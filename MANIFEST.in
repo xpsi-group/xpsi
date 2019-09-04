@@ -1,0 +1,3 @@
+include LICENSE README.rst CHANGELOG.rst TODO.rst
+
+graft xpsi/include
