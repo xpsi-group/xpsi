@@ -99,7 +99,7 @@ class HotRegions(ParameterSubspace):
                                threads, *args)
 
     def integrate(self, st, energies, threads,
-                  closed_atmosphere, elsewhere_atmosphere):
+                  hot_atmosphere, elsewhere_atmosphere):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
@@ -122,11 +122,11 @@ class HotRegions(ParameterSubspace):
 
         primary = self._objects[0].integrate(st, primary_energies,
                                              threads,
-                                             closed_atmosphere,
+                                             hot_atmosphere,
                                              elsewhere_atmosphere)
         secondary = self._objects[1].integrate(st, secondary_energies,
                                                threads,
-                                               closed_atmosphere,
+                                               hot_atmosphere,
                                                elsewhere_atmosphere)
 
         return (primary, secondary)
