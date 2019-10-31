@@ -71,7 +71,7 @@ class Star(object):
 
     def activate_fast_mode(self, activate):
         for photosphere in self._photospheres:
-            photosphere.spot.fast_mode = activate
+            photosphere.hot.fast_mode = activate
 
     def update(self, p, fast_counts=None, threads=1):
         """ Update the star.

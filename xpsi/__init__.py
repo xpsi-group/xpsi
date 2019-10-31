@@ -1,4 +1,5 @@
-""" X-PSI: A prototype open-source package for X-ray Pulse Simulation and Inference. """
+""" X-PSI: A prototype open-source package for neutron star
+    X-ray Pulse Simulation and Inference. """
 from __future__ import print_function
 __version__ = "0.1"
 __author__ = "Thomas E. Riley"
@@ -83,10 +84,12 @@ if not __XPSI_SETUP__:
             return error
 
     if _verbose:
+        vstring = "Version: %s" % __version__
+        name = "X-PSI: X-ray Pulse Simulation and Inference"
         print("/=============================================\\")
-        print("| X-PSI: X-ray Pulse Simulation and Inference |")
+        print("| " + name + " |")
         print("|---------------------------------------------|")
-        print("|              Version: %s                 |" % __version__)
+        print("|" + vstring.center(len(name)+2) + "|")
         print("\\=============================================/\n")
 
     import global_imports
@@ -99,15 +102,15 @@ if not __XPSI_SETUP__:
     from .Star import Star
     from .Spacetime import Spacetime
     from .Photosphere import Photosphere
-    from .Spot import Spot
-    from .Spots import Spots
-    from .TwoSpots import TwoSpots
+    from .HotRegion import HotRegion
+    from .TwoHotRegions import TwoHotRegions
+    from .HotRegions import HotRegions
     from .Elsewhere import Elsewhere
 
     from .Background import Background
     from .Interstellar import Interstellar
 
-    from .Sample import MultiNest
+    from .Sample import nested
     from .Prior import Prior
 
     if global_imports._size == 1:

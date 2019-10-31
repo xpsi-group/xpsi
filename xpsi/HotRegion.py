@@ -16,8 +16,34 @@ class RayError(xpsiError):
 class PulseError(xpsiError):
     """ Raised if a numerical problems encountered during integration. """
 
-class Spot(ParameterSubspace):
-    """ A photospheric spot. """
+class HotRegion(ParameterSubspace):
+    """ A photospheric hot region that is contiguous.
+
+    Instances of this class can take the following forms:
+
+        * a circular, simply-connected region;
+        * a ceding region with a non-radiating superseding region;
+        * a ceding region with a radiating superseding region.
+
+    For the first option, set ``hole=False`` and ``cede=False``.
+    For the third option, set ``hole=False`` and ``cede=True``.
+
+    For the second option, set ``hole=True`` and ``cede=False``. This is
+    counter-intuitive. These settings produce a superseding region with a
+    non-radiating hole, which is equivalent to a ceding region with a
+    non-radiating superseding region. The *hole* may not strictly always be
+    a hole, because it behaves as a superseding region that does not radiate.
+    A superseding region can exist partially outside its relative ceding
+    region, so the non-superseded subset of the ceding region is
+    simply-connected (i.e., does not have a hole).
+
+    .. note:: Setting ``hole=True`` and ``cede=True`` ignores the hole.
+
+    The ``concentric`` setting defines whether the superseding region is
+    concentric with the ceding region or a hole, supposing either
+    ``hole=True`` or ``cede=True``.
+
+    """
 
     def __init__(self,
                  num_params,
@@ -41,28 +67,54 @@ class Spot(ParameterSubspace):
                  fast_num_leaves = 32,
                  is_secondary = False):
         """
-        :param num_params: Number of parameters for spot model, including the
-                           spot centre colatitude and spot angular radius.
+        :param num_params: Number of parameters for hot region model. For a
+                           circular hot-spot, this includes the
+                           the spot centre colatitude and spot angular radius.
 
         :param list bounds: Hard parameter bounds for the instance of
                             :class:`.ParameterSubspace.ParameterSubspace`.
 
-        :param bool symmetry: Is the radiation field axisymmetric (w.r.t the
-                              stellar rotation axis)? This determines which
-                              ``CellMesh`` integrator to deploy. Only set to
-                              ``False`` if you overwrite
-                              :meth:`_eval_srcRadFieldParamVectors` in a
-                              custom subclass.
+        .. note::
+
+            The order of the list of the parameter bounds must follow an order
+            of precedence:
+
+            * super colatitude
+            * super angular radius
+            * cede or hole colatitude
+            * cede or hole angular radius
+            * cede or hole relative azimuth
+            * parameters controlling the local comoving radiation field over
+              the photospheric 2-surface (entirely the user's responsibility)
+
+            These bounds might not be actually used, depending the user's
+            implementation of the joint prior, and the user can in that case
+            specify ``[None,None]`` for bounds pertaining to the ceding region
+            or the hole.
+
+        :param bool symmetry:
+            Is the radiation field axisymmetric (w.r.t the stellar rotation
+            axis) within a hot region with only a superseding region?
+            This determines which ``CellMesh`` integrator to
+            deploy. Only set to ``False`` if you overwrite
+            :meth:`_eval_srcRadFieldParamVectors` in a custom subclass.
 
         :param sqrt_num_cells:
             Number of cells in both colatitude and azimuth which form a
             regular mesh on a curved 2-surface (a spacelike leaf of the
             spacetime foliation). This is square-root of the approximate
-            number of cells which constitute a spot.
+            number of cells whose centres should lie within a hot region.
 
         :param min_sqrt_num_cells:
-            Sets the minimum number of cells per *region*, discretised to
-            the same degree in colatitude and azimuth.
+            Sets the minimum number of cells per *subregion*, discretised to
+            the same degree in colatitude and azimuth. This setting has an
+            effect only when the hot region has two temperature components, in
+            the form of a superseding region and a ceding region.
+
+        :param min_sqrt_num_cells:
+            Sets the maximum number of cells per *subregion*, discretised to
+            the same degree in colatitude and azimuth. This setting has an
+            effect even when there is only one temperature component.
 
         :param num_rays: Number of rays to trace (integrate) at each colatitude,
                          distributed in angle subtended between ray tangent
@@ -84,24 +136,20 @@ class Spot(ParameterSubspace):
             Activate fast precomputation to guide cell distribution between
             two radiating regions at distinct temperatures.
 
+        .. note:: For each of the resolution parameters listed above, there is
+                  a corresponding parameter whose value is respected if the
+                  fast precomputation mode is activated.
+
         :param bool is_secondary:
             If ``True``, shifts the cell mesh by :math:`\pi` radians about
             the stellar rotation axis for pulse integration.
 
-        .. note:: The order of the list of the parameter bounds must be:
-
-            * spot colatitude, restricted to :math:`\Theta\in(0.0,\pi)` or
-              a subinterval
-            * spot angular radius, restricted to :math:`\zeta\in(0.0,\pi/2]`
-              or a subinterval
-            * parameters controlling the local comoving radiation field over
-              the photospheric 2-surface (entirely the user's responsibility)
-
         """
-        super(Spot, self).__init__(num_params, bounds)
+        super(HotRegion, self).__init__(num_params, bounds)
 
         if self._num_params < 3:
-            raise BoundsError('A spot requires at least three sets of '
+            raise BoundsError('A hot region spot requires at least three '
+                              'sets of '
                               'parameter bounds.')
 
         for colatitude in self._bounds[0]:
@@ -197,7 +245,7 @@ class Spot(ParameterSubspace):
         """ Get the leaves of the photospheric foliation. """
         return self._phases
 
-    def set_phases(self, num_leaves, fast_num_leaves,
+    def set_phases(self, num_leaves, fast_num_leaves=None,
                    num_phases=None, phases=None):
         """ Construct the set of interpolation phases and foliation leaves.
 

@@ -3,21 +3,26 @@ from __future__ import division, print_function
 from .global_imports import *
 from . import global_imports
 
-from .Spot import Spot
+from .HotRegion import HotRegion
 
 from .ParameterSubspace import BoundsError
 
 class PulseError(xpsiError):
     """ Raised if a numerical problems encountered during integration. """
 
-class Spots(Spot):
-    """ Two photospheric spots, which may or may not be antipodal.
+class TwoHotRegions(HotRegion):
+    """ Two photospheric hot regions, which may or may not be antipodal.
 
-    The *primary* spot is represented by the class from which the
-    :class:`.Spots.Spots` derives -- i.e., the :class:`.Spot.Spot` class.
+    The *primary* hot region is represented by the class from which the
+    :class:`.TwoHotRegions.TwoHotRegions` derives -- i.e., the
+    :class:`.HotRegion.HotRegion` class.
 
-    The *secondary* spot is represented by adding behaviour to this parent
-    class. This secondary spot may or may not be *antipodal*.
+    The *secondary* hot region is represented by adding behaviour to this parent
+    class. This secondary hot region may or may not be *antipodal*.
+
+    This class differs from the :class:`.HotRegions.HotRegions` class because
+    it works specifically for two hot regions of equal complexity via
+    inheritance.
 
     """
 
@@ -47,7 +52,8 @@ class Spots(Spot):
                             origin which is perpendicular to the line
                             through the origin and the primary spot centre.
 
-        :param kwargs: Keyword arguments passed to :class:`.Spot.Spot` class.
+        :param kwargs:
+            Keyword arguments passed to :class:`.HotRegion.HotRegion` class.
 
         .. note:: The parameter bounds of the secondary spot must satisfy:
 
@@ -56,7 +62,7 @@ class Spots(Spot):
 
         """
         if len(num_params) == 2:
-            super(Spots, self).__init__(sum(num_params), bounds, **kwargs)
+            super(TwoHotRegions, self).__init__(sum(num_params), bounds, **kwargs)
         else:
             raise ValueError('Number of parameters must be passed as a '
                              '2-tuple in order to parse a parameter vector '
@@ -90,7 +96,7 @@ class Spots(Spot):
 
     def print_settings(self):
         """ Print numerical settings. """
-        super(Spots, self).print_settings()
+        super(TwoHotRegions, self).print_settings()
         print('Antipodal symmetry: %s' % str(self._antipodal_symmetry))
 
     @property
@@ -116,18 +122,18 @@ class Spots(Spot):
             ps = p[self._num_primary_params:]
 
         if not self._antipodal_symmetry:
-            super(Spots, self).embed(spacetime, ps,
-                                     fast_secondary_total_counts,
-                                     threads, *args)
+            super(TwoHotRegions, self).embed(spacetime, ps,
+                                             fast_secondary_total_counts,
+                                             threads, *args)
             self.__super_theta = self._super_theta
             try:
                 self.__cede_theta = self._cede_theta
             except AttributeError:
                 pass
         else:
-            super(Spots, self).embed(spacetime, p,
-                                     fast_secondary_total_counts,
-                                     threads, *args)
+            super(TwoHotRegions, self).embed(spacetime, p,
+                                             fast_secondary_total_counts,
+                                             threads, *args)
             self.__super_theta = _pi - self._super_theta
             try:
                 self.__cede_theta = _pi - self._cede_theta
@@ -170,9 +176,9 @@ class Spots(Spot):
         if not self._antipodal_symmetry or fast_total_counts is not None:
             # embed primary spot; names (attributes) in parent class rebound
             pp = p[:self._num_primary_params]
-            super(Spots, self).embed(spacetime, pp,
-                                     fast_primary_total_counts,
-                                     threads, *args)
+            super(TwoHotRegions, self).embed(spacetime, pp,
+                                             fast_primary_total_counts,
+                                             threads, *args)
 
     def integrate(self, st, energies, threads,
                   spot_atmosphere, elsewhere_atmosphere):
@@ -210,10 +216,10 @@ class Spots(Spot):
         else:
             super_energies = cede_energies = secondary_energies
 
-        primary = super(Spots, self).integrate(st, primary_energies,
-                                               threads,
-                                               spot_atmosphere,
-                                               elsewhere_atmosphere)
+        primary = super(TwoHotRegions, self).integrate(st, primary_energies,
+                                                       threads,
+                                                       spot_atmosphere,
+                                                       elsewhere_atmosphere)
 
         leaves = self._fast_leaves if self.fast_mode else self._leaves
         phases = self._fast_phases if self.fast_mode else self._phases
