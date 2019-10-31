@@ -43,7 +43,7 @@ cdef double Planck_dist_const = 5.040366110812353e22
 cdef int SUCCESS = 0
 cdef int ERROR = 1
 
-from xpsi.surface_radiation_field.open_radiation_field cimport (init_extRadField,
+from xpsi.surface_radiation_field.elsewhere_radiation_field cimport (init_extRadField,
                                                                 eval_extRadField,
                                                                 eval_extRadField_norm,
                                                                 free_extRadField,

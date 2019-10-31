@@ -130,8 +130,8 @@ if __name__ == '__main__':
                 'xpsi.tools.synthesise',
                 'xpsi.likelihoods.default_background_marginalisation',
                 'xpsi.likelihoods.Poisson_loglike',
-                'xpsi.surface_radiation_field.closed_radiation_field',
-                'xpsi.surface_radiation_field.open_radiation_field',
+                'xpsi.surface_radiation_field.hot_radiation_field',
+                'xpsi.surface_radiation_field.elsewhere_radiation_field',
                 'xpsi.cellmesh.integrator',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance',
                 'xpsi.cellmesh.integrator_for_time_invariance']
@@ -148,7 +148,8 @@ if __name__ == '__main__':
         author_email = 'T.E.Riley@uva.nl; t.riley.phd@gmail.com',
         url = 'https://github.com/ThomasEdwardRiley/xpsi',
         license = 'MIT',
-        description = """X-PSI: A prototype open-source package for X-ray Pulse Simulation and Inference.""",
+        description = """X-PSI: A prototype open-source package for
+                         neutron star X-ray Pulse Simulation and Inference.""",
         long_description = open('README.rst').read(),
         packages = ['xpsi',
                     'xpsi/cellmesh',

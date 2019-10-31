@@ -87,6 +87,10 @@ class HotRegion(ParameterSubspace):
             * parameters controlling the local comoving radiation field over
               the photospheric 2-surface (entirely the user's responsibility)
 
+            If the ceding region or the hole are concentric with the
+            superseding region, the colatitude and relative azimuth of the
+            ceding region or hole are not parameters.
+
             These bounds might not be actually used, depending the user's
             implementation of the joint prior, and the user can in that case
             specify ``[None,None]`` for bounds pertaining to the ceding region
@@ -142,15 +146,18 @@ class HotRegion(ParameterSubspace):
 
         :param bool is_secondary:
             If ``True``, shifts the cell mesh by :math:`\pi` radians about
-            the stellar rotation axis for pulse integration.
+            the stellar rotation axis for pulse integration. This is merely
+            a choice that can be made, and is not crucial. Note that the
+            (fast) phase-shifting applied near the end of the likelihood
+            evaluation is related to this choice and thus phase-shift parameter
+            prior support can be chosen accordingly.
 
         """
         super(HotRegion, self).__init__(num_params, bounds)
 
         if self._num_params < 3:
-            raise BoundsError('A hot region spot requires at least three '
-                              'sets of '
-                              'parameter bounds.')
+            raise BoundsError('A hot region requires at least three '
+                              'sets of parameter bounds.')
 
         for colatitude in self._bounds[0]:
             if not 0.0 < colatitude < _pi:
@@ -297,7 +304,7 @@ class HotRegion(ParameterSubspace):
 
     @property
     def phases_in_cycles(self):
-        """ Get the phases (in cycles) the spot pulse is interpolated at. """
+        """ Get the phases (in cycles) the pulse is interpolated at. """
         return self._phases_cycles
 
     @property
@@ -549,43 +556,18 @@ class HotRegion(ParameterSubspace):
                        * _sin(theta)
                        * _cos(phi))
 
-    @staticmethod
-    def _eval_srcRadFieldParamVectors(psi, p, *args):
-        """
-        .. note:: Default. Can be overwritten in a custom subclass, *if you know
-                  what you are doing*\ .
-
-        Optional function to evaluate the source radiation field parameter
-        vector at points on a curved 2-surface (a spacelike leaf of the
-        spacetime foliation).
-
-        Returns the source radiation field parameters of a uniform spot on
-        a Schwarzschild temporal hyperslice.
-
-        The first parameter is a matrix, and a matrix must be returned.
-
-        :param list p: The local radiation field parameter vector, which
-                       is to be passed to the low-level routines.
-
-        """
-        cellParamVecs = _np.ones((psi.shape[0], psi.shape[1], len(p)+1),
-                                  dtype=_np.double)
-
-        cellParamVecs[...,:-1] *= _np.array(p)
-
-        return cellParamVecs
-
     def embed(self, spacetime, p, fast_total_counts, threads, *args):
-        """ Embed the spot.
+        """ Embed the hot region.
 
         :param bool correction: Correct the integral over the radiation field
                                 *elsewhere* by accounting for the time-dependent
-                                component arising from the presence of the spot.
+                                component arising from the presence of the
+                                hot region.
 
         :param cellParamVecs: A :class:`numpy.ndarray` of ``float``\ s. If a
                               :obj:`correction` is to be made, this array
                               contains a parameter vector for each cell of the
-                              spot mesh. The parameter vectors should be
+                              hot region mesh. The parameter vectors should be
                               identical and equivalent to the parameter vector
                               used for the radiation field *elsewhere*\ . If no
                               correction is to be made, the array needs to be

@@ -46,13 +46,13 @@ cdef int ERROR = 1
 cdef int VERBOSE = 1
 cdef int QUIET = 0
 
-from xpsi.surface_radiation_field.closed_radiation_field cimport (init_srcRadField,
+from xpsi.surface_radiation_field.hot_radiation_field cimport (init_srcRadField,
                                                        free_srcRadField,
                                                        eval_srcRadField,
                                                        eval_srcRadField_norm,
                                                        srcRadField_PRELOAD)
 
-from xpsi.surface_radiation_field.open_radiation_field cimport (init_extRadField,
+from xpsi.surface_radiation_field.elsewhere_radiation_field cimport (init_extRadField,
                                                     free_extRadField,
                                                     eval_extRadField,
                                                     eval_extRadField_norm,
