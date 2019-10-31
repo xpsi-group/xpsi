@@ -711,11 +711,11 @@ class HotRegion(ParameterSubspace):
         self._fast_mode = activate
 
     def integrate(self, st, energies, threads,
-                  spot_atmosphere, elsewhere_atmosphere):
+                  hot_atmosphere, elsewhere_atmosphere):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
-        azimuthal invariance of the spot radiation field.
+        azimuthal invariance of the radiation field of the hot region.
 
         :param st: Instance of :class:`~.Spacetime.Spacetime`.
 
@@ -782,7 +782,7 @@ class HotRegion(ParameterSubspace):
                                        super_energies,
                                        leaves,
                                        phases,
-                                       spot_atmosphere,
+                                       hot_atmosphere,
                                        elsewhere_atmosphere)
 
         if super_pulse[0] == 1:
@@ -815,7 +815,7 @@ class HotRegion(ParameterSubspace):
                                           cede_energies,
                                           leaves,
                                           phases,
-                                          spot_atmosphere,
+                                          hot_atmosphere,
                                           elsewhere_atmosphere)
         except AttributeError:
             pass

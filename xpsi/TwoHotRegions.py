@@ -32,11 +32,9 @@ class TwoHotRegions(HotRegion):
                  antipodal_symmetry = True,
                  **kwargs):
         """
-        :param tuple num_params: Number of parameters for spot model, including
-                                 the primary spot centre colatitude and spot
-                                 angular radius. The tuple must have two
-                                 elements, specifying the number of parameters
-                                 per spot.
+        :param tuple num_params: Number of parameters for model. The tuple
+                                 must have two elements, specifying the number
+                                 of parameters per spot.
 
         :param list bounds: Hard parameter bounds for the instance of
                             :class:`.ParameterSubspace.ParameterSubspace`.
@@ -181,11 +179,11 @@ class TwoHotRegions(HotRegion):
                                              threads, *args)
 
     def integrate(self, st, energies, threads,
-                  spot_atmosphere, elsewhere_atmosphere):
+                  hot_atmosphere, elsewhere_atmosphere):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
-        azimuthal invariance of the spot radiation field.
+        azimuthal invariance of the radiation field of the hot region.
 
         :param st: Instance of :class:`~.Spacetime.Spacetime`.
 
@@ -218,7 +216,7 @@ class TwoHotRegions(HotRegion):
 
         primary = super(TwoHotRegions, self).integrate(st, primary_energies,
                                                        threads,
-                                                       spot_atmosphere,
+                                                       hot_atmosphere,
                                                        elsewhere_atmosphere)
 
         leaves = self._fast_leaves if self.fast_mode else self._leaves
@@ -250,7 +248,7 @@ class TwoHotRegions(HotRegion):
                                           super_energies,
                                           leaves,
                                           phases,
-                                          spot_atmosphere,
+                                          hot_atmosphere,
                                           elsewhere_atmosphere)
 
         if super_pulse[0] == 1:
@@ -283,7 +281,7 @@ class TwoHotRegions(HotRegion):
                                              cede_energies,
                                              leaves,
                                              phases,
-                                             spot_atmosphere,
+                                             hot_atmosphere,
                                              elsewhere_atmosphere)
         except AttributeError:
             pass
