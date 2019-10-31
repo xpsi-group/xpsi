@@ -69,6 +69,40 @@ class Prior(object):
 
         return p
 
+
+    def draw(self, ndraws):
+        """ Draw samples uniformly from the prior via inverse sampling.
+
+        """
+
+        h = _np.random.rand(ndraws, len(self._bounds))
+
+        samples = _np.zeros((int(ndraws), len(self._bounds)),
+                            dtype=_np.double)
+
+        finite_counter = counter = index = 0
+        while finite_counter < ndraws:
+            try:
+                p = self.inverse_sample(h[index, :])
+            except IndexError: # use estimate to draw more from hypercube
+                if finite_counter > 0:
+                    redraw = float(counter) * ndraws / finite_counter
+                else:
+                    redraw = ndraws
+                redraw -= finite_counter
+                h = _np.random.rand(int(redraw)+1, len(self._bounds))
+                index = 0
+                p = self.inverse_sample(h[index, :])
+
+            if _np.isfinite(self.__call__(p)):
+                samples[finite_counter,:] = p
+                finite_counter += 1
+            counter += 1
+            index += 1
+
+        return samples, float(finite_counter) / counter
+
+
     @make_verbose('Estimating fractional hypervolume of the unit hypercube '
                   'with finite prior density:',
                   'Fractional hypervolume estimated')
@@ -87,25 +121,7 @@ class Prior(object):
             yield ('Requiring %.E draws from the prior support '
                    'for Monte Carlo estimation.' % ndraws)
 
-            h = _np.random.rand(ndraws, len(self._bounds))
-
-            finite_counter = counter = index = 0
-            while finite_counter < ndraws:
-                try:
-                    p = self.inverse_sample(h[index, :])
-                except IndexError: # use estimate to draw more from hypercube
-                    redraw = float(counter) * ndraws / finite_counter
-                    redraw -= finite_counter
-                    h = _np.random.rand(int(redraw)+1, len(self._bounds))
-                    index = 0
-                    p = self.inverse_sample(h[index, :])
-
-                if _np.isfinite(self.__call__(p)):
-                    finite_counter += 1
-                counter += 1
-                index += 1
-
-            self._unit_hypercube_frac = float(finite_counter) / counter
+            self._unit_hypercube_frac = self.draw(ndraws)[1]
         else:
             self._unit_hypercube_frac = None
 
