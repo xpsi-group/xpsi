@@ -87,6 +87,10 @@ class HotRegion(ParameterSubspace):
             * parameters controlling the local comoving radiation field over
               the photospheric 2-surface (entirely the user's responsibility)
 
+            If the ceding region or the hole are concentric with the
+            superseding region, the colatitude and relative azimuth of the
+            ceding region or hole are not parameters.
+
             These bounds might not be actually used, depending the user's
             implementation of the joint prior, and the user can in that case
             specify ``[None,None]`` for bounds pertaining to the ceding region
@@ -142,7 +146,11 @@ class HotRegion(ParameterSubspace):
 
         :param bool is_secondary:
             If ``True``, shifts the cell mesh by :math:`\pi` radians about
-            the stellar rotation axis for pulse integration.
+            the stellar rotation axis for pulse integration. This is merely
+            a choice that can be made, and is not crucial. Note that the
+            (fast) phase-shifting applied near the end of the likelihood
+            evaluation is related to this choice and thus phase-shift parameter
+            prior support can be chosen accordingly.
 
         """
         super(HotRegion, self).__init__(num_params, bounds)
