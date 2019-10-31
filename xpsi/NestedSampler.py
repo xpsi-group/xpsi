@@ -17,7 +17,7 @@ else:
     if _verbose:
         print('Imported PyMultiNest.')
 
-class MultiNestIntegrator(object):
+class NestedSampler(object):
     """ Extended MultiNest wrapper.
 
     """
