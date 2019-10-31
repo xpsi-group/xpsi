@@ -1,0 +1,19 @@
+.. module:: xpsi
+
+.. _hotregions:
+
+HotRegions
+==========
+
+Instances of :class:`~.HotRegions.HotRegions` are objects representing a pair of
+radiatively intense regions of the source photosphere. The class handles
+:class:`~.HotRegions.HotRegions` instances, and applies the methods to compute
+photon pulses from a pair of spots which may be related under some model.
+
+.. autoclass:: xpsi.HotRegions.HotRegions
+    :members: __init__, embed, integrate, print_settings, num_params,
+              bounds
+    :show-inheritance:
+
+.. autoclass:: xpsi.HotRegions.PulseError
+    :show-inheritance:
