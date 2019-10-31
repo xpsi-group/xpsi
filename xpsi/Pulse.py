@@ -347,7 +347,7 @@ class Pulse(ParameterSubspace):
         return self._energy_edges
 
     def fold(self, signals, p, fast_mode=False, threads=1):
-        """ Fold an raw pulse signal through the response matrix.
+        """ Fold a raw pulse signal through the response matrix.
 
         A :class:`numpy.ndarray` is stored as an instance attribute containing
         source pulsation for each *output* channel in units of counts cm^2/s
