@@ -10,7 +10,7 @@ required:
 
 * :mod:`numpy`
 * :mod:`cython`
-* :mod:`emcee` (bleeding-edge version 3.0.0.dev0 -- commit 36e2f233)
+* :mod:`emcee` (v3.0.1)
 * :mod:`h5py`
 * :mod:`mpi4py`
 * :mod:`schwimmbad`
@@ -20,9 +20,9 @@ required:
 
 .. _emcee: http://emcee.readthedocs.io/en/latest/
 
-For likelihood evaluation, you require Version 2.3 of the GNU Scientific
-Library (`GSL <https://www.gnu.org/software/gsl/>`_). You also require an
-`OpenMP`_-enabled C compiler (tested with icc, gcc, clang).
+For likelihood evaluation, you require the GNU Scientific (no reason not to
+use v2.5) Library (`GSL <https://www.gnu.org/software/gsl/>`_). You also
+require an `OpenMP`_-enabled C compiler (tested with icc, gcc, clang).
 
 .. _OpenMP: http://www.openmp.org
 

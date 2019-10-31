@@ -46,7 +46,7 @@ generative model of interest can be constructed from a restricted set of
 abstract mathematical objects. These objects often have properties which are
 discrete representations of continuous mathematical structures, and these
 continuous structures are imbued with physical and statistical meaning in
-order to *attempt* to describe observable reality in terms of deterministic and
+order to attempt to describe observable reality in terms of deterministic and
 stochastic processes.
 
 In X-PSI, we adopt general relativistic gravity to construct a spacetime
