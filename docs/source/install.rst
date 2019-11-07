@@ -6,7 +6,7 @@ Installation
 Dependencies
 ------------
 
-X-PSI has been used thus far in Python 2.7 environments, and the following
+X-PSI was developed in Python 2.7 environments. The following
 Python packages are required for strictly for likelihood functionality:
 
 * :mod:`numpy`
@@ -14,35 +14,41 @@ Python packages are required for strictly for likelihood functionality:
 
 The following Python packages are required for nested sampling:
 
-* :mod:`PyMultiNest`
-* :mod:`mpi4py`
+* `PyMultiNest <https://github.com/JohannesBuchner/PyMultiNest>`_
+* `mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_
 
 The following Python packages are required for full functionality of the
 post-processing module:
 
 * `Matplotlib <https://matplotlib.org/>`_
 * :mod:`getdist` (posterior KDE corner plotting)
-* :mod:`h5py` (storage of signals computed from samples)
-* :mod:`nestcheck` (error analysis and plotting)
-* :mod:`fgivenx` (conditional posterior plotting; required by nestcheck)
+* :mod:`h5py` (storage of X-ray signals computed from posterior samples)
+* :mod:`nestcheck` (posterior error analysis, plotting, run combination, etc.)
+* :mod:`fgivenx` (conditional posterior plotting; also required by nestcheck)
 
 Note that post-processing can generally be done on a desktop computer and thus
 these packages are not necessary for running sampling processes on a
 high-performance system. If they are not installed, a warning message is
 printed or an exception is raised (by the root process if MPI world size >1).
 
-The following Python packages for ensemble MCMC are optional:
-* :mod:`emcee` (v3.0.1)
+The following Python packages for ensemble-MCMC are optional:
+
+* :mod:`emcee`
 * :mod:`schwimmbad`
 * `tqdm <https://pypi.python.org/pypi/tqdm>`_
 
 .. _emcee: http://emcee.readthedocs.io/en/latest/
 
-X-PSI has several dependencies that are not Python packages.
+These packages can be installed straightforwardly from source or via a
+package manager (conda, pip), via the instructions native to the packages.
+
+X-PSI has several dependencies that are not Python packages. Build and install
+guidelines are given below.
 
 For likelihood evaluation, you require the GNU Scientific Library
 (`GSL <https://www.gnu.org/software/gsl/>`_). You also
-require an `OpenMP`_-enabled C compiler (tested with icc, gcc, clang).
+require an `OpenMP`_-enabled C compiler (known compatibility with icc, gcc,
+clang).
 
 .. _OpenMP: http://www.openmp.org
 
@@ -56,7 +62,9 @@ you require an MPI-wrapped Fortran compiler (e.g., mpifort in Open MPI v1.7+).
 From source
 -----------
 
-To obtain the latest GSL_ source code (v2.5 as of writing)::
+To obtain the latest GSL_ source code (v2.5 as of writing):
+
+.. code-block:: bash
 
    wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
 
@@ -72,191 +80,51 @@ then build and install:
     make installcheck
     make clean
 
-To build and install ``xpsi``:
+To build and install ``xpsi``, requiring a C compiler:
 
 .. code-block:: bash
 
-    python build.py install --user
+    CC=<path/to/compiler/executable> python build.py install --user
 
 Alternatively, to build in-place:
 
 .. code-block:: bash
 
-    python build.py build_ext -i
+    CC=<path/to/compiler/executable> python build.py build_ext -i
 
 This will build extension modules in the source code directory. You must in
 this case ensure that the source code directory is on your ``PYTHONPATH``
 environment variable, or inserted into ``sys.path`` within a calling module.
 
-Lisa
-----
-
-The following are *system-specific* instructions for the SURFsara
-`Lisa <https://userinfo.surfsara.nl/systems/lisa>`_ Cluster.
-
-To get started, ``XPSI`` and all package and library dependencies need to be
-installed. The necessary compilers, wrappers, and low-level parallelisation
-libraries are already globally installed on Lisa.
-
-Note that all of the following must be performed on a login node in your
-home directory ``$HOME``.
-
-Let's start with GSL_. Assuming you are on your home file system on a login
-node, `cd` to the package source code directory (e.g., ``$HOME/src``).
-We need to install the library in our home file system, so we give a prefix to
-the configure script, 
-
-.. code-block:: bash
-
-    module load gcc
-    ./configure CC=gcc --prefix=$HOME/gsl
-    make
-    make check
-    make install
-    make installcheck
-    make clean
-
-We will now install the various python packages we require. We use the module
-``/sara/sw/python-2.7.9/`` and its ``pip`` package manager to install packages
-locally in ``$HOME/.local/lib/python2.7/site-packages/`` if they are not
-installed globally or are outdated. For emcee_ we want the bleeding-edge
-version, so we install from source.
-
-.. code-block:: bash
-
-    module load python/2.7.9
-    module load gcc
-
-    export CC=gcc
-
-    pip install --user Cython==0.27.3
-    pip install --user mpi4py==2.0.0
-    #pip install --user schwimmbad
-
-    git clone https://github.com/dfm/emcee.git
-    git cd emcee
-    python setup.py install --user
-    py.test -v tests
-    cd ..
-    rm -r emcee
-
-    cd XPSI/src
-    python build.py install --user --use-cython
-    cd $HOME
-
-Provided the GSL prefix is in your ``PATH`` environment variable (see below for
-environment variables), the ``XPSI`` setup script will automatically use
-the ``gsl-config`` executable script to link the shared libraries and give the
-required cflags for compilation of the ``XPSI`` source code.
-
-We will not use :mod:`getdist` or Matplotlib_ on Lisa, but instead `scp` output
-files to a local system to perform plotting. This circumvents any potential
-backend problems and permits straightforward use of IPython for interactive
-plotting.
-
-.. We will now install `PolyChord`_. Untar the source code archive and `cd` into
-    it. Edit the ``PyPolyChord`` target in the ``Makefile``:
-    .. code-block:: bash
-        PyPolyChord: environment $(LIB_DIR)/libchord.so
-            python setup.py install --user
-    .. code-block:: bash
-        module load python/2.7.9
-        module load openmpi/gnu
-        #optionally DEBUG=1
-        make PyPolyChord MPI=1 COMPILER_TYPE=gnu
-        make clean
-
-The following environment variables need to be exported in your job script
-script so that all relevant libraries can be located at *runtime* by the
-dynamic loader (ensure that the environment variables are only extended, and
-not overwritten because module loading modifies these variables):
-
-.. code-block:: bash
-
-    # if you want to ensure that your locally installed packages take
-    # precedence over globally installed packages:
-    #export PYTHONPATH=$HOME/.local.lib/python2.7/site-packages/:$PYTHONPATH
-
-    # we point the dynamic loader to the runtime path for the GSL library
-    # when we link the XPSI binaries into an executable, so we do not require
-    # it here:
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/PolyChord/lib
-
-    # if you intend to use PolyChord, the authors require that the dynamic
-    # loader imports the MPI library before all others:
-    #export LD_PRELOAD=/sara/sw/openmpi-gnu-1.6.5-x/lib/libmpi.so.1:$LD_PRELOAD
-
-If you are to perform small tests on login nodes in your login shell, these
-environment variables need to be exported in your ``.bash_profile`` script, or
-in your ``.bash.rc`` script which can be sourced by your ``.bash_profile``
-script. NB: this is a default behaviour on Lisa.
-
-Unfortunately, the ``/sara/sw/python-2.7.9/`` Python distribution does not
-seem to have :mod:`numpy` linked against the Intel MKL library. Instead it
-uses the open-source, multithreaded OpenBLAS library which still offers an
-optimised interface to BLAS and LAPACK. However for our purposes on distributed
-memory architectures, we  wish to export the following environment variables
-in our batch job script if we do not want multithreaded libraries to spawn
-worker (OpenMP or POSIX) threads:
-
-.. code-block:: bash
-
-    export OMP_NUM_THREADS=1
-    export GOTO_NUM_THREADS=1
-    export OPENBLAS_NUM_THREADS=1
-    export MKL_NUM_THREADS=1
-
-If we instruct our likelihood evaluation object to OpenMP multithread, local
-multithreading regions are used which do not use the ``OMP_NUM_THREADS``
-environment variable, so we can invariantly export it as above. However, the
-``MKL_NUM_THREADS`` environment variable should either not be exported (in
-which case the ``OMP_NUM_THREADS`` variable is used) or increased so that 
-:mod:`numpy` can multithread outside of the our local multithreading regions
-in the low-level ``XPSI`` source code.
-
-Note that OpenBLAS may not be compiled against the OpenMP library but use
-Pthreads. If :mod:`numpy` *is* linked against MKL, we have covered all
-possibilities because MKL whilst uses OpenMP threading but the
-``MKL_NUM_THREADS`` environment variable takes precedence if set and thus we
-ensure it is set to one.
-
-The GSL library we installed (see above) is not a parallel library itself,
-and actually supplies a low-level layer of its own as a CBLAS implementation.
-This may be replaced with an optimised implementation, in which case the
-question of nested multithreading arises. The OpenBLAS and MKL implementations
-can detect whether library calls are made within OpenMP-parallel regions of
-the ``XPSI`` source code provided the same threading library is used: e.g.,
-OpenBLAS compiled with ``USE_OPENMP=1``, or ``XPSI`` compiled with an Intel
-compiler and linked against MKL.
-
 Documentation
 -------------
 
-If you wish to compile the documentation, and you are in the ``src`` directory:
+If you wish to compile the documentation you require :mod:`sphinx`:
 
 .. code-block:: bash
 
-    cd docs
+    cd xpsi/docs; make html
 
-    #optionally:
-    #make clean
-
-    make html
-
-The ``.html`` files can then found in ``src/docs/build/html``, along with the
-notebooks for the tutorials in this documentation. The ``.html`` files can 
-naturally be opened in a browser. To do this you need :mod:`sphinx` and the
-relevant extensions and the ``sphinx_rtd_theme``. Customisation can be made
-in the ``src/docs/source/conf.py`` script.
+The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
+notebooks for the tutorials in this documentation. The ``.html`` files can
+naturally be opened in a browser. You need the relevant extensions and a
+theme such as ``sphinx_rtd_theme``. Customisation can be made
+in the ``xpsi/docs/source/conf.py`` script.
 
 Note that if you require links to the source code in the HTML files, you need
-to ensure Sphinx imports the ``XPSI`` package from the *source* directory
+to ensure Sphinx imports the ``xpsi`` package from the *source* directory
 instead of from the ``~/.local/lib`` directory of the user. To enforce this,
 insert the path to the source directory into ``sys.path`` in the ``conf.py``
 script. Then make sure the extension modules are inside the source directory
 -- i.e., the package is built in-place (see above).
 
+.. To build the documentation, all modules need to be imported, and the
+   dependencies that are not resolved will print warning messages.
 
+Conda environment duplication
+-----------------------------
 
-
+In the source repository we provide dependency files that can facilitate
+the duplication of the environment from which X-PSI ``v0.1`` was released.
+This information may be useful if trying to diagnose installation problems.
 

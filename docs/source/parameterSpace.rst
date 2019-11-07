@@ -2,8 +2,8 @@
 
 .. _parameterSpace:
 
-The parameter space
-===================
+ParameterSpace
+==============
 
 Instances of :class:`~.ParameterSpace.ParameterSpace` represent the
 *abstract* global parameter space of the model. The class itself is an

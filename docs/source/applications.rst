@@ -6,6 +6,8 @@ Applications
 X-PSI was applied in the following contexts. These may be useful for rough
 performance benchmarking and planning of resource consumption.
 
+.. _R19:
+
 *Riley et al. 2019*
 ~~~~~~~~~~~~~~~~~~~
 
@@ -44,7 +46,8 @@ receiving likelihood function evaluation requests.
 
 **Compilation**
 
-Intel compiler collection,\ [#]_ with the CORE-AVX2 instruction set.
+Intel compiler collection,\ [#]_ with the CORE-AVX2 instruction set, for X-PSI
+and dependencies (apart from :mod:`numpy`, which was centrally installed).
 
 .. rubric:: Footnotes
 

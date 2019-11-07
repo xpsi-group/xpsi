@@ -2,8 +2,8 @@
 
 .. _parameterSubspace:
 
-Parameter subspaces
-===================
+ParameterSubspace
+=================
 
 Instances of :class:`~.ParameterSubspace.ParameterSubspace` represent *abstract*
 subspaces of the model global parameter space. The class itself is an

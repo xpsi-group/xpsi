@@ -2,8 +2,8 @@
 
 .. _PostProcessing:
 
-Post-processing
-===============
+PostProcessing
+==============
 
 .. autosummary::
 

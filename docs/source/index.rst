@@ -1,20 +1,16 @@
 .. module:: xpsi
 
-X-PSI
-=====
-
-X-PSI is a prototype open-source package for neutron star
-**X-**\ ray **P**\ ulse **S**\ imulation and **I**\ nference.
+.. include:: intro.txt
 
 .. toctree::
    :maxdepth: 1
    :caption: User Guide
 
-   README
    install
    overview
    FAQ
    applications
+   SURFsara_systems
 
 .. toctree::
    :maxdepth: 1

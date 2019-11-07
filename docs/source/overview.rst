@@ -1,5 +1,3 @@
-.. module:: xpsi
-
 .. _overview:
 
 Overview
