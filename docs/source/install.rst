@@ -3,33 +3,51 @@
 Installation
 ============
 
-X-PSI has a number of dependencies which need to be carefully installed.
+Dependencies
+------------
 
-X-PSI has been tested in Python 2.7, and the following Python packages are
-required:
+X-PSI has been used thus far in Python 2.7 environments, and the following
+Python packages are required for strictly for likelihood functionality:
 
 * :mod:`numpy`
-* :mod:`cython`
-* :mod:`emcee` (v3.0.1)
-* :mod:`h5py`
+* `Cython <http://cython.readthedocs.io/en/latest>`_
+
+The following Python packages are required for nested sampling:
+
+* :mod:`PyMultiNest`
 * :mod:`mpi4py`
+
+The following Python packages are required for full functionality of the
+post-processing module:
+
+* `Matplotlib <https://matplotlib.org/>`_
+* :mod:`getdist` (posterior KDE corner plotting)
+* :mod:`h5py` (storage of signals computed from samples)
+* :mod:`nestcheck` (error analysis and plotting)
+* :mod:`fgivenx` (conditional posterior plotting; required by nestcheck)
+
+Note that post-processing can generally be done on a desktop computer and thus
+these packages are not necessary for running sampling processes on a
+high-performance system. If they are not installed, a warning message is
+printed or an exception is raised (by the root process if MPI world size >1).
+
+The following Python packages for ensemble MCMC are optional:
+* :mod:`emcee` (v3.0.1)
 * :mod:`schwimmbad`
 * `tqdm <https://pypi.python.org/pypi/tqdm>`_
-* :mod:`getdist`
-* `Matplotlib <https://matplotlib.org/>`_
 
 .. _emcee: http://emcee.readthedocs.io/en/latest/
 
-For likelihood evaluation, you require the GNU Scientific (no reason not to
-use v2.5) Library (`GSL <https://www.gnu.org/software/gsl/>`_). You also
+X-PSI has several dependencies that are not Python packages.
+
+For likelihood evaluation, you require the GNU Scientific Library
+(`GSL <https://www.gnu.org/software/gsl/>`_). You also
 require an `OpenMP`_-enabled C compiler (tested with icc, gcc, clang).
 
 .. _OpenMP: http://www.openmp.org
 
-To use `MultiNest`_, you require Version 1.14, which is free for
-academic use. The source code can be downloaded once you have registered with
-CCPForge as an academic. To build the MultiNest library, you require an
-MPI-wrapped Fortran compiler (e.g., mpifort in Open MPI v1.7+).
+To use `MultiNest`_, you require Version 3.11. To build the MultiNest library,
+you require an MPI-wrapped Fortran compiler (e.g., mpifort in Open MPI v1.7+).
 
 .. _MultiNest: https://github.com/farhanferoz/MultiNest
 
@@ -38,7 +56,12 @@ MPI-wrapped Fortran compiler (e.g., mpifort in Open MPI v1.7+).
 From source
 -----------
 
-You first need to build GSL_:
+To obtain the latest GSL_ source code (v2.5 as of writing)::
+
+   wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+
+Untar and navigate to the build directory (e.g. ``cd gsl-latest/build``) and
+then build and install:
 
 .. code-block:: bash
 
@@ -48,7 +71,6 @@ You first need to build GSL_:
     make install
     make installcheck
     make clean
-
 
 To build and install ``xpsi``:
 
