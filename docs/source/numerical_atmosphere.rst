@@ -1,5 +1,3 @@
-.. module:: XPSI
-
 .. _numerical_atmosphere:
 
 A numerical atmosphere

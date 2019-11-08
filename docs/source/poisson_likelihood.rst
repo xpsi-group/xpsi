@@ -1,5 +1,3 @@
-.. module:: XPSI
-
 .. _poisson_likelihood:
 
 Poisson likelihood
