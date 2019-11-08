@@ -17,8 +17,8 @@ from .Pulse import Pulse, LikelihoodError
 from .Background import Background
 from .Prior import Prior
 from .ParameterSpace import ParameterSpace
-from . import Spot
-from . import Spots
+from . import HotRegion
+from . import TwoHotRegions
 from . import Elsewhere
 
 class TagError(xpsiError):
@@ -87,9 +87,9 @@ class Likelihood(ParameterSpace):
                 'Photosphere and pulse object lists must have matching \
                  identification tags.'
 
-            pulse.phases = photosphere.spot.phases_in_cycles
-            pulse.fast_phases = photosphere.spot.fast_phases_in_cycles
-            if photosphere.spot.do_fast: self._do_fast = True
+            pulse.phases = photosphere.hot.phases_in_cycles
+            pulse.fast_phases = photosphere.hot.fast_phases_in_cycles
+            if photosphere.hot.do_fast: self._do_fast = True
 
         self._theta = [0.0] * self.num_params
 
@@ -136,7 +136,7 @@ class Likelihood(ParameterSpace):
 
         for photosphere in self._star.photospheres:
             b += photosphere.bounds
-            b += photosphere.spot.bounds
+            b += photosphere.hot.bounds
             if photosphere.elsewhere is not None:
                 b += photosphere.elsewhere.bounds
 
@@ -159,8 +159,8 @@ class Likelihood(ParameterSpace):
         for photosphere in self._star.photospheres:
             print("Photosphere ['%s']: %i"
                     % (photosphere.tag, photosphere.total_params))
-            print("   --> Spot ['%s']: %i"
-                    % (photosphere.tag, photosphere.spot.num_params))
+            print("   --> Hot ['%s']: %i"
+                    % (photosphere.tag, photosphere.hot.num_params))
             try:
                 print("   --> Elsewhere ['%s']: %i"
                         % (photosphere.tag, photosphere.elsewhere.num_params))
@@ -266,8 +266,8 @@ class Likelihood(ParameterSpace):
 
                 self._star.update(p[:s], fast_total_counts, self.threads)
             except xpsiError as e:
-                if isinstance(e, Spot.RayError):
-                    print('Warning: Spot.RayError raised.')
+                if isinstance(e, HotRegion.RayError):
+                    print('Warning: HotRegion.RayError raised.')
                 elif isinstance(e, Elsewhere.RayError):
                     print('Warning: Elsewhere.RayError raised.')
 
@@ -288,11 +288,11 @@ class Likelihood(ParameterSpace):
 
                     photosphere.integrate(energies, self.threads)
                 except xpsiError as e:
-                    if isinstance(e, Spot.PulseError):
-                        print('Warning: Spot.PulseError raised for '
+                    if isinstance(e, HotRegion.PulseError):
+                        print('Warning: HotRegion.PulseError raised for '
                               'photosphere tag %s.' % photosphere.tag)
-                    elif isinstance(e, Spots.PulseError):
-                        print('Warning: Spots.PulseError raised for '
+                    elif isinstance(e, HotRegions.PulseError):
+                        print('Warning: HotRegions.PulseError raised for '
                               'photosphere tag %s.' % photosphere.tag)
                     elif isinstance(e, Elsewhere.IntegrationError):
                         print('Warning: Elsewhere.IntegrationError for '
