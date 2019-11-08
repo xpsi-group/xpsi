@@ -119,7 +119,9 @@ environment variable, or inserted into ``sys.path`` within a calling module.
 Documentation
 -------------
 
-If you wish to compile the documentation you require :mod:`sphinx`:
+.. _Sphinx: http://www.sphinx-doc.org/en/master
+
+If you wish to compile the documentation you require `Sphinx`_:
 
 .. code-block:: bash
 
@@ -128,8 +130,10 @@ If you wish to compile the documentation you require :mod:`sphinx`:
 The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
 notebooks for the tutorials in this documentation. The ``.html`` files can
 naturally be opened in a browser. You need the relevant extensions and a
-theme such as ``sphinx_rtd_theme``. Customisation can be made
+theme such as `sphinx_rtd_theme`_. Customisation can be made
 in the ``xpsi/docs/source/conf.py`` script.
+
+.. _sphinx_rtd_theme: https://sphinx-rtd-theme.readthedocs.io/en/latest/
 
 Note that if you require links to the source code in the HTML files, you need
 to ensure Sphinx imports the ``xpsi`` package from the *source* directory
@@ -138,7 +142,9 @@ insert the path to the source directory into ``sys.path`` in the ``conf.py``
 script. Then make sure the extension modules are inside the source directory
 -- i.e., the package is built in-place (see above).
 
-.. To build the documentation, all modules need to be imported, and the
+.. note::
+
+   To build the documentation, all modules need to be imported, and the
    dependencies that are not resolved will print warning messages.
 
 Conda environment duplication
