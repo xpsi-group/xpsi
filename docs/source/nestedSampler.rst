@@ -1,4 +1,4 @@
-.. module:: xpsi
+.. module:: xpsi.NestedSampler
 
 .. _nestedSampler:
 

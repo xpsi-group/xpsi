@@ -1,4 +1,4 @@
-.. module:: xpsi
+.. module:: xpsi.PostProcessing
 
 .. _PostProcessing:
 
@@ -28,3 +28,7 @@ PostProcessing
 .. autoclass:: xpsi.PostProcessing.PostProcessor
     :members:
     :special-members: __call__
+    :exclude-members: plot_posteriorDensity, plot_pulse_and_spectrum
+
+    .. automethod:: plot_posteriorDensity(self, params, run_IDs=None, combine=False, combine_all=False, only_combined=False, bootstrap_estimators=True, bootstrap_density=False, separate_plots=False, write=False, root_filename='', directory='./', ext='.pdf', dpi=300, maxdots=2000,**kwargs)
+    .. automethod:: plot_pulse_and_spectrum(self, params, run_IDs=None, combine=False, combine_all=False, only_combined=False, bootstrap_estimators=True, bootstrap_density=False, separate_plots=False, write=False, root_filename='', directory='./', ext='.pdf', dpi=300, maxdots=2000,**kwargs)

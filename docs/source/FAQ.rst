@@ -1,21 +1,40 @@
 .. _faq:
 
 (FA)Q
------
+=====
+
+Installation
+^^^^^^^^^^^^
 
 .. rubric:: Do I need to edit the package setup script?
 
 You may well have to edit the setup script depending on the target system.
+This includes editing compiler flags (see below for example regarding
+instruction sets).
 
 .. rubric:: Does it matter what compiler I use?
 
 The Intel compiler collection has been used successfully for X-PSI and
-dependencies (GSL, MultiNest). We recommend first trying to use Intel.
+dependencies (namely GSL, MultiNest). We recommend first trying to use Intel.
 
 .. rubric:: What Intel instruction sets should I use?
 
-If you want to test the binaries on a login node, note that you may need to
-compile with multiple instruction sets.
+If you want to test the binaries on a login node, note that you can
+compile with multiple instruction sets for auto-dispatch using the ``-x`` and
+``-ax`` flags. See the :ref:`surfsystems` page for examples.
+
+Model setup
+^^^^^^^^^^^
+
+Future questions and answers will be archived here.
+
+Batch usage
+^^^^^^^^^^^
+
+Future questions and answers will be archived here.
+
+Sampling
+^^^^^^^^
 
 .. rubric:: Is I/O or disk storage a concern, or are all the files small?
 

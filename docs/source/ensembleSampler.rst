@@ -1,4 +1,4 @@
-.. module:: xpsi
+.. module:: xpsi.EnsembleSampler
 
 .. _ensembleSampler:
 

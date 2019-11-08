@@ -67,7 +67,9 @@ and dependencies (apart from :mod:`numpy`, which was centrally installed).
 
 .. [#] The rays were integrated for each likelihood function call instead of
        loading lookup tables from disk, or using an analytic treatment such as
-       a high-order expansion. Only primary images were included.
+       a high-order expansion (see, e.g.,
+       `rayXpanda <https://github.com/ThomasEdwardRiley/rayXpanda>`_).
+       Only primary images were included.
 
 .. [#] On Cartesius (and Lisa), one can simply execute
        ``module load intel/2017b`` to access these compilers from the toolchain.

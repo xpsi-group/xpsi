@@ -9,7 +9,7 @@ Dependencies
 X-PSI was developed in Python 2.7 environments. The following
 Python packages are required for strictly for likelihood functionality:
 
-* :mod:`numpy`
+* `NumPy <https://docs.scipy.org/doc/numpy/index.html>`_
 * `Cython <http://cython.readthedocs.io/en/latest>`_
 
 The following Python packages are required for nested sampling:
@@ -21,10 +21,14 @@ The following Python packages are required for full functionality of the
 post-processing module:
 
 * `Matplotlib <https://matplotlib.org/>`_
-* :mod:`getdist` (posterior KDE corner plotting)
-* :mod:`h5py` (storage of X-ray signals computed from posterior samples)
-* :mod:`nestcheck` (posterior error analysis, plotting, run combination, etc.)
-* :mod:`fgivenx` (conditional posterior plotting; also required by nestcheck)
+* `getdist <https://getdist.readthedocs.io/en/latest/>`_
+  (posterior KDE corner plotting)\ [#]_
+* `h5py <http://docs.h5py.org/en/stable/>`_
+  (storage of X-ray signals computed from posterior samples)
+* `nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_
+  (posterior error analysis, plotting, run combination, etc.)\ [#]_
+* `fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_
+  (conditional posterior plotting; also required by nestcheck)
 
 Note that post-processing can generally be done on a desktop computer and thus
 these packages are not necessary for running sampling processes on a
@@ -33,17 +37,33 @@ printed or an exception is raised (by the root process if MPI world size >1).
 
 The following Python packages for ensemble-MCMC are optional:
 
-* :mod:`emcee`
-* :mod:`schwimmbad`
+* `emcee <https://emcee.readthedocs.io/en/latest/>`_
+* `schwimmbad <https://schwimmbad.readthedocs.io/en/latest/>`_
 * `tqdm <https://pypi.python.org/pypi/tqdm>`_
-
-.. _emcee: http://emcee.readthedocs.io/en/latest/
 
 These packages can be installed straightforwardly from source or via a
 package manager (conda, pip), via the instructions native to the packages.
 
-X-PSI has several dependencies that are not Python packages. Build and install
-guidelines are given below.
+.. rubric:: Footnotes
+
+.. [#] The getdist_ software used in :ref:`R19` and which which X-PSI ``v0.1``
+       interfaces may be cloned as follows:
+
+       .. code-block:: bash
+
+            git clone [--single-branch] -b customisation https://github.com/ThomasEdwardRiley/getdist
+
+.. [#] The nestcheck_ software used in :ref:`R19` and which which X-PSI ``v0.1``
+       interfaces may be cloned as follows:
+
+       .. code-block:: bash
+
+            git clone [--single-branch] -b feature/getdist_kde https://github.com/ThomasEdwardRiley/nestcheck
+
+.. note::
+
+    X-PSI has several dependencies that are not Python packages. Build and
+    install guidelines are given below.
 
 For likelihood evaluation, you require the GNU Scientific Library
 (`GSL <https://www.gnu.org/software/gsl/>`_). You also

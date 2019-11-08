@@ -1,4 +1,4 @@
-.. module:: xpsi
+.. module:: xpsi.Interstellar
 
 .. _interstellar:
 

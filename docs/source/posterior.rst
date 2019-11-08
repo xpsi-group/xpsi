@@ -1,4 +1,4 @@
-.. module:: xpsi
+.. module:: xpsi.Posterior
 
 .. _posterior:
 
