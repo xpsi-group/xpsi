@@ -20,4 +20,6 @@ Files for the examples on path ``xpsi/examples`` (i.e., data files,
 NICER v1.01 instrument files, sampling files) may be obtained from the
 repository owner until they are archived with Zenodo to accompany the paper.
 
-These documentations pages are currently being rapidly updated.
+.. note::
+
+    These documentation pages are currently being rapidly updated.

@@ -8,7 +8,7 @@ Installation
 Conda environment duplication
 -----------------------------
 
-In the source repository we provide dependency files that can facilitate
+In the source repository we provide a dependency file that can facilitate
 the duplication of the environment from which X-PSI ``v0.1`` was released.
 This information may be useful if trying to diagnose installation problems.
 
