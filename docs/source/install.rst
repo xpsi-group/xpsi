@@ -91,14 +91,14 @@ ensemble-MCMC is optional.
 
 .. rubric:: Footnotes
 
-.. [#] The getdist_ software used in :ref:`R19` and which which X-PSI ``v0.1``
+.. [#] The getdist_ software used in :ref:`R19` and which X-PSI ``v0.1``
        interfaces may be cloned as follows:
 
        .. code-block:: bash
 
             git clone [--single-branch] -b customisation https://github.com/ThomasEdwardRiley/getdist
 
-.. [#] The nestcheck_ software used in :ref:`R19` and which which X-PSI ``v0.1``
+.. [#] The nestcheck_ software used in :ref:`R19` and which X-PSI ``v0.1``
        interfaces may be cloned as follows:
 
        .. code-block:: bash
