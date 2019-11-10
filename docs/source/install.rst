@@ -116,23 +116,6 @@ ensemble-MCMC is optional.
 
             git clone [--single-branch] -b feature/getdist_kde https://github.com/ThomasEdwardRiley/nestcheck
 
-.. note::
-
-    X-PSI has several dependencies that are not Python packages. Build and
-    install guidelines are given below.
-
-For likelihood evaluation, you require the GNU Scientific Library
-(`GSL <https://www.gnu.org/software/gsl/>`_). You also
-require an `OpenMP`_-enabled C compiler (known compatibility with icc, gcc,
-clang).
-
-.. _OpenMP: http://www.openmp.org
-
-To use `MultiNest`_, you require Version 3.11. To build the MultiNest library,
-you require an MPI-wrapped Fortran compiler (e.g., mpifort in Open MPI v1.7+).
-
-.. _MultiNest: https://github.com/farhanferoz/MultiNest
-
 __ source_
 
 .. _source:
@@ -140,8 +123,14 @@ __ source_
 From source
 -----------
 
+X-PSI has several dependencies that are not Python packages. Build and
+install guidelines are given below.
+
 GSL
 ^^^
+
+For likelihood evaluation, you require the GNU Scientific Library
+(`GSL <https://www.gnu.org/software/gsl/>`_).
 
 To obtain the latest GSL_ source code (v2.5 as of writing):
 
@@ -173,6 +162,12 @@ the prefix and version of GSL on your path:
 MultiNest
 ^^^^^^^^^
 
+To leverage some capabilities of sample post-processing software you require
+`MultiNest`_ ``v3.11``. To build the MultiNest library,
+you require an MPI-wrapped Fortran compiler (e.g., mpifort from Open MPI).
+
+.. _MultiNest: https://github.com/farhanferoz/MultiNest
+
 .. note::
 
     The following assumes an environment similar to that summarised in
@@ -198,7 +193,7 @@ If you have not already installed mpi4py using pip (or conda assuming a
 different environment setup to that summarised dev_env_), then here is how
 to do it from source (e.g., on some path such as ``$HOME``):
 
-.. code-block::
+.. code-block:: bash
 
     wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
 
@@ -253,7 +248,10 @@ Clone X-PSI:
 
     git clone https://github.com/ThomasEdwardRiley/xpsi.git <path/to/xpsi>
 
-To build and install ``xpsi`` from the clone root, you require a C compiler:
+.. _OpenMP: http://www.openmp.org
+
+To build and install ``xpsi`` from the clone root, you require an
+`OpenMP`_-enabled C compiler (known compatibility with icc, gcc, and clang):
 
 .. code-block:: bash
 
