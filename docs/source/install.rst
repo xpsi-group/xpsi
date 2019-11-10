@@ -81,7 +81,8 @@ post-processing module:
 * `getdist <https://getdist.readthedocs.io/en/latest/>`_
   (posterior KDE corner plotting)\ [#]_
 * `h5py <http://docs.h5py.org/en/stable/>`_
-  (storage of X-ray signals computed from posterior samples)
+  (storage of X-ray signals computed from posterior samples; also used by
+  emcee_)
 * `nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_
   (posterior error analysis, plotting, run combination, etc.)\ [#]_
 * `fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_
@@ -132,7 +133,7 @@ GSL
 For likelihood evaluation, you require the GNU Scientific Library
 (`GSL <https://www.gnu.org/software/gsl/>`_).
 
-To obtain the latest GSL_ source code (v2.5 as of writing):
+To obtain the latest GSL_ source code (otherwise ``v2.5`` works):
 
 .. code-block:: bash
 
@@ -164,15 +165,15 @@ MultiNest
 
 To leverage some capabilities of sample post-processing software you require
 `MultiNest`_ ``v3.11``. To build the MultiNest library,
-you require an MPI-wrapped Fortran compiler (e.g., mpifort from Open MPI).
+you require an MPI-wrapped Fortran compiler (e.g., ``mpifort`` from Open MPI).
 
 .. _MultiNest: https://github.com/farhanferoz/MultiNest
 
 .. note::
 
     The following assumes an environment similar to that summarised in
-    the dev_env_ section above, specifically to emphasise where an MPI compiler
-    wrapper is required.
+    the in the :ref:`dev_env` section above, specifically to emphasise where an
+    MPI compiler wrapper is required.
 
 First clone the repository:
 
@@ -190,7 +191,7 @@ Use the last command to check for the presence of shared objects. There is
 *no* need to ``make install`` as suggested in the source code documentation.
 
 If you have not already installed mpi4py using pip (or conda assuming a
-different environment setup to that summarised dev_env_), then here is how
+different environment setup to that summarised in :ref:`dev_env`), then here is how
 to do it from source (e.g., on some path such as ``$HOME``):
 
 .. code-block:: bash
@@ -229,7 +230,7 @@ The package will be installed in your conda environment (if activated).
 
 .. note::
 
-    Here we cloned from the PyMultiNest repository. However, for :ref:`R19`,
+    Here we clone the PyMultiNest repository. However, for :ref:`R19`,
     working with X-PSI ``v0.1``, we used the repository as frozen in a *fork*.
     To clone this version instead:
 

@@ -140,7 +140,7 @@ Main
                           num_rays=200,
                           is_secondary=True)
 
-    from xpsi import TwoSpots
+    from xpsi import TwoHotRegions
 
     hot = TwoHotRegions((primary, secondary))
 
@@ -180,7 +180,7 @@ Main
             0.476829413031657379E+00]
 
     t = time.time()
-    ll = likelihood(p) # OptiPlex: ll = -36316.354394388654
+    ll = likelihood(p) # check ll = -36316.354394388654
     print('p: ', ll, time.time() - t)
 
     runtime_params = {'resume': False,

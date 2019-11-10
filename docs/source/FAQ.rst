@@ -15,7 +15,8 @@ instruction sets).
 .. rubric:: Does it matter what compiler I use?
 
 The Intel compiler collection has been used successfully for X-PSI and
-dependencies (namely GSL, MultiNest). We recommend first trying to use Intel.
+dependencies (namely GSL, MultiNest). We recommend first trying to use Intel
+in a context where performance matters.
 
 .. rubric:: What Intel instruction sets should I use?
 

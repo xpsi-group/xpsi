@@ -88,10 +88,6 @@ energy-dependent effective area vector) which is used in forward-modelling to
 transform a radiation field incident on the detector into a form which enters
 directly in the sampling distribution of :math:`\mathcal{D}_{i}`.
 
-.. note:: For an outdated (and unfinished) manuscript on computation of
-          incident specific flux pulses (and the references therein) ask the
-          author.
-
 Posteriors
 ----------
 
@@ -121,7 +117,7 @@ Parallelisation paradigms
 .. _emcee: http://emcee.readthedocs.io/en/latest/
 .. _MultiNest: https://github.com/farhanferoz/MultiNest
 
-X-PSI inherits the Open MPI parallelisation of an external sampling package. In
+X-PSI inherits the MPI parallelisation of an external sampling package. In
 general it is necessary to run X-PSI posterior sampling/integration on
 distributed memory architectures (e.g., a cluster or a supercomputer) because
 likelihood evaluation times are slow, of :math:`\mathcal{O}(1)\,s`.
@@ -142,3 +138,6 @@ into an ambient Schwarzschild spacetime with the rotationally deformed
 gravitational mass monopole moment, whilst neglecting all other rotational
 :math:`\ell>0` metric deformations at :math:`\mathcal{O}(\Omega)`
 (see Hartle, 1967; Hartle & Thorne, 1968).
+
+An image-plane integrator may also be integrated for visualisation contexts,
+and for internal cross-checking of signal integration.
