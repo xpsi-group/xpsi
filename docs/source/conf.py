@@ -46,12 +46,12 @@ extensions = ['sphinx.ext.autodoc',
                 'nbsphinx']
 
 intersphinx_mapping = {'sphinx': ('http://www.sphinx-doc.org/en/master', None),
-           'numpy': ('http://docs.scipy.org/doc/numpy', None),
-           'cython': ('http://cython.readthedocs.io/en/latest', None),
-           'emcee': ('http://emcee.readthedocs.io/en/latest', None),
-           'getdist': ('http://getdist.readthedocs.io/en/latest', None),
-           'schwimmbad': ('http://schwimmbad.readthedocs.io/en/latest', None),
-           'mpi4py': ('http://mpi4py.readthedocs.io/en/stable', None),
+           'numpy': ('https://docs.scipy.org/doc/numpy', None),
+           'cython': ('https://cython.readthedocs.io/en/latest', None),
+           'emcee': ('https://emcee.readthedocs.io/en/latest', None),
+           'getdist': ('https://getdist.readthedocs.io/en/latest', None),
+           'schwimmbad': ('https://schwimmbad.readthedocs.io/en/latest', None),
+           'mpi4py': ('https://mpi4py.readthedocs.io/en/stable', None),
            'h5py': ('http://docs.h5py.org/en/latest', None),
            'nestcheck': ('https://nestcheck.readthedocs.io/en/latest', None),
            'fgivenx': ('https://fgivenx.readthedocs.io/en/latest', None)}
