@@ -13,18 +13,19 @@ This information may be useful if trying to diagnose installation problems.
 The development environment is summarised as follows:
 
     * Ubuntu 14.04
-    * GCC 4.8.4
-    * Open MPI 1.6.5
-    * BLAS, LAPACK, ATLAS installed globally via ``apt``
+    * Installed globally via ``apt``:
+        * GCC 4.8.4
+        * Open MPI 1.6.5
+        * BLAS, LAPACK, ATLAS
     * Miniconda (Python 2.7; 64-bit)
     * conda environment exported to ``xpsi/environment.yml``
 
 When inspecting the ``xpsi/environment.yml`` file, note the packages that
 where installed into a conda environment via pip. There are a few reasons
-for these choices, but one main one is that pip is purely for Python
+for these choices, but the main one is that pip is purely for Python
 packages and will not install unwanted non-Python libraries. To be clear, such
-libraries would be dependencies, if we had not already satisfied them as listed
-above.
+libraries would be dependencies that could have been installed via conda,
+if we had not already satisfied them as listed above in this instance.
 
 The Python packages below can be installed straightforwardly from source
 or via a package manager (conda, pip, or a combination), via the instructions
@@ -38,6 +39,12 @@ to add *conda-forge* package channel.
     high-performance system, instructions on this page, which tailor to a
     self-administered machine, may not be applicable. We direct the reader to
     the :ref:`surfsystems` page for guidance.
+
+To duplicate from file:
+
+.. code-block:: bash
+
+     conda env create -f <path/to/xpsi>/environment.yaml
 
 Dependencies
 ------------
@@ -91,14 +98,14 @@ ensemble-MCMC is optional.
 
 .. rubric:: Footnotes
 
-.. [#] The getdist_ software used in :ref:`R19` and which X-PSI ``v0.1``
+.. [#] The getdist_ software used in :ref:`R19` and with which X-PSI ``v0.1``
        interfaces may be cloned as follows:
 
        .. code-block:: bash
 
             git clone [--single-branch] -b customisation https://github.com/ThomasEdwardRiley/getdist
 
-.. [#] The nestcheck_ software used in :ref:`R19` and which X-PSI ``v0.1``
+.. [#] The nestcheck_ software used in :ref:`R19` and with which X-PSI ``v0.1``
        interfaces may be cloned as follows:
 
        .. code-block:: bash
@@ -153,6 +160,13 @@ then build and install:
 MultiNest
 ^^^^^^^^^
 
+First obtain the source code:
+
+.. code-block:: bash
+
+    git clone
+
+The 
 
 X-PSI
 ^^^^^
