@@ -39,4 +39,3 @@ Slurm batch system on the Cartesius system (see :ref:`surfsystems`).
 
    cp run1* out_run1 err_run1 $HOME/NICER_analyses/J0030_ST_PST/.
    #end of job file
-

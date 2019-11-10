@@ -17,7 +17,6 @@
    :caption: Tutorials
 
    model_construction
-   pulse_simulation
    example_script
    example_job
 

@@ -24,6 +24,11 @@ page, and than those defined for the example parameter
 estimation problems that can be found in the ``xpsi/examples`` directory of
 the repository.
 
+.. note::
+
+    The script has been updated to use updated object names in the API
+    since ``v0.1``.
+
 Main
 ^^^^
 
@@ -137,12 +142,12 @@ Main
 
     from xpsi import TwoSpots
 
-    spot = TwoSpots((primary, secondary))
+    hot = TwoHotRegions((primary, secondary))
 
     photosphere = CustomPhotosphere(num_params = 0, bounds = [],
-                                    tag = 'all', spot = spot, elsewhere = None)
+                                    tag = 'all', hot = hot, elsewhere = None)
 
-    photosphere.spot_atmosphere = 'model_data/nsx_H_v171019.out'
+    photosphere.hot_atmosphere = 'model_data/nsx_H_v171019.out'
 
     star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
 
@@ -209,8 +214,8 @@ Photosphere
 
         """
 
-        @xpsi.Photosphere.spot_atmosphere.setter
-        def spot_atmosphere(self, path):
+        @xpsi.Photosphere.hot_atmosphere.setter
+        def hot_atmosphere(self, path):
             NSX = np.loadtxt(path, dtype=np.double)
             logT = np.zeros(35)
             logg = np.zeros(11)
@@ -240,5 +245,5 @@ Photosphere
                        for l in range(reorder_buf.shape[3]):
                             buf[bufdex] = reorder_buf[i,j,k,l]; bufdex += 1
 
-            self._spot_atmosphere = (logT, logg, mu, logE, buf)
+            self._hot_atmosphere = (logT, logg, mu, logE, buf)
 
