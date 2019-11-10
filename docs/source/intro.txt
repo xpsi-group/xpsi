@@ -11,4 +11,7 @@ The initial development of X-PSI was checkpointed with the completion of
 :ref:`R19`, and tagged as ``v0.1``. X-PSI remains, however, in the
 `initial development stage <https://semver.org/>`_. Backwards incompatible
 changes will be committed without incrementing the major version.
-The package should not be considered stable.
+The package should not be considered stable, and as such has not been
+packaged for automatic installation via a package manager (namely conda). To
+install X-PSI from source, and to install dependencies, see the
+:ref:`install` page.

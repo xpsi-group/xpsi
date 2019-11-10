@@ -33,9 +33,11 @@ to add *conda-forge* package channel.
 
 .. note::
 
-    For installation on a high-performance system, instructions on this page,
-    which tailor to a personal machine, may not be applicable. We direct the
-    reader to the :ref:`surfsystems` page for guidance.
+    The specifications on this page regard the development environment:
+    you are free to set up alternative environment. For installation on a
+    high-performance system, instructions on this page, which tailor to a
+    self-administered machine, may not be applicable. We direct the reader to
+    the :ref:`surfsystems` page for guidance.
 
 Dependencies
 ------------
@@ -59,7 +61,7 @@ The following Python packages are required for nested sampling:
     listed is a minor release too low to satisfy all our needs. It might not
     be worth installing MultiNest on your personal machine unless you want
     to apply it more generally or gain experience on test problems. In the
-    latter case we provide offer instructions below.
+    latter case we provide offer `from source`__ instructions.
 
 The following Python packages are required for full functionality of the
 post-processing module:
@@ -120,10 +122,15 @@ you require an MPI-wrapped Fortran compiler (e.g., mpifort in Open MPI v1.7+).
 
 .. _MultiNest: https://github.com/farhanferoz/MultiNest
 
+__ source_
+
 .. _source:
 
 From source
 -----------
+
+GSL
+^^^
 
 To obtain the latest GSL_ source code (v2.5 as of writing):
 
@@ -143,17 +150,33 @@ then build and install:
     make installcheck
     make clean
 
-To build and install ``xpsi``, requiring a C compiler:
+MultiNest
+^^^^^^^^^
+
+
+X-PSI
+^^^^^
+
+Clone X-PSI:
 
 .. code-block:: bash
 
-    CC=<path/to/compiler/executable> python build.py install --user
+    git clone https://github.com/ThomasEdwardRiley/xpsi.git <path/to/xpsi>
+
+To build and install ``xpsi`` from the clone root, you require a C compiler:
+
+.. code-block:: bash
+
+    CC=<path/to/compiler/executable> python setup.py install --user
+
+For ``icc``, You may need to prepend this command with
+``LDSHARED="icc -shared"``.
 
 Alternatively, to build in-place:
 
 .. code-block:: bash
 
-    CC=<path/to/compiler/executable> python build.py build_ext -i
+    CC=<path/to/compiler/executable> python setup.py build_ext -i
 
 This will build extension modules in the source code directory. You must in
 this case ensure that the source code directory is on your ``PYTHONPATH``
