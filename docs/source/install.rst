@@ -3,6 +3,8 @@
 Installation
 ============
 
+.. _dev_env:
+
 Conda environment duplication
 -----------------------------
 
@@ -17,7 +19,8 @@ The development environment is summarised as follows:
         * GCC 4.8.4
         * Open MPI 1.6.5
         * BLAS, LAPACK, ATLAS
-    * Miniconda (Python 2.7; 64-bit)
+    * `Miniconda2 <https://docs.conda.io/en/latest/miniconda.html>`_
+      (Python 2.7; 64-bit)
     * conda environment exported to ``xpsi/environment.yml``
 
 When inspecting the ``xpsi/environment.yml`` file, note the packages that
@@ -63,12 +66,13 @@ The following Python packages are required for nested sampling:
 .. note::
 
     That ``conda install -c conda-forge pymultinest`` might try to install
-    many dependencies, including MPI, BLAS/LAPACK, and a Fortran compiler
-    binaries in order to install MultiNest. Moreover, the MultiNest version
-    listed is a minor release too low to satisfy all our needs. It might not
-    be worth installing MultiNest on your personal machine unless you want
-    to apply it more generally or gain experience on test problems. In the
-    latter case we provide offer `from source`__ instructions.
+    dependencies in the environment, including binaries for MPI, BLAS/LAPACK,
+    and a Fortran compiler, all in order to install MultiNest. Moreover, the
+    MultiNest version listed is a minor release too low to satisfy all our
+    needs. Although production sampling runs need to be performed on a
+    high-performance system, it is advisable to install MultiNest on your
+    personal machine to gain experience on application to inexpensive test
+    problems. In the latter case we provide offer `from source`__ instructions.
 
 The following Python packages are required for full functionality of the
 post-processing module:
@@ -145,28 +149,100 @@ To obtain the latest GSL_ source code (v2.5 as of writing):
 
    wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
 
-Untar and navigate to the build directory (e.g. ``cd gsl-latest/build``) and
+Untar, navigate to the build directory (e.g., ``cd gsl-latest/build``), and
 then build and install:
 
 .. code-block:: bash
 
-    ./configure CC=<path/to/compiler/executable>
+    ./configure CC=<path/to/compiler/executable> --prefix=$HOME/gsl
     make
     make check
     make install
     make installcheck
     make clean
 
-MultiNest
-^^^^^^^^^
-
-First obtain the source code:
+This will install the library in your ``$HOME``, as an example. You can check
+the prefix and version of GSL on your path:
 
 .. code-block:: bash
 
-    git clone
+    gsl-config --version
+    gsl-config --prefix
 
-The 
+
+MultiNest
+^^^^^^^^^
+
+.. note::
+
+    The following assumes an environment similar to that summarised in
+    the dev_env_ section above, specifically to emphasise where an MPI compiler
+    wrapper is required.
+
+First clone the repository:
+
+.. code-block:: bash
+
+    git clone https://github.com/farhanferoz/MultiNest.git <path/to/clone>/multinest
+    cd <path/to/clone>/multinest/MultiNest_v3.11_CMake/multinest
+    mkdir build
+    cd build
+    CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+    make
+    ls ../lib/
+
+Use the last command to check for the presence of shared objects. There is
+*no* need to ``make install`` as suggested in the source code documentation.
+
+If you have not already installed mpi4py using pip (or conda assuming a
+different environment setup to that summarised dev_env_), then here is how
+to do it from source (e.g., on some path such as ``$HOME``):
+
+.. code-block::
+
+    wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
+
+    tar -xf mpi4py-3.0.0.tar.gz
+
+    python setup.py build --mpicc=mpicc
+
+    python setup.py install
+
+
+The package will be installed in your conda environment (if activated).
+
+To test:
+
+.. code-block:: bash
+
+    mpiexec -n 4 python demo/helloworld.py
+
+Do you see ranks 0 through 3 reporting for duty? The number of MPI processes
+might be best set to somewhere between the number of physical cores and
+logical cores in your machine for test sampling applications. For a typical
+laptop that might be up to ``-n 4``.
+
+Now you need the Python interface to MultiNest:
+
+.. code-block:: bash
+
+    git clone https://github.com/JohannesBuchner/PyMultiNest.git <path/to/clone>pymultinest
+    cd <path/to/clone> pymultinest
+    python setup.py install --user
+
+The package will be installed in your conda environment (if activated).
+
+.. note::
+
+    Here we cloned from the PyMultiNest repository. However, for :ref:`R19`,
+    working with X-PSI ``v0.1``, we used the repository as frozen in a *fork*.
+    To clone this version instead:
+
+    .. code-block:: bash
+
+        git clone https://github.com/ThomasEdwardRiley/PyMultiNest.git <path/to/clone>
+
+    and then simply follow the same installation procedure.
 
 X-PSI
 ^^^^^
@@ -184,9 +260,23 @@ To build and install ``xpsi`` from the clone root, you require a C compiler:
     CC=<path/to/compiler/executable> python setup.py install --user
 
 For ``icc``, You may need to prepend this command with
-``LDSHARED="icc -shared"``.
+``LDSHARED="icc -shared"``. This ensures that both the compiler and linker
+are Intel, otherwise gcc linker would be invoked.
 
-Alternatively, to build in-place:
+Provided the GSL ``<prefix>/bin`` is in your ``PATH``
+environment variable, the X-PSI ``setup.py`` script will automatically use the
+``gsl-config`` executable to link the shared libraries and give the required
+cflags for compilation of the X-PSI extensions. Because the library location
+will not change for runtime, we state the runtime linking instructions at
+compilation in the ``setup.py`` script.
+
+If you ever need to reinstall, first clean to recompile C files:
+
+.. code-block:: bash
+
+    rm -r build dist *egg* xpsi/*/*.c
+
+Alternatively, to build X-PSI in-place:
 
 .. code-block:: bash
 
