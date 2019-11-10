@@ -6,3 +6,9 @@ X-PSI
 
 **A prototype open-source package for neutron star**
 **\ X-ray Pulsation Simulation and Inference.**
+
+The initial development of X-PSI was checkpointed with the completion of
+:ref:`R19`, and tagged as ``v0.1``. X-PSI remains, however, in the
+`initial development stage <https://semver.org/>`_. Backwards incompatible
+changes will be committed without incrementing the major version.
+The package should not be considered stable.

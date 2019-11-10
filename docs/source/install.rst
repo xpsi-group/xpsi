@@ -3,6 +3,40 @@
 Installation
 ============
 
+Conda environment duplication
+-----------------------------
+
+In the source repository we provide dependency files that can facilitate
+the duplication of the environment from which X-PSI ``v0.1`` was released.
+This information may be useful if trying to diagnose installation problems.
+
+The development environment is summarised as follows:
+
+    * Ubuntu 14.04
+    * GCC 4.8.4
+    * Open MPI 1.6.5
+    * BLAS, LAPACK, ATLAS installed globally via ``apt``
+    * Miniconda (Python 2.7; 64-bit)
+    * conda environment exported to ``xpsi/environment.yml``
+
+When inspecting the ``xpsi/environment.yml`` file, note the packages that
+where installed into a conda environment via pip. There are a few reasons
+for these choices, but one main one is that pip is purely for Python
+packages and will not install unwanted non-Python libraries. To be clear, such
+libraries would be dependencies, if we had not already satisfied them as listed
+above.
+
+The Python packages below can be installed straightforwardly from source
+or via a package manager (conda, pip, or a combination), via the instructions
+native to the packages. When searching for an open-source package you may need
+to add *conda-forge* package channel.
+
+.. note::
+
+    For installation on a high-performance system, instructions on this page,
+    which tailor to a personal machine, may not be applicable. We direct the
+    reader to the :ref:`surfsystems` page for guidance.
+
 Dependencies
 ------------
 
@@ -16,6 +50,16 @@ The following Python packages are required for nested sampling:
 
 * `PyMultiNest <https://github.com/JohannesBuchner/PyMultiNest>`_
 * `mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_
+
+.. note::
+
+    That ``conda install -c conda-forge pymultinest`` might try to install
+    many dependencies, including MPI, BLAS/LAPACK, and a Fortran compiler
+    binaries in order to install MultiNest. Moreover, the MultiNest version
+    listed is a minor release too low to satisfy all our needs. It might not
+    be worth installing MultiNest on your personal machine unless you want
+    to apply it more generally or gain experience on test problems. In the
+    latter case we provide offer instructions below.
 
 The following Python packages are required for full functionality of the
 post-processing module:
@@ -35,14 +79,13 @@ these packages are not necessary for running sampling processes on a
 high-performance system. If they are not installed, a warning message is
 printed or an exception is raised (by the root process if MPI world size >1).
 
-The following Python packages for ensemble-MCMC are optional:
+The `emcee <https://emcee.readthedocs.io/en/latest/>`_ Python package for
+ensemble-MCMC is optional.
 
-* `emcee <https://emcee.readthedocs.io/en/latest/>`_
-* `schwimmbad <https://schwimmbad.readthedocs.io/en/latest/>`_
-* `tqdm <https://pypi.python.org/pypi/tqdm>`_
+.. note::
 
-These packages can be installed straightforwardly from source or via a
-package manager (conda, pip), via the instructions native to the packages.
+    That ``conda install -c conda-forge emcee`` will handle dependencies
+    recursively to the extent that MPI would be installed if you accept.
 
 .. rubric:: Footnotes
 
@@ -146,11 +189,3 @@ script. Then make sure the extension modules are inside the source directory
 
    To build the documentation, all modules need to be imported, and the
    dependencies that are not resolved will print warning messages.
-
-Conda environment duplication
------------------------------
-
-In the source repository we provide dependency files that can facilitate
-the duplication of the environment from which X-PSI ``v0.1`` was released.
-This information may be useful if trying to diagnose installation problems.
-

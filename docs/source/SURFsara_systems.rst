@@ -248,6 +248,8 @@ compiler and linked against MKL.
 Batch usage
 ^^^^^^^^^^^
 
+For an example job script, refer to :ref:`example_script`.
+
 
 Lisa
 ----
@@ -260,7 +262,6 @@ The instruction sets for targeting Intel Ivy Bridge processors (Lisa normal
 nodes) are CORE-AVX-I. Use these arguments for the C and Fortran compiler
 flags ``-ax`` (Intel compiler).
 
-The structure of the Lisa filesystem is different to Cartesius and more
-difficult to use.
+The structure of the Lisa filesystem for batch jobs is different to Cartesius.
 
 
