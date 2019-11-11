@@ -22,4 +22,10 @@ repository owner until they are archived with Zenodo to accompany the paper.
 
 .. note::
 
-    These documentation pages are currently being rapidly updated.
+    These documentation pages are currently being rapidly updated during
+    development.
+
+    These pages were generated from a local development build prior to release
+    ``v0.2.0``. They are hosted on GitHub due to requests from potential users.
+    The pages reference ``v0.1`` that is currently on the ``master`` branch
+    of the repo, but do not aim to document that version.
