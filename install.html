@@ -1,0 +1,550 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Overview" href="overview.html" />
+    <link rel="prev" title="X-PSI" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#conda-environment-duplication">Conda environment duplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#from-source">From source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gsl">GSL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multinest">MultiNest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#x-psi">X-PSI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/install.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="installation">
+<span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="conda-environment-duplication">
+<span id="dev-env"></span><h2>Conda environment duplication<a class="headerlink" href="#conda-environment-duplication" title="Permalink to this headline">¶</a></h2>
+<p>In the source repository we provide a dependency file that can facilitate
+the duplication of the environment from which X-PSI <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> was released.
+This information may be useful if trying to diagnose installation problems.</p>
+<p>The development environment:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Ubuntu 14.04</li>
+<li><dl class="first docutils">
+<dt>Installed globally via <code class="docutils literal notranslate"><span class="pre">apt</span></code>:</dt>
+<dd><ul class="first last">
+<li>GCC 4.8.4</li>
+<li>Open MPI 1.6.5</li>
+<li>BLAS, LAPACK, ATLAS</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda2</a>
+(Python 2.7; 64-bit)</li>
+<li>Conda environment exported to <code class="docutils literal notranslate"><span class="pre">xpsi/environment.yml</span></code></li>
+</ul>
+</div></blockquote>
+<p>When inspecting the <code class="docutils literal notranslate"><span class="pre">xpsi/environment.yml</span></code> file, note the packages that
+where installed into a Conda environment via pip. There are a few reasons
+for these choices, but the main one is that pip is purely for Python
+packages and will not install unwanted non-Python libraries. To be clear, such
+libraries would be dependencies that could have been installed via Conda,
+if we had not already satisfied them as listed above in this instance.</p>
+<p>The Python packages below can be installed straightforwardly from source
+or via a package manager (Conda, pip, or a combination), via the instructions
+native to the packages. When searching for an open-source package you may need
+to add <em>conda-forge</em> package channel.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The specifications on this page regard the development environment:
+you are free to set up alternative environment. For installation on a
+high-performance system, instructions on this page, which tailor to a
+self-administered machine, are either not applicable or do not target
+performance. We direct the reader to the <a class="reference internal" href="SURFsara_systems.html#surfsystems"><span class="std std-ref">SURFsara systems</span></a> page for
+guidance.</p>
+</div>
+<p>To duplicate from file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda env create -f &lt;path/to/xpsi&gt;/environment.yaml
+</pre></div>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>X-PSI was developed in Python 2.7 environments. The following
+Python packages are required for strictly for likelihood functionality:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://docs.scipy.org/doc/numpy/index.html">NumPy</a></li>
+<li><a class="reference external" href="http://cython.readthedocs.io/en/latest">Cython</a></li>
+</ul>
+<p>The following Python packages are required for nested sampling:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest">PyMultiNest</a></li>
+<li><a class="reference external" href="https://bitbucket.org/mpi4py/mpi4py/downloads/">mpi4py</a></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">That <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">pymultinest</span></code> might try to install
+dependencies in the environment, including binaries for MPI, BLAS/LAPACK,
+and a Fortran compiler, all in order to install MultiNest. Moreover, the
+MultiNest version listed is a minor release too low to satisfy all our
+needs. Although production sampling runs need to be performed on a
+high-performance system, it is advisable to install MultiNest on your
+personal machine to gain experience on application to inexpensive test
+problems. Below we offer <a class="reference internal" href="#source">from source</a> instructions.</p>
+</div>
+<p>The following Python packages are required for full functionality of the
+post-processing module:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://matplotlib.org/">Matplotlib</a></li>
+<li><a class="reference external" href="https://getdist.readthedocs.io/en/latest/">getdist</a>
+(posterior KDE corner plotting)<a class="footnote-reference" href="#id3" id="id1">[1]</a></li>
+<li><a class="reference external" href="http://docs.h5py.org/en/stable/">h5py</a>
+(storage of X-ray signals computed from posterior samples; also used by
+<a class="reference external" href="https://emcee.readthedocs.io/en/latest/">emcee</a>)</li>
+<li><a class="reference external" href="https://nestcheck.readthedocs.io/en/latest/">nestcheck</a>
+(posterior error analysis, plotting, run combination, etc.)<a class="footnote-reference" href="#id4" id="id2">[2]</a></li>
+<li><a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/">fgivenx</a>
+(conditional posterior plotting; also required by nestcheck)</li>
+</ul>
+<p>Note that post-processing can generally be done on a desktop computer and thus
+these packages are not necessary for running sampling processes on a
+high-performance system. If they are not installed, a warning message is
+printed or an exception is raised (by the root process if MPI world size &gt;1).</p>
+<p>The <a class="reference external" href="https://emcee.readthedocs.io/en/latest/">emcee</a> Python package for
+ensemble-MCMC is optional.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">That <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">emcee</span></code> will handle dependencies
+recursively to the extent that MPI would be installed if you accept.</p>
+</div>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><p class="first">The <a class="reference external" href="https://getdist.readthedocs.io/en/latest/">getdist</a> software used in <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019</span></a> and with which X-PSI <code class="docutils literal notranslate"><span class="pre">v0.1</span></code>
+interfaces may be cloned as follows:</p>
+<div class="last highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone <span class="o">[</span>--single-branch<span class="o">]</span> -b customisation https://github.com/ThomasEdwardRiley/getdist
+</pre></div>
+</div>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td><p class="first">The <a class="reference external" href="https://nestcheck.readthedocs.io/en/latest/">nestcheck</a> software used in <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019</span></a> and with which X-PSI <code class="docutils literal notranslate"><span class="pre">v0.1</span></code>
+interfaces may be cloned as follows:</p>
+<div class="last highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone <span class="o">[</span>--single-branch<span class="o">]</span> -b feature/getdist_kde https://github.com/ThomasEdwardRiley/nestcheck
+</pre></div>
+</div>
+</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="from-source">
+<span id="source"></span><h2>From source<a class="headerlink" href="#from-source" title="Permalink to this headline">¶</a></h2>
+<p>X-PSI has several dependencies that are not Python packages. Build and
+install guidelines are given below.</p>
+<div class="section" id="gsl">
+<h3>GSL<a class="headerlink" href="#gsl" title="Permalink to this headline">¶</a></h3>
+<p>For likelihood evaluation, you require the GNU Scientific Library
+(<a class="reference external" href="https://www.gnu.org/software/gsl/">GSL</a>).</p>
+<p>To obtain the latest <a class="reference external" href="https://www.gnu.org/software/gsl/">GSL</a> source code (otherwise <code class="docutils literal notranslate"><span class="pre">v2.5</span></code> works):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+</pre></div>
+</div>
+<p>Untar, navigate to the build directory (e.g., <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">gsl-latest/build</span></code>), and
+then build and install:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./configure <span class="nv">CC</span><span class="o">=</span>&lt;path/to/compiler/executable&gt; --prefix<span class="o">=</span><span class="nv">$HOME</span>/gsl
+make
+make check
+make install
+make installcheck
+make clean
+</pre></div>
+</div>
+<p>This will install the library in your <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>, as an example. You can check
+the prefix and version of GSL on your path:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gsl-config --version
+gsl-config --prefix
+</pre></div>
+</div>
+</div>
+<div class="section" id="multinest">
+<h3>MultiNest<a class="headerlink" href="#multinest" title="Permalink to this headline">¶</a></h3>
+<p>To leverage some capabilities of sample post-processing software you require
+<a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> <code class="docutils literal notranslate"><span class="pre">v3.11</span></code>. To build the MultiNest library,
+you require an MPI-wrapped Fortran compiler (e.g., <code class="docutils literal notranslate"><span class="pre">mpifort</span></code> from Open MPI).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The following assumes an environment similar to that summarised in
+the in the <a class="reference internal" href="#dev-env"><span class="std std-ref">Conda environment duplication</span></a> section above, specifically to emphasise where an
+MPI compiler wrapper is required.</p>
+</div>
+<p>First clone the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/farhanferoz/MultiNest.git &lt;path/to/clone&gt;/multinest
+<span class="nb">cd</span> &lt;path/to/clone&gt;/multinest/MultiNest_v3.11_CMake/multinest
+mkdir build
+<span class="nb">cd</span> build
+<span class="nv">CC</span><span class="o">=</span>gcc <span class="nv">FC</span><span class="o">=</span>mpif90 <span class="nv">CXX</span><span class="o">=</span>g++ cmake -DCMAKE_<span class="o">{</span>C,CXX<span class="o">}</span><span class="nv">_FLAGS</span><span class="o">=</span><span class="s2">&quot;-O3 -march=native -funroll-loops&quot;</span> -DCMAKE_Fortran_FLAGS<span class="o">=</span><span class="s2">&quot;-O3 -march=native -funroll-loops&quot;</span> ..
+make
+ls ../lib/
+</pre></div>
+</div>
+<p>Use the last command to check for the presence of shared objects. There is
+<em>no</em> need to <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> as suggested in the source code documentation.</p>
+<p>If you have not already installed mpi4py using pip (or Conda assuming a
+different environment setup to that summarised in <a class="reference internal" href="#dev-env"><span class="std std-ref">Conda environment duplication</span></a>), then here
+is how to do it from source (e.g., on some path such as <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
+
+tar -xf mpi4py-3.0.0.tar.gz
+
+python setup.py build --mpicc<span class="o">=</span>mpicc
+
+python setup.py install
+</pre></div>
+</div>
+<p>The package will be installed in your Conda environment (if activated).</p>
+<p>To test:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpiexec -n <span class="m">4</span> python demo/helloworld.py
+</pre></div>
+</div>
+<p>Do you see ranks 0 through 3 reporting for duty? The number of MPI processes
+might be best set to somewhere between the number of physical cores and
+logical cores in your machine for test sampling applications. For a typical
+laptop that might be up to <code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">4</span></code>.</p>
+<p>Now you need the Python interface to MultiNest:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/JohannesBuchner/PyMultiNest.git &lt;path/to/clone&gt;pymultinest
+<span class="nb">cd</span> &lt;path/to/clone&gt; pymultinest
+python setup.py install --user
+</pre></div>
+</div>
+<p>The package will be installed in your Conda environment (if activated).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Here we clone the PyMultiNest repository. However, for <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019</span></a>,
+working with X-PSI <code class="docutils literal notranslate"><span class="pre">v0.1</span></code>, we used the repository as frozen in a <em>fork</em>.
+To clone this version instead:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/PyMultiNest.git &lt;path/to/clone&gt;
+</pre></div>
+</div>
+<p class="last">and then simply follow the same installation procedure.</p>
+</div>
+</div>
+<div class="section" id="x-psi">
+<h3>X-PSI<a class="headerlink" href="#x-psi" title="Permalink to this headline">¶</a></h3>
+<p>Clone X-PSI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi.git &lt;path/to/xpsi&gt;
+</pre></div>
+</div>
+<p>To build and install from the clone root, you require an
+<a class="reference external" href="http://www.openmp.org">OpenMP</a>-enabled C compiler (known compatibility with <code class="docutils literal notranslate"><span class="pre">icc</span></code>, <code class="docutils literal notranslate"><span class="pre">gcc</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">clang</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC</span><span class="o">=</span>&lt;path/to/compiler/executable&gt; python setup.py install --user
+</pre></div>
+</div>
+<p>For <code class="docutils literal notranslate"><span class="pre">icc</span></code>, You may need to prepend this command with
+<code class="docutils literal notranslate"><span class="pre">LDSHARED=&quot;icc</span> <span class="pre">-shared&quot;</span></code>. This ensures that both the compiler and linker
+are Intel, otherwise the <code class="docutils literal notranslate"><span class="pre">gcc</span></code> linker might be invoked.</p>
+<p>Provided the GSL <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;/bin</span></code> is in your <code class="docutils literal notranslate"><span class="pre">PATH</span></code>
+environment variable, the X-PSI <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script will automatically use the
+<code class="docutils literal notranslate"><span class="pre">gsl-config</span></code> executable to link the shared libraries and give the required
+C flags for compilation of the X-PSI extensions. Because the library location
+will not change for runtime, we state the runtime linking instructions at
+compilation in the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script.</p>
+<p>If you ever need to reinstall, first clean to recompile the C files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rm -r build dist *egg* xpsi/*/*.c
+</pre></div>
+</div>
+<p>Alternatively, to build X-PSI in-place:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC</span><span class="o">=</span>&lt;path/to/compiler/executable&gt; python setup.py build_ext -i
+</pre></div>
+</div>
+<p>This will build extension modules in the source code directory. You must in
+this case ensure that the source code directory is on your <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code>
+environment variable, or inserted into <code class="docutils literal notranslate"><span class="pre">sys.path</span></code> within a calling module.</p>
+</div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>If you wish to compile the documentation you require <a class="reference external" href="http://www.sphinx-doc.org/en/master">Sphinx</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> xpsi/docs<span class="p">;</span> make html
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">.html</span></code> files can then found in <code class="docutils literal notranslate"><span class="pre">xpsi/docs/build/html</span></code>, along with the
+notebooks for the tutorials in this documentation. The <code class="docutils literal notranslate"><span class="pre">.html</span></code> files can
+naturally be opened in a browser. You need the relevant extensions and a
+theme such as <a class="reference external" href="https://sphinx-rtd-theme.readthedocs.io/en/latest/">sphinx_rtd_theme</a>. Customisation can be made
+in the <code class="docutils literal notranslate"><span class="pre">xpsi/docs/source/conf.py</span></code> script.</p>
+<p>Note that if you require links to the source code in the HTML files, you need
+to ensure Sphinx imports the <code class="docutils literal notranslate"><span class="pre">xpsi</span></code> package from the <em>source</em> directory
+instead of from the <code class="docutils literal notranslate"><span class="pre">~/.local/lib</span></code> directory of the user. To enforce this,
+insert the path to the source directory into <code class="docutils literal notranslate"><span class="pre">sys.path</span></code> in the <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>
+script. Then make sure the extension modules are inside the source directory
+– i.e., the package is built in-place (see above).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To build the documentation, all modules need to be imported, and the
+dependencies that are not resolved will print warning messages.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="X-PSI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

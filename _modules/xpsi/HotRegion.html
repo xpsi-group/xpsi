@@ -1,0 +1,1041 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>xpsi.HotRegion &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>xpsi.HotRegion</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for xpsi.HotRegion</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+
+<span class="kn">from</span> <span class="nn">.cellmesh.mesh_tools</span> <span class="k">import</span> <span class="n">allocate_cells</span> <span class="k">as</span> <span class="n">_allocate_cells</span>
+<span class="kn">from</span> <span class="nn">.cellmesh.mesh</span> <span class="k">import</span> <span class="n">construct_spot_cellMesh</span> <span class="k">as</span> <span class="n">_construct_spot_cellMesh</span>
+<span class="kn">from</span> <span class="nn">.cellmesh.polar_mesh</span> <span class="k">import</span> <span class="n">construct_polar_cellMesh</span> <span class="k">as</span> <span class="n">_construct_polar_cellMesh</span>
+<span class="kn">from</span> <span class="nn">.cellmesh.rays</span> <span class="k">import</span> <span class="n">compute_rays</span> <span class="k">as</span> <span class="n">_compute_rays</span>
+
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span><span class="p">,</span> <span class="n">BoundsError</span>
+
+<div class="viewcode-block" id="RayError"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.RayError">[docs]</a><span class="k">class</span> <span class="nc">RayError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Raised if a numerical problems encountered during ray integration. &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="PulseError"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.PulseError">[docs]</a><span class="k">class</span> <span class="nc">PulseError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Raised if a numerical problems encountered during integration. &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="HotRegion"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion">[docs]</a><span class="k">class</span> <span class="nc">HotRegion</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A photospheric hot region that is contiguous.</span>
+
+<span class="sd">    Instances of this class can take the following forms:</span>
+
+<span class="sd">        * a circular, simply-connected region;</span>
+<span class="sd">        * a ceding region with a non-radiating superseding region;</span>
+<span class="sd">        * a ceding region with a radiating superseding region.</span>
+
+<span class="sd">    For the first option, set ``hole=False`` and ``cede=False``.</span>
+<span class="sd">    For the third option, set ``hole=False`` and ``cede=True``.</span>
+
+<span class="sd">    For the second option, set ``hole=True`` and ``cede=False``. This is</span>
+<span class="sd">    counter-intuitive. These settings produce a superseding region with a</span>
+<span class="sd">    non-radiating hole, which is equivalent to a ceding region with a</span>
+<span class="sd">    non-radiating superseding region. The *hole* may not strictly always be</span>
+<span class="sd">    a hole, because it behaves as a superseding region that does not radiate.</span>
+<span class="sd">    A superseding region can exist partially outside its relative ceding</span>
+<span class="sd">    region, so the non-superseded subset of the ceding region is</span>
+<span class="sd">    simply-connected (i.e., does not have a hole).</span>
+
+<span class="sd">    .. note:: Setting ``hole=True`` and ``cede=True`` ignores the hole.</span>
+
+<span class="sd">    The ``concentric`` setting defines whether the superseding region is</span>
+<span class="sd">    concentric with the ceding region or a hole, supposing either</span>
+<span class="sd">    ``hole=True`` or ``cede=True``.</span>
+
+<span class="sd">    :param num_params: Number of parameters for hot region model. For a</span>
+<span class="sd">                       circular hot-spot, this includes the</span>
+<span class="sd">                       the spot centre colatitude and spot angular radius.</span>
+
+<span class="sd">    :param list bounds: Hard parameter bounds for the instance of</span>
+<span class="sd">                        :class:`.ParameterSubspace.ParameterSubspace`.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        The order of the list of the parameter bounds must follow an order</span>
+<span class="sd">        of precedence:</span>
+
+<span class="sd">        * super colatitude</span>
+<span class="sd">        * super angular radius</span>
+<span class="sd">        * cede or hole colatitude</span>
+<span class="sd">        * cede or hole angular radius</span>
+<span class="sd">        * cede or hole relative azimuth</span>
+<span class="sd">        * parameters controlling the local comoving radiation field over</span>
+<span class="sd">          the photospheric 2-surface (entirely the user&#39;s responsibility)</span>
+
+<span class="sd">        If the ceding region or the hole are concentric with the</span>
+<span class="sd">        superseding region, the colatitude and relative azimuth of the</span>
+<span class="sd">        ceding region or hole are not parameters.</span>
+
+<span class="sd">        These bounds might not be actually used, depending the user&#39;s</span>
+<span class="sd">        implementation of the joint prior, and the user can in that case</span>
+<span class="sd">        specify ``[None,None]`` for bounds pertaining to the ceding region</span>
+<span class="sd">        or the hole.</span>
+
+<span class="sd">    :param bool symmetry:</span>
+<span class="sd">        Is the radiation field axisymmetric (w.r.t the stellar rotation</span>
+<span class="sd">        axis) within a hot region with only a superseding region?</span>
+<span class="sd">        This determines which ``CellMesh`` integrator to</span>
+<span class="sd">        deploy. Only set to ``False`` if you overwrite</span>
+<span class="sd">        :meth:`_eval_srcRadFieldParamVectors` in a custom subclass.</span>
+
+<span class="sd">    :param sqrt_num_cells:</span>
+<span class="sd">        Number of cells in both colatitude and azimuth which form a</span>
+<span class="sd">        regular mesh on a curved 2-surface (a spacelike leaf of the</span>
+<span class="sd">        spacetime foliation). This is square-root of the approximate</span>
+<span class="sd">        number of cells whose centres should lie within a hot region.</span>
+
+<span class="sd">    :param min_sqrt_num_cells:</span>
+<span class="sd">        Sets the minimum number of cells per *subregion*, discretised to</span>
+<span class="sd">        the same degree in colatitude and azimuth. This setting has an</span>
+<span class="sd">        effect only when the hot region has two temperature components, in</span>
+<span class="sd">        the form of a superseding region and a ceding region.</span>
+
+<span class="sd">    :param min_sqrt_num_cells:</span>
+<span class="sd">        Sets the maximum number of cells per *subregion*, discretised to</span>
+<span class="sd">        the same degree in colatitude and azimuth. This setting has an</span>
+<span class="sd">        effect even when there is only one temperature component.</span>
+
+<span class="sd">    :param num_rays: Number of rays to trace (integrate) at each colatitude,</span>
+<span class="sd">                     distributed in angle subtended between ray tangent</span>
+<span class="sd">                     4-vector and radial outward unit vector w.r.t a local</span>
+<span class="sd">                     orthonormal tetrad.</span>
+
+<span class="sd">    :param int num_leaves: Number of leaves mesh motion is discretised into.</span>
+
+<span class="sd">    :param int num_phases: Number of phases in a discrete representation of</span>
+<span class="sd">                           the specific flux pulses on the interval</span>
+<span class="sd">                           :math:`[0,1]`.</span>
+
+<span class="sd">    :param phases: If not ``None``, a :class:`numpy.ndarray` of phases</span>
+<span class="sd">                   for a discrete representation of the specific flux</span>
+<span class="sd">                   pulses on the interval :math:`[0,1]`. If ``None``</span>
+<span class="sd">                   (default), the :obj:`num_phases` argument is utilised.</span>
+
+<span class="sd">    :param bool do_fast:</span>
+<span class="sd">        Activate fast precomputation to guide cell distribution between</span>
+<span class="sd">        two radiating regions at distinct temperatures.</span>
+
+<span class="sd">    .. note:: For each of the resolution parameters listed above, there is</span>
+<span class="sd">              a corresponding parameter whose value is respected if the</span>
+<span class="sd">              fast precomputation mode is activated.</span>
+
+<span class="sd">    :param bool is_secondary:</span>
+<span class="sd">        If ``True``, shifts the cell mesh by :math:`\pi` radians about</span>
+<span class="sd">        the stellar rotation axis for pulse integration. This is merely</span>
+<span class="sd">        a choice that can be made, and is not crucial. Note that the</span>
+<span class="sd">        (fast) phase-shifting applied near the end of the likelihood</span>
+<span class="sd">        evaluation is related to this choice and thus phase-shift parameter</span>
+<span class="sd">        prior support can be chosen accordingly.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">num_params</span><span class="p">,</span>
+                 <span class="n">bounds</span><span class="p">,</span>
+                 <span class="n">symmetry</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">hole</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">cede</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">concentric</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+                 <span class="n">min_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                 <span class="n">max_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>
+                 <span class="n">num_rays</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+                 <span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
+                 <span class="n">num_phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">do_fast</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">fast_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
+                 <span class="n">fast_min_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+                 <span class="n">fast_max_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
+                 <span class="n">fast_num_rays</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                 <span class="n">fast_num_leaves</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+                 <span class="n">is_secondary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">HotRegion</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BoundsError</span><span class="p">(</span><span class="s1">&#39;A hot region requires at least three &#39;</span>
+                              <span class="s1">&#39;sets of parameter bounds.&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">colatitude</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">colatitude</span> <span class="o">&lt;</span> <span class="n">_pi</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">BoundsError</span><span class="p">(</span><span class="s1">&#39;Invalid superseding region colatitude bound.&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">radius</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">radius</span> <span class="o">&lt;=</span> <span class="n">_pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">BoundsError</span><span class="p">(</span><span class="s1">&#39;Invalid superseding region angular radius bound.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_secondary</span> <span class="o">=</span> <span class="n">is_secondary</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_fast</span> <span class="o">=</span> <span class="n">do_fast</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_num_rays</span><span class="p">(</span><span class="n">num_rays</span><span class="p">,</span> <span class="n">fast_num_rays</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_num_cells</span><span class="p">(</span><span class="n">sqrt_num_cells</span><span class="p">,</span>
+                           <span class="n">min_sqrt_num_cells</span><span class="p">,</span> <span class="n">max_sqrt_num_cells</span><span class="p">,</span>
+                           <span class="n">fast_sqrt_num_cells</span><span class="p">,</span>
+                           <span class="n">fast_min_sqrt_num_cells</span><span class="p">,</span> <span class="n">fast_max_sqrt_num_cells</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span><span class="p">,</span> <span class="n">fast_num_leaves</span><span class="p">,</span> <span class="n">num_phases</span><span class="p">,</span> <span class="n">phases</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">symmetry</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.cellmesh.integrator_for_azimuthal_invariance</span> <span class="k">import</span> <span class="n">integrate_radField</span> <span class="k">as</span> <span class="n">_integrator</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hole</span> <span class="o">=</span> <span class="n">hole</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_concentric</span> <span class="o">=</span> <span class="n">concentric</span>
+        <span class="k">elif</span> <span class="n">cede</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede</span> <span class="o">=</span> <span class="n">cede</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_concentric</span> <span class="o">=</span> <span class="n">concentric</span>
+            <span class="kn">from</span> <span class="nn">.cellmesh.integrator_for_azimuthal_invariance</span> <span class="k">import</span> <span class="n">integrate_radField</span> <span class="k">as</span> <span class="n">_integrator</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.cellmesh.integrator</span> <span class="k">import</span> <span class="n">integrate_radField</span> <span class="k">as</span> <span class="n">_integrator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span> <span class="o">=</span> <span class="n">_integrator</span>
+
+    <span class="k">def</span> <span class="nf">set_num_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_rays</span><span class="p">,</span> <span class="n">fast_num_rays</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_rays</span> <span class="o">=</span> <span class="n">num_rays</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fast_num_rays</span> <span class="o">=</span> <span class="n">fast_num_rays</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the number of rays integrated per parallel. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span>
+
+    <span class="nd">@num_rays</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">num_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the number of rays integrated per parallel. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of rays must be an integer.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sqrt_num_cells</span><span class="p">,</span>
+                      <span class="n">min_sqrt_num_cells</span><span class="p">,</span> <span class="n">max_sqrt_num_cells</span><span class="p">,</span>
+                      <span class="n">fast_sqrt_num_cells</span><span class="p">,</span>
+                      <span class="n">fast_min_sqrt_num_cells</span><span class="p">,</span> <span class="n">fast_max_sqrt_num_cells</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="n">sqrt_num_cells</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_sqrt_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">min_sqrt_num_cells</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_sqrt_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_sqrt_num_cells</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_sqrt_num_cells</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_sqrt_num_cells</span><span class="p">,</span>\
+               <span class="p">(</span><span class="s1">&#39;Minimum number of cells must be less than or equal to &#39;</span>
+                <span class="s1">&#39;maximum number of cells.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fast_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fast_sqrt_num_cells</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fast_min_sqrt_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fast_min_sqrt_num_cells</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fast_max_sqrt_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fast_max_sqrt_num_cells</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_min_sqrt_num_cells</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_max_sqrt_num_cells</span><span class="p">,</span>\
+               <span class="p">(</span><span class="s1">&#39;Minimum number of cells must be less than or equal to &#39;</span>
+                <span class="s1">&#39;maximum number of cells.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sqrt_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the number of cell parallels. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span>
+
+    <span class="nd">@sqrt_num_cells</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sqrt_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the number of cell parallels. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of cells must be an integer.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the leaves of the photospheric foliation. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leaves</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the leaves of the photospheric foliation. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span>
+
+<div class="viewcode-block" id="HotRegion.set_phases"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion.set_phases">[docs]</a>    <span class="k">def</span> <span class="nf">set_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_leaves</span><span class="p">,</span> <span class="n">fast_num_leaves</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">num_phases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Construct the set of interpolation phases and foliation leaves.</span>
+
+<span class="sd">        :param int num_leaves: Number of leaves mesh motion is discretised into.</span>
+
+<span class="sd">        :param int num_phases: Number of phases in a discrete representation of</span>
+<span class="sd">                               the specific flux pulses on the interval</span>
+<span class="sd">                               :math:`[0,1]`. If ``None``, the number of phases</span>
+<span class="sd">                               interpolated at is set equal to the number of</span>
+<span class="sd">                               leaves.</span>
+
+<span class="sd">        :param phases: If not ``None``, a :class:`numpy.ndarray` of phases</span>
+<span class="sd">                       for a discrete representation of the specific flux</span>
+<span class="sd">                       pulses on the interval :math:`[0,1]`. If ``None``</span>
+<span class="sd">                       (default), the :obj:`num_phases` argument is utilised.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">num_phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_phases</span> <span class="o">=</span> <span class="n">num_leaves</span>
+            <span class="n">fast_num_phases</span> <span class="o">=</span> <span class="n">fast_num_leaves</span>
+
+        <span class="k">if</span> <span class="n">phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_phases</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases_cycles</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">fast_num_phases</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of phases must be an integer.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">phases</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="k">assert</span> <span class="p">(</span><span class="n">phases</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">phases</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">assert</span> <span class="n">phases</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">phases</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Phases must be a one-dimensional &#39;</span>
+                                <span class="s1">&#39;``numpy.ndarray`` with monotonically &#39;</span>
+                                <span class="s1">&#39;increasing elements on the interval [0,1].&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span> <span class="o">=</span> <span class="n">phases</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">_2pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span> <span class="o">=</span> <span class="n">_2pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases_cycles</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_leaves</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_2pi</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_leaves</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fast_leaves</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_2pi</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">fast_num_leaves</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of leaves must be an integer.&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phases_in_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the phases (in cycles) the pulse is interpolated at. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fast_phases_in_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases_cycles</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the total number of cells in the mesh. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_cells</span>
+
+<div class="viewcode-block" id="HotRegion.print_settings"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion.print_settings">[docs]</a>    <span class="k">def</span> <span class="nf">print_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Print numerical settings. &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Base number of cell parallels: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rays per parallel: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rays</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of photospheric leaves: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">leaves</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of interpolation phases: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">__construct_cellMesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">superColatitude</span><span class="p">,</span> <span class="n">superRadius</span><span class="p">,</span>
+                             <span class="n">cedeColatitude</span><span class="p">,</span> <span class="n">cedeRadius</span><span class="p">,</span> <span class="n">cedeAzimuth</span><span class="p">,</span>
+                             <span class="n">holeColatitude</span><span class="p">,</span> <span class="n">holeRadius</span><span class="p">,</span> <span class="n">holeAzimuth</span><span class="p">,</span>
+                             <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Call a low-level routine to construct a mesh representation.</span>
+
+<span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param float superColatitude: Superseding region colatitude (radians).</span>
+
+<span class="sd">        :param float cedeRadius: Ceding region angular radius (radians).</span>
+
+<span class="sd">        :param float superRadius: Superseding region angular radius (radians).</span>
+
+<span class="sd">        :param float cedeOffset: Ceding region angular offset (radians).</span>
+
+<span class="sd">        :param int threads: Number of ``OpenMP`` threads for mesh construction.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_cells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_num_cells</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> \
+                                                    <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_cells</span>
+        <span class="n">min_sqrt_num_cells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_min_sqrt_num_cells</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> \
+                                                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_sqrt_num_cells</span>
+        <span class="n">max_sqrt_num_cells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_max_sqrt_num_cells</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> \
+                                                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_sqrt_num_cells</span>
+
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_sqrt_num_cells</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_num_cells</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_cede_sqrt_num_cells</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_cede_num_cells</span><span class="p">)</span> <span class="o">=</span> <span class="n">_allocate_cells</span><span class="p">(</span><span class="n">num_cells</span><span class="p">,</span>
+                                                      <span class="n">min_sqrt_num_cells</span><span class="p">,</span>
+                                                      <span class="n">max_sqrt_num_cells</span><span class="p">,</span>
+                                                      <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+                                                      <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                                      <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                                      <span class="n">st</span><span class="o">.</span><span class="n">Omega</span><span class="p">,</span>
+                                                      <span class="n">st</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
+                                                      <span class="n">st</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
+                                                      <span class="n">superRadius</span><span class="p">,</span>
+                                                      <span class="n">cedeRadius</span><span class="p">,</span>
+                                                      <span class="n">superColatitude</span><span class="p">,</span>
+                                                      <span class="n">cedeColatitude</span><span class="p">,</span>
+                                                      <span class="o">-</span><span class="n">cedeAzimuth</span><span class="p">,</span>
+                                                      <span class="n">holeColatitude</span><span class="p">,</span>
+                                                      <span class="n">holeRadius</span><span class="p">,</span>
+                                                      <span class="n">holeAzimuth</span><span class="p">,</span>
+                                                      <span class="n">fast_total_counts</span><span class="p">)</span>
+
+        <span class="c1">#print(&#39;----------------&#39;)</span>
+        <span class="c1">#print(&#39;Cell allocation:&#39;)</span>
+        <span class="c1">#print(&#39;super region: %i&#39; % self._super_sqrt_num_cells)</span>
+        <span class="c1">#print(&#39;cede region: %i&#39; % self._cede_sqrt_num_cells)</span>
+        <span class="c1">#print(&#39;----------------&#39;)</span>
+
+        <span class="k">if</span> <span class="n">superColatitude</span> <span class="o">-</span> <span class="n">superRadius</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">superColatitude</span> <span class="o">+</span> <span class="n">superRadius</span> <span class="o">&gt;</span> <span class="n">_pi</span><span class="p">:</span>
+            <span class="n">mesh_func</span> <span class="o">=</span> <span class="n">_construct_polar_cellMesh</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mesh_func</span> <span class="o">=</span> <span class="n">_construct_spot_cellMesh</span>
+
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_theta</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_phi</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_r</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_cellArea</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_maxAlpha</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_cos_gamma</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_effGrav</span><span class="p">)</span> <span class="o">=</span> <span class="n">mesh_func</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_super_num_cells</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_super_sqrt_num_cells</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
+                                          <span class="n">superRadius</span><span class="p">,</span>
+                                          <span class="n">superColatitude</span><span class="p">,</span>
+                                          <span class="n">holeRadius</span><span class="p">,</span>
+                                          <span class="n">holeColatitude</span><span class="p">,</span>
+                                          <span class="n">holeAzimuth</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_super_phi</span> <span class="o">-=</span> <span class="n">holeAzimuth</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_secondary</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_super_phi</span> <span class="o">+=</span> <span class="n">_pi</span>
+
+        <span class="k">if</span> <span class="n">cedeRadius</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cedeColatitude</span> <span class="o">-</span> <span class="n">cedeRadius</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">cedeColatitude</span> <span class="o">+</span> <span class="n">cedeRadius</span> <span class="o">&gt;</span> <span class="n">_pi</span><span class="p">:</span>
+                <span class="n">mesh_func</span> <span class="o">=</span> <span class="n">_construct_polar_cellMesh</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mesh_func</span> <span class="o">=</span> <span class="n">_construct_spot_cellMesh</span>
+
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cede_theta</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_phi</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellArea</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_maxAlpha</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cos_gamma</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_effGrav</span><span class="p">)</span> <span class="o">=</span> <span class="n">mesh_func</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_num_cells</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_sqrt_num_cells</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
+                                             <span class="n">cedeRadius</span><span class="p">,</span>
+                                             <span class="n">cedeColatitude</span><span class="p">,</span>
+                                             <span class="n">superRadius</span><span class="p">,</span>
+                                             <span class="n">superColatitude</span><span class="p">,</span>
+                                             <span class="o">-</span><span class="n">cedeAzimuth</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede_phi</span> <span class="o">+=</span> <span class="n">cedeAzimuth</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_secondary</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cede_phi</span> <span class="o">+=</span> <span class="n">_pi</span>
+
+    <span class="k">def</span> <span class="nf">__calibrate_lag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calibrate lag for cell mesh and normalise by oscillation period. &quot;&quot;&quot;</span>
+
+        <span class="n">R_i</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">R_r_s</span>
+
+        <span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_r_s_over_r</span> <span class="o">-</span> <span class="n">R_i</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">+=</span> <span class="n">_log</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_r_s_over_r</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">R_i</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="n">C</span> <span class="o">*=</span> <span class="n">st</span><span class="o">.</span><span class="n">r_s</span> <span class="o">/</span> <span class="n">_c</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_lag</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_super_lag</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">-=</span> <span class="n">C</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_super_lag</span> <span class="o">*=</span> <span class="n">st</span><span class="o">.</span><span class="n">Omega</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r_s_over_r</span> <span class="o">-</span> <span class="n">R_i</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">C</span> <span class="o">+=</span> <span class="n">_log</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r_s_over_r</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">R_i</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">))</span>
+            <span class="n">C</span> <span class="o">*=</span> <span class="n">st</span><span class="o">.</span><span class="n">r_s</span> <span class="o">/</span> <span class="n">_c</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cede_lag</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cede_lag</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">-=</span> <span class="n">C</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede_lag</span> <span class="o">*=</span> <span class="n">st</span><span class="o">.</span><span class="n">Omega</span>
+
+    <span class="k">def</span> <span class="nf">__compute_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Integrate rays for null mapping.</span>
+
+<span class="sd">        These rays represent a null mapping from photosphere to a point at</span>
+<span class="sd">        some effective infinity.</span>
+
+<span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param int threads: Number of ``OpenMP`` threads for ray integration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_super_r_s_over_r</span> <span class="o">=</span> <span class="n">_contig</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">r_s</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_r</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+        <span class="n">num_rays</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_num_rays</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span>
+
+        <span class="p">(</span><span class="n">terminate_calculation</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_deflection</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_cos_alpha</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_lag</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_super_maxDeflection</span><span class="p">)</span> <span class="o">=</span> <span class="n">_compute_rays</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_super_sqrt_num_cells</span><span class="p">,</span>
+                                                    <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_super_r_s_over_r</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_super_maxAlpha</span><span class="p">,</span>
+                                                    <span class="n">num_rays</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">terminate_calculation</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RayError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical problem during ray integration.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r_s_over_r</span> <span class="o">=</span> <span class="n">_contig</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">r_s</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">terminate_calculation</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_deflection</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cos_alpha</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_lag</span><span class="p">,</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_cede_maxDeflection</span><span class="p">)</span> <span class="o">=</span> <span class="n">_compute_rays</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_cede_sqrt_num_cells</span><span class="p">,</span>
+                                                       <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r_s_over_r</span><span class="p">,</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">_cede_maxAlpha</span><span class="p">,</span>
+                                                       <span class="n">num_rays</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">terminate_calculation</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">RayError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical problem during ray integration.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__calibrate_lag</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__compute_cellParamVecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Precomputes photospheric source radiation field parameter vectors</span>
+<span class="sd">        cell-by-cell.</span>
+
+<span class="sd">        Designed here simply for uniform effective temperature superseding</span>
+<span class="sd">        and ceding regions.</span>
+
+<span class="sd">        :params p: Arguments for :meth:`_eval_srcRadFieldParamVectors`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_super_radiates</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_cellArea</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_super_cellParamVecs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_radiates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_super_radiates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                              <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_super_cellParamVecs</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_cellParamVecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_super_cellParamVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_effGrav</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede_radiates</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellArea</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellParamVecs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_cede_radiates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_cede_radiates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                                 <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellParamVecs</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellParamVecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellParamVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_effGrav</span>
+
+<div class="viewcode-block" id="HotRegion._psi"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion._psi">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_psi</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">colatitude</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Coordinates of cell centres in rotated spherical coordinate system.</span>
+
+<span class="sd">        Transformation is anticlockwise rotation about y-axis of Cartesian</span>
+<span class="sd">        basis.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_arccos</span><span class="p">(</span><span class="n">_cos</span><span class="p">(</span><span class="n">colatitude</span><span class="p">)</span>
+                       <span class="o">*</span> <span class="n">_cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+                       <span class="o">+</span> <span class="n">_sin</span><span class="p">(</span><span class="n">colatitude</span><span class="p">)</span>
+                       <span class="o">*</span> <span class="n">_sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+                       <span class="o">*</span> <span class="n">_cos</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="HotRegion.embed"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Embed the hot region.</span>
+
+<span class="sd">        :param bool correction: Correct the integral over the radiation field</span>
+<span class="sd">                                *elsewhere* by accounting for the time-dependent</span>
+<span class="sd">                                component arising from the presence of the</span>
+<span class="sd">                                hot region.</span>
+
+<span class="sd">        :param cellParamVecs: A :class:`numpy.ndarray` of ``float``\ s. If a</span>
+<span class="sd">                              :obj:`correction` is to be made, this array</span>
+<span class="sd">                              contains a parameter vector for each cell of the</span>
+<span class="sd">                              hot region mesh. The parameter vectors should be</span>
+<span class="sd">                              identical and equivalent to the parameter vector</span>
+<span class="sd">                              used for the radiation field *elsewhere*\ . If no</span>
+<span class="sd">                              correction is to be made, the array needs to be</span>
+<span class="sd">                              passed but can be a zero array.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hole</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__construct_cellMesh</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                          <span class="mf">0.0</span><span class="p">,</span>
+                                          <span class="mf">0.0</span><span class="p">,</span>
+                                          <span class="mf">0.0</span><span class="p">,</span>
+                                          <span class="mf">0.0</span><span class="p">,</span>
+                                          <span class="mf">0.0</span><span class="p">,</span>
+                                          <span class="n">fast_total_counts</span><span class="p">,</span>
+                                          <span class="n">threads</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concentric</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__construct_cellMesh</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                              <span class="mf">0.0</span><span class="p">,</span>
+                                              <span class="mf">0.0</span><span class="p">,</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                              <span class="mf">0.0</span><span class="p">,</span>
+                                              <span class="n">fast_total_counts</span><span class="p">,</span>
+                                              <span class="n">threads</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__construct_cellMesh</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                              <span class="mf">0.0</span><span class="p">,</span>
+                                              <span class="mf">0.0</span><span class="p">,</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                                              <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                                              <span class="n">fast_total_counts</span><span class="p">,</span>
+                                              <span class="n">threads</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concentric</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__construct_cellMesh</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="c1"># super colatitude</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="c1"># super radius</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="c1"># cede colatitude</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="c1"># cede radius</span>
+                                          <span class="mf">0.0</span><span class="p">,</span> <span class="c1"># cede relative azimuth</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="c1"># super hole colatitude</span>
+                                          <span class="mf">0.0</span><span class="p">,</span> <span class="c1"># super hole radius</span>
+                                          <span class="mf">0.0</span><span class="p">,</span> <span class="c1"># super hole azimuth</span>
+                                          <span class="n">fast_total_counts</span><span class="p">,</span>
+                                          <span class="n">threads</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__construct_cellMesh</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                                          <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                          <span class="mf">0.0</span><span class="p">,</span>
+                                          <span class="mf">0.0</span><span class="p">,</span>
+                                          <span class="n">fast_total_counts</span><span class="p">,</span>
+                                          <span class="n">threads</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__compute_rays</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hole</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concentric</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_super_correctionVecs</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_super_correctionVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_effGrav</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cede_correctionVecs</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">_cede_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cede_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cede_correctionVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_effGrav</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_super_correctionVecs</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede_correctionVecs</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">do_fast</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span>
+
+    <span class="nd">@do_fast</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">do_fast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activate</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span> <span class="o">=</span> <span class="n">activate</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fast_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_mode</span>
+
+    <span class="nd">@fast_mode</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">fast_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activate</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fast_mode</span> <span class="o">=</span> <span class="n">activate</span>
+
+<div class="viewcode-block" id="HotRegion.integrate"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span>
+                  <span class="n">hot_atmosphere</span><span class="p">,</span> <span class="n">elsewhere_atmosphere</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>
+
+<span class="sd">        Calls the CellMesh integrator, with or without exploitation of</span>
+<span class="sd">        azimuthal invariance of the radiation field of the hot region.</span>
+
+<span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param energies: A one-dimensional :class:`numpy.ndarray` of energies</span>
+<span class="sd">                         in keV.</span>
+
+<span class="sd">        :param int threads: Number of ``OpenMP`` threads for pulse</span>
+<span class="sd">                            integration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cede</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span>
+
+        <span class="n">leaves</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_leaves</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leaves</span>
+        <span class="n">phases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span>
+        <span class="n">num_rays</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_num_rays</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">super_energies</span><span class="p">,</span> <span class="n">cede_energies</span> <span class="o">=</span> <span class="n">energies</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">super_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellArea</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cede_energies</span> <span class="o">=</span> <span class="n">super_energies</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">super_energies</span> <span class="o">=</span> <span class="n">cede_energies</span> <span class="o">=</span> <span class="n">energies</span>
+
+        <span class="c1">#print(&#39;Primary super energies&#39;, super_energies)</span>
+        <span class="c1">#print(&#39;Primary cede energies&#39;, cede_energies)</span>
+
+        <span class="c1"># change low-level code so as to require only a parameter vector</span>
+        <span class="c1"># for the correction, and not a larger array of the same parameter</span>
+        <span class="c1"># vector? Effective gravity varies with colatitude however.</span>
+        <span class="n">super_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                       <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+                                       <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                       <span class="n">st</span><span class="o">.</span><span class="n">Omega</span><span class="p">,</span>
+                                       <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                       <span class="n">st</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
+                                       <span class="n">st</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
+                                       <span class="n">st</span><span class="o">.</span><span class="n">i</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_cellArea</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_r</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_r_s_over_r</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_theta</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_phi</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_cellParamVecs</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_radiates</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_correctionVecs</span><span class="p">,</span>
+                                       <span class="n">num_rays</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_deflection</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_cos_alpha</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_lag</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_maxDeflection</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_super_cos_gamma</span><span class="p">,</span>
+                                       <span class="n">super_energies</span><span class="p">,</span>
+                                       <span class="n">leaves</span><span class="p">,</span>
+                                       <span class="n">phases</span><span class="p">,</span>
+                                       <span class="n">hot_atmosphere</span><span class="p">,</span>
+                                       <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">super_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PulseError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical error during superseding-&#39;</span>
+                             <span class="s1">&#39;region pulse integration.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cede_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">Omega</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">i</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellArea</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r_s_over_r</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_theta</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_phi</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellParamVecs</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_radiates</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_correctionVecs</span><span class="p">,</span>
+                                          <span class="n">num_rays</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_deflection</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cos_alpha</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_lag</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_maxDeflection</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cos_gamma</span><span class="p">,</span>
+                                          <span class="n">cede_energies</span><span class="p">,</span>
+                                          <span class="n">leaves</span><span class="p">,</span>
+                                          <span class="n">phases</span><span class="p">,</span>
+                                          <span class="n">hot_atmosphere</span><span class="p">,</span>
+                                          <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cede_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">PulseError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical error during ceding-region &#39;</span>
+                                 <span class="s1">&#39;pulse integration.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">super_pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cede_pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">super_pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">],)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

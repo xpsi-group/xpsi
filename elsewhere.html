@@ -1,0 +1,464 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Elsewhere &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Interstellar" href="interstellar.html" />
+    <link rel="prev" title="HotRegions" href="hotregions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Elsewhere</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/elsewhere.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<span class="target" id="module-xpsi.Elsewhere"></span><div class="section" id="elsewhere">
+<span id="id1"></span><h1>Elsewhere<a class="headerlink" href="#elsewhere" title="Permalink to this headline">¶</a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Elsewhere.Elsewhere" title="xpsi.Elsewhere.Elsewhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elsewhere</span></code></a> represent the region of the
+photosphere in which smaller radiative features (such as spots) are embedded.</p>
+<dl class="class">
+<dt id="xpsi.Elsewhere.Elsewhere">
+<em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">Elsewhere</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>num_rays=1000</em>, <em>sq_num_cells=64</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
+<p>The photospheric radiation field elsewhere (other than the spot).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_params</strong> (<em>int</em>) – Number of parameters for model of photospheric
+radiation field elsewhere.</li>
+<li><strong>bounds</strong> (<em>list</em>) – Hard parameter bounds for the instance of
+<a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace.ParameterSubspace</span></code></a>.</li>
+<li><strong>num_rays</strong> (<em>int</em>) – Number of rays to trace (integrate) at each
+colatitude, distributed in angle subtended between
+ray tangent 4-vector and radial outward unit
+vector w.r.t a local orthonormal tetrad.</li>
+<li><strong>sq_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth
+which form a regular mesh on a closed curved
+2-surface (which is a compact subset of a
+spacelike leaf of the spacetime foliation).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xpsi.Elsewhere.Elsewhere._compute_cellParamVecs">
+<code class="descname">_compute_cellParamVecs</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere._compute_cellParamVecs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere._compute_cellParamVecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precomputes photospheric source radiation field parameter vectors
+cell-by-cell.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p</strong> (<em>list</em>) – Arguments for the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_eval_srcRadFieldParamVectors()</span></code> method.</li>
+<li><strong>spot</strong> (<em>optional</em>) – An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Spot</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
+the ambient source radiation field is evaluated
+in terms of parameter vectors at the centres of
+cells defined in the ambient cell mesh. If
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">spot</span></code> is an instance, the parameter vectors
+are evaluated at the centres of cells defined
+in the spot cell mesh.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Elsewhere.Elsewhere._compute_rays">
+<code class="descname">_compute_rays</code><span class="sig-paren">(</span><em>st</em>, <em>threads</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere._compute_rays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere._compute_rays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace (integrate) a set of rays.</p>
+<p>These rays represent a null mapping from photosphere to a point at
+some effective infinity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</li>
+<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for ray integration.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Elsewhere.Elsewhere._construct_cellMesh">
+<code class="descname">_construct_cellMesh</code><span class="sig-paren">(</span><em>st</em>, <em>threads</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere._construct_cellMesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere._construct_cellMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call a low-level routine to construct a mesh representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</li>
+<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for mesh construction.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Elsewhere.Elsewhere.bounds">
+<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of tuples of hard parameter bounds.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="xpsi.Elsewhere.Elsewhere.eval_srcRadFieldParamVectors">
+<em class="property">static </em><code class="descname">eval_srcRadFieldParamVectors</code><span class="sig-paren">(</span><em>shape</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere.eval_srcRadFieldParamVectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.eval_srcRadFieldParamVectors" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Default. Can be overwritten in a custom subclass, <em>if you know
+what you are doing</em>.</p>
+</div>
+<p>The ambient field is uniform with respect to local Lagrangian tetrads.
+Parameters are matrices, and a matrix must be returned.</p>
+<p>Function to evaluate the source radiation field parameter vector at
+points on a closed 2-surface (a spacelike leaf of the spacetime
+foliation).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>shape</strong> (<em>tuple</em>) – Dimensions of a 2D array of points.</li>
+<li><strong>p</strong> (<em>list</em>) – The local radiation field parameter vector, which
+is to be passed to the low-level routines.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Elsewhere.Elsewhere.integrate">
+<code class="descname">integrate</code><span class="sig-paren">(</span><em>st</em>, <em>energies</em>, <em>threads</em>, <em>*atmosphere</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere.integrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate over the photospheric radiation field.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</li>
+<li><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies
+in keV.</li>
+<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads the integrator is
+permitted to spawn.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Elsewhere.Elsewhere.num_cells">
+<code class="descname">num_cells</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.num_cells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the total number of cells in the mesh.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Elsewhere.Elsewhere.num_params">
+<code class="descname">num_params</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.num_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of dimensions of the parameter subspace.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Elsewhere.Elsewhere.num_rays">
+<code class="descname">num_rays</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.num_rays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of rays integrated per parallel.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Elsewhere.Elsewhere.print_settings">
+<code class="descname">print_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere.print_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.print_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print numerical settings.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Elsewhere.Elsewhere.sq_num_cells">
+<code class="descname">sq_num_cells</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.sq_num_cells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of cell parallels.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.Elsewhere.RayError">
+<em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">RayError</code><a class="reference internal" href="_modules/xpsi/Elsewhere.html#RayError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.RayError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
+<p>Raised if a numerical problems encountered during ray integration.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.Elsewhere.IntegrationError">
+<em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">IntegrationError</code><a class="reference internal" href="_modules/xpsi/Elsewhere.html#IntegrationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.IntegrationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
+<p>Raised if a numerical problems encountered during integration.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="interstellar.html" class="btn btn-neutral float-right" title="Interstellar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hotregions.html" class="btn btn-neutral float-left" title="HotRegions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>xpsi.Sample &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>xpsi.Sample</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for xpsi.Sample</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;nested&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+
+<span class="n">posterior</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># Function defined on the module-level for function and module name pickling</span>
+<span class="c1"># during point-to-point MPI comminications. The global variable is set in</span>
+<span class="c1"># emcee() function before creation of an MPIPool.</span>
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">posterior</span>
+    <span class="k">return</span> <span class="n">posterior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ensemble"><a class="viewcode-back" href="../../sample.html#xpsi.Sample.ensemble">[docs]</a><span class="k">def</span> <span class="nf">ensemble</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">MPI</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Initialise `emcee &lt;http://dfm.io/emcee/current/&gt;`_ and sample.</span>
+
+<span class="sd">    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.</span>
+
+<span class="sd">    :param prior: An instance of :class:`~.Prior.Prior`.</span>
+
+<span class="sd">    :param bool MPI: Parallelise with MPI? If calling script not lauched with</span>
+<span class="sd">                     an MPI directive, sampling will not commence because there</span>
+<span class="sd">                     is only one process. Default is ``True`` since only in</span>
+<span class="sd">                     testing is it justifiable to use a single process.</span>
+
+
+<span class="sd">    :param kwargs: Passed to initialisers of appropriate classes.</span>
+
+<span class="sd">       * boolean to resume, under keyword :obj:`resume`;</span>
+<span class="sd">       * number of steps, under keyword :obj:`nsteps`;</span>
+<span class="sd">       * number of walkers, under keyword :obj:`nwalkers`;</span>
+<span class="sd">       * moments of initial walker multivariate Gaussian distribution, under</span>
+<span class="sd">         keyword :obj:`walker_dist_moments` (can be ``None``);</span>
+<span class="sd">       * root directory for output, under keyword :obj:`root_dir`;</span>
+<span class="sd">       * boolean to activate generation of incident source pulse blobs,</span>
+<span class="sd">         under keyword :obj:`source_pulse_blobs`.</span>
+
+<span class="sd">    The above objects are used to instantiate :class:`~.Posterior.Posterior`.</span>
+
+<span class="sd">    :return: An instance of :class:`emcee.backends.HDFBackend`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># use the globally scoped variable</span>
+    <span class="k">global</span> <span class="n">posterior</span>
+    <span class="kn">from</span> <span class="nn">xpsi.Posterior</span> <span class="k">import</span> <span class="n">Posterior</span>
+    <span class="c1"># Callable instance of the posterior</span>
+    <span class="n">posterior</span> <span class="o">=</span> <span class="n">Posterior</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span>
+                          <span class="n">prior</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">MPI</span> <span class="ow">or</span> <span class="n">global_imports</span><span class="o">.</span><span class="n">_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">schwimmbad</span> <span class="k">import</span> <span class="n">MPIPool</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;Check your schwimmbad package installation.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Initialize the MPI-based pool used for parallelisation.</span>
+        <span class="k">with</span> <span class="n">MPIPool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">is_master</span><span class="p">():</span>
+                <span class="c1"># Wait for instructions from the master process.</span>
+                <span class="n">pool</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                <span class="n">_sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="kn">from</span> <span class="nn">xpsi.EnsembleSampler</span> <span class="k">import</span> <span class="n">EnsembleSampler</span>
+
+            <span class="c1"># Initialise emcee sampler</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">num_params</span><span class="p">,</span>
+                                      <span class="n">posterior</span> <span class="o">=</span> <span class="n">func</span><span class="p">,</span>
+                                      <span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span><span class="p">,</span>
+                                      <span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">,</span>
+                                      <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># Commence emcee sampling process</span>
+            <span class="n">sampler</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">xpsi.EnsembleSampler</span> <span class="k">import</span> <span class="n">EnsembleSampler</span>
+
+        <span class="c1"># Initialise emcee sampler</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">num_params</span><span class="p">,</span>
+                                  <span class="n">posterior</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">,</span>
+                                  <span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span><span class="p">,</span>
+                                  <span class="n">pool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Commence emcee sampling process</span>
+        <span class="n">sampler</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">sampler</span><span class="o">.</span><span class="n">backend</span></div>
+
+<div class="viewcode-block" id="nested"><a class="viewcode-back" href="../../sample.html#xpsi.Sample.nested">[docs]</a><span class="k">def</span> <span class="nf">nested</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">check_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Initialise MultiNest and integrate.</span>
+
+<span class="sd">    :param dict likelihood:</span>
+<span class="sd">        Keyword arguments required for instantiation of</span>
+<span class="sd">        :class:`~.Likelihood.Likelihood`.</span>
+
+<span class="sd">    :param dict prior:</span>
+<span class="sd">        Keyword arguments required for instantiation of</span>
+<span class="sd">        :class:`~.Prior.Prior`.</span>
+
+<span class="sd">    :param dict check_kwargs:</span>
+<span class="sd">        Keywords for likelihood function checker. Passed to checker before</span>
+<span class="sd">        commencement of sampling.</span>
+
+<span class="sd">    :param kwargs: Keyword arguments for PyMultiNest.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">xpsi.NestedSampler</span> <span class="k">import</span> <span class="n">NestedSampler</span>
+
+    <span class="k">if</span> <span class="n">check_kwargs</span><span class="p">:</span>
+        <span class="n">likelihood</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="o">**</span><span class="n">check_kwargs</span><span class="p">)</span>
+
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">NestedSampler</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">num_params</span><span class="p">,</span>
+                                  <span class="n">likelihood</span><span class="p">,</span>
+                                  <span class="n">prior</span><span class="p">)</span>
+    <span class="n">sampler</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

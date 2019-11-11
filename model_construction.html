@@ -1,0 +1,1980 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Model construction &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example script and modules" href="example_script.html" />
+    <link rel="prev" title="SURFsara systems" href="SURFsara_systems.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Model construction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Likelihood">Likelihood</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#The-parameter-space">The parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Data">Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Instrument">Instrument</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Background">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Pulse">Pulse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Constructing-a-star">Constructing a star</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#The-ambient-spacetime">The ambient spacetime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#The-photosphere-and-its-constituent-regions">The photosphere and its constituent regions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Star">Star</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#A-callable-likelihood-object">A callable likelihood object</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Prior">Prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Model construction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/model_construction.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Model-construction">
+<h1>Model construction<a class="headerlink" href="#Model-construction" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rcParams</span>
+<span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;font.size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">16</span>
+
+<span class="kn">import</span> <span class="nn">xpsi</span>
+
+<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_2pi</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                 Version: 0.1                |
+\=============================================/
+
+Warning: Cannot import GetDist.
+Warning: Cannot import nestcheck.
+Warning: Cannot import fgivenx.
+</pre></div></div>
+</div>
+<p>Let’s build a statistical generative model for the data; first we build a <em>callable</em> object for likelihood evaluation, and then we build a <em>callable</em> object for prior-density evaluation.</p>
+<p>En route, we will explain why various software design choices were made during development. In some cases the conventions defined are not necessarily important for future development and indeed we expect them to be redesigned.</p>
+<div class="section" id="Likelihood">
+<h2>Likelihood<a class="headerlink" href="#Likelihood" title="Permalink to this headline">¶</a></h2>
+<p>If you have not yet read the <a class="reference internal" href="overview.html#likelihoods"><span class="std std-ref">likelihood overview</span></a>, it is advisable to do so now.</p>
+<div class="section" id="The-parameter-space">
+<h3>The parameter space<a class="headerlink" href="#The-parameter-space" title="Permalink to this headline">¶</a></h3>
+<p>In order to define the X-PSI likelihood it is first necessary to define an underlying model parameter space. In general the parameter space is <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span>, where <span class="math notranslate nohighlight">\(d\in\mathbb{N}\)</span> is the total number of free model parameters, satisfying <span class="math notranslate nohighlight">\(d\geq5\)</span> (in the current version, as explicitly shown below).</p>
+<p>In X-PSI we define an Abstract Base Class (ABC) representing a <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace"><span class="std std-ref">parameter subspace</span></a>. To construct an X-PSI model a set of objects are defined which <em>derive</em> from this parameter subspace ABC, and it is the <em>union</em> of these objects that forms both the global model parameter space, and a set of methods and attributes for evaluation of a parametrised sampling distribution of the data at the vector <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>, conditional on
+a vector of model parameter values.</p>
+<p>Our aim is to construct a <em>callable</em> <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object to feed as a <em>callback</em> function to a posterior sampler and a posterior integrator. We illustrate this object in the diagram below; all nodes in the diagram below represent objects (instances of some class). In some cases there are multiple instances of a particular class, in other cases there is only a single instance of a particular class. Moreover, a subset of these classes inherit (derive or subclass) the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC,
+because instances of these classes are objects defined abstractly by a parameter subspace and a collection of methods with instructions for handling parameter vectors in that subspace (methods and attributes to, e.g., calculate and store some <em>derived</em> parameters of the underlying theory/model respectively for likelihood evaluation).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="s2">&quot;./figures/oop_modelling_diagram.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_8_0.png" src="_images/model_construction_8_0.png" />
+</div>
+</div>
+<p>The arrows in the diagram denote an object that is stored as an attribute of another encapsulating object. The encapsulating object makes calls to methods of the wrapped objects when a call is processed to evaluate the likelihood given a vector of model parameter values. The purpose of exploiting the object-oriented paradigm here is to <em>organise</em> a non-trivial likelihood evaluation algorithm in a <em>logical</em>, <em>flexible</em>, and <em>extensible</em> manner by identifying groups of mathematical structures
+which can be considered as belonging to some more abstract object with some physical and/or statistical meaning. We use a dynamic and expressive high-level language to organise this computation, allowing both calls low-level library routines where necessary to improve calculation speed, and straightforward communication between our problem-specific code and other more general open-source software libraries (in particular, statistical sampling/integration software).</p>
+<p>We will now briefly describe the purpose of each object above which is encapsulated by the callable <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object (<code class="docutils literal notranslate"><span class="pre">Likelihood</span></code> in the diagram to denote the name of the class of which it is an instance).</p>
+<ul class="simple">
+<li>A <code class="docutils literal notranslate"><span class="pre">star</span></code> object does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents the model star. The objects it encapsulates <em>do</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and all parameters of these subspaces are <em>slow</em> parameters in terms of likelihood evaluation.<ul>
+<li>A <code class="docutils literal notranslate"><span class="pre">spacetime</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. It represents the ambient Schwarzschild spacetime solution.</li>
+<li>A <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents a source radiation field on a 2-surface embedded in a spacelike hypersurface of that ambient spacetime. There can be multiple <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> objects per <code class="docutils literal notranslate"><span class="pre">star</span></code> object.<ul>
+<li>A <code class="docutils literal notranslate"><span class="pre">hotRegion</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents a radiatively intense region: e.g., a “circular hot-spot” in the source radiation field.</li>
+<li>An <code class="docutils literal notranslate"><span class="pre">elsewhere</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. The represents the source radiation field exterior of the <code class="docutils literal notranslate"><span class="pre">hotRegion</span></code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>A <code class="docutils literal notranslate"><span class="pre">pulse</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. A pulse is defined as a subset <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\subseteq\mathcal{D}\)</span> of the dataset with a parametrised sampling distribution dependent on an incident specific flux pulse generated by a particular <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object. There can thus be multiple <code class="docutils literal notranslate"><span class="pre">pulse</span></code> objects. Moreover, all model parameters in the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> subspace, and in the subspaces associated with objects that <code class="docutils literal notranslate"><span class="pre">pulse</span></code> encapsulates are
+<em>fast</em> parameters in terms of likelihood evaluation.<ul>
+<li>A <code class="docutils literal notranslate"><span class="pre">data</span></code> object does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, but is itself an ABC. It is a container for the data subset <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\subseteq\mathcal{D}\)</span>.</li>
+<li>An <code class="docutils literal notranslate"><span class="pre">instrument</span></code> object does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, but is itself an ABC. It represents the model instrument for transforming incident specific flux pulses into a structure which directly enters the parameterised sampling distribution of <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span>.</li>
+<li>An <code class="docutils literal notranslate"><span class="pre">interstellar</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. It represents a model for physical interstellar radiation-matter interaction processes which modify the source radiation field during propagation to the instrument.</li>
+<li>A <code class="docutils literal notranslate"><span class="pre">background</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. It represents a model for the background radiation field <em>incident</em> on the instrument.</li>
+</ul>
+</li>
+</ul>
+<p>For each of these objects which derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> class, one needs to specify the number of parameters in the subspace, and define the hard bounds on those parameters upon instantiation.</p>
+<p>A subset of model parameters are <em>slow</em> because varying those parameters requires <em>likelihood</em> re-evaluation, and the compute time required to perform that re-evaluation is slow <em>relative</em> to re-evaluation when varying only a distinct <em>subset</em> of the model parameters – the <em>fast</em> parameters. In general there can be multiple subsets of parameters forming a <em>speed hierarchy</em> – see <a class="reference external" href="https://arxiv.org/abs/1304.4473">A. Lewis, “Efficient sampling of fast and slow cosmological parameters”
+(arXiv:1304.4473)</a>.</p>
+<p>X-PSI, during developement, supported the use of the nested sampler <code class="docutils literal notranslate"><span class="pre">PolyChord</span></code>, whose internals require that parameters forming a speed hierarchy are ordered in subsets (or blocks) from <em>slow</em> to <em>fast</em> in an array passed to a <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> callback function – if one wishes to exploit a speed hierarchy that is. Thus the ordering of an array of parameter values passed to a general instance of the <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood"><span class="std std-ref">Likelihood</span></a> class was of crucial importance.
+During development, we opted to support the nested sampler <code class="docutils literal notranslate"><span class="pre">MultiNest</span></code> instead based on the nature of the sampling problem (dimensionality and likelihood evaluation expense).</p>
+<p>However, for this reason, the source code of X-PSI imposes the following convention for parameter ordering for likelihood evaluation, with a minimum of two speed grades:</p>
+<ol class="arabic simple">
+<li>the <em>slow</em> parameters associated with an instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime"><span class="std std-ref">Spacetime</span></a>;</li>
+<li>the <em>slow</em> parameters associated with each instance of <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere"><span class="std std-ref">Photosphere</span></a> and the other objects it encapsulates which derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC;</li>
+<li>the <em>faster</em> (nuisance) parameters associated with each instance of <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a>, and the other objects it encapsulates which derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC.</li>
+</ol>
+<p>Note that the user has complete freedom to extend the speed hierarchy beyond the two <em>slow-fast</em> grades in custom classes. Also note that: (i) when a prior-density evaluation call is made, the bounds on all model parameters need to be passed upon instantiation; and (ii) when a likelihood evaluation call is made a parameter vector is handled correctly in terms of passing the correct parameter values to objects, and the property <code class="docutils literal notranslate"><span class="pre">Likelihood.bounds</span></code> automatically returns an ordered list of bounds
+which can be used to instantiate a <code class="docutils literal notranslate"><span class="pre">prior</span></code> object.</p>
+<p>An exception to this convention is the distance, which although a fast parameter, was later grouped with the spacetime parameters and now appears at the top of the speed hierarchy.</p>
+<p>If there are multiple instances of the <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere"><span class="std std-ref">Photosphere</span></a> class, and thus multiple instances of the <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> class (since by definition a one-to-one mapping between is required), the parameter array would assume the following form (with the <em>non-optional</em> free parameters in bold):</p>
+<ul class="simple">
+<li>distance from Earth</li>
+<li><strong>(rotationally deformed) gravitational mass</strong></li>
+<li><strong>(rotationally deformed) coordinate equatorial radius</strong></li>
+<li><strong>inclination of Earth to stellar rotation axis</strong></li>
+<li>coordinate spin frequency (if not fixed upon star construction)</li>
+<li><code class="docutils literal notranslate"><span class="pre">photosphere_1</span></code> (non-optional):<ul>
+<li>mode/oscillation coordinate rotation frequency (if not locked to stellar rotation)</li>
+<li>subvector of <strong>hot-region parameters</strong> (e.g., spot centre colatitude, spot angular radius, and so on)</li>
+<li>(optional) subvector of additional parameters controlling the comoving radiation field <em>within</em> the spot boundary (e.g., pertaining to ionisation degree or composition)</li>
+<li>(optional) subvector of parameters controlling the comoving radiation field <em>outside</em> the spot boundary</li>
+</ul>
+</li>
+<li><span class="math notranslate nohighlight">\(\ldots\)</span></li>
+<li><code class="docutils literal notranslate"><span class="pre">photosphere_n</span></code> (optional):<ul>
+<li>mode/oscillation coordinate rotation frequency (if not locked to stellar rotation)</li>
+<li>spot centre colatitude</li>
+<li>spot angular radius</li>
+<li>(optional) subvector of parameters controlling the comoving radiation field within the spot boundary</li>
+<li>(optional) subvector of parameters controlling the comoving radiation field outside the spot boundary</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">pulse_1</span></code> (non-optional):<ul>
+<li>(optional) subvector of fast nuisance parameters (including background and interstellar processes)</li>
+</ul>
+</li>
+<li><span class="math notranslate nohighlight">\(\ldots\)</span></li>
+<li><code class="docutils literal notranslate"><span class="pre">pulse_n</span></code> (if matching <code class="docutils literal notranslate"><span class="pre">photosphere_n</span></code>):<ul>
+<li>(optional) subvector of fast nuisance parameters (including background and interstellar processes)</li>
+</ul>
+</li>
+</ul>
+<p>where <span class="math notranslate nohighlight">\(\forall i\in[1,n]\)</span> <code class="docutils literal notranslate"><span class="pre">photosphere_i</span></code> and <code class="docutils literal notranslate"><span class="pre">pulse_i</span></code> share an identification <code class="docutils literal notranslate"><span class="pre">tag</span></code>.</p>
+<p>All model parameters not associated with <code class="docutils literal notranslate"><span class="pre">pulse</span></code> objects are <em>slow</em> parameters.</p>
+<p>For the analysis in this notebook we consider all data <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> to be drawn from a joint sampling distribution whose dependency on <em>slow</em> model source parameters is expressed in terms of a <em>single</em> pulse. The justification for such an assumption is that we are performing parameter estimation given a synthetic data set for a model <em>pulsar</em> with a stable (effectively non-evolving) source radiation field, with any quasi-periodicity arising solely from relative orbital motion of source
+and telescope. The synthetic data is intended to emulate detection of photons over a long observing run, after which the photon incidence events are phase-folded during a pre-processing phase.</p>
+<p>This parameter estimation excercise is not <em>blind</em> – we know the parameter values injected to generate the synthetic dataset we will later load into a custom container.</p>
+</div>
+<div class="section" id="Data">
+<h3>Data<a class="headerlink" href="#Data" title="Permalink to this headline">¶</a></h3>
+<p>We are required to write a custom data container. X-PSI is designed this way so that freedom and the scope of applicability of the source code is preserved. We are entirely free to write methods and attributes for this class provided it satisfies two constraints:</p>
+<ul class="simple">
+<li>our custom class derives from the class <a class="reference internal" href="data.html#xpsi.Data.Data"><span class="std std-ref">Data</span></a>;</li>
+<li>and two underscore instance attributes are assigned, <code class="docutils literal notranslate"><span class="pre">self._first</span></code> and <code class="docutils literal notranslate"><span class="pre">self._last</span></code>, for handling the instrument response model.</li>
+</ul>
+<p>If these constraints are satisfied, instances of other X-PSI classes know what to do with the an instance of our data container and will not throw exceptions. The container instance will then be available as an underscore instance method of <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a>, and thus available in a derived class where we will later write code for likelihood evaluation.</p>
+<p>Hereafter we will write our custom derived classes in the notebook itself, but in practice it is best if your derived classes are written in distinct modules within a project directory, so they can be imported by a script for use with an Open MPI command within a shell (because in general we want to exploit parallelism for expensive likelihood evaluations).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">CustomData</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Custom data container.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param counts: A :class:`numpy.ndarray` of count numbers. The rows of</span>
+<span class="sd">                       the array must map to a contiguous subset of instrument</span>
+<span class="sd">                       output channels, with the zeroth row corresponding to</span>
+<span class="sd">                       the :attr:`first` channel, and the last row</span>
+<span class="sd">                       corresponding to the channel :attr:`last` minus one.</span>
+<span class="sd">                       The columns must map to the phases given by</span>
+<span class="sd">                       :obj:`phases`.</span>
+<span class="sd">        :param phases: A :class:`numpy.ndarray` of phase *edges* of intervals</span>
+<span class="sd">                       in which the *synthetic* photons arrive.</span>
+<span class="sd">        :param exposure_time: The total exposure time in seconds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Execute parent initialisation code</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Counts object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="o">=</span> <span class="n">counts</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;The number of rows must be compatible &#39;</span>
+                                 <span class="s1">&#39;with the first and last output channel &#39;</span>
+                                 <span class="s1">&#39;numbers.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Phases object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">phases</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exposure_time</span> <span class="o">=</span> <span class="n">exposure_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exposure_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the total exposure time in seconds. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exposure_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the photon count data. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the phases. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_SWG</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor which loads photon data from a .txt file.</span>
+<span class="sd">        :param str path: Path to .txt file which is converted into a</span>
+<span class="sd">                         two-dimensional :class:`numpy.ndarray`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Data file could not be loaded.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="n">first</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">last</span> <span class="o">=</span> <span class="mi">181</span>
+
+        <span class="n">phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">33</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">CustomData</span><span class="o">.</span><span class="n">from_SWG</span><span class="p">(</span><span class="s1">&#39;../../examples/data/synthetic_realisation.dat&#39;</span><span class="p">,</span> <span class="mf">984307.6661</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Instrument">
+<h3>Instrument<a class="headerlink" href="#Instrument" title="Permalink to this headline">¶</a></h3>
+<p>We require a model instrument object to transform incident specific flux pulses into a form which enters directly in the sampling distribution of the data.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">CustomInstrument</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Instrument</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Methods and attributes specific to the NICER instrument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PI_channels</span><span class="p">,</span> <span class="n">chan_edges</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomInstrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_PI_channels</span> <span class="o">=</span> <span class="n">PI_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chan_edges</span> <span class="o">=</span> <span class="n">chan_edges</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_PI_channels</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the channel edges. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chan_edges</span>
+
+    <span class="k">def</span> <span class="nf">_construct_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Implement response matrix parameterisation. &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Overwrite. &quot;&quot;&quot;</span>
+
+        <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_matrix</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_folded_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folded_signal</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_SWG</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span>
+                 <span class="n">ARF</span><span class="p">,</span> <span class="n">RMF</span><span class="p">,</span> <span class="n">max_input</span><span class="p">,</span> <span class="n">min_input</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">chan_edges</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor which converts files into :class:`numpy.ndarray`s.</span>
+<span class="sd">        :param str ARF: Path to ARF which is compatible with</span>
+<span class="sd">                                :func:`numpy.loadtxt`.</span>
+<span class="sd">        :param str RMF: Path to RMF which is compatible with</span>
+<span class="sd">                                :func:`numpy.loadtxt`.</span>
+<span class="sd">        :param str chan_edges: Optional path to edges which is compatible with</span>
+<span class="sd">                                :func:`numpy.loadtxt`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">min_input</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">min_input</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">min_input</span><span class="p">)</span>
+
+        <span class="n">max_input</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_input</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ARF</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">ARF</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">RMF</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">RMF</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">RMF</span><span class="p">[</span><span class="n">min_input</span><span class="p">:</span><span class="n">max_input</span><span class="p">,</span><span class="mi">20</span><span class="p">:</span><span class="mi">201</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">chan_edges</span><span class="p">:</span>
+                <span class="n">chan_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">chan_edges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">3</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;A file could not be loaded.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ARF</span><span class="p">[</span><span class="n">min_input</span><span class="p">:</span><span class="n">max_input</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+        <span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ARF</span><span class="p">[</span><span class="n">min_input</span><span class="p">,</span><span class="mi">1</span><span class="p">];</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">ARF</span><span class="p">[</span><span class="n">min_input</span><span class="p">:</span><span class="n">max_input</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">*=</span> <span class="n">ARF</span><span class="p">[</span><span class="n">min_input</span><span class="p">:</span><span class="n">max_input</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="n">PI_channels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">201</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">PI_channels</span><span class="p">,</span> <span class="n">chan_edges</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">202</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                   <span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">edges</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Let’s construct an instance. Later we will visualise the response matrix as a check.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">NICER</span> <span class="o">=</span> <span class="n">CustomInstrument</span><span class="o">.</span><span class="n">from_SWG</span><span class="p">(</span><span class="n">num_params</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                  <span class="n">bounds</span><span class="o">=</span><span class="p">[],</span>
+                                  <span class="n">ARF</span> <span class="o">=</span> <span class="s1">&#39;../../examples/model_data/nicer_v1.01_arf.txt&#39;</span><span class="p">,</span>
+                                  <span class="n">RMF</span> <span class="o">=</span> <span class="s1">&#39;../../examples/model_data/nicer_v1.01_rmf_matrix.txt&#39;</span><span class="p">,</span>
+                                  <span class="n">max_input</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+                                  <span class="n">min_input</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                  <span class="n">chan_edges</span> <span class="o">=</span> <span class="s1">&#39;../../examples/model_data/nicer_v1.01_rmf_energymap.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Background">
+<h3>Background<a class="headerlink" href="#Background" title="Permalink to this headline">¶</a></h3>
+<p>The background radiation field incident on the model instrument for the purpose of generating synthetic data was a time-invariant powerlaw spectrum, and was transformed into a count-rate in each output channel using the response matrix for synthetic data generation. We would reproduce this background here by writing a custom derived class so that later it is more straightforward to apply the model instrument response.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CustomBackground</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Background</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The background injected to generate synthetic data.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomBackground</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">,</span> <span class="n">phases</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluate the incident background field. &quot;&quot;&quot;</span>
+        <span class="n">Gamma</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">energy_edges</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="n">temp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">**</span><span class="p">(</span><span class="n">Gamma</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="p">(</span><span class="n">Gamma</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">Gamma</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">temp</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="n">temp</span>
+</pre></div>
+</div>
+<p>We can now construct and instantiate a <code class="docutils literal notranslate"><span class="pre">background</span></code> object. The base clase <code class="docutils literal notranslate"><span class="pre">xpsi.Background</span></code> is inherited from the <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace"><span class="std std-ref">parameter subspace</span></a> ABC. We therefore need to specify the number of background parameters, and define the hard bounds on those parameters; in this case we have only a single parameter, the powerlaw index.</p>
+<p>We could then instantiate as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">background</span> <span class="o">=</span> <span class="n">CustomBackground</span><span class="p">(</span><span class="n">num_params</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.1</span><span class="p">)])</span>
+</pre></div>
+</div>
+<p>We do not execute use this background model to define the likelihood function here however, as we opt to marginalise over a set of channel-by-channel background count-rate parameters instead.</p>
+</div>
+<div class="section" id="Pulse">
+<h3>Pulse<a class="headerlink" href="#Pulse" title="Permalink to this headline">¶</a></h3>
+<p>We can now combine the dataset, model instrument, and model background into a <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> object. The source code for this class has methods and attributes which simplify communication between the aforementioned model facets and an object representing our model star (see below). The source radiation field of the model star is integrated over when called from a <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> object which knows which energies to relay based on the properties of
+the instrument and the dataset (which are tightly coupled).</p>
+<p>We are actually forced to inherit from <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> and write a routine that evaluates the logarithm of the likelihood conditional on a nuisance vector of parameter values and a parametrised sampling distribution for the data. There is much freedom in constructing this sampling distribution, so the design strategy for X-PSI was to leave this part of the modelling process entirely to a user, guided by a number of examples. The only condition of applicability is that the
+sampling distribution of the data (or of each subset) can be written in terms of a set of <em>single</em> count-rate pulses spanning a subset of output channels of the model instrument.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">xpsi.likelihoods.default_background_marginalisation</span> <span class="kn">import</span> <span class="n">eval_loglike_phaseIntervals_maximise</span> <span class="k">as</span> <span class="n">eval_loglike_maximise</span>
+<span class="kn">from</span> <span class="nn">xpsi.likelihoods.default_background_marginalisation</span> <span class="kn">import</span> <span class="n">precomputation</span>
+<span class="kn">from</span> <span class="nn">xpsi.tools</span> <span class="kn">import</span> <span class="n">phase_interpolator</span>
+<span class="kn">from</span> <span class="nn">xpsi.tools.phase_integrator</span> <span class="kn">import</span> <span class="n">phase_integrator</span>
+<span class="kn">from</span> <span class="nn">xpsi.tools.synthesise</span> <span class="kn">import</span> <span class="n">synthesise</span>
+
+<span class="k">class</span> <span class="nc">CustomPulse</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Pulse</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A custom calculation of the logarithm of the likelihood.</span>
+<span class="sd">    We extend the :class:`xpsi.Pulse.Pulse` class to make it callable.</span>
+<span class="sd">    We overwrite the body of the __call__ method. The docstring for the</span>
+<span class="sd">    abstract method is copied.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">epsabs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
+                 <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span> <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Perform precomputation. &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomPulse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_precomp</span> <span class="o">=</span> <span class="n">precomputation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;No data... can synthesise data but cannot evaluate a &#39;</span>
+                  <span class="s1">&#39;likelihood function.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_intervals</span> <span class="o">=</span> <span class="n">workspace_intervals</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epsabs</span> <span class="o">=</span> <span class="n">epsabs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epsrel</span> <span class="o">=</span> <span class="n">epsrel</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas</span> <span class="o">=</span> <span class="n">sigmas</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameter vector:</span>
+<span class="sd">        * p[0] = phase shift primary (alias for initial azimuth/phase of photosphere)</span>
+<span class="sd">        * p[1] = phase shift secondary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">loglikelihood</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_signal</span> <span class="o">=</span> \
+                <span class="n">eval_loglike_maximise</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_precomp</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_intervals</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_epsabs</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_epsrel</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas</span><span class="p">,</span>
+                                      <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;llzero&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">synthesise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="fm">__call__</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Pulse</span><span class="o">.</span><span class="fm">__call__</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">+</span> <span class="fm">__call__</span><span class="o">.</span><span class="vm">__doc__</span>
+</pre></div>
+</div>
+</div>
+<p>We wrote our <code class="docutils literal notranslate"><span class="pre">__call__</span></code> method as a wrapper for a extension module to improve speed. The source code for the simpler case of parameter estimation when the background model is known (see <code class="docutils literal notranslate"><span class="pre">xpsi/examples/true_background</span></code> may be found as an <a class="reference internal" href="extensions.html"><span class="doc">example</span></a>. In general, if you wish to change the model for likelihood evaluation given pulses, you can archive the Cython extensions in, e.g., the <code class="docutils literal notranslate"><span class="pre">xpsi/likelihoods</span></code>, and compile these when X-PSI is compiled and installed (by editing the
+<code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script). Alternatively, you can compile your extension elsewhere and call those compiled binaries from your custom class derived from <code class="docutils literal notranslate"><span class="pre">xpsi.Pulse</span></code>.</p>
+<p>Let’s construct and instantiate a <code class="docutils literal notranslate"><span class="pre">pulse</span></code> object. We give the bounds of the initial phase, a <em>fast</em> nuisance parameter, as detailed in the docstring of <code class="docutils literal notranslate"><span class="pre">pulse</span></code>. The bounds of the background parameter have already been specified above.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pulse</span> <span class="o">=</span> <span class="n">CustomPulse</span><span class="p">(</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
+                    <span class="n">num_params</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)],</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span>
+                    <span class="n">instrument</span> <span class="o">=</span> <span class="n">NICER</span><span class="p">,</span>
+                    <span class="n">background</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+                    <span class="n">interstellar</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+                    <span class="n">energies_per_interval</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                    <span class="n">default_energy_spacing</span> <span class="o">=</span> <span class="s1">&#39;logspace&#39;</span><span class="p">,</span>
+                    <span class="n">fast_rel_energies_per_interval</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                    <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+                    <span class="n">adaptive_energies</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+                    <span class="n">store</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+                    <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
+                    <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
+                    <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="fm">__call__</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ Compute the logarithm of the likelihood and store it as a property.
+
+        :param list p: Model nuisance parameters (fast). The length of this
+                       list will be equal to the ``total_params`` property.
+
+        :param int threads: Number of ``OpenMP`` threads to use for likelihood
+                            evaluation. This argument can be ignored if not
+                            required.
+
+        :param tuple args: If the pulse is not folded in the slow block, the
+                           first argument is the photospheric pulse, which is
+                           to be passed on to the fold method.
+                           The slow parameters follow, in case required.
+
+
+        Parameter vector:
+        * p[0] = phase shift primary (alias for initial azimuth/phase of photosphere)
+        * p[1] = phase shift secondary
+
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Constructing-a-star">
+<h3>Constructing a star<a class="headerlink" href="#Constructing-a-star" title="Permalink to this headline">¶</a></h3>
+<p>We now need to build our star. The basic units for building a star are:</p>
+<ul class="simple">
+<li>the <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime"><span class="std std-ref">Spacetime</span></a> class;</li>
+<li>the <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere"><span class="std std-ref">Photosphere</span></a> class;</li>
+<li>the <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> class;</li>
+<li>the <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere"><span class="std std-ref">Elsewhere</span></a> class;</li>
+<li>and four low-level user-modifiable routines for evaluation of a parametrised specific intensity model.</li>
+</ul>
+<p>For this demonstration we will assume that the source radiation field <em>elsewhere</em> (other than the spot) can be ignored in the soft X-ray regime our model instrument is sensitive to. We need to write custom <em>derived</em> classes, and instantiate those derived classes to construct objects for our model. Let’s start with the <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime"><span class="std std-ref">Spacetime</span></a> class.</p>
+<div class="section" id="The-ambient-spacetime">
+<h4>The ambient spacetime<a class="headerlink" href="#The-ambient-spacetime" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">CustomSpacetime</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A custom spacetime object.</span>
+<span class="sd">    For the NICER SWG synthetic data parameter recovery exercise, the coordinate</span>
+<span class="sd">    rotation frequency of the star is fixed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param int num_params: The number of spacetime parameters.</span>
+<span class="sd">        :param float S: The coordinate rotation frequency (Hz).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomSpacetime</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_S</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Coordinate spin frequency must be a ``float``.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Omega</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">S</span>
+</pre></div>
+</div>
+</div>
+<p>We inherited from <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime"><span class="std std-ref">Spacetime</span></a>, wrote a custom initialiser, and in that initaliser executed the code in the body of the parent initaliser via a call to <code class="docutils literal notranslate"><span class="pre">super()</span></code>. We have <em>fixed</em> the coordinate rotation frequency of the star. Let’s instantiate our custom spacetime class; given that we fixed the rotation frequency, there are three spacetime parameters, details of which can be found in the documentation of the
+<a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime.update"><span class="std std-ref">Spacetime.update</span></a> method.</p>
+<p>We did not overwrite <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime.update"><span class="std std-ref">Spacetime.update</span></a> in our custom derived class, and thus did not add free parameters, so we set the keyword <code class="docutils literal notranslate"><span class="pre">num_params</span></code> to <code class="docutils literal notranslate"><span class="pre">3</span></code>, and define the bounds. We will assume a coordinate rotation frequency based on timing analyses of 600.0 Hz.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">gravradius</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="mf">16.0</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)]</span>
+
+<span class="n">spacetime</span> <span class="o">=</span> <span class="n">CustomSpacetime</span><span class="p">(</span><span class="n">num_params</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">S</span> <span class="o">=</span> <span class="mf">300.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="The-photosphere-and-its-constituent-regions">
+<h4>The photosphere and its constituent regions<a class="headerlink" href="#The-photosphere-and-its-constituent-regions" title="Permalink to this headline">¶</a></h4>
+<p>It is not <em>necessary</em> (in the current version) for us to write a custom derived class for the photosphere object, so we will simply instantiate a <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere"><span class="std std-ref">Photosphere</span></a> object. However, we first need an instance of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> to instantiate the photosphere, and we need to implement a low-level parametrised model for the specific intensity emergent from the photosphere in a local comoving frame.</p>
+<p>The neutron star atmosphere is assumed to be geometrically thin. In the applications thus far, the local comoving photospheric radiation field as being described by a single <em>free</em> parameter: the effective temperature. The radiation field is also dependent on the local effective gravitational acceleration, however this is a <em>derived</em> parameter in the model. The parametrised radiation field as a function of energy and angle subtended to the normal to the (plane-parallel) atmosphere in a local
+comoving frame is provided as numerical model data for multi-dimensional interpolation.</p>
+<p>In X-PSI, integration over the source radiation field is performed via calls to low-level C routines. To reduce likelihood evaluation times, the atmosphere interpolator is written in C, and calls to that interpolator are from C routine. In other words, in X-PSI, <strong>we do not use Python callback functions for evaluation of specific intensities, but C functions which are compiled when the</strong> X-PSI <strong>package is built</strong>. Unfortunately this means that to change the parametrised source radiation field
+you need to get your hands a little dirty; on the bright side, the body of these functions can be implemented almost completely in the Cython language, so syntactically there is some similarity to Python because the language syntax is somewhat of a hybrid/superset. Beware, however, that the body of these functions must not contain calls to the Python API, and only to external C libraries if required: the code must evaluate to pure C, and not require the Python/C API. Note that the Python global
+interpreter lock is deactivated during integration to enable <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> multi-threading in some applications of the integrator; thus the code needs to be thread safe and <code class="docutils literal notranslate"><span class="pre">nogil</span></code> (not require the global interpreter lock, although a context manager could <em>in principle</em> be used to reacquire the lock within the integrator). Also note that if external C libraries are required, that you include a Cython .pxd (header) file in the package which <code class="docutils literal notranslate"><span class="pre">extern</span></code>s the required library components; the
+library also needs to be included and linked in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> at package build-time.</p>
+<p><em>You are encouraged to ask the author of X-PSI for assistance in implementing your low-level source radiation field model if you are uncertain. If you have ideas for making this model specification more user-friendly, without, crucially, increasing pulse integration time, please contact the author or submit a pull request.</em></p>
+<p>The following is the contents of the <code class="docutils literal notranslate"><span class="pre">hot_radiation_field.pxd</span></code> file which the X-PSI integrators use as the header file for including other C functions in the package.</p>
+<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
+                             <span class="n">double</span> <span class="n">E</span><span class="p">,</span>
+                             <span class="n">double</span> <span class="n">mu</span><span class="p">,</span>
+                             <span class="n">const</span> <span class="n">double</span> <span class="o">*</span><span class="n">const</span> <span class="n">VEC</span><span class="p">,</span>
+                             <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span>
+
+<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_srcRadField_norm</span><span class="p">()</span> <span class="k">nogil</span>
+
+<span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">init_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">)</span> <span class="k">nogil</span>
+
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">free_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span>
+</pre></div>
+</div>
+<p><strong>You are free to modify these functions in the associated</strong> <code class="docutils literal notranslate"><span class="pre">hot_radiation_field.pyx</span></code> <strong>implementation file, and you have almost complete control over the function bodies, but not the signatures.</strong> By default the package includes an isotropic blackbody model:</p>
+<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="c">#cython: cdivision=True</span>
+<span class="c">#cython: boundscheck=False</span>
+<span class="c">#cython: nonecheck=False</span>
+<span class="c">#cython: wraparound=False</span>
+
+<span class="k">from</span> <span class="nn">libc.math</span> <span class="k">cimport</span> <span class="n">exp</span>
+
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">SUCCESS</span> <span class="o">=</span> <span class="mf">0</span>
+
+<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">erg</span> <span class="o">=</span> <span class="mf">1.0e-7</span>
+<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">Planck_dist_const</span> <span class="o">=</span> <span class="mf">5.040366110812353e22</span>
+
+<span class="c">#-----------------------------------------------------------------------&gt;&gt;&gt;</span>
+<span class="c"># &gt;&gt;&gt; User modifiable functions.</span>
+<span class="c"># &gt;&gt;&gt; Note that the user is entirely free to wrap thread-safe and</span>
+<span class="c"># ... non-parallel external C routines from an external library.</span>
+<span class="c"># &gt;&gt;&gt; Thus the bodies of the following need not be written explicitly in</span>
+<span class="c"># ... the Cython language.</span>
+<span class="c">#-----------------------------------------------------------------------&gt;&gt;&gt;</span>
+<span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">init_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># This function must match the free management routine free_srcRadField()</span>
+    <span class="c"># in terms of freeing dynamically allocated memory. This is entirely</span>
+    <span class="c"># the user&#39;s responsibility to manage.</span>
+
+    <span class="c"># Return NULL if dynamic memory is not required for the model.</span>
+    <span class="k">return</span> <span class="bp">NULL</span>
+
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">free_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># This function must match the initialisation routine init_srcRadField()</span>
+    <span class="c"># in terms of freeing dynamically allocated memory. This is entirely</span>
+    <span class="c"># the user&#39;s responsibility to manage.</span>
+    <span class="c"># The void pointer must be appropriately cast before memory is freed --</span>
+    <span class="c"># only the user can know this at compile time.</span>
+    <span class="c"># Just use free(&lt;void*&gt; data) iff no memory was dynamically</span>
+    <span class="c"># allocated in the function:</span>
+    <span class="c">#   init_local_srcRadField()</span>
+    <span class="c"># because data is expected to be NULL in this case</span>
+
+    <span class="c">#printf(&quot;\nNo data to be freed.&quot;)</span>
+
+    <span class="k">return</span> <span class="n">SUCCESS</span>
+
+<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
+                             <span class="n">double</span> <span class="n">E</span><span class="p">,</span>
+                             <span class="n">double</span> <span class="n">mu</span><span class="p">,</span>
+                             <span class="n">const</span> <span class="n">double</span> <span class="o">*</span><span class="n">const</span> <span class="n">VEC</span><span class="p">,</span>
+                             <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+
+    <span class="k">return</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">/</span> <span class="p">(</span> <span class="n">exp</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">VEC</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="p">)</span>
+
+<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_srcRadField_norm</span><span class="p">()</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># Source radiation field normalisation which is independent of the</span>
+    <span class="c"># parameters of the parametrised model -- i.e. cell properties, energy,</span>
+    <span class="c"># and angle.</span>
+    <span class="c"># Writing the normalisation here reduces the number of operations required</span>
+    <span class="c"># during integration.</span>
+
+    <span class="k">return</span> <span class="n">erg</span> <span class="o">*</span> <span class="n">Planck_dist_const</span>
+</pre></div>
+</div>
+<p>In most use-cases we need to modify these functions to enable handling of the numerical atmosphere data. An extension for such a case may be found as an <a class="reference internal" href="extensions.html"><span class="doc">example</span></a>, which contains that used by <a class="reference internal" href="applications.html"><span class="doc">Riley et al. (2019)</span></a> to implement the <code class="docutils literal notranslate"><span class="pre">NSX</span></code> atmosphere computed by Wynn Ho. In general, if you wish to change the model for the parametrised local comoving source radiation field model, you can archive the extensions in, e.g., the
+<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive</span></code>, and completely replace the contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot_radiation_field.pyx</span></code> when X-PSI is compiled and installed. Alternatively, you can compile your extension elsewhere and link it when X-PSI is installed (by editing the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script), <code class="docutils literal notranslate"><span class="pre">cimporting</span></code> or <code class="docutils literal notranslate"><span class="pre">extern</span></code>ing from the appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</span></code> header file(s), and calling those precompiled binaries from the functions declared in the
+<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot_radiation_field.pxd</span></code> header.</p>
+<p>Since the atmospheric effective temperature is uniform everywhere within the spot boundary, we can use the default value of the <code class="docutils literal notranslate"><span class="pre">symmetry</span></code> keyword, <code class="docutils literal notranslate"><span class="pre">True</span></code>. All other arguments determine the numerical resolution, and have defaults which have been (somewhat arbitrarily) chosen to be result in a likelihood evaluation time of <span class="math notranslate nohighlight">\(\mathcal{O}(1)\)</span> s.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">)]</span>
+
+<span class="n">hot</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">TwoHotRegions</span><span class="p">(</span><span class="n">num_params</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                            <span class="n">symmetry</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                            <span class="n">hole</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">cede</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">concentric</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">antipodal_symmetry</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                            <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                            <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+                            <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                            <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We can now instantitate the photosphere:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">photosphere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="p">(</span><span class="n">num_params</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">[],</span>
+                               <span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">hot</span> <span class="o">=</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We <code class="docutils literal notranslate"><span class="pre">tag</span></code> the instance with the name <code class="docutils literal notranslate"><span class="pre">'all'</span></code> to ensure that this photosphere is matched to the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> object with the same identification tag during likelihood evaluation; when the model defines multiple data subsets and thus multiple <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> instances, tagging the objects in this manner is a safety guard (in particular against inadvertently wasting compute resources sampling a distribution conditional on an unintended model).</p>
+<p>We also assume that the coordinate (asymptotic) rotation frequency of the spot is locked to the (fixed) coordinate (asymptotic) spin frequency of the star.</p>
+<p>We do not model the source radiation field <em>elsewhere</em>, and we thus leave the <code class="docutils literal notranslate"><span class="pre">elsewhere</span></code> keyword as <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default). <em>Elsewhere</em> means on the surface, exterior to radiating hot regions that are typically expected to span a smaller angular extent; in <code class="docutils literal notranslate"><span class="pre">v0.1</span></code>, the radiation from <em>elsewhere</em>, if explicitly computed is assumed to be time-invariant supposing the hot regions were not present. To account for radiation from <em>elsewhere</em>, a time-invariant signal is first computed – meaning an
+axisymmetric local comoving radiation field is assumed. The time-dependent signals from the hot regions are then computed, and modified by subtracting the specific intensity that would otherwise be generated by the local comoving radiation field from <em>elsewhere</em> (i.e., in place of the hot regions).</p>
+</div>
+<div class="section" id="Star">
+<h4>Star<a class="headerlink" href="#Star" title="Permalink to this headline">¶</a></h4>
+<p>We can now combine the ambient spacetime, <code class="docutils literal notranslate"><span class="pre">spacetime</span></code>, and the embedded photosphere, <code class="docutils literal notranslate"><span class="pre">photosphere</span></code>, into a model star represented by an instance of <a class="reference internal" href="star.html#xpsi.Star.Star"><span class="std std-ref">Star</span></a>. We do not need to extend this class, so we can simply construct and instantiate a star as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">star</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Star</span><span class="p">(</span><span class="n">spacetime</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photospheres</span> <span class="o">=</span> <span class="n">photosphere</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="A-callable-likelihood-object">
+<h3>A callable likelihood object<a class="headerlink" href="#A-callable-likelihood-object" title="Permalink to this headline">¶</a></h3>
+<p>Given the objects constructed above and the relevant pre-compiled low-level code, we can now construct and instantiate a <em>callable</em> likelihood object. We do not need extend (via inheritance) the <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood"><span class="std std-ref">Likelihood</span></a> class found the source code: this class simply combines all of the model objects defined above, performs some automatic operations given the properties of the those objects, and facilitates communication of those objects when it recieves a call
+to evaluate the likelihood.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Likelihood</span><span class="p">(</span><span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="p">,</span> <span class="n">pulses</span> <span class="o">=</span> <span class="n">pulse</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We could in principle set the number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads we want to spawn in low-level functions (such as the integrator) which are parallelised, but we will leave it at the default value of <code class="docutils literal notranslate"><span class="pre">1</span></code> since we intend to invoke Open MPI and it is best not to experiment with the parallelisation paradigm at this stage.</p>
+<p>We can print the model objects constituting the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> instance, in the required order, with their respective parameter dependency number:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">print</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Printing the model objects in order...
+
+Object [tag]: number of parameters
+--------------------------------------
+Spacetime: 4
+Photosphere [&#39;all&#39;]: 6
+   --&gt; Hot [&#39;all&#39;]: 6
+Pulse [&#39;all&#39;]: 2
+--------------------------------------
+Total number of model parameters: 12
+</pre></div></div>
+</div>
+<p>The bounds on these parameters are:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">bounds</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>[(0.1, 1.0),
+ (1.0, 3.0),
+ (4.429875115500001, 16.0),
+ (0.001, 1.5707963267948966),
+ (0.001, 3.1405926535897932),
+ (0.001, 1.5697963267948967),
+ (5.5, 6.5),
+ (0.001, 3.1405926535897932),
+ (0.001, 1.5697963267948967),
+ (5.5, 6.5),
+ (-0.25, 0.75),
+ (-0.25, 0.75)]
+</pre></div>
+</div>
+</div>
+<p><strong>Note that if you want to modify the definition of the model parameter space you should restart the process of constructing a</strong> <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> <strong>object, intead of manipulating existing objects.</strong></p>
+<p>Let’s call the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object with the known model parameter values:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span>
+     <span class="mf">1.4</span><span class="p">,</span>
+     <span class="mf">12.5</span><span class="p">,</span>
+     <span class="mf">1.25</span><span class="p">,</span>
+     <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">0.075</span><span class="p">,</span>
+     <span class="mf">6.2</span><span class="p">,</span>
+     <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">0.2</span><span class="p">,</span>
+     <span class="mf">6.0</span><span class="p">,</span>
+     <span class="mf">0.0</span><span class="p">,</span>
+     <span class="mf">0.025</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">ll</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1.12213778496
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ll</span> <span class="c1"># -26713.613677693844</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>-26713.613677693822
+</pre></div>
+</div>
+</div>
+<p>Calling the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object also modified the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> property of the <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object. Let’s plot the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> by summing the count-rate over output instrument channels:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">plot_pulse</span><span class="p">():</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Counts/s [arbitrary normalisation]&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Phase [cycles]&#39;</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">plot_pulse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_67_0.png" src="_images/model_construction_67_0.png" />
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object calls the <code class="docutils literal notranslate"><span class="pre">star.update</span></code> method which in-turn calls the <code class="docutils literal notranslate"><span class="pre">photosphere.embed</span></code> method. The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object then calls the <code class="docutils literal notranslate"><span class="pre">photosphere.integrate</span></code> method, passing the energies stored as the property <code class="docutils literal notranslate"><span class="pre">pulse.energies</span></code>. We can do this manually if we wish to integrate pulses but not calculate likelihoods. Here we sum over incident specific photon flux pulses as an approximation to integrating over energy:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">print</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">plot_pulse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ Update the star.
+
+        :param list p: Model parameters relevant to ambient spacetime solution
+                       and photosphere objects.
+
+        :param int threads: Number of ``OpenMP`` threads to spawn for embedding
+                            photosphere objects in the ambient spacetime.
+
+
+        Parameter vector:
+
+        * ``p[:i]`` = spacetime parameters
+        * ``p[i:]`` = photospheric radiation field parameters
+
+        where
+
+        .. code-block:: python
+
+            i = self._spacetime.num_params
+
+
+ Integrate over the photospheric radiation field.
+
+        :param energies: A one-dimensional :class:`numpy.ndarray` of energies
+                         in keV.
+
+        :param int threads: Number of ``OpenMP`` threads to spawn for pulse
+                            integration.
+
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fa1a5872ad0&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_69_2.png" src="_images/model_construction_69_2.png" />
+</div>
+</div>
+<p>Below we print a crude representation of the cell mesh spanning the spot (if you defocus your eyes the approximate circular region is clearer). The elements of the array which are finite are not all identical: at the boundary of the spot the proper area elements are smaller such that the sum of all finite proper areas effectively equals the total proper area within the spot boundary.</p>
+<p>Let’s plot a pulse in two dimensions.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> <span class="n">fast_num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MultipleLocator</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+
+<span class="n">phase_mesh</span><span class="p">,</span> <span class="n">energy_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+
+<span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ax_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">temp</span> <span class="o">=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pulse</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
+                         <span class="n">pulse</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
+                         <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span>
+                         <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+                         <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                         <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="n">profile</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Channel&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()]</span>
+<span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mf">0.05</span><span class="p">))</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Phase&#39;</span><span class="p">)</span>
+
+<span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span>
+                  <span class="n">cax</span> <span class="o">=</span> <span class="n">ax_cb</span><span class="p">)</span>
+
+<span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;log10(Normalised specific photon flux)&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">cb</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span> <span class="o">=</span> <span class="mf">0.025</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/thomas/miniconda2/envs/xpsi/lib/python2.7/site-packages/matplotlib/axes/_base.py:3477: UserWarning: Attempted to set non-positive ylimits for log-scale axis; invalid limits will be ignored.
+  &#39;Attempted to set non-positive ylimits for log-scale axis; &#39;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_73_1.png" src="_images/model_construction_73_1.png" />
+</div>
+</div>
+<p>Let’s iterate over a monotonically increasing set of values of the spot angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">threads</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>1
+</pre></div>
+</div>
+</div>
+<p>For the following calculations however, we are not using the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object as a callback function passed to posterior sampling/integration software which parallelises efficiently using Open MPI. We can thus spawn additional worker threads for pulse integration; if likelihood evaluations are parallelised in an Open MPI environment on the other hand, one risks <em>losing</em> efficiency by spawning worker threads for likelihood evaluation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Photons/s/keV/cm$^2$ [arbitrary normalisation]&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Phase [cycles]&#39;</span><span class="p">)</span>
+<span class="n">angular_radii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span> <span class="n">fast_num_leaves</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">q</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">angular_radius</span> <span class="ow">in</span> <span class="n">angular_radii</span><span class="p">:</span>
+    <span class="n">q</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">angular_radius</span>
+    <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">q</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="k">for</span> <span class="n">angular_radius</span> <span class="ow">in</span> <span class="n">angular_radii</span><span class="p">:</span>
+    <span class="n">q</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">angular_radius</span>
+    <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">q</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+<span class="k">for</span> <span class="n">angular_radius</span> <span class="ow">in</span> <span class="n">angular_radii</span><span class="p">:</span>
+    <span class="n">q</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">angular_radius</span>
+    <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_77_0.png" src="_images/model_construction_77_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Prior">
+<h2>Prior<a class="headerlink" href="#Prior" title="Permalink to this headline">¶</a></h2>
+<p>Let us now construct a callable object representing a joint prior density distribution on the space <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span>. We need to extend the base class to implement our distribution, which in all but two dimensions is separable and <em>uniform</em> on some compact interval of the space. The exceptions are the gravitational mass and equatorial radius: a joint constraint is imposed to assign zero density to stars which are <em>too</em> compact (the polar radius of the rotationally deformed stellar
+2-surface is close to the radius of the Schwarzschild photon sphere), but the joint prior density is <em>uniform</em> otherwise between hard bounds on each parameter.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">truncnorm</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">CustomPrior</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Prior</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A custom (joint) prior distribution.</span>
+
+<span class="sd">    Source: Imaginary</span>
+<span class="sd">    Model variant: ST-U</span>
+<span class="sd">    Parameter vector:</span>
+<span class="sd">    * p[0] = distance (kpc)</span>
+<span class="sd">    * p[1] = (rotationally deformed) gravitational mass (solar masses)</span>
+<span class="sd">    * p[2] = coordinate equatorial radius (km)</span>
+<span class="sd">    * p[3] = inclination of Earth to rotational axis (radians)</span>
+<span class="sd">    * p[4] = primary cap centre colatitude (radians)</span>
+<span class="sd">    * p[5] = primary cap angular radius (radians)</span>
+<span class="sd">    * p[6] = primary cap log10(comoving blackbody temperature [K])</span>
+<span class="sd">    * p[7] = secondary cap centre colatitude (radians)</span>
+<span class="sd">    * p[8] = secondary cap angular radius (radians)</span>
+<span class="sd">    * p[9] = secondary cap log10(comoving blackbody temperature [K])</span>
+<span class="sd">    * p[10] = primary cap phase shift (cycles); (alias for initial azimuth, periodic)</span>
+<span class="sd">    * p[11] = secondary cap phase shift (cycles)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">):</span>
+        <span class="c1"># Execute abstract parent initialiser</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomPrior</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="p">),</span>\
+                <span class="s1">&#39;Invalid type for ambient spacetime object.&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span> <span class="o">=</span> <span class="n">spacetime</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluate distribution at :obj:`p`.</span>
+<span class="sd">        :param list p: Model parameters values.</span>
+<span class="sd">        :return: Logarithm of the distribution evaluated at :obj:`p`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">num_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">R</span> <span class="o">&lt;=</span> <span class="mf">16.0</span><span class="o">*</span><span class="n">_km</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="mf">1.5</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">R_r_s</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">epsilon</span>
+        <span class="n">zeta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">zeta</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.788</span> <span class="o">+</span> <span class="mf">1.030</span> <span class="o">*</span> <span class="n">zeta</span><span class="p">)))</span>
+
+        <span class="c1"># 2-surface cross-section have a single maximum in |z|</span>
+        <span class="c1"># i.e., an elliptical surface</span>
+        <span class="k">if</span> <span class="n">mu</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="c1"># polar radius causality for ~static star (static ambient spacetime)</span>
+        <span class="n">R_p</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.788</span> <span class="o">+</span> <span class="mf">1.030</span> <span class="o">*</span> <span class="n">zeta</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">R_p</span> <span class="o">&lt;</span> <span class="mf">1.5</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">R_r_s</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">[</span><span class="mi">7</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="c1"># spots cannot overlap</span>
+        <span class="n">theta_p</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span> <span class="o">*</span> <span class="n">_2pi</span>
+        <span class="n">rho_p</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+
+        <span class="n">theta_s</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+        <span class="n">rho_s</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+
+        <span class="n">ang_sep</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="o">.</span><span class="n">_psi</span><span class="p">(</span><span class="n">theta_s</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">theta_p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ang_sep</span> <span class="o">&lt;</span> <span class="n">rho_p</span> <span class="o">+</span> <span class="n">rho_s</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span> <span class="nf">inverse_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw sample uniformly from the distribution via inverse sampling.</span>
+<span class="sd">        :param hypercube: A pseudorandom point in an n-dimensional hypercube.</span>
+<span class="sd">        :return: A parameter ``list``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">CustomPrior</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">hypercube</span><span class="p">)</span>
+
+        <span class="c1"># distance</span>
+        <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">truncnorm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">hypercube</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">1.0</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="n">p</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">1.0</span>
+
+        <span class="k">return</span> <span class="n">p</span>
+
+    <span class="k">def</span> <span class="nf">inverse_sample_and_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A transformation for post-processing. &quot;&quot;&quot;</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">hypercube</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">p</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A transformation for post-processing. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">gravradius</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">tempp</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tempp</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+
+        <span class="n">temps</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">temps</span> <span class="o">&gt;=</span> <span class="n">tempp</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">temps</span> <span class="o">-</span> <span class="n">tempp</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">tempp</span> <span class="o">+</span> <span class="n">temps</span><span class="p">]</span>
+
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]]</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]]</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">7</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="n">p</span>
+</pre></div>
+</div>
+</div>
+<p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, passing the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object such that the parameter bounds can be automatically applied in the required order to a vector of parameter values passed upon calling the <code class="docutils literal notranslate"><span class="pre">prior</span></code> object.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">CustomPrior</span><span class="p">(</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">bounds</span><span class="p">,</span> <span class="n">spacetime</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">)</span>
+
+<span class="n">prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>0.0
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">prior.inverse_sample()</span></code> method can be used to initialise the ensemble of walkers evolved by <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a>, and is required by <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> to uniformly sample from the prior distribution and transform it into a posterior distribution. Let’s call the method, passing a vector of pseudorandom numbers drawn when each is drawn from a uniform distribution on the interval <span class="math notranslate nohighlight">\([0,1)\)</span>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">prior</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">num_params</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>[0.310795047458417,
+ 1.4165031429878017,
+ 14.983824520671714,
+ 0.5335868580427459,
+ 1.1635638397223536,
+ 0.6482539819068411,
+ 5.947450824105521,
+ 1.2914024941570448,
+ 0.5764477692165598,
+ 6.115910500941504,
+ -0.4001685426454876,
+ -0.1950785868876478]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Summary">
+<h2>Summary<a class="headerlink" href="#Summary" title="Permalink to this headline">¶</a></h2>
+<p>We have constructed and instantiated both a callable <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object and a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object. These objects implement the model specified by the NICER SWG for the pulsar parameter recovery exercise. We could proceed, for example, to apply the open-source sampler <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a> to the joint posterior distribution proportional to the product of the calls to the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> and <code class="docutils literal notranslate"><span class="pre">prior</span></code> objects.</p>
+<p>To prove that the objects constructed above can be fed to the <code class="docutils literal notranslate"><span class="pre">emcee</span></code> sampler, let’s run a few iterations using a single process.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>[0.2,
+ 1.4,
+ 12.5,
+ 1.25,
+ 1.0,
+ 0.075,
+ 6.2,
+ 2.141592653589793,
+ 0.2,
+ 6.0,
+ 0.0,
+ 0.025]
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">moments</span> <span class="o">=</span> <span class="p">[(</span><span class="n">mu</span><span class="p">,</span> <span class="mf">0.01</span><span class="o">*</span><span class="n">mu</span><span class="p">)</span> <span class="k">if</span> <span class="n">mu</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="mf">0.0025</span><span class="p">)</span> <span class="k">for</span> <span class="n">mu</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">moments</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>[(0.2, 0.002),
+ (1.4, 0.013999999999999999),
+ (12.5, 0.125),
+ (1.25, 0.0125),
+ (1.0, 0.01),
+ (0.075, 0.00075),
+ (6.2, 0.062000000000000006),
+ (2.141592653589793, 0.021415926535897932),
+ (0.2, 0.002),
+ (6.0, 0.06),
+ (0.0, 0.0025),
+ (0.025, 0.00025)]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">runtime_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;resume&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                  <span class="s1">&#39;root_dir&#39;</span><span class="p">:</span> <span class="s1">&#39;./&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;nwalkers&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                  <span class="s1">&#39;nsteps&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                  <span class="s1">&#39;source_pulse_blobs&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                  <span class="s1">&#39;walker_dist_moments&#39;</span><span class="p">:</span> <span class="n">moments</span><span class="p">}</span>
+
+<span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">fast_num_leaves</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="p">:</span><span class="n">e</span>
+<span class="c1"># you need the ``tqdm`` package for the progress bar to print</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Sample</span><span class="o">.</span><span class="n">ensemble</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span>
+                               <span class="n">MPI</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">runtime_params</span><span class="p">)</span> <span class="c1"># Use MPI=False for testing purposes</span>
+
+<span class="c1"># clean up the docs/source directory</span>
+<span class="c1">#!rm samples.h5</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Warning: a ``samples.h5`` file exists in ``./``.
+Attempting to move ``samples.h5`` to a subdirectory of ``./``.
+File archived in subdirectory ``./old_samples``.
+
+Commencing posterior sampling.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 100/100 [1:29:04&lt;00:00, 52.44s/it]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Sampling complete.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<p>Note that above we initialise the ensemble by inverse sampling a uniform joint prior distribution, and with so few walkers (due to limited computational resources), initially the iteration time will increase because a non-negligible fraction of move proposals will be where the prior density is zero and thus the likelihood is not evaluated. As the ensemble migrates to higher posterior densities the iteration time will increase and then stabilise.</p>
+<p>Let’s quickly plot the evolution of the ensemble Markov chains to prove that the sampling process commenced and is behaving in a reasonable manner:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rcParams</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MultipleLocator</span><span class="p">,</span> <span class="n">AutoMinorLocator</span><span class="p">,</span> <span class="n">LogLocator</span><span class="p">,</span> <span class="n">NullFormatter</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+
+<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.serif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Computer Modern Roman&#39;</span>
+<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.family&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;serif&#39;</span>
+<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">16.0</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">backend</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">emcee</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">HDFBackend</span><span class="p">(</span><span class="s1">&#39;samples.h5&#39;</span><span class="p">)</span>
+
+<span class="n">chain</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_chain</span><span class="p">()</span>
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;mass&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;radius&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;inclination&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;colatitude_p&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;radius_p&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;temperature_p&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;colatitude_s&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;radius_s&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;temperature_s&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;phase_shift_p&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;phase_shift_s&#39;</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">32</span><span class="p">))</span>
+
+<span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.075</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="c1">#ax.set_ylim(likelihood.bounds[i])</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">chain</span><span class="p">[:,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">11</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">labelbottom</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">visible</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">visible</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Steps&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_95_0.png" src="_images/model_construction_95_0.png" />
+</div>
+</div>
+<p>Let’s move on to a more formal tutorial on applying <code class="docutils literal notranslate"><span class="pre">emcee</span></code> to the above model.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="example_script.html" class="btn btn-neutral float-right" title="Example script and modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="SURFsara_systems.html" class="btn btn-neutral float-left" title="SURFsara systems" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

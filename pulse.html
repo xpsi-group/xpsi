@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Pulse &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Instrument" href="instrument.html" />
+    <link rel="prev" title="Likelihood" href="likelihood.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Pulse</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pulse.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<span class="target" id="module-xpsi.Pulse"></span><div class="section" id="pulse">
+<span id="id1"></span><h1>Pulse<a class="headerlink" href="#pulse" title="Permalink to this headline">¶</a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Pulse.Pulse" title="xpsi.Pulse.Pulse"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pulse</span></code></a> are objects which define the
+generative relationship between the pulse and X-ray photon data.
+That is, the parametrised sampling distribution of the photon data is defined.</p>
+<dl class="class">
+<dt id="xpsi.Pulse.Pulse">
+<em class="property">class </em><code class="descclassname">xpsi.Pulse.</code><code class="descname">Pulse</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>tag</em>, <em>data</em>, <em>instrument</em>, <em>background=None</em>, <em>interstellar=None</em>, <em>energies_per_interval=0.25</em>, <em>default_energy_spacing='logspace'</em>, <em>fast_rel_energies_per_interval=0.5</em>, <em>adaptive_energies=False</em>, <em>adapt_exponent=0.5</em>, <em>store=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
+<p>A pulse is constituted by some X-ray dataset, a model instrument
+with which that data was acquired, a model background, and an object for
+modelling interstellar processes.</p>
+<p>The methods in this class must transform incident specific flux pulsations
+into a structure congruent to that of the data for the purpose of
+evaluation of the likelihood.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tag</strong> (<em>str</em>) – An identification tag to enforce intended pairing with
+a <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere" title="xpsi.Photosphere.Photosphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Photosphere</span></code></a> object.</li>
+<li><strong>num_params</strong> (<em>int</em>) – <p>Number of <em>fast</em> nuisance parameters associated
+with the model of the pulsation, excluding:</p>
+<ul>
+<li><em>slow</em> parameters associated with the star
+defined in <a class="reference internal" href="star.html#xpsi.Star.Star" title="xpsi.Star.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>;</li>
+<li>parameters associated with an instance of
+<a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a>;</li>
+<li>parameters associated with an instance of
+<a class="reference internal" href="interstellar.html#xpsi.Interstellar.Interstellar" title="xpsi.Interstellar.Interstellar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interstellar</span></code></a>.</li>
+</ul>
+</li>
+<li><strong>bounds</strong> (<em>list</em>) – Hard parameter bounds for the instance of
+<a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace.ParameterSubspace</span></code></a>.</li>
+<li><strong>data</strong> – An instance of <a class="reference internal" href="data.html#xpsi.Data.Data" title="xpsi.Data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>.</li>
+<li><strong>instrument</strong> – An instance of <a class="reference internal" href="instrument.html#xpsi.Instrument.Instrument" title="xpsi.Instrument.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>.</li>
+<li><strong>background</strong> – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, an instance of
+<a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a>. It is
+assumed if one constructs a model using instances
+of <a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a> that the
+background needs to be folded through a model
+instrument. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, it is still possible for
+one to define and use background parameters in a
+custom subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Pulsation</span></code>. In
+particular, background parameters for some model
+which directly specifies background contribution
+in units of count/s per <em>output</em> channels. These
+background parameters can even <em>be</em> the counts/s in
+output channels.</li>
+<li><strong>interstellar</strong> – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, an instance of
+<a class="reference internal" href="interstellar.html#xpsi.Interstellar.Interstellar" title="xpsi.Interstellar.Interstellar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interstellar</span></code></a>. To be
+applied to the incident source pulsation.</li>
+<li><strong>energies_per_interval</strong> (<em>int</em>) – The number of energies to compute
+photon fluxes, per input energy
+channel of the instrument.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xpsi.Pulse.Pulse.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the logarithm of the likelihood and store it as a property.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p</strong> (<em>list</em>) – Model nuisance parameters (fast). The length of this
+list will be equal to the <code class="docutils literal notranslate"><span class="pre">total_params</span></code> property.</li>
+<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to use for likelihood
+evaluation. This argument can be ignored if not
+required.</li>
+<li><strong>args</strong> (<em>tuple</em>) – If the pulse is not folded in the slow block, the
+first argument is the photospheric pulse, which is
+to be passed on to the fold method.
+The slow parameters follow, in case required.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Pulse.Pulse._construct_energy_array">
+<code class="descname">_construct_energy_array</code><span class="sig-paren">(</span><em>energies_per_interval</em>, <em>default_spacing</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse._construct_energy_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse._construct_energy_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct an array of photon energies for integration.</p>
+<p>This method will automatically construct an array of energies at which
+to integrate over a photosphere, given details about the contiguous
+subset of output channels the photon data spans (in an instance of
+the <a class="reference internal" href="data.html#xpsi.Data.Data" title="xpsi.Data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> class) and the redistribution matrix of the
+model instrument (in an instance of the <a class="reference internal" href="instrument.html#xpsi.Instrument.Instrument" title="xpsi.Instrument.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>
+class).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>energies_per_interval</strong> (<em>int</em>) – The number of energies to compute
+photon fluxes, per input energy
+channel of the instrument.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>IndexError</strong> – If the channel range of the data object
+is not consistent with the instrument object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Pulse.Pulse.bounds">
+<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Pulse.Pulse.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of tuples of hard parameter bounds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Pulse.Pulse.fold">
+<code class="descname">fold</code><span class="sig-paren">(</span><em>signals</em>, <em>p</em>, <em>fast_mode=False</em>, <em>threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse.fold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse.fold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fold a raw pulse signal through the response matrix.</p>
+<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> is stored as an instance attribute containing
+source pulsation for each <em>output</em> channel in units of counts cm^2/s
+(assuming instrument effective area units are cm^2).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Pulse.Pulse.loglikelihood">
+<code class="descname">loglikelihood</code><a class="headerlink" href="#xpsi.Pulse.Pulse.loglikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the logarithm of the likelihood.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>AttributeError</strong> – If property not set in methods of a subclass.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Pulse.Pulse.num_params">
+<code class="descname">num_params</code><a class="headerlink" href="#xpsi.Pulse.Pulse.num_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of dimensions of the parameter subspace.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Pulse.Pulse.total_params">
+<code class="descname">total_params</code><a class="headerlink" href="#xpsi.Pulse.Pulse.total_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of (fast, nuisance) parameters of the pulse.</p>
+<p>These parameters are nuisance parameters which are expected to be fast
+in regards to likelihood recalculation, and include background and
+interstellar process parameters.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.Pulse.LikelihoodError">
+<em class="property">class </em><code class="descclassname">xpsi.Pulse.</code><code class="descname">LikelihoodError</code><a class="reference internal" href="_modules/xpsi/Pulse.html#LikelihoodError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.LikelihoodError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
+<p>Raised if there is a problem with the value of the log-likelihood.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="instrument.html" class="btn btn-neutral float-right" title="Instrument" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="likelihood.html" class="btn btn-neutral float-left" title="Likelihood" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Instrument &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data" href="data.html" />
+    <link rel="prev" title="Pulse" href="pulse.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Instrument</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/instrument.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<span class="target" id="module-xpsi.Instrument"></span><div class="section" id="instrument">
+<span id="id1"></span><h1>Instrument<a class="headerlink" href="#instrument" title="Permalink to this headline">¶</a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Instrument.Instrument" title="xpsi.Instrument.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> are objects representing a model
+instruments.</p>
+<dl class="class">
+<dt id="xpsi.Instrument.Instrument">
+<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">Instrument</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>matrix</em>, <em>energy_edges</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for astronomical X-ray instruments such as NICER.</p>
+<p>The body of the initialiser must not be changed to ensure inter-module
+compatibility, but can be extended if appropriate using a call to
+<code class="docutils literal notranslate"><span class="pre">super().__init__</span></code>. Specialist constructors can be defined in a subclass
+using the <code class="docutils literal notranslate"><span class="pre">&#64;classmethod</span></code> decorator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>matrix</strong> – A <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span> <span class="pre">q</span></code> <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which is the
+product of a redistribution matrix and effective area
+vector. The input energy channels must increase along
+the columns of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code></a>, and the output channels
+must increase along the rows of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code></a>. The
+<em>units</em> of the elements must be that of an <em>effective</em>
+area (<span class="math notranslate nohighlight">\(cm^2\)</span>).</li>
+<li><strong>energy_edges</strong> – Energy edges of the instrument channels which
+must be congruent to the first dimension of the
+<a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code></a> – i.e., the number of edges must
+be <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">+</span> <span class="pre">1</span></code>. The edges must be monotonically
+increasing.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The dimensions of the response matrix need not be equal, but
+it is required that the number of input channels be greater
+than or equal to the number of output channels – i.e.,
+<code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&lt;=</span> <span class="pre">q</span></code>. If <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&lt;</span> <span class="pre">q</span></code> then it is implied that subsets of
+adjacent output channels are actually grouped together.</p>
+</div>
+<dl class="method">
+<dt id="xpsi.Instrument.Instrument.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em>, <em>signal</em>, <em>irange</em>, <em>orange</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fold an incident signal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>signal</strong> – An <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">x</span> <span class="pre">n</span></code> <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> matrix, where
+input energy channel increments along rows, and
+phase increases along columns. The number of
+rows, <code class="docutils literal notranslate"><span class="pre">m</span></code>, must equal the number of columns of
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_matrix</span></code>, <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">=</span> <span class="pre">q</span></code>.</li>
+<li><strong>irange</strong> – Array-like object with two elements respectively denoting
+the indices of the first and last <em>input</em> channels. The
+response matrix <code class="xref py py-attr docutils literal notranslate"><span class="pre">_matrix</span></code> must be indexable with
+these numbers, i.e., they must satisfy <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">q</span></code>.</li>
+<li><strong>orange</strong> – Array-like object with two elements respectively denoting
+the indices of the first and last <em>output</em> channels. The
+response matrix <code class="xref py py-attr docutils literal notranslate"><span class="pre">_matrix</span></code> must be indexable with
+these numbers, i.e., they must satisfy <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">p</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of size <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span> <span class="pre">n</span></code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes</strong></p>
+<p>The profile most recently operated on is stored as the attribute
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_last_folded</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Instrument.Instrument.energy_edges">
+<code class="descname">energy_edges</code><a class="headerlink" href="#xpsi.Instrument.Instrument.energy_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the energy edges of the instrument.</p>
+<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy
+channels which map to output channels defined in the
+data space.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Instrument.Instrument.folded_signal">
+<code class="descname">folded_signal</code><a class="headerlink" href="#xpsi.Instrument.Instrument.folded_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the cached folded signal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Instrument.Instrument.matrix">
+<code class="descname">matrix</code><a class="headerlink" href="#xpsi.Instrument.Instrument.matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the response matrix.</p>
+<p>A photon redistribution matrix of dimension <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span> <span class="pre">q</span></code>. Here
+<code class="docutils literal notranslate"><span class="pre">p</span></code> must be the number of input channels, and <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">&gt;=</span> <span class="pre">p</span></code> the
+number of output channels.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">_matrix</span></code> must be assigned, and it must be
+a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> for use with <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.17)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> (even
+if the matrix is sparse to some degree).</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.Instrument.ResponseError">
+<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">ResponseError</code><a class="reference internal" href="_modules/xpsi/Instrument.html#ResponseError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.ResponseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
+<p>Raised if there is a problem with the input response matrix.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.Instrument.EdgesError">
+<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">EdgesError</code><a class="reference internal" href="_modules/xpsi/Instrument.html#EdgesError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.EdgesError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
+<p>Raised if there is a problem with the input energy edges.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="data.html" class="btn btn-neutral float-right" title="Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pulse.html" class="btn btn-neutral float-left" title="Pulse" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

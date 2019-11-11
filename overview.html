@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Overview &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="(FA)Q" href="FAQ.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-overarching-concept">The overarching concept</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#x-ray-photon-data">X-ray photon data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#likelihoods">Likelihoods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#posteriors">Posteriors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parallelisation-paradigms">Parallelisation paradigms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#future-extension-of-scope">Future extension of scope</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="overview">
+<span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p><em>Here we give a more abstract explanation of how one can construct a
+generative model within the X-PSI framework, and apply that model to
+astronomical X-ray photon data.</em></p>
+<div class="section" id="the-overarching-concept">
+<h2>The overarching concept<a class="headerlink" href="#the-overarching-concept" title="Permalink to this headline">¶</a></h2>
+<p>X-PSI is designed for the statistical analysis of astronomical X-ray photon
+data sets acquired through observation of <em>pulsed</em> emission from compact stars.
+To achieve this, X-PSI couples code for likelihood evaluation with existing
+open-source software for posterior sampling and integration.</p>
+</div>
+<div class="section" id="x-ray-photon-data">
+<h2>X-ray photon data<a class="headerlink" href="#x-ray-photon-data" title="Permalink to this headline">¶</a></h2>
+<p>The relevant data is acquired via direct astronomical detection of photons in
+the X-ray regime.</p>
+</div>
+<div class="section" id="likelihoods">
+<h2>Likelihoods<a class="headerlink" href="#likelihoods" title="Permalink to this headline">¶</a></h2>
+<p>The likelihood ‘distribution’ is a function on an <span class="math notranslate nohighlight">\(n\)</span>-dimensional
+parameter space, equal at each point <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span> (with finite
+local prior probability density) to a parametrised sampling distribution on the
+space of the data evaluated at the <em>fixed</em> dataset <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>. The
+likelihood is defined by</p>
+<div class="math notranslate nohighlight">
+\[L(\boldsymbol{\theta};\mathcal{M})\mathrel{:=}\mathcal{P}(\mathcal{D}\;|\;\boldsymbol{\theta},\mathcal{M}),\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathcal{M}\)</span> is the global (hierarchical) model.</p>
+<p>A fundamental assumption upon which X-PSI is based is that the statistical
+generative model of interest can be constructed from a restricted set of
+abstract mathematical objects. These objects often have properties which are
+discrete representations of continuous mathematical structures, and these
+continuous structures are imbued with physical and statistical meaning in
+order to attempt to describe observable reality in terms of deterministic and
+stochastic processes.</p>
+<p>In X-PSI, we adopt general relativistic gravity to construct a spacetime
+manifold associated with a model compact star.</p>
+<p>We first need to consider our X-ray photon data set <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>: in
+general let it be constituted by some union of data subsets
+<span class="math notranslate nohighlight">\(\mathcal{D}=\cup_{i}\mathcal{D}_{i}\)</span>, such that
+<span class="math notranslate nohighlight">\(\mathcal{D}_{i}\cap\mathcal{D}_{j}=\emptyset\)</span> for <span class="math notranslate nohighlight">\(i\neq j\)</span>, and
+the subsets are statistically independent—i.e., the joint sampling
+distribution conditional on the model is separable. We describe the stochastic
+generation of this data via observations—with a model X-ray telescope—of
+a <em>single</em> general relativistic compact model star (the <em>source</em>), whose
+exterior spacetime parameters we are interested in constraining (primarily for
+the purpose of dense matter study). Further, we assume that the data subsets
+<span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span> are acquired during disjoint time intervals, and that
+the exterior spacetime of the <em>source</em> is stationary (and thus
+time-independent) over the time interval spanning acquisition of all subsets
+which constitute <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>. More accurately, the spacetime of an
+accreting model star in a binary is non-stationary (and thus dynamic), but the
+evolution is considered sufficiently small to neglect.</p>
+<p>We have not yet given a concrete definition of a data subset
+<span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span>: let us define one data subset as having a parametrised
+model sampling distribution dependent on a single <strong>pulse</strong> generated by a
+rotating non-axisymmetric source radiation field, during which the source
+radiation field is everywhere invariant with respect to the proper time in some
+local comoving frame (which need not necessarily be the frame of the local
+photospheric plasma). Crucially, all data points (photon incidence events)
+constituting <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span> need not be acquired within a single
+period of rotation of the source—indeed, in reality sources are of galactic
+origin but are sufficiently distant that the incident flux of photons is very
+small. The photon incidence events which comprise <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span> can
+span an arbitrarily long time interval, but over that time interval the source
+radiation field is assumed to be stable, with any quasi-periodicity manifesting
+due to relative motion the source and a model telescope, and/or due to a small
+evolution in the coordinate rotation frequency of the source radiation field.
+Each subset <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span> is acquired with some model instrument with
+a response matrix (a photon energy redistribution matrix combined with an
+energy-dependent effective area vector) which is used in forward-modelling to
+transform a radiation field incident on the detector into a form which enters
+directly in the sampling distribution of <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span>.</p>
+</div>
+<div class="section" id="posteriors">
+<h2>Posteriors<a class="headerlink" href="#posteriors" title="Permalink to this headline">¶</a></h2>
+<p>The joint posterior distribution on parameter space is the joint probability
+density distribution proportional to the integrable product of the likelihood
+function with a joint prior distribution.</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{P}(\boldsymbol{\theta}\;|\;\mathcal{D},\mathcal{M},\mathcal{I})=\frac{L(\boldsymbol{\theta};\mathcal{M})\mathcal{P}(\boldsymbol{\theta}\;|\;\mathcal{M},\mathcal{I})}{\mathcal{P}(\mathcal{D}\;|\;\mathcal{M},\mathcal{I})}\]</div>
+<p>The normalisation is the prior predictive distribution on the space of the data
+evaluated at <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{P}(\mathcal{D}\;|\;\mathcal{M},\mathcal{I})
+=\mathop{\int}\mathcal{P}(\mathcal{D}\;|\;\boldsymbol{\theta},\mathcal{M})\mathcal{P}(\boldsymbol{\theta}\;|\;\mathcal{M},\mathcal{I})d^{n}\boldsymbol{\theta}.\]</div>
+<p>Also termed the ‘evidence’ or ‘marginal likelihood’, this normalisation can be
+approximated by MultiNest.</p>
+</div>
+<div class="section" id="parallelisation-paradigms">
+<h2>Parallelisation paradigms<a class="headerlink" href="#parallelisation-paradigms" title="Permalink to this headline">¶</a></h2>
+<p>X-PSI inherits the MPI parallelisation of an external sampling package. In
+general it is necessary to run X-PSI posterior sampling/integration on
+distributed memory architectures (e.g., a cluster or a supercomputer) because
+likelihood evaluation times are slow, of <span class="math notranslate nohighlight">\(\mathcal{O}(1)\,s\)</span>.</p>
+<p>In addition, the source code for pulse simulation (required for likelihood
+evalution) is OpenMP-enabled, meaning that in principle one can
+explore hybrid parallelisation paradigms—in particular, enabling
+multithreaded computation on shared memory nodes of distributed architectures.</p>
+</div>
+<div class="section" id="future-extension-of-scope">
+<h2>Future extension of scope<a class="headerlink" href="#future-extension-of-scope" title="Permalink to this headline">¶</a></h2>
+<p>In future development, support for direct <em>interior</em> parameter estimation may
+be added. This involves solving the field equations for stable stationary
+spacetime solutions and embedding the rotationally deformed stellar surface
+into an ambient Schwarzschild spacetime with the rotationally deformed
+gravitational mass monopole moment, whilst neglecting all other rotational
+<span class="math notranslate nohighlight">\(\ell&gt;0\)</span> metric deformations at <span class="math notranslate nohighlight">\(\mathcal{O}(\Omega)\)</span>
+(see Hartle, 1967; Hartle &amp; Thorne, 1968).</p>
+<p>An image-plane integrator may also be integrated for visualisation contexts,
+and for internal cross-checking of signal integration.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="FAQ.html" class="btn btn-neutral float-right" title="(FA)Q" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

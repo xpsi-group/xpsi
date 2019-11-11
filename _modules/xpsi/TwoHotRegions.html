@@ -1,0 +1,525 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>xpsi.TwoHotRegions &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>xpsi.TwoHotRegions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for xpsi.TwoHotRegions</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+
+<span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="k">import</span> <span class="n">HotRegion</span>
+
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">BoundsError</span>
+
+<div class="viewcode-block" id="PulseError"><a class="viewcode-back" href="../../twohotregions.html#xpsi.TwoHotRegions.PulseError">[docs]</a><span class="k">class</span> <span class="nc">PulseError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Raised if a numerical problems encountered during integration. &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="TwoHotRegions"><a class="viewcode-back" href="../../twohotregions.html#xpsi.TwoHotRegions.TwoHotRegions">[docs]</a><span class="k">class</span> <span class="nc">TwoHotRegions</span><span class="p">(</span><span class="n">HotRegion</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Two photospheric hot regions, which may or may not be antipodal.</span>
+
+<span class="sd">    The *primary* hot region is represented by the class from which the</span>
+<span class="sd">    :class:`.TwoHotRegions.TwoHotRegions` derives -- i.e., the</span>
+<span class="sd">    :class:`.HotRegion.HotRegion` class.</span>
+
+<span class="sd">    The *secondary* hot region is represented by adding behaviour to this parent</span>
+<span class="sd">    class. This secondary hot region may or may not be *antipodal*.</span>
+
+<span class="sd">    This class differs from the :class:`.HotRegions.HotRegions` class because</span>
+<span class="sd">    it works specifically for two hot regions of equal complexity via</span>
+<span class="sd">    inheritance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">num_params</span><span class="p">,</span>
+                 <span class="n">bounds</span><span class="p">,</span>
+                 <span class="n">antipodal_symmetry</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param tuple num_params: Number of parameters for model. The tuple</span>
+<span class="sd">                                 must have two elements, specifying the number</span>
+<span class="sd">                                 of parameters per spot.</span>
+
+<span class="sd">        :param list bounds: Hard parameter bounds for the instance of</span>
+<span class="sd">                            :class:`.ParameterSubspace.ParameterSubspace`.</span>
+
+<span class="sd">        :param bool antipodal_symmetry: Apply antipodal reflection symmetry?</span>
+<span class="sd">                            This means that all parameters describing the</span>
+<span class="sd">                            secondary spot are derived from the primary spot:</span>
+<span class="sd">                            the secondary is antipodal and given by an</span>
+<span class="sd">                            equatorial reflection of the primary spot,</span>
+<span class="sd">                            followed by a rotation by :math:`\pi` radians</span>
+<span class="sd">                            about the rotation axis. The mirroring is thus</span>
+<span class="sd">                            with respect to a 2-plane through the coordinate</span>
+<span class="sd">                            origin which is perpendicular to the line</span>
+<span class="sd">                            through the origin and the primary spot centre.</span>
+
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Keyword arguments passed to :class:`.HotRegion.HotRegion` class.</span>
+
+<span class="sd">        .. note:: The parameter bounds of the secondary spot must satisfy:</span>
+
+<span class="sd">            * the colatitude is restricted to :math:`\Theta\in(0.0,\pi)`</span>
+<span class="sd">            * the angular radius is restricted to :math:`\zeta\in(0.0,\pi/2)`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">num_params</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">TwoHotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">num_params</span><span class="p">),</span> <span class="n">bounds</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of parameters must be passed as a &#39;</span>
+                             <span class="s1">&#39;2-tuple in order to parse a parameter vector &#39;</span>
+                             <span class="s1">&#39;for passing parameters to methods.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_primary_params</span> <span class="o">=</span> <span class="n">num_params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">antipodal_symmetry</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Use a boolean to specify whether or not the &#39;</span>
+                            <span class="s1">&#39;secondary spot is an antipodal reflection of &#39;</span>
+                            <span class="s1">&#39;the primary.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_antipodal_symmetry</span> <span class="o">=</span> <span class="n">antipodal_symmetry</span>
+
+        <span class="c1"># Check derived parameter settings match cardiality of set of input</span>
+        <span class="c1"># parameter bounds</span>
+        <span class="k">if</span> <span class="n">antipodal_symmetry</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">num_params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;The parameters of the secondary spot are all derived &#39;</span>
+                       <span class="s1">&#39;from the parameters of the primary.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">BoundsError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">antipodal_symmetry</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">colatitude</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">[</span><span class="n">num_params</span><span class="p">[</span><span class="mi">0</span><span class="p">]]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">colatitude</span> <span class="o">&lt;</span> <span class="n">_pi</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">BoundsError</span><span class="p">(</span><span class="s1">&#39;Invalid secondary spot colatitude &#39;</span>
+                                      <span class="s1">&#39;bound.&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">radius</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">[</span><span class="n">num_params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">radius</span> <span class="o">&lt;=</span> <span class="n">_pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">BoundsError</span><span class="p">(</span><span class="s1">&#39;Invalid spot angular radius bound.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TwoHotRegions.print_settings"><a class="viewcode-back" href="../../twohotregions.html#xpsi.TwoHotRegions.TwoHotRegions.print_settings">[docs]</a>    <span class="k">def</span> <span class="nf">print_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Print numerical settings. &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TwoHotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">print_settings</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Antipodal symmetry: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_antipodal_symmetry</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cellArea</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the areas of cells in the secondary-spot mesh. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cellArea</span>
+
+<div class="viewcode-block" id="TwoHotRegions.embed"><a class="viewcode-back" href="../../twohotregions.html#xpsi.TwoHotRegions.TwoHotRegions.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Embed the spots. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">fast_total_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fast_primary_total_counts</span> <span class="o">=</span> <span class="n">fast_total_counts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">fast_secondary_total_counts</span> <span class="o">=</span> <span class="n">fast_total_counts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fast_primary_total_counts</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">fast_secondary_total_counts</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># embed secondary spot first using methods of parent class, using</span>
+        <span class="c1"># derived parameters as required</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antipodal_symmetry</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ps</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_primary_params</span><span class="p">:]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antipodal_symmetry</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">TwoHotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span>
+                                             <span class="n">fast_secondary_total_counts</span><span class="p">,</span>
+                                             <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__super_theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_theta</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__cede_theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_theta</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">TwoHotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span>
+                                             <span class="n">fast_secondary_total_counts</span><span class="p">,</span>
+                                             <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__super_theta</span> <span class="o">=</span> <span class="n">_pi</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_theta</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__cede_theta</span> <span class="o">=</span> <span class="n">_pi</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_theta</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># bind NumPy arrays to new name with mangle; no shallow/deep copy</span>
+        <span class="c1"># required. The data in these arrays is required for integration of</span>
+        <span class="c1"># secondary spot pulse.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_phi</span> <span class="o">+</span> <span class="n">_pi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_cellArea</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_cellArea</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_cos_gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_cos_gamma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_r_s_over_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_r_s_over_r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_lag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_lag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_deflection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_deflection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_cos_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_cos_alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_maxDeflection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_maxDeflection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_radiates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_radiates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_cellParamVecs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_cellParamVecs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__super_correctionVecs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_correctionVecs</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_phi</span> <span class="o">+</span> <span class="n">_pi</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cellArea</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellArea</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cos_gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cos_gamma</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_r_s_over_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r_s_over_r</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_lag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_lag</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_deflection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_deflection</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cos_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cos_alpha</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_maxDeflection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_maxDeflection</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_radiates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_radiates</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cellParamVecs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellParamVecs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cede_correctionVecs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_correctionVecs</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antipodal_symmetry</span> <span class="ow">or</span> <span class="n">fast_total_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># embed primary spot; names (attributes) in parent class rebound</span>
+            <span class="n">pp</span> <span class="o">=</span> <span class="n">p</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_primary_params</span><span class="p">]</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">TwoHotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">pp</span><span class="p">,</span>
+                                             <span class="n">fast_primary_total_counts</span><span class="p">,</span>
+                                             <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TwoHotRegions.integrate"><a class="viewcode-back" href="../../twohotregions.html#xpsi.TwoHotRegions.TwoHotRegions.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span>
+                  <span class="n">hot_atmosphere</span><span class="p">,</span> <span class="n">elsewhere_atmosphere</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>
+
+<span class="sd">        Calls the CellMesh integrator, with or without exploitation of</span>
+<span class="sd">        azimuthal invariance of the radiation field of the hot region.</span>
+
+<span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param energies: A one-dimensional :class:`numpy.ndarray` of energies</span>
+<span class="sd">                         in keV.</span>
+
+<span class="sd">        :param int threads: Number of ``OpenMP`` threads for pulse</span>
+<span class="sd">                            integration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">primary_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">secondary_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">primary_energies</span> <span class="o">=</span> <span class="n">secondary_energies</span> <span class="o">=</span> <span class="n">energies</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">secondary_energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">super_energies</span><span class="p">,</span> <span class="n">cede_energies</span> <span class="o">=</span> <span class="n">secondary_energies</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">super_energies</span> <span class="o">=</span> <span class="n">secondary_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cellArea</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cede_energies</span> <span class="o">=</span> <span class="n">super_energies</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">super_energies</span> <span class="o">=</span> <span class="n">cede_energies</span> <span class="o">=</span> <span class="n">secondary_energies</span>
+
+        <span class="n">primary</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TwoHotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">primary_energies</span><span class="p">,</span>
+                                                       <span class="n">threads</span><span class="p">,</span>
+                                                       <span class="n">hot_atmosphere</span><span class="p">,</span>
+                                                       <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
+
+        <span class="n">leaves</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_leaves</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leaves</span>
+        <span class="n">phases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span>
+        <span class="n">num_rays</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_num_rays</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_mode</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span>
+
+        <span class="n">super_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">Omega</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
+                                          <span class="n">st</span><span class="o">.</span><span class="n">i</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_cellArea</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_r</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_r_s_over_r</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_theta</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_phi</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_cellParamVecs</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_radiates</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_correctionVecs</span><span class="p">,</span>
+                                          <span class="n">num_rays</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_deflection</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_cos_alpha</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_lag</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_maxDeflection</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__super_cos_gamma</span><span class="p">,</span>
+                                          <span class="n">super_energies</span><span class="p">,</span>
+                                          <span class="n">leaves</span><span class="p">,</span>
+                                          <span class="n">phases</span><span class="p">,</span>
+                                          <span class="n">hot_atmosphere</span><span class="p">,</span>
+                                          <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">super_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PulseError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical error during secondary &#39;</span>
+                             <span class="s1">&#39;superseding-region pulse integration.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cede_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">Omega</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
+                                             <span class="n">st</span><span class="o">.</span><span class="n">i</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cellArea</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_r</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_r_s_over_r</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_theta</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_phi</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cellParamVecs</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_radiates</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_correctionVecs</span><span class="p">,</span>
+                                             <span class="n">num_rays</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_deflection</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cos_alpha</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_lag</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_maxDeflection</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cos_gamma</span><span class="p">,</span>
+                                             <span class="n">cede_energies</span><span class="p">,</span>
+                                             <span class="n">leaves</span><span class="p">,</span>
+                                             <span class="n">phases</span><span class="p">,</span>
+                                             <span class="n">hot_atmosphere</span><span class="p">,</span>
+                                             <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cede_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">PulseError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical error during pulse integration.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">primary</span><span class="p">,</span> <span class="p">(</span><span class="n">super_pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cede_pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">primary</span><span class="p">,</span> <span class="p">(</span><span class="n">super_pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">],))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

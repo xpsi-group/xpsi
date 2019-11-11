@@ -1,0 +1,679 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PostProcessing &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Sample" href="sample.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>PostProcessing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/postprocessing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<span class="target" id="module-xpsi.PostProcessing"></span><div class="section" id="postprocessing">
+<span id="id1"></span><h1>PostProcessing<a class="headerlink" href="#postprocessing" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.Run</span></code></a>(filepath,&nbsp;ID,&nbsp;names,&nbsp;…)</td>
+<td>Base class for a sample object, containing basic information.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xpsi.PostProcessing.NSBackend" title="xpsi.PostProcessing.NSBackend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.NSBackend</span></code></a>(root,&nbsp;…[,&nbsp;…])</td>
+<td>Container for nested samples generated by a single run, and backends for analysis of the run.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.Runs</span></code></a>(runs)</td>
+<td>Container for nested sampling run objects.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xpsi.PostProcessing.PostProcessor" title="xpsi.PostProcessing.PostProcessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.PostProcessor</span></code></a>([runs,&nbsp;…])</td>
+<td>Post-process samples for inference and posterior checking.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="xpsi.PostProcessing.Run">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">Run</code><span class="sig-paren">(</span><em>filepath</em>, <em>ID</em>, <em>names</em>, <em>bounds</em>, <em>labels=None</em>, <em>implementation=None</em>, <em>truths=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for a sample object, containing basic information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ID</strong> (<em>str</em>) – For identification of the set of the samples if multiple
+sets are jointly plotted.</li>
+<li><strong>filepath</strong> (<em>str</em>) – Path to samples file.</li>
+<li><strong>names</strong> (<em>list</em>) – An ordered list of <code class="docutils literal notranslate"><span class="pre">str</span></code> parameter names. The
+ordering must match the parameter vector ordering
+defined in sample backend objects.</li>
+<li><strong>bounds</strong> (<em>dict</em>) – A dictionary of one-dimensional <em>hard</em> parameter
+bounds. See <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>;
+the keys must match the <a class="reference internal" href="#xpsi.PostProcessing.Run.names" title="xpsi.PostProcessing.Run.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a> list. For
+the purpose of density estimation plots these
+bounds can be viewing bounds.</li>
+<li><strong>labels</strong> (<em>list</em>) – An ordered list of (LaTeX compatible) <code class="docutils literal notranslate"><span class="pre">str</span></code>
+literal parameter labels.</li>
+<li><strong>implementation</strong> (<em>str</em>) – Sampling software applied to generate the
+samples. Known options are
+<code class="docutils literal notranslate"><span class="pre">['multinest',</span> <span class="pre">'polychord',</span> <span class="pre">'emcee']</span></code>.</li>
+<li><strong>truths</strong> (<em>dict</em>) – Optional dictionary of parameter truths, if <em>known</em>;
+if <em>unknown</em> leave as <code class="docutils literal notranslate"><span class="pre">None</span></code>. The keys
+must be names which match those in
+<a class="reference internal" href="#xpsi.PostProcessing.Run.names" title="xpsi.PostProcessing.Run.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.ID">
+<code class="descname">ID</code><a class="headerlink" href="#xpsi.PostProcessing.Run.ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the identification <code class="docutils literal notranslate"><span class="pre">str</span></code> of the sample set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.bounds">
+<code class="descname">bounds</code><a class="headerlink" href="#xpsi.PostProcessing.Run.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter bounds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.contours">
+<code class="descname">contours</code><a class="headerlink" href="#xpsi.PostProcessing.Run.contours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the dictionary of contour arguments for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contours</strong> (<em>dict</em>) – <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>-compatible dictionary of parameters
+specifying the properties of the contours
+representing credible regions of the
+two-dimensional marginal distributions of
+parameters.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.implementation">
+<code class="descname">implementation</code><a class="headerlink" href="#xpsi.PostProcessing.Run.implementation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sampling software applied to generate the samples of the run.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.labels">
+<code class="descname">labels</code><a class="headerlink" href="#xpsi.PostProcessing.Run.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter labels.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.lines">
+<code class="descname">lines</code><a class="headerlink" href="#xpsi.PostProcessing.Run.lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the dictionary of line arguments for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lines</strong> (<em>dict</em>) – <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>-compatible dictionary of parameters
+specifying the properties of the smooth lines
+representing one-dimensional marginal distributions
+of parameters.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.names">
+<code class="descname">names</code><a class="headerlink" href="#xpsi.PostProcessing.Run.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter names.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.samples">
+<code class="descname">samples</code><a class="headerlink" href="#xpsi.PostProcessing.Run.samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of the samples array.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.truth_vector">
+<code class="descname">truth_vector</code><a class="headerlink" href="#xpsi.PostProcessing.Run.truth_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter truths as a list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Run.truths">
+<code class="descname">truths</code><a class="headerlink" href="#xpsi.PostProcessing.Run.truths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter truths as a dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing.NSBackend">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">NSBackend</code><span class="sig-paren">(</span><em>root</em>, <em>base_dir</em>, <em>kde_settings</em>, <em>use_nestcheck</em>, <em>transform=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#NSBackend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.NSBackend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing.Run</span></code></a></p>
+<p>Container for nested samples generated by a single run, and backends
+for analysis of the run.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kde_settings</strong> (<em>dict</em>) – Settings for instantiation of <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+<p>The other keyword arguments are generic properties passed to the parent
+class, such as the identification (ID) string of the run.</p>
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.NSBackend.getdist_backend">
+<code class="descname">getdist_backend</code><a class="headerlink" href="#xpsi.PostProcessing.NSBackend.getdist_backend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.NSBackend.kde_settings">
+<code class="descname">kde_settings</code><a class="headerlink" href="#xpsi.PostProcessing.NSBackend.kde_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the input <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> KDE settings dictionary.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.NSBackend.margeStats">
+<code class="descname">margeStats</code><a class="headerlink" href="#xpsi.PostProcessing.NSBackend.margeStats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the marginal statistics using <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.NSBackend.nestcheck_backend">
+<code class="descname">nestcheck_backend</code><a class="headerlink" href="#xpsi.PostProcessing.NSBackend.nestcheck_backend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> backend for the nested samples.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing.Runs">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">Runs</code><span class="sig-paren">(</span><em>runs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container for nested sampling run objects.</p>
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Runs.combined">
+<code class="descname">combined</code><a class="headerlink" href="#xpsi.PostProcessing.Runs.combined" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to get a combined run in the form of a <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code>
+backend.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.Runs.get_attr">
+<code class="descname">get_attr</code><span class="sig-paren">(</span><em>attribute</em>, <em>current=True</em>, <em>nestcheck_compatible=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs.get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.get_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of attributes of the <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances stored as
+the current subset.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="xpsi.PostProcessing.Runs.load_all">
+<em class="property">classmethod </em><code class="descname">load_all</code><span class="sig-paren">(</span><em>roots</em>, <em>IDs</em>, <em>use_nestcheck</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs.load_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.load_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instance by loading distinct runs with
+equivalent arguments.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Runs.params">
+<code class="descname">params</code><a class="headerlink" href="#xpsi.PostProcessing.Runs.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current parameter information.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.Runs.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>names</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set current parameters for plotting which are shared.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.Runs.set_subset">
+<code class="descname">set_subset</code><span class="sig-paren">(</span><em>IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>force_combine=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs.set_subset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.set_subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a current list of <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Runs.subset">
+<code class="descname">subset</code><a class="headerlink" href="#xpsi.PostProcessing.Runs.subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current subset of runs and parameters for plotting.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing.PostProcessor">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">PostProcessor</code><span class="sig-paren">(</span><em>runs=None</em>, <em>likelihood=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post-process samples for inference and posterior checking.</p>
+<p>Calculate inferences, usually in the form of approximate integrals over
+the posterior distribution. Also visualise posterior information and
+derived quantities.</p>
+<p>Perform posterior predictive checking.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>runs</strong> – An instance of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> or an instance of <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a>.</li>
+<li><strong>likelihood</strong> – The instance of <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> used for
+sampling, or a clone of that instance. Defaults to
+<code class="docutils literal notranslate"><span class="pre">None</span></code>. If multiple likelihood functions are
+associated with the runs due to discreteness in the
+model space, one can pass a dictionary with keys
+matching the IDs of the runs.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xpsi.PostProcessing.PostProcessor.plot_posteriorDensity">
+<code class="descname">plot_posteriorDensity</code><span class="sig-paren">(</span><em>self</em>, <em>params</em>, <em>run_IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>only_combined=False</em>, <em>bootstrap_estimators=True</em>, <em>bootstrap_density=False</em>, <em>separate_plots=False</em>, <em>write=False</em>, <em>root_filename=''</em>, <em>directory='./'</em>, <em>ext='.pdf'</em>, <em>dpi=300</em>, <em>maxdots=2000</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor.plot_posteriorDensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.plot_posteriorDensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate posterior density plots with <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> for
+nested sampling runs.</p>
+<p>Up to five runs can be plotted natively via <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code>; beyond
+such a number the plots are generally display too much information and
+clarity is lost.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params</strong> (<em>list</em>) – List of parameter strings for plotting. Must match
+identifier strings which are attributes of <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a>
+instances, and those parameters must occupy the same
+indices across the <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances (a limitation,
+but the <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> package assumes a set of realisations
+of the same nested sampling process).</li>
+<li><strong>run_IDs</strong> (<em>list</em>) – An iterable containing string identifiers of instances
+of <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances. These identifiers must
+match objects collected in the <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance
+stored as an attribute of an instance of the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PostProcessing</span></code> class. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+meaning attempt to use all runs in the attribute
+instance of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a>.</li>
+<li><strong>combine</strong> (<em>bool</em>) – Additionally combine the runs into a single run for overplotting?</li>
+<li><strong>combine_all</strong> (<em>bool</em>) – Combine all runs in the <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance or only those
+for which IDs are provided? Ignored if <code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>only_combine</strong> (<em>bool</em>) – Only plot the combined run? Ignored if <code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>bootstrap</strong> (<em>bool</em>) – Use <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> and <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> to bootstrap the runs for
+posterior density error estimation?</li>
+<li><strong>separate_plots</strong> (<em>bool</em>) – Generate a lower-triangle plot with <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>, and a separate
+error plot with <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> (with <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> and
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>). If <code class="docutils literal notranslate"><span class="pre">False</span></code> (default), the diagonal panels of the
+lower-triangle plot are modified by adding the nestcheck output.
+Ignored if <code class="docutils literal notranslate"><span class="pre">bootstrap</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>write</strong> (<em>bool</em>) – Export the figure?</li>
+<li><strong>root_filename</strong> (<em>str</em>) – Root filename to prepend to automatically generated name. Can be,
+e.g., a model and/or data set identifier.</li>
+<li><strong>directory</strong> (<em>str</em>) – If <code class="docutils literal notranslate"><span class="pre">None</span></code> defaults to current directory.</li>
+<li><strong>ext</strong> (<em>str</em>) – File extension for writing. E.g., <code class="docutils literal notranslate"><span class="pre">'.png'</span></code>.</li>
+<li><strong>dpi</strong> (<em>int</em>) – Dots-per-square-inch settings for exporting plots.</li>
+<li><strong>kwargs</strong> – Keyword arguments for the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_plot_density_with_error()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_plot_triangle()</span></code> methods. Keyword arguments for line
+properties (width and alpha) for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> contours and density
+distributions. If <code class="docutils literal notranslate"><span class="pre">bootstrap</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">separate_plots</span></code> then
+the density distribution linewidth is set to zero if not
+explicitly specified with kward <code class="docutils literal notranslate"><span class="pre">lw_1d</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.PostProcessor.plot_pulse_and_spectrum">
+<code class="descname">plot_pulse_and_spectrum</code><span class="sig-paren">(</span><em>self</em>, <em>params</em>, <em>run_IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>only_combined=False</em>, <em>bootstrap_estimators=True</em>, <em>bootstrap_density=False</em>, <em>separate_plots=False</em>, <em>write=False</em>, <em>root_filename=''</em>, <em>directory='./'</em>, <em>ext='.pdf'</em>, <em>dpi=300</em>, <em>maxdots=2000</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor.plot_pulse_and_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.plot_pulse_and_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot data and model for posterior checking.</p>
+<p>If a combined run is available, only this run is used. Otherwise
+a plot is generated for each run using the corresponding likelihood
+object. There may in principle be multiple <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse" title="xpsi.Pulse.Pulse"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pulse</span></code></a>
+instances per likelihood object, but only the first instance is used.</p>
+<p>Compute and plot posterior-averaged channel-summed count-rate pulse.
+The figure contains four panels which share phase as an x-axis:</p>
+<blockquote>
+<div><ul class="simple">
+<li>the first (topmost) panel displays the data in joint channel-phase
+intervals</li>
+<li>the second panel displays the posterior mean expectation in joint
+channel-phase intervals</li>
+<li>the third panel displays the standardised residuals in joint
+channel-phase intervals</li>
+<li>the last (bottommost) panel displays the channel-summed pulse as
+a function of phase for a subset of samples, optionally using
+<a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>; the injected pulse is plotted by default if the
+injection (truth) vector is known.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cache</strong> (<em>bool</em>) – Cache intermediary model objects to accelerate post-processing?</li>
+<li><strong>nsamples</strong> (<em>int</em>) – Number of samples to use. Equally-weighted samples are generated,
+thus introducing a additional Monte Carlo noise which is ignored.</li>
+<li><strong>num_phases</strong> (<em>int</em>) – Number of phases to interpolate at on the interval [0,2] cycles.</li>
+<li><strong>use_fgivenx</strong> (<em>bool</em>) – Use <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> to plot iso-probability credible interval
+contours in target-source count rate as a function of phase.</li>
+<li><strong>random_seed</strong> (<em>int</em>) – Seed <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/random/index.html#module-numpy.random" title="(in NumPy v1.17)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.random</span></code></a> for determinism.</li>
+<li><strong>kwargs</strong> – <p>Keyword arguments for the following:</p>
+<blockquote>
+<div><ul>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">_SignalPlot.add_expected_source()</span></code></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>Use tqdm for progress bar.</li>
+<li>Bootstrap and weight simulation via nestcheck for additional
+variation?</li>
+<li>Return plot objects for the user handling?</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.PostProcessor.KL_divergence">
+<code class="descname">KL_divergence</code><span class="sig-paren">(</span><em>base='bits'</em>, <em>bootstrap=False</em>, <em>ID=None</em>, <em>n_simulate=200</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor.KL_divergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.KL_divergence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kullback-Leibler divergence integral jointly for all parameters.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.PostProcessor.likelihood">
+<code class="descname">likelihood</code><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the likelihood instance.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="xpsi.PostProcessing.PostProcessor.load_runs">
+<em class="property">classmethod </em><code class="descname">load_runs</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor.load_runs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.load_runs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance and then <a class="reference internal" href="#xpsi.PostProcessing.PostProcessor" title="xpsi.PostProcessing.PostProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">PostProcessor</span></code></a>
+instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*args</strong> – Passed directly to <a class="reference internal" href="#xpsi.PostProcessing.Runs.load_all" title="xpsi.PostProcessing.Runs.load_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Runs.load_all()</span></code></a>.</li>
+<li><strong>**kwargs</strong> – Passed directly to <a class="reference internal" href="#xpsi.PostProcessing.Runs.load_all" title="xpsi.PostProcessing.Runs.load_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Runs.load_all()</span></code></a>. Also a <code class="docutils literal notranslate"><span class="pre">'likelihood'</span></code>
+argument can be handled for <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.PostProcessor.runs">
+<code class="descname">runs</code><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.runs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the nested sampling runs.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="sample.html" class="btn btn-neutral float-left" title="Sample" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

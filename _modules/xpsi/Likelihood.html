@@ -1,0 +1,743 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>xpsi.Likelihood &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>xpsi.Likelihood</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for xpsi.Likelihood</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Class for managing likelihood function evaluation.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Likelihood&quot;</span><span class="p">,</span> <span class="s2">&quot;TagError&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_rank</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">make_verbose</span>
+
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+
+<span class="kn">from</span> <span class="nn">.Star</span> <span class="k">import</span> <span class="n">Star</span>
+<span class="kn">from</span> <span class="nn">.Pulse</span> <span class="k">import</span> <span class="n">Pulse</span><span class="p">,</span> <span class="n">LikelihoodError</span>
+<span class="kn">from</span> <span class="nn">.Background</span> <span class="k">import</span> <span class="n">Background</span>
+<span class="kn">from</span> <span class="nn">.Prior</span> <span class="k">import</span> <span class="n">Prior</span>
+<span class="kn">from</span> <span class="nn">.ParameterSpace</span> <span class="k">import</span> <span class="n">ParameterSpace</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">HotRegion</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">TwoHotRegions</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Elsewhere</span>
+
+<div class="viewcode-block" id="TagError"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.TagError">[docs]</a><span class="k">class</span> <span class="nc">TagError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised if an ordered list of photosphere objects and an ordered list</span>
+<span class="sd">    of pulse objects do have matching identification tags.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="Likelihood"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood">[docs]</a><span class="k">class</span> <span class="nc">Likelihood</span><span class="p">(</span><span class="n">ParameterSpace</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A container for all objects related to likelihood evaluation.</span>
+
+<span class="sd">    A collective for objects pertaining to a statistical analysis of</span>
+<span class="sd">    X-ray pulses. These objects include X-ray data (sub)sets, the model</span>
+<span class="sd">    instruments used to acquire these data sets, and the model star and</span>
+<span class="sd">    model backgrounds.</span>
+
+<span class="sd">    :param obj star: An instance of :class:`~.Star.Star`. This instance</span>
+<span class="sd">                     is the model star.</span>
+
+<span class="sd">    :param list pulses: A list of :class:`~.Pulse.Pulse`</span>
+<span class="sd">                        instances.</span>
+
+<span class="sd">    :param int threads: The number of ``OpenMP`` threads to spawn for</span>
+<span class="sd">                        integration. The default number of threads used</span>
+<span class="sd">                        by low-level integration routines is ``1``. The</span>
+<span class="sd">                        number can be increased if the parallelisation</span>
+<span class="sd">                        paradigm on a cluster is changed such that, e.g.,</span>
+<span class="sd">                        per node there is one thread per CPU, instead of</span>
+<span class="sd">                        one ``OpenMPI`` process. It is recommended that</span>
+<span class="sd">                        :obj:`threads` is ``1``; more threads are useful</span>
+<span class="sd">                        when performing integrals at high resolution, and</span>
+<span class="sd">                        not necessarily when integrating *many* times as</span>
+<span class="sd">                        when sampling.</span>
+
+<span class="sd">    :param float llzero: The minimum log-likelihood setting for</span>
+<span class="sd">                         MultiNest. Points whose log-likelihood is lower</span>
+<span class="sd">                         than this value are ignored, which is useful for</span>
+<span class="sd">                         defining complicated priors.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">star</span><span class="p">,</span> <span class="n">pulses</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">llzero</span><span class="o">=-</span><span class="mf">1.0e90</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">star</span><span class="p">,</span> <span class="n">Star</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a Star object.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_star</span> <span class="o">=</span> <span class="n">star</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">iter</span><span class="p">(</span><span class="n">pulses</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulses</span><span class="p">,</span> <span class="n">Pulse</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span> <span class="o">=</span> <span class="p">[</span><span class="n">pulses</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a pulse object.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="n">pulses</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse</span><span class="p">,</span> <span class="n">Pulse</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a pulse object.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span> <span class="o">=</span> <span class="n">pulses</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="n">pulse</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> \
+                <span class="s1">&#39;Photosphere and pulse object lists must have matching </span><span class="se">\</span>
+<span class="s1">                 identification tags.&#39;</span>
+
+            <span class="n">pulse</span><span class="o">.</span><span class="n">phases</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span>
+            <span class="n">pulse</span><span class="o">.</span><span class="n">fast_phases</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">fast_phases_in_cycles</span>
+            <span class="k">if</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_params</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span> <span class="o">==</span> <span class="n">threads</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Thread number must be an integer.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span> <span class="o">=</span> <span class="n">llzero</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">threads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the number of threads spawned for integration. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span>
+
+    <span class="nd">@threads</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">threads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the number of threads spawned for integration. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Thread number must be an integer.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the number of dimensions of the parameter space. &quot;&quot;&quot;</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">num_params</span>
+
+        <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">total_params</span>
+
+        <span class="k">return</span> <span class="n">n</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a list of tuples of hard parameter bounds. &quot;&quot;&quot;</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">b</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">spacetime</span><span class="o">.</span><span class="n">bounds</span>
+
+        <span class="k">for</span> <span class="n">photosphere</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">+=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="n">b</span> <span class="o">+=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="k">if</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">b</span> <span class="o">+=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">elsewhere</span><span class="o">.</span><span class="n">bounds</span>
+
+        <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pulse</span><span class="o">.</span><span class="n">interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">b</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">interstellar</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="k">if</span> <span class="n">pulse</span><span class="o">.</span><span class="n">instrument</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">b</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="k">if</span> <span class="n">pulse</span><span class="o">.</span><span class="n">background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">b</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="n">b</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="k">return</span> <span class="n">b</span>
+
+<div class="viewcode-block" id="Likelihood.__str__"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Print the model objects in order, with parameter numbers. &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Printing the model objects in order...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Object [tag]: number of parameters&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------------------&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spacetime: </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">spacetime</span><span class="o">.</span><span class="n">num_params</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">photosphere</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Photosphere [&#39;</span><span class="si">%s</span><span class="s2">&#39;]: </span><span class="si">%i</span><span class="s2">&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">total_params</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   --&gt; Hot [&#39;</span><span class="si">%s</span><span class="s2">&#39;]: </span><span class="si">%i</span><span class="s2">&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">num_params</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   --&gt; Elsewhere [&#39;</span><span class="si">%s</span><span class="s2">&#39;]: </span><span class="si">%i</span><span class="s2">&quot;</span>
+                        <span class="o">%</span> <span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">elsewhere</span><span class="o">.</span><span class="n">num_params</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pulse [&#39;</span><span class="si">%s</span><span class="s2">&#39;]: </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">pulse</span><span class="o">.</span><span class="n">total_params</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------------------&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s1">&#39;Total number of model parameters: </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_params</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">star</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.Star.Star`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pulses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the list of :class:`~.Pulse.Pulse` instances. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">theta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the last parameter vector for joint likelihood evaluation.</span>
+
+<span class="sd">        :setter: Stores the last parameter vector so that if only the fast</span>
+<span class="sd">                 parameters change, recompute only the fast contribution the</span>
+<span class="sd">                 likelihood.</span>
+
+<span class="sd">        :param p: A list of model parameters values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">prior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span>
+
+    <span class="nd">@prior</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the prior object if useful, e.g., in nested sampling.</span>
+
+<span class="sd">        :param prior: A callable instance of :class:`~.Prior.Prior` which is</span>
+<span class="sd">                      useful for nested sampling if inverse prior sampling</span>
+<span class="sd">                      is not possible or not straightforward. If not ``None``</span>
+<span class="sd">                      (default), the prior is called. If the point lies</span>
+<span class="sd">                      exterior to the prior hypervolume, ensure the callable</span>
+<span class="sd">                      returns minus :obj:`numpy.inf`. The purpose is to mix the</span>
+<span class="sd">                      likelihood function and the prior for definition of</span>
+<span class="sd">                      hard nested sampling boundaries. Inverse sampling is</span>
+<span class="sd">                      still performed between hard parameter bounds, or on</span>
+<span class="sd">                      any prior factors not handled in the call method. If the</span>
+<span class="sd">                      (conditional) prior to be evaluated is not uniform,</span>
+<span class="sd">                      return the logarithm of the prior density, which is</span>
+<span class="sd">                      combined with the likelihood evaluation. The likelihood</span>
+<span class="sd">                      is not evaluated if the log-prior is infinite.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Prior</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The prior object is not an instance of the &#39;</span>
+                            <span class="s1">&#39;Prior class.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">llzero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the minimum log-likelihood setting passed to MultiNest. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">random_near_llzero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the minimum log-likelihood scaled randomly by up to an</span>
+<span class="sd">            order of magnitude. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="mf">0.9</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">less_than_llzero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a number less than the minimum log-likelihood threshold. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">1.1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">divide</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span> <span class="o">/</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_driver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">synthesise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Main likelihood evaluation driver routine. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">activate_fast_mode</span><span class="p">(</span><span class="n">fast_mode</span><span class="p">)</span>
+
+        <span class="n">star_updated</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">num_params</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">s</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fast_mode</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span><span class="p">:</span>
+                    <span class="n">fast_total_counts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fast_total_counts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">fast_total_counts</span> <span class="k">for</span>\
+                                                        <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="n">s</span><span class="p">],</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">xpsiError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">HotRegion</span><span class="o">.</span><span class="n">RayError</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: HotRegion.RayError raised.&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="o">.</span><span class="n">RayError</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Elsewhere.RayError raised.&#39;</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
+
+            <span class="k">for</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">fast_mode</span><span class="p">:</span>
+                            <span class="n">energies</span> <span class="o">=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">fast_energies</span>
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span><span class="p">:</span>
+                            <span class="n">energies</span> <span class="o">=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">energies</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">energies</span> <span class="o">=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">default_energies</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="n">energies</span> <span class="o">=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">logspace_energies</span>
+
+                    <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">xpsiError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">HotRegion</span><span class="o">.</span><span class="n">PulseError</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: HotRegion.PulseError raised for &#39;</span>
+                              <span class="s1">&#39;photosphere tag </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">HotRegions</span><span class="o">.</span><span class="n">PulseError</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: HotRegions.PulseError raised for &#39;</span>
+                              <span class="s1">&#39;photosphere tag </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="o">.</span><span class="n">IntegrationError</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Elsewhere.IntegrationError for &#39;</span>
+                              <span class="s1">&#39;photosphere tag </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
+
+            <span class="n">star_updated</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># update distance if changed</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">star_updated</span> <span class="ow">and</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">star_updated</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># fold the pulse through the instrument response</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="k">for</span> <span class="n">pulse</span><span class="p">,</span> <span class="n">photosphere</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">pulse</span><span class="o">.</span><span class="n">total_params</span> <span class="o">-</span> <span class="n">pulse</span><span class="o">.</span><span class="n">num_params</span>
+
+            <span class="k">if</span> <span class="n">star_updated</span> <span class="ow">or</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">pulse</span><span class="o">.</span><span class="n">fold</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span>
+                                 <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">component</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d_sq</span><span class="p">)</span>
+                                       <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">cap</span><span class="p">)</span>
+                                 <span class="k">for</span> <span class="n">cap</span> <span class="ow">in</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">),</span>
+                           <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span> <span class="n">fast_mode</span><span class="o">=</span><span class="n">fast_mode</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">)</span>
+                <span class="n">refolded</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">refolded</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">fast_mode</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="n">pulse</span><span class="o">.</span><span class="n">num_params</span>
+                <span class="k">if</span> <span class="n">refolded</span> <span class="ow">or</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">k</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">synthesise</span><span class="p">:</span>
+                        <span class="n">pulse</span><span class="o">.</span><span class="n">synthesise</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">k</span><span class="p">],</span>
+                                         <span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span>
+                                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">pulse</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">k</span><span class="p">],</span> <span class="o">*</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="n">s</span><span class="p">])</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">])],</span>
+                                  <span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span> <span class="n">llzero</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="n">LikelihoodError</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: LikelihoodError raised for &#39;</span>
+                                  <span class="s1">&#39;pulse tag </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">pulse</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
+
+
+            <span class="n">i</span> <span class="o">=</span> <span class="n">j</span>
+
+        <span class="k">return</span> <span class="n">star_updated</span>
+
+<div class="viewcode-block" id="Likelihood.__call__"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluate the logarithm of the joint likelihood over all pulsations.</span>
+
+<span class="sd">        :param list p: The parameter vector.</span>
+
+<span class="sd">        :return: The logarithm of the likelihood.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logprior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logprior</span><span class="p">):</span>
+                    <span class="c1">#print(&#39;p, ll = &#39;, p, self.less_than_llzero)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">less_than_llzero</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span><span class="p">:</span>
+                <span class="c1"># perform a low-resolution precomputation to direct cell allocation</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="k">return</span> <span class="n">_</span>
+                <span class="k">elif</span> <span class="n">_</span><span class="p">:</span>
+                    <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                        <span class="k">return</span> <span class="n">_</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="k">return</span> <span class="n">_</span>
+
+        <span class="c1"># store parameter vector for next iteration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+
+        <span class="n">loglikelihood</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">:</span>
+            <span class="n">loglikelihood</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">loglikelihood</span>
+
+        <span class="c1">#print(&#39;p, ll, lp = &#39;, p, loglikelihood, logprior)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">loglikelihood</span> <span class="o">+</span> <span class="n">logprior</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">loglikelihood</span></div>
+
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Checking likelihood and prior evaluation before &#39;</span>
+                  <span class="s1">&#39;commencing sampling&#39;</span><span class="p">,</span> <span class="s1">&#39;Checks passed&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+              <span class="n">hypercube_points</span><span class="p">,</span>
+              <span class="n">loglikelihood_call_vals</span><span class="p">,</span>
+              <span class="n">rtol_loglike</span><span class="p">,</span>
+              <span class="n">atol_loglike</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+              <span class="n">logprior_call_vals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">rtol_logprior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">atol_logprior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">physical_points</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Perform checks on the likelihood evaluator and the prior</span>
+<span class="sd">            density function.</span>
+
+<span class="sd">        :param hypercube_points:</span>
+<span class="sd">            :class:`numpy.ndarray` of ``n`` points in the unit hypercube, with</span>
+<span class="sd">            shape ``(n, m)``, where ``m`` is the dimensionality of the sampling</span>
+<span class="sd">            space -- i.e., of the hypercube.</span>
+
+<span class="sd">        .. todo::</span>
+<span class="sd">            Write a fallback routine porting directly from NumPy?</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">_np</span> <span class="k">import</span> <span class="n">allclose</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="s1">&#39;Cannot import ``allclose`` function from NumPy...&#39;</span>
+            <span class="k">yield</span> <span class="s1">&#39;Using fallback implementation...&#39;</span>
+
+            <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">equal_nan</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">lls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">lps</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">logprior_call_vals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">physical_points</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">physical_points</span><span class="p">:</span>
+                <span class="n">lls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">lps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">lps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">hypercube_points</span><span class="p">:</span>
+                <span class="n">phys_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+                <span class="n">lls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">phys_point</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">lps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">lps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">phys_point</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">allclose</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lls</span><span class="p">),</span> <span class="n">loglikelihood_call_vals</span><span class="p">,</span>
+                        <span class="n">rtol</span><span class="o">=</span><span class="n">rtol_loglike</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol_loglike</span><span class="p">,</span>
+                        <span class="n">equal_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="s1">&#39;Log-likelihood value checks passed on root process.&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Log-likelihood value checks failed on process &#39;</span>
+                                 <span class="s1">&#39;</span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">_rank</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Log-likelihood value checks failed on process </span><span class="si">%i</span><span class="s1">&#39;</span>
+                            <span class="s1">&#39;with exception value: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_rank</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">lps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">allclose</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lps</span><span class="p">),</span> <span class="n">logprior_call_vals</span><span class="p">,</span>
+                            <span class="n">rtol</span><span class="o">=</span><span class="n">rtol_logprior</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol_logprior</span><span class="p">,</span>
+                            <span class="n">equal_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="s1">&#39;Log-prior value checks passed on root process.&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Log-prior value checks failed on &#39;</span>
+                                     <span class="s1">&#39;process </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">_rank</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Log-prior value checks failed on process </span><span class="si">%i</span><span class="s1"> &#39;</span>
+                                <span class="s1">&#39;with exception value: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_rank</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+
+
+    <span class="k">def</span> <span class="nf">synthesise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Synthesise pulsation data according to the generative model.</span>
+
+<span class="sd">        :param list p: The injection parameter vector.</span>
+
+<span class="sd">        .. todo::</span>
+<span class="sd">            Update.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logprior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logprior</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span><span class="p">:</span>
+                <span class="c1"># perform a low-resolution precomputation to direct cell allocation</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">elif</span> <span class="n">_</span><span class="p">:</span>
+                    <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">synthesise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                        <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">synthesise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,496 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>xpsi.Photosphere &mdash; xpsi 0.2.0-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>xpsi.Photosphere</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for xpsi.Photosphere</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+
+<span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="k">import</span> <span class="n">HotRegion</span>
+<span class="kn">from</span> <span class="nn">.Elsewhere</span> <span class="k">import</span> <span class="n">Elsewhere</span>
+
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span><span class="p">,</span> <span class="n">BoundsError</span>
+
+<div class="viewcode-block" id="Photosphere"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere">[docs]</a><span class="k">class</span> <span class="nc">Photosphere</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A photosphere embedded in an ambient spacetime for use with the CellMesh</span>
+<span class="sd">    algorithm.</span>
+
+<span class="sd">    The exterior domain of the photosphere is everywhere vacuum.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param num_params: Number of parameters for the *global* photosphere,</span>
+<span class="sd">                           which are not defined by the</span>
+<span class="sd">                           :class:`~.HotRegion.HotRegion`</span>
+<span class="sd">                           or :class:`~.Elsewhere.Elsewhere` parameter</span>
+<span class="sd">                           subspaces. At present this is restricted to the</span>
+<span class="sd">                           coordinate rotation frequency if not *locked*</span>
+<span class="sd">                           to the stellar rotation frequency.</span>
+
+<span class="sd">        :param list bounds: Hard parameter bounds for the instance of</span>
+<span class="sd">                            :class:`.ParameterSubspace.ParameterSubspace`.</span>
+
+<span class="sd">        :param str tag: An identification tag to enforce intended pairing with</span>
+<span class="sd">                        a :class:`~.Pulse.Pulse` object.</span>
+
+<span class="sd">        :param hot: An instance of :class:`~.HotRegion.HotRegion` (or a</span>
+<span class="sd">                       derived class). This objects represents the hot</span>
+<span class="sd">                       regions of the surface that in most use-cases will be</span>
+<span class="sd">                       assumed to contain radiating material that is hotter</span>
+<span class="sd">                       than that *elsewhere*.</span>
+
+<span class="sd">        :param elsewhere: An instance of :class:`~.Elsewhere.Elsewhere` (or a</span>
+<span class="sd">                          derived class).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Photosphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Photosphere parameter subspace dimensionality &#39;</span>
+                             <span class="s1">&#39;can be a maximum of one.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">frequency</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">frequency</span> <span class="o">&lt;=</span> <span class="mf">1000.0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">BoundsError</span><span class="p">(</span><span class="s1">&#39;Invalid rotation frequency bound.&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Incompatible type for identification tag.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elsewhere</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for an elsewhere object.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="n">elsewhere</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span> <span class="c1"># including derived classes</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid object for the hot &#39;</span>
+                                        <span class="s1">&#39;region(s).&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid object for the hot region(s).&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="o">=</span> <span class="n">hot</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">num_params</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">num_params</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the total number of photospheric radiation field parameters. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the ID tag of the photosphere object for pulse pairing. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hot_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the numerical atmosphere buffers for hot regions if used.</span>
+
+<span class="sd">        To preload a numerical atmosphere into a buffer, subclass and</span>
+<span class="sd">        overwrite the setter. The underscore attribute set by the setter</span>
+<span class="sd">        must be an :math:`n`-tuple whose :math:`n^{th}` element is an</span>
+<span class="sd">        :math:`(n-1)`-dimensional array flattened into a one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray`. The first :math:`n-1`</span>
+<span class="sd">        elements of the :math:`n`-tuple must each be an ordered one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray` of parameter values for the purpose of</span>
+<span class="sd">        multi-dimensional interpolation in the :math:`n^{th}` buffer. The</span>
+<span class="sd">        first :math:`n-1` elements must be ordered to match the index</span>
+<span class="sd">        arithmetic applied to the :math:`n^{th}` buffer. An example would be</span>
+<span class="sd">        ``self._hot_atmosphere = (logT, logg, mu, logE, buf)``, where:</span>
+<span class="sd">        ``logT`` is a logarithm of local comoving effective temperature;</span>
+<span class="sd">        ``logg`` is a logarithm of effective surface gravity;</span>
+<span class="sd">        ``mu`` is the cosine of the angle from the local surface normal;</span>
+<span class="sd">        ``logE`` is a logarithm of the photon energy; and</span>
+<span class="sd">        ``buf`` is a one-dimensional buffer of intensities of size given by</span>
+<span class="sd">        the product of sizes of the first :math:`n-1` tuple elements.</span>
+
+<span class="sd">        It is highly recommended that buffer preloading is used, instead</span>
+<span class="sd">        of loading from disk in the customisable radiation field extension</span>
+<span class="sd">        module, to avoid reading from disk for every signal</span>
+<span class="sd">        (likelihood) evaluation. This can be a non-negligible waste of compute</span>
+<span class="sd">        resources. By preloading in Python, the memory is allocated and</span>
+<span class="sd">        references to that memory are not in general deleted until a sampling</span>
+<span class="sd">        script exits and the kernel stops. The likelihood callback accesses</span>
+<span class="sd">        the same memory upon each call without I/O.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span>
+
+    <span class="nd">@hot_atmosphere</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">hot_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Implement if required. &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">elsewhere_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the numerical atmosphere buffers for elsewhere if used.</span>
+
+<span class="sd">        To preload a numerical atmosphere into a buffer, subclass and</span>
+<span class="sd">        overwrite the setter. The underscore attribute set by the setter</span>
+<span class="sd">        must be an :math:`n`-tuple whose :math:`n^{th}` element is an</span>
+<span class="sd">        :math:`(n-1)`-dimensional array flattened into a one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray`. The first :math:`n-1`</span>
+<span class="sd">        elements of the :math:`n`-tuple must each be an ordered one-dimensional</span>
+<span class="sd">        :class:`numpy.ndarray` of parameter values for the purpose of</span>
+<span class="sd">        multi-dimensional interpolation in the :math:`n^{th}` buffer. The</span>
+<span class="sd">        first :math:`n-1` elements must be ordered to match the index</span>
+<span class="sd">        arithmetic applied to the :math:`n^{th}` buffer. An example would be</span>
+<span class="sd">        ``self._hot_atmosphere = (logT, logg, mu, logE, buf)``, where:</span>
+<span class="sd">        ``logT`` is a logarithm of local comoving effective temperature;</span>
+<span class="sd">        ``logg`` is a logarithm of effective surface gravity;</span>
+<span class="sd">        ``mu`` is the cosine of the angle from the local surface normal;</span>
+<span class="sd">        ``logE`` is a logarithm of the photon energy; and</span>
+<span class="sd">        ``buf`` is a one-dimensional buffer of intensities of size given by</span>
+<span class="sd">        the product of sizes of the first :math:`n-1` tuple elements.</span>
+
+<span class="sd">        It is highly recommended that buffer preloading is used, instead</span>
+<span class="sd">        of loading from disk in the customisable radiation field extension</span>
+<span class="sd">        module, to avoid reading from disk for every signal</span>
+<span class="sd">        (likelihood) evaluation. This can be a non-negligible waste of compute</span>
+<span class="sd">        resources. By preloading in Python, the memory is allocated and</span>
+<span class="sd">        references to that memory are not in general deleted until a sampling</span>
+<span class="sd">        script exits and the kernel stops. The likelihood callback accesses</span>
+<span class="sd">        the same memory upon each call without I/O.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span>
+
+    <span class="nd">@elsewhere_atmosphere</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">elsewhere_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Implement if required. &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.HotRegion.HotRegion`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">elsewhere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.Elsewhere.Elsewhere`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span>
+
+<div class="viewcode-block" id="Photosphere.embed"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Embed the photosphere in an ambient Schwarzschild spacetime.</span>
+
+<span class="sd">        In other words, generate a discrete representation of the photospheric</span>
+<span class="sd">        radiation field and the null mapping from the photosphere to infinity,</span>
+<span class="sd">        for use in flux integrators called by distant observers.</span>
+
+<span class="sd">        :param obj spacetime: Instance of :class:`~.Spacetime.Spacetime`.</span>
+
+<span class="sd">        :param list p: Parameters of photospheric radiation field.</span>
+
+<span class="sd">        Parameter vector:</span>
+
+<span class="sd">        * ``p[i]`` = coordinate mode/oscillation frequency, *if not locked*</span>
+<span class="sd">        * ``p[i:j]`` = parameters for photospheric hot region(s)</span>
+<span class="sd">        * ``p[j:]`` = parameters for radiation field elsewhere</span>
+
+<span class="sd">        where ``i = self._num_params`` and ``j = 1 + self._hot.num_params``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">num_params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span>
+                             <span class="n">fast_total_counts</span><span class="p">,</span>
+                             <span class="n">threads</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">eval_srcRadFieldParamVectors</span><span class="p">,</span>
+                             <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:],</span> <span class="n">threads</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span>
+                               <span class="n">fast_total_counts</span><span class="p">,</span>
+                               <span class="n">threads</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span> <span class="o">=</span> <span class="n">spacetime</span> <span class="c1"># store a reference to the spacetime object</span></div>
+
+<div class="viewcode-block" id="Photosphere.integrate"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>
+
+<span class="sd">        :param energies: A one-dimensional :class:`numpy.ndarray` of energies</span>
+<span class="sd">                         in keV.</span>
+
+<span class="sd">        :param int threads: Number of ``OpenMP`` threads to spawn for pulse</span>
+<span class="sd">                            integration.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">time_invariant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                                       <span class="n">energies</span><span class="p">,</span>
+                                                       <span class="n">threads</span><span class="p">,</span>
+                                                       <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                             <span class="n">energies</span><span class="p">,</span>
+                                             <span class="n">threads</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
+
+        <span class="c1"># add time-invariant component to first time-dependent component</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">time_invariant</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the stored pulse.</span>
+
+<span class="sd">        :return: A :class:`numpy.ndarray` of size ``m x n``, where ``m`` is</span>
+<span class="sd">                 the number of energies, and ``n`` is the number of phases.</span>
+<span class="sd">                 Units are photon/s/keV; the distance is a fast parameter so</span>
+<span class="sd">                 the area units are not yet factored in.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span></div>
+
+
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
