@@ -18,14 +18,12 @@ class HotRegions(ParameterSubspace):
     Applications thus far have used two distinct hot regions with equal
     and unequal complexity.
 
+    :param tuple hotregions:
+            Two-element container of :class:`.HotRegion.HotRegion` instances.
+
     """
 
     def __init__(self, hotregions):
-        """
-        :param tuple hotregions:
-            Two-element container of :class:`.HotRegion.HotRegion` instances.
-
-        """
         self.objects = spots
 
         self._num_primary_params = self._objects[0].num_params

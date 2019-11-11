@@ -36,32 +36,31 @@ class Likelihood(ParameterSpace):
     instruments used to acquire these data sets, and the model star and
     model backgrounds.
 
+    :param obj star: An instance of :class:`~.Star.Star`. This instance
+                     is the model star.
+
+    :param list pulses: A list of :class:`~.Pulse.Pulse`
+                        instances.
+
+    :param int threads: The number of ``OpenMP`` threads to spawn for
+                        integration. The default number of threads used
+                        by low-level integration routines is ``1``. The
+                        number can be increased if the parallelisation
+                        paradigm on a cluster is changed such that, e.g.,
+                        per node there is one thread per CPU, instead of
+                        one ``OpenMPI`` process. It is recommended that
+                        :obj:`threads` is ``1``; more threads are useful
+                        when performing integrals at high resolution, and
+                        not necessarily when integrating *many* times as
+                        when sampling.
+
+    :param float llzero: The minimum log-likelihood setting for
+                         MultiNest. Points whose log-likelihood is lower
+                         than this value are ignored, which is useful for
+                         defining complicated priors.
+
     """
     def __init__(self, star, pulses, threads=1, llzero=-1.0e90):
-        """
-        :param obj star: An instance of :class:`~.Star.Star`. This instance
-                         is the model star.
-
-        :param list pulses: A list of :class:`~.Pulse.Pulse`
-                            instances.
-
-        :param int threads: The number of ``OpenMP`` threads to spawn for
-                            integration. The default number of threads used
-                            by low-level integration routines is ``1``. The
-                            number can be increased if the parallelisation
-                            paradigm on a cluster is changed such that, e.g.,
-                            per node there is one thread per CPU, instead of
-                            one ``OpenMPI`` process. It is recommended that
-                            :obj:`threads` is ``1``; more threads are useful
-                            when performing integrals at high resolution, and
-                            not necessarily when integrating *many* times as
-                            when sampling.
-
-        :param float llzero: The minimum log-likelihood setting for
-                             MultiNest. Points whose log-likelihood is lower
-                             than this value are ignored, which is useful for
-                             defining complicated priors.
-        """
         if not isinstance(star, Star):
             raise TypeError('Invalid type for a Star object.')
         else:

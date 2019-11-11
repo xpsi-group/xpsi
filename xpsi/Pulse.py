@@ -31,6 +31,48 @@ class Pulse(ParameterSubspace):
     into a structure congruent to that of the data for the purpose of
     evaluation of the likelihood.
 
+    :param str tag: An identification tag to enforce intended pairing with
+                    a :class:`~.Photosphere.Photosphere` object.
+
+    :param int num_params: Number of *fast* nuisance parameters associated
+                           with the model of the pulsation, excluding:
+
+                           * *slow* parameters associated with the star
+                             defined in :class:`~.Star.Star`;
+                           * parameters associated with an instance of
+                             :class:`~.Background.Background`;
+                           * parameters associated with an instance of
+                             :class:`~.Interstellar.Interstellar`.
+
+    :param list bounds: Hard parameter bounds for the instance of
+                        :class:`.ParameterSubspace.ParameterSubspace`.
+
+    :param data: An instance of :class:`~.Data.Data`.
+
+    :param instrument: An instance of :class:`~.Instrument.Instrument`.
+
+    :param background: If not ``None``, an instance of
+                       :class:`~.Background.Background`. It is
+                       assumed if one constructs a model using instances
+                       of :class:`~.Background.Background` that the
+                       background needs to be folded through a model
+                       instrument. If ``None``, it is still possible for
+                       one to define and use background parameters in a
+                       custom subclass of :class:`Pulsation`. In
+                       particular, background parameters for some model
+                       which directly specifies background contribution
+                       in units of count/s per *output* channels. These
+                       background parameters can even *be* the counts/s in
+                       output channels.
+
+    :param interstellar: If not ``None``, an instance of
+                         :class:`~.Interstellar.Interstellar`. To be
+                         applied to the incident source pulsation.
+
+    :param int energies_per_interval: The number of energies to compute
+                                     photon fluxes, per input energy
+                                     channel of the instrument.
+
     """
     def __init__(self,
                  num_params,
@@ -46,50 +88,6 @@ class Pulse(ParameterSubspace):
                  adaptive_energies = False,
                  adapt_exponent = 0.5,
                  store = False):
-        """
-        :param str tag: An identification tag to enforce intended pairing with
-                        a :class:`~.Photosphere.Photosphere` object.
-
-        :param int num_params: Number of *fast* nuisance parameters associated
-                               with the model of the pulsation, excluding:
-
-                               * *slow* parameters associated with the star
-                                 defined in :class:`~.Star.Star`;
-                               * parameters associated with an instance of
-                                 :class:`~.Background.Background`;
-                               * parameters associated with an instance of
-                                 :class:`~.Interstellar.Interstellar`.
-
-        :param list bounds: Hard parameter bounds for the instance of
-                            :class:`.ParameterSubspace.ParameterSubspace`.
-
-        :param data: An instance of :class:`~.Data.Data`.
-
-        :param instrument: An instance of :class:`~.Instrument.Instrument`.
-
-        :param background: If not ``None``, an instance of
-                           :class:`~.Background.Background`. It is
-                           assumed if one constructs a model using instances
-                           of :class:`~.Background.Background` that the
-                           background needs to be folded through a model
-                           instrument. If ``None``, it is still possible for
-                           one to define and use background parameters in a
-                           custom subclass of :class:`Pulsation`. In
-                           particular, background parameters for some model
-                           which directly specifies background contribution
-                           in units of count/s per *output* channels. These
-                           background parameters can even *be* the counts/s in
-                           output channels.
-
-        :param interstellar: If not ``None``, an instance of
-                             :class:`~.Interstellar.Interstellar`. To be
-                             applied to the incident source pulsation.
-
-        :param int energies_per_interval: The number of energies to compute
-                                         photon fluxes, per input energy
-                                         channel of the instrument.
-
-        """
         super(Pulse, self).__init__(num_params, bounds)
 
         try:
