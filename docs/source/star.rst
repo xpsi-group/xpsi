@@ -20,5 +20,5 @@ A model star is constituted by:
   neighbourhood of a point at effective infinity to obtain pulses.
 
 .. autoclass:: xpsi.Star.Star
-    :members: __init__, photospheres, num_params, update
+    :members: photospheres, num_params, update
   

@@ -13,7 +13,7 @@ pulsars under the assumption of a dominantly dipolar magnetic field with two
 magnetic polar caps.
 
 .. autoclass:: xpsi.TwoHotRegions.TwoHotRegions
-    :members: __init__, embed, integrate, print_settings, num_params, bounds, cellArea
+    :members: embed, integrate, print_settings, num_params, bounds, cellArea
     :show-inheritance:
 
 .. autoclass:: xpsi.TwoHotRegions.PulseError
