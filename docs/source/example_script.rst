@@ -204,7 +204,8 @@ We proceed to show the custom modules required for the model.
 
 .. todo::
 
-    Write more extensive inline comments for explanation.
+    Write more extensive inline comments for clarity, and clean up where
+    applicable.
 
 Photosphere
 ^^^^^^^^^^^
@@ -754,7 +755,7 @@ Prior
             if R_p < 1.5 / self._spacetime.R_r_s:
                 return -np.inf
 
-            # spots cannot overlap
+            # hot regions cannot overlap
             theta_p = p[4]
             phi_s = (0.5 + p[18]) * _2pi - p[11]
             phi = p[17] * _2pi - phi_s # include ceding azimuth
@@ -763,7 +764,7 @@ Prior
             theta_s = p[7]
             rho_s = p[8]
 
-            ang_sep = xpsi.Spot._psi(theta_s, phi, theta_p)
+            ang_sep = xpsi.HotRegion._psi(theta_s, phi, theta_p)
 
             if ang_sep < rho_p + rho_s:
                 return -np.inf
