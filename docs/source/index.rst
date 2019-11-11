@@ -19,6 +19,7 @@
    model_construction
    example_script
    example_job
+   extensions
 
 .. toctree::
    :maxdepth: 1
@@ -48,10 +49,3 @@
    posterior
    sample
    postprocessing
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Low-level extensions
-
-   poisson_likelihood
-   numerical_atmosphere
