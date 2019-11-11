@@ -12,7 +12,7 @@ In the source repository we provide a dependency file that can facilitate
 the duplication of the environment from which X-PSI ``v0.1`` was released.
 This information may be useful if trying to diagnose installation problems.
 
-The development environment is summarised as follows:
+The development environment:
 
     * Ubuntu 14.04
     * Installed globally via ``apt``:
@@ -21,17 +21,17 @@ The development environment is summarised as follows:
         * BLAS, LAPACK, ATLAS
     * `Miniconda2 <https://docs.conda.io/en/latest/miniconda.html>`_
       (Python 2.7; 64-bit)
-    * conda environment exported to ``xpsi/environment.yml``
+    * Conda environment exported to ``xpsi/environment.yml``
 
 When inspecting the ``xpsi/environment.yml`` file, note the packages that
-where installed into a conda environment via pip. There are a few reasons
+where installed into a Conda environment via pip. There are a few reasons
 for these choices, but the main one is that pip is purely for Python
 packages and will not install unwanted non-Python libraries. To be clear, such
-libraries would be dependencies that could have been installed via conda,
+libraries would be dependencies that could have been installed via Conda,
 if we had not already satisfied them as listed above in this instance.
 
 The Python packages below can be installed straightforwardly from source
-or via a package manager (conda, pip, or a combination), via the instructions
+or via a package manager (Conda, pip, or a combination), via the instructions
 native to the packages. When searching for an open-source package you may need
 to add *conda-forge* package channel.
 
@@ -40,8 +40,9 @@ to add *conda-forge* package channel.
     The specifications on this page regard the development environment:
     you are free to set up alternative environment. For installation on a
     high-performance system, instructions on this page, which tailor to a
-    self-administered machine, may not be applicable. We direct the reader to
-    the :ref:`surfsystems` page for guidance.
+    self-administered machine, are either not applicable or do not target
+    performance. We direct the reader to the :ref:`surfsystems` page for
+    guidance.
 
 To duplicate from file:
 
@@ -72,7 +73,7 @@ The following Python packages are required for nested sampling:
     needs. Although production sampling runs need to be performed on a
     high-performance system, it is advisable to install MultiNest on your
     personal machine to gain experience on application to inexpensive test
-    problems. In the latter case we provide offer `from source`__ instructions.
+    problems. Below we offer `from source`__ instructions.
 
 The following Python packages are required for full functionality of the
 post-processing module:
@@ -190,9 +191,9 @@ First clone the repository:
 Use the last command to check for the presence of shared objects. There is
 *no* need to ``make install`` as suggested in the source code documentation.
 
-If you have not already installed mpi4py using pip (or conda assuming a
-different environment setup to that summarised in :ref:`dev_env`), then here is how
-to do it from source (e.g., on some path such as ``$HOME``):
+If you have not already installed mpi4py using pip (or Conda assuming a
+different environment setup to that summarised in :ref:`dev_env`), then here
+is how to do it from source (e.g., on some path such as ``$HOME``):
 
 .. code-block:: bash
 
@@ -205,7 +206,7 @@ to do it from source (e.g., on some path such as ``$HOME``):
     python setup.py install
 
 
-The package will be installed in your conda environment (if activated).
+The package will be installed in your Conda environment (if activated).
 
 To test:
 
@@ -226,7 +227,7 @@ Now you need the Python interface to MultiNest:
     cd <path/to/clone> pymultinest
     python setup.py install --user
 
-The package will be installed in your conda environment (if activated).
+The package will be installed in your Conda environment (if activated).
 
 .. note::
 
@@ -251,8 +252,9 @@ Clone X-PSI:
 
 .. _OpenMP: http://www.openmp.org
 
-To build and install ``xpsi`` from the clone root, you require an
-`OpenMP`_-enabled C compiler (known compatibility with icc, gcc, and clang):
+To build and install from the clone root, you require an
+`OpenMP`_-enabled C compiler (known compatibility with ``icc``, ``gcc``, and
+``clang``):
 
 .. code-block:: bash
 
@@ -260,16 +262,16 @@ To build and install ``xpsi`` from the clone root, you require an
 
 For ``icc``, You may need to prepend this command with
 ``LDSHARED="icc -shared"``. This ensures that both the compiler and linker
-are Intel, otherwise gcc linker would be invoked.
+are Intel, otherwise the ``gcc`` linker might be invoked.
 
 Provided the GSL ``<prefix>/bin`` is in your ``PATH``
 environment variable, the X-PSI ``setup.py`` script will automatically use the
 ``gsl-config`` executable to link the shared libraries and give the required
-cflags for compilation of the X-PSI extensions. Because the library location
+C flags for compilation of the X-PSI extensions. Because the library location
 will not change for runtime, we state the runtime linking instructions at
 compilation in the ``setup.py`` script.
 
-If you ever need to reinstall, first clean to recompile C files:
+If you ever need to reinstall, first clean to recompile the C files:
 
 .. code-block:: bash
 

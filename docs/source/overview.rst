@@ -3,7 +3,7 @@
 Overview
 ========
 
-*Here we give a high-level explanation of how one can construct a
+*Here we give a more abstract explanation of how one can construct a
 generative model within the X-PSI framework, and apply that model to
 astronomical X-ray photon data.*
 
@@ -54,9 +54,9 @@ We first need to consider our X-ray photon data set :math:`\mathcal{D}`: in
 general let it be constituted by some union of data subsets
 :math:`\mathcal{D}=\cup_{i}\mathcal{D}_{i}`, such that 
 :math:`\mathcal{D}_{i}\cap\mathcal{D}_{j}=\emptyset` for :math:`i\neq j`, and
-the subsets are statistically independent -- i.e., the joint sampling
+the subsets are statistically independent---i.e., the joint sampling
 distribution conditional on the model is separable. We describe the stochastic
-generation of this data via observations -- with a model X-ray telescope -- of
+generation of this data via observations---with a model X-ray telescope---of
 a *single* general relativistic compact model star (the *source*), whose
 exterior spacetime parameters we are interested in constraining (primarily for
 the purpose of dense matter study). Further, we assume that the data subsets
@@ -75,7 +75,7 @@ radiation field is everywhere invariant with respect to the proper time in some
 local comoving frame (which need not necessarily be the frame of the local
 photospheric plasma). Crucially, all data points (photon incidence events)
 constituting :math:`\mathcal{D}_{i}` need not be acquired within a single
-period of rotation of the source -- indeed, in reality sources are of galactic
+period of rotation of the source---indeed, in reality sources are of galactic
 origin but are sufficiently distant that the incident flux of photons is very
 small. The photon incidence events which comprise :math:`\mathcal{D}_{i}` can
 span an arbitrarily long time interval, but over that time interval the source
@@ -124,7 +124,7 @@ likelihood evaluation times are slow, of :math:`\mathcal{O}(1)\,s`.
 
 In addition, the source code for pulse simulation (required for likelihood
 evalution) is OpenMP-enabled, meaning that in principle one can
-explore hybrid parallelisation paradigms -- in particular, enabling
+explore hybrid parallelisation paradigms---in particular, enabling
 multithreaded computation on shared memory nodes of distributed architectures.
 
 

@@ -17,7 +17,7 @@ four physical cores, we spawn as many MPI processes.
           (see, e.g., :ref:`surfsystems`) to avoid hybrid parallelisation by
           libraries linked to NumPy and GSL, for instance.
 
-The script below is an example like that found in the `Model construction`
+The script below is an example like that found on the `Model construction`
 page, but without being interleaved with verbose explanations. The model
 implemented here is more involved than shown on the `Model construction`
 page, and than those defined for the example parameter
@@ -203,6 +203,8 @@ Photosphere
 ^^^^^^^^^^^
 
 .. code-block:: python
+
+    """ CustomPhotosphere.py """
 
     import numpy as np
     import math
