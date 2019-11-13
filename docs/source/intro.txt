@@ -12,7 +12,7 @@ The initial development of X-PSI was checkpointed with the completion of
 `initial development stage <https://semver.org/>`_. Backwards incompatible
 changes will be committed without incrementing the major version.
 The package should not be considered stable, and as such has not been
-packaged for automatic installation via a package manager (namely conda). To
+packaged for automatic installation via a package manager (namely Conda). To
 install X-PSI from source, and to install dependencies, see the
 :ref:`install` page.
 
@@ -22,10 +22,9 @@ repository owner until they are archived with Zenodo to accompany the paper.
 
 .. note::
 
-    These documentation pages are currently being rapidly updated during
-    development.
+    These documentation pages are being rapidly updated during development.
 
     These pages were generated from a local development build prior to release
     ``v0.2.0``. They are hosted on GitHub due to requests from potential users.
     The pages reference ``v0.1`` that is currently on the ``master`` branch
-    of the repo, but do not aim to document that version.
+    of the repo, but do not aim to comprehensively document that version.

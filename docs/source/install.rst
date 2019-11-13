@@ -54,7 +54,7 @@ Dependencies
 ------------
 
 X-PSI was developed in Python 2.7 environments. The following
-Python packages are required for strictly for likelihood functionality:
+Python packages are required for likelihood functionality:
 
 * `NumPy <https://docs.scipy.org/doc/numpy/index.html>`_
 * `Cython <http://cython.readthedocs.io/en/latest>`_
@@ -79,7 +79,7 @@ The following Python packages are required for full functionality of the
 post-processing module:
 
 * `Matplotlib <https://matplotlib.org/>`_
-* `getdist <https://getdist.readthedocs.io/en/latest/>`_
+* `GetDist <https://getdist.readthedocs.io/en/latest/>`_
   (posterior KDE corner plotting)\ [#]_
 * `h5py <http://docs.h5py.org/en/stable/>`_
   (storage of X-ray signals computed from posterior samples; also used by
@@ -104,19 +104,19 @@ ensemble-MCMC is optional.
 
 .. rubric:: Footnotes
 
-.. [#] The getdist_ software used in :ref:`R19` and with which X-PSI ``v0.1``
+.. [#] The GetDist_ software used in :ref:`R19` and with which X-PSI ``v0.1``
        interfaces may be cloned as follows:
 
        .. code-block:: bash
 
-            git clone [--single-branch] -b customisation https://github.com/ThomasEdwardRiley/getdist
+            git clone [--single-branch] -b customisation https://github.com/ThomasEdwardRiley/getdist.git
 
 .. [#] The nestcheck_ software used in :ref:`R19` and with which X-PSI ``v0.1``
        interfaces may be cloned as follows:
 
        .. code-block:: bash
 
-            git clone [--single-branch] -b feature/getdist_kde https://github.com/ThomasEdwardRiley/nestcheck
+            git clone [--single-branch] -b feature/getdist_kde https://github.com/ThomasEdwardRiley/nestcheck.git
 
 __ source_
 
