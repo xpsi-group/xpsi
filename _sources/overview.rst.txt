@@ -12,26 +12,22 @@ The overarching concept
 -----------------------
 
 X-PSI is designed for the statistical analysis of astronomical X-ray photon
-data sets acquired through observation of *pulsed* emission from compact stars.
-To achieve this, X-PSI couples code for likelihood evaluation with existing
-open-source software for posterior sampling and integration.
+data sets acquired through observation of *pulsed* emission from neutron stars.
+To achieve this, X-PSI couples code for likelihood function evaluation with
+existing open-source software for posterior sampling.
 
 
-X-ray photon data
------------------
+X-ray photon data and likelihood functions
+------------------------------------------
 
 The relevant data is acquired via direct astronomical detection of photons in
 the X-ray regime.
 
-
-Likelihoods
------------
-
-The likelihood 'distribution' is a function on an :math:`n`-dimensional
-parameter space, equal at each point :math:`\boldsymbol{\theta}` (with finite
-local prior probability density) to a parametrised sampling distribution on the
-space of the data evaluated at the *fixed* dataset :math:`\mathcal{D}`. The
-likelihood is defined by
+The likelihood function has domain :math:`\mathbb{R}^{n}`, defined at each point
+:math:`\boldsymbol{\theta}` (optionally with finite local prior probability
+density) to a parametrised sampling distribution on the space of the data
+evaluated at the *fixed* dataset :math:`\mathcal{D}`. The likelihood is
+defined by
 
 .. math::
 
@@ -39,53 +35,60 @@ likelihood is defined by
 
 where :math:`\mathcal{M}` is the global (hierarchical) model.
 
-A fundamental assumption upon which X-PSI is based is that the statistical
-generative model of interest can be constructed from a restricted set of
-abstract mathematical objects. These objects often have properties which are
-discrete representations of continuous mathematical structures, and these
-continuous structures are imbued with physical and statistical meaning in
-order to attempt to describe observable reality in terms of deterministic and
-stochastic processes.
+A fundamental assumption upon which X-PSI is based is that a model with
+sufficient complexity to describe data can be constructed from a restricted
+set of abstract objects that form a modelling language. Crucially, those
+objects must have software implementations that are sufficiently fast for
+parameter estimation to be tractable on a high-performance computing system,
+but are also simple for a modeller to piece together into a bespoke model.
+These objects often have properties which are discrete representations of
+continuous mathematical structures, and these continuous structures are imbued
+with physical meaning in order to attempt to describe
+observable reality in terms of deterministic and stochastic processes.
 
 In X-PSI, we adopt general relativistic gravity to construct a spacetime
-manifold associated with a model compact star.
+manifold associated with a model neutron star. The exterior
+spacetime of the star is stationary (and thus time-independent) during the
+acquisition of all data :math:`\mathcal{D}`.\ [#]_ Further, the exterior
+spacetime is assumed to be non-rotating for the purpose of constructing models
+that are expected to be more tractable given some resource allowance than models
+that account for rotation in the exterior metric. Spherical symmetry is
+arguably a logical baseline assumption to condition on at the outset of
+modelling some new data set.
 
 We first need to consider our X-ray photon data set :math:`\mathcal{D}`: in
 general let it be constituted by some union of data subsets
-:math:`\mathcal{D}=\cup_{i}\mathcal{D}_{i}`, such that 
+:math:`\mathcal{D}=\cup_{i}\mathcal{D}_{i}`, such that
 :math:`\mathcal{D}_{i}\cap\mathcal{D}_{j}=\emptyset` for :math:`i\neq j`, and
 the subsets are statistically independent---i.e., the joint sampling
 distribution conditional on the model is separable. We describe the stochastic
 generation of this data via observations---with a model X-ray telescope---of
-a *single* general relativistic compact model star (the *source*), whose
-exterior spacetime parameters we are interested in constraining (primarily for
-the purpose of dense matter study). Further, we assume that the data subsets
-:math:`\mathcal{D}_{i}` are acquired during disjoint time intervals, and that
-the exterior spacetime of the *source* is stationary (and thus
-time-independent) over the time interval spanning acquisition of all subsets
-which constitute :math:`\mathcal{D}`. More accurately, the spacetime of an
-accreting model star in a binary is non-stationary (and thus dynamic), but the
-evolution is considered sufficiently small to neglect.
+a single model star, whose exterior spacetime parameters we
+are interested in constraining (primarily for the purpose of dense matter
+study). Further, we assume that the data subsets :math:`\mathcal{D}_{i}` are
+realistically acquired during mutually disjoint time intervals.
 
-We have not yet given a concrete definition of a data subset
-:math:`\mathcal{D}_{i}`: let us define one data subset as having a parametrised
-model sampling distribution dependent on a single **pulse** generated by a
-rotating non-axisymmetric source radiation field, during which the source
-radiation field is everywhere invariant with respect to the proper time in some
-local comoving frame (which need not necessarily be the frame of the local
-photospheric plasma). Crucially, all data points (photon incidence events)
-constituting :math:`\mathcal{D}_{i}` need not be acquired within a single
-period of rotation of the source---indeed, in reality sources are of galactic
+Let us define a data subset :math:`\mathcal{D}_{i}` as having a parametrised
+model sampling distribution that is written in terms of a single *pulse*
+generated by a rotating non-axisymmetric surface radiation field. Further,
+let the radiation field be everywhere invariant with respect to the proper
+time in a local comoving frame (which need not necessarily be the frame of the
+local photospheric plasma). All photon events constituting
+:math:`\mathcal{D}_{i}` need not be acquired within a single period of
+rotation of the star---indeed, in reality the stars of interest are of galactic
 origin but are sufficiently distant that the incident flux of photons is very
-small. The photon incidence events which comprise :math:`\mathcal{D}_{i}` can
-span an arbitrarily long time interval, but over that time interval the source
-radiation field is assumed to be stable, with any quasi-periodicity manifesting
-due to relative motion the source and a model telescope, and/or due to a small
-evolution in the coordinate rotation frequency of the source radiation field.
+small.
+
+The photon events which comprise :math:`\mathcal{D}_{i}` can
+span an arbitrarily long time interval, but over that time interval the surface
+radiation field is assumed to be stable, with any quasi-periodicity in the
+signal incident on a telescope manifesting due to relative motion the star
+and the telescope, and/or due to a small evolution in the coordinate rotation
+frequency a mode of asymmetry in the surface radiation field.
 Each subset :math:`\mathcal{D}_{i}` is acquired with some model instrument with
 a response matrix (a photon energy redistribution matrix combined with an
-energy-dependent effective area vector) which is used in forward-modelling to
-transform a radiation field incident on the detector into a form which enters
+energy-dependent effective area vector) which is used to
+transform a radiation field incident on the telescope into a form which enters
 directly in the sampling distribution of :math:`\mathcal{D}_{i}`.
 
 Posteriors
@@ -93,7 +96,7 @@ Posteriors
 
 The joint posterior distribution on parameter space is the joint probability
 density distribution proportional to the integrable product of the likelihood
-function with a joint prior distribution.
+function with a joint prior distribution:
 
 .. math::
 
@@ -107,8 +110,10 @@ evaluated at :math:`\mathcal{D}`:
     \mathcal{P}(\mathcal{D}\;|\;\mathcal{M},\mathcal{I})
     =\mathop{\int}\mathcal{P}(\mathcal{D}\;|\;\boldsymbol{\theta},\mathcal{M})\mathcal{P}(\boldsymbol{\theta}\;|\;\mathcal{M},\mathcal{I})d^{n}\boldsymbol{\theta}.
 
-Also termed the 'evidence' or 'marginal likelihood', this normalisation can be
-approximated by MultiNest.
+Also termed the *evidence* or *fully marginal likelihood*, this normalisation
+can be approximated by a nested sampler such as MultiNest. However, the
+interpretation and robustness of the evidence in the context of model
+comparison is problem-dependent a subject of much debate in the literature.
 
 
 Parallelisation paradigms
@@ -141,3 +146,12 @@ gravitational mass monopole moment, whilst neglecting all other rotational
 
 An image-plane integrator may also be integrated for visualisation contexts,
 and for internal cross-checking of signal integration.
+
+
+.. rubric:: Footnotes
+
+.. [#] For a model star in a binary, the spacetime is non-stationary (and thus
+       dynamic), but the time evolution is considered unimportant for systems
+       containing X-ray sources.
+
+
