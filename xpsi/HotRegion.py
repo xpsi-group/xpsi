@@ -43,6 +43,91 @@ class HotRegion(ParameterSubspace):
     concentric with the ceding region or a hole, supposing either
     ``hole=True`` or ``cede=True``.
 
+    :param num_params: Number of parameters for hot region model. For a
+                       circular hot-spot, this includes the
+                       the spot centre colatitude and spot angular radius.
+
+    :param list bounds: Hard parameter bounds for the instance of
+                        :class:`.ParameterSubspace.ParameterSubspace`.
+
+    .. note::
+
+        The order of the list of the parameter bounds must follow an order
+        of precedence:
+
+        * super colatitude
+        * super angular radius
+        * cede or hole colatitude
+        * cede or hole angular radius
+        * cede or hole relative azimuth
+        * parameters controlling the local comoving radiation field over
+          the photospheric 2-surface (entirely the user's responsibility)
+
+        If the ceding region or the hole are concentric with the
+        superseding region, the colatitude and relative azimuth of the
+        ceding region or hole are not parameters.
+
+        These bounds might not be actually used, depending the user's
+        implementation of the joint prior, and the user can in that case
+        specify ``[None,None]`` for bounds pertaining to the ceding region
+        or the hole.
+
+    :param bool symmetry:
+        Is the radiation field axisymmetric (w.r.t the stellar rotation
+        axis) within a hot region with only a superseding region?
+        This determines which ``CellMesh`` integrator to
+        deploy. Only set to ``False`` if you overwrite
+        :meth:`_eval_srcRadFieldParamVectors` in a custom subclass.
+
+    :param sqrt_num_cells:
+        Number of cells in both colatitude and azimuth which form a
+        regular mesh on a curved 2-surface (a spacelike leaf of the
+        spacetime foliation). This is square-root of the approximate
+        number of cells whose centres should lie within a hot region.
+
+    :param min_sqrt_num_cells:
+        Sets the minimum number of cells per *subregion*, discretised to
+        the same degree in colatitude and azimuth. This setting has an
+        effect only when the hot region has two temperature components, in
+        the form of a superseding region and a ceding region.
+
+    :param min_sqrt_num_cells:
+        Sets the maximum number of cells per *subregion*, discretised to
+        the same degree in colatitude and azimuth. This setting has an
+        effect even when there is only one temperature component.
+
+    :param num_rays: Number of rays to trace (integrate) at each colatitude,
+                     distributed in angle subtended between ray tangent
+                     4-vector and radial outward unit vector w.r.t a local
+                     orthonormal tetrad.
+
+    :param int num_leaves: Number of leaves mesh motion is discretised into.
+
+    :param int num_phases: Number of phases in a discrete representation of
+                           the specific flux pulses on the interval
+                           :math:`[0,1]`.
+
+    :param phases: If not ``None``, a :class:`numpy.ndarray` of phases
+                   for a discrete representation of the specific flux
+                   pulses on the interval :math:`[0,1]`. If ``None``
+                   (default), the :obj:`num_phases` argument is utilised.
+
+    :param bool do_fast:
+        Activate fast precomputation to guide cell distribution between
+        two radiating regions at distinct temperatures.
+
+    .. note:: For each of the resolution parameters listed above, there is
+              a corresponding parameter whose value is respected if the
+              fast precomputation mode is activated.
+
+    :param bool is_secondary:
+        If ``True``, shifts the cell mesh by :math:`\pi` radians about
+        the stellar rotation axis for pulse integration. This is merely
+        a choice that can be made, and is not crucial. Note that the
+        (fast) phase-shifting applied near the end of the likelihood
+        evaluation is related to this choice and thus phase-shift parameter
+        prior support can be chosen accordingly.
+
     """
 
     def __init__(self,
@@ -66,93 +151,7 @@ class HotRegion(ParameterSubspace):
                  fast_num_rays = 100,
                  fast_num_leaves = 32,
                  is_secondary = False):
-        """
-        :param num_params: Number of parameters for hot region model. For a
-                           circular hot-spot, this includes the
-                           the spot centre colatitude and spot angular radius.
 
-        :param list bounds: Hard parameter bounds for the instance of
-                            :class:`.ParameterSubspace.ParameterSubspace`.
-
-        .. note::
-
-            The order of the list of the parameter bounds must follow an order
-            of precedence:
-
-            * super colatitude
-            * super angular radius
-            * cede or hole colatitude
-            * cede or hole angular radius
-            * cede or hole relative azimuth
-            * parameters controlling the local comoving radiation field over
-              the photospheric 2-surface (entirely the user's responsibility)
-
-            If the ceding region or the hole are concentric with the
-            superseding region, the colatitude and relative azimuth of the
-            ceding region or hole are not parameters.
-
-            These bounds might not be actually used, depending the user's
-            implementation of the joint prior, and the user can in that case
-            specify ``[None,None]`` for bounds pertaining to the ceding region
-            or the hole.
-
-        :param bool symmetry:
-            Is the radiation field axisymmetric (w.r.t the stellar rotation
-            axis) within a hot region with only a superseding region?
-            This determines which ``CellMesh`` integrator to
-            deploy. Only set to ``False`` if you overwrite
-            :meth:`_eval_srcRadFieldParamVectors` in a custom subclass.
-
-        :param sqrt_num_cells:
-            Number of cells in both colatitude and azimuth which form a
-            regular mesh on a curved 2-surface (a spacelike leaf of the
-            spacetime foliation). This is square-root of the approximate
-            number of cells whose centres should lie within a hot region.
-
-        :param min_sqrt_num_cells:
-            Sets the minimum number of cells per *subregion*, discretised to
-            the same degree in colatitude and azimuth. This setting has an
-            effect only when the hot region has two temperature components, in
-            the form of a superseding region and a ceding region.
-
-        :param min_sqrt_num_cells:
-            Sets the maximum number of cells per *subregion*, discretised to
-            the same degree in colatitude and azimuth. This setting has an
-            effect even when there is only one temperature component.
-
-        :param num_rays: Number of rays to trace (integrate) at each colatitude,
-                         distributed in angle subtended between ray tangent
-                         4-vector and radial outward unit vector w.r.t a local
-                         orthonormal tetrad.
-
-        :param int num_leaves: Number of leaves mesh motion is discretised into.
-
-        :param int num_phases: Number of phases in a discrete representation of
-                               the specific flux pulses on the interval
-                               :math:`[0,1]`.
-
-        :param phases: If not ``None``, a :class:`numpy.ndarray` of phases
-                       for a discrete representation of the specific flux
-                       pulses on the interval :math:`[0,1]`. If ``None``
-                       (default), the :obj:`num_phases` argument is utilised.
-
-        :param bool do_fast:
-            Activate fast precomputation to guide cell distribution between
-            two radiating regions at distinct temperatures.
-
-        .. note:: For each of the resolution parameters listed above, there is
-                  a corresponding parameter whose value is respected if the
-                  fast precomputation mode is activated.
-
-        :param bool is_secondary:
-            If ``True``, shifts the cell mesh by :math:`\pi` radians about
-            the stellar rotation axis for pulse integration. This is merely
-            a choice that can be made, and is not crucial. Note that the
-            (fast) phase-shifting applied near the end of the likelihood
-            evaluation is related to this choice and thus phase-shift parameter
-            prior support can be chosen accordingly.
-
-        """
         super(HotRegion, self).__init__(num_params, bounds)
 
         if self._num_params < 3:

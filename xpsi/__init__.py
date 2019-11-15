@@ -29,9 +29,11 @@ if not __XPSI_SETUP__:
 
     import six as _six
     from inspect import isgeneratorfunction as _isgeneratorfunction
+    from functools import wraps
 
     def make_verbose(enter_msg='', exit_msg=''):
         def decorator(func):
+            @wraps(func)
             def wrapper(*args, **kwargs):
                 if _verbose:
                     if enter_msg and isinstance(enter_msg, _six.string_types):

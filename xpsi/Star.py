@@ -14,15 +14,13 @@ class Star(object):
     embedded in that ambient spacetime for disjoint intervals of coordinate
     time.
 
+    :param spacetime: An instance of :class:`~.Spacetime.Spacetime`.
+
+    :param list photospheres: Each element must be an instance of
+                              :class:`~.Photosphere`.
+
     """
     def __init__(self, spacetime, photospheres):
-        """
-        :param spacetime: An instance of :class:`~.Spacetime.Spacetime`.
-
-        :param list photospheres: Each element must be an instance of
-                                  :class:`~.Photosphere`.
-
-        """
         try:
             assert isinstance(spacetime, Spacetime)
         except AssertionError:

@@ -7,15 +7,17 @@ from abc import ABCMeta, abstractmethod
 from .ParameterSubspace import ParameterSubspace, BoundsError
 
 class Spacetime(ParameterSubspace):
-    """ The ambient Schwarzschild spacetime. """
+    """ The ambient Schwarzschild spacetime.
+
+    :param int num_params: Number of free spacetime parameters.
+
+    :param list bounds: Tuples of hard bounds on parameters.
+
+    """
 
     @abstractmethod
     def __init__(self, num_params, bounds):
         """
-        :param int num_params: Number of free spacetime parameters.
-
-        :param list bounds: Tuples of hard bounds on parameters.
-
         """
         super(Spacetime, self).__init__(num_params, bounds)
 

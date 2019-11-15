@@ -22,10 +22,7 @@ class Instrument(ParameterSubspace):
     ``super().__init__``. Specialist constructors can be defined in a subclass
     using the ``@classmethod`` decorator.
 
-    """
-    def __init__(self, num_params, bounds, matrix, energy_edges):
-        """
-        :param matrix: A ``p x q`` :class:`numpy.ndarray` which is the
+    :param matrix: A ``p x q`` :class:`numpy.ndarray` which is the
                        product of a redistribution matrix and effective area
                        vector. The input energy channels must increase along
                        the columns of :obj:`matrix`, and the output channels
@@ -33,19 +30,20 @@ class Instrument(ParameterSubspace):
                        *units* of the elements must be that of an *effective*
                        area (:math:`cm^2`).
 
-        :param energy_edges: Energy edges of the instrument channels which
-                             must be congruent to the first dimension of the
-                             :obj:`matrix` -- i.e., the number of edges must
-                             be ``q + 1``. The edges must be monotonically
-                             increasing.
+    :param energy_edges: Energy edges of the instrument channels which
+                         must be congruent to the first dimension of the
+                         :obj:`matrix` -- i.e., the number of edges must
+                         be ``q + 1``. The edges must be monotonically
+                         increasing.
 
-        .. note:: The dimensions of the response matrix need not be equal, but
-                  it is required that the number of input channels be greater
-                  than or equal to the number of output channels -- i.e.,
-                  ``p <= q``. If ``p < q`` then it is implied than subsets of
-                  adjacent output channels are actually grouped together.
+    .. note:: The dimensions of the response matrix need not be equal, but
+              it is required that the number of input channels be greater
+              than or equal to the number of output channels -- i.e.,
+              ``p <= q``. If ``p < q`` then it is implied that subsets of
+              adjacent output channels are actually grouped together.
 
-        """
+    """
+    def __init__(self, num_params, bounds, matrix, energy_edges):
         super(Instrument, self).__init__(num_params, bounds)
 
         try:

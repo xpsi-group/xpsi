@@ -15,29 +15,27 @@ class Prior(object):
     """ The (joint) prior distribution.
 
     Methods to both evaluate the distribution (required by emcee) and
-    draw uniformly from the distribution (required by PolyChord, and by default
+    draw uniformly from the distribution (required by MultiNest, and by default
     is used to initialise the emcee ensemble).
 
-    The distribution must be integrable (proper, regular) and is thus
+    The distribution must be integrable (proper) and is thus
     *usually* bounded (compactly supported on a space). Bounds is a
     list of hard one-dimensional limits used to rapidly evaluate for
     finiteness.
+
+    :param list bounds: The set of 2-tuples of hard parameter bounds. The
+                        list has length :math:`d`, the dimensionality of
+                        the space :math:`\mathbb{R}^{d}`.
+
+    .. note:: If you wish to check bounds manually, implement
+              the ``__init__()`` and ``__call__()`` methods, and do not
+              access the default code (e.g., via ``super()``).
 
     """
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(self, bounds):
-        """
-        :param list bounds: The set of 2-tuples of hard parameter bounds. The
-                            list has length :math:`d`, the dimensionality of
-                            the space :math:`\mathbb{R}^{d}`.
-
-        .. note:: If you wish to check bounds manually, implement the
-                  the ``__init__()`` and ``__call__()`` methods, and do not
-                  access the default code (e.g., via ``super()``).
-
-        """
         self._bounds = bounds
 
     @abstractmethod
@@ -107,8 +105,9 @@ class Prior(object):
                   'with finite prior density:',
                   'Fractional hypervolume estimated')
     def estimate_hypercube_frac(self, ndraws=5):
-        """ Estimate using Monte Carlo integration the fractional hypervolume
-            within a unit hypercube at which prior density is finite.
+        """
+        Estimate using Monte Carlo integration the fractional hypervolume
+        within a unit hypercube at which prior density is finite.
 
         :param int ndraws:
             Base-10 logarithm of number of draws from the prior to require

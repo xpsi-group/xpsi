@@ -16,31 +16,31 @@ class IntegrationError(xpsiError):
     """ Raised if a numerical problems encountered during integration. """
 
 class Elsewhere(ParameterSubspace):
-    """ The photospheric radiation field elsewhere (other than the spot). """
+    """ The photospheric radiation field elsewhere (other than the spot).
+
+    :param int num_params: Number of parameters for model of photospheric
+                           radiation field elsewhere.
+
+    :param list bounds: Hard parameter bounds for the instance of
+                        :class:`.ParameterSubspace.ParameterSubspace`.
+
+    :param int num_rays: Number of rays to trace (integrate) at each
+                         colatitude, distributed in angle subtended between
+                         ray tangent 4-vector and radial outward unit
+                         vector w.r.t a local orthonormal tetrad.
+
+    :param int sq_num_cells: Number of cells in both colatitude and azimuth
+                             which form a regular mesh on a closed curved
+                             2-surface (which is a compact subset of a
+                             spacelike leaf of the spacetime foliation).
+
+    """
 
     def __init__(self,
                  num_params,
                  bounds,
                  num_rays = 1000,
                  sq_num_cells = 64):
-        """
-        :param int num_params: Number of parameters for model of photospheric
-                               radiation field elsewhere.
-
-        :param list bounds: Hard parameter bounds for the instance of
-                            :class:`.ParameterSubspace.ParameterSubspace`.
-
-        :param int num_rays: Number of rays to trace (integrate) at each
-                             colatitude, distributed in angle subtended between
-                             ray tangent 4-vector and radial outward unit
-                             vector w.r.t a local orthonormal tetrad.
-
-        :param int sq_num_cells: Number of cells in both colatitude and azimuth
-                                 which form a regular mesh on a closed curved
-                                 2-surface (which is a compact subset of a
-                                 spacelike leaf of the spacetime foliation).
-
-        """
         super(Elsewhere, self).__init__(num_params, bounds)
 
         self.num_rays = num_rays
