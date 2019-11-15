@@ -24,7 +24,7 @@ The development environment:
     * Conda environment exported to ``xpsi/environment.yml``
 
 When inspecting the ``xpsi/environment.yml`` file, note the packages that
-where installed into a Conda environment via pip. There are a few reasons
+were installed into a Conda environment via pip. There are a few reasons
 for these choices, but the main one is that pip is purely for Python
 packages and will not install unwanted non-Python libraries. To be clear, such
 libraries would be dependencies that could have been installed via Conda,
