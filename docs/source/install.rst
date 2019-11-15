@@ -62,7 +62,11 @@ Python packages are required for likelihood functionality:
 The following Python packages are required for nested sampling:
 
 * `PyMultiNest <https://github.com/JohannesBuchner/PyMultiNest>`_
+  (the interface to the MultiNest library)
 * `mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_
+  (for parallelisation)
+* `SciPy <https://docs.scipy.org/doc/scipy/reference/>`_
+  (optional core package useful for, e.g., inverse prior sampling)
 
 .. note::
 
@@ -301,10 +305,10 @@ If you wish to compile the documentation you require `Sphinx`_:
 The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
 notebooks for the tutorials in this documentation. The ``.html`` files can
 naturally be opened in a browser. You need the relevant extensions and a
-theme such as `sphinx_rtd_theme`_. Customisation can be made
+theme such as the Sphinx `Read the Docs theme`__. Customisation can be made
 in the ``xpsi/docs/source/conf.py`` script.
 
-.. _sphinx_rtd_theme: https://sphinx-rtd-theme.readthedocs.io/en/latest/
+__ https://sphinx-rtd-theme.readthedocs.io/en/latest/
 
 Note that if you require links to the source code in the HTML files, you need
 to ensure Sphinx imports the ``xpsi`` package from the *source* directory
