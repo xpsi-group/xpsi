@@ -21,9 +21,7 @@ class Star(object):
 
     """
     def __init__(self, spacetime, photospheres):
-        try:
-            assert isinstance(spacetime, Spacetime)
-        except AssertionError:
+        if not isinstance(spacetime, Spacetime):
             raise TypeError('Invalid type for ambient spacetime object.')
         else:
             self._spacetime = spacetime
