@@ -16,46 +16,28 @@ class PriorError(ValueError):
 class Posterior(object):
     """ The (joint) posterior distribution.
 
-    A callable instance is required by `emcee <http://dfm.io/emcee/current/>`_.
+    A callable instance is required by `emcee <http://dfm.io/emcee/current/>`_
+    (but is not required for nested sampling).
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
 
     """
     def __init__(self,
                  likelihood,
                  prior,
-                 source_pulse_blobs = False,
                  **kwargs):
-        """
-        :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
 
-        :param prior: An instance of :class:`~.Prior.Prior`.
-
-        :param bool source_pulse_blobs: Store ``emcee`` blobs with the
-                                        incident source pulses.
-
-        """
-        try:
-            assert isinstance(likelihood, Likelihood)
-        except AttributeError:
+        if not isinstance(likelihood, Likelihood):
             raise TypeError('Invalid type for likelihood object.')
         else:
             self._likelihood = likelihood
 
-        try:
-            assert isinstance(prior, Prior)
-        except AttributeError:
+        if not isinstance(prior, Prior):
             raise TypeError('Invalid type for prior object.')
         else:
             self._prior = prior
-
-        try:
-            assert isinstance(source_pulse_blobs, bool)
-        except AssertionError:
-            self._source_pulse_blobs = False
-        else:
-            self._source_pulse_blobs = source_pulse_blobs
-
-            if source_pulse_blobs:
-                self._blobs = [None] * len(self._likelihood.pulses)
 
     @property
     def likelihood(self):
@@ -76,7 +58,7 @@ class Posterior(object):
         lp = self._prior(p)
 
         if _np.isnan(lp):
-            raise PriorError('Log-prior is ``NaN``.')
+            raise PriorError('Log-prior is not a number.')
 
         if _np.isfinite(lp):
             try:
@@ -87,17 +69,4 @@ class Posterior(object):
         else:
             ll = 0.0
 
-        if self._source_pulse_blobs:
-            for i, pulse in enumerate(self._likelihood.pulses):
-                self._blobs[i] = pulse.derived
-            return ll + lp, self._blobs
-        else:
-            return ll + lp
-
-
-
-
-
-
-
-
+        return ll + lp
