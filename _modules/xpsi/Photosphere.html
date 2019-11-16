@@ -205,41 +205,31 @@
 <span class="sd">    The exterior domain of the photosphere is everywhere vacuum.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">locked</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param num_params: Number of parameters for the *global* photosphere,</span>
-<span class="sd">                           which are not defined by the</span>
-<span class="sd">                           :class:`~.HotRegion.HotRegion`</span>
-<span class="sd">                           or :class:`~.Elsewhere.Elsewhere` parameter</span>
-<span class="sd">                           subspaces. At present this is restricted to the</span>
-<span class="sd">                           coordinate rotation frequency if not *locked*</span>
-<span class="sd">                           to the stellar rotation frequency.</span>
-
-<span class="sd">        :param list bounds: Hard parameter bounds for the instance of</span>
-<span class="sd">                            :class:`.ParameterSubspace.ParameterSubspace`.</span>
-
 <span class="sd">        :param str tag: An identification tag to enforce intended pairing with</span>
 <span class="sd">                        a :class:`~.Pulse.Pulse` object.</span>
 
-<span class="sd">        :param hot: An instance of :class:`~.HotRegion.HotRegion` (or a</span>
-<span class="sd">                       derived class). This objects represents the hot</span>
-<span class="sd">                       regions of the surface that in most use-cases will be</span>
-<span class="sd">                       assumed to contain radiating material that is hotter</span>
-<span class="sd">                       than that *elsewhere*.</span>
+<span class="sd">        :param obj hot: An instance of :class:`~.HotRegion.HotRegion` (or a</span>
+<span class="sd">                        derived class). This objects represents the hot</span>
+<span class="sd">                        regions of the surface that in most use-cases will be</span>
+<span class="sd">                        assumed to contain radiating material that is hotter</span>
+<span class="sd">                        than that *elsewhere*.</span>
 
-<span class="sd">        :param elsewhere: An instance of :class:`~.Elsewhere.Elsewhere` (or a</span>
-<span class="sd">                          derived class).</span>
+<span class="sd">        :param obj elsewhere: An instance of :class:`~.Elsewhere.Elsewhere`</span>
+<span class="sd">                              (or a derived class).</span>
+
+<span class="sd">        :param bool locked:</span>
+<span class="sd">            Has no effect. However, if one wanted the coordinate rotation</span>
+<span class="sd">            frequency of a mode of asymmetry in the photosphere to *not be</span>
+<span class="sd">            locked* to the stellar rotation frequency, a parameter could</span>
+<span class="sd">            be defined for this object and the hot region base class could</span>
+<span class="sd">            be modified to normalise the ray lags by this frequency instead</span>
+<span class="sd">            of the stellar rotation frequency.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_params</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">()</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Photosphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Photosphere parameter subspace dimensionality &#39;</span>
-                             <span class="s1">&#39;can be a maximum of one.&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">frequency</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">frequency</span> <span class="o">&lt;=</span> <span class="mf">1000.0</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">BoundsError</span><span class="p">(</span><span class="s1">&#39;Invalid rotation frequency bound.&#39;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
