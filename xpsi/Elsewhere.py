@@ -10,10 +10,10 @@ from .cellmesh.integrator_for_time_invariance import integrate_radField as _inte
 from .ParameterSubspace import ParameterSubspace
 
 class RayError(xpsiError):
-    """ Raised if a numerical problems encountered during ray integration. """
+    """ Raised if a problem was encountered during ray integration. """
 
 class IntegrationError(xpsiError):
-    """ Raised if a numerical problems encountered during integration. """
+    """ Raised if a problem was encountered during signal integration. """
 
 class Elsewhere(ParameterSubspace):
     """ The photospheric radiation field elsewhere (other than the spot).
@@ -29,10 +29,10 @@ class Elsewhere(ParameterSubspace):
                          ray tangent 4-vector and radial outward unit
                          vector w.r.t a local orthonormal tetrad.
 
-    :param int sq_num_cells: Number of cells in both colatitude and azimuth
-                             which form a regular mesh on a closed curved
-                             2-surface (which is a compact subset of a
-                             spacelike leaf of the spacetime foliation).
+    :param int sqrt_num_cells: Number of cells in both colatitude and azimuth
+                               which form a regular mesh on a closed curved
+                               2-surface (which is a compact subset of a
+                               spacelike leaf of the spacetime foliation).
 
     """
 
@@ -40,11 +40,11 @@ class Elsewhere(ParameterSubspace):
                  num_params,
                  bounds,
                  num_rays = 1000,
-                 sq_num_cells = 64):
+                 sqrt_num_cells = 64):
         super(Elsewhere, self).__init__(num_params, bounds)
 
         self.num_rays = num_rays
-        self.sq_num_cells = sq_num_cells
+        self.sqrt_num_cells = sqrt_num_cells
 
     @property
     def num_rays(self):
@@ -60,15 +60,15 @@ class Elsewhere(ParameterSubspace):
             raise TypeError('Number of rays must be an integer.')
 
     @property
-    def sq_num_cells(self):
+    def sqrt_num_cells(self):
         """ Get the number of cell parallels. """
         return self._num_rays
 
-    @sq_num_cells.setter
-    def sq_num_cells(self, n):
+    @sqrt_num_cells.setter
+    def sqrt_num_cells(self, n):
         """ Set the number of cell parallels. """
         try:
-            self._sq_num_cells = int(n)
+            self._sqrt_num_cells = int(n)
         except TypeError:
             raise TypeError('Number of cells must be an integer.')
         else:
@@ -81,7 +81,7 @@ class Elsewhere(ParameterSubspace):
 
     def print_settings(self):
         """ Print numerical settings. """
-        print('Number of cell parallels: ', self.sq_num_cells)
+        print('Number of cell parallels: ', self.sqrt_num_cells)
         print('Number of rays per parallel: ', self.num_rays)
 
     def _construct_cellMesh(self, st, threads):
@@ -99,7 +99,7 @@ class Elsewhere(ParameterSubspace):
          self._maxAlpha,
          self._cos_gamma,
          self._effGrav) = _construct_closed_cellMesh(threads,
-                                                     self._sq_num_cells,
+                                                     self._sqrt_num_cells,
                                                      self._num_cells,
                                                      st.M,
                                                      st.r_s,
@@ -125,7 +125,7 @@ class Elsewhere(ParameterSubspace):
          self._cos_alpha,
          self._lag,
          self._maxDeflection) = _compute_rays(threads,
-                                              self._sq_num_cells,
+                                              self._sqrt_num_cells,
                                               st.r_s,
                                               self._r_s_over_r,
                                               self._maxAlpha,
@@ -134,52 +134,35 @@ class Elsewhere(ParameterSubspace):
         if terminate_calculation == 1:
             raise RayError('Fatal numerical problem during ray integration.')
 
-    def _compute_cellParamVecs(self, p):
+    def _compute_cellParamVecs(self, p, *args):
         """
-        Precomputes photospheric source radiation field parameter vectors
+        Precompute photospheric source radiation field parameter vectors
         cell-by-cell.
 
-        :param list p: Arguments for the
-                       :meth:`_eval_srcRadFieldParamVectors` method.
-
-        :param optional spot: An instance of :class:`.Spot`. If ``None``
-                              the ambient source radiation field is evaluated
-                              in terms of parameter vectors at the centres of
-                              cells defined in the ambient cell mesh. If
-                              :obj:`spot` is an instance, the parameter vectors
-                              are evaluated at the centres of cells defined
-                              in the spot cell mesh.
-        """
-        self._cellParamVecs = self.eval_srcRadFieldParamVectors(self._theta.shape, p)
-
-        for i in range(self._cellParamVecs.shape[1]):
-            self._cellParamVecs[:,i,-1] *= self._effGrav
-
-    @staticmethod
-    def eval_srcRadFieldParamVectors(shape, p):
-        """
-        .. note:: Default. Can be overwritten in a custom subclass, *if you know
-                  what you are doing*\ .
-
-        The ambient field is uniform with respect to local Lagrangian tetrads.
-        Parameters are matrices, and a matrix must be returned.
-
-        Function to evaluate the source radiation field parameter vector at
-        points on a closed 2-surface (a spacelike leaf of the spacetime
-        foliation).
-
-        :param tuple shape: Dimensions of a 2D array of points.
-
-        :param list p: The local radiation field parameter vector, which
-                       is to be passed to the low-level routines.
+        :param list p:
+            Parameters to transform into local comoving radiation field
+            variables.
 
         """
-        cellParamVecs = _np.ones((shape[0], shape[1], len(p)+1),
-                                 dtype=_np.double)
+        if args:
+            cellParamVecs = _np.ones((args[0].shape[0],
+                                      args[0].shape[1],
+                                      len(p)+1), dtype=_np.double)
 
-        cellParamVecs[...,:-1] *= _np.array(p)
+            cellParamVecs[...,:-1] *= _np.array(p)
 
-        return cellParamVecs
+        else:
+            self._cellParamVecs = _np.ones((self._theta.shape[0],
+                                            self._theta.shape[1],
+                                            len(p)+1), dtype=_np.double)
+
+            self._cellParamVecs[...,:-1] *= _np.array(p)
+
+            for i in range(self._cellParamVecs.shape[1]):
+                self._cellParamVecs[:,i,-1] *= self._effGrav
+
+        if args:
+            return cellParamVecs
 
     def embed(self, spacetime, p, threads):
         """ Embed the photosphere elsewhere. """
@@ -197,7 +180,7 @@ class Elsewhere(ParameterSubspace):
                          in keV.
 
         :param int threads: Number of ``OpenMP`` threads the integrator is
-                            permitted to spawn. 
+                            permitted to spawn.
 
         """
         out = _integrator(threads,
@@ -205,7 +188,7 @@ class Elsewhere(ParameterSubspace):
                            st.Omega,
                            st.r_s,
                            st.i,
-                           self._sq_num_cells,
+                           self._sqrt_num_cells,
                            self._cellArea,
                            self._r,
                            self._r_s_over_r,
