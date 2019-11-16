@@ -100,24 +100,18 @@ class Pulse(ParameterSubspace):
         except TypeError:
             raise TypeError('Number of parameters must be an integer.')
 
-        try:
-            assert isinstance(data, Data)
-        except AssertionError:
+        if not isinstance(data, Data):
             raise TypeError('Invalid type for a data object.')
         else:
             self._data = data
 
-        try:
-            assert isinstance(instrument, Instrument)
-        except AssertionError:
+        if not isinstance(instrument, Instrument):
             raise TypeError('Invalid type for an instrument object.')
         else:
             self._instrument = instrument
 
         if background is not None:
-            try:
-                assert isinstance(background, Background)
-            except AssertionError:
+            if not isinstance(background, Background):
                 raise TypeError('Invalid type for a background object.')
             else:
                 self._background = background
@@ -125,9 +119,7 @@ class Pulse(ParameterSubspace):
             self._background = None
 
         if interstellar is not None:
-            try:
-                assert isinstance(interstellar, Interstellar)
-            except AssertionError:
+            if not isinstance(interstellar, Interstellar):
                 raise TypeError('Invalid type for an interstellar object.')
             else:
                 self._interstellar = interstellar
@@ -365,11 +357,11 @@ class Pulse(ParameterSubspace):
             if self.store:
                 self._fast_incident_spectrum = []
 
-            for cap in signals:
+            for hotRegion in signals:
                 fast_total_counts = []
                 energies = []
 
-                for component in cap:
+                for component in hotRegion:
                     if component is None:
                         energies.append(self.default_energies)
                         fast_total_counts.append(None)
@@ -414,9 +406,9 @@ class Pulse(ParameterSubspace):
             try:
                 self.energies
             except AttributeError:
-                for cap in signals:
+                for hotRegion in signals:
                     energies = []
-                    for component in cap:
+                    for component in hotRegion:
                         energies.append(self.default_energies)
                     self.energies = tuple(energies)
 
@@ -426,12 +418,12 @@ class Pulse(ParameterSubspace):
                 except AttributeError:
                     pass
 
-                for cap, cap_energies in zip(signals, self.energies):
-                    _ = energy_interpolator(1, cap[0],
-                                            _np.log10(cap_energies[0]),
+                for hotRegion, hotRegion_energies in zip(signals, self.energies):
+                    _ = energy_interpolator(1, hotRegion[0],
+                                            _np.log10(hotRegion_energies[0]),
                                             _np.log10(self.logspace_energies_hires))
 
-                    for component, component_energies in zip(cap[1:], cap_energies[1:]):
+                    for component, component_energies in zip(hotRegion[1:], hotRegion_energies[1:]):
                         _ += energy_interpolator(1, component,
                                                  _np.log10(component_energies),
                                                  _np.log10(self.logspace_energies_hires))
@@ -458,13 +450,13 @@ class Pulse(ParameterSubspace):
                 except AttributeError:
                     pass
 
-            for cap, cap_energies in zip(signals, self.energies):
+            for hotRegion, hotRegion_energies in zip(signals, self.energies):
                 integrated = channel_integrator(threads,
-                                                cap[0],
-                                                _np.log10(cap_energies[0]),
+                                                hotRegion[0],
+                                                _np.log10(hotRegion_energies[0]),
                                                 _np.log10(self._energy_edges))
 
-                for component, component_energies in zip(cap[1:], cap_energies[1:]):
+                for component, component_energies in zip(hotRegion[1:], hotRegion_energies[1:]):
                     integrated += channel_integrator(threads,
                                                      component,
                                                      _np.log10(component_energies),
