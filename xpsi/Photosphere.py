@@ -9,36 +9,30 @@ from .Elsewhere import Elsewhere
 from .ParameterSubspace import ParameterSubspace, BoundsError
 
 class Photosphere(ParameterSubspace):
-    """
-    A photosphere embedded in an ambient spacetime for use with the CellMesh
-    algorithm.
+    """ A photosphere embedded in an ambient Schwarzschild spacetime.
 
-    The exterior domain of the photosphere is everywhere vacuum.
+    :param str tag: An identification tag to enforce intended pairing with
+                    a :class:`~.Pulse.Pulse` object.
+
+    :param obj hot: An instance of :class:`~.HotRegion.HotRegion` (or a
+                    derived class). This objects represents the hot
+                    regions of the surface that in most use-cases will be
+                    assumed to contain radiating material that is hotter
+                    than that *elsewhere*.
+
+    :param obj elsewhere: An instance of :class:`~.Elsewhere.Elsewhere`
+                          (or a derived class).
+
+    :param bool locked:
+        Has no effect. However, if one wanted the coordinate rotation
+        frequency of a mode of asymmetry in the photosphere to *not be
+        locked* to the stellar rotation frequency, a parameter could
+        be defined for this object and the hot region base class could
+        be modified to normalise the ray lags by this frequency instead
+        of the stellar rotation frequency.
 
     """
     def __init__(self, tag, hot, elsewhere=None, locked=True):
-        """
-        :param str tag: An identification tag to enforce intended pairing with
-                        a :class:`~.Pulse.Pulse` object.
-
-        :param obj hot: An instance of :class:`~.HotRegion.HotRegion` (or a
-                        derived class). This objects represents the hot
-                        regions of the surface that in most use-cases will be
-                        assumed to contain radiating material that is hotter
-                        than that *elsewhere*.
-
-        :param obj elsewhere: An instance of :class:`~.Elsewhere.Elsewhere`
-                              (or a derived class).
-
-        :param bool locked:
-            Has no effect. However, if one wanted the coordinate rotation
-            frequency of a mode of asymmetry in the photosphere to *not be
-            locked* to the stellar rotation frequency, a parameter could
-            be defined for this object and the hot region base class could
-            be modified to normalise the ray lags by this frequency instead
-            of the stellar rotation frequency.
-
-        """
         num_params = 0; bounds = ()
         super(Photosphere, self).__init__(num_params, bounds)
 
