@@ -55,6 +55,10 @@ class Prior(object):
     def inverse_sample(self, hypercube):
         """ Draw sample uniformly from the distribution via inverse sampling.
 
+        By default, implements a flat density between bounds. If ``None`` is
+        in a tuple of bounds, ``None`` is assigned to the corresponding
+        coordinate and the user must handle in a custom subclass.
+
         :param hypercube: A pseudorandom point in an n-dimensional hypercube
 
         :return: A parameter ``list``.
@@ -63,7 +67,10 @@ class Prior(object):
         p = [0.0] * len(hypercube)
 
         for i, b in enumerate(self._bounds):
-            p[i] = b[0] + (b[1] - b[0]) * hypercube[i]
+            if None not in b:
+                p[i] = b[0] + (b[1] - b[0]) * hypercube[i]
+            else:
+                p[i] = None
 
         return p
 
