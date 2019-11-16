@@ -11,10 +11,10 @@ from .cellmesh.rays import compute_rays as _compute_rays
 from .ParameterSubspace import ParameterSubspace, BoundsError
 
 class RayError(xpsiError):
-    """ Raised if a numerical problems encountered during ray integration. """
+    """ Raised if a problem was encountered during ray integration. """
 
 class PulseError(xpsiError):
-    """ Raised if a numerical problems encountered during integration. """
+    """ Raised if a problem was encountered during signal integration. """
 
 class HotRegion(ParameterSubspace):
     """ A photospheric hot region that is contiguous.
@@ -660,7 +660,7 @@ class HotRegion(ParameterSubspace):
                 self.__compute_cellParamVecs(p[5:7])
 
         if args:
-            self._super_correctionVecs = args[0](self._super_theta.shape, args[1])
+            self._super_correctionVecs = args[0](args[1], self._super_cellArea)
             for i in range(self._super_theta.shape[1]):
                 self._super_correctionVecs[:,i,-1] *= self._super_effGrav
 
@@ -732,12 +732,6 @@ class HotRegion(ParameterSubspace):
         else:
             super_energies = cede_energies = energies
 
-        #print('Primary super energies', super_energies)
-        #print('Primary cede energies', cede_energies)
-
-        # change low-level code so as to require only a parameter vector
-        # for the correction, and not a larger array of the same parameter
-        # vector? Effective gravity varies with colatitude however.
         super_pulse = self._integrator(threads,
                                        st.M,
                                        st.R,
