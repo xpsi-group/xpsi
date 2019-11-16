@@ -290,9 +290,6 @@ class Likelihood(ParameterSpace):
                     if isinstance(e, HotRegion.PulseError):
                         print('Warning: HotRegion.PulseError raised for '
                               'photosphere tag %s.' % photosphere.tag)
-                    elif isinstance(e, HotRegions.PulseError):
-                        print('Warning: HotRegions.PulseError raised for '
-                              'photosphere tag %s.' % photosphere.tag)
                     elif isinstance(e, Elsewhere.IntegrationError):
                         print('Warning: Elsewhere.IntegrationError for '
                               'photosphere tag %s.' % photosphere.tag)
@@ -362,26 +359,26 @@ class Likelihood(ParameterSpace):
                 pass
             else:
                 if not _np.isfinite(logprior):
-                    #print('p, ll = ', p, self.less_than_llzero)
                     self._theta = p
                     return self.less_than_llzero
 
             if self._do_fast:
-                # perform a low-resolution precomputation to direct cell allocation
-                _ = self._driver(p, fast_mode=True)
-                if not isinstance(_, bool):
+                # perform a low-resolution precomputation to direct cell
+                # allocation
+                x = self._driver(p, fast_mode=True)
+                if not isinstance(x, bool):
                     self._theta = p
-                    return _
-                elif _:
-                    _ = self._driver(p)
-                    if not isinstance(_, bool):
+                    return x
+                elif x:
+                    x = self._driver(p)
+                    if not isinstance(x, bool):
                         self._theta = p
-                        return _
+                        return x
             else:
-                _ = self._driver(p)
-                if not isinstance(_, bool):
+                x = self._driver(p)
+                if not isinstance(x, bool):
                     self._theta = p
-                    return _
+                    return x
 
         # store parameter vector for next iteration
         self._theta = p
@@ -389,8 +386,6 @@ class Likelihood(ParameterSpace):
         loglikelihood = 0.0
         for pulse in self._pulses:
             loglikelihood += pulse.loglikelihood
-
-        #print('p, ll, lp = ', p, loglikelihood, logprior)
 
         try:
             return loglikelihood + logprior
@@ -494,18 +489,18 @@ class Likelihood(ParameterSpace):
 
             if self._do_fast:
                 # perform a low-resolution precomputation to direct cell allocation
-                _ = self._driver(p, fast_mode=True)
-                if not isinstance(_, bool):
+                x = self._driver(p, fast_mode=True)
+                if not isinstance(x, bool):
                     self._theta = p
                     return None
-                elif _:
-                    _ = self._driver(p, synthesise=True, **kwargs)
-                    if not isinstance(_, bool):
+                elif x:
+                    x = self._driver(p, synthesise=True, **kwargs)
+                    if not isinstance(x, bool):
                         self._theta = p
                         return None
             else:
-                _ = self._driver(p, synthesise=True, **kwargs)
-                if not isinstance(_, bool):
+                x = self._driver(p, synthesise=True, **kwargs)
+                if not isinstance(x, bool):
                     self._theta = p
                     return None
 
