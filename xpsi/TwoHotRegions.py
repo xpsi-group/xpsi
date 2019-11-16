@@ -3,12 +3,9 @@ from __future__ import division, print_function
 from .global_imports import *
 from . import global_imports
 
-from .HotRegion import HotRegion
+from .HotRegion import HotRegion, PulseError
 
 from .ParameterSubspace import BoundsError
-
-class PulseError(xpsiError):
-    """ Raised if a numerical problems encountered during integration. """
 
 class TwoHotRegions(HotRegion):
     """ Two photospheric hot regions, which may or may not be antipodal.

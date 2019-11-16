@@ -7,9 +7,6 @@ from .HotRegion import HotRegion
 
 from .ParameterSubspace import ParameterSubspace
 
-class PulseError(xpsiError):
-    """ Raised if a numerical problems encountered during integration. """
-
 class HotRegions(ParameterSubspace):
     """ Two photospheric hot regions, where the hot regions are objects.
 
