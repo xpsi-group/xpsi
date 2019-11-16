@@ -93,7 +93,7 @@ class Likelihood(ParameterSpace):
         self._theta = [0.0] * self.num_params
 
         try:
-            assert int(threads) == threads
+            assert int(threads) == threads, 'Thread number must be an integer.'
         except TypeError:
             raise TypeError('Thread number must be an integer.')
         else:
