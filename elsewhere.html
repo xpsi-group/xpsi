@@ -220,7 +220,7 @@
 photosphere in which smaller radiative features (such as spots) are embedded.</p>
 <dl class="class">
 <dt id="xpsi.Elsewhere.Elsewhere">
-<em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">Elsewhere</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>num_rays=1000</em>, <em>sq_num_cells=64</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">Elsewhere</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>num_rays=1000</em>, <em>sqrt_num_cells=64</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>The photospheric radiation field elsewhere (other than the spot).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -236,7 +236,7 @@ radiation field elsewhere.</li>
 colatitude, distributed in angle subtended between
 ray tangent 4-vector and radial outward unit
 vector w.r.t a local orthonormal tetrad.</li>
-<li><strong>sq_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth
+<li><strong>sqrt_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth
 which form a regular mesh on a closed curved
 2-surface (which is a compact subset of a
 spacelike leaf of the spacetime foliation).</li>
@@ -247,25 +247,15 @@ spacelike leaf of the spacetime foliation).</li>
 </table>
 <dl class="method">
 <dt id="xpsi.Elsewhere.Elsewhere._compute_cellParamVecs">
-<code class="descname">_compute_cellParamVecs</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere._compute_cellParamVecs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere._compute_cellParamVecs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Precomputes photospheric source radiation field parameter vectors
+<code class="descname">_compute_cellParamVecs</code><span class="sig-paren">(</span><em>p</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere._compute_cellParamVecs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere._compute_cellParamVecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precompute photospheric source radiation field parameter vectors
 cell-by-cell.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>p</strong> (<em>list</em>) – Arguments for the
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">_eval_srcRadFieldParamVectors()</span></code> method.</li>
-<li><strong>spot</strong> (<em>optional</em>) – An instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Spot</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
-the ambient source radiation field is evaluated
-in terms of parameter vectors at the centres of
-cells defined in the ambient cell mesh. If
-<code class="xref py py-obj docutils literal notranslate"><span class="pre">spot</span></code> is an instance, the parameter vectors
-are evaluated at the centres of cells defined
-in the spot cell mesh.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> (<em>list</em>) – Parameters to transform into local comoving radiation field
+variables.</td>
 </tr>
 </tbody>
 </table>
@@ -315,34 +305,6 @@ some effective infinity.</p>
 <dd><p>Get a list of tuples of hard parameter bounds.</p>
 </dd></dl>
 
-<dl class="staticmethod">
-<dt id="xpsi.Elsewhere.Elsewhere.eval_srcRadFieldParamVectors">
-<em class="property">static </em><code class="descname">eval_srcRadFieldParamVectors</code><span class="sig-paren">(</span><em>shape</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere.eval_srcRadFieldParamVectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.eval_srcRadFieldParamVectors" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Default. Can be overwritten in a custom subclass, <em>if you know
-what you are doing</em>.</p>
-</div>
-<p>The ambient field is uniform with respect to local Lagrangian tetrads.
-Parameters are matrices, and a matrix must be returned.</p>
-<p>Function to evaluate the source radiation field parameter vector at
-points on a closed 2-surface (a spacelike leaf of the spacetime
-foliation).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>shape</strong> (<em>tuple</em>) – Dimensions of a 2D array of points.</li>
-<li><strong>p</strong> (<em>list</em>) – The local radiation field parameter vector, which
-is to be passed to the low-level routines.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="xpsi.Elsewhere.Elsewhere.integrate">
 <code class="descname">integrate</code><span class="sig-paren">(</span><em>st</em>, <em>energies</em>, <em>threads</em>, <em>*atmosphere</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere.integrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.integrate" title="Permalink to this definition">¶</a></dt>
@@ -389,8 +351,8 @@ permitted to spawn.</li>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xpsi.Elsewhere.Elsewhere.sq_num_cells">
-<code class="descname">sq_num_cells</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.sq_num_cells" title="Permalink to this definition">¶</a></dt>
+<dt id="xpsi.Elsewhere.Elsewhere.sqrt_num_cells">
+<code class="descname">sqrt_num_cells</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.sqrt_num_cells" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the number of cell parallels.</p>
 </dd></dl>
 
@@ -400,14 +362,14 @@ permitted to spawn.</li>
 <dt id="xpsi.Elsewhere.RayError">
 <em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">RayError</code><a class="reference internal" href="_modules/xpsi/Elsewhere.html#RayError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.RayError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
-<p>Raised if a numerical problems encountered during ray integration.</p>
+<p>Raised if a problem was encountered during ray integration.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="xpsi.Elsewhere.IntegrationError">
 <em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">IntegrationError</code><a class="reference internal" href="_modules/xpsi/Elsewhere.html#IntegrationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.IntegrationError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
-<p>Raised if a numerical problems encountered during integration.</p>
+<p>Raised if a problem was encountered during signal integration.</p>
 </dd></dl>
 
 </div>

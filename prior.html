@@ -223,9 +223,9 @@ evaluation of a joint prior distribution.</p>
 <em class="property">class </em><code class="descclassname">xpsi.Prior.</code><code class="descname">Prior</code><span class="sig-paren">(</span><em>bounds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior" title="Permalink to this definition">¶</a></dt>
 <dd><p>The (joint) prior distribution.</p>
 <p>Methods to both evaluate the distribution (required by emcee) and
-draw uniformly from the distribution (required by PolyChord, and by default
+draw uniformly from the distribution (required by MultiNest, and by default
 is used to initialise the emcee ensemble).</p>
-<p>The distribution must be integrable (proper, regular) and is thus
+<p>The distribution must be integrable (proper) and is thus
 <em>usually</em> bounded (compactly supported on a space). Bounds is a
 list of hard one-dimensional limits used to rapidly evaluate for
 finiteness.</p>
@@ -241,7 +241,7 @@ the space <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span>.<
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If you wish to check bounds manually, implement the
+<p class="last">If you wish to check bounds manually, implement
 the <code class="docutils literal notranslate"><span class="pre">__init__()</span></code> and <code class="docutils literal notranslate"><span class="pre">__call__()</span></code> methods, and do not
 access the default code (e.g., via <code class="docutils literal notranslate"><span class="pre">super()</span></code>).</p>
 </div>
@@ -285,6 +285,9 @@ at which the density is finite.</td>
 <dt id="xpsi.Prior.Prior.inverse_sample">
 <code class="descname">inverse_sample</code><span class="sig-paren">(</span><em>hypercube</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.inverse_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior.inverse_sample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw sample uniformly from the distribution via inverse sampling.</p>
+<p>By default, implements a flat density between bounds. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is
+in a tuple of bounds, <code class="docutils literal notranslate"><span class="pre">None</span></code> is assigned to the corresponding
+coordinate and the user must handle in a custom subclass.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

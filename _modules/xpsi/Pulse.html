@@ -289,24 +289,18 @@
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of parameters must be an integer.&#39;</span><span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Data</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Data</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a data object.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instrument</span><span class="p">,</span> <span class="n">Instrument</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instrument</span><span class="p">,</span> <span class="n">Instrument</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for an instrument object.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span> <span class="o">=</span> <span class="n">instrument</span>
 
         <span class="k">if</span> <span class="n">background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">Background</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">Background</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a background object.&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="o">=</span> <span class="n">background</span>
@@ -314,9 +308,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interstellar</span><span class="p">,</span> <span class="n">Interstellar</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interstellar</span><span class="p">,</span> <span class="n">Interstellar</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for an interstellar object.&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="o">=</span> <span class="n">interstellar</span>
@@ -554,11 +546,11 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_fast_incident_spectrum</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="k">for</span> <span class="n">cap</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">hotRegion</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
                 <span class="n">fast_total_counts</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">energies</span> <span class="o">=</span> <span class="p">[]</span>
 
-                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">cap</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">hotRegion</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">component</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_energies</span><span class="p">)</span>
                         <span class="n">fast_total_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
@@ -603,9 +595,9 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">energies</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">cap</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">hotRegion</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
                     <span class="n">energies</span> <span class="o">=</span> <span class="p">[]</span>
-                    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">cap</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">hotRegion</span><span class="p">:</span>
                         <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_energies</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">energies</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
 
@@ -615,12 +607,12 @@
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
-                <span class="k">for</span> <span class="n">cap</span><span class="p">,</span> <span class="n">cap_energies</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">):</span>
-                    <span class="n">_</span> <span class="o">=</span> <span class="n">energy_interpolator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cap</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                            <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">cap_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="k">for</span> <span class="n">hotRegion</span><span class="p">,</span> <span class="n">hotRegion_energies</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">):</span>
+                    <span class="n">_</span> <span class="o">=</span> <span class="n">energy_interpolator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hotRegion</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                            <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">hotRegion_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                                             <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logspace_energies_hires</span><span class="p">))</span>
 
-                    <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">component_energies</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cap</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">cap_energies</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+                    <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">component_energies</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">hotRegion</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">hotRegion_energies</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
                         <span class="n">_</span> <span class="o">+=</span> <span class="n">energy_interpolator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span>
                                                  <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">component_energies</span><span class="p">),</span>
                                                  <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logspace_energies_hires</span><span class="p">))</span>
@@ -647,13 +639,13 @@
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
-            <span class="k">for</span> <span class="n">cap</span><span class="p">,</span> <span class="n">cap_energies</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">hotRegion</span><span class="p">,</span> <span class="n">hotRegion_energies</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">signals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">energies</span><span class="p">):</span>
                 <span class="n">integrated</span> <span class="o">=</span> <span class="n">channel_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
-                                                <span class="n">cap</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                                <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">cap_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                                                <span class="n">hotRegion</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">hotRegion_energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                                                 <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">))</span>
 
-                <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">component_energies</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cap</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">cap_energies</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+                <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">component_energies</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">hotRegion</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">hotRegion_energies</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
                     <span class="n">integrated</span> <span class="o">+=</span> <span class="n">channel_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
                                                      <span class="n">component</span><span class="p">,</span>
                                                      <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">component_energies</span><span class="p">),</span>

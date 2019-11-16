@@ -200,10 +200,10 @@
 <span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span><span class="p">,</span> <span class="n">BoundsError</span>
 
 <div class="viewcode-block" id="RayError"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.RayError">[docs]</a><span class="k">class</span> <span class="nc">RayError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Raised if a numerical problems encountered during ray integration. &quot;&quot;&quot;</span></div>
+    <span class="sd">&quot;&quot;&quot; Raised if a problem was encountered during ray integration. &quot;&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="PulseError"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.PulseError">[docs]</a><span class="k">class</span> <span class="nc">PulseError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Raised if a numerical problems encountered during integration. &quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="PulseError"><a class="viewcode-back" href="../../twohotregions.html#xpsi.HotRegion.PulseError">[docs]</a><span class="k">class</span> <span class="nc">PulseError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Raised if a problem was encountered during signal integration. &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="HotRegion"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion">[docs]</a><span class="k">class</span> <span class="nc">HotRegion</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A photospheric hot region that is contiguous.</span>
@@ -849,7 +849,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_super_correctionVecs</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_super_correctionVecs</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_cellArea</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_super_correctionVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_effGrav</span>
 
@@ -921,12 +921,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">super_energies</span> <span class="o">=</span> <span class="n">cede_energies</span> <span class="o">=</span> <span class="n">energies</span>
 
-        <span class="c1">#print(&#39;Primary super energies&#39;, super_energies)</span>
-        <span class="c1">#print(&#39;Primary cede energies&#39;, cede_energies)</span>
-
-        <span class="c1"># change low-level code so as to require only a parameter vector</span>
-        <span class="c1"># for the correction, and not a larger array of the same parameter</span>
-        <span class="c1"># vector? Effective gravity varies with colatitude however.</span>
         <span class="n">super_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
                                        <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
                                        <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>

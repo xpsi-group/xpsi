@@ -204,10 +204,10 @@
     <span class="sd">&quot;&quot;&quot; The (joint) prior distribution.</span>
 
 <span class="sd">    Methods to both evaluate the distribution (required by emcee) and</span>
-<span class="sd">    draw uniformly from the distribution (required by PolyChord, and by default</span>
+<span class="sd">    draw uniformly from the distribution (required by MultiNest, and by default</span>
 <span class="sd">    is used to initialise the emcee ensemble).</span>
 
-<span class="sd">    The distribution must be integrable (proper, regular) and is thus</span>
+<span class="sd">    The distribution must be integrable (proper) and is thus</span>
 <span class="sd">    *usually* bounded (compactly supported on a space). Bounds is a</span>
 <span class="sd">    list of hard one-dimensional limits used to rapidly evaluate for</span>
 <span class="sd">    finiteness.</span>
@@ -216,7 +216,7 @@
 <span class="sd">                        list has length :math:`d`, the dimensionality of</span>
 <span class="sd">                        the space :math:`\mathbb{R}^{d}`.</span>
 
-<span class="sd">    .. note:: If you wish to check bounds manually, implement the</span>
+<span class="sd">    .. note:: If you wish to check bounds manually, implement</span>
 <span class="sd">              the ``__init__()`` and ``__call__()`` methods, and do not</span>
 <span class="sd">              access the default code (e.g., via ``super()``).</span>
 
@@ -244,6 +244,10 @@
     <span class="k">def</span> <span class="nf">inverse_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Draw sample uniformly from the distribution via inverse sampling.</span>
 
+<span class="sd">        By default, implements a flat density between bounds. If ``None`` is</span>
+<span class="sd">        in a tuple of bounds, ``None`` is assigned to the corresponding</span>
+<span class="sd">        coordinate and the user must handle in a custom subclass.</span>
+
 <span class="sd">        :param hypercube: A pseudorandom point in an n-dimensional hypercube</span>
 
 <span class="sd">        :return: A parameter ``list``.</span>
@@ -252,7 +256,10 @@
         <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">hypercube</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">):</span>
-            <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">hypercube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
+                <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">hypercube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">p</span></div>
 

@@ -252,7 +252,7 @@ This information may be useful if trying to diagnose installation problems.</p>
 </ul>
 </div></blockquote>
 <p>When inspecting the <code class="docutils literal notranslate"><span class="pre">xpsi/environment.yml</span></code> file, note the packages that
-where installed into a Conda environment via pip. There are a few reasons
+were installed into a Conda environment via pip. There are a few reasons
 for these choices, but the main one is that pip is purely for Python
 packages and will not install unwanted non-Python libraries. To be clear, such
 libraries would be dependencies that could have been installed via Conda,
@@ -285,8 +285,12 @@ Python packages are required for likelihood functionality:</p>
 </ul>
 <p>The following Python packages are required for nested sampling:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest">PyMultiNest</a></li>
-<li><a class="reference external" href="https://bitbucket.org/mpi4py/mpi4py/downloads/">mpi4py</a></li>
+<li><a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest">PyMultiNest</a>
+(the interface to the MultiNest library)</li>
+<li><a class="reference external" href="https://bitbucket.org/mpi4py/mpi4py/downloads/">mpi4py</a>
+(for parallelisation)</li>
+<li><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/">SciPy</a>
+(optional core package useful for, e.g., inverse prior sampling)</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -482,7 +486,7 @@ environment variable, or inserted into <code class="docutils literal notranslate
 <p>The <code class="docutils literal notranslate"><span class="pre">.html</span></code> files can then found in <code class="docutils literal notranslate"><span class="pre">xpsi/docs/build/html</span></code>, along with the
 notebooks for the tutorials in this documentation. The <code class="docutils literal notranslate"><span class="pre">.html</span></code> files can
 naturally be opened in a browser. You need the relevant extensions and a
-theme such as <a class="reference external" href="https://sphinx-rtd-theme.readthedocs.io/en/latest/">sphinx_rtd_theme</a>. Customisation can be made
+theme such as the Sphinx <a class="reference external" href="https://sphinx-rtd-theme.readthedocs.io/en/latest/">Read the Docs theme</a>. Customisation can be made
 in the <code class="docutils literal notranslate"><span class="pre">xpsi/docs/source/conf.py</span></code> script.</p>
 <p>Note that if you require links to the source code in the HTML files, you need
 to ensure Sphinx imports the <code class="docutils literal notranslate"><span class="pre">xpsi</span></code> package from the <em>source</em> directory

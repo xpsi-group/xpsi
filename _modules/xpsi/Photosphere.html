@@ -247,9 +247,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Incompatible type for identification tag.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elsewhere</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elsewhere</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for an elsewhere object.&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="n">elsewhere</span>
@@ -321,7 +319,7 @@
     <span class="nd">@hot_atmosphere</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">hot_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Implement if required. &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Implement setter if required.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">elsewhere_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -360,7 +358,7 @@
     <span class="nd">@elsewhere_atmosphere</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">elsewhere_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Implement if required. &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Implement setter if required.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -396,12 +394,14 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">num_params</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:],</span> <span class="n">threads</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span>
                              <span class="n">fast_total_counts</span><span class="p">,</span>
                              <span class="n">threads</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">eval_srcRadFieldParamVectors</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">,</span>
                              <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:],</span> <span class="n">threads</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span>
                                <span class="n">fast_total_counts</span><span class="p">,</span>
@@ -420,8 +420,15 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span>
             <span class="n">time_invariant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
-                                                       <span class="n">energies</span><span class="p">,</span>
+                                                       <span class="n">_energies</span><span class="p">,</span>
                                                        <span class="n">threads</span><span class="p">,</span>
                                                        <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
 
@@ -431,10 +438,13 @@
                                              <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">,</span>
                                              <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">,)</span>
+
         <span class="c1"># add time-invariant component to first time-dependent component</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">time_invariant</span></div>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">time_invariant</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -447,11 +457,6 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span></div>
-
-
-
-
-
 </pre></div>
 
            </div>
