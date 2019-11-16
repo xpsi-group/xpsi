@@ -58,9 +58,7 @@ class Photosphere(ParameterSubspace):
             raise TypeError('Incompatible type for identification tag.')
 
         if elsewhere is not None:
-            try:
-                assert isinstance(elsewhere, Elsewhere)
-            except AssertionError:
+            if not isinstance(elsewhere, Elsewhere):
                 raise TypeError('Invalid type for an elsewhere object.')
             else:
                 self._elsewhere = elsewhere
@@ -233,8 +231,15 @@ class Photosphere(ParameterSubspace):
 
         """
         if self._elsewhere is not None:
+            if isinstance(energies, tuple):
+                if not isinstance(energies[0], tuple):
+                    _energies = energies[0]
+                else:
+                    _energies = energies[0][0]
+            else:
+                _energies = energies
             time_invariant = self._elsewhere.integrate(self._spacetime,
-                                                       energies,
+                                                       _energies,
                                                        threads,
                                                        *self._elsewhere_atmosphere)
 
