@@ -16,41 +16,31 @@ class Photosphere(ParameterSubspace):
     The exterior domain of the photosphere is everywhere vacuum.
 
     """
-    def __init__(self, num_params, bounds, tag, hot, elsewhere=None):
+    def __init__(self, tag, hot, elsewhere=None, locked=True):
         """
-        :param num_params: Number of parameters for the *global* photosphere,
-                           which are not defined by the
-                           :class:`~.HotRegion.HotRegion`
-                           or :class:`~.Elsewhere.Elsewhere` parameter
-                           subspaces. At present this is restricted to the
-                           coordinate rotation frequency if not *locked*
-                           to the stellar rotation frequency.
-
-        :param list bounds: Hard parameter bounds for the instance of
-                            :class:`.ParameterSubspace.ParameterSubspace`.
-
         :param str tag: An identification tag to enforce intended pairing with
                         a :class:`~.Pulse.Pulse` object.
 
-        :param hot: An instance of :class:`~.HotRegion.HotRegion` (or a
-                       derived class). This objects represents the hot
-                       regions of the surface that in most use-cases will be
-                       assumed to contain radiating material that is hotter
-                       than that *elsewhere*.
+        :param obj hot: An instance of :class:`~.HotRegion.HotRegion` (or a
+                        derived class). This objects represents the hot
+                        regions of the surface that in most use-cases will be
+                        assumed to contain radiating material that is hotter
+                        than that *elsewhere*.
 
-        :param elsewhere: An instance of :class:`~.Elsewhere.Elsewhere` (or a
-                          derived class).
+        :param obj elsewhere: An instance of :class:`~.Elsewhere.Elsewhere`
+                              (or a derived class).
+
+        :param bool locked:
+            Has no effect. However, if one wanted the coordinate rotation
+            frequency of a mode of asymmetry in the photosphere to *not be
+            locked* to the stellar rotation frequency, a parameter could
+            be defined for this object and the hot region base class could
+            be modified to normalise the ray lags by this frequency instead
+            of the stellar rotation frequency.
 
         """
+        num_params = 0; bounds = ()
         super(Photosphere, self).__init__(num_params, bounds)
-
-        if self._num_params > 1:
-            raise ValueError('Photosphere parameter subspace dimensionality '
-                             'can be a maximum of one.')
-        elif self._num_params == 1:
-            for frequency in self._bounds[0]:
-                if not 0.0 < frequency <= 1000.0:
-                    raise BoundsError('Invalid rotation frequency bound.')
 
         try:
             self._tag = str(tag)
