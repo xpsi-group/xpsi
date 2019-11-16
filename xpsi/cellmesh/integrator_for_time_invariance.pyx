@@ -43,11 +43,11 @@ cdef double Planck_dist_const = 5.040366110812353e22
 cdef int SUCCESS = 0
 cdef int ERROR = 1
 
-from xpsi.surface_radiation_field.elsewhere_radiation_field cimport (init_extRadField,
-                                                                eval_extRadField,
-                                                                eval_extRadField_norm,
-                                                                free_extRadField,
-                                                                extRadField_PRELOAD)
+from xpsi.surface_radiation_field.elsewhere_radiation_field cimport (init_elsewhereRadField,
+                                                                eval_elsewhereRadField,
+                                                                eval_elsewhereRadField_norm,
+                                                                free_elsewhereRadField,
+                                                                elsewhereRadField_PRELOAD)
 
 #----------------------------------------------------------------------->>>
 # >>> Integrate over the celestial sphere of distant observer.
@@ -137,14 +137,14 @@ def integrate_radField(size_t numThreads,
             cos_deflection[i,j] = cos(deflection[i,j])
 
     # Initialise the source radiation field
-    cdef extRadField_PRELOAD *preload = NULL
+    cdef elsewhereRadField_PRELOAD *preload = NULL
     cdef double[::1] cast
     cdef double[::1] intensity
     cdef void *data = NULL
     cdef size_t num_args
     if args:
         num_args = len(args)
-        preload = <extRadField_PRELOAD*> malloc(sizeof(extRadField_PRELOAD))
+        preload = <elsewhereRadField_PRELOAD*> malloc(sizeof(elsewhereRadField_PRELOAD))
         preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
         preload.S = <size_t*> malloc(sizeof(size_t) * (num_args - 2))
         for i in range(num_args - 1):
@@ -159,9 +159,9 @@ def integrate_radField(size_t numThreads,
                         preload.S[i] *= cast.shape[0]
         intensity = args[i+1]
         preload.I = &intensity[0]
-        data = init_extRadField(N_T, preload)
+        data = init_elsewhereRadField(N_T, preload)
     else:
-        data = init_extRadField(N_T, NULL)
+        data = init_elsewhereRadField(N_T, NULL)
 
     #----------------------------------------------------------------------->>>
     # >>> Integrate.
@@ -252,7 +252,7 @@ def integrate_radField(size_t numThreads,
                     for e in range(N_E):
                         E_prime = energies[e] / _Z
 
-                        I_E = eval_extRadField(T,
+                        I_E = eval_elsewhereRadField(T,
                                                E_prime,
                                                _ABB,
                                                &(srcCellParams[i,j,0]),
@@ -274,7 +274,7 @@ def integrate_radField(size_t numThreads,
             flux[e] += privateFlux[T,e]
 
     for e in range(N_E):
-        flux[e] *= cellArea * eval_extRadField_norm() / (energies[e] * keV)
+        flux[e] *= cellArea * eval_elsewhereRadField_norm() / (energies[e] * keV)
 
     free(interp_alpha)
     free(accel_alpha)
@@ -284,7 +284,7 @@ def integrate_radField(size_t numThreads,
         free(preload.S)
         free(preload)
 
-    free_extRadField(N_T, data)
+    free_elsewhereRadField(N_T, data)
 
     for T in range(N_T):
         if terminate[T] == 1:
