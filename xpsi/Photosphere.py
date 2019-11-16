@@ -132,7 +132,7 @@ class Photosphere(ParameterSubspace):
     @hot_atmosphere.setter
     def hot_atmosphere(self, path):
         """ Implement if required. """
-        pass
+        raise NotImplementedError('Implement setter if required.')
 
     @property
     def elsewhere_atmosphere(self):
@@ -171,7 +171,7 @@ class Photosphere(ParameterSubspace):
     @elsewhere_atmosphere.setter
     def elsewhere_atmosphere(self, path):
         """ Implement if required. """
-        pass
+        raise NotImplementedError('Implement setter if required.')
 
     @property
     def hot(self):
@@ -207,12 +207,14 @@ class Photosphere(ParameterSubspace):
 
         if self._elsewhere is not None:
             j = i + self._hot.num_params
+
+            self._elsewhere.embed(spacetime, p[j:], threads)
+
             self._hot.embed(spacetime, p[i:j],
                              fast_total_counts,
                              threads,
-                             self._elsewhere.eval_srcRadFieldParamVectors,
+                             self._elsewhere._compute_cellParamVecs,
                              p[j:])
-            self._elsewhere.embed(spacetime, p[j:], threads)
         else:
             self._hot.embed(spacetime, p[i:],
                                fast_total_counts,
@@ -242,10 +244,13 @@ class Photosphere(ParameterSubspace):
                                              self._hot_atmosphere,
                                              self._elsewhere_atmosphere)
 
+        if not isinstance(self._pulse[0], tuple):
+            self._pulse = (self._pulse,)
+
         # add time-invariant component to first time-dependent component
         if self._elsewhere is not None:
-            for i in range(self._pulse[0].shape[1]):
-                self._pulse[0][:,i] += time_invariant
+            for i in range(self._pulse[0][0].shape[1]):
+                self._pulse[0][0][:,i] += time_invariant
 
     @property
     def pulse(self):
@@ -258,8 +263,3 @@ class Photosphere(ParameterSubspace):
 
         """
         return self._pulse
-
-
-
-
-
