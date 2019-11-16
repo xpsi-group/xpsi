@@ -222,9 +222,32 @@ in an ambient Schwarzschild spacetime.</p>
 <dt id="xpsi.Photosphere.Photosphere">
 <em class="property">class </em><code class="descclassname">xpsi.Photosphere.</code><code class="descname">Photosphere</code><span class="sig-paren">(</span><em>tag</em>, <em>hot</em>, <em>elsewhere=None</em>, <em>locked=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
-<p>A photosphere embedded in an ambient spacetime for use with the CellMesh
-algorithm.</p>
-<p>The exterior domain of the photosphere is everywhere vacuum.</p>
+<p>A photosphere embedded in an ambient Schwarzschild spacetime.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tag</strong> (<em>str</em>) – An identification tag to enforce intended pairing with
+a <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse" title="xpsi.Pulse.Pulse"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pulse</span></code></a> object.</li>
+<li><strong>hot</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a> (or a
+derived class). This objects represents the hot
+regions of the surface that in most use-cases will be
+assumed to contain radiating material that is hotter
+than that <em>elsewhere</em>.</li>
+<li><strong>elsewhere</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere" title="xpsi.Elsewhere.Elsewhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elsewhere</span></code></a>
+(or a derived class).</li>
+<li><strong>locked</strong> (<em>bool</em>) – Has no effect. However, if one wanted the coordinate rotation
+frequency of a mode of asymmetry in the photosphere to <em>not be
+locked</em> to the stellar rotation frequency, a parameter could
+be defined for this object and the hot region base class could
+be modified to normalise the ray lags by this frequency instead
+of the stellar rotation frequency.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="xpsi.Photosphere.Photosphere.bounds">
 <code class="descname">bounds</code><a class="headerlink" href="#xpsi.Photosphere.Photosphere.bounds" title="Permalink to this definition">¶</a></dt>

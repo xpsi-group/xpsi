@@ -642,7 +642,7 @@
     "                    fast_rel_energies_per_interval = 0.5,\n",
     "                    workspace_intervals = 1000,\n",
     "                    adaptive_energies = False,\n",
-    "                    store = False,\n",
+    "                    store = True,\n",
     "                    epsrel = 1.0e-8,\n",
     "                    epsilon = 1.0e-3,\n",
     "                    sigmas = 10.0)\n",
@@ -766,17 +766,17 @@
     "The following is the contents of the ``hot_radiation_field.pxd`` file which the X-PSI integrators use as the header file for including other C functions in the package.\n",
     "\n",
     "```cython\n",
-    "cdef double eval_srcRadField(size_t THREAD,\n",
+    "cdef double eval_hotRadField(size_t THREAD,\n",
     "                             double E,\n",
     "                             double mu,\n",
     "                             const double *const VEC,\n",
     "                             void *const data) nogil\n",
     "\n",
-    "cdef double eval_srcRadField_norm() nogil\n",
+    "cdef double eval_hotRadField_norm() nogil\n",
     "\n",
-    "cdef void* init_srcRadField(size_t numThreads) nogil\n",
+    "cdef void* init_hotRadField(size_t numThreads) nogil\n",
     "\n",
-    "cdef int free_srcRadField(size_t numThreads, void *const data) nogil\n",
+    "cdef int free_hotRadField(size_t numThreads, void *const data) nogil\n",
     "```\n",
     "\n",
     "**You are free to modify these functions in the associated** ``hot_radiation_field.pyx`` **implementation file, and you have almost complete control over the function bodies, but not the signatures.** By default the package includes an isotropic blackbody model:\n",
@@ -801,38 +801,40 @@
     "# >>> Thus the bodies of the following need not be written explicitly in\n",
     "# ... the Cython language.\n",
     "#----------------------------------------------------------------------->>>\n",
-    "cdef void* init_srcRadField(size_t numThreads) nogil:\n",
-    "    # This function must match the free management routine free_srcRadField()\n",
+    "cdef void* init_hotRadField(size_t numThreads) nogil:\n",
+    "    # This function must match the free management routine free_hotRadField()\n",
     "    # in terms of freeing dynamically allocated memory. This is entirely\n",
     "    # the user's responsibility to manage.\n",
     "\n",
     "    # Return NULL if dynamic memory is not required for the model.\n",
     "    return NULL\n",
     "\n",
-    "cdef int free_srcRadField(size_t numThreads, void *const data) nogil:\n",
-    "    # This function must match the initialisation routine init_srcRadField()\n",
+    "cdef int free_hotRadField(size_t numThreads, void *const data) nogil:\n",
+    "    # This function must match the initialisation routine init_hotRadField()\n",
     "    # in terms of freeing dynamically allocated memory. This is entirely\n",
     "    # the user's responsibility to manage.\n",
     "    # The void pointer must be appropriately cast before memory is freed --\n",
     "    # only the user can know this at compile time.\n",
     "    # Just use free(<void*> data) iff no memory was dynamically\n",
     "    # allocated in the function:\n",
-    "    #   init_local_srcRadField()\n",
+    "    #   init_local_hotRadField()\n",
     "    # because data is expected to be NULL in this case\n",
     "\n",
     "    #printf(\"\\nNo data to be freed.\")\n",
     "\n",
     "    return SUCCESS\n",
     "\n",
-    "cdef double eval_srcRadField(size_t THREAD,\n",
+    "cdef double eval_hotRadField(size_t THREAD,\n",
     "                             double E,\n",
     "                             double mu,\n",
     "                             const double *const VEC,\n",
     "                             void *const data) nogil:\n",
     "    \n",
-    "    return E * E * E / ( exp(E / VEC[0]) - 1.0 )\n",
+    "    cdef double temp = k_B_over_keV * pow(10.0, VEC[0])\n",
+    "    \n",
+    "    return E * E * E / ( exp(E / temp) - 1.0 )\n",
     "\n",
-    "cdef double eval_srcRadField_norm() nogil:\n",
+    "cdef double eval_hotRadField_norm() nogil:\n",
     "    # Source radiation field normalisation which is independent of the\n",
     "    # parameters of the parametrised model -- i.e. cell properties, energy,\n",
     "    # and angle.\n",
@@ -1065,7 +1067,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "1.12213778496\n"
+      "1.15275216103\n"
      ]
     }
    ],
@@ -1091,7 +1093,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 19,
+   "execution_count": 18,
    "metadata": {},
    "outputs": [
     {
@@ -1100,7 +1102,7 @@
        "-26713.613677693822"
       ]
      },
-     "execution_count": 19,
+     "execution_count": 18,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1118,7 +1120,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 20,
+   "execution_count": 19,
    "metadata": {},
    "outputs": [
     {
@@ -1158,7 +1160,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 21,
+   "execution_count": 20,
    "metadata": {
     "scrolled": false
    },
@@ -1202,10 +1204,10 @@
     {
      "data": {
       "text/plain": [
-       "<matplotlib.axes._subplots.AxesSubplot at 0x7fa1a5872ad0>"
+       "<matplotlib.axes._subplots.AxesSubplot at 0x7fdc14432a50>"
       ]
      },
-     "execution_count": 21,
+     "execution_count": 20,
      "metadata": {},
      "output_type": "execute_result"
     },
@@ -1247,7 +1249,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 22,
+   "execution_count": 21,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1258,7 +1260,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 25,
+   "execution_count": 22,
    "metadata": {
     "scrolled": false
    },
@@ -1343,7 +1345,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 26,
+   "execution_count": 23,
    "metadata": {},
    "outputs": [
     {
@@ -1352,7 +1354,7 @@
        "1"
       ]
      },
-     "execution_count": 26,
+     "execution_count": 23,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1370,7 +1372,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 27,
+   "execution_count": 24,
    "metadata": {},
    "outputs": [
     {
@@ -1443,7 +1445,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 28,
+   "execution_count": 25,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1452,7 +1454,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 29,
+   "execution_count": 26,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1598,7 +1600,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 30,
+   "execution_count": 27,
    "metadata": {},
    "outputs": [
     {
@@ -1607,7 +1609,7 @@
        "0.0"
       ]
      },
-     "execution_count": 30,
+     "execution_count": 27,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1627,27 +1629,27 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 31,
+   "execution_count": 28,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/plain": [
-       "[0.310795047458417,\n",
-       " 1.4165031429878017,\n",
-       " 14.983824520671714,\n",
-       " 0.5335868580427459,\n",
-       " 1.1635638397223536,\n",
-       " 0.6482539819068411,\n",
-       " 5.947450824105521,\n",
-       " 1.2914024941570448,\n",
-       " 0.5764477692165598,\n",
-       " 6.115910500941504,\n",
-       " -0.4001685426454876,\n",
-       " -0.1950785868876478]"
+       "[0.3261854949190768,\n",
+       " 1.8301189743375463,\n",
+       " 5.924144238940054,\n",
+       " 0.27382861726444724,\n",
+       " 2.3277613801593264,\n",
+       " 0.3024515652808285,\n",
+       " 6.444924489043305,\n",
+       " 3.1018964432015608,\n",
+       " 0.9694171697743492,\n",
+       " 5.893033922380075,\n",
+       " 0.009849146440495282,\n",
+       " 0.455069625251573]"
       ]
      },
-     "execution_count": 31,
+     "execution_count": 28,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1679,7 +1681,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 32,
+   "execution_count": 29,
    "metadata": {},
    "outputs": [
     {
@@ -1699,7 +1701,7 @@
        " 0.025]"
       ]
      },
-     "execution_count": 32,
+     "execution_count": 29,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1710,7 +1712,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 33,
+   "execution_count": 30,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1719,7 +1721,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 34,
+   "execution_count": 31,
    "metadata": {},
    "outputs": [
     {
@@ -1739,7 +1741,7 @@
        " (0.025, 0.00025)]"
       ]
      },
-     "execution_count": 34,
+     "execution_count": 31,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1892,13 +1894,6 @@
     "    else: ax.set_xlabel('Steps')\n",
     "\n",
     "plt.subplots_adjust(hspace=0.0)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "Let's move on to a more formal tutorial on applying ``emcee`` to the above model."
    ]
   }
  ],

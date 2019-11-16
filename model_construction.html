@@ -900,7 +900,7 @@ sampling distribution of the data (or of each subset) can be written in terms of
                     <span class="n">fast_rel_energies_per_interval</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
                     <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
                     <span class="n">adaptive_energies</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
-                    <span class="n">store</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+                    <span class="n">store</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
                     <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
                     <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
                     <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span>
@@ -1005,17 +1005,17 @@ interpreter lock is deactivated during integration to enable <code class="docuti
 library also needs to be included and linked in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> at package build-time.</p>
 <p><em>You are encouraged to ask the author of X-PSI for assistance in implementing your low-level source radiation field model if you are uncertain. If you have ideas for making this model specification more user-friendly, without, crucially, increasing pulse integration time, please contact the author or submit a pull request.</em></p>
 <p>The following is the contents of the <code class="docutils literal notranslate"><span class="pre">hot_radiation_field.pxd</span></code> file which the X-PSI integrators use as the header file for including other C functions in the package.</p>
-<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
+<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_hotRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
                              <span class="n">double</span> <span class="n">E</span><span class="p">,</span>
                              <span class="n">double</span> <span class="n">mu</span><span class="p">,</span>
                              <span class="n">const</span> <span class="n">double</span> <span class="o">*</span><span class="n">const</span> <span class="n">VEC</span><span class="p">,</span>
                              <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span>
 
-<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_srcRadField_norm</span><span class="p">()</span> <span class="k">nogil</span>
+<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_hotRadField_norm</span><span class="p">()</span> <span class="k">nogil</span>
 
-<span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">init_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">)</span> <span class="k">nogil</span>
+<span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">init_hotRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">)</span> <span class="k">nogil</span>
 
-<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">free_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span>
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">free_hotRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span>
 </pre></div>
 </div>
 <p><strong>You are free to modify these functions in the associated</strong> <code class="docutils literal notranslate"><span class="pre">hot_radiation_field.pyx</span></code> <strong>implementation file, and you have almost complete control over the function bodies, but not the signatures.</strong> By default the package includes an isotropic blackbody model:</p>
@@ -1038,38 +1038,40 @@ library also needs to be included and linked in <code class="docutils literal no
 <span class="c"># &gt;&gt;&gt; Thus the bodies of the following need not be written explicitly in</span>
 <span class="c"># ... the Cython language.</span>
 <span class="c">#-----------------------------------------------------------------------&gt;&gt;&gt;</span>
-<span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">init_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
-    <span class="c"># This function must match the free management routine free_srcRadField()</span>
+<span class="k">cdef</span> <span class="kt">void</span>* <span class="nf">init_hotRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># This function must match the free management routine free_hotRadField()</span>
     <span class="c"># in terms of freeing dynamically allocated memory. This is entirely</span>
     <span class="c"># the user&#39;s responsibility to manage.</span>
 
     <span class="c"># Return NULL if dynamic memory is not required for the model.</span>
     <span class="k">return</span> <span class="bp">NULL</span>
 
-<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">free_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
-    <span class="c"># This function must match the initialisation routine init_srcRadField()</span>
+<span class="k">cdef</span> <span class="kt">int</span> <span class="nf">free_hotRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">numThreads</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="c"># This function must match the initialisation routine init_hotRadField()</span>
     <span class="c"># in terms of freeing dynamically allocated memory. This is entirely</span>
     <span class="c"># the user&#39;s responsibility to manage.</span>
     <span class="c"># The void pointer must be appropriately cast before memory is freed --</span>
     <span class="c"># only the user can know this at compile time.</span>
     <span class="c"># Just use free(&lt;void*&gt; data) iff no memory was dynamically</span>
     <span class="c"># allocated in the function:</span>
-    <span class="c">#   init_local_srcRadField()</span>
+    <span class="c">#   init_local_hotRadField()</span>
     <span class="c"># because data is expected to be NULL in this case</span>
 
     <span class="c">#printf(&quot;\nNo data to be freed.&quot;)</span>
 
     <span class="k">return</span> <span class="n">SUCCESS</span>
 
-<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_srcRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
+<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_hotRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
                              <span class="n">double</span> <span class="n">E</span><span class="p">,</span>
                              <span class="n">double</span> <span class="n">mu</span><span class="p">,</span>
                              <span class="n">const</span> <span class="n">double</span> <span class="o">*</span><span class="n">const</span> <span class="n">VEC</span><span class="p">,</span>
                              <span class="n">void</span> <span class="o">*</span><span class="n">const</span> <span class="n">data</span><span class="p">)</span> <span class="k">nogil</span><span class="p">:</span>
 
-    <span class="k">return</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">/</span> <span class="p">(</span> <span class="n">exp</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">VEC</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="p">)</span>
+    <span class="k">cdef</span> <span class="kt">double</span> <span class="nf">temp</span> <span class="o">=</span> <span class="n">k_B_over_keV</span> <span class="o">*</span> <span class="nb">pow</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">VEC</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span>
 
-<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_srcRadField_norm</span><span class="p">()</span> <span class="k">nogil</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">/</span> <span class="p">(</span> <span class="n">exp</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">temp</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="p">)</span>
+
+<span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_hotRadField_norm</span><span class="p">()</span> <span class="k">nogil</span><span class="p">:</span>
     <span class="c"># Source radiation field normalisation which is independent of the</span>
     <span class="c"># parameters of the parametrised model -- i.e. cell properties, energy,</span>
     <span class="c"># and angle.</span>
@@ -1243,11 +1245,11 @@ Total number of model parameters: 12
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-1.12213778496
+1.15275216103
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1256,7 +1258,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1266,7 +1268,7 @@ Total number of model parameters: 12
 </div>
 <p>Calling the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object also modified the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> property of the <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object. Let’s plot the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> by summing the count-rate over output instrument channels:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1294,7 +1296,7 @@ Total number of model parameters: 12
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object calls the <code class="docutils literal notranslate"><span class="pre">star.update</span></code> method which in-turn calls the <code class="docutils literal notranslate"><span class="pre">photosphere.embed</span></code> method. The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object then calls the <code class="docutils literal notranslate"><span class="pre">photosphere.integrate</span></code> method, passing the energies stored as the property <code class="docutils literal notranslate"><span class="pre">pulse.energies</span></code>. We can do this manually if we wish to integrate pulses but not calculate likelihoods. Here we sum over incident specific photon flux pulses as an approximation to integrating over energy:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1345,11 +1347,11 @@ Total number of model parameters: 12
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fa1a5872ad0&gt;
+<span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fdc14432a50&gt;
 </pre></div>
 </div>
 </div>
@@ -1363,7 +1365,7 @@ Total number of model parameters: 12
 <p>Below we print a crude representation of the cell mesh spanning the spot (if you defocus your eyes the approximate circular region is clearer). The elements of the array which are finite are not all identical: at the boundary of the spot the proper area elements are smaller such that the sum of all finite proper areas effectively equals the total proper area within the spot boundary.</p>
 <p>Let’s plot a pulse in two dimensions.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1374,7 +1376,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1446,7 +1448,7 @@ Total number of model parameters: 12
 </div>
 <p>Let’s iterate over a monotonically increasing set of values of the spot angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1455,7 +1457,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1465,7 +1467,7 @@ Total number of model parameters: 12
 </div>
 <p>For the following calculations however, we are not using the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object as a callback function passed to posterior sampling/integration software which parallelises efficiently using Open MPI. We can thus spawn additional worker threads for pulse integration; if likelihood evaluations are parallelised in an Open MPI environment on the other hand, one risks <em>losing</em> efficiency by spawning worker threads for likelihood evaluation.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1522,7 +1524,7 @@ Total number of model parameters: 12
 <p>Let us now construct a callable object representing a joint prior density distribution on the space <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span>. We need to extend the base class to implement our distribution, which in all but two dimensions is separable and <em>uniform</em> on some compact interval of the space. The exceptions are the gravitational mass and equatorial radius: a joint constraint is imposed to assign zero density to stars which are <em>too</em> compact (the polar radius of the rotationally deformed stellar
 2-surface is close to the radius of the Schwarzschild photon sphere), but the joint prior density is <em>uniform</em> otherwise between hard bounds on each parameter.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1531,7 +1533,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1671,7 +1673,7 @@ Total number of model parameters: 12
 </div>
 <p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, passing the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object such that the parameter bounds can be automatically applied in the required order to a vector of parameter values passed upon calling the <code class="docutils literal notranslate"><span class="pre">prior</span></code> object.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1682,7 +1684,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1692,7 +1694,7 @@ Total number of model parameters: 12
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">prior.inverse_sample()</span></code> method can be used to initialise the ensemble of walkers evolved by <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a>, and is required by <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> to uniformly sample from the prior distribution and transform it into a posterior distribution. Let’s call the method, passing a vector of pseudorandom numbers drawn when each is drawn from a uniform distribution on the interval <span class="math notranslate nohighlight">\([0,1)\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1701,22 +1703,22 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[0.310795047458417,
- 1.4165031429878017,
- 14.983824520671714,
- 0.5335868580427459,
- 1.1635638397223536,
- 0.6482539819068411,
- 5.947450824105521,
- 1.2914024941570448,
- 0.5764477692165598,
- 6.115910500941504,
- -0.4001685426454876,
- -0.1950785868876478]
+<span></span>[0.3261854949190768,
+ 1.8301189743375463,
+ 5.924144238940054,
+ 0.27382861726444724,
+ 2.3277613801593264,
+ 0.3024515652808285,
+ 6.444924489043305,
+ 3.1018964432015608,
+ 0.9694171697743492,
+ 5.893033922380075,
+ 0.009849146440495282,
+ 0.455069625251573]
 </pre></div>
 </div>
 </div>
@@ -1726,7 +1728,7 @@ Total number of model parameters: 12
 <p>We have constructed and instantiated both a callable <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object and a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object. These objects implement the model specified by the NICER SWG for the pulsar parameter recovery exercise. We could proceed, for example, to apply the open-source sampler <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a> to the joint posterior distribution proportional to the product of the calls to the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> and <code class="docutils literal notranslate"><span class="pre">prior</span></code> objects.</p>
 <p>To prove that the objects constructed above can be fed to the <code class="docutils literal notranslate"><span class="pre">emcee</span></code> sampler, let’s run a few iterations using a single process.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1735,7 +1737,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1755,7 +1757,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1764,7 +1766,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1773,7 +1775,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1924,7 +1926,6 @@ Sampling complete.
 <img alt="_images/model_construction_95_0.png" src="_images/model_construction_95_0.png" />
 </div>
 </div>
-<p>Let’s move on to a more formal tutorial on applying <code class="docutils literal notranslate"><span class="pre">emcee</span></code> to the above model.</p>
 </div>
 </div>
 
