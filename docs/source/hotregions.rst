@@ -13,6 +13,3 @@ photon pulses from a pair of spots which may be related under some model.
 .. autoclass:: xpsi.HotRegions.HotRegions
     :members: embed, integrate, print_settings, num_params, bounds
     :show-inheritance:
-
-.. autoclass:: xpsi.HotRegions.PulseError
-    :show-inheritance:
