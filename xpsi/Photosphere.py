@@ -33,7 +33,7 @@ class Photosphere(ParameterSubspace):
 
     """
     def __init__(self, tag, hot, elsewhere=None, locked=True):
-        num_params = 0; bounds = ()
+        num_params = 0; bounds = []
         super(Photosphere, self).__init__(num_params, bounds)
 
         try:
