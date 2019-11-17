@@ -88,10 +88,13 @@ if not __XPSI_SETUP__:
     if _verbose:
         vstring = "Version: %s" % __version__
         name = "X-PSI: X-ray Pulse Simulation and Inference"
+        rtds = "https://thomasedwardriley.github.io/xpsi/"
         print("/=============================================\\")
         print("| " + name + " |")
         print("|---------------------------------------------|")
         print("|" + vstring.center(len(name)+2) + "|")
+        print("|---------------------------------------------|")
+        print("|" + rtds.center(len(name)+2) + "|")
         print("\\=============================================/\n")
 
     import global_imports
