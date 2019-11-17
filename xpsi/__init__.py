@@ -37,19 +37,19 @@ if not __XPSI_SETUP__:
             def wrapper(*args, **kwargs):
                 if _verbose:
                     if enter_msg and isinstance(enter_msg, _six.string_types):
-                        msg = '>> ' + enter_msg
+                        msg = enter_msg
                         print(msg + ('...' if enter_msg[-1] != ':' else ''))
                 if _isgeneratorfunction(func):
                     for msg in func(*args, **kwargs):
                         if _verbose:
                             if msg and isinstance(msg, _six.string_types):
-                                print(msg)
+                                print(msg + ('...' if msg[-1] != '.' else ''))
                         _ = msg # catch last yield if generator
                 else:
                     _ = func(*args, **kwargs)
                 if _verbose:
                     if exit_msg and isinstance(exit_msg, _six.string_types):
-                        print('>> ' + exit_msg + '.')
+                        print(exit_msg + '.')
                 return _
             return wrapper
         return decorator
@@ -62,12 +62,12 @@ if not __XPSI_SETUP__:
 
         def __enter__(self):
             if self.condition and _verbose:
-                print('>> ' + self.enter_msg + '...')
+                print(self.enter_msg + '...')
             return self.condition
 
         def __exit__(self, *args, **kwargs):
             if self.condition and _verbose:
-                print('>> ' + self.exit_msg + '.')
+                print(self.exit_msg + '.')
 
     class fragile(object):
         class Break(Exception):
