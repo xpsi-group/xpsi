@@ -50,9 +50,10 @@ class Likelihood(ParameterSpace):
                         per node there is one thread per CPU, instead of
                         one ``OpenMPI`` process. It is recommended that
                         :obj:`threads` is ``1``; more threads are useful
-                        when performing integrals at high resolution, and
+                        when performing integrals at high resolution, but
                         not necessarily when integrating *many* times as
-                        when sampling.
+                        when sampling, because the MPI parallelisation
+                        paradigm is invoked.
 
     :param float llzero: The minimum log-likelihood setting for
                          MultiNest. Points whose log-likelihood is lower
@@ -412,16 +413,18 @@ class Likelihood(ParameterSpace):
               rtol_logprior=None,
               atol_logprior=None,
               physical_points=None):
-        """ Perform checks on the likelihood evaluator and the prior
-            density function.
+        """ Perform checks on the likelihood evaluator and the prior density.
 
-        :param hypercube_points:
-            :class:`numpy.ndarray` of ``n`` points in the unit hypercube, with
-            shape ``(n, m)``, where ``m`` is the dimensionality of the sampling
-            space -- i.e., of the hypercube.
+        :param ndarray[n,m] hypercube_points:
+            A set of ``n`` points in the unit hypercube, where ``m`` is
+            dimensionality (``self.num_params``) of the sampling space -- i.e.,
+            of the hypercube. If you want to pass the physical points instead,
+            just pass ``None`` here.
 
-        .. todo::
-            Write a fallback routine porting directly from NumPy?
+        :param optional(ndarray[n,m]) physical_points:
+            A set of ``n`` points in the physical parameter space, where
+            ``m`` is dimensionality (``self.num_params``) of the sampling space.
+            The ``hypercube_points``, if not ``None``, will be ignored.
 
         """
 
