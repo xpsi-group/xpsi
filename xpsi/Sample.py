@@ -35,8 +35,6 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
        * moments of initial walker multivariate Gaussian distribution, under
          keyword :obj:`walker_dist_moments` (can be ``None``);
        * root directory for output, under keyword :obj:`root_dir`;
-       * boolean to activate generation of incident source pulse blobs,
-         under keyword :obj:`source_pulse_blobs`.
 
     The above objects are used to instantiate :class:`~.Posterior.Posterior`.
 
