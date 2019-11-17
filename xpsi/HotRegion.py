@@ -691,6 +691,16 @@ class HotRegion(ParameterSubspace):
     def fast_mode(self, activate):
         self._fast_mode = activate
 
+    @property
+    def cede(self):
+        """ Does the hot region have a ceding member? """
+        return self._cede
+
+    @property
+    def concentric(self):
+        """ Is the superseding region concentric with ceding member or hole? """
+        return self._cede
+
     def integrate(self, st, energies, threads,
                   hot_atmosphere, elsewhere_atmosphere):
         """ Integrate over the photospheric radiation field.
