@@ -880,6 +880,16 @@
     <span class="k">def</span> <span class="nf">fast_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activate</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fast_mode</span> <span class="o">=</span> <span class="n">activate</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cede</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Does the hot region have a ceding member? &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">concentric</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Is the superseding region concentric with ceding member or hole? &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede</span>
+
 <div class="viewcode-block" id="HotRegion.integrate"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span>
                   <span class="n">hot_atmosphere</span><span class="p">,</span> <span class="n">elsewhere_atmosphere</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>

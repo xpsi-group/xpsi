@@ -285,6 +285,9 @@
         <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">num_params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span>
 
+        <span class="k">if</span> <span class="n">fast_counts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fast_counts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_photospheres</span><span class="p">))</span>
+
         <span class="c1"># Iteratively embed each photosphere in the ambient spacetime</span>
         <span class="k">for</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">fast_count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_photospheres</span><span class="p">,</span> <span class="n">fast_counts</span><span class="p">):</span>
             <span class="n">photosphere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
@@ -292,11 +295,6 @@
                               <span class="n">fast_count</span><span class="p">,</span>
                               <span class="n">threads</span><span class="p">)</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">total_params</span></div></div>
-
-
-
-
-
 </pre></div>
 
            </div>

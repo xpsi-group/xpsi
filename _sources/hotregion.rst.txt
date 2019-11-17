@@ -13,7 +13,7 @@ intense regions of the source photosphere.
               _HotRegion__compute_cellParamVecs, embed,
               _psi, integrate, num_rays, sqrt_num_cells, leaves, phases,
               set_phases, phases_in_cycles, print_settings, num_cells,
-              num_params, bounds
+              num_params, bounds, cede, concentric
     :show-inheritance:
 
 .. autoclass:: xpsi.HotRegion.RayError

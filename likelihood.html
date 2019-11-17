@@ -244,9 +244,10 @@ paradigm on a cluster is changed such that, e.g.,
 per node there is one thread per CPU, instead of
 one <code class="docutils literal notranslate"><span class="pre">OpenMPI</span></code> process. It is recommended that
 <a class="reference internal" href="#xpsi.Likelihood.Likelihood.threads" title="xpsi.Likelihood.Likelihood.threads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">threads</span></code></a> is <code class="docutils literal notranslate"><span class="pre">1</span></code>; more threads are useful
-when performing integrals at high resolution, and
+when performing integrals at high resolution, but
 not necessarily when integrating <em>many</em> times as
-when sampling.</li>
+when sampling, because the MPI parallelisation
+paradigm is invoked.</li>
 <li><strong>llzero</strong> (<em>float</em>) – The minimum log-likelihood setting for
 MultiNest. Points whose log-likelihood is lower
 than this value are ignored, which is useful for
@@ -258,15 +259,22 @@ defining complicated priors.</li>
 </table>
 <dl class="method">
 <dt id="xpsi.Likelihood.Likelihood.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em>, <em>reinitialise=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the logarithm of the joint likelihood over all pulsations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> (<em>list</em>) – The parameter vector.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p</strong> (<em>list</em>) – Parameter vector.</li>
+<li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Reinitialise? Useful if some resolution settings in child
+objects were changed (namely, the number of pulse phases) that
+need to be communicated to other child objects.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The logarithm of the likelihood.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The logarithm of the likelihood.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -279,9 +287,89 @@ defining complicated priors.</li>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.bounds">
+<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of tuples of hard parameter bounds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Likelihood.Likelihood.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform checks on the likelihood evaluator and the prior density.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hypercube_points</strong> (<em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em>) – A set of <code class="docutils literal notranslate"><span class="pre">n</span></code> points in the unit hypercube, where <code class="docutils literal notranslate"><span class="pre">m</span></code> is
+dimensionality (<code class="docutils literal notranslate"><span class="pre">self.num_params</span></code>) of the sampling space – i.e.,
+of the hypercube. If you want to pass the physical points instead,
+just pass <code class="docutils literal notranslate"><span class="pre">None</span></code> here.</li>
+<li><strong>physical_points</strong> (<em>optional</em><em>(</em><em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em><em>)</em>) – A set of <code class="docutils literal notranslate"><span class="pre">n</span></code> points in the physical parameter space, where
+<code class="docutils literal notranslate"><span class="pre">m</span></code> is dimensionality (<code class="docutils literal notranslate"><span class="pre">self.num_params</span></code>) of the sampling space.
+The <code class="docutils literal notranslate"><span class="pre">hypercube_points</span></code>, if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, will be ignored.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.less_than_llzero">
+<code class="descname">less_than_llzero</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.less_than_llzero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a number less than the minimum log-likelihood threshold.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.llzero">
+<code class="descname">llzero</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.llzero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the minimum log-likelihood setting passed to MultiNest.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="xpsi.Likelihood.Likelihood.num_params">
 <code class="descname">num_params</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.num_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the number of dimensions of the parameter space.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.pulses">
+<code class="descname">pulses</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.pulses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse" title="xpsi.Pulse.Pulse"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pulse</span></code></a> instances.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.random_near_llzero">
+<code class="descname">random_near_llzero</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.random_near_llzero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the minimum log-likelihood scaled randomly by up to an
+order of magnitude.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.star">
+<code class="descname">star</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.star" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="star.html#xpsi.Star.Star" title="xpsi.Star.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Likelihood.Likelihood.synthesise">
+<code class="descname">synthesise</code><span class="sig-paren">(</span><em>p</em>, <em>reinitialise=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.synthesise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.synthesise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synthesise pulsation data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p</strong> (<em>list</em>) – Parameter vector.</li>
+<li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Reinitialise? Useful if some resolution settings in child
+objects were changed (namely, the number of pulse phases) that
+need to be communicated to other child objects.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -305,6 +393,12 @@ likelihood.</td>
 <dl class="attribute">
 <dt id="xpsi.Likelihood.Likelihood.threads">
 <code class="descname">threads</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.threads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of threads spawned for integration.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">threads</code></dt>
 <dd><p>Get the number of threads spawned for integration.</p>
 </dd></dl>
 

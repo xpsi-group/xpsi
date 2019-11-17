@@ -433,6 +433,7 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="Model-construction">
 <h1>Model construction<a class="headerlink" href="#Model-construction" title="Permalink to this headline">¶</a></h1>
+<p>The notebook for this tutorial is on path <code class="docutils literal notranslate"><span class="pre">xpsi/docs/source/</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -465,6 +466,8 @@ div.rendered_html tbody tr:hover {
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
 |                 Version: 0.1                |
+|---------------------------------------------|
+|  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
 
 Warning: Cannot import GetDist.
@@ -490,7 +493,7 @@ because instances of these classes are objects defined abstractly by a parameter
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="n">Image</span><span class="p">(</span><span class="s2">&quot;./figures/oop_modelling_diagram.png&quot;</span><span class="p">)</span>
+<span class="n">Image</span><span class="p">(</span><span class="s2">&quot;./_static/oop_modelling_diagram.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -499,11 +502,11 @@ because instances of these classes are objects defined abstractly by a parameter
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_8_0.png" src="_images/model_construction_8_0.png" />
+<img alt="_images/model_construction_9_0.png" src="_images/model_construction_9_0.png" />
 </div>
 </div>
 <p>The arrows in the diagram denote an object that is stored as an attribute of another encapsulating object. The encapsulating object makes calls to methods of the wrapped objects when a call is processed to evaluate the likelihood given a vector of model parameter values. The purpose of exploiting the object-oriented paradigm here is to <em>organise</em> a non-trivial likelihood evaluation algorithm in a <em>logical</em>, <em>flexible</em>, and <em>extensible</em> manner by identifying groups of mathematical structures
-which can be considered as belonging to some more abstract object with some physical and/or statistical meaning. We use a dynamic and expressive high-level language to organise this computation, allowing both calls low-level library routines where necessary to improve calculation speed, and straightforward communication between our problem-specific code and other more general open-source software libraries (in particular, statistical sampling/integration software).</p>
+which can be considered as belonging to some more abstract object with some physical and/or statistical meaning. We use a dynamic and expressive high-level language to organise this computation, allowing both calls low-level library routines where necessary to improve calculation speed, and straightforward communication between our problem-specific code and other more general open-source software libraries (in particular, statistical sampling software).</p>
 <p>We will now briefly describe the purpose of each object above which is encapsulated by the callable <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object (<code class="docutils literal notranslate"><span class="pre">Likelihood</span></code> in the diagram to denote the name of the class of which it is an instance).</p>
 <ul class="simple">
 <li>A <code class="docutils literal notranslate"><span class="pre">star</span></code> object does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents the model star. The objects it encapsulates <em>do</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and all parameters of these subspaces are <em>slow</em> parameters in terms of likelihood evaluation.<ul>
@@ -546,7 +549,7 @@ which can be used to instantiate a <code class="docutils literal notranslate"><s
 <li><strong>inclination of Earth to stellar rotation axis</strong></li>
 <li>coordinate spin frequency (if not fixed upon star construction)</li>
 <li><code class="docutils literal notranslate"><span class="pre">photosphere_1</span></code> (non-optional):<ul>
-<li>mode/oscillation coordinate rotation frequency (if not locked to stellar rotation)</li>
+<li>mode/oscillation coordinate rotation frequency (if not locked to stellar rotation; not currently implemented)</li>
 <li>subvector of <strong>hot-region parameters</strong> (e.g., spot centre colatitude, spot angular radius, and so on)</li>
 <li>(optional) subvector of additional parameters controlling the comoving radiation field <em>within</em> the spot boundary (e.g., pertaining to ionisation degree or composition)</li>
 <li>(optional) subvector of parameters controlling the comoving radiation field <em>outside</em> the spot boundary</li>
@@ -554,11 +557,10 @@ which can be used to instantiate a <code class="docutils literal notranslate"><s
 </li>
 <li><span class="math notranslate nohighlight">\(\ldots\)</span></li>
 <li><code class="docutils literal notranslate"><span class="pre">photosphere_n</span></code> (optional):<ul>
-<li>mode/oscillation coordinate rotation frequency (if not locked to stellar rotation)</li>
-<li>spot centre colatitude</li>
-<li>spot angular radius</li>
-<li>(optional) subvector of parameters controlling the comoving radiation field within the spot boundary</li>
-<li>(optional) subvector of parameters controlling the comoving radiation field outside the spot boundary</li>
+<li>mode/oscillation coordinate rotation frequency (if not locked to stellar rotation; not currently implemented)</li>
+<li>subvector of <strong>hot-region parameters</strong> (e.g., spot centre colatitude, spot angular radius, and so on)</li>
+<li>(optional) subvector of additional parameters controlling the comoving radiation field <em>within</em> the spot boundary (e.g., pertaining to ionisation degree or composition)</li>
+<li>(optional) subvector of parameters controlling the comoving radiation field <em>outside</em> the spot boundary</li>
 </ul>
 </li>
 <li><code class="docutils literal notranslate"><span class="pre">pulse_1</span></code> (non-optional):<ul>
@@ -582,7 +584,7 @@ and telescope. The synthetic data is intended to emulate detection of photons ov
 <p>We are required to write a custom data container. X-PSI is designed this way so that freedom and the scope of applicability of the source code is preserved. We are entirely free to write methods and attributes for this class provided it satisfies two constraints:</p>
 <ul class="simple">
 <li>our custom class derives from the class <a class="reference internal" href="data.html#xpsi.Data.Data"><span class="std std-ref">Data</span></a>;</li>
-<li>and two underscore instance attributes are assigned, <code class="docutils literal notranslate"><span class="pre">self._first</span></code> and <code class="docutils literal notranslate"><span class="pre">self._last</span></code>, for handling the instrument response model.</li>
+<li>and a property <code class="docutils literal notranslate"><span class="pre">self.channel_range</span></code> returns the first and last channels in the contiguous subset spanned by the data.</li>
 </ul>
 <p>If these constraints are satisfied, instances of other X-PSI classes know what to do with the an instance of our data container and will not throw exceptions. The container instance will then be available as an underscore instance method of <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a>, and thus available in a derived class where we will later write code for likelihood evaluation.</p>
 <p>Hereafter we will write our custom derived classes in the notebook itself, but in practice it is best if your derived classes are written in distinct modules within a project directory, so they can be imported by a script for use with an Open MPI command within a shell (because in general we want to exploit parallelism for expensive likelihood evaluations).</p>
@@ -611,23 +613,17 @@ and telescope. The synthetic data is intended to emulate detection of photons ov
         <span class="c1"># Execute parent initialisation code</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CustomData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Counts object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="o">=</span> <span class="n">counts</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;The number of rows must be compatible &#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of rows must be compatible &#39;</span>
                                  <span class="s1">&#39;with the first and last output channel &#39;</span>
                                  <span class="s1">&#39;numbers.&#39;</span><span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Phases object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">phases</span>
@@ -690,14 +686,14 @@ and telescope. The synthetic data is intended to emulate detection of photons ov
 <span></span><span class="k">class</span> <span class="nc">CustomInstrument</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Instrument</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Methods and attributes specific to the NICER instrument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PI_channels</span><span class="p">,</span> <span class="n">chan_edges</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">chan_edges</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CustomInstrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_PI_channels</span> <span class="o">=</span> <span class="n">PI_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="n">channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_chan_edges</span> <span class="o">=</span> <span class="n">chan_edges</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_PI_channels</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1118,8 +1114,7 @@ library also needs to be included and linked in <code class="docutils literal no
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">photosphere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="p">(</span><span class="n">num_params</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">[],</span>
-                               <span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">hot</span> <span class="o">=</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span>
+<span></span><span class="n">photosphere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="p">(</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">hot</span> <span class="o">=</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1245,7 +1240,7 @@ Total number of model parameters: 12
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-1.15275216103
+1.1945130825
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1272,7 +1267,9 @@ Total number of model parameters: 12
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">def</span> <span class="nf">plot_pulse</span><span class="p">():</span>
+<span></span><span class="n">likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">plot_pulse</span><span class="p">():</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Counts/s [arbitrary normalisation]&#39;</span><span class="p">)</span>
@@ -1281,6 +1278,10 @@ Total number of model parameters: 12
     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;o--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;o--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span>
 
 <span class="n">_</span> <span class="o">=</span> <span class="n">plot_pulse</span><span class="p">()</span>
@@ -1291,7 +1292,7 @@ Total number of model parameters: 12
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_67_0.png" src="_images/model_construction_67_0.png" />
+<img alt="_images/model_construction_68_0.png" src="_images/model_construction_68_0.png" />
 </div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object calls the <code class="docutils literal notranslate"><span class="pre">star.update</span></code> method which in-turn calls the <code class="docutils literal notranslate"><span class="pre">photosphere.embed</span></code> method. The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object then calls the <code class="docutils literal notranslate"><span class="pre">photosphere.integrate</span></code> method, passing the energies stored as the property <code class="docutils literal notranslate"><span class="pre">pulse.energies</span></code>. We can do this manually if we wish to integrate pulses but not calculate likelihoods. Here we sum over incident specific photon flux pulses as an approximation to integrating over energy:</p>
@@ -1302,14 +1303,10 @@ Total number of model parameters: 12
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">print</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-
-<span class="n">plot_pulse</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -1346,12 +1343,28 @@ Total number of model parameters: 12
 
 </pre></div></div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fdc14432a50&gt;
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span>
+     <span class="mf">1.4</span><span class="p">,</span>
+     <span class="mf">12.5</span><span class="p">,</span>
+     <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">0.075</span><span class="p">,</span>
+     <span class="mf">6.2</span><span class="p">,</span>
+     <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">0.2</span><span class="p">,</span>
+     <span class="mf">6.0</span><span class="p">,</span>
+     <span class="mf">0.0</span><span class="p">,</span>
+     <span class="mf">0.025</span><span class="p">]</span>
+
+<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">plot_pulse</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1359,24 +1372,32 @@ Total number of model parameters: 12
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_69_2.png" src="_images/model_construction_69_2.png" />
+<img alt="_images/model_construction_71_0.png" src="_images/model_construction_71_0.png" />
 </div>
 </div>
 <p>Below we print a crude representation of the cell mesh spanning the spot (if you defocus your eyes the approximate circular region is clearer). The elements of the array which are finite are not all identical: at the boundary of the spot the proper area elements are smaller such that the sum of all finite proper areas effectively equals the total proper area within the spot boundary.</p>
 <p>Let’s plot a pulse in two dimensions.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> <span class="n">fast_num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">likelihood</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">reinitialise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>-30715.697224587464
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1411,7 +1432,7 @@ Total number of model parameters: 12
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span><span class="o">+</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Channel&#39;</span><span class="p">)</span>
 <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()]</span>
 <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()]</span>
@@ -1430,20 +1451,11 @@ Total number of model parameters: 12
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/thomas/miniconda2/envs/xpsi/lib/python2.7/site-packages/matplotlib/axes/_base.py:3477: UserWarning: Attempted to set non-positive ylimits for log-scale axis; invalid limits will be ignored.
-  &#39;Attempted to set non-positive ylimits for log-scale axis; &#39;
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_73_1.png" src="_images/model_construction_73_1.png" />
+<img alt="_images/model_construction_75_0.png" src="_images/model_construction_75_0.png" />
 </div>
 </div>
 <p>Let’s iterate over a monotonically increasing set of values of the spot angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
@@ -1467,7 +1479,7 @@ Total number of model parameters: 12
 </div>
 <p>For the following calculations however, we are not using the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object as a callback function passed to posterior sampling/integration software which parallelises efficiently using Open MPI. We can thus spawn additional worker threads for pulse integration; if likelihood evaluations are parallelised in an Open MPI environment on the other hand, one risks <em>losing</em> efficiency by spawning worker threads for likelihood evaluation.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1483,7 +1495,7 @@ Total number of model parameters: 12
 
 <span class="k">for</span> <span class="n">angular_radius</span> <span class="ow">in</span> <span class="n">angular_radii</span><span class="p">:</span>
     <span class="n">q</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">angular_radius</span>
-    <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
@@ -1493,7 +1505,7 @@ Total number of model parameters: 12
 
 <span class="k">for</span> <span class="n">angular_radius</span> <span class="ow">in</span> <span class="n">angular_radii</span><span class="p">:</span>
     <span class="n">q</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">angular_radius</span>
-    <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
@@ -1503,7 +1515,7 @@ Total number of model parameters: 12
 
 <span class="k">for</span> <span class="n">angular_radius</span> <span class="ow">in</span> <span class="n">angular_radii</span><span class="p">:</span>
     <span class="n">q</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">angular_radius</span>
-    <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
@@ -1514,7 +1526,7 @@ Total number of model parameters: 12
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_77_0.png" src="_images/model_construction_77_0.png" />
+<img alt="_images/model_construction_79_0.png" src="_images/model_construction_79_0.png" />
 </div>
 </div>
 </div>
@@ -1524,7 +1536,7 @@ Total number of model parameters: 12
 <p>Let us now construct a callable object representing a joint prior density distribution on the space <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span>. We need to extend the base class to implement our distribution, which in all but two dimensions is separable and <em>uniform</em> on some compact interval of the space. The exceptions are the gravitational mass and equatorial radius: a joint constraint is imposed to assign zero density to stars which are <em>too</em> compact (the polar radius of the rotationally deformed stellar
 2-surface is close to the radius of the Schwarzschild photon sphere), but the joint prior density is <em>uniform</em> otherwise between hard bounds on each parameter.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1533,7 +1545,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1673,7 +1685,7 @@ Total number of model parameters: 12
 </div>
 <p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, passing the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object such that the parameter bounds can be automatically applied in the required order to a vector of parameter values passed upon calling the <code class="docutils literal notranslate"><span class="pre">prior</span></code> object.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1684,7 +1696,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1694,31 +1706,60 @@ Total number of model parameters: 12
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">prior.inverse_sample()</span></code> method can be used to initialise the ensemble of walkers evolved by <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a>, and is required by <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> to uniformly sample from the prior distribution and transform it into a posterior distribution. Let’s call the method, passing a vector of pseudorandom numbers drawn when each is drawn from a uniform distribution on the interval <span class="math notranslate nohighlight">\([0,1)\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">prior</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">num_params</span><span class="p">))</span>
+<span></span><span class="n">prior</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">prior</span><span class="o">.</span><span class="n">ndims</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[0.3261854949190768,
- 1.8301189743375463,
- 5.924144238940054,
- 0.27382861726444724,
- 2.3277613801593264,
- 0.3024515652808285,
- 6.444924489043305,
- 3.1018964432015608,
- 0.9694171697743492,
- 5.893033922380075,
- 0.009849146440495282,
- 0.455069625251573]
+<span></span>[0.30512226361830874,
+ 2.590641244268336,
+ 11.951508889637406,
+ 1.3756893878711614,
+ 1.7304761144631227,
+ 0.5205798243465742,
+ 5.7095825399823426,
+ 2.1616057887886146,
+ 0.6422532947193769,
+ 6.294124023442566,
+ -0.26072604052270876,
+ -0.21844036966195335]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">prior</span><span class="o">.</span><span class="n">estimate_hypercube_frac</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Estimating fractional hypervolume of the unit hypercube with finite prior density:
+Requiring 1E+04 draws from the prior support for Monte Carlo estimation...
+The support occupies an estimated 8.8% of the hypervolume within the unit hypercube...
+Fractional hypervolume estimated.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>0.08809486054583576
 </pre></div>
 </div>
 </div>
@@ -1923,7 +1964,7 @@ Sampling complete.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_95_0.png" src="_images/model_construction_95_0.png" />
+<img alt="_images/model_construction_98_0.png" src="_images/model_construction_98_0.png" />
 </div>
 </div>
 </div>

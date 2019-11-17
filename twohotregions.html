@@ -221,7 +221,9 @@ radiatively intense regions of the source photosphere. The class inherits
 from <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a>, and applies the methods to compute photon
 pulses from a pair of spots which may be related under some model; useful for
 pulsars under the assumption of a dominantly dipolar magnetic field with two
-magnetic polar caps.</p>
+magnetic polar caps. The regions must share a parameterisation, but not
+parameters; the regions do not need to be related via antipodal reflection
+symmetry.</p>
 <dl class="class">
 <dt id="xpsi.TwoHotRegions.TwoHotRegions">
 <em class="property">class </em><code class="descclassname">xpsi.TwoHotRegions.</code><code class="descname">TwoHotRegions</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>antipodal_symmetry=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/TwoHotRegions.html#TwoHotRegions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions" title="Permalink to this definition">¶</a></dt>
