@@ -12,20 +12,19 @@ from . import make_verbose
 from abc import ABCMeta, abstractmethod
 
 class Prior(object):
-    """ The (joint) prior distribution.
+    """ The joint prior distribution.
 
-    Methods to both evaluate the distribution (required by emcee) and
-    draw uniformly from the distribution (required by MultiNest, and by default
-    is used to initialise the emcee ensemble).
+    Methods to both evaluate the distribution (required by MCMC) and
+    draw uniformly from the distribution (required for nested sampling, and
+    by default is used to initialise an ensemble of MCMC chains).
 
     The distribution must be integrable (proper) and is thus
-    *usually* bounded (compactly supported on a space). Bounds is a
-    list of hard one-dimensional limits used to rapidly evaluate for
-    finiteness.
+    *usually* bounded (compactly supported on a space).
 
     :param list bounds: The set of 2-tuples of hard parameter bounds. The
                         list has length :math:`d`, the dimensionality of
-                        the space :math:`\mathbb{R}^{d}`.
+                        the space :math:`\mathbb{R}^{d}`. Used to rapidly
+                        evaluate for finiteness.
 
     .. note:: If you wish to check bounds manually, implement
               the ``__init__()`` and ``__call__()`` methods, and do not
@@ -38,6 +37,11 @@ class Prior(object):
     def __init__(self, bounds):
         self._bounds = bounds
 
+    @property
+    def ndims(self):
+        """ Get the dimensionality of the parameter space. """
+        return len(self._bounds)
+
     @abstractmethod
     def __call__(self, p):
         """ Evaluate distribution at :obj:`p` and store it as a property.
@@ -46,8 +50,9 @@ class Prior(object):
 
         """
         for i, b in enumerate(self._bounds):
-            if not b[0] <= p[i] <= b[1]:
-                return -_np.inf
+            if None not in b:
+                if not b[0] <= p[i] <= b[1]:
+                    return -_np.inf
 
         return 0.0
 
@@ -59,9 +64,10 @@ class Prior(object):
         in a tuple of bounds, ``None`` is assigned to the corresponding
         coordinate and the user must handle in a custom subclass.
 
-        :param hypercube: A pseudorandom point in an n-dimensional hypercube
+        :param iterable hypercube:
+            A pseudorandom point in an n-dimensional hypercube.
 
-        :return: A parameter ``list``.
+        :return: A parameter *list*.
 
         """
         p = [0.0] * len(hypercube)
@@ -74,9 +80,34 @@ class Prior(object):
 
         return p
 
+    def inverse_sample_and_transform(self, hypercube):
+        """ Inverse sample and then transform.
+
+        This method is useful for drawing from the prior when overplotting
+        posterior and prior density functions.
+
+        """
+
+        p = self.transform(self.inverse_sample(hypercube))
+
+        return p
+
+    @staticmethod
+    def transform(p):
+        """ A transformation for post-processing. """
+
+        if not isinstance(p, list):
+            p = list(p)
+
+        raise NotImplementedError('Define a transformation.')
 
     def draw(self, ndraws):
         """ Draw samples uniformly from the prior via inverse sampling.
+
+        :param ndraws: Number of draws.
+        :type ndraws: int
+        :return: (samples, acceptance fraction)
+        :rtype: (*ndarray[ndraws, self.ndims]*, *float*)
 
         """
 
@@ -116,7 +147,7 @@ class Prior(object):
         Estimate using Monte Carlo integration the fractional hypervolume
         within a unit hypercube at which prior density is finite.
 
-        :param int ndraws:
+        :param optional[int] ndraws:
             Base-10 logarithm of number of draws from the prior to require
             at which the density is finite.
 
@@ -125,7 +156,7 @@ class Prior(object):
         if _rank == 0:
             ndraws = 10**ndraws
             yield ('Requiring %.E draws from the prior support '
-                   'for Monte Carlo estimation.' % ndraws)
+                   'for Monte Carlo estimation' % ndraws)
 
             self._unit_hypercube_frac = self.draw(ndraws)[1]
         else:
@@ -135,16 +166,16 @@ class Prior(object):
             self._unit_hypercube_frac = _comm.bcast(self._unit_hypercube_frac,
                                                     root=0)
 
-        yield ('The support of the joint prior occupies an estimated fraction '
-               '%.4f of the hypervolume within the unit hypercube.'
-               % self._unit_hypercube_frac)
+        yield ('The support occupies an estimated '
+               '%.1f%% of the hypervolume within the unit hypercube'
+               % (self._unit_hypercube_frac*100.0))
 
         yield self._unit_hypercube_frac
 
     @property
     def unit_hypercube_frac(self):
-        """ Get the fractional hypervolume over which the prior density is
-            finite. """
+        """ Get the fractional hypervolume with finite prior density. """
+
         try:
             return self._unit_hypercube_frac
         except AttributeError:
