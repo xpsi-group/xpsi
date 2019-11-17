@@ -337,19 +337,28 @@ class Likelihood(ParameterSpace):
                             print('Parameter vector: ', p)
                             return self.random_near_llzero
 
-
             i = j
 
         return star_updated
 
-    def __call__(self, p):
+    def __call__(self, p, reinitialise=False):
         """ Evaluate the logarithm of the joint likelihood over all pulsations.
 
-        :param list p: The parameter vector.
+        :param list p: Parameter vector.
+        :param optional[bool] reinitialise:
+            Reinitialise? Useful if some resolution settings in child
+            objects were changed (namely, the number of pulse phases) that
+            need to be communicated to other child objects.
 
         :return: The logarithm of the likelihood.
 
         """
+        if reinitialise:
+            self.__init__(self._star,
+                          self._pulses,
+                          self._threads,
+                          self._llzero)
+
         p = _np.array(p)
 
         if (p != self._theta).any():
@@ -466,15 +475,23 @@ class Likelihood(ParameterSpace):
                                 'with exception value: %s' % (_rank, e.value))
 
 
-    def synthesise(self, p, **kwargs):
-        """ Synthesise pulsation data according to the generative model.
+    def synthesise(self, p, reinitialise=False, **kwargs):
+        """ Synthesise pulsation data.
 
-        :param list p: The injection parameter vector.
+        :param list p: Parameter vector.
 
-        .. todo::
-            Update.
+        :param optional[bool] reinitialise:
+            Reinitialise? Useful if some resolution settings in child
+            objects were changed (namely, the number of pulse phases) that
+            need to be communicated to other child objects.
 
         """
+        if reinitialise:
+            self.__init__(self._star,
+                          self._pulses,
+                          self._threads,
+                          self._llzero)
+
         p = _np.array(p)
 
         if (p != self._theta).any():
