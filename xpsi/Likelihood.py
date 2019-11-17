@@ -241,7 +241,7 @@ class Likelihood(ParameterSpace):
         return 1.1 * self._llzero
 
     @staticmethod
-    def divide(obj, x):
+    def _divide(obj, x):
         if isinstance(obj, _np.ndarray):
             return obj / x
         else:
@@ -311,10 +311,10 @@ class Likelihood(ParameterSpace):
 
             if star_updated or (p[i:j] != self._theta[i:j]).any():
                 pulse.fold(tuple(
-                                 tuple(self.divide(component,
-                                                   self._star.spacetime.d_sq)
-                                       for component in cap)
-                                 for cap in photosphere.pulse),
+                                 tuple(self._divide(component,
+                                                    self._star.spacetime.d_sq)
+                                       for component in hotRegion)
+                                 for hotRegion in photosphere.pulse),
                            p[i:j], fast_mode=fast_mode, threads=self.threads)
                 refolded = True
             else:
@@ -488,7 +488,8 @@ class Likelihood(ParameterSpace):
                     return None
 
             if self._do_fast:
-                # perform a low-resolution precomputation to direct cell allocation
+                # perform a low-resolution precomputation to direct cell
+                # allocation
                 x = self._driver(p, fast_mode=True)
                 if not isinstance(x, bool):
                     self._theta = p
