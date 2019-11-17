@@ -432,7 +432,7 @@ class Likelihood(ParameterSpace):
             yield 'Using fallback implementation...'
 
             def allclose(a, b, rtol, atol, equal_nan):
-                return False
+                raise NotImplementedError('Implement a fallback.')
 
         lls = []
         lps = [] if logprior_call_vals is not None else None
