@@ -96,6 +96,9 @@ class Star(object):
         i = self._spacetime.num_params
         self._spacetime.update(*p[:i])
 
+        if fast_counts is None:
+            fast_counts = tuple([None]*len(self._photospheres))
+
         # Iteratively embed each photosphere in the ambient spacetime
         for photosphere, fast_count in zip(self._photospheres, fast_counts):
             photosphere.embed(self._spacetime,
@@ -103,8 +106,3 @@ class Star(object):
                               fast_count,
                               threads)
             i += photosphere.total_params
-
-
-
-
-

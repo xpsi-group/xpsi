@@ -259,7 +259,7 @@ class Likelihood(ParameterSpace):
         if (p[1:s] != self._theta[1:s]).any():
             try:
                 if fast_mode or not self._do_fast:
-                    fast_total_counts = tuple([None]*len(self._pulses))
+                    fast_total_counts = None
                 else:
                     fast_total_counts = tuple(pulse.fast_total_counts for\
                                                         pulse in self._pulses)
