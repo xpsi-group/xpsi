@@ -2095,7 +2095,7 @@ class PostProcessor(object):
         def update(theta):
             if cache: # use the cache if available
                 cached = next(cache)
-                unique_keys = []
+                #unique_keys = []
                 for key, value in cached.iteritems():
                     try:
                         delattr(pulse, key)
