@@ -25,21 +25,21 @@ class Instrument(ParameterSubspace):
     :param ndarray[p,q] matrix:
         A :math:`p \\times q` matrix which is the
         product of a redistribution matrix and effective area
-        vector. The input energy edges must increase along
+        vector. The input energy intervals must increase along
         the columns of :attr:`matrix`, and the output channels
         must increase along the rows of :attr:`matrix`. The
         *units* of the elements must be that of an *effective*
         area (:math:`cm^2`).
 
     :param ndarray[q+1] energy_edges:
-        Energy edges of the instrument channels which
+        Energy edges of the instrument energy intervals which
         must be congruent to the first dimension of the
-        :attr:`matrix` -- i.e., the number of edges must
+        :attr:`matrix`: the number of edges must
         be :math:`q + 1`. The edges must be monotonically
         increasing.
 
     .. note:: The dimensions of the response matrix need not be equal, but
-              it is required that the number of input channels be greater
+              it is required that the number of input intervals be greater
               than or equal to the number of output channels -- i.e.,
               :math:`p \leq q`. If :math:`p < q` then it is implied that subsets of
               adjacent output channels are actually grouped together.
@@ -97,7 +97,7 @@ class Instrument(ParameterSubspace):
         """ Get the energy edges of the instrument.
 
         A :class:`numpy.ndarray` of edges of the input energy
-        channels which map to output channels defined in the
+        intervals which map to output channels defined in the
         data space.
 
         """
@@ -130,14 +130,14 @@ class Instrument(ParameterSubspace):
         """ Fold an incident signal.
 
         :param ndarray[m,n] signal:
-            An :math:`m \\times n` matrix, where input energy edge increments
-            along rows, and phase increases along columns. The number of rows,
-            :math:`m`, must equal the number of columns of :attr:`matrix`:
-            :math:`m=q`.
+            An :math:`m \\times n` matrix, where input energy interval
+            increments along rows, and phase increases along columns.
+            The number of rows, :math:`m`, must equal the number of columns of
+            :attr:`matrix`: :math:`m=q`.
 
         :param array-like irange:
             Indexable object with two elements respectively denoting
-            the indices of the first and last *input* channels. The
+            the indices of the first and last *input* intervals. The
             response matrix :attr:`matrix` must be indexable with
             these numbers, i.e., they must satisfy :math:`i < q`.
 
