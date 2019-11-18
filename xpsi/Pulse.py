@@ -707,7 +707,6 @@ class Pulse(ParameterSubspace):
 
         """
 
-    @abstractmethod
     def synthesise(self, p, directory, *args, **kwargs):
         """ Synthesise pulsation data according to the generative model.
 
@@ -724,4 +723,4 @@ class Pulse(ParameterSubspace):
                            The slow parameters follow, in case required.
 
         """
-
+        raise NotImplementedError('Cannot synthesise data.')
