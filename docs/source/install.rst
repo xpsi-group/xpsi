@@ -227,8 +227,8 @@ Now you need the Python interface to MultiNest:
 
 .. code-block:: bash
 
-    git clone https://github.com/JohannesBuchner/PyMultiNest.git <path/to/clone>pymultinest
-    cd <path/to/clone> pymultinest
+    git clone https://github.com/JohannesBuchner/PyMultiNest.git <path/to/clone>/pymultinest
+    cd <path/to/clone>/pymultinest
     python setup.py install --user
 
 The package will be installed in your Conda environment (if activated).
