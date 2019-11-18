@@ -277,8 +277,9 @@
 <span class="s1">                 identification tags.&#39;</span>
 
             <span class="n">pulse</span><span class="o">.</span><span class="n">phases</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span>
-            <span class="n">pulse</span><span class="o">.</span><span class="n">fast_phases</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">fast_phases_in_cycles</span>
-            <span class="k">if</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
+                <span class="n">pulse</span><span class="o">.</span><span class="n">fast_phases</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">fast_phases_in_cycles</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_params</span>
 
@@ -432,6 +433,12 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_divide</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Helper operator to check for compatibility first.</span>
+
+<span class="sd">        As an example, if fast mode is activated for some hot region but not</span>
+<span class="sd">        another, :obj:`obj` would be ``None`` and thus a safeguard is needed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">obj</span> <span class="o">/</span> <span class="n">x</span>
         <span class="k">else</span><span class="p">:</span>
@@ -603,6 +610,9 @@
               <span class="n">atol_logprior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">physical_points</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Perform checks on the likelihood evaluator and the prior density.</span>
+
+<span class="sd">        Can be called from :func:`~.Sample.nested` to execute a check before</span>
+<span class="sd">        automatically commencing a sampling process.</span>
 
 <span class="sd">        :param ndarray[n,m] hypercube_points:</span>
 <span class="sd">            A set of ``n`` points in the unit hypercube, where ``m`` is</span>

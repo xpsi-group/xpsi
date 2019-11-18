@@ -2284,7 +2284,7 @@
         <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">cache</span><span class="p">:</span> <span class="c1"># use the cache if available</span>
                 <span class="n">cached</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
-                <span class="n">unique_keys</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="c1">#unique_keys = []</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cached</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="nb">delattr</span><span class="p">(</span><span class="n">pulse</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>

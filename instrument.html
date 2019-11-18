@@ -231,17 +231,17 @@ using the <code class="docutils literal notranslate"><span class="pre">&#64;clas
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>matrix</strong> – A <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span> <span class="pre">q</span></code> <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which is the
+<li><strong>matrix</strong> (<em>ndarray</em><em>[</em><em>p</em><em>,</em><em>q</em><em>]</em>) – A <span class="math notranslate nohighlight">\(p \times q\)</span> matrix which is the
 product of a redistribution matrix and effective area
-vector. The input energy channels must increase along
-the columns of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code></a>, and the output channels
-must increase along the rows of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code></a>. The
+vector. The input energy intervals must increase along
+the columns of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>, and the output channels
+must increase along the rows of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>. The
 <em>units</em> of the elements must be that of an <em>effective</em>
 area (<span class="math notranslate nohighlight">\(cm^2\)</span>).</li>
-<li><strong>energy_edges</strong> – Energy edges of the instrument channels which
+<li><strong>energy_edges</strong> (<em>ndarray</em><em>[</em><em>q+1</em><em>]</em>) – Energy edges of the instrument energy intervals which
 must be congruent to the first dimension of the
-<a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code></a> – i.e., the number of edges must
-be <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">+</span> <span class="pre">1</span></code>. The edges must be monotonically
+<a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>: the number of edges must
+be <span class="math notranslate nohighlight">\(q + 1\)</span>. The edges must be monotonically
 increasing.</li>
 </ul>
 </td>
@@ -251,9 +251,9 @@ increasing.</li>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The dimensions of the response matrix need not be equal, but
-it is required that the number of input channels be greater
+it is required that the number of input intervals be greater
 than or equal to the number of output channels – i.e.,
-<code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&lt;=</span> <span class="pre">q</span></code>. If <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&lt;</span> <span class="pre">q</span></code> then it is implied that subsets of
+<span class="math notranslate nohighlight">\(p \leq q\)</span>. If <span class="math notranslate nohighlight">\(p &lt; q\)</span> then it is implied that subsets of
 adjacent output channels are actually grouped together.</p>
 </div>
 <dl class="method">
@@ -265,30 +265,37 @@ adjacent output channels are actually grouped together.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>signal</strong> – An <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">x</span> <span class="pre">n</span></code> <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> matrix, where
-input energy channel increments along rows, and
-phase increases along columns. The number of
-rows, <code class="docutils literal notranslate"><span class="pre">m</span></code>, must equal the number of columns of
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">_matrix</span></code>, <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">=</span> <span class="pre">q</span></code>.</li>
-<li><strong>irange</strong> – Array-like object with two elements respectively denoting
-the indices of the first and last <em>input</em> channels. The
-response matrix <code class="xref py py-attr docutils literal notranslate"><span class="pre">_matrix</span></code> must be indexable with
-these numbers, i.e., they must satisfy <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">q</span></code>.</li>
-<li><strong>orange</strong> – Array-like object with two elements respectively denoting
+<li><strong>signal</strong> (<em>ndarray</em><em>[</em><em>m</em><em>,</em><em>n</em><em>]</em>) – An <span class="math notranslate nohighlight">\(m \times n\)</span> matrix, where input energy interval
+increments along rows, and phase increases along columns.
+The number of rows, <span class="math notranslate nohighlight">\(m\)</span>, must equal the number of columns of
+<a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>: <span class="math notranslate nohighlight">\(m=q\)</span>.</li>
+<li><strong>irange</strong> (<em>array-like</em>) – Indexable object with two elements respectively denoting
+the indices of the first and last <em>input</em> intervals. The
+response matrix <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be indexable with
+these numbers, i.e., they must satisfy <span class="math notranslate nohighlight">\(i &lt; q\)</span>.</li>
+<li><strong>orange</strong> (<em>array-like</em>) – Indexable object with two elements respectively denoting
 the indices of the first and last <em>output</em> channels. The
-response matrix <code class="xref py py-attr docutils literal notranslate"><span class="pre">_matrix</span></code> must be indexable with
-these numbers, i.e., they must satisfy <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">p</span></code>.</li>
+response matrix <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be indexable with
+these numbers, i.e., they must satisfy <span class="math notranslate nohighlight">\(i &lt; p\)</span>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of size <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span> <span class="pre">n</span></code>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>ndarray[p,n]</em> containing the folded signal.</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p><strong>Notes</strong></p>
-<p>The profile most recently operated on is stored as the attribute
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">_last_folded</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The profile most recently operated on is stored as the property
+<a class="reference internal" href="#xpsi.Instrument.Instrument.folded_signal" title="xpsi.Instrument.Instrument.folded_signal"><code class="xref py py-attr docutils literal notranslate"><span class="pre">folded_signal</span></code></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Instrument.Instrument.construct_matrix">
+<code class="descname">construct_matrix</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument.construct_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument.construct_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct the response matrix given parameter values (if any).</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -296,7 +303,7 @@ these numbers, i.e., they must satisfy <code class="docutils literal notranslate
 <code class="descname">energy_edges</code><a class="headerlink" href="#xpsi.Instrument.Instrument.energy_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the energy edges of the instrument.</p>
 <p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy
-channels which map to output channels defined in the
+intervals which map to output channels defined in the
 data space.</p>
 </dd></dl>
 
@@ -310,12 +317,12 @@ data space.</p>
 <dt id="xpsi.Instrument.Instrument.matrix">
 <code class="descname">matrix</code><a class="headerlink" href="#xpsi.Instrument.Instrument.matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the response matrix.</p>
-<p>A photon redistribution matrix of dimension <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span> <span class="pre">q</span></code>. Here
-<code class="docutils literal notranslate"><span class="pre">p</span></code> must be the number of input channels, and <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">&gt;=</span> <span class="pre">p</span></code> the
-number of output channels.</p>
+<p>A matrix of dimension <span class="math notranslate nohighlight">\(p \times q\)</span>. Here <span class="math notranslate nohighlight">\(p\)</span> must be the
+number of input energy intervals, and <span class="math notranslate nohighlight">\(q \geq p\)</span> the number of
+output channels.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">_matrix</span></code> must be assigned, and it must be
+<p class="last">The attribute <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be assigned, and it must be
 a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> for use with <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.17)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> (even
 if the matrix is sparse to some degree).</p>
 </div>

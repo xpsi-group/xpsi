@@ -211,30 +211,55 @@
 <span class="sd">    ``super().__init__``. Specialist constructors can be defined in a subclass</span>
 <span class="sd">    using the ``@classmethod`` decorator.</span>
 
-<span class="sd">    :param matrix: A ``p x q`` :class:`numpy.ndarray` which is the</span>
-<span class="sd">                       product of a redistribution matrix and effective area</span>
-<span class="sd">                       vector. The input energy channels must increase along</span>
-<span class="sd">                       the columns of :obj:`matrix`, and the output channels</span>
-<span class="sd">                       must increase along the rows of :obj:`matrix`. The</span>
-<span class="sd">                       *units* of the elements must be that of an *effective*</span>
-<span class="sd">                       area (:math:`cm^2`).</span>
+<span class="sd">    :param ndarray[p,q] matrix:</span>
+<span class="sd">        A :math:`p \\times q` matrix which is the</span>
+<span class="sd">        product of a redistribution matrix and effective area</span>
+<span class="sd">        vector. The input energy intervals must increase along</span>
+<span class="sd">        the columns of :attr:`matrix`, and the output channels</span>
+<span class="sd">        must increase along the rows of :attr:`matrix`. The</span>
+<span class="sd">        *units* of the elements must be that of an *effective*</span>
+<span class="sd">        area (:math:`cm^2`).</span>
 
-<span class="sd">    :param energy_edges: Energy edges of the instrument channels which</span>
-<span class="sd">                         must be congruent to the first dimension of the</span>
-<span class="sd">                         :obj:`matrix` -- i.e., the number of edges must</span>
-<span class="sd">                         be ``q + 1``. The edges must be monotonically</span>
-<span class="sd">                         increasing.</span>
+<span class="sd">    :param ndarray[q+1] energy_edges:</span>
+<span class="sd">        Energy edges of the instrument energy intervals which</span>
+<span class="sd">        must be congruent to the first dimension of the</span>
+<span class="sd">        :attr:`matrix`: the number of edges must</span>
+<span class="sd">        be :math:`q + 1`. The edges must be monotonically</span>
+<span class="sd">        increasing.</span>
 
 <span class="sd">    .. note:: The dimensions of the response matrix need not be equal, but</span>
-<span class="sd">              it is required that the number of input channels be greater</span>
+<span class="sd">              it is required that the number of input intervals be greater</span>
 <span class="sd">              than or equal to the number of output channels -- i.e.,</span>
-<span class="sd">              ``p &lt;= q``. If ``p &lt; q`` then it is implied that subsets of</span>
+<span class="sd">              :math:`p \leq q`. If :math:`p &lt; q` then it is implied that subsets of</span>
 <span class="sd">              adjacent output channels are actually grouped together.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Instrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span> <span class="o">=</span> <span class="n">energy_edges</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the response matrix.</span>
+
+<span class="sd">        A matrix of dimension :math:`p \\times q`. Here :math:`p` must be the</span>
+<span class="sd">        number of input energy intervals, and :math:`q \geq p` the number of</span>
+<span class="sd">        output channels.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            The attribute :attr:`matrix` must be assigned, and it must be</span>
+<span class="sd">            a :class:`numpy.ndarray` for use with :func:`numpy.dot` (even</span>
+<span class="sd">            if the matrix is sparse to some degree).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span>
+
+    <span class="nd">@matrix</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the matrix. &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">matrix</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span>
@@ -256,6 +281,21 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span> <span class="o">=</span> <span class="n">matrix</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">energy_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the energy edges of the instrument.</span>
+
+<span class="sd">        A :class:`numpy.ndarray` of edges of the input energy</span>
+<span class="sd">        intervals which map to output channels defined in the</span>
+<span class="sd">        data space.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span>
+
+    <span class="nd">@energy_edges</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">energy_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the energy edges. &quot;&quot;&quot;</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energy_edges</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
@@ -263,7 +303,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energy_edges</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Energy edges must be in a one-dimensional &#39;</span>
-                                 <span class="s1">&#39;``numpy.ndarray``, and must all be postive.&#39;</span><span class="p">)</span>
+                                 <span class="s1">&#39;array, and must all be postive.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span> <span class="o">=</span> <span class="n">energy_edges</span>
 
@@ -273,59 +313,35 @@
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Energy edges must be in a one-dimensional &#39;</span>
-                             <span class="s1">&#39;``numpy.ndarray``, and must be postive.&#39;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the response matrix.</span>
-
-<span class="sd">        A photon redistribution matrix of dimension ``p x q``. Here</span>
-<span class="sd">        ``p`` must be the number of input channels, and ``q &gt;= p`` the</span>
-<span class="sd">        number of output channels.</span>
-
-<span class="sd">        .. note:: The attribute :attr:`._matrix` must be assigned, and it must be</span>
-<span class="sd">              a :class:`numpy.ndarray` for use with :func:`numpy.dot` (even</span>
-<span class="sd">              if the matrix is sparse to some degree).</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">energy_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the energy edges of the instrument.</span>
-
-<span class="sd">        A :class:`numpy.ndarray` of edges of the input energy</span>
-<span class="sd">        channels which map to output channels defined in the</span>
-<span class="sd">        data space.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span>
+                             <span class="s1">&#39;array, and must be postive.&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Instrument.__call__"><a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.Instrument.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">irange</span><span class="p">,</span> <span class="n">orange</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Fold an incident signal.</span>
 
-<span class="sd">        :param signal: An ``m x n`` :class:`numpy.ndarray` matrix, where</span>
-<span class="sd">                      input energy channel increments along rows, and</span>
-<span class="sd">                      phase increases along columns. The number of</span>
-<span class="sd">                      rows, ``m``, must equal the number of columns of</span>
-<span class="sd">                      :attr:`._matrix`, ``m = q``.</span>
+<span class="sd">        :param ndarray[m,n] signal:</span>
+<span class="sd">            An :math:`m \\times n` matrix, where input energy interval</span>
+<span class="sd">            increments along rows, and phase increases along columns.</span>
+<span class="sd">            The number of rows, :math:`m`, must equal the number of columns of</span>
+<span class="sd">            :attr:`matrix`: :math:`m=q`.</span>
 
-<span class="sd">        :param irange: Array-like object with two elements respectively denoting</span>
-<span class="sd">                       the indices of the first and last *input* channels. The</span>
-<span class="sd">                       response matrix :attr:`._matrix` must be indexable with</span>
-<span class="sd">                       these numbers, i.e., they must satisfy ``i &lt; q``.</span>
+<span class="sd">        :param array-like irange:</span>
+<span class="sd">            Indexable object with two elements respectively denoting</span>
+<span class="sd">            the indices of the first and last *input* intervals. The</span>
+<span class="sd">            response matrix :attr:`matrix` must be indexable with</span>
+<span class="sd">            these numbers, i.e., they must satisfy :math:`i &lt; q`.</span>
 
-<span class="sd">        :param orange: Array-like object with two elements respectively denoting</span>
-<span class="sd">                       the indices of the first and last *output* channels. The</span>
-<span class="sd">                       response matrix :attr:`._matrix` must be indexable with</span>
-<span class="sd">                       these numbers, i.e., they must satisfy ``i &lt; p``.</span>
+<span class="sd">        :param array-like orange:</span>
+<span class="sd">            Indexable object with two elements respectively denoting</span>
+<span class="sd">            the indices of the first and last *output* channels. The</span>
+<span class="sd">            response matrix :attr:`matrix` must be indexable with</span>
+<span class="sd">            these numbers, i.e., they must satisfy :math:`i &lt; p`.</span>
 
-<span class="sd">        :return: A :class:`numpy.ndarray` of size ``p x n``.</span>
+<span class="sd">        :return: *ndarray[p,n]* containing the folded signal.</span>
 
-<span class="sd">        **Notes**</span>
+<span class="sd">        .. note::</span>
 
-<span class="sd">        The profile most recently operated on is stored as the attribute</span>
-<span class="sd">        :attr:`._last_folded`.</span>
+<span class="sd">            The profile most recently operated on is stored as the property</span>
+<span class="sd">            :attr:`folded_signal`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -341,9 +357,9 @@
         <span class="sd">&quot;&quot;&quot; Get the cached folded signal. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folded_signal</span>
 
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_construct_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Construct the response matrix. &quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="Instrument.construct_matrix"><a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.Instrument.construct_matrix">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">construct_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Construct the response matrix given parameter values (if any). &quot;&quot;&quot;</span></div></div>
 </pre></div>
 
            </div>

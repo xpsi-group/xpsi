@@ -296,6 +296,8 @@ need to be communicated to other child objects.</li>
 <dt id="xpsi.Likelihood.Likelihood.check">
 <code class="descname">check</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform checks on the likelihood evaluator and the prior density.</p>
+<p>Can be called from <a class="reference internal" href="sample.html#xpsi.Sample.nested" title="xpsi.Sample.nested"><code class="xref py py-func docutils literal notranslate"><span class="pre">nested()</span></code></a> to execute a check before
+automatically commencing a sampling process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -393,12 +395,6 @@ likelihood.</td>
 <dl class="attribute">
 <dt id="xpsi.Likelihood.Likelihood.threads">
 <code class="descname">threads</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.threads" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of threads spawned for integration.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">threads</code></dt>
 <dd><p>Get the number of threads spawned for integration.</p>
 </dd></dl>
 

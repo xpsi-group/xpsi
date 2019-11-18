@@ -221,7 +221,7 @@
 <dt id="xpsi.Spacetime.Spacetime">
 <em class="property">class </em><code class="descclassname">xpsi.Spacetime.</code><code class="descname">Spacetime</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Spacetime.html#Spacetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Spacetime.Spacetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
-<p>The ambient Schwarzschild spacetime.</p>
+<p>The ambient Schwarzschild spacetime and Earth coordinates.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -234,6 +234,15 @@
 </tr>
 </tbody>
 </table>
+<p>The default parameter order is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Earth distance</li>
+<li>(rotationally deformed) gravitational mass</li>
+<li>coordinate equatorial radius</li>
+<li>inclination of Earth to stellar rotation axis</li>
+</ul>
+</div></blockquote>
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.M">
 <code class="descname">M</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.M" title="Permalink to this definition">¶</a></dt>
@@ -311,7 +320,8 @@ in a custom <a class="reference internal" href="#xpsi.Spacetime.Spacetime.update
 <dl class="method">
 <dt id="xpsi.Spacetime.Spacetime.update">
 <code class="descname">update</code><span class="sig-paren">(</span><em>d</em>, <em>M</em>, <em>R</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Spacetime.html#Spacetime.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Spacetime.Spacetime.update" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Update the spacetime properties.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -334,6 +344,12 @@ in a custom <a class="reference internal" href="#xpsi.Spacetime.Spacetime.update
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If subclassing to handle a free spin parameter, take care with
+the argument (parameter) ordering, and set the rotation frequency
+before calling <code class="docutils literal notranslate"><span class="pre">super(CustomSpacetime,</span> <span class="pre">self).update()</span></code>.</p>
+</div>
 </dd></dl>
 
 </dd></dl>

@@ -271,7 +271,7 @@
 <span class="sd">    :param sqrt_num_cells:</span>
 <span class="sd">        Number of cells in both colatitude and azimuth which form a</span>
 <span class="sd">        regular mesh on a curved 2-surface (a spacelike leaf of the</span>
-<span class="sd">        spacetime foliation). This is square-root of the approximate</span>
+<span class="sd">        spacetime foliation). This is the square-root of the approximate</span>
 <span class="sd">        number of cells whose centres should lie within a hot region.</span>
 
 <span class="sd">    :param min_sqrt_num_cells:</span>
@@ -339,6 +339,8 @@
                  <span class="n">fast_max_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
                  <span class="n">fast_num_rays</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
                  <span class="n">fast_num_leaves</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+                 <span class="n">fast_num_phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fast_phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">is_secondary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">HotRegion</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
@@ -364,7 +366,8 @@
                            <span class="n">min_sqrt_num_cells</span><span class="p">,</span> <span class="n">max_sqrt_num_cells</span><span class="p">,</span>
                            <span class="n">fast_sqrt_num_cells</span><span class="p">,</span>
                            <span class="n">fast_min_sqrt_num_cells</span><span class="p">,</span> <span class="n">fast_max_sqrt_num_cells</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span><span class="p">,</span> <span class="n">fast_num_leaves</span><span class="p">,</span> <span class="n">num_phases</span><span class="p">,</span> <span class="n">phases</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span><span class="p">,</span> <span class="n">num_phases</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span>
+                        <span class="n">fast_num_leaves</span><span class="p">,</span> <span class="n">fast_num_phases</span><span class="p">,</span> <span class="n">fast_phases</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">symmetry</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.cellmesh.integrator_for_azimuthal_invariance</span> <span class="k">import</span> <span class="n">integrate_radField</span> <span class="k">as</span> <span class="n">_integrator</span>
@@ -440,8 +443,9 @@
         <span class="sd">&quot;&quot;&quot; Get the leaves of the photospheric foliation. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span>
 
-<div class="viewcode-block" id="HotRegion.set_phases"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion.set_phases">[docs]</a>    <span class="k">def</span> <span class="nf">set_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_leaves</span><span class="p">,</span> <span class="n">fast_num_leaves</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">num_phases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="HotRegion.set_phases"><a class="viewcode-back" href="../../hotregion.html#xpsi.HotRegion.HotRegion.set_phases">[docs]</a>    <span class="k">def</span> <span class="nf">set_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_leaves</span><span class="p">,</span> <span class="n">num_phases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">fast_num_leaves</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fast_num_phases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">fast_phases</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Construct the set of interpolation phases and foliation leaves.</span>
 
 <span class="sd">        :param int num_leaves: Number of leaves mesh motion is discretised into.</span>
@@ -459,12 +463,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">num_phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">num_phases</span> <span class="o">=</span> <span class="n">num_leaves</span>
-            <span class="n">fast_num_phases</span> <span class="o">=</span> <span class="n">fast_num_leaves</span>
 
         <span class="k">if</span> <span class="n">phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_phases</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases_cycles</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">fast_num_phases</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of phases must be an integer.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -482,13 +484,41 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span> <span class="o">=</span> <span class="n">phases</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">_2pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases_cycles</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span> <span class="o">=</span> <span class="n">_2pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases_cycles</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_leaves</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_2pi</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_leaves</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_fast_leaves</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_2pi</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">fast_num_leaves</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of leaves must be an integer.&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of leaves must be an integer.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fast_num_phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fast_num_phases</span> <span class="o">=</span> <span class="n">fast_num_leaves</span>
+
+            <span class="k">if</span> <span class="n">fast_phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases_cycles</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">fast_num_phases</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of phases must be an integer.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fast_phases</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+                    <span class="k">assert</span> <span class="n">fast_phases</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span>
+                    <span class="k">assert</span> <span class="p">(</span><span class="n">fast_phases</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">fast_phases</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">fast_phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="k">assert</span> <span class="n">fast_phases</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">fast_phases</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Phases must be a one-dimensional &#39;</span>
+                                    <span class="s1">&#39;``numpy.ndarray`` with monotonically &#39;</span>
+                                    <span class="s1">&#39;increasing elements on the interval [0,1].&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases_cycles</span> <span class="o">=</span> <span class="n">fast_phases</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span> <span class="o">=</span> <span class="n">_2pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases_cycles</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fast_leaves</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_2pi</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">fast_num_leaves</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of leaves must be an integer.&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">phases_in_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

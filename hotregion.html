@@ -220,7 +220,7 @@
 intense regions of the source photosphere.</p>
 <dl class="class">
 <dt id="xpsi.HotRegion.HotRegion">
-<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">HotRegion</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>symmetry=True</em>, <em>hole=False</em>, <em>cede=False</em>, <em>concentric=True</em>, <em>sqrt_num_cells=32</em>, <em>min_sqrt_num_cells=10</em>, <em>max_sqrt_num_cells=80</em>, <em>num_rays=200</em>, <em>num_leaves=64</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>do_fast=False</em>, <em>fast_sqrt_num_cells=16</em>, <em>fast_min_sqrt_num_cells=4</em>, <em>fast_max_sqrt_num_cells=16</em>, <em>fast_num_rays=100</em>, <em>fast_num_leaves=32</em>, <em>is_secondary=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">HotRegion</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>symmetry=True</em>, <em>hole=False</em>, <em>cede=False</em>, <em>concentric=True</em>, <em>sqrt_num_cells=32</em>, <em>min_sqrt_num_cells=10</em>, <em>max_sqrt_num_cells=80</em>, <em>num_rays=200</em>, <em>num_leaves=64</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>do_fast=False</em>, <em>fast_sqrt_num_cells=16</em>, <em>fast_min_sqrt_num_cells=4</em>, <em>fast_max_sqrt_num_cells=16</em>, <em>fast_num_rays=100</em>, <em>fast_num_leaves=32</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em>, <em>is_secondary=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>A photospheric hot region that is contiguous.</p>
 <p>Instances of this class can take the following forms:</p>
@@ -296,7 +296,7 @@ deploy. Only set to <code class="docutils literal notranslate"><span class="pre"
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">_eval_srcRadFieldParamVectors()</span></code> in a custom subclass.</li>
 <li><strong>sqrt_num_cells</strong> – Number of cells in both colatitude and azimuth which form a
 regular mesh on a curved 2-surface (a spacelike leaf of the
-spacetime foliation). This is square-root of the approximate
+spacetime foliation). This is the square-root of the approximate
 number of cells whose centres should lie within a hot region.</li>
 <li><strong>min_sqrt_num_cells</strong> – Sets the minimum number of cells per <em>subregion</em>, discretised to
 the same degree in colatitude and azimuth. This setting has an
@@ -523,7 +523,7 @@ integration.</li>
 
 <dl class="method">
 <dt id="xpsi.HotRegion.HotRegion.set_phases">
-<code class="descname">set_phases</code><span class="sig-paren">(</span><em>num_leaves</em>, <em>fast_num_leaves=None</em>, <em>num_phases=None</em>, <em>phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.set_phases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.set_phases" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_phases</code><span class="sig-paren">(</span><em>num_leaves</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>fast_num_leaves=None</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.set_phases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.set_phases" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct the set of interpolation phases and foliation leaves.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
