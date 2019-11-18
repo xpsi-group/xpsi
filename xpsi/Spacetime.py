@@ -24,8 +24,6 @@ class Spacetime(ParameterSubspace):
 
     @abstractmethod
     def __init__(self, num_params, bounds):
-        """
-        """
         super(Spacetime, self).__init__(num_params, bounds)
 
         if self._num_params < 4:
@@ -66,7 +64,7 @@ class Spacetime(ParameterSubspace):
                                 in a custom :meth:`update` method of a subclass.
 
         .. note::
-            If subclassing to handle free spin parameter, take care with
+            If subclassing to handle a free spin parameter, take care with
             the argument (parameter) ordering, and set the rotation frequency
             before calling ``super(CustomSpacetime, self).update()``.
 
@@ -112,7 +110,7 @@ class Spacetime(ParameterSubspace):
 
     @property
     def R_r_s(self):
-        """ Get the ratio of the radius to the Schwarzschild radius. """
+        """ Get the ratio of the equatorial radius to the Schwarzschild radius. """
         return self._R_r_s
 
     @property

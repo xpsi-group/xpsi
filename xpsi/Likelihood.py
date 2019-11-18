@@ -422,6 +422,9 @@ class Likelihood(ParameterSpace):
               physical_points=None):
         """ Perform checks on the likelihood evaluator and the prior density.
 
+        Can be called from :func:`~.Sample.nested` to execute a check before
+        automatically commencing a sampling process.
+
         :param ndarray[n,m] hypercube_points:
             A set of ``n`` points in the unit hypercube, where ``m`` is
             dimensionality (``self.num_params``) of the sampling space -- i.e.,
