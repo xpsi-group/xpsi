@@ -1245,7 +1245,7 @@ Total number of model parameters: 12
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
--26713.6136777 1.16300415993
+-26713.6136777 1.11842179298
 </pre></div></div>
 </div>
 <p>Calling the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object also modified the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> property of the <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object. Let’s plot the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> by summing the count-rate over output instrument channels. We first define some settings and helper functions.</p>
@@ -1351,18 +1351,9 @@ the solid curves without markers.</p>
 </div>
 </div>
 <p>Below we print a crude representation of the cell mesh spanning the spot (if you defocus your eyes the approximate circular region is clearer). The elements of the array which are finite are not all identical: at the boundary of the spot the proper area elements are smaller such that the sum of all finite proper areas effectively equals the total proper area within the spot boundary.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1">#</span>
-</pre></div>
-</div>
-</div>
 <p>Let’s plot a pulse in two dimensions.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1372,7 +1363,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1381,7 +1372,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1433,12 +1424,12 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_76_0.png" src="_images/model_construction_76_0.png" />
+<img alt="_images/model_construction_75_0.png" src="_images/model_construction_75_0.png" />
 </div>
 </div>
 <p>Let’s iterate over a monotonically increasing set of values of the spot angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many OpenMP threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1447,7 +1438,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1456,8 +1447,8 @@ the solid curves without markers.</p>
 </div>
 </div>
 <p>For the following calculations however, we are not using the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object as a callback function passed to posterior sampling/integration software which parallelises efficiently using Open MPI. We can thus spawn additional worker threads for pulse integration; if likelihood evaluations are parallelised in an Open MPI environment on the other hand, one risks <em>losing</em> efficiency by spawning worker threads for likelihood evaluation.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1502,6 +1493,13 @@ the solid curves without markers.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_79_0.png" src="_images/model_construction_79_0.png" />
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="Prior">
@@ -1509,7 +1507,7 @@ the solid curves without markers.</p>
 <p>Let us now construct a callable object representing a joint prior density distribution on the space <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span>. We need to extend the base class to implement our distribution, which in all but two dimensions is separable and <em>uniform</em> on some compact interval of the space. The exceptions are the gravitational mass and equatorial radius: a joint constraint is imposed to assign zero density to stars which are <em>too</em> compact (the polar radius of the rotationally deformed stellar
 2-surface is close to the radius of the Schwarzschild photon sphere), but the joint prior density is <em>uniform</em> otherwise between hard bounds on each parameter.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1518,7 +1516,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1681,8 +1679,8 @@ the solid curves without markers.</p>
 </div>
 </div>
 <p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, passing the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object such that the parameter bounds can be automatically applied in the required order to a vector of parameter values passed upon calling the <code class="docutils literal notranslate"><span class="pre">prior</span></code> object.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1692,9 +1690,18 @@ the solid curves without markers.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>0.0
+</pre></div>
+</div>
+</div>
 <p>The <code class="docutils literal notranslate"><span class="pre">prior.inverse_sample()</span></code> method can be used to initialise the ensemble of walkers evolved by <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a>, and is required by <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> to uniformly sample from the prior distribution and transform it into a posterior distribution. Let’s call the method, passing a vector of pseudorandom numbers drawn when each is drawn from a uniform distribution on the interval <span class="math notranslate nohighlight">\([0,1)\)</span>:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1702,12 +1709,52 @@ the solid curves without markers.</p>
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>[0.36025959763896853,
+ 1.1676022836884568,
+ 6.1844085245793705,
+ 0.8629715168792558,
+ 1.2731812069651105,
+ 0.8829821606732123,
+ 5.61864733603463,
+ 1.5266838212287377,
+ 0.4899234439990458,
+ 5.629749360239541,
+ 0.26107667082273567,
+ 0.23182883441086122]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">prior</span><span class="o">.</span><span class="n">estimate_hypercube_frac</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Estimating fractional hypervolume of the unit hypercube with finite prior density:
+Requiring 1E+04 draws from the prior support for Monte Carlo estimation...
+The support occupies an estimated 7.0% of the hypervolume within the unit hypercube...
+Fractional hypervolume estimated.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>0.06997264069748728
 </pre></div>
 </div>
 </div>
