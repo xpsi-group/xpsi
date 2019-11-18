@@ -656,6 +656,14 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_secondary</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cede_phi</span> <span class="o">+=</span> <span class="n">_pi</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">__cellArea</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the areas of cells in the secondary-spot mesh. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_cellArea</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellArea</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_super_cellArea</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__calibrate_lag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Calibrate lag for cell mesh and normalise by oscillation period. &quot;&quot;&quot;</span>
 

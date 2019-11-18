@@ -511,29 +511,29 @@ instances of these classes are objects defined abstractly by a parameter subspac
 which can be considered as belonging to some more abstract object with some physical and/or statistical meaning. We use a dynamic and expressive high-level language to organise this computation, allowing both calls low-level library routines where necessary to improve calculation speed, and straightforward communication between our problem-specific code and other more general open-source software libraries (in particular, statistical sampling software).</p>
 <p>We will now briefly describe the purpose of each object above which is encapsulated by the callable <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object (<code class="docutils literal notranslate"><span class="pre">Likelihood</span></code> in the diagram to denote the name of the class of which it is an instance).</p>
 <ul class="simple">
-<li>A <code class="docutils literal notranslate"><span class="pre">star</span></code> object does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents the model star. The objects it encapsulates <em>do</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and all parameters of these subspaces are <em>slow</em> parameters in terms of likelihood evaluation.<ul>
-<li>A <code class="docutils literal notranslate"><span class="pre">spacetime</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. It represents the ambient Schwarzschild spacetime solution.</li>
-<li>A <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents a source radiation field on a 2-surface embedded in a spacelike hypersurface of that ambient spacetime. There can be multiple <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> objects per <code class="docutils literal notranslate"><span class="pre">star</span></code> object.<ul>
-<li>A <code class="docutils literal notranslate"><span class="pre">hotRegion</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents a radiatively intense region: e.g., a “circular hot-spot” in the source radiation field.</li>
-<li>An <code class="docutils literal notranslate"><span class="pre">elsewhere</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. The represents the source radiation field exterior of the <code class="docutils literal notranslate"><span class="pre">hotRegion</span></code>.</li>
+<li>A <code class="docutils literal notranslate"><span class="pre">Star</span></code> instance does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents the model star. The objects it encapsulates <em>do</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and all parameters of these subspaces are <em>slow</em> parameters in terms of likelihood evaluation.<ul>
+<li>A <code class="docutils literal notranslate"><span class="pre">Spacetime</span></code> instance derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. It represents the ambient Schwarzschild spacetime solution.</li>
+<li>A <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code> instance derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents a radiation field on a 2-surface embedded in a spacelike hypersurface of that ambient spacetime. There can be multiple <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code> instances per <code class="docutils literal notranslate"><span class="pre">Star</span></code> instance.<ul>
+<li>A <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> instance derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. It represents a radiatively intense region: e.g., a “circular hot-spot” in the photosphere (the surface radiation field).</li>
+<li>An <code class="docutils literal notranslate"><span class="pre">Elsewhere</span></code> instance derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC. The represents the surface radiation field exterior to the hot region.</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>A <code class="docutils literal notranslate"><span class="pre">pulse</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. A pulse is defined as a subset <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\subseteq\mathcal{D}\)</span> of the dataset with a parametrised sampling distribution dependent on an incident specific flux pulse generated by a particular <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object. There can thus be multiple <code class="docutils literal notranslate"><span class="pre">pulse</span></code> objects. Moreover, all model parameters in the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> subspace, and in the subspaces associated with objects that <code class="docutils literal notranslate"><span class="pre">pulse</span></code> encapsulates are
-<em>fast</em> parameters in terms of likelihood evaluation.<ul>
-<li>A <code class="docutils literal notranslate"><span class="pre">data</span></code> object does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, but is itself an ABC. It is a container for the data subset <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\subseteq\mathcal{D}\)</span>.</li>
-<li>An <code class="docutils literal notranslate"><span class="pre">instrument</span></code> object does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, but is itself an ABC. It represents the model instrument for transforming incident specific flux pulses into a structure which directly enters the parameterised sampling distribution of <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span>.</li>
-<li>An <code class="docutils literal notranslate"><span class="pre">interstellar</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. It represents a model for physical interstellar radiation-matter interaction processes which modify the source radiation field during propagation to the instrument.</li>
-<li>A <code class="docutils literal notranslate"><span class="pre">background</span></code> object derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. It represents a model for the background radiation field <em>incident</em> on the instrument.</li>
+<li>A <code class="docutils literal notranslate"><span class="pre">Pulse</span></code> instance derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. A pulse is defined as a subset <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\subseteq\mathcal{D}\)</span> of the dataset with a parametrised sampling distribution dependent on an incident specific flux pulse generated by a particular <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code> instance. There can thus be multiple <code class="docutils literal notranslate"><span class="pre">Pulse</span></code> instances. Moreover, all model parameters in the <code class="docutils literal notranslate"><span class="pre">Pulse</span></code> instances, and in the subspaces associated with objects that those <code class="docutils literal notranslate"><span class="pre">Pulse</span></code>
+instances encapsulate are <em>fast</em> parameters in terms of likelihood evaluation.<ul>
+<li>A <code class="docutils literal notranslate"><span class="pre">Data</span></code> instance does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, but is itself an ABC. It is a container for the data subset <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\subseteq\mathcal{D}\)</span>.</li>
+<li>An <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> instance does <em>not</em> derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, but is itself an ABC. It represents the model instrument for transforming incident specific flux pulses into a structure which directly enters the parameterised sampling distribution of <span class="math notranslate nohighlight">\(\mathcal{D}_{i}\)</span>.</li>
+<li>An <code class="docutils literal notranslate"><span class="pre">Interstellar</span></code> instance derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. It represents a model for physical interstellar radiation-matter interaction processes which modify the surface radiation field during propagation to the instrument.</li>
+<li>A <code class="docutils literal notranslate"><span class="pre">Background</span></code> instance derives from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> ABC, and is itself an ABC. It represents a model for the background radiation field <em>incident</em> on the instrument.</li>
 </ul>
 </li>
 </ul>
 <p>For each of these objects which derive from the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> class, one needs to specify the number of parameters in the subspace, and define the hard bounds on those parameters upon instantiation.</p>
 <p>A subset of model parameters are <em>slow</em> because varying those parameters requires <em>likelihood</em> re-evaluation, and the compute time required to perform that re-evaluation is slow <em>relative</em> to re-evaluation when varying only a distinct <em>subset</em> of the model parameters: the <em>fast</em> parameters. In general there can be multiple subsets of parameters forming a <em>speed hierarchy</em>; see <a class="reference external" href="https://arxiv.org/abs/1304.4473">A. Lewis, “Efficient sampling of fast and slow cosmological parameters”
 (arXiv:1304.4473)</a>.</p>
-<p>X-PSI, during developement, supported the use of the nested sampler <code class="docutils literal notranslate"><span class="pre">PolyChord</span></code>, whose internals require that parameters forming a speed hierarchy are ordered in subsets (or blocks) from <em>slow</em> to <em>fast</em> in an array passed to a <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> callback function (if one wishes to exploit a speed hierarchy that is). Thus the ordering of an array of parameter values passed to a general instance of the <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood"><span class="std std-ref">Likelihood</span></a> class was of crucial importance.
-During development, we opted to support the nested sampler <code class="docutils literal notranslate"><span class="pre">MultiNest</span></code> instead based on the nature of the sampling problem (dimensionality and likelihood evaluation expense).</p>
+<p>X-PSI, during developement, supported the use of the nested sampler PolyChord, whose internals require that parameters forming a speed hierarchy are ordered in subsets (or blocks) from <em>slow</em> to <em>fast</em> in an array passed to a <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> callback function (if one wishes to exploit a speed hierarchy that is). Thus the ordering of an array of parameter values passed to a general instance of the <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood"><span class="std std-ref">Likelihood</span></a> class was of crucial importance. During
+development, we opted to support the nested sampler <code class="docutils literal notranslate"><span class="pre">MultiNest</span></code> instead based on the nature of the sampling problem (dimensionality and likelihood evaluation expense).</p>
 <p>However, for this reason, the source code of X-PSI imposes the following convention for parameter ordering for likelihood evaluation, with a minimum of two speed grades:</p>
 <ol class="arabic simple">
 <li>the <em>slow</em> parameters associated with an instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime"><span class="std std-ref">Spacetime</span></a>;</li>
@@ -552,32 +552,38 @@ which can be used to instantiate a <code class="docutils literal notranslate"><s
 <li>coordinate spin frequency (if not fixed upon star construction)</li>
 <li><code class="docutils literal notranslate"><span class="pre">photosphere_1</span></code> (non-optional):<ul>
 <li>mode/oscillation coordinate rotation frequency (if not locked to stellar rotation; not currently implemented)</li>
-<li>subvector of <strong>hot-region parameters</strong> (e.g., spot centre colatitude, spot angular radius, and so on)</li>
-<li>(optional) subvector of additional parameters controlling the comoving radiation field <em>within</em> the spot boundary (e.g., pertaining to ionisation degree or composition)</li>
-<li>(optional) subvector of parameters controlling the comoving radiation field <em>outside</em> the spot boundary</li>
+<li>subvector of geometric <strong>hot-region parameters</strong> (e.g., spot centre colatitude, spot angular radius, and so on) and a parameter controlling the local comoving radiation field <em>within</em> the region boundary</li>
+<li>(optional) subvector of additional parameters controlling the local comoving radiation field <em>within</em> the hot-region boundary (e.g., pertaining to ionisation degree or composition)</li>
+<li>(optional) subvector of parameters controlling the local comoving radiation field <em>outside</em> the hot-region boundary</li>
 </ul>
 </li>
 <li><span class="math notranslate nohighlight">\(\ldots\)</span></li>
 <li><code class="docutils literal notranslate"><span class="pre">photosphere_n</span></code> (optional):<ul>
 <li>mode/oscillation coordinate rotation frequency (if not locked to stellar rotation; not currently implemented)</li>
-<li>subvector of <strong>hot-region parameters</strong> (e.g., spot centre colatitude, spot angular radius, and so on)</li>
-<li>(optional) subvector of additional parameters controlling the comoving radiation field <em>within</em> the spot boundary (e.g., pertaining to ionisation degree or composition)</li>
-<li>(optional) subvector of parameters controlling the comoving radiation field <em>outside</em> the spot boundary</li>
+<li>subvector of geometric <strong>hot-region parameters</strong> (e.g., spot centre colatitude, spot angular radius, and so on) and a parameter such as an effective temperature controlling the local comoving radiation field <em>within</em> the region boundary</li>
+<li>(optional) subvector of additional parameters controlling the local comoving radiation field <em>within</em> the hot-region boundary (e.g., pertaining to ionisation degree or composition)</li>
+<li>(optional) subvector of parameters controlling the local comoving radiation field <em>outside</em> the hot-region boundary</li>
 </ul>
 </li>
 <li><code class="docutils literal notranslate"><span class="pre">pulse_1</span></code> (non-optional):<ul>
-<li>(optional) subvector of fast nuisance parameters (including background and interstellar processes)</li>
+<li>(optional) subvector of fast nuisance parameters associated with interstellar processes</li>
+<li>(optional) subvector of fast nuisance parameters associated with instrument response</li>
+<li>(optional) subvector of fast nuisance parameters associated with background processes</li>
+<li>subvector of fast nuisance parameters for the phases of the hot region(s) relative to some fiducial phase</li>
 </ul>
 </li>
 <li><span class="math notranslate nohighlight">\(\ldots\)</span></li>
 <li><code class="docutils literal notranslate"><span class="pre">pulse_n</span></code> (if matching <code class="docutils literal notranslate"><span class="pre">photosphere_n</span></code>):<ul>
-<li>(optional) subvector of fast nuisance parameters (including background and interstellar processes)</li>
+<li>(optional) subvector of fast nuisance parameters associated with interstellar processes</li>
+<li>(optional) subvector of fast nuisance parameters associated with instrument response</li>
+<li>(optional) subvector of fast nuisance parameters associated with background processes</li>
+<li>subvector of fast nuisance parameters for the phases of the hot region(s) relative to some fiducial phase</li>
 </ul>
 </li>
 </ul>
 <p>where <span class="math notranslate nohighlight">\(\forall i\in[1,n]\)</span> <code class="docutils literal notranslate"><span class="pre">photosphere_i</span></code> and <code class="docutils literal notranslate"><span class="pre">pulse_i</span></code> share an identification <code class="docutils literal notranslate"><span class="pre">tag</span></code>.</p>
-<p>All model parameters not associated with <code class="docutils literal notranslate"><span class="pre">pulse</span></code> objects are <em>slow</em> parameters.</p>
-<p>For the analysis in this notebook we consider all data <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> to be drawn from a joint sampling distribution whose dependency on <em>slow</em> model source parameters is expressed in terms of a <em>single</em> pulse. The justification for such an assumption is that we are performing parameter estimation given a synthetic data set for a model <em>pulsar</em> with a stable (effectively non-evolving) source radiation field, with any quasi-periodicity arising solely from relative orbital motion of source
+<p>All model parameters not associated with <code class="docutils literal notranslate"><span class="pre">Pulse</span></code> instances are <em>slow</em> parameters.</p>
+<p>For the analysis in this notebook we consider all data <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> to be drawn from a joint sampling distribution whose dependency on <em>slow</em> model source parameters is expressed in terms of a <em>single</em> pulse. The justification for such an assumption is that we are performing parameter estimation given a synthetic data set for a model <em>pulsar</em> with a stable (effectively non-evolving) surface radiation field, with any quasi-periodicity arising solely from relative orbital motion of source
 and telescope. The synthetic data is intended to emulate detection of photons over a long observing run, after which the photon incidence events are phase-folded during a pre-processing phase.</p>
 <p>This parameter estimation excercise is not <em>blind</em>: we know the parameter values injected to generate the synthetic dataset we will later load into a custom container.</p>
 </div>
@@ -596,9 +602,8 @@ and telescope. The synthetic data is intended to emulate detection of photons ov
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">class</span> <span class="nc">CustomData</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Custom data container.</span>
+    <span class="sd">&quot;&quot;&quot; Custom data container. &quot;&quot;&quot;</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param counts: A :class:`numpy.ndarray` of count numbers. The rows of</span>
@@ -611,6 +616,7 @@ and telescope. The synthetic data is intended to emulate detection of photons ov
 <span class="sd">        :param phases: A :class:`numpy.ndarray` of phase *edges* of intervals</span>
 <span class="sd">                       in which the *synthetic* photons arrive.</span>
 <span class="sd">        :param exposure_time: The total exposure time in seconds.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Execute parent initialisation code</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CustomData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
@@ -776,6 +782,88 @@ and telescope. The synthetic data is intended to emulate detection of photons ov
 </pre></div>
 </div>
 </div>
+<p>A helper function and plot settings:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">14.0</span>
+
+<span class="k">def</span> <span class="nf">veneer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Make the plots a little more aesthetically pleasing. &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The NICER <code class="docutils literal notranslate"><span class="pre">v1.01</span></code> response matrix:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">NICER</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span>
+              <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+              <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Channel $-20$&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Energy interval&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_26_0.png" src="_images/model_construction_26_0.png" />
+</div>
+</div>
+<p>Summed over channel subset <span class="math notranslate nohighlight">\([20,200]\)</span>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">250</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">NICER</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">NICER</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">NICER</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Effective area [cm$^{-2}$]&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Energy [keV]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_28_0.png" src="_images/model_construction_28_0.png" />
+</div>
+</div>
 </div>
 <div class="section" id="Background">
 <h3>Background<a class="headerlink" href="#Background" title="Permalink to this headline">¶</a></h3>
@@ -811,19 +899,17 @@ and telescope. The synthetic data is intended to emulate detection of photons ov
 </div>
 <div class="section" id="Pulse">
 <h3>Pulse<a class="headerlink" href="#Pulse" title="Permalink to this headline">¶</a></h3>
-<p>We can now combine the dataset, model instrument, and model background into a <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> object. The source code for this class has methods and attributes which simplify communication between the aforementioned model facets and an object representing our model star (see below). The source radiation field of the model star is integrated over when called from a <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> object which knows which energies to relay based on the properties of
+<p>We can now combine the dataset, model instrument, and model background into a <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> object. The source code for this class has methods and attributes which simplify communication between the aforementioned model facets and an object representing our model star (see below). The surface radiation field of the model star is integrated over when called from a <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> object which knows which energies to relay based on the properties of
 the instrument and the dataset (which are tightly coupled).</p>
 <p>We are actually forced to inherit from <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> and write a routine that evaluates the logarithm of the likelihood conditional on a nuisance vector of parameter values and a parametrised sampling distribution for the data. There is much freedom in constructing this sampling distribution, so the design strategy for X-PSI was to leave this part of the modelling process entirely to a user, guided by a number of examples. The only condition of applicability is that the
 sampling distribution of the data (or of each subset) can be written in terms of a set of <em>single</em> count-rate pulses spanning a subset of output channels of the model instrument.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">xpsi.likelihoods.default_background_marginalisation</span> <span class="kn">import</span> <span class="n">eval_marginal_likelihood</span>
 <span class="kn">from</span> <span class="nn">xpsi.likelihoods.default_background_marginalisation</span> <span class="kn">import</span> <span class="n">precomputation</span>
-<span class="kn">from</span> <span class="nn">xpsi.tools</span> <span class="kn">import</span> <span class="n">phase_interpolator</span>
-<span class="kn">from</span> <span class="nn">xpsi.tools.phase_integrator</span> <span class="kn">import</span> <span class="n">phase_integrator</span>
 <span class="kn">from</span> <span class="nn">xpsi.tools.synthesise</span> <span class="kn">import</span> <span class="n">synthesise</span>
 
 <span class="k">class</span> <span class="nc">CustomPulse</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Pulse</span><span class="p">):</span>
@@ -882,7 +968,7 @@ sampling distribution of the data (or of each subset) can be written in terms of
 <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script). Alternatively, you can compile your extension elsewhere and call those compiled binaries from your custom class derived from <code class="docutils literal notranslate"><span class="pre">xpsi.Pulse</span></code>.</p>
 <p>Let’s construct and instantiate a <code class="docutils literal notranslate"><span class="pre">pulse</span></code> object. We give the bounds of the initial phase, a <em>fast</em> nuisance parameter, as detailed in the docstring of <code class="docutils literal notranslate"><span class="pre">pulse</span></code>. The bounds of the background parameter have already been specified above.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -944,11 +1030,11 @@ sampling distribution of the data (or of each subset) can be written in terms of
 <li>the <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere"><span class="std std-ref">Elsewhere</span></a> class;</li>
 <li>and four low-level user-modifiable routines for evaluation of a parametrised specific intensity model.</li>
 </ul>
-<p>For this demonstration we will assume that the source radiation field <em>elsewhere</em> (other than the spot) can be ignored in the soft X-ray regime our model instrument is sensitive to. We need to write custom <em>derived</em> classes, and instantiate those derived classes to construct objects for our model. Let’s start with the <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime"><span class="std std-ref">Spacetime</span></a> class.</p>
+<p>For this demonstration we will assume that the surface radiation field <em>elsewhere</em> (other than the hot regions) can be ignored in the soft X-ray regime our model instrument is sensitive to. We need to write custom <em>derived</em> classes, and instantiate those derived classes to construct objects for our model. Let’s start with the <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime"><span class="std std-ref">Spacetime</span></a> class.</p>
 <div class="section" id="The-ambient-spacetime">
 <h4>The ambient spacetime<a class="headerlink" href="#The-ambient-spacetime" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -980,7 +1066,7 @@ sampling distribution of the data (or of each subset) can be written in terms of
 <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime.update"><span class="std std-ref">Spacetime.update</span></a> method.</p>
 <p>We did not overwrite <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime.update"><span class="std std-ref">Spacetime.update</span></a> in our custom derived class, and thus did not add free parameters, so we set the keyword <code class="docutils literal notranslate"><span class="pre">num_params</span></code> to <code class="docutils literal notranslate"><span class="pre">3</span></code>, and define the bounds. We will assume a coordinate rotation frequency based on timing analyses of 600.0 Hz.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -999,11 +1085,11 @@ sampling distribution of the data (or of each subset) can be written in terms of
 <p>It is not <em>necessary</em> (in the current version) for us to write a custom derived class for the photosphere object, so we will simply instantiate a <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere"><span class="std std-ref">Photosphere</span></a> object. However, we first need an instance of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> to instantiate the photosphere, and we need to implement a low-level parametrised model for the specific intensity emergent from the photosphere in a local comoving frame.</p>
 <p>The neutron star atmosphere is assumed to be geometrically thin. In the applications thus far, the local comoving photospheric radiation field as being described by a single <em>free</em> parameter: the effective temperature. The radiation field is also dependent on the local effective gravitational acceleration, however this is a <em>derived</em> parameter in the model. The parametrised radiation field as a function of energy and angle subtended to the normal to the (plane-parallel) atmosphere in a local
 comoving frame is provided as numerical model data for multi-dimensional interpolation.</p>
-<p>In X-PSI, integration over the source radiation field is performed via calls to low-level C routines. To reduce likelihood evaluation times, the atmosphere interpolator is written in C, and calls to that interpolator are from C routine. In other words, in X-PSI, <strong>we do not use Python callback functions for evaluation of specific intensities, but C functions which are compiled when the</strong> X-PSI <strong>package is built</strong>. Unfortunately this means that to change the parametrised source radiation field
+<p>In X-PSI, integration over the surface radiation field is performed via calls to low-level C routines. To reduce likelihood evaluation times, the atmosphere interpolator is written in C, and calls to that interpolator are from C routine. In other words, in X-PSI, <strong>we do not use Python callback functions for evaluation of specific intensities, but C functions which are compiled when the</strong> X-PSI <strong>package is built</strong>. Unfortunately this means that to change the parametrised surface radiation field
 you need to get your hands a little dirty; on the bright side, the body of these functions can be implemented almost completely in the Cython language, so syntactically there is some similarity to Python because the language syntax is somewhat of a hybrid/superset. Beware, however, that the body of these functions must not contain calls to the Python API, and only to external C libraries if required: the code must evaluate to pure C, and not require the Python/C API. Note that the Python global
 interpreter lock is deactivated during integration to enable OpenMP multi-threading in some applications of the integrator; thus the code needs to be thread safe and <code class="docutils literal notranslate"><span class="pre">nogil</span></code> (not require the global interpreter lock, although a context manager could <em>in principle</em> be used to reacquire the lock within the integrator). Also note that if external C libraries are required, that you include a Cython .pxd (header) file in the package which <code class="docutils literal notranslate"><span class="pre">extern</span></code>s the required library components; the library
 also needs to be included and linked in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> at package build-time.</p>
-<p><em>You are encouraged to ask the author of X-PSI for assistance in implementing your low-level source radiation field model if you are uncertain. If you have ideas for making this model specification more user-friendly, without, crucially, increasing pulse integration time, please contact the author or submit a pull request.</em></p>
+<p><em>You are encouraged to ask the author of X-PSI for assistance in implementing your low-level surface radiation field model if you are uncertain. If you have ideas for making this model specification more user-friendly, without, crucially, increasing pulse integration time, please contact the author or submit a pull request.</em></p>
 <p>The following is the contents of the <code class="docutils literal notranslate"><span class="pre">hot_radiation_field.pxd</span></code> file which the X-PSI integrators use as the header file for including other C functions in the package.</p>
 <div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_hotRadField</span><span class="p">(</span><span class="n">size_t</span> <span class="n">THREAD</span><span class="p">,</span>
                              <span class="n">double</span> <span class="n">E</span><span class="p">,</span>
@@ -1072,7 +1158,7 @@ also needs to be included and linked in <code class="docutils literal notranslat
     <span class="k">return</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">*</span> <span class="n">E</span> <span class="o">/</span> <span class="p">(</span> <span class="n">exp</span><span class="p">(</span><span class="n">E</span> <span class="o">/</span> <span class="n">temp</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="p">)</span>
 
 <span class="k">cdef</span> <span class="kt">double</span> <span class="nf">eval_hotRadField_norm</span><span class="p">()</span> <span class="k">nogil</span><span class="p">:</span>
-    <span class="c"># Source radiation field normalisation which is independent of the</span>
+    <span class="c"># Surface radiation field normalisation which is independent of the</span>
     <span class="c"># parameters of the parametrised model, i.e. cell properties, energy,</span>
     <span class="c"># and angle.</span>
     <span class="c"># Writing the normalisation here reduces the number of operations required</span>
@@ -1081,12 +1167,12 @@ also needs to be included and linked in <code class="docutils literal notranslat
     <span class="k">return</span> <span class="n">erg</span> <span class="o">*</span> <span class="n">Planck_dist_const</span>
 </pre></div>
 </div>
-<p>In most use-cases we need to modify these functions to enable handling of the numerical atmosphere data. An extension for such a case may be found as an <a class="reference internal" href="extensions.html"><span class="doc">example</span></a>, which contains that used by <a class="reference internal" href="applications.html"><span class="doc">Riley et al. (2019)</span></a> to implement the <code class="docutils literal notranslate"><span class="pre">NSX</span></code> atmosphere computed by Wynn Ho. In general, if you wish to change the model for the parametrised local comoving source radiation field model, you can archive the extensions in, e.g., the
+<p>In most use-cases we need to modify these functions to enable handling of the numerical atmosphere data. An extension for such a case may be found as an <a class="reference internal" href="extensions.html"><span class="doc">example</span></a>, which contains that used by <a class="reference internal" href="applications.html"><span class="doc">Riley et al. (2019)</span></a> to implement the <code class="docutils literal notranslate"><span class="pre">NSX</span></code> atmosphere computed by Wynn Ho. In general, if you wish to change the model for the parametrised local comoving surface radiation field model, you can archive the extensions in, e.g., the
 <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive</span></code>, and completely replace the contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot_radiation_field.pyx</span></code> when X-PSI is compiled and installed. Alternatively, you can compile your extension elsewhere and link it when X-PSI is installed (by editing the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script), <code class="docutils literal notranslate"><span class="pre">cimporting</span></code> or <code class="docutils literal notranslate"><span class="pre">extern</span></code>ing from the appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</span></code> header file(s), and calling those precompiled binaries from the functions declared in the
 <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot_radiation_field.pxd</span></code> header.</p>
-<p>Since the atmospheric effective temperature is uniform everywhere within the spot boundary, we can use the default value of the <code class="docutils literal notranslate"><span class="pre">symmetry</span></code> keyword, <code class="docutils literal notranslate"><span class="pre">True</span></code>. All other arguments determine the numerical resolution, and have defaults which have been (somewhat arbitrarily) chosen to be result in a likelihood evaluation time of <span class="math notranslate nohighlight">\(\mathcal{O}(1)\)</span> s.</p>
+<p>Since the atmospheric local comoving effective temperature is uniform everywhere within the hot region boundary, we can use the default value of the <code class="docutils literal notranslate"><span class="pre">symmetry</span></code> keyword, <code class="docutils literal notranslate"><span class="pre">True</span></code>. All other arguments determine the numerical resolution, and have defaults which have been (somewhat arbitrarily) chosen to be result in a likelihood evaluation time of <span class="math notranslate nohighlight">\(\mathcal{O}(1)\)</span> s.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1114,7 +1200,7 @@ also needs to be included and linked in <code class="docutils literal notranslat
 </div>
 <p>We can now instantitate the photosphere:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1123,15 +1209,15 @@ also needs to be included and linked in <code class="docutils literal notranslat
 </div>
 </div>
 <p>We <code class="docutils literal notranslate"><span class="pre">tag</span></code> the instance with the name <code class="docutils literal notranslate"><span class="pre">'all'</span></code> to ensure that this photosphere is matched to the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> object with the same identification tag during likelihood evaluation; when the model defines multiple data subsets and thus multiple <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> instances, tagging the objects in this manner is a safety guard (in particular against inadvertently wasting compute resources sampling a distribution conditional on an unintended model).</p>
-<p>We also assume that the coordinate (asymptotic) rotation frequency of the spot is locked to the (fixed) coordinate (asymptotic) spin frequency of the star.</p>
-<p>We do not model the source radiation field <em>elsewhere</em>, and we thus leave the <code class="docutils literal notranslate"><span class="pre">elsewhere</span></code> keyword as <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default). <em>Elsewhere</em> means on the surface, exterior to radiating hot regions that are typically expected to span a smaller angular extent; in <code class="docutils literal notranslate"><span class="pre">v0.1</span></code>, the radiation from <em>elsewhere</em>, if explicitly computed is assumed to be time-invariant supposing the hot regions were not present. To account for radiation from <em>elsewhere</em>, a time-invariant signal is first computed, meaning an
+<p>We also assume that the coordinate (asymptotic) rotation frequency of the hot regions is locked to the (fixed) coordinate (asymptotic) spin frequency of the star.</p>
+<p>We do not model the surface radiation field <em>elsewhere</em>, and we thus leave the <code class="docutils literal notranslate"><span class="pre">elsewhere</span></code> keyword as <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default). <em>Elsewhere</em> means on the surface, exterior to radiating hot regions that are typically expected to span a smaller angular extent; in <code class="docutils literal notranslate"><span class="pre">v0.1</span></code>, the radiation from <em>elsewhere</em>, if explicitly computed is assumed to be time-invariant supposing the hot regions were not present. To account for radiation from <em>elsewhere</em>, a time-invariant signal is first computed, meaning an
 axisymmetric local comoving radiation field is assumed. The time-dependent signals from the hot regions are then computed, and modified by subtracting the specific intensity that would otherwise be generated by the local comoving radiation field from <em>elsewhere</em> (i.e., in place of the hot regions).</p>
 </div>
 <div class="section" id="Star">
 <h4>Star<a class="headerlink" href="#Star" title="Permalink to this headline">¶</a></h4>
 <p>We can now combine the ambient spacetime, <code class="docutils literal notranslate"><span class="pre">spacetime</span></code>, and the embedded photosphere, <code class="docutils literal notranslate"><span class="pre">photosphere</span></code>, into a model star represented by an instance of <a class="reference internal" href="star.html#xpsi.Star.Star"><span class="std std-ref">Star</span></a>. We do not need to extend this class, so we can simply construct and instantiate a star as follows:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1146,7 +1232,7 @@ axisymmetric local comoving radiation field is assumed. The time-dependent signa
 <p>Given the objects constructed above and the relevant pre-compiled low-level code, we can now construct and instantiate a <em>callable</em> likelihood object. We do not need extend (via inheritance) the <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood"><span class="std std-ref">Likelihood</span></a> class found the source code: this class simply combines all of the model objects defined above, performs some automatic operations given the properties of the those objects, and facilitates communication of those objects when it recieves a call
 to evaluate the likelihood.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1157,7 +1243,7 @@ to evaluate the likelihood.</p>
 <p>We could in principle set the number of OpenMP threads we want to spawn in low-level functions (such as the integrator) which are parallelised, but we will leave it at the default value of <code class="docutils literal notranslate"><span class="pre">1</span></code> since we intend to invoke Open MPI and it is best not to experiment with the parallelisation paradigm when preparing a model as a callback for a sampling process.</p>
 <p>We can print the model objects constituting the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> instance, with their respective parameter numbers:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1184,7 +1270,7 @@ Total number of model parameters: 12
 </div>
 <p>The bounds on these parameters are:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1193,7 +1279,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1215,7 +1301,7 @@ Total number of model parameters: 12
 <p><strong>Note that if you want to modify the definition of the model parameter space you should restart the process of constructing a</strong> <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> <strong>object, intead of manipulating existing objects.</strong></p>
 <p>Let’s call the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object with the known model parameter values:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1236,7 +1322,7 @@ Total number of model parameters: 12
 
 <span class="n">ll</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">ll</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t</span><span class="p">)</span> <span class="c1"># ll = -26713.6136777</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;ll = </span><span class="si">%.8f</span><span class="s1">; time = </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ll</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span><span class="p">))</span> <span class="c1"># ll = -26713.6136777</span>
 </pre></div>
 </div>
 </div>
@@ -1245,38 +1331,16 @@ Total number of model parameters: 12
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
--26713.6136777 1.11842179298
+ll = -26713.61367769; time = 1.177
 </pre></div></div>
 </div>
 <p>Calling the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object also modified the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> property of the <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object. Let’s plot the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> by summing the count-rate over output instrument channels. We first define some settings and helper functions.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
-<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">14.0</span>
-
-<span class="k">def</span> <span class="nf">veneer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Make the plots a little more aesthetically pleasing. &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">plot_pulse</span><span class="p">():</span>
+<span></span><span class="k">def</span> <span class="nf">plot_pulse</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Plot hot region signals before and after telescope operation. &quot;&quot;&quot;</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
@@ -1299,7 +1363,7 @@ Total number of model parameters: 12
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1312,14 +1376,14 @@ Total number of model parameters: 12
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_68_0.png" src="_images/model_construction_68_0.png" />
+<img alt="_images/model_construction_74_0.png" src="_images/model_construction_74_0.png" />
 </div>
 </div>
 <p>The pulse profiles with markers are the signals incident on the telescope, before operating on them with the response model. The markers, linearly spaced in phase, denote the phase resolution.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object calls the <code class="docutils literal notranslate"><span class="pre">star.update</span></code> method which in-turn calls the <code class="docutils literal notranslate"><span class="pre">photosphere.embed</span></code> method. The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object then calls the <code class="docutils literal notranslate"><span class="pre">photosphere.integrate</span></code> method, passing the energies stored as the property <code class="docutils literal notranslate"><span class="pre">pulse.energies</span></code>. We can do this manually if we wish to integrate pulses but not calculate likelihoods. Here we sum over incident specific photon flux pulses as an approximation to integrating over energy. Note that we do not change the <code class="docutils literal notranslate"><span class="pre">pulse.pulses</span></code> traced by
 the solid curves without markers.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1347,38 +1411,140 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_71_0.png" src="_images/model_construction_71_0.png" />
+<img alt="_images/model_construction_77_0.png" src="_images/model_construction_77_0.png" />
 </div>
 </div>
-<p>Below we print a crude representation of the cell mesh spanning the spot (if you defocus your eyes the approximate circular region is clearer). The elements of the array which are finite are not all identical: at the boundary of the spot the proper area elements are smaller such that the sum of all finite proper areas effectively equals the total proper area within the spot boundary.</p>
-<p>Let’s plot a pulse in two dimensions.</p>
+<p>Below we print a crude representation of the cell mesh spanning the primary hot region (if you defocus your eyes the approximate circular region is clearer). The elements of the array which are finite are not all identical: at the boundary of the hot region the proper area elements are smaller such that the sum of all finite proper areas effectively equals the total proper area within the hot-region boundary.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">)</span>
-<span class="n">likelihood</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">reinitialise</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+
+<span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+
+<span class="c1"># primary (lower colatitude) hot region</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">hot</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">patches</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">z</span><span class="p">,</span>
+                         <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                         <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                         <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
+                         <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                         <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+
+<span class="c1"># secondary (higher colatitude) hot region</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">cellArea</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">cellArea</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                   <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                   <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                   <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
+                   <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                   <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="n">ax_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span>
+                  <span class="n">cax</span> <span class="o">=</span> <span class="n">ax_cb</span><span class="p">,</span>
+                  <span class="n">ticks</span> <span class="o">=</span> <span class="n">MultipleLocator</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+
+<span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;cell area (normalised by maximum)&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">cb</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+
+<span class="n">veneer</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
+<span class="n">cb</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_79_0.png" src="_images/model_construction_79_0.png" />
+</div>
+</div>
+<p>Note that the lowest colatitude row is at zero on the y-axis.</p>
+<p>Let’s plot a pulse in two dimensions. Also note that we can interpolate the signal in phase as follows.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-30715.697224587464
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">xpsi.tools</span> <span class="kn">import</span> <span class="n">phase_interpolator</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">phase_mesh</span><span class="p">,</span> <span class="n">energy_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">)</span>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.025</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ax_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">new_phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+
+<span class="n">interpolated</span> <span class="o">=</span> <span class="n">phase_interpolator</span><span class="o">.</span><span class="n">interpolate_pulse</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span> <span class="n">pulse</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">pulse</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">interpolated</span> <span class="o">+=</span> <span class="n">phase_interpolator</span><span class="o">.</span><span class="n">interpolate_pulse</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span> <span class="n">pulse</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">pulse</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
+                         <span class="n">NICER</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
+                         <span class="n">interpolated</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">interpolated</span><span class="p">),</span>
+                         <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+                         <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                         <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="n">profile</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Channel&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Phase&#39;</span><span class="p">)</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+<span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span>
+                  <span class="n">cax</span> <span class="o">=</span> <span class="n">ax_cb</span><span class="p">,</span>
+                  <span class="n">ticks</span> <span class="o">=</span> <span class="n">MultipleLocator</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+
+<span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;counts/s (normalised by maximum)&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">cb</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+<span class="n">veneer</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
+<span class="n">cb</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_83_0.png" src="_images/model_construction_83_0.png" />
+</div>
+</div>
+<p>Now we use parameter vector <code class="docutils literal notranslate"><span class="pre">q</span></code>, increase the phase resolution, and plot a single rotational pulse.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">reinitialise</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
 
 <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -1410,10 +1576,10 @@ the solid curves without markers.</p>
 
 <span class="c1"># the count rate signal is normalised with respect to the global maximum</span>
 <span class="c1"># over channels and phase of the joint signal from the hot regions</span>
-<span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;log$_{10}$(normalised count rate per channel)&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;counts/s (normalised by maximum)&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
 <span class="n">cb</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
 
-<span class="n">veneer</span><span class="p">((</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="p">);</span> <span class="n">veneer</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="p">);</span> <span class="n">veneer</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
 <span class="n">cb</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span> <span class="o">=</span> <span class="mf">0.025</span><span class="p">)</span>
@@ -1424,12 +1590,12 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_75_0.png" src="_images/model_construction_75_0.png" />
+<img alt="_images/model_construction_86_0.png" src="_images/model_construction_86_0.png" />
 </div>
 </div>
-<p>Let’s iterate over a monotonically increasing set of values of the spot angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many OpenMP threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
+<p>Let’s iterate over a monotonically increasing set of values of the hot-region angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many OpenMP threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1438,7 +1604,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1446,19 +1612,21 @@ the solid curves without markers.</p>
 </pre></div>
 </div>
 </div>
-<p>For the following calculations however, we are not using the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object as a callback function passed to posterior sampling/integration software which parallelises efficiently using Open MPI. We can thus spawn additional worker threads for pulse integration; if likelihood evaluations are parallelised in an Open MPI environment on the other hand, one risks <em>losing</em> efficiency by spawning worker threads for likelihood evaluation.</p>
+<p>Given that we are not currently using the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object as a callback function passed to posterior sampling software (which parallelises efficiently using Open MPI), we can safely spawn additional worker threads for pulse integration; if likelihood evaluations are parallelised in an Open MPI environment on the other hand, one risks <em>losing</em> efficiency by spawning worker threads for likelihood evaluation.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Photons/cm$^2$/s/keV [arbitrary normalisation]&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Photons/cm$^2$/s/keV (normalised by maxima)&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Phase [cycles]&#39;</span><span class="p">)</span>
 
-<span class="n">angular_radii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">256</span><span class="p">)</span>
+
+<span class="c1"># let&#39;s play with the angular radius of the primary hot region</span>
+<span class="n">angular_radii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 
 <span class="n">q</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c1"># copy</span>
 
@@ -1470,7 +1638,7 @@ the solid curves without markers.</p>
     <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span> <span class="n">temp</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">),</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
 <span class="n">q</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-<span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># change inclination</span>
 
 <span class="k">for</span> <span class="n">angular_radius</span> <span class="ow">in</span> <span class="n">angular_radii</span><span class="p">:</span>
     <span class="n">q</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">angular_radius</span>
@@ -1497,7 +1665,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_79_0.png" src="_images/model_construction_79_0.png" />
+<img alt="_images/model_construction_90_0.png" src="_images/model_construction_90_0.png" />
 </div>
 </div>
 </div>
@@ -1507,7 +1675,7 @@ the solid curves without markers.</p>
 <p>Let us now construct a callable object representing a joint prior density distribution on the space <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span>. We need to extend the base class to implement our distribution, which in all but two dimensions is separable and <em>uniform</em> on some compact interval of the space. The exceptions are the gravitational mass and equatorial radius: a joint constraint is imposed to assign zero density to stars which are <em>too</em> compact (the polar radius of the rotationally deformed stellar
 2-surface is close to the radius of the Schwarzschild photon sphere), but the joint prior density is <em>uniform</em> otherwise between hard bounds on each parameter.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1516,7 +1684,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1536,10 +1704,10 @@ the solid curves without markers.</p>
 <span class="sd">        * p[3] = inclination of Earth to rotational axis (radians)</span>
 <span class="sd">        * p[4] = primary region centre colatitude (radians)</span>
 <span class="sd">        * p[5] = primary region angular radius (radians)</span>
-<span class="sd">        * p[6] = primary region log10(comoving blackbody temperature [K])</span>
+<span class="sd">        * p[6] = primary region log10(local comoving blackbody temperature [K])</span>
 <span class="sd">        * p[7] = secondary cap centre colatitude (radians)</span>
 <span class="sd">        * p[8] = secondary cap angular radius (radians)</span>
-<span class="sd">        * p[9] = secondary cap log10(comoving blackbody temperature [K])</span>
+<span class="sd">        * p[9] = secondary cap log10(local comoving blackbody temperature [K])</span>
 <span class="sd">        * p[10] = primary cap phase shift (cycles); (alias for initial azimuth, periodic)</span>
 <span class="sd">        * p[11] = secondary cap phase shift (cycles)</span>
 
@@ -1680,7 +1848,7 @@ the solid curves without markers.</p>
 </div>
 <p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, passing the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object such that the parameter bounds can be automatically applied in the required order to a vector of parameter values passed upon calling the <code class="docutils literal notranslate"><span class="pre">prior</span></code> object.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1691,7 +1859,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1701,7 +1869,7 @@ the solid curves without markers.</p>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">prior.inverse_sample()</span></code> method can be used to initialise the ensemble of walkers evolved by <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a>, and is required by <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> to uniformly sample from the prior distribution and transform it into a posterior distribution. Let’s call the method, passing a vector of pseudorandom numbers drawn when each is drawn from a uniform distribution on the interval <span class="math notranslate nohighlight">\([0,1)\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1710,27 +1878,27 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[0.36025959763896853,
- 1.1676022836884568,
- 6.1844085245793705,
- 0.8629715168792558,
- 1.2731812069651105,
- 0.8829821606732123,
- 5.61864733603463,
- 1.5266838212287377,
- 0.4899234439990458,
- 5.629749360239541,
- 0.26107667082273567,
- 0.23182883441086122]
+<span></span>[0.14488749120650185,
+ 1.6513384882051796,
+ 12.985098235182651,
+ 0.5429779708640244,
+ 0.42543637720910604,
+ 0.40111270067833005,
+ 6.425443663704155,
+ 1.3327251293298936,
+ 0.7359445369886086,
+ 6.129776212394883,
+ 0.3517319703882139,
+ 0.4752491391802893]
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1745,16 +1913,16 @@ the solid curves without markers.</p>
 <div class="highlight"><pre>
 Estimating fractional hypervolume of the unit hypercube with finite prior density:
 Requiring 1E+04 draws from the prior support for Monte Carlo estimation...
-The support occupies an estimated 7.0% of the hypervolume within the unit hypercube...
+The support occupies an estimated 6.8% of the hypervolume within the unit hypercube...
 Fractional hypervolume estimated.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>0.06997264069748728
+<span></span>0.0681059728938228
 </pre></div>
 </div>
 </div>

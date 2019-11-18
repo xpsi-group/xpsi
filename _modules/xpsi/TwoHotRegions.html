@@ -286,7 +286,10 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cellArea</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the areas of cells in the secondary-spot mesh. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cellArea</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__super_cellArea</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cede_cellArea</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__super_cellArea</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TwoHotRegions.embed"><a class="viewcode-back" href="../../twohotregions.html#xpsi.TwoHotRegions.TwoHotRegions.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Embed the spots. &quot;&quot;&quot;</span>
