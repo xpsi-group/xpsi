@@ -169,5 +169,5 @@ class Instrument(ParameterSubspace):
         return self._folded_signal
 
     @abstractmethod
-    def _construct_matrix(self, p):
-        """ Construct the response matrix. """
+    def construct_matrix(self, p):
+        """ Construct the response matrix given parameter values (if any). """
