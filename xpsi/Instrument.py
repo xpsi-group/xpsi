@@ -25,14 +25,14 @@ class Instrument(ParameterSubspace):
     :param matrix: A ``p x q`` :class:`numpy.ndarray` which is the
                        product of a redistribution matrix and effective area
                        vector. The input energy channels must increase along
-                       the columns of :obj:`matrix`, and the output channels
-                       must increase along the rows of :obj:`matrix`. The
+                       the columns of :attr:`matrix`, and the output channels
+                       must increase along the rows of :attr:`matrix`. The
                        *units* of the elements must be that of an *effective*
                        area (:math:`cm^2`).
 
     :param energy_edges: Energy edges of the instrument channels which
                          must be congruent to the first dimension of the
-                         :obj:`matrix` -- i.e., the number of edges must
+                         :attr:`matrix` -- i.e., the number of edges must
                          be ``q + 1``. The edges must be monotonically
                          increasing.
 
@@ -46,6 +46,29 @@ class Instrument(ParameterSubspace):
     def __init__(self, num_params, bounds, matrix, energy_edges):
         super(Instrument, self).__init__(num_params, bounds)
 
+        self.matrix = matrix
+        self.energy_edges = energy_edges
+
+    @property
+    def matrix(self):
+        """ Get the response matrix.
+
+        A photon redistribution matrix of dimension ``p x q``. Here
+        ``p`` must be the number of input channels, and ``q >= p`` the
+        number of output channels.
+
+        .. note::
+
+            The attribute :attr:`matrix` must be assigned, and it must be
+            a :class:`numpy.ndarray` for use with :func:`numpy.dot` (even
+            if the matrix is sparse to some degree).
+
+        """
+        return self._matrix
+
+    @matrix.setter
+    def matrix(self, matrix):
+        """ Set the matrix. """
         try:
             assert isinstance(matrix, _np.ndarray)
             assert matrix.ndim == 2
@@ -67,6 +90,21 @@ class Instrument(ParameterSubspace):
             else:
                 self._matrix = matrix
 
+    @property
+    def energy_edges(self):
+        """ Get the energy edges of the instrument.
+
+        A :class:`numpy.ndarray` of edges of the input energy
+        channels which map to output channels defined in the
+        data space.
+
+        """
+        return self._energy_edges
+
+    @energy_edges.setter
+    def energy_edges(self):
+        """ Set the energy edges. """
+
         try:
             assert isinstance(energy_edges, _np.ndarray)
         except AssertionError:
@@ -86,32 +124,6 @@ class Instrument(ParameterSubspace):
             raise EdgesError('Energy edges must be in a one-dimensional '
                              '``numpy.ndarray``, and must be postive.')
 
-    @property
-    def matrix(self):
-        """ Get the response matrix.
-
-        A photon redistribution matrix of dimension ``p x q``. Here
-        ``p`` must be the number of input channels, and ``q >= p`` the
-        number of output channels.
-
-        .. note:: The attribute :attr:`._matrix` must be assigned, and it must be
-              a :class:`numpy.ndarray` for use with :func:`numpy.dot` (even
-              if the matrix is sparse to some degree).
-
-        """
-        return self._matrix
-
-    @property
-    def energy_edges(self):
-        """ Get the energy edges of the instrument.
-
-        A :class:`numpy.ndarray` of edges of the input energy
-        channels which map to output channels defined in the
-        data space.
-
-        """
-        return self._energy_edges
-
     def __call__(self, p, signal, irange, orange):
         """ Fold an incident signal.
 
@@ -119,24 +131,24 @@ class Instrument(ParameterSubspace):
                       input energy channel increments along rows, and
                       phase increases along columns. The number of
                       rows, ``m``, must equal the number of columns of
-                      :attr:`._matrix`, ``m = q``.
+                      :attr:`matrix`, ``m = q``.
 
         :param irange: Array-like object with two elements respectively denoting
                        the indices of the first and last *input* channels. The
-                       response matrix :attr:`._matrix` must be indexable with
+                       response matrix :attr:`matrix` must be indexable with
                        these numbers, i.e., they must satisfy ``i < q``.
 
         :param orange: Array-like object with two elements respectively denoting
                        the indices of the first and last *output* channels. The
-                       response matrix :attr:`._matrix` must be indexable with
+                       response matrix :attr:`matrix` must be indexable with
                        these numbers, i.e., they must satisfy ``i < p``.
 
         :return: A :class:`numpy.ndarray` of size ``p x n``.
 
-        **Notes**
+        .. note::
 
-        The profile most recently operated on is stored as the attribute
-        :attr:`._last_folded`.
+            The profile most recently operated on is stored as the property
+            :attr:`folded_signal`.
 
         """
 
