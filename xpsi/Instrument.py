@@ -22,24 +22,26 @@ class Instrument(ParameterSubspace):
     ``super().__init__``. Specialist constructors can be defined in a subclass
     using the ``@classmethod`` decorator.
 
-    :param matrix: A ``p x q`` :class:`numpy.ndarray` which is the
-                       product of a redistribution matrix and effective area
-                       vector. The input energy channels must increase along
-                       the columns of :attr:`matrix`, and the output channels
-                       must increase along the rows of :attr:`matrix`. The
-                       *units* of the elements must be that of an *effective*
-                       area (:math:`cm^2`).
+    :param ndarray[p,q] matrix:
+        A :math:`p \\times q` matrix which is the
+        product of a redistribution matrix and effective area
+        vector. The input energy edges must increase along
+        the columns of :attr:`matrix`, and the output channels
+        must increase along the rows of :attr:`matrix`. The
+        *units* of the elements must be that of an *effective*
+        area (:math:`cm^2`).
 
-    :param energy_edges: Energy edges of the instrument channels which
-                         must be congruent to the first dimension of the
-                         :attr:`matrix` -- i.e., the number of edges must
-                         be ``q + 1``. The edges must be monotonically
-                         increasing.
+    :param ndarray[q+1] energy_edges:
+        Energy edges of the instrument channels which
+        must be congruent to the first dimension of the
+        :attr:`matrix` -- i.e., the number of edges must
+        be :math:`q + 1`. The edges must be monotonically
+        increasing.
 
     .. note:: The dimensions of the response matrix need not be equal, but
               it is required that the number of input channels be greater
               than or equal to the number of output channels -- i.e.,
-              ``p <= q``. If ``p < q`` then it is implied that subsets of
+              :math:`p \leq q`. If :math:`p < q` then it is implied that subsets of
               adjacent output channels are actually grouped together.
 
     """
@@ -53,9 +55,9 @@ class Instrument(ParameterSubspace):
     def matrix(self):
         """ Get the response matrix.
 
-        A photon redistribution matrix of dimension ``p x q``. Here
-        ``p`` must be the number of input channels, and ``q >= p`` the
-        number of output channels.
+        A matrix of dimension :math:`p \\times q`. Here :math:`p` must be the
+        number of input energy intervals, and :math:`q \geq p` the number of
+        output channels.
 
         .. note::
 
@@ -112,7 +114,7 @@ class Instrument(ParameterSubspace):
                 self._energy_edges = _np.array(energy_edges)
             except TypeError:
                 raise EdgesError('Energy edges must be in a one-dimensional '
-                                 '``numpy.ndarray``, and must all be postive.')
+                                 'array, and must all be postive.')
         else:
             self._energy_edges = energy_edges
 
@@ -122,28 +124,30 @@ class Instrument(ParameterSubspace):
             assert self._energy_edges.shape[0] == self._matrix.shape[1] + 1
         except AssertionError:
             raise EdgesError('Energy edges must be in a one-dimensional '
-                             '``numpy.ndarray``, and must be postive.')
+                             'array, and must be postive.')
 
     def __call__(self, p, signal, irange, orange):
         """ Fold an incident signal.
 
-        :param signal: An ``m x n`` :class:`numpy.ndarray` matrix, where
-                      input energy channel increments along rows, and
-                      phase increases along columns. The number of
-                      rows, ``m``, must equal the number of columns of
-                      :attr:`matrix`, ``m = q``.
+        :param ndarray[m,n] signal:
+            An :math:`m \\times n` matrix, where input energy edge increments
+            along rows, and phase increases along columns. The number of rows,
+            :math:`m`, must equal the number of columns of :attr:`matrix`:
+            :math:`m=q`.
 
-        :param irange: Array-like object with two elements respectively denoting
-                       the indices of the first and last *input* channels. The
-                       response matrix :attr:`matrix` must be indexable with
-                       these numbers, i.e., they must satisfy ``i < q``.
+        :param array-like irange:
+            Indexable object with two elements respectively denoting
+            the indices of the first and last *input* channels. The
+            response matrix :attr:`matrix` must be indexable with
+            these numbers, i.e., they must satisfy :math:`i < q`.
 
-        :param orange: Array-like object with two elements respectively denoting
-                       the indices of the first and last *output* channels. The
-                       response matrix :attr:`matrix` must be indexable with
-                       these numbers, i.e., they must satisfy ``i < p``.
+        :param array-like orange:
+            Indexable object with two elements respectively denoting
+            the indices of the first and last *output* channels. The
+            response matrix :attr:`matrix` must be indexable with
+            these numbers, i.e., they must satisfy :math:`i < p`.
 
-        :return: A :class:`numpy.ndarray` of size ``p x n``.
+        :return: *ndarray[p,n]* containing the folded signal.
 
         .. note::
 
