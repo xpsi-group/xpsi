@@ -104,7 +104,7 @@ class Instrument(ParameterSubspace):
         return self._energy_edges
 
     @energy_edges.setter
-    def energy_edges(self):
+    def energy_edges(self, energy_edges):
         """ Set the energy edges. """
 
         try:
