@@ -150,6 +150,8 @@ class HotRegion(ParameterSubspace):
                  fast_max_sqrt_num_cells = 16,
                  fast_num_rays = 100,
                  fast_num_leaves = 32,
+                 fast_num_phases = None,
+                 fast_phases = None,
                  is_secondary = False):
 
         super(HotRegion, self).__init__(num_params, bounds)
@@ -175,7 +177,8 @@ class HotRegion(ParameterSubspace):
                            min_sqrt_num_cells, max_sqrt_num_cells,
                            fast_sqrt_num_cells,
                            fast_min_sqrt_num_cells, fast_max_sqrt_num_cells)
-        self.set_phases(num_leaves, fast_num_leaves, num_phases, phases)
+        self.set_phases(num_leaves, num_phases, phases,
+                        fast_num_leaves, fast_num_phases, fast_phases)
 
         if symmetry:
             from .cellmesh.integrator_for_azimuthal_invariance import integrate_radField as _integrator
@@ -251,8 +254,9 @@ class HotRegion(ParameterSubspace):
         """ Get the leaves of the photospheric foliation. """
         return self._phases
 
-    def set_phases(self, num_leaves, fast_num_leaves=None,
-                   num_phases=None, phases=None):
+    def set_phases(self, num_leaves, num_phases=None, phases=None,
+                   fast_num_leaves=None, fast_num_phases=None,
+                   fast_phases=None):
         """ Construct the set of interpolation phases and foliation leaves.
 
         :param int num_leaves: Number of leaves mesh motion is discretised into.
@@ -270,12 +274,10 @@ class HotRegion(ParameterSubspace):
         """
         if num_phases is None:
             num_phases = num_leaves
-            fast_num_phases = fast_num_leaves
 
         if phases is None:
             try:
                 self._phases_cycles = _np.linspace(0.0, 1.0, int(num_phases))
-                self._fast_phases_cycles = _np.linspace(0.0, 1.0, int(fast_num_phases))
             except TypeError:
                 raise TypeError('Number of phases must be an integer.')
         else:
@@ -293,13 +295,41 @@ class HotRegion(ParameterSubspace):
                 self._phases_cycles = phases
 
         self._phases = _2pi * self._phases_cycles
-        self._fast_phases = _2pi * self._fast_phases_cycles
 
         try:
             self._leaves =  _np.linspace(0.0, _2pi, int(num_leaves))
-            self._fast_leaves =  _np.linspace(0.0, _2pi, int(fast_num_leaves))
         except TypeError:
             raise TypeError('Number of leaves must be an integer.')
+
+        if self.do_fast:
+            if fast_num_phases is None:
+                fast_num_phases = fast_num_leaves
+
+            if fast_phases is None:
+                try:
+                    self._fast_phases_cycles = _np.linspace(0.0, 1.0, int(fast_num_phases))
+                except TypeError:
+                    raise TypeError('Number of phases must be an integer.')
+            else:
+                try:
+                    assert isinstance(fast_phases, _np.ndarray)
+                    assert fast_phases.ndim == 1
+                    assert (fast_phases >= 0.0).all() & (fast_phases <= 1.0).all()
+                    for i in range(fast_phases.shape[0] - 1):
+                        assert fast_phases[i] < fast_phases[i+1]
+                except AssertionError:
+                    raise TypeError('Phases must be a one-dimensional '
+                                    '``numpy.ndarray`` with monotonically '
+                                    'increasing elements on the interval [0,1].')
+                else:
+                    self._fast_phases_cycles = fast_phases
+
+            self._fast_phases = _2pi * self._fast_phases_cycles
+
+            try:
+                self._fast_leaves =  _np.linspace(0.0, _2pi, int(fast_num_leaves))
+            except TypeError:
+                raise TypeError('Number of leaves must be an integer.')
 
     @property
     def phases_in_cycles(self):

@@ -88,8 +88,9 @@ class Likelihood(ParameterSpace):
                  identification tags.'
 
             pulse.phases = photosphere.hot.phases_in_cycles
-            pulse.fast_phases = photosphere.hot.fast_phases_in_cycles
-            if photosphere.hot.do_fast: self._do_fast = True
+            if photosphere.hot.do_fast:
+                pulse.fast_phases = photosphere.hot.fast_phases_in_cycles
+                self._do_fast = True
 
         self._theta = [0.0] * self.num_params
 
