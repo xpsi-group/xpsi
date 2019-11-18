@@ -244,6 +244,12 @@ class Likelihood(ParameterSpace):
 
     @staticmethod
     def _divide(obj, x):
+        """ Helper operator to check for compatibility first.
+
+        As an example, if fast mode is activated for some hot region but not
+        another, :obj:`obj` would be ``None`` and thus a safeguard is needed.
+
+        """
         if isinstance(obj, _np.ndarray):
             return obj / x
         else:

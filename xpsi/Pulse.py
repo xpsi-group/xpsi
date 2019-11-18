@@ -659,7 +659,15 @@ class Pulse(ParameterSubspace):
 
     @property
     def caching_targets(self):
-        """ Get a dictionary of model objects for caching. """
+        """ Get a dictionary of model objects for caching.
+
+        Called by the post-processing module.
+
+        :raises AttributeError:
+            If a property is not set in methods of a subclass, or if the
+            ``self.store`` property is not ``True``.
+
+        """
         return {'shift': self.shift,
                 'pulse': self.pulse,
                 'expected_counts': self.expected_counts,

@@ -82,7 +82,7 @@ class HotRegion(ParameterSubspace):
     :param sqrt_num_cells:
         Number of cells in both colatitude and azimuth which form a
         regular mesh on a curved 2-surface (a spacelike leaf of the
-        spacetime foliation). This is square-root of the approximate
+        spacetime foliation). This is the square-root of the approximate
         number of cells whose centres should lie within a hot region.
 
     :param min_sqrt_num_cells:
