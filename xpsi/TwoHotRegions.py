@@ -97,7 +97,10 @@ class TwoHotRegions(HotRegion):
     @property
     def cellArea(self):
         """ Get the areas of cells in the secondary-spot mesh. """
-        return self.__cellArea
+        try:
+            return (self.__super_cellArea, self.__cede_cellArea)
+        except AttributeError:
+            return (self.__super_cellArea, None)
 
     def embed(self, spacetime, p, fast_total_counts, threads, *args):
         """ Embed the spots. """

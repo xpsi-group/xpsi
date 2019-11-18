@@ -467,6 +467,14 @@ class HotRegion(ParameterSubspace):
             if self._is_secondary:
                 self._cede_phi += _pi
 
+    @property
+    def __cellArea(self):
+        """ Get the areas of cells in the secondary-spot mesh. """
+        try:
+            return (self._super_cellArea, self._cede_cellArea)
+        except AttributeError:
+            return (self._super_cellArea, None)
+
     def __calibrate_lag(self, st):
         """ Calibrate lag for cell mesh and normalise by oscillation period. """
 
