@@ -349,23 +349,37 @@ class Likelihood(ParameterSpace):
 
         return star_updated
 
-    def __call__(self, p, reinitialise=False):
+    def reinitialise(self):
+        """ Reinitialise the likelihood object.
+
+        Useful if some resolution settings in child
+        objects were changed (namely, the number of pulse phases) that
+        need to be communicated to other child objects.
+
+        """
+
+        self.__init__(self._star,
+                          self._pulses,
+                          self._threads,
+                          self._llzero)
+
+    def __call__(self, p, reinitialise=False, force=False):
         """ Evaluate the logarithm of the joint likelihood over all pulsations.
 
         :param list p: Parameter vector.
-        :param optional[bool] reinitialise:
-            Reinitialise? Useful if some resolution settings in child
-            objects were changed (namely, the number of pulse phases) that
-            need to be communicated to other child objects.
+
+        :param optional[bool] reinitialise: Call self.reinitialise()?
+
+        :param optional[bool] force:
+            Force complete reevaluation even if some parameters are unchanged.
 
         :return: The logarithm of the likelihood.
 
         """
         if reinitialise:
-            self.__init__(self._star,
-                          self._pulses,
-                          self._threads,
-                          self._llzero)
+            self.reinitialise()
+        elif force:
+            self._theta = [0.0] * self.num_params
 
         p = _np.array(p)
 
@@ -488,22 +502,21 @@ class Likelihood(ParameterSpace):
                                 'with exception value: %s' % (_rank, e.value))
 
 
-    def synthesise(self, p, reinitialise=False, **kwargs):
+    def synthesise(self, p, reinitialise=False, force=False, **kwargs):
         """ Synthesise pulsation data.
 
         :param list p: Parameter vector.
 
-        :param optional[bool] reinitialise:
-            Reinitialise? Useful if some resolution settings in child
-            objects were changed (namely, the number of pulse phases) that
-            need to be communicated to other child objects.
+        :param optional[bool] reinitialise: Call self.reinitialise()?
+
+        :param optional[bool] force:
+            Force complete reevaluation even if some parameters are unchanged.
 
         """
         if reinitialise:
-            self.__init__(self._star,
-                          self._pulses,
-                          self._threads,
-                          self._llzero)
+            self.reinitialise()
+        elif force:
+            self._theta = [0.0] * self.num_params
 
         p = _np.array(p)
 
