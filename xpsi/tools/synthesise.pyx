@@ -38,15 +38,20 @@ def synthesise_exposure(double[::1] phases,
                         phase_shifts):
     """ Synthesise from Poisson generative model given an exposure time.
 
-    :param phases: A C-contiguous :class:`numpy.ndarray` of phase interval edges.
-    :param exposure: Exposure time in seconds.
-    :param pulse: A C-contiguous :class:`numpy.ndarray` of pulse count rates.
-    :param pulse_phases: A C-contiguous :class:`numpy.ndarray` of phases at which
-                         the model :obj:`pulse` is evaluated on the interval
-                         ``[0,1]``.
-    :param background: A C-contiguous :class:`numpy.ndarray` of background expected
-                       counts, whose shape matches :obj:`counts`.
-    :param double phase_shift: A phase shift on the interval ``[-0.5,0.5]``.
+    :param phases:
+        A C-contiguous :class:`numpy.ndarray` of phase interval edges.
+    :param float exposure_time:
+        Exposure time in seconds.
+    :param pulse:
+        A C-contiguous :class:`numpy.ndarray` of pulse count rates.
+    :param pulse_phases:
+        A C-contiguous :class:`numpy.ndarray` of phases at which
+        the model :obj:`pulse` is evaluated on the interval ``[0,1]``.
+    :param background:
+        A C-contiguous :class:`numpy.ndarray` of background expected
+        counts, whose shape matches :obj:`counts`.
+    :param array-like phase_shift:
+        Phase shifts in cycles.
 
     """
 
@@ -138,14 +143,21 @@ def synthesise(double[::1] phases,
                phase_shifts):
     """ Synthesise from Poisson generative model.
 
-    :param phases: A C-contiguous :class:`numpy.ndarray` of phase interval edges.
-    :param pulse: A C-contiguous :class:`numpy.ndarray` of pulse count rates.
-    :param pulse_phases: A C-contiguous :class:`numpy.ndarray` of phases at which
-                         the model :obj:`pulse` is evaluated on the interval
-                         ``[0,1]``.
-    :param background: A C-contiguous :class:`numpy.ndarray` of background expected
-                       counts, whose shape matches :obj:`counts`.
-    :param double phase_shifts: A phase shift on the interval ``[-0.5,0.5]``.
+    :param phases:
+        A C-contiguous :class:`numpy.ndarray` of phase interval edges.
+    :param float expected_star_counts:
+        Total number of expected counts from the star to require.
+    :param float expected_background_stars:
+        Total number of expected background counts to require.
+    :param tuple pulses:
+        A tuple of C-contiguous :class:`numpy.ndarray` of pulse count rates.
+    :param pulse_phases:
+        A C-contiguous :class:`numpy.ndarray` of phases at which
+        the model :obj:`pulse` is evaluated on the interval ``[0,1]``.
+    :param background:
+        A C-contiguous :class:`numpy.ndarray` of background expected
+        counts, whose shape matches :obj:`counts`.
+    :param array-like phase_shifts: Phase shifts in cycles.
 
     """
 
