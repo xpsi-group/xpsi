@@ -552,6 +552,14 @@ class Pulse(ParameterSubspace):
         """ Get the stored data object. """
         return self._data
 
+    @data.setter
+    def data(self, data):
+        """ Set the data object. """
+        if isinstance(data, Data):
+                self._data = data
+        else:
+            raise TypeError('The data object is of an invalid type.')
+
     @property
     def pulse(self):
         """ Get the stored channel-by-channel signal components. """
