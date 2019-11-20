@@ -65,7 +65,7 @@ class NestedSampler(object):
         except KeyError:
             kwargs['sampling_efficiency'] = 1.0/self._prior.unit_hypercube_frac
 
-        yield 'Sampling efficiency set to: %.4f' % kwargs['sampling_efficiency']
+        yield 'Sampling efficiency set to: %.4f.'%kwargs['sampling_efficiency']
 
         # ignore the pymultinest output object
         # it has never been used in the author's workflows but change this
