@@ -95,7 +95,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
@@ -538,23 +538,37 @@
 
         <span class="k">return</span> <span class="n">star_updated</span>
 
-<div class="viewcode-block" id="Likelihood.__call__"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">reinitialise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reinitialise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reinitialise the likelihood object.</span>
+
+<span class="sd">        Useful if some resolution settings in child</span>
+<span class="sd">        objects were changed (namely, the number of pulse phases) that</span>
+<span class="sd">        need to be communicated to other child objects.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Likelihood.__call__"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">reinitialise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Evaluate the logarithm of the joint likelihood over all pulsations.</span>
 
 <span class="sd">        :param list p: Parameter vector.</span>
-<span class="sd">        :param optional[bool] reinitialise:</span>
-<span class="sd">            Reinitialise? Useful if some resolution settings in child</span>
-<span class="sd">            objects were changed (namely, the number of pulse phases) that</span>
-<span class="sd">            need to be communicated to other child objects.</span>
+
+<span class="sd">        :param optional[bool] reinitialise: Call self.reinitialise()?</span>
+
+<span class="sd">        :param optional[bool] force:</span>
+<span class="sd">            Force complete reevaluation even if some parameters are unchanged.</span>
 
 <span class="sd">        :return: The logarithm of the likelihood.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">reinitialise</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reinitialise</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">force</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_params</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
@@ -677,22 +691,21 @@
                                 <span class="s1">&#39;with exception value: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_rank</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="Likelihood.synthesise"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.synthesise">[docs]</a>    <span class="k">def</span> <span class="nf">synthesise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">reinitialise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Likelihood.synthesise"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.synthesise">[docs]</a>    <span class="k">def</span> <span class="nf">synthesise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">reinitialise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Synthesise pulsation data.</span>
 
 <span class="sd">        :param list p: Parameter vector.</span>
 
-<span class="sd">        :param optional[bool] reinitialise:</span>
-<span class="sd">            Reinitialise? Useful if some resolution settings in child</span>
-<span class="sd">            objects were changed (namely, the number of pulse phases) that</span>
-<span class="sd">            need to be communicated to other child objects.</span>
+<span class="sd">        :param optional[bool] reinitialise: Call self.reinitialise()?</span>
+
+<span class="sd">        :param optional[bool] force:</span>
+<span class="sd">            Force complete reevaluation even if some parameters are unchanged.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">reinitialise</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reinitialise</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">force</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_params</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 

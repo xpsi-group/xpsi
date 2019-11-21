@@ -97,7 +97,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Model construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
@@ -259,7 +259,7 @@ defining complicated priors.</li>
 </table>
 <dl class="method">
 <dt id="xpsi.Likelihood.Likelihood.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em>, <em>reinitialise=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em>, <em>reinitialise=False</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the logarithm of the joint likelihood over all pulsations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -267,9 +267,8 @@ defining complicated priors.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>p</strong> (<em>list</em>) – Parameter vector.</li>
-<li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Reinitialise? Useful if some resolution settings in child
-objects were changed (namely, the number of pulse phases) that
-need to be communicated to other child objects.</li>
+<li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Call self.reinitialise()?</li>
+<li><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.</li>
 </ul>
 </td>
 </tr>
@@ -356,7 +355,7 @@ order of magnitude.</p>
 
 <dl class="method">
 <dt id="xpsi.Likelihood.Likelihood.synthesise">
-<code class="descname">synthesise</code><span class="sig-paren">(</span><em>p</em>, <em>reinitialise=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.synthesise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.synthesise" title="Permalink to this definition">¶</a></dt>
+<code class="descname">synthesise</code><span class="sig-paren">(</span><em>p</em>, <em>reinitialise=False</em>, <em>force=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.synthesise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.synthesise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synthesise pulsation data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -364,9 +363,8 @@ order of magnitude.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>p</strong> (<em>list</em>) – Parameter vector.</li>
-<li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Reinitialise? Useful if some resolution settings in child
-objects were changed (namely, the number of pulse phases) that
-need to be communicated to other child objects.</li>
+<li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Call self.reinitialise()?</li>
+<li><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.</li>
 </ul>
 </td>
 </tr>
