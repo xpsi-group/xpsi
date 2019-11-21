@@ -290,7 +290,8 @@
 
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Define a transformation.&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Prior.draw"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndraws</span><span class="p">):</span>
+<div class="viewcode-block" id="Prior.draw"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.draw">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Drawing samples from the joint prior&#39;</span><span class="p">,</span><span class="s1">&#39;Samples drawn&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndraws</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Draw samples uniformly from the prior via inverse sampling.</span>
 
 <span class="sd">        :param ndraws: Number of draws.</span>
@@ -300,24 +301,49 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">ndraws</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ndraws</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
 
-        <span class="n">samples</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">ndraws</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">)),</span>
-                            <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">transform</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample_and_transform</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="s1">&#39;Cannot transform... falling back to default...&#39;</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">ndraws</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="s1">&#39;An error occurred when handling the output of a custom &#39;</span>\
+                  <span class="s1">&#39;method&#39;</span>
 
         <span class="n">finite_counter</span> <span class="o">=</span> <span class="n">counter</span> <span class="o">=</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">finite_counter</span> <span class="o">&lt;</span> <span class="n">ndraws</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="k">if</span> <span class="n">transform</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample_and_transform</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                    <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span> <span class="c1"># use estimate to draw more from hypercube</span>
                 <span class="k">if</span> <span class="n">finite_counter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">redraw</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span> <span class="o">*</span> <span class="n">ndraws</span> <span class="o">/</span> <span class="n">finite_counter</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">redraw</span> <span class="o">=</span> <span class="n">ndraws</span>
                 <span class="n">redraw</span> <span class="o">-=</span> <span class="n">finite_counter</span>
-                <span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">redraw</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">))</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">redraw</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="k">if</span> <span class="n">transform</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample_and_transform</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                    <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:])</span>
 
             <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">p</span><span class="p">)):</span>
                 <span class="n">samples</span><span class="p">[</span><span class="n">finite_counter</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">p</span>
@@ -325,7 +351,7 @@
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">return</span> <span class="n">samples</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">finite_counter</span><span class="p">)</span> <span class="o">/</span> <span class="n">counter</span></div>
+        <span class="k">yield</span> <span class="n">samples</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">finite_counter</span><span class="p">)</span> <span class="o">/</span> <span class="n">counter</span></div>
 
 
 <div class="viewcode-block" id="Prior.estimate_hypercube_frac"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.estimate_hypercube_frac">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Estimating fractional hypervolume of the unit hypercube &#39;</span>
