@@ -101,7 +101,8 @@ class Prior(object):
 
         raise NotImplementedError('Define a transformation.')
 
-    def draw(self, ndraws):
+    @make_verbose('Drawing samples from the joint prior','Samples drawn')
+    def draw(self, ndraws, transform=False):
         """ Draw samples uniformly from the prior via inverse sampling.
 
         :param ndraws: Number of draws.
@@ -111,24 +112,49 @@ class Prior(object):
 
         """
 
-        h = _np.random.rand(ndraws, len(self._bounds))
+        h = _np.random.rand(int(ndraws), self.ndims)
 
-        samples = _np.zeros((int(ndraws), len(self._bounds)),
-                            dtype=_np.double)
+        if transform:
+            try:
+                p = self.inverse_sample_and_transform(h[0, :])
+            except AttributeError:
+                yield 'Cannot transform... falling back to default...'
+                p = self.inverse_sample(h[0, :])
+        else:
+            p = self.inverse_sample(h[0, :])
+
+        try:
+            samples = _np.zeros((int(ndraws), len(p)),
+                                dtype=_np.double)
+        except TypeError:
+            yield 'An error occurred when handling the output of a custom '\
+                  'method'
 
         finite_counter = counter = index = 0
         while finite_counter < ndraws:
             try:
-                p = self.inverse_sample(h[index, :])
+                if transform:
+                    try:
+                        p = self.inverse_sample_and_transform(h[index, :])
+                    except NotImplementedError:
+                        p = self.inverse_sample(h[index, :])
+                else:
+                    p = self.inverse_sample(h[index, :])
             except IndexError: # use estimate to draw more from hypercube
                 if finite_counter > 0:
                     redraw = float(counter) * ndraws / finite_counter
                 else:
                     redraw = ndraws
                 redraw -= finite_counter
-                h = _np.random.rand(int(redraw)+1, len(self._bounds))
+                h = _np.random.rand(int(redraw)+1, self.ndims)
                 index = 0
-                p = self.inverse_sample(h[index, :])
+                if transform:
+                    try:
+                        p = self.inverse_sample_and_transform(h[index, :])
+                    except NotImplementedError:
+                        p = self.inverse_sample(h[index, :])
+                else:
+                    p = self.inverse_sample(h[index, :])
 
             if _np.isfinite(self.__call__(p)):
                 samples[finite_counter,:] = p
@@ -136,7 +162,7 @@ class Prior(object):
             counter += 1
             index += 1
 
-        return samples, float(finite_counter) / counter
+        yield samples, float(finite_counter) / counter
 
 
     @make_verbose('Estimating fractional hypervolume of the unit hypercube '
