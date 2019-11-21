@@ -716,10 +716,11 @@ class Pulse(ParameterSubspace):
                             evaluation. This argument can be ignored if not
                             required.
 
-        :param tuple args: If the pulse is not folded in the slow block, the
-                           first argument is the photospheric pulse, which is
-                           to be passed on to the fold method.
-                           The slow parameters follow, in case required.
+        :param tuple args:
+            The other parameters, in case required. Note that the
+            :class:`~.Likelihood.Likelihood` class expects this method
+            signature, and an exception will be raised if it is not adhered
+            to when implementing ``__call__`` in a custom subclass.
 
         """
 
