@@ -209,10 +209,12 @@ class HotRegion(ParameterSubspace):
         except TypeError:
             raise TypeError('Number of rays must be an integer.')
 
-    def set_num_cells(self, sqrt_num_cells,
-                      min_sqrt_num_cells, max_sqrt_num_cells,
-                      fast_sqrt_num_cells,
-                      fast_min_sqrt_num_cells, fast_max_sqrt_num_cells):
+    def set_num_cells(self, sqrt_num_cells = 32,
+                      min_sqrt_num_cells = 10,
+                      max_sqrt_num_cells = 80,
+                      fast_sqrt_num_cells = 16,
+                      fast_min_sqrt_num_cells = 4,
+                      fast_max_sqrt_num_cells = 16):
 
         self.sqrt_num_cells = sqrt_num_cells
         self._num_cells = int(self.sqrt_num_cells**2)
