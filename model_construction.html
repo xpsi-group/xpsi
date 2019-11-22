@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Example script and modules" href="example_script.html" />
+    <link rel="next" title="Hot region complexity" href="hotregion_complexity.html" />
     <link rel="prev" title="SURFsara systems" href="SURFsara_systems.html" /> 
 </head>
 
@@ -133,6 +133,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#Summary">Summary</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
@@ -904,7 +905,7 @@ and telescope. The synthetic data is intended to emulate detection of photons ov
               <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
               <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Channel $-20$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Channel $-\;20$&#39;</span><span class="p">)</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Energy interval&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1348,7 +1349,7 @@ Total number of model parameters: 12
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-ll = -26713.61367769; time = 1.118
+ll = -26713.61367769; time = 1.128
 </pre></div></div>
 </div>
 </div>
@@ -1403,14 +1404,14 @@ ll = -26713.61367769; time = 1.118
 <p>The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object calls the <code class="docutils literal notranslate"><span class="pre">star.update</span></code> method which in-turn calls the <code class="docutils literal notranslate"><span class="pre">photosphere.embed</span></code> method. The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object then calls the <code class="docutils literal notranslate"><span class="pre">photosphere.integrate</span></code> method, passing the energies stored as the property <code class="docutils literal notranslate"><span class="pre">pulse.energies</span></code>. We can do this manually if we wish to integrate pulses but not calculate likelihoods. Here we sum over incident specific photon flux pulses as an approximation to integrating over energy. Note that we do not change the <code class="docutils literal notranslate"><span class="pre">pulse.pulses</span></code> traced by
 the solid curves without markers.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span>
      <span class="mf">1.4</span><span class="p">,</span>
      <span class="mf">12.5</span><span class="p">,</span>
-     <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">1.0</span><span class="p">,</span> <span class="c1"># lower the Earth inclination</span>
      <span class="mf">1.0</span><span class="p">,</span>
      <span class="mf">0.075</span><span class="p">,</span>
      <span class="mf">6.2</span><span class="p">,</span>
@@ -1420,8 +1421,8 @@ the solid curves without markers.</p>
      <span class="mf">0.0</span><span class="p">,</span>
      <span class="mf">0.025</span><span class="p">]</span>
 
-<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">pulse</span><span class="o">.</span><span class="n">default_energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">_</span> <span class="o">=</span> <span class="n">plot_pulse</span><span class="p">()</span>
 </pre></div>
@@ -1434,9 +1435,10 @@ the solid curves without markers.</p>
 <img alt="_images/model_construction_76_0.png" src="_images/model_construction_76_0.png" />
 </div>
 </div>
+<p>Notice the solid pulses without markers are unchanged from the plot a few cells above, and can be used to guide the eye to the effect of a change in Earth inclination.</p>
 <p>Below we print crude representations of the cell meshes spanning each hot region. The elements of a mesh cell-area array which are finite are not all identical: at the boundary of a hot region the proper area elements are smaller because of partial coverage by radiating material. The sum of all finite proper areas effectively equals the total proper area within a hot-region boundary.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1452,7 +1454,7 @@ the solid curves without markers.</p>
                          <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                          <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                          <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
-                         <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                         <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
                          <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
                          <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
@@ -1465,7 +1467,7 @@ the solid curves without markers.</p>
                    <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                    <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                    <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
-                   <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                   <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
                    <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
                    <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
@@ -1486,13 +1488,13 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_78_0.png" src="_images/model_construction_78_0.png" />
+<img alt="_images/model_construction_79_0.png" src="_images/model_construction_79_0.png" />
 </div>
 </div>
 <p>Note that the lowest colatitude row is at zero on the y-axis.</p>
 <p>Let’s plot a pulse in two dimensions. Also note that we can interpolate the signal in phase as follows.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1501,7 +1503,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1562,9 +1564,9 @@ the solid curves without markers.</p>
 </pre></div>
 </div>
 </div>
-<p>The incident specific flux signal, in units of photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV:</p>
+<p>The incident specific flux signal, in units of photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV as output by the source code, and then normalised to the maximum in specific flux:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1580,7 +1582,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_84_0.png" src="_images/model_construction_84_0.png" />
+<img alt="_images/model_construction_85_0.png" src="_images/model_construction_85_0.png" />
 </div>
 </div>
 <p>The count rate signal in each channel:</p>
@@ -1602,7 +1604,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_86_0.png" src="_images/model_construction_86_0.png" />
+<img alt="_images/model_construction_87_0.png" src="_images/model_construction_87_0.png" />
 </div>
 </div>
 <p>Now we use parameter vector <code class="docutils literal notranslate"><span class="pre">q</span></code>, increase the phase resolution, and plot a single rotational pulse.</p>
@@ -1612,6 +1614,8 @@ the solid curves without markers.</p>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">)</span>
+<span class="c1"># the current relationship between objects requires that we reinitialise</span>
+<span class="c1"># if we wish to automatically communicate the update to the phases</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">reinitialise</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1633,7 +1637,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_89_0.png" src="_images/model_construction_89_0.png" />
+<img alt="_images/model_construction_90_0.png" src="_images/model_construction_90_0.png" />
 </div>
 </div>
 <p>Let’s iterate over a monotonically increasing set of values of the hot-region angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many OpenMP threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
@@ -1708,7 +1712,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_93_0.png" src="_images/model_construction_93_0.png" />
+<img alt="_images/model_construction_94_0.png" src="_images/model_construction_94_0.png" />
 </div>
 </div>
 </div>
@@ -1720,7 +1724,7 @@ the solid curves without markers.</p>
 <div class="section" id="Custom-subclass">
 <h3>Custom subclass<a class="headerlink" href="#Custom-subclass" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1729,7 +1733,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1882,7 +1886,7 @@ the solid curves without markers.</p>
 </div>
 <p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, passing the bounds from the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1893,7 +1897,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1903,7 +1907,7 @@ the solid curves without markers.</p>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">prior.inverse_sample()</span></code> method can be used to initialise the ensemble of walkers evolved by <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a>, and is required by <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> to uniformly sample from the prior distribution and transform it into a posterior distribution. Let’s call the method, passing a vector of pseudorandom numbers drawn when each is drawn from a uniform distribution on the interval <span class="math notranslate nohighlight">\([0,1)\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1912,22 +1916,22 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[0.2635157329648086,
- 2.7104158680779005,
- 6.433658221271493,
- 1.4092043055146384,
- 1.3740091159856405,
- 0.2588561910185838,
- 6.217630004752931,
- 2.0276557652930816,
- 0.7138200428229784,
- 6.41198801258361,
- 0.3157687044111106,
- 0.40819336890742963]
+<span></span>[0.29681584440162545,
+ 2.581452218491565,
+ 10.177596787197075,
+ 1.2510548394275876,
+ 2.29278214957535,
+ 0.46137401425567304,
+ 5.500264404086102,
+ 1.607233152951422,
+ 0.623152610598827,
+ 6.278819988524323,
+ 0.23903614817517282,
+ -0.0717375772106591]
 </pre></div>
 </div>
 </div>
@@ -1990,7 +1994,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_108_0.png" src="_images/model_construction_108_0.png" />
+<img alt="_images/model_construction_109_0.png" src="_images/model_construction_109_0.png" />
 </div>
 </div>
 <p>Note that the prior support is defined with a constraint that the polar radius <span class="math notranslate nohighlight">\(R_{\rm p}(R_{\rm eq}, M, \Omega)\geq 1.76r_{s}(M)\)</span>, which is why there is a region devoid of samples between the prior support and the dashed line <span class="math notranslate nohighlight">\(R_{\rm eq} = 1.76r_s(M)\)</span>.</p>
@@ -2011,7 +2015,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_111_0.png" src="_images/model_construction_111_0.png" />
+<img alt="_images/model_construction_112_0.png" src="_images/model_construction_112_0.png" />
 </div>
 </div>
 <p>Note that the samples, marginalised over other region geometry parameters, are sparser when both hot regions approach the poles because we exclude overlapping configurations from the prior support. This is because the hot regions are by convention defined as disjoint, and cannot merge. If one wanted a more complex hot region, one would not invoke multiple hot regions that are permitted to overlap, but one would instead handle the extra complexity within the <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> class or a subclass.</p>
@@ -2021,7 +2025,7 @@ Samples drawn.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_samps</span><span class="p">(</span><span class="n">samps</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\zeta_{p}$ [radians]&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\zeta_{s}$ [radians]&#39;</span><span class="p">)</span>
+<span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plot_samps</span><span class="p">(</span><span class="n">samps</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\zeta_{p}$ [radians]&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\zeta_{s}$ [radians]&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2038,7 +2042,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_114_1.png" src="_images/model_construction_114_1.png" />
+<img alt="_images/model_construction_115_1.png" src="_images/model_construction_115_1.png" />
 </div>
 </div>
 <p>Note that the prior density is greater for hot regions that subtend smaller solid angles at the centre of the star, which also derives from the non-overlapping criterion for prior support.</p>
@@ -2048,7 +2052,7 @@ Samples drawn.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_samps</span><span class="p">(</span><span class="n">samps</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\phi_{p}$ [cycles]&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\phi_{s}$ [cycles]&#39;</span><span class="p">)</span>
+<span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plot_samps</span><span class="p">(</span><span class="n">samps</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\phi_{p}$ [cycles]&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\phi_{s}$ [cycles]&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2065,7 +2069,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_117_1.png" src="_images/model_construction_117_1.png" />
+<img alt="_images/model_construction_118_1.png" src="_images/model_construction_118_1.png" />
 </div>
 </div>
 <p>Note that again because the hot regions cannot overlap, rarefaction occurs in the vicinity of lines of minimal phase separation. Note that the boundaries are all periodic, so this pattern tesselates. Because we implemented a transformation in our <code class="docutils literal notranslate"><span class="pre">CustomPrior</span></code> subclass, we can actually draw the samples and transform them, which is useful in post-processing contexts. We defined the intervals <code class="docutils literal notranslate"><span class="pre">[-0.25,</span> <span class="pre">0.75]</span></code> for the inverse sampling so that the posterior mode(s) will not be near a boundary.
@@ -2096,7 +2100,7 @@ Samples drawn.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_samps</span><span class="p">(</span><span class="n">samps_plus_transformed</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\phi_{p}$ [cycles]&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\Delta\phi$ [cycles]&#39;</span><span class="p">)</span>
+<span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plot_samps</span><span class="p">(</span><span class="n">samps_plus_transformed</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\phi_{p}$ [cycles]&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\Delta\phi$ [cycles]&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2113,7 +2117,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_123_1.png" src="_images/model_construction_123_1.png" />
+<img alt="_images/model_construction_124_1.png" src="_images/model_construction_124_1.png" />
 </div>
 </div>
 <p>We can see the rarefaction occurs for <span class="math notranslate nohighlight">\(\Delta\phi\sim0.0=1.0\)</span>.</p>
@@ -2126,8 +2130,8 @@ Samples drawn.
 <p>We have constructed and instantiated both a callable <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object and a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object. We could proceed, for example, to apply the open-source sampler <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a> to the joint posterior distribution proportional to the product of the (exponentiated) calls to the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> and <code class="docutils literal notranslate"><span class="pre">prior</span></code> objects.</p>
 <div class="section" id="Ensemble-MCMC">
 <h3>Ensemble MCMC<a class="headerlink" href="#Ensemble-MCMC" title="Permalink to this headline">¶</a></h3>
-<p>To prove that the objects constructed above can be fed to the <code class="docutils literal notranslate"><span class="pre">emcee</span></code> sampler, let’s run a few iterations using a single process. We will initialise the ensemble by drawing from a multivariate Gaussian with mean vector equal to the ground truth vector.</p>
-<div class="nbinput nblast docutils container">
+<p>To prove that the objects constructed above can be fed to the <code class="docutils literal notranslate"><span class="pre">emcee</span></code> sampler, let’s run a number of iterations using a single Python process. We will initialise the ensemble by drawing from a multivariate Gaussian with mean vector equal to the ground truth vector.</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
@@ -2145,14 +2149,14 @@ Samples drawn.
          <span class="mf">0.01</span><span class="p">,</span>
          <span class="mf">0.01</span><span class="p">]</span>
 
-<span class="n">runtime_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;resume&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+<span class="n">runtime_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;resume&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
                   <span class="s1">&#39;root_dir&#39;</span><span class="p">:</span> <span class="s1">&#39;./&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;nwalkers&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
                   <span class="s1">&#39;nsteps&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-                  <span class="s1">&#39;walker_dist_moments&#39;</span><span class="p">:</span> <span class="nb">zip</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">std</span><span class="p">)}</span> <span class="c1"># if resume, can use None for the moments</span>
+                  <span class="s1">&#39;walker_dist_moments&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span> <span class="c1"># if resume, can use None for the moments; zip(p, std)</span>
 
 <span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">likelihood</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">likelihood</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">likelihood</span><span class="o">.</span><span class="n">reinitialise</span><span class="p">()</span>
 
 <span class="c1"># Use MPI=False for testing purposes</span>
@@ -2160,6 +2164,32 @@ Samples drawn.
                                <span class="n">MPI</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">runtime_params</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+  0%|          | 0/1000 [00:00&lt;?, ?it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imported emcee version: 3.0.1
+
+Commencing posterior sampling.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+  6%|▌         | 55/1000 [20:27&lt;5:52:27, 22.38s/it]
+</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -2171,10 +2201,10 @@ Samples drawn.
 </pre></div>
 </div>
 </div>
-<p>Note that we could also try initialising the ensemble by inverse sampling the joint prior distribution. Initially the iteration time should increase because a non-negligible fraction of move proposals will be where the prior density is zero and thus the likelihood is not evaluated. As the ensemble migrates to higher posterior densities the iteration time will increase and then stabilise.</p>
+<p>Note that we could also try initialising the ensemble by inverse sampling the joint prior distribution. Initially, in that case, the iteration time should increase because a non-negligible fraction of move proposals will be to outside of the prior support. As the ensemble migrates to higher posterior densities the iteration time will increase and then stabilise.</p>
 <p>Let’s quickly plot the evolution of the ensemble Markov chains to prove that the sampling process commenced and is behaving in a somewhat reasonable manner:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2213,7 +2243,7 @@ Samples drawn.
         <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">visible</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">visible</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Steps&#39;</span><span class="p">)</span>
-    <span class="n">veneer</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+    <span class="n">veneer</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2221,9 +2251,11 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_134_0.png" src="_images/model_construction_134_0.png" />
+<img alt="_images/model_construction_135_0.png" src="_images/model_construction_135_0.png" />
 </div>
 </div>
+<p>The chains rendered in the documentation were run on a desktop machine in about a day of wall-time. It is visually discernable that the ensemble distribution has not yet evolved to a stationary state: a rigourous application of ensemble MCMC would cover convergence criteria, auto-correlation, and examination of sensitivity to initial conditions and the transition kernel. In fact, based on the analysis with nested sampling on path <code class="docutils literal notranslate"><span class="pre">xpsi/examples/default_background</span></code>, we know that the posterior
+mode in the vicinity of the above ensemble is rather non-linear in the space being sampled, so ensemble MCMC may require <em>many</em> steps in order to argue for convergence.</p>
 </div>
 <div class="section" id="Nested-sampling">
 <h3>Nested sampling<a class="headerlink" href="#Nested-sampling" title="Permalink to this headline">¶</a></h3>
@@ -2675,7 +2707,7 @@ Background normalisation: 1.89127972e-05
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_169_0.png" src="_images/model_construction_169_0.png" />
+<img alt="_images/model_construction_171_0.png" src="_images/model_construction_171_0.png" />
 </div>
 </div>
 <p>Check we have generated the same count numbers, given the same seed and resolution settings:</p>
@@ -2714,7 +2746,7 @@ Background normalisation: 1.89127972e-05
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="example_script.html" class="btn btn-neutral float-right" title="Example script and modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="hotregion_complexity.html" class="btn btn-neutral float-right" title="Hot region complexity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="SURFsara_systems.html" class="btn btn-neutral float-left" title="SURFsara systems" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

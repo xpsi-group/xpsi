@@ -17,6 +17,7 @@
    :caption: Tutorials
 
    model_construction
+   hotregion_complexity
    example_script
    example_job
    extensions

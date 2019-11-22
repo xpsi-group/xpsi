@@ -98,6 +98,7 @@
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
@@ -289,10 +290,10 @@ list will be equal to the <code class="docutils literal notranslate"><span class
 <li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to use for likelihood
 evaluation. This argument can be ignored if not
 required.</li>
-<li><strong>args</strong> (<em>tuple</em>) – If the pulse is not folded in the slow block, the
-first argument is the photospheric pulse, which is
-to be passed on to the fold method.
-The slow parameters follow, in case required.</li>
+<li><strong>args</strong> (<em>tuple</em>) – The other parameters, in case required. Note that the
+<a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> class expects this method
+signature, and an exception will be raised if it is not adhered
+to when implementing <code class="docutils literal notranslate"><span class="pre">__call__</span></code> in a custom subclass.</li>
 </ul>
 </td>
 </tr>

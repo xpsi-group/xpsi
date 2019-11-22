@@ -96,6 +96,7 @@
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
@@ -398,10 +399,12 @@
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of rays must be an integer.&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">set_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sqrt_num_cells</span><span class="p">,</span>
-                      <span class="n">min_sqrt_num_cells</span><span class="p">,</span> <span class="n">max_sqrt_num_cells</span><span class="p">,</span>
-                      <span class="n">fast_sqrt_num_cells</span><span class="p">,</span>
-                      <span class="n">fast_min_sqrt_num_cells</span><span class="p">,</span> <span class="n">fast_max_sqrt_num_cells</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+                      <span class="n">min_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                      <span class="n">max_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>
+                      <span class="n">fast_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
+                      <span class="n">fast_min_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+                      <span class="n">fast_max_sqrt_num_cells</span> <span class="o">=</span> <span class="mi">16</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="n">sqrt_num_cells</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>

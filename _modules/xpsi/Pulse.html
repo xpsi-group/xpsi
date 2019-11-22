@@ -96,6 +96,7 @@
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
@@ -905,10 +906,11 @@
 <span class="sd">                            evaluation. This argument can be ignored if not</span>
 <span class="sd">                            required.</span>
 
-<span class="sd">        :param tuple args: If the pulse is not folded in the slow block, the</span>
-<span class="sd">                           first argument is the photospheric pulse, which is</span>
-<span class="sd">                           to be passed on to the fold method.</span>
-<span class="sd">                           The slow parameters follow, in case required.</span>
+<span class="sd">        :param tuple args:</span>
+<span class="sd">            The other parameters, in case required. Note that the</span>
+<span class="sd">            :class:`~.Likelihood.Likelihood` class expects this method</span>
+<span class="sd">            signature, and an exception will be raised if it is not adhered</span>
+<span class="sd">            to when implementing ``__call__`` in a custom subclass.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span></div>
 

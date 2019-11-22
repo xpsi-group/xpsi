@@ -96,6 +96,7 @@
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
@@ -231,6 +232,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_photospheres</span> <span class="o">=</span> <span class="n">photospheres</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_eval_num_params</span><span class="p">()</span>
+
+        <span class="c1"># by default turn off fast_mode in HotRegion objects</span>
+        <span class="c1"># the likelihood object will activate this if it is needed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activate_fast_mode</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_eval_num_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Evaluate the number of *slow* parameters defining the star. &quot;&quot;&quot;</span>
