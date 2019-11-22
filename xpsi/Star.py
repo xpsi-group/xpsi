@@ -43,6 +43,10 @@ class Star(object):
 
         self._eval_num_params()
 
+        # by default turn off fast_mode in HotRegion objects
+        # the likelihood object will activate this if it is needed
+        self.activate_fast_mode(False)
+
     def _eval_num_params(self):
         """ Evaluate the number of *slow* parameters defining the star. """
         self._num_params = self._spacetime.num_params
