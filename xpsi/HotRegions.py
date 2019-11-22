@@ -21,18 +21,27 @@ class HotRegions(ParameterSubspace):
     """
 
     def __init__(self, hotregions):
-        self.objects = spots
+        self.objects = hotregions
 
         self._num_primary_params = self._objects[0].num_params
         self._num_secondary_params = self._objects[1].num_params
 
-        super(TwoSpots, self).__init__(self._num_primary_params\
-                                       + self._num_secondary_params,
-                                       self._objects[0].bounds\
-                                       + self._objects[1].bounds)
+        super(HotRegions, self).__init__(self._num_primary_params\
+                                         + self._num_secondary_params,
+                                         self._objects[0].bounds\
+                                         + self._objects[1].bounds)
 
-        self.phases_in_cycles = self._objects[0].phases_in_cycles
-        self.fast_phases_in_cycles = self._objects[0].fast_phases_in_cycles
+        self.phases_in_cycles = []
+        for obj in self.objects:
+            self.phases_in_cycles.append(obj.phases_in_cycles)
+
+        if self.do_fast:
+            self.fast_phases_in_cycles = []
+            for obj in self.objects:
+                try:
+                    self.fast_phases_in_cycles.append(obj.fast_phases_in_cycles)
+                except AttributeError:
+                    pass
 
     @property
     def objects(self):
