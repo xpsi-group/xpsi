@@ -151,22 +151,22 @@ class Instrument(ParameterSubspace):
 
         .. note::
 
-            The profile most recently operated on is stored as the property
-            :attr:`folded_signal`.
+            The product of the most recent operation is stored as the property
+            :attr:`cached_signal`.
 
         """
 
         self.construct_matrix(p)
 
-        self._folded_signal = _np.dot(self._matrix[orange[0]:orange[1],
+        self._cached_signal = _np.dot(self._matrix[orange[0]:orange[1],
                                                    irange[0]:irange[1]], signal)
 
-        return self._folded_signal
+        return self._cached_signal
 
     @property
-    def folded_signal(self):
+    def cached_signal(self):
         """ Get the cached folded signal. """
-        return self._folded_signal
+        return self._cached_signal
 
     @abstractmethod
     def construct_matrix(self, p):
