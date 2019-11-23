@@ -266,8 +266,7 @@
 <span class="sd">        Is the radiation field axisymmetric (w.r.t the stellar rotation</span>
 <span class="sd">        axis) within a hot region with only a superseding region?</span>
 <span class="sd">        This determines which ``CellMesh`` integrator to</span>
-<span class="sd">        deploy. Only set to ``False`` if you overwrite</span>
-<span class="sd">        :meth:`_eval_srcRadFieldParamVectors` in a custom subclass.</span>
+<span class="sd">        deploy.</span>
 
 <span class="sd">    :param sqrt_num_cells:</span>
 <span class="sd">        Number of cells in both colatitude and azimuth which form a</span>
@@ -875,8 +874,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__compute_rays</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cede</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hole</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concentric</span><span class="p">:</span>
@@ -886,7 +884,9 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concentric</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
@@ -895,7 +895,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_super_correctionVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_super_effGrav</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_cede_correctionVecs</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">_cede_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cede_correctionVecs</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellArea</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">else</span><span class="p">:</span>

@@ -288,9 +288,15 @@ these numbers, i.e., they must satisfy <span class="math notranslate nohighlight
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The profile most recently operated on is stored as the property
-<a class="reference internal" href="#xpsi.Instrument.Instrument.folded_signal" title="xpsi.Instrument.Instrument.folded_signal"><code class="xref py py-attr docutils literal notranslate"><span class="pre">folded_signal</span></code></a>.</p>
+<p class="last">The product of the most recent operation is stored as the property
+<a class="reference internal" href="#xpsi.Instrument.Instrument.cached_signal" title="xpsi.Instrument.Instrument.cached_signal"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cached_signal</span></code></a>.</p>
 </div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Instrument.Instrument.cached_signal">
+<code class="descname">cached_signal</code><a class="headerlink" href="#xpsi.Instrument.Instrument.cached_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the cached folded signal.</p>
 </dd></dl>
 
 <dl class="method">
@@ -306,12 +312,6 @@ these numbers, i.e., they must satisfy <span class="math notranslate nohighlight
 <p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy
 intervals which map to output channels defined in the
 data space.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Instrument.Instrument.folded_signal">
-<code class="descname">folded_signal</code><a class="headerlink" href="#xpsi.Instrument.Instrument.folded_signal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the cached folded signal.</p>
 </dd></dl>
 
 <dl class="attribute">

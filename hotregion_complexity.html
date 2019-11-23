@@ -99,7 +99,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Hot region complexity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Single-temperature-hot-regions">Single-temperature hot regions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Pulse-integration">Pulse integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Two-temperature-hot-regions">Two-temperature hot regions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
@@ -506,7 +508,9 @@ Warning: Cannot import fgivenx.
 </pre></div>
 </div>
 </div>
-<p>Now we instantiate hot region objects.</p>
+<div class="section" id="Single-temperature-hot-regions">
+<h2>Single-temperature hot regions<a class="headerlink" href="#Single-temperature-hot-regions" title="Permalink to this headline">¶</a></h2>
+<p>First we play with two hot regions that each have a single temperature component, meaning that the local comoving effective temperature is uniform within the hot region boundary. We instantiate hot region objects:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -532,7 +536,7 @@ Warning: Cannot import fgivenx.
 <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
           <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
           <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
-          <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
           <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
           <span class="p">(</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">)]</span>
 
@@ -644,8 +648,15 @@ Warning: Cannot import fgivenx.
 
     <span class="n">veneer</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
     <span class="n">cb</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-
-<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
 <span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">14.0</span>
 
 <span class="k">def</span> <span class="nf">veneer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
@@ -668,25 +679,24 @@ Warning: Cannot import fgivenx.
         <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">AutoLocator</span><span class="p">())</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
 
-    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">)</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>Let’s form a vector of parameter values in the <em>conventional</em> order expected by the <code class="docutils literal notranslate"><span class="pre">Star</span></code> instance and the other objects it encapsulates references to.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">class</span> <span class="nc">Vector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; The ordered parameter vector.</span>
 
-<span class="sd">    An alternative implementation might simply use</span>
-<span class="sd">    the class ``collections.OrderedDict``.</span>
+<span class="sd">    An alternative implementation might use</span>
+<span class="sd">    the class ``collections.OrderedDict`` alone,</span>
+<span class="sd">    or as an alterative object for initialisation.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -694,8 +704,8 @@ Warning: Cannot import fgivenx.
 
         <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="n">names</span>
 
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -704,31 +714,36 @@ Warning: Cannot import fgivenx.
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Preserve dimensionality. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;names&#39;</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Assignment would change parameter space dimensionality.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Vector</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;M&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;R&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;i&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;spot_colat&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;spot_radius&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;spot_temp&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;cede_colat&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;cede_radius&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;hole_colat&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;hole_radius&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;hole_azi&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;cede_temp&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;elsewhere_temp&#39;</span><span class="p">]</span>
-
-<span class="n">v</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+<span></span><span class="n">v</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">([</span><span class="s1">&#39;D&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;M&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;R&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;i&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;spot_colat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;spot_radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;spot_temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;cede_colat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;cede_radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hole_colat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hole_radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hole_azi&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;cede_temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;elsewhere_temp&#39;</span><span class="p">])</span>
 
 <span class="k">def</span> <span class="nf">set_defaults</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="c1"># (Earth) distance</span>
@@ -767,7 +782,7 @@ Warning: Cannot import fgivenx.
 <p>We now prepare the star for pulse integration. In statistical contexts the likelihood function places this call automatically. The preparation involves embedding hot region objects into the photosphere (that also radiates elsewhere), by constructing element (or cell) meshes and precomputing ray mapping information for image integration. We place a call to our helper function to plot the meshes constructed: the mesh for the primary hot region is rendered in the topmost panel, with colour
 representing the proper area covered by the hot region within a given element. This area weights the pulse generated by an infinitesimal radiating element located at the proper-area-weighted centre of the element. The mesh associated with the secondary hot region is rendered in the bottommost panel.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -781,12 +796,12 @@ representing the proper area covered by the hot region within a given element. T
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_18_0.png" src="_images/hotregion_complexity_18_0.png" />
+<img alt="_images/hotregion_complexity_20_0.png" src="_images/hotregion_complexity_20_0.png" />
 </div>
 </div>
 <p>We have a ring for secondary hot region. The hole would be automatically filled with the radiation field <em>elsewhere</em>, which might, e.g., be much cooler.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -804,13 +819,13 @@ representing the proper area covered by the hot region within a given element. T
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_20_0.png" src="_images/hotregion_complexity_20_0.png" />
+<img alt="_images/hotregion_complexity_22_0.png" src="_images/hotregion_complexity_22_0.png" />
 </div>
 </div>
 <p>We have a crescent that is symmetric about the equator. Note that, confusingly, the <em>hole</em> is not actually a hole. The current object naming convention in the source code means that this is referred to as a hole, although it is not topologically true. A better way to think about this configuration is to consider a superseding member that supersedes a ceding member with the <em>elsewhere</em> radiation field.</p>
 <p>Given that the superseding member is not a topological hole, the resulting crescent has <em>terminal points</em> or <em>horns</em>. As one approaches the horns around the crescent, the cell areas approach zero, and the two cells containing the two terminal points, and the adjacent cells cannot be resolved in colour from the cells that have zero coverage of the hot region. We can pick out these cells at the horns by setting a uniform colour for cells of finite area:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -829,12 +844,12 @@ representing the proper area covered by the hot region within a given element. T
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_23_0.png" src="_images/hotregion_complexity_23_0.png" />
+<img alt="_images/hotregion_complexity_25_0.png" src="_images/hotregion_complexity_25_0.png" />
 </div>
 </div>
 <p>We can now see all cells with finite hot region coverage, and the symmetry is perhaps clearer.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -855,13 +870,13 @@ representing the proper area covered by the hot region within a given element. T
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_25_0.png" src="_images/hotregion_complexity_25_0.png" />
+<img alt="_images/hotregion_complexity_27_0.png" src="_images/hotregion_complexity_27_0.png" />
 </div>
 </div>
 <p>Note that a fundamental property of the topmost mesh has now changed: the boundary in azimuth is periodic because the spot encompasses a pole (the southern rotational pole), whilst the lower boundary in colatitude is actually a coordinate singularity. The boundary in azimuth for the bottommost mesh is <em>not</em> periodic. The <em>hole</em> is close enough to being a topological hole that we cannot distinguish whether or not it is from the mesh, and we would need to calulate the sum of the angular radius of
 the hole with the angular separation between the centres.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -881,14 +896,14 @@ the hole with the angular separation between the centres.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_27_0.png" src="_images/hotregion_complexity_27_0.png" />
+<img alt="_images/hotregion_complexity_29_0.png" src="_images/hotregion_complexity_29_0.png" />
 </div>
 </div>
 <p>Note that although the primary spot was reflected about the equator, and now encompasses the northern rotation pole, the mesh does not look as though it has been reflected. Under the hood, the mesh for the primary spot encompassing the southern rotational pole is constructed as reflection about the equator, and then the mesh of colatitudes, which is not plotted but has the same shape as the mesh of proper areas (plotted), is transformed via <span class="math notranslate nohighlight">\(\theta\mapsto\pi-\theta\)</span>, leaving other
 reflection-symmetric properties intact.</p>
 <p>The mesh for the secondary hot region has now joined that of the primary in having a periodic boundary in azimuth. Note that the hole also encompasses the southern rotational pole.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -909,13 +924,13 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_30_0.png" src="_images/hotregion_complexity_30_0.png" />
+<img alt="_images/hotregion_complexity_32_0.png" src="_images/hotregion_complexity_32_0.png" />
 </div>
 </div>
 <p>The primary spot centre is now almost coincident with a pole, with the angular separation between pole and centre much smaller than the angular radius of the spot. Meanwhile, the hole in the secondary hot region is a topological hole, but does not encompass a pole, whilst the outer boundary of the resulting ring <em>does</em>.</p>
 <p>Let’s increase the resolution for one of the examples above to some ridiculous level that is not even accurately rendered:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -941,12 +956,12 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_33_0.png" src="_images/hotregion_complexity_33_0.png" />
+<img alt="_images/hotregion_complexity_35_0.png" src="_images/hotregion_complexity_35_0.png" />
 </div>
 </div>
 <p>There are other parametrisations that are useful to consider that might be more natural for prior implementation. The helper function below is an example.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -978,7 +993,7 @@ reflection-symmetric properties intact.</p>
 </div>
 <p>Let’s try to recreate (approximately, although it can of course be done exactly by inverting the transformation) the crescent above that is symmetric with respect to the equator.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1010,14 +1025,15 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_37_0.png" src="_images/hotregion_complexity_37_0.png" />
+<img alt="_images/hotregion_complexity_39_0.png" src="_images/hotregion_complexity_39_0.png" />
+</div>
 </div>
 </div>
 <div class="section" id="Pulse-integration">
 <h2>Pulse integration<a class="headerlink" href="#Pulse-integration" title="Permalink to this headline">¶</a></h2>
 <p>Let’s compute some pulses. First we need a helper function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1082,7 +1098,7 @@ reflection-symmetric properties intact.</p>
 </div>
 <p>First we will make a configuration that resembles the first configuration in the <strong>Modelling</strong> notebook tutorial.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1107,7 +1123,7 @@ reflection-symmetric properties intact.</p>
 </div>
 <p>Let’s compute the incident specific flux signal, in units of photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV output as by the source code, and then normalise it to the maximum specific flux:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1116,7 +1132,7 @@ reflection-symmetric properties intact.</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1136,18 +1152,18 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_45_0.png" src="_images/hotregion_complexity_45_0.png" />
+<img alt="_images/hotregion_complexity_47_0.png" src="_images/hotregion_complexity_47_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_45_1.png" src="_images/hotregion_complexity_45_1.png" />
+<img alt="_images/hotregion_complexity_47_1.png" src="_images/hotregion_complexity_47_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1169,11 +1185,11 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_46_0.png" src="_images/hotregion_complexity_46_0.png" />
+<img alt="_images/hotregion_complexity_48_0.png" src="_images/hotregion_complexity_48_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1203,16 +1219,445 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_47_0.png" src="_images/hotregion_complexity_47_0.png" />
+<img alt="_images/hotregion_complexity_49_0.png" src="_images/hotregion_complexity_49_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_47_1.png" src="_images/hotregion_complexity_47_1.png" />
+<img alt="_images/hotregion_complexity_49_1.png" src="_images/hotregion_complexity_49_1.png" />
 </div>
 </div>
+</div>
+<div class="section" id="Two-temperature-hot-regions">
+<h2>Two-temperature hot regions<a class="headerlink" href="#Two-temperature-hot-regions" title="Permalink to this headline">¶</a></h2>
+<p>Now we play with two hot regions which each have two temperature components. First we need to do the usual type of setup:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">)]</span>
+
+<span class="c1"># overlap of a radiating superseding member region</span>
+<span class="c1"># and a radiating ceding member region</span>
+<span class="n">primary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">num_params</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                            <span class="n">symmetry</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">hole</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">cede</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                            <span class="n">concentric</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                            <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                            <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                            <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                            <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                            <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">),</span>
+          <span class="p">(</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">)]</span>
+
+<span class="c1"># overlap of a radiating superseding member region</span>
+<span class="c1"># and a radiating ceding member region</span>
+<span class="n">secondary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">num_params</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                              <span class="n">symmetry</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                              <span class="n">hole</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                              <span class="n">cede</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                              <span class="n">concentric</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                              <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                              <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                              <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                              <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                              <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                              <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                              <span class="n">is_secondary</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">xpsi</span> <span class="kn">import</span> <span class="n">HotRegions</span>
+
+<span class="n">hot</span> <span class="o">=</span> <span class="n">HotRegions</span><span class="p">((</span><span class="n">primary</span><span class="p">,</span> <span class="n">secondary</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">elsewhere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Elsewhere</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[(</span><span class="mf">5.4</span><span class="p">,</span><span class="mf">6.4</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">photosphere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="p">(</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">hot</span> <span class="o">=</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="n">elsewhere</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">star</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Star</span><span class="p">(</span><span class="n">spacetime</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photospheres</span> <span class="o">=</span> <span class="n">photosphere</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Let’s define a different helper function for plotting the meshes:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">plot_meshes</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span><span class="bp">True</span><span class="p">),</span>
+                <span class="n">primary_ticks</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
+                <span class="n">secondary_ticks</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot; Plot representations of the cached meshes.</span>
+
+<span class="sd">    Note that the lowest colatitude row of elements is plotted as the</span>
+<span class="sd">    lowest row, so colatitude increases along the y-axis and azimuth</span>
+<span class="sd">    increaes along the x-axis. This could be considered as spatially</span>
+<span class="sd">    inverted if we were looking at the star whilst being oriented</span>
+<span class="sd">    such that &quot;up&quot; is in the spin direction.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+    <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">veneer</span><span class="p">(</span><span class="n">primary_ticks</span><span class="p">,</span> <span class="n">primary_ticks</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+    <span class="c1"># primary (lower colatitude) superseding</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">patches</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">z</span><span class="p">,</span>
+                             <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                             <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                             <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
+                             <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
+                             <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                             <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">veneer</span><span class="p">(</span><span class="n">secondary_ticks</span><span class="p">,</span> <span class="n">secondary_ticks</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+    <span class="c1"># primary ceding</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">z</span><span class="p">,</span>
+                       <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                       <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                       <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
+                       <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
+                       <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                       <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">veneer</span><span class="p">(</span><span class="n">primary_ticks</span><span class="p">,</span> <span class="n">primary_ticks</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+    <span class="c1"># secondary superseding</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">patches</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">z</span><span class="p">,</span>
+                             <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                             <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                             <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
+                             <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
+                             <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                             <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">veneer</span><span class="p">(</span><span class="n">secondary_ticks</span><span class="p">,</span> <span class="n">secondary_ticks</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+
+    <span class="c1"># secondary ceding</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_HotRegion__cellArea</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">z</span><span class="p">,</span>
+                       <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                       <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
+                       <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
+                       <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
+                       <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                       <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+    <span class="n">ax_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span>
+                      <span class="n">cax</span> <span class="o">=</span> <span class="n">ax_cb</span><span class="p">,</span>
+                      <span class="n">ticks</span> <span class="o">=</span> <span class="n">MultipleLocator</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+
+    <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;cell area (normalised by maximum)&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+    <span class="n">cb</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+    <span class="n">veneer</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
+    <span class="n">cb</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">v</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">([</span><span class="s1">&#39;D&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;M&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;R&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;i&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;p_super_colat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;p_super_radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;p_cede_colat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;p_cede_radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;p_cede_azi&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;p_super_temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;p_cede_temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;s_super_colat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;s_super_radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;s_cede_colat&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;s_cede_radius&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;s_cede_azi&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;s_super_temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;s_cede_temp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;elsewhere_temp&#39;</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">set_defaults</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Default configuration is antipodally reflection symmetric. &quot;&quot;&quot;</span>
+    <span class="c1"># (Earth) distance</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="mf">0.329</span>
+    <span class="c1"># gravitational mass</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="mf">1.4</span>
+    <span class="c1"># coordinate equatorial radius</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="mf">13.18</span>
+    <span class="c1"># (Earth) inclination to rotation axis</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="c1"># primary super colatitude</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">p_super_colat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="c1"># primary super angular radius</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">p_super_radius</span> <span class="o">=</span> <span class="mf">0.25</span>
+    <span class="c1"># primary cede colatitude</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">p_cede_colat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="c1"># primary cede angular radius</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">p_cede_radius</span> <span class="o">=</span> <span class="mf">0.32</span>
+    <span class="c1"># primary cede azimuthal offset</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">p_cede_azi</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="c1"># primary super temp</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">p_super_temp</span> <span class="o">=</span> <span class="mf">6.12</span>
+    <span class="c1"># primary super temp</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">p_cede_temp</span> <span class="o">=</span> <span class="mf">6.0</span>
+
+    <span class="c1"># secondary super colatitude</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">s_super_colat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="c1"># secondary super angular radius</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">s_super_radius</span> <span class="o">=</span> <span class="mf">0.25</span>
+    <span class="c1"># secondary cede colatitude</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">s_cede_colat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="c1"># secondary cede angular radius</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">s_cede_radius</span> <span class="o">=</span> <span class="mf">0.32</span>
+    <span class="c1"># secondary cede azimuthal offset</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">s_cede_azi</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="c1"># secondary super temp</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">s_super_temp</span> <span class="o">=</span> <span class="mf">6.12</span>
+    <span class="c1"># secondary super temp</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">s_cede_temp</span> <span class="o">=</span> <span class="mf">6.0</span>
+
+    <span class="c1"># elsewhere effective temperature</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">elsewhere_temp</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+<span class="n">set_defaults</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">())</span>
+
+<span class="n">plot_meshes</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotregion_complexity_59_0.png" src="_images/hotregion_complexity_59_0.png" />
+</div>
+</div>
+<p>The leftmost panels are the meshes associated with the primary hot region, whilst the rightmost panels are the meshes associated with the secondary hot region. The topmost panels are the meshes associated with the superseding members, whilst the bottommost panels are the meshes associated with the ceding members.</p>
+<p>Let’s play with the hot regions:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">v</span><span class="o">.</span><span class="n">p_cede_azi</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.04</span>
+<span class="n">v</span><span class="o">.</span><span class="n">s_cede_azi</span> <span class="o">=</span> <span class="mf">0.04</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">p_super_radius</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_super_radius</span> <span class="o">=</span> <span class="mf">0.9</span><span class="o">*</span><span class="n">v</span><span class="o">.</span><span class="n">s_cede_radius</span>
+
+<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">())</span>
+
+<span class="n">plot_meshes</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotregion_complexity_62_0.png" src="_images/hotregion_complexity_62_0.png" />
+</div>
+</div>
+<p>Let’s move them to opposite poles:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">v</span><span class="o">.</span><span class="n">p_super_colat</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">p_cede_colat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.2</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">s_cede_colat</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_super_colat</span> <span class="o">=</span> <span class="mf">0.2</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">p_cede_azi</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">v</span><span class="o">.</span><span class="n">s_cede_azi</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+
+<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">())</span>
+
+<span class="n">plot_meshes</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotregion_complexity_64_0.png" src="_images/hotregion_complexity_64_0.png" />
+</div>
+</div>
+<p>Let’s move them so that they do not encompass the poles and the meshes are inverted:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">v</span><span class="o">.</span><span class="n">p_super_colat</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">p_cede_colat</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">s_cede_colat</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_super_colat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">1.0</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">p_cede_azi</span> <span class="o">=</span> <span class="mf">0.04</span>
+<span class="n">v</span><span class="o">.</span><span class="n">s_cede_azi</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.05</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">p_cede_radius</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_cede_radius</span> <span class="o">=</span> <span class="mf">0.15</span>
+<span class="n">v</span><span class="o">.</span><span class="n">p_super_radius</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_super_radius</span> <span class="o">=</span> <span class="mf">0.8</span><span class="o">*</span><span class="n">v</span><span class="o">.</span><span class="n">s_cede_radius</span>
+
+<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">())</span>
+
+<span class="n">plot_meshes</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotregion_complexity_66_0.png" src="_images/hotregion_complexity_66_0.png" />
+</div>
+</div>
+<p>Finally, let’s integrate a pulse:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">3.0</span><span class="p">),</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">v</span><span class="o">.</span><span class="n">elsewhere_temp</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">())</span>
+
+<span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+               <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
+              <span class="n">x</span><span class="o">=</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+              <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]),</span>
+              <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
+              <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Energy (keV)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotregion_complexity_69_0.png" src="_images/hotregion_complexity_69_0.png" />
+</div>
+</div>
+<p>Let’s have a play with the temperatures, so show that the signal from <em>elsewhere</em> is affected by the now <em>cool</em> localised regions.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">v</span><span class="o">.</span><span class="n">elsewhere_temp</span> <span class="o">=</span> <span class="mf">6.2</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">p_super_temp</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">p_cede_temp</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_super_temp</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_cede_temp</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">p_super_colat</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">p_cede_colat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">s_cede_colat</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_super_colat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">p_cede_radius</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_cede_radius</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">v</span><span class="o">.</span><span class="n">p_super_radius</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">s_super_radius</span> <span class="o">=</span> <span class="mf">0.8</span><span class="o">*</span><span class="n">v</span><span class="o">.</span><span class="n">s_cede_radius</span>
+
+<span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">())</span>
+
+<span class="n">plot_meshes</span><span class="p">()</span>
+
+<span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+               <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
+              <span class="n">x</span><span class="o">=</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+              <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]),</span>
+              <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
+              <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Energy (keV)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotregion_complexity_71_0.png" src="_images/hotregion_complexity_71_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotregion_complexity_71_1.png" src="_images/hotregion_complexity_71_1.png" />
+</div>
+</div>
+<p>Notice the phase shift relative to the previous pulse plot? The local maxima now are shifted by <span class="math notranslate nohighlight">\(\sim\!0.25\)</span> cycles.</p>
 </div>
 </div>
 

@@ -732,10 +732,8 @@ and telescope. The synthetic data is intended to emulate detection of photons ov
         <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">AutoLocator</span><span class="p">())</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
 
-    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">)</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">plot_one_pulse</span><span class="p">(</span><span class="n">pulse</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Counts&#39;</span><span class="p">):</span>
@@ -2132,7 +2130,7 @@ Samples drawn.
 <h3>Ensemble MCMC<a class="headerlink" href="#Ensemble-MCMC" title="Permalink to this headline">¶</a></h3>
 <p>To prove that the objects constructed above can be fed to the <code class="docutils literal notranslate"><span class="pre">emcee</span></code> sampler, let’s run a number of iterations using a single Python process. We will initialise the ensemble by drawing from a multivariate Gaussian with mean vector equal to the ground truth vector.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2152,8 +2150,8 @@ Samples drawn.
 <span class="n">runtime_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;resume&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
                   <span class="s1">&#39;root_dir&#39;</span><span class="p">:</span> <span class="s1">&#39;./&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;nwalkers&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-                  <span class="s1">&#39;nsteps&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-                  <span class="s1">&#39;walker_dist_moments&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span> <span class="c1"># if resume, can use None for the moments; zip(p, std)</span>
+                  <span class="s1">&#39;nsteps&#39;</span><span class="p">:</span> <span class="mi">551</span><span class="p">,</span>
+                  <span class="s1">&#39;walker_dist_moments&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span> <span class="c1"># zip(p, std) if not resume else None</span>
 
 <span class="n">hot</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">likelihood</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="mi">3</span>
@@ -2170,7 +2168,7 @@ Samples drawn.
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-  0%|          | 0/1000 [00:00&lt;?, ?it/s]
+  0%|          | 0/551 [00:00&lt;?, ?it/s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -2178,9 +2176,25 @@ Samples drawn.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Imported emcee version: 3.0.1
 
 Commencing posterior sampling.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 551/551 [4:10:06&lt;00:00, 27.24s/it]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Sampling complete.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -2188,7 +2202,7 @@ Commencing posterior sampling.
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-  6%|▌         | 55/1000 [20:27&lt;5:52:27, 22.38s/it]
+
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -2201,10 +2215,10 @@ Commencing posterior sampling.
 </pre></div>
 </div>
 </div>
-<p>Note that we could also try initialising the ensemble by inverse sampling the joint prior distribution. Initially, in that case, the iteration time should increase because a non-negligible fraction of move proposals will be to outside of the prior support. As the ensemble migrates to higher posterior densities the iteration time will increase and then stabilise.</p>
+<p>Note that we could also try initialising the ensemble by inverse sampling the joint prior distribution.</p>
 <p>Let’s quickly plot the evolution of the ensemble Markov chains to prove that the sampling process commenced and is behaving in a somewhat reasonable manner:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2243,7 +2257,7 @@ Commencing posterior sampling.
         <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">visible</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">visible</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Steps&#39;</span><span class="p">)</span>
-    <span class="n">veneer</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+    <span class="n">veneer</span><span class="p">((</span><span class="mi">250</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="bp">None</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
