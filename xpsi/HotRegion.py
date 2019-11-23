@@ -76,8 +76,7 @@ class HotRegion(ParameterSubspace):
         Is the radiation field axisymmetric (w.r.t the stellar rotation
         axis) within a hot region with only a superseding region?
         This determines which ``CellMesh`` integrator to
-        deploy. Only set to ``False`` if you overwrite
-        :meth:`_eval_srcRadFieldParamVectors` in a custom subclass.
+        deploy.
 
     :param sqrt_num_cells:
         Number of cells in both colatitude and azimuth which form a
@@ -685,8 +684,7 @@ class HotRegion(ParameterSubspace):
         self.__compute_rays(spacetime, threads)
 
         try:
-            if self._cede:
-                self.__compute_cellParamVecs(p[3:5])
+            self._cede
         except AttributeError:
             if self._hole:
                 if self._concentric:
@@ -696,7 +694,9 @@ class HotRegion(ParameterSubspace):
             else:
                 self.__compute_cellParamVecs(p[2:3])
         else:
-            if not self._cede:
+            if self._concentric:
+                self.__compute_cellParamVecs(p[3:5])
+            else:
                 self.__compute_cellParamVecs(p[5:7])
 
         if args:
@@ -705,7 +705,7 @@ class HotRegion(ParameterSubspace):
                 self._super_correctionVecs[:,i,-1] *= self._super_effGrav
 
             try:
-                self._cede_correctionVecs = args[0](self._cede_theta.shape, args[1])
+                self._cede_correctionVecs = args[0](args[1], self._cede_cellArea)
             except AttributeError:
                 pass
             else:
