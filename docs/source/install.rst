@@ -48,7 +48,7 @@ To duplicate from file:
 
 .. code-block:: bash
 
-     conda env create -f <path/to/xpsi>/environment.yaml
+     conda env create -f <path/to/xpsi>/environment.yml
 
 Dependencies
 ------------
