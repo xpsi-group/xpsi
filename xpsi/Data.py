@@ -29,23 +29,21 @@ class Data(object):
     .. note:: You need to subclass in order to tailor the handling of the
               photon event data.
 
+    :param int first: The first instrument *output* channel which photons
+                      of this data are associated with.
+
+    :param int last: The last instrument *output* channel which photons
+                     of this data are associated with.
+
+    .. note:: For treatment of the incident pulse, it is assumed that
+              that photons space a contiguous subset of output channels,
+              between the :obj:`first` and :obj:`last` channel.
+
     """
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(self, first, last):
-        """
-        :param int first: The first instrument *output* channel which photons
-                          of this data are associated with.
-
-        :param int last: The last instrument *output* channel which photons
-                         of this data are associated with.
-
-        .. note:: For treatment of the incident pulse, it is assumed that
-                  that photons space a contiguous subset of output channels,
-                  between the :obj:`first` and :obj:`last` channel.
-
-        """
         try:
             self._first = int(first)
             self._last = int(last)

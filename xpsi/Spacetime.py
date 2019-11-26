@@ -7,20 +7,28 @@ from abc import ABCMeta, abstractmethod
 from .ParameterSubspace import ParameterSubspace, BoundsError
 
 class Spacetime(ParameterSubspace):
-    """ The ambient Schwarzschild spacetime. """
+    """ The ambient Schwarzschild spacetime and Earth coordinates.
+
+    :param int num_params: Number of free spacetime parameters.
+
+    :param list bounds: Tuples of hard bounds on parameters.
+
+    The default parameter order is:
+
+        * Earth distance
+        * (rotationally deformed) gravitational mass
+        * coordinate equatorial radius
+        * inclination of Earth to stellar rotation axis
+
+    """
 
     @abstractmethod
     def __init__(self, num_params, bounds):
-        """
-        :param int num_params: Number of free spacetime parameters.
-
-        :param list bounds: Tuples of hard bounds on parameters.
-
-        """
         super(Spacetime, self).__init__(num_params, bounds)
 
         if self._num_params < 4:
-            raise BoundsError('A spacetime requires at least three parameters.')
+            raise BoundsError('Spacetime specification requires at least '
+                              'three parameters.')
 
         for mass in self._bounds[1]:
             if not 0.8 <= mass <= 3.0:
@@ -33,7 +41,7 @@ class Spacetime(ParameterSubspace):
         r_g = _G * self._bounds[1][0] * _M_s / _csq
 
         if self._bounds[2][0] * _km <= 3.0 * r_g:
-            raise BoundsError('Lower radius bound is at or within the'
+            raise BoundsError('Lower radius bound is at or within the '
                               'photon sphere for the lower mass bound.')
 
         for inclination in self._bounds[3]:
@@ -41,7 +49,8 @@ class Spacetime(ParameterSubspace):
                 raise BoundsError('Invalid inclination bound.')
 
     def update(self, d, M, R, i):
-        """
+        """ Update the spacetime properties.
+
         :param M: The (rotationally deformed) gravitational mass (solar masses).
         :param R: The coordinate equatorial radius (km).
         :param i: Inclination of the Earth to the rotational axis (radians).
@@ -54,6 +63,11 @@ class Spacetime(ParameterSubspace):
                                 set in the initialiser of a custom subclass, or
                                 in a custom :meth:`update` method of a subclass.
 
+        .. note::
+            If subclassing to handle a free spin parameter, take care with
+            the argument (parameter) ordering, and set the rotation frequency
+            before calling ``super(CustomSpacetime, self).update()``.
+
         """
         self._M = M * _M_s
         self._r_g = _G * self._M / _csq
@@ -62,7 +76,7 @@ class Spacetime(ParameterSubspace):
         self._R = R * _km
         self._R_r_s = self._R / self._r_s
 
-        # observer parameters
+        # Earth parameters
         self._i = i
         self.d = d
 
@@ -96,7 +110,7 @@ class Spacetime(ParameterSubspace):
 
     @property
     def R_r_s(self):
-        """ Get the ratio of the radius to the Schwarzschild radius. """
+        """ Get the ratio of the equatorial radius to the Schwarzschild radius. """
         return self._R_r_s
 
     @property
@@ -148,7 +162,3 @@ class Spacetime(ParameterSubspace):
     def epsilon(self):
         """ Get the derived parameter ``epsilon`` for universality relation. """
         return self._epsilon
-
-
-
-

@@ -31,6 +31,48 @@ class Pulse(ParameterSubspace):
     into a structure congruent to that of the data for the purpose of
     evaluation of the likelihood.
 
+    :param str tag: An identification tag to enforce intended pairing with
+                    a :class:`~.Photosphere.Photosphere` object.
+
+    :param int num_params: Number of *fast* nuisance parameters associated
+                           with the model of the pulsation, excluding:
+
+                           * *slow* parameters associated with the star
+                             defined in :class:`~.Star.Star`;
+                           * parameters associated with an instance of
+                             :class:`~.Background.Background`;
+                           * parameters associated with an instance of
+                             :class:`~.Interstellar.Interstellar`.
+
+    :param list bounds: Hard parameter bounds for the instance of
+                        :class:`.ParameterSubspace.ParameterSubspace`.
+
+    :param data: An instance of :class:`~.Data.Data`.
+
+    :param instrument: An instance of :class:`~.Instrument.Instrument`.
+
+    :param background: If not ``None``, an instance of
+                       :class:`~.Background.Background`. It is
+                       assumed if one constructs a model using instances
+                       of :class:`~.Background.Background` that the
+                       background needs to be folded through a model
+                       instrument. If ``None``, it is still possible for
+                       one to define and use background parameters in a
+                       custom subclass of :class:`Pulsation`. In
+                       particular, background parameters for some model
+                       which directly specifies background contribution
+                       in units of count/s per *output* channels. These
+                       background parameters can even *be* the counts/s in
+                       output channels.
+
+    :param interstellar: If not ``None``, an instance of
+                         :class:`~.Interstellar.Interstellar`. To be
+                         applied to the incident source pulsation.
+
+    :param int energies_per_interval: The number of energies to compute
+                                     photon fluxes, per input energy
+                                     channel of the instrument.
+
     """
     def __init__(self,
                  num_params,
@@ -46,50 +88,6 @@ class Pulse(ParameterSubspace):
                  adaptive_energies = False,
                  adapt_exponent = 0.5,
                  store = False):
-        """
-        :param str tag: An identification tag to enforce intended pairing with
-                        a :class:`~.Photosphere.Photosphere` object.
-
-        :param int num_params: Number of *fast* nuisance parameters associated
-                               with the model of the pulsation, excluding:
-
-                               * *slow* parameters associated with the star
-                                 defined in :class:`~.Star.Star`;
-                               * parameters associated with an instance of
-                                 :class:`~.Background.Background`;
-                               * parameters associated with an instance of
-                                 :class:`~.Interstellar.Interstellar`.
-
-        :param list bounds: Hard parameter bounds for the instance of
-                            :class:`.ParameterSubspace.ParameterSubspace`.
-
-        :param data: An instance of :class:`~.Data.Data`.
-
-        :param instrument: An instance of :class:`~.Instrument.Instrument`.
-
-        :param background: If not ``None``, an instance of
-                           :class:`~.Background.Background`. It is
-                           assumed if one constructs a model using instances
-                           of :class:`~.Background.Background` that the
-                           background needs to be folded through a model
-                           instrument. If ``None``, it is still possible for
-                           one to define and use background parameters in a
-                           custom subclass of :class:`Pulsation`. In
-                           particular, background parameters for some model
-                           which directly specifies background contribution
-                           in units of count/s per *output* channels. These
-                           background parameters can even *be* the counts/s in
-                           output channels.
-
-        :param interstellar: If not ``None``, an instance of
-                             :class:`~.Interstellar.Interstellar`. To be
-                             applied to the incident source pulsation.
-
-        :param int energies_per_interval: The number of energies to compute
-                                         photon fluxes, per input energy
-                                         channel of the instrument.
-
-        """
         super(Pulse, self).__init__(num_params, bounds)
 
         try:
@@ -102,24 +100,18 @@ class Pulse(ParameterSubspace):
         except TypeError:
             raise TypeError('Number of parameters must be an integer.')
 
-        try:
-            assert isinstance(data, Data)
-        except AssertionError:
+        if not isinstance(data, Data):
             raise TypeError('Invalid type for a data object.')
         else:
             self._data = data
 
-        try:
-            assert isinstance(instrument, Instrument)
-        except AssertionError:
+        if not isinstance(instrument, Instrument):
             raise TypeError('Invalid type for an instrument object.')
         else:
             self._instrument = instrument
 
         if background is not None:
-            try:
-                assert isinstance(background, Background)
-            except AssertionError:
+            if not isinstance(background, Background):
                 raise TypeError('Invalid type for a background object.')
             else:
                 self._background = background
@@ -127,9 +119,7 @@ class Pulse(ParameterSubspace):
             self._background = None
 
         if interstellar is not None:
-            try:
-                assert isinstance(interstellar, Interstellar)
-            except AssertionError:
+            if not isinstance(interstellar, Interstellar):
                 raise TypeError('Invalid type for an interstellar object.')
             else:
                 self._interstellar = interstellar
@@ -347,7 +337,7 @@ class Pulse(ParameterSubspace):
         return self._energy_edges
 
     def fold(self, signals, p, fast_mode=False, threads=1):
-        """ Fold an raw pulse signal through the response matrix.
+        """ Fold a raw pulse signal through the response matrix.
 
         A :class:`numpy.ndarray` is stored as an instance attribute containing
         source pulsation for each *output* channel in units of counts cm^2/s
@@ -367,11 +357,11 @@ class Pulse(ParameterSubspace):
             if self.store:
                 self._fast_incident_spectrum = []
 
-            for cap in signals:
+            for hotRegion in signals:
                 fast_total_counts = []
                 energies = []
 
-                for component in cap:
+                for component in hotRegion:
                     if component is None:
                         energies.append(self.default_energies)
                         fast_total_counts.append(None)
@@ -416,9 +406,9 @@ class Pulse(ParameterSubspace):
             try:
                 self.energies
             except AttributeError:
-                for cap in signals:
+                for hotRegion in signals:
                     energies = []
-                    for component in cap:
+                    for component in hotRegion:
                         energies.append(self.default_energies)
                     self.energies = tuple(energies)
 
@@ -428,12 +418,12 @@ class Pulse(ParameterSubspace):
                 except AttributeError:
                     pass
 
-                for cap, cap_energies in zip(signals, self.energies):
-                    _ = energy_interpolator(1, cap[0],
-                                            _np.log10(cap_energies[0]),
+                for hotRegion, hotRegion_energies in zip(signals, self.energies):
+                    _ = energy_interpolator(1, hotRegion[0],
+                                            _np.log10(hotRegion_energies[0]),
                                             _np.log10(self.logspace_energies_hires))
 
-                    for component, component_energies in zip(cap[1:], cap_energies[1:]):
+                    for component, component_energies in zip(hotRegion[1:], hotRegion_energies[1:]):
                         _ += energy_interpolator(1, component,
                                                  _np.log10(component_energies),
                                                  _np.log10(self.logspace_energies_hires))
@@ -460,13 +450,13 @@ class Pulse(ParameterSubspace):
                 except AttributeError:
                     pass
 
-            for cap, cap_energies in zip(signals, self.energies):
+            for hotRegion, hotRegion_energies in zip(signals, self.energies):
                 integrated = channel_integrator(threads,
-                                                cap[0],
-                                                _np.log10(cap_energies[0]),
+                                                hotRegion[0],
+                                                _np.log10(hotRegion_energies[0]),
                                                 _np.log10(self._energy_edges))
 
-                for component, component_energies in zip(cap[1:], cap_energies[1:]):
+                for component, component_energies in zip(hotRegion[1:], hotRegion_energies[1:]):
                     integrated += channel_integrator(threads,
                                                      component,
                                                      _np.log10(component_energies),
@@ -561,6 +551,14 @@ class Pulse(ParameterSubspace):
     def data(self):
         """ Get the stored data object. """
         return self._data
+
+    @data.setter
+    def data(self, data):
+        """ Set the data object. """
+        if isinstance(data, Data):
+                self._data = data
+        else:
+            raise TypeError('The data object is of an invalid type.')
 
     @property
     def pulse(self):
@@ -669,7 +667,15 @@ class Pulse(ParameterSubspace):
 
     @property
     def caching_targets(self):
-        """ Get a dictionary of model objects for caching. """
+        """ Get a dictionary of model objects for caching.
+
+        Called by the post-processing module.
+
+        :raises AttributeError:
+            If a property is not set in methods of a subclass, or if the
+            ``self.store`` property is not ``True``.
+
+        """
         return {'shift': self.shift,
                 'pulse': self.pulse,
                 'expected_counts': self.expected_counts,
@@ -710,14 +716,14 @@ class Pulse(ParameterSubspace):
                             evaluation. This argument can be ignored if not
                             required.
 
-        :param tuple args: If the pulse is not folded in the slow block, the
-                           first argument is the photospheric pulse, which is
-                           to be passed on to the fold method.
-                           The slow parameters follow, in case required.
+        :param tuple args:
+            The other parameters, in case required. Note that the
+            :class:`~.Likelihood.Likelihood` class expects this method
+            signature, and an exception will be raised if it is not adhered
+            to when implementing ``__call__`` in a custom subclass.
 
         """
 
-    @abstractmethod
     def synthesise(self, p, directory, *args, **kwargs):
         """ Synthesise pulsation data according to the generative model.
 
@@ -734,4 +740,4 @@ class Pulse(ParameterSubspace):
                            The slow parameters follow, in case required.
 
         """
-
+        raise NotImplementedError('Cannot synthesise data.')

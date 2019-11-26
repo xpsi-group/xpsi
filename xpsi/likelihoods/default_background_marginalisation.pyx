@@ -99,19 +99,19 @@ cdef double delta(double B, void *params) nogil:
 
     return -1.0 * y / x
 
-def eval_loglike_phaseIntervals_maximise(double exposure_time,
-                                         double[::1] phases,
-                                         double[:,::1] counts,
-                                         pulses,
-                                         double[::1] pulse_phases,
-                                         phase_shifts,
-                                         double[::1] neg_sum_ln_data_factorial,
-                                         size_t workspace_intervals,
-                                         double epsabs,
-                                         double epsrel,
-                                         double epsilon,
-                                         double sigmas,
-                                         double llzero):
+def eval_marginal_likelihood(double exposure_time,
+                             double[::1] phases,
+                             double[:,::1] counts,
+                             pulses,
+                             double[::1] pulse_phases,
+                             phase_shifts,
+                             double[::1] neg_sum_ln_data_factorial,
+                             size_t workspace_intervals,
+                             double epsabs,
+                             double epsrel,
+                             double epsilon,
+                             double sigmas,
+                             double llzero):
 
     """ Evaluate the Poisson likelihood.
 

@@ -16,18 +16,11 @@ from libc.stdio cimport printf
 from GSL cimport (gsl_function,
                   gsl_integration_workspace,
                   gsl_integration_workspace_alloc,
-                  gsl_spline_eval,
                   gsl_integration_workspace_free,
                   gsl_integration_cquad_workspace,
                   gsl_integration_qag,
-                  gsl_spline_alloc,
                   gsl_interp_accel,
                   gsl_interp_accel_alloc,
-                  gsl_spline,
-                  gsl_spline2d,
-                  gsl_interp_linear,
-                  gsl_spline_init,
-                  gsl_spline_free,
                   gsl_interp_accel_free,
                   gsl_interp_accel_reset,
                   gsl_isnan,
@@ -37,9 +30,17 @@ from GSL cimport (gsl_function,
                   gsl_set_error_handler_off,
                   gsl_error_handler_t)
 
+
+from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
+                                       gsl_interp_eval_deriv,
+                                       gsl_interp_alloc,
+                                       gsl_interp,
+                                       gsl_interp_steffen,
+                                       gsl_interp_init,
+                                       gsl_interp_free)
+
+ctypedef gsl_interp interp
 ctypedef gsl_interp_accel accel
-ctypedef gsl_spline spline
-ctypedef gsl_spline2d spline2d
 ctypedef gsl_integration_workspace gsl_work
 ctypedef gsl_integration_cquad_workspace gsl_cq_work
 
@@ -236,58 +237,65 @@ cdef void rayIntegrator(size_t thread,
     if (status != GSL_EFAILED):
         rayParams[4 * thread + 2] /= c
 
-def compute_rays(size_t numThreads,
-                 size_t numParallels,
+def compute_rays(size_t N_T,
+                 size_t N_u,
                  double r_s,
                  double[::1] r_s_over_R,
                  double[::1] maxAlpha,
-                 size_t numRays):
+                 size_t N_R):
     """
-    Precompute rays for the Schwarzschild + Doppler approximation scheme.
+    Compute ray properties in the Schwarzschild spacetime.
 
-    Returns a tuple of objects of type np.ndarray:
-        -- the cosine of the deflection angle
-        -- the temporal lag in coordinate time
-        -- the maximum deflection angle for emission from each parallel along
-           which pixels are allocated
+    :param int: Number of OpenMP threads.
+    :param int: Number of :math:`u\mathrel{:=}r_{s}/R` coordinate values
+    :param obj: 1D :class:`numpy.ndarray` :math:`u`
+    :param obj: 1D :class:`numpy.ndarray` of *maximum* :math:`\cos\\alpha`
+    :param int: Number of rays per :math:`u` value
+
+    :return: Termination flag
+    :return: Deflection angle as a 2D :class:`numpy.ndarray`
+    :return: Cosine of local ray angle as a 2D :class:`numpy.ndarray`
+    :return: Ray lag relative to radial ray as a 2D :class:`numpy.ndarray`
+    :return: Maximum deflection angle as a 1D :class:`numpy.ndarray`
+
     """
 
     cdef:
         signed int ii
         size_t i, j, k, T
-        gsl_work **w = <gsl_work**> malloc(numThreads * sizeof(gsl_work*))
+        gsl_work **w = <gsl_work**> malloc(N_T * sizeof(gsl_work*))
         double alpha, cos_alpha_inc, delta, extreme
         int terminate = 0
-        int *terminate_thread = <int*> malloc(numThreads * sizeof(int))
+        int *terminate_thread = <int*> malloc(N_T * sizeof(int))
 
-    for i in range(numThreads):
+    for i in range(N_T):
         w[i] = gsl_integration_workspace_alloc(100)
         terminate_thread[i] = 0
 
-    cdef double *rayParams = <double*> malloc(numThreads * 4 * sizeof(double))
-    cdef size_t *interp_index = <size_t*> malloc(numThreads * sizeof(size_t))
-    cdef size_t *interp_counter = <size_t*> malloc(numThreads * sizeof(size_t))
+    cdef double *rayParams = <double*> malloc(N_T * 4 * sizeof(double))
+    cdef size_t *interp_index = <size_t*> malloc(N_T * sizeof(size_t))
+    cdef size_t *interp_counter = <size_t*> malloc(N_T * sizeof(size_t))
 
-    for i in range(numThreads):
+    for i in range(N_T):
         interp_counter[i] = 0
 
     cdef:
-        double[:,::1] deflection = np.empty((numParallels, numRays), dtype = np.double)
-        double[:,::1] cos_alpha = np.empty((numParallels, numRays), dtype = np.double)
-        double[:,::1] lag = np.empty((numParallels, numRays), dtype = np.double)
-        double[::1] maxDeflection = np.empty(numParallels, dtype = np.double)
+        double[:,::1] deflection = np.empty((N_u, N_R), dtype = np.double)
+        double[:,::1] cos_alpha = np.empty((N_u, N_R), dtype = np.double)
+        double[:,::1] lag = np.empty((N_u, N_R), dtype = np.double)
+        double[::1] maxDeflection = np.empty(N_u, dtype = np.double)
 
     # set_gsl_error_handler outside multi-threading
     cdef gsl_error_handler_t *handler = gsl_set_error_handler_off()
 
-    for ii in prange(<signed int>numParallels,
+    for ii in prange(<signed int>N_u,
                      nogil = True,
                      schedule = 'static',
-                     num_threads = numThreads,
+                     num_threads = N_T,
                      chunksize = 1):
 
         T = threadid()
-        i = <size_t>ii
+        i = <size_t> ii
 
         if r_s_over_R[i] < 2.0/3.0:
             extreme = _pi - asin(sqrt(1.0 - r_s_over_R[i]) * b_phsph_over_r_s * r_s_over_R[i])
@@ -299,13 +307,13 @@ def compute_rays(size_t numThreads,
         if maxAlpha[i] >= extreme:
             maxAlpha[i] = (1.0 - 1.0e-8) * extreme
 
-        cos_alpha_inc = (1.0 - cos(maxAlpha[i])) / (<double>numRays - 1.0)
+        cos_alpha_inc = (1.0 - cos(maxAlpha[i])) / (<double>N_R - 1.0)
 
-        for j in range(numRays):
+        for j in range(N_R):
 
             cos_alpha[i,j] = cos(maxAlpha[i]) + (<double>j) * cos_alpha_inc
 
-            if j == numRays - 1:
+            if j == N_R - 1:
                 cos_alpha[i,j] = 1.0
                 deflection[i,j] = 0.0
                 lag[i,j] = 0.0
@@ -315,13 +323,11 @@ def compute_rays(size_t numThreads,
 
                     if j == 0 and gsl_isnan(rayParams[4*T]) == 1:
                         terminate_thread[T] = ERROR
-                        #===========================================================
-                    elif (j == numRays - 1 and
+                    elif (j == N_R - 1 and
                           (gsl_isnan(rayParams[4*T]) == 1 or
                            rayParams[4*T] >= deflection[i,j - 1])):
 
                         terminate_thread[T] = ERROR
-                        #===========================================================
                     elif (interp_counter[T] > 0 and
                           gsl_isnan(rayParams[4*T]) == 0 and
                           (0.0 <= rayParams[4*T] < 100.0 * _pi) and
@@ -341,7 +347,6 @@ def compute_rays(size_t numThreads,
                             lag[i,interp_index[T] + k] /= delta
 
                         interp_counter[T] = 0 # reset counter
-                        #===========================================================
                     elif (j > 0 and
                           (gsl_isnan(rayParams[4*T]) == 1 or
                            rayParams[4*T] < 0.0 or
@@ -350,11 +355,9 @@ def compute_rays(size_t numThreads,
                         if interp_counter[T] == 0:
                             interp_index[T] = j - 1
                         interp_counter[T] += 1
-                        #===========================================================
                     else:
                         deflection[i,j] = rayParams[4*T]
                         lag[i,j] = rayParams[4*T + 2]
-                        #===========================================================
 
         if deflection[i,0] <= _pi:
             maxDeflection[i] = deflection[i,0]
@@ -362,11 +365,12 @@ def compute_rays(size_t numThreads,
             for j in range(deflection.shape[1]):
                 if deflection[i,j] < _pi:
                     maxDeflection[i] = deflection[i,j]
+
                     break
 
     gsl_set_error_handler(handler)
 
-    for i in range(numThreads):
+    for i in range(N_T):
         gsl_integration_workspace_free(w[i])
         if terminate_thread[i] == ERROR:
             terminate = ERROR
@@ -382,3 +386,78 @@ def compute_rays(size_t numThreads,
             np.asarray(cos_alpha, dtype = np.double, order = 'C'),
             np.asarray(lag, dtype = np.double, order = 'C'),
             np.asarray(maxDeflection, dtype = np.double, order = 'C'))
+
+
+def compute_derivative(size_t N_T,
+                       double[:,::1] deflection,
+                       double[:,::1] cos_alpha):
+    """ Compute the lensing factor via a monotone cubic spline approximation.
+
+    :param int: Number of OpenMP threads.
+    :param obj: 1D :class:`numpy.ndarray` of :math:`\cos\psi`
+    :param obj: 1D :class:`numpy.ndarray` of :math:`\cos\\alpha`
+
+    :return: 1D :class:`numpy.ndarray` of :math:`\partial\cos\\alpha/\partial\cos\psi/(1-u)`)
+
+    """
+
+    cdef:
+        signed int ii
+        size_t i, j, k, T
+        size_t N_u = deflection.shape[0]
+        size_t N_R = deflection.shape[1]
+
+        double[:,::1] deriv = np.empty((N_u, N_R), dtype = np.double)
+        double[:,::1] cos_deflection = np.empty((N_u, N_R), dtype = np.double)
+
+        double **defl_ptr = <double**> malloc(N_T * sizeof(double*))
+        double **alpha_ptr = <double**> malloc(N_T * sizeof(double*))
+
+        accel **accel_alpha = <accel**> malloc(N_T * sizeof(accel*))
+        interp **interp_alpha = <interp**> malloc(N_T * sizeof(interp*))
+
+    for T in range(N_T):
+        accel_alpha[T] = gsl_interp_accel_alloc()
+        interp_alpha[T] = NULL
+        defl_ptr[T] = NULL
+        alpha_ptr[T] = NULL
+
+    for i in range(N_u):
+        for j in range(N_R):
+            cos_deflection[i,j] = cos(deflection[i,j])
+
+    for ii in prange(<signed int>N_u,
+                     nogil = True,
+                     schedule = 'static',
+                     num_threads = N_T,
+                     chunksize = 1):
+
+        T = threadid()
+        i = <size_t> ii
+
+        for j in range(N_R):
+            if deflection[i,j] < _pi:
+
+                interp_alpha[T] = gsl_interp_alloc(gsl_interp_steffen, N_R - j)
+                gsl_interp_accel_reset(accel_alpha[T])
+
+                defl_ptr[T] = &(cos_deflection[i,j])
+                alpha_ptr[T] = &(cos_alpha[i,j])
+                gsl_interp_init(interp_alpha[T], defl_ptr[T], alpha_ptr[T],  N_R - j)
+
+                for k in range(j, N_R):
+                    deriv[i,k] = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr[T], alpha_ptr[T], cos_deflection[i,k], accel_alpha[T])
+
+                gsl_interp_free(interp_alpha[T])
+
+                break
+
+    for T in range(N_T):
+        free(accel_alpha[T])
+
+    free(defl_ptr)
+    free(alpha_ptr)
+    free(accel_alpha)
+    free(interp_alpha)
+
+    return np.asarray(deriv, dtype = np.double, order = 'C')

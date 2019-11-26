@@ -21,12 +21,12 @@ class Interstellar(ParameterSubspace):
         :param pulse: A :class:`numpy.ndarray` of specific fluxes, with energy
                       increasing along rows and phase increasing along columns.
 
+        :return: ``None``.
+
         .. note:: It is expected that the operations performed on a column of
                   specific fluxes need to be applied identically to all other
                   columns. The referenced object :obj:`pulse` needs to be
                   directly modified, and *not* copied.
-
-        :return: ``None``.
 
         """
 

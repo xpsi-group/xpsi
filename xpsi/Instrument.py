@@ -22,32 +22,55 @@ class Instrument(ParameterSubspace):
     ``super().__init__``. Specialist constructors can be defined in a subclass
     using the ``@classmethod`` decorator.
 
+    :param ndarray[p,q] matrix:
+        A :math:`p \\times q` matrix which is the
+        product of a redistribution matrix and effective area
+        vector. The input energy intervals must increase along
+        the columns of :attr:`matrix`, and the output channels
+        must increase along the rows of :attr:`matrix`. The
+        *units* of the elements must be that of an *effective*
+        area (:math:`cm^2`).
+
+    :param ndarray[q+1] energy_edges:
+        Energy edges of the instrument energy intervals which
+        must be congruent to the first dimension of the
+        :attr:`matrix`: the number of edges must
+        be :math:`q + 1`. The edges must be monotonically
+        increasing.
+
+    .. note:: The dimensions of the response matrix need not be equal, but
+              it is required that the number of input intervals be greater
+              than or equal to the number of output channels -- i.e.,
+              :math:`p \leq q`. If :math:`p < q` then it is implied that subsets of
+              adjacent output channels are actually grouped together.
+
     """
     def __init__(self, num_params, bounds, matrix, energy_edges):
-        """
-        :param matrix: A ``p x q`` :class:`numpy.ndarray` which is the
-                       product of a redistribution matrix and effective area
-                       vector. The input energy channels must increase along
-                       the columns of :obj:`matrix`, and the output channels
-                       must increase along the rows of :obj:`matrix`. The
-                       *units* of the elements must be that of an *effective*
-                       area (:math:`cm^2`).
-
-        :param energy_edges: Energy edges of the instrument channels which
-                             must be congruent to the first dimension of the
-                             :obj:`matrix` -- i.e., the number of edges must
-                             be ``q + 1``. The edges must be monotonically
-                             increasing.
-
-        .. note:: The dimensions of the response matrix need not be equal, but
-                  it is required that the number of input channels be greater
-                  than or equal to the number of output channels -- i.e.,
-                  ``p <= q``. If ``p < q`` then it is implied than subsets of
-                  adjacent output channels are actually grouped together.
-
-        """
         super(Instrument, self).__init__(num_params, bounds)
 
+        self.matrix = matrix
+        self.energy_edges = energy_edges
+
+    @property
+    def matrix(self):
+        """ Get the response matrix.
+
+        A matrix of dimension :math:`p \\times q`. Here :math:`p` must be the
+        number of input energy intervals, and :math:`q \geq p` the number of
+        output channels.
+
+        .. note::
+
+            The attribute :attr:`matrix` must be assigned, and it must be
+            a :class:`numpy.ndarray` for use with :func:`numpy.dot` (even
+            if the matrix is sparse to some degree).
+
+        """
+        return self._matrix
+
+    @matrix.setter
+    def matrix(self, matrix):
+        """ Set the matrix. """
         try:
             assert isinstance(matrix, _np.ndarray)
             assert matrix.ndim == 2
@@ -69,6 +92,21 @@ class Instrument(ParameterSubspace):
             else:
                 self._matrix = matrix
 
+    @property
+    def energy_edges(self):
+        """ Get the energy edges of the instrument.
+
+        A :class:`numpy.ndarray` of edges of the input energy
+        intervals which map to output channels defined in the
+        data space.
+
+        """
+        return self._energy_edges
+
+    @energy_edges.setter
+    def energy_edges(self, energy_edges):
+        """ Set the energy edges. """
+
         try:
             assert isinstance(energy_edges, _np.ndarray)
         except AssertionError:
@@ -76,7 +114,7 @@ class Instrument(ParameterSubspace):
                 self._energy_edges = _np.array(energy_edges)
             except TypeError:
                 raise EdgesError('Energy edges must be in a one-dimensional '
-                                 '``numpy.ndarray``, and must all be postive.')
+                                 'array, and must all be postive.')
         else:
             self._energy_edges = energy_edges
 
@@ -86,74 +124,50 @@ class Instrument(ParameterSubspace):
             assert self._energy_edges.shape[0] == self._matrix.shape[1] + 1
         except AssertionError:
             raise EdgesError('Energy edges must be in a one-dimensional '
-                             '``numpy.ndarray``, and must be postive.')
-
-    @property
-    def matrix(self):
-        """ Get the response matrix.
-
-        A photon redistribution matrix of dimension ``p x q``. Here
-        ``p`` must be the number of input channels, and ``q >= p`` the
-        number of output channels.
-
-        .. note:: The attribute :attr:`._matrix` must be assigned, and it must be
-              a :class:`numpy.ndarray` for use with :func:`numpy.dot` (even
-              if the matrix is sparse to some degree).
-
-        """
-        return self._matrix
-
-    @property
-    def energy_edges(self):
-        """ Get the energy edges of the instrument.
-
-        A :class:`numpy.ndarray` of edges of the input energy
-        channels which map to output channels defined in the
-        data space.
-
-        """
-        return self._energy_edges
+                             'array, and must be postive.')
 
     def __call__(self, p, signal, irange, orange):
         """ Fold an incident signal.
 
-        :param signal: An ``m x n`` :class:`numpy.ndarray` matrix, where
-                      input energy channel increments along rows, and
-                      phase increases along columns. The number of
-                      rows, ``m``, must equal the number of columns of
-                      :attr:`._matrix`, ``m = q``.
+        :param ndarray[m,n] signal:
+            An :math:`m \\times n` matrix, where input energy interval
+            increments along rows, and phase increases along columns.
+            The number of rows, :math:`m`, must equal the number of columns of
+            :attr:`matrix`: :math:`m=q`.
 
-        :param irange: Array-like object with two elements respectively denoting
-                       the indices of the first and last *input* channels. The
-                       response matrix :attr:`._matrix` must be indexable with
-                       these numbers, i.e., they must satisfy ``i < q``.
+        :param array-like irange:
+            Indexable object with two elements respectively denoting
+            the indices of the first and last *input* intervals. The
+            response matrix :attr:`matrix` must be indexable with
+            these numbers, i.e., they must satisfy :math:`i < q`.
 
-        :param orange: Array-like object with two elements respectively denoting
-                       the indices of the first and last *output* channels. The
-                       response matrix :attr:`._matrix` must be indexable with
-                       these numbers, i.e., they must satisfy ``i < p``.
+        :param array-like orange:
+            Indexable object with two elements respectively denoting
+            the indices of the first and last *output* channels. The
+            response matrix :attr:`matrix` must be indexable with
+            these numbers, i.e., they must satisfy :math:`i < p`.
 
-        :return: A :class:`numpy.ndarray` of size ``p x n``.
+        :return: *ndarray[p,n]* containing the folded signal.
 
-        **Notes**
+        .. note::
 
-        The profile most recently operated on is stored as the attribute
-        :attr:`._last_folded`.
+            The product of the most recent operation is stored as the property
+            :attr:`cached_signal`.
 
         """
 
         self.construct_matrix(p)
 
-        self._folded_signal = _np.dot(self._matrix[orange[0]:orange[1],
+        self._cached_signal = _np.dot(self._matrix[orange[0]:orange[1],
                                                    irange[0]:irange[1]], signal)
 
-        return self._folded_signal
+        return self._cached_signal
 
     @property
-    def folded_signal(self):
+    def cached_signal(self):
         """ Get the cached folded signal. """
-        return self._folded_signal
+        return self._cached_signal
 
     @abstractmethod
-    def _construct_matrix(self, p):
-        """ Construct the response matrix. """
+    def construct_matrix(self, p):
+        """ Construct the response matrix given parameter values (if any). """

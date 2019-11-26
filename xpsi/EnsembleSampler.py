@@ -130,9 +130,8 @@ class EnsembleSampler(_EnsembleSampler):
             except (AssertionError, PriorError):
                 print('Attempting to initialise the walker positions via '
                       'inverse sampling...')
-                self._p0 = _np.random.rand(nwalkers, ndims)
+                self._p0 = prior.draw(nwalkers)[0]
                 for i in range(nwalkers):
-                    self._p0[i,:] = prior.inverse_sample(self._p0[i,:])
                     if not _np.isfinite(prior(self._p0[i,:])):
                         raise PriorError('Failed to initialise walkers.')
                 print('Walker positions successfully initialised via inverse '
@@ -153,15 +152,18 @@ class EnsembleSampler(_EnsembleSampler):
         :return:
 
         """
-        try:
-            assert isinstance(moments, list)
-            assert len(moments) == self._ndims
-            for m in moments:
-                assert len(m) == 2
-        except AssertionError:
-            print('\nInvalid specification initial walker position '
-                  'distribution.')
-            raise
+        if moments is not None:
+            try:
+                assert isinstance(moments, list)
+                assert len(moments) == self._ndims
+                for m in moments:
+                    assert len(m) == 2
+            except AssertionError:
+                print('\nInvalid specification of initial walker position '
+                      'distribution.')
+                raise
+        else:
+            raise PriorError
 
         moments = map(list, zip(*moments))
 
@@ -177,7 +179,7 @@ class EnsembleSampler(_EnsembleSampler):
         """ Hammer the nail. """
         print('\nCommencing posterior sampling.')
 
-        self.run_mcmc(pos0 = self._p0,
+        self.run_mcmc(initial_state = self._p0,
                       nsteps = self._nsteps,
                       thin_by = 1,
                       store = True,

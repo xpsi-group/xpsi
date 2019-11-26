@@ -1,6 +1,6 @@
 from __future__ import division, print_function
 
-__all__ = ["MultiNest", "emcee", "PolyChord"]
+__all__ = ["nested", "ensemble"]
 
 from .global_imports import *
 from . import global_imports
@@ -14,7 +14,7 @@ def func(p):
     global posterior
     return posterior(p)
 
-def emcee(likelihood, prior, MPI = True, **kwargs):
+def ensemble(likelihood, prior, MPI = True, **kwargs):
     """ Initialise `emcee <http://dfm.io/emcee/current/>`_ and sample.
 
     :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
@@ -35,8 +35,6 @@ def emcee(likelihood, prior, MPI = True, **kwargs):
        * moments of initial walker multivariate Gaussian distribution, under
          keyword :obj:`walker_dist_moments` (can be ``None``);
        * root directory for output, under keyword :obj:`root_dir`;
-       * boolean to activate generation of incident source pulse blobs,
-         under keyword :obj:`source_pulse_blobs`.
 
     The above objects are used to instantiate :class:`~.Posterior.Posterior`.
 
@@ -90,41 +88,7 @@ def emcee(likelihood, prior, MPI = True, **kwargs):
 
     return sampler.backend
 
-def PolyChord(likelihood, prior, nderived=0, **kwargs):
-    """ Initialise `PolyChord`_ and integrate.
-
-    .. _PolyChord: https://ccpforge.cse.rl.ac.uk/gf/project/polychord/
-
-    :param dict likelihood: Keyword arguments required for
-                            instantiation of :class:`~.Likelihood.Likelihood`.
-
-    :param dict prior: Keyword arguments required for
-                       instantiation of :class:`~.Prior.Prior`.
-
-    :param int nderived: Number of derived parameters (default zero).
-
-    :param kwargs: Keyword arguments required for instantiation of
-                   :class:`PyPolyChord.settings.PolyChordSettings`.
-
-    :return: An instance of :class:`PyPolyChord.output.PyPolyChordOutput`.
-
-    """
-    from xpsi.PolyChordIntegrator import PolyChordIntegrator
-
-    # Initialise PolyChord integrator
-    sampler = PolyChordIntegrator(likelihood.num_params,
-                                  nderived,
-                                  likelihood,
-                                  prior,
-                                  **kwargs)
-
-    # Commence PolyChord integration process
-    sampler()
-
-    return sampler.output
-
-
-def MultiNest(likelihood, prior, check_kwargs={}, **kwargs):
+def nested(likelihood, prior, check_kwargs={}, **kwargs):
     """ Initialise MultiNest and integrate.
 
     :param dict likelihood:
@@ -142,12 +106,12 @@ def MultiNest(likelihood, prior, check_kwargs={}, **kwargs):
     :param kwargs: Keyword arguments for PyMultiNest.
 
     """
-    from xpsi.MultiNestIntegrator import MultiNestIntegrator
+    from xpsi.NestedSampler import NestedSampler
 
     if check_kwargs:
         likelihood.check(**check_kwargs)
 
-    sampler = MultiNestIntegrator(likelihood.num_params,
+    sampler = NestedSampler(likelihood.num_params,
                                   likelihood,
                                   prior)
     sampler(**kwargs)

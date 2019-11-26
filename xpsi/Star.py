@@ -14,18 +14,14 @@ class Star(object):
     embedded in that ambient spacetime for disjoint intervals of coordinate
     time.
 
+    :param spacetime: An instance of :class:`~.Spacetime.Spacetime`.
+
+    :param list photospheres: Each element must be an instance of
+                              :class:`~.Photosphere`.
+
     """
     def __init__(self, spacetime, photospheres):
-        """
-        :param spacetime: An instance of :class:`~.Spacetime.Spacetime`.
-
-        :param list photospheres: Each element must be an instance of
-                                  :class:`~.Photosphere`.
-
-        """
-        try:
-            assert isinstance(spacetime, Spacetime)
-        except AssertionError:
+        if not isinstance(spacetime, Spacetime):
             raise TypeError('Invalid type for ambient spacetime object.')
         else:
             self._spacetime = spacetime
@@ -46,6 +42,10 @@ class Star(object):
             self._photospheres = photospheres
 
         self._eval_num_params()
+
+        # by default turn off fast_mode in HotRegion objects
+        # the likelihood object will activate this if it is needed
+        self.activate_fast_mode(False)
 
     def _eval_num_params(self):
         """ Evaluate the number of *slow* parameters defining the star. """
@@ -71,7 +71,7 @@ class Star(object):
 
     def activate_fast_mode(self, activate):
         for photosphere in self._photospheres:
-            photosphere.spot.fast_mode = activate
+            photosphere.hot.fast_mode = activate
 
     def update(self, p, fast_counts=None, threads=1):
         """ Update the star.
@@ -100,6 +100,9 @@ class Star(object):
         i = self._spacetime.num_params
         self._spacetime.update(*p[:i])
 
+        if fast_counts is None:
+            fast_counts = tuple([None]*len(self._photospheres))
+
         # Iteratively embed each photosphere in the ambient spacetime
         for photosphere, fast_count in zip(self._photospheres, fast_counts):
             photosphere.embed(self._spacetime,
@@ -107,8 +110,3 @@ class Star(object):
                               fast_count,
                               threads)
             i += photosphere.total_params
-
-
-
-
-

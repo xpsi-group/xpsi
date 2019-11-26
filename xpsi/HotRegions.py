@@ -3,60 +3,45 @@ from __future__ import division, print_function
 from .global_imports import *
 from . import global_imports
 
-from .Spot import Spot
+from .HotRegion import HotRegion
 
 from .ParameterSubspace import ParameterSubspace
 
-class PulseError(xpsiError):
-    """ Raised if a numerical problems encountered during integration. """
+class HotRegions(ParameterSubspace):
+    """ Two photospheric hot regions, where the hot regions are objects.
 
-class TwoSpots(ParameterSubspace):
-    """ Two photospheric spots, where the spots are objects.
+    This class could be extended in principle to operate with multiple hot
+    regions, but the computational expense scales ~linearly with number.
+    Applications thus far have used two distinct hot regions with equal
+    and unequal complexity.
+
+    :param tuple hotregions:
+            Two-element container of :class:`.HotRegion.HotRegion` instances.
 
     """
 
-    def __init__(self, spots):
-        """
-        :param tuple num_params: Number of parameters for spot model, including
-                                 the primary spot centre colatitude and spot
-                                 angular radius. The tuple must have two
-                                 elements, specifying the number of parameters
-                                 per spot.
-
-        :param list bounds: Hard parameter bounds for the instance of
-                            :class:`.ParameterSubspace.ParameterSubspace`.
-
-        :param bool antipodal_symmetry: Apply antipodal reflection symmetry?
-                            This means that all parameters describing the
-                            secondary spot are derived from the primary spot:
-                            the secondary is antipodal and given by an
-                            equatorial reflection of the primary spot,
-                            followed by a rotation by :math:`\pi` radians
-                            about the rotation axis. The mirroring is thus
-                            with respect to a 2-plane through the coordinate
-                            origin which is perpendicular to the line
-                            through the origin and the primary spot centre.
-
-        :param kwargs: Keyword arguments passed to :class:`.Spot.Spot` class.
-
-        .. note:: The parameter bounds of the secondary spot must satisfy:
-
-            * the colatitude is restricted to :math:`\Theta\in(0.0,\pi)`
-            * the angular radius is restricted to :math:`\zeta\in(0.0,\pi/2)`
-
-        """
-        self.objects = spots
+    def __init__(self, hotregions):
+        self.objects = hotregions
 
         self._num_primary_params = self._objects[0].num_params
         self._num_secondary_params = self._objects[1].num_params
 
-        super(TwoSpots, self).__init__(self._num_primary_params\
-                                       + self._num_secondary_params,
-                                       self._objects[0].bounds\
-                                       + self._objects[1].bounds)
+        super(HotRegions, self).__init__(self._num_primary_params\
+                                         + self._num_secondary_params,
+                                         self._objects[0].bounds\
+                                         + self._objects[1].bounds)
 
-        self.phases_in_cycles = self._objects[0].phases_in_cycles
-        self.fast_phases_in_cycles = self._objects[0].fast_phases_in_cycles
+        self.phases_in_cycles = []
+        for obj in self.objects:
+            self.phases_in_cycles.append(obj.phases_in_cycles)
+
+        if self.do_fast:
+            self.fast_phases_in_cycles = []
+            for obj in self.objects:
+                try:
+                    self.fast_phases_in_cycles.append(obj.fast_phases_in_cycles)
+                except AttributeError:
+                    pass
 
     @property
     def objects(self):
@@ -66,10 +51,10 @@ class TwoSpots(ParameterSubspace):
     def objects(self, objs):
         if isinstance(objs, tuple) or isinstance(objs, list):
             for obj in objs:
-                if not isinstance(obj, Spot):
-                    raise ValueError('Invalid type for spot object.')
+                if not isinstance(obj, HotRegion):
+                    raise ValueError('Invalid type for hot-region object.')
         else:
-            raise ValueError('Spot container must be iterable.')
+            raise ValueError('Hot-region container must be iterable.')
 
         self._objects = objs
 
@@ -98,7 +83,7 @@ class TwoSpots(ParameterSubspace):
             obj.print_settings()
 
     def embed(self, spacetime, p, fast_total_counts, threads, *args):
-        """ Embed the spots. """
+        """ Embed the hot regions. """
 
         if fast_total_counts is not None:
             fast_primary_total_counts = fast_total_counts[0]
@@ -118,11 +103,11 @@ class TwoSpots(ParameterSubspace):
                                threads, *args)
 
     def integrate(self, st, energies, threads,
-                  spot_atmosphere, elsewhere_atmosphere):
+                  hot_atmosphere, elsewhere_atmosphere):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
-        azimuthal invariance of the spot radiation field.
+        azimuthal invariance of the radiation field.
 
         :param st: Instance of :class:`~.Spacetime.Spacetime`.
 
@@ -141,11 +126,11 @@ class TwoSpots(ParameterSubspace):
 
         primary = self._objects[0].integrate(st, primary_energies,
                                              threads,
-                                             spot_atmosphere,
+                                             hot_atmosphere,
                                              elsewhere_atmosphere)
         secondary = self._objects[1].integrate(st, secondary_energies,
                                                threads,
-                                               spot_atmosphere,
+                                               hot_atmosphere,
                                                elsewhere_atmosphere)
 
         return (primary, secondary)

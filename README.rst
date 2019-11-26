@@ -1,12 +1,9 @@
+.. _readme:
+
 X-PSI
 =====
 
-**A prototype package for X-ray Pulsation Simulation and Inference.**
+**A prototype open-source package for neutron star**
+**\ X-ray Pulsation Simulation and Inference.**
 
-Documentation is currently being updated.
-
-This includes Sphinx docs for the API,
-and typeset technical notes on light-curve integration.
-
-Files for the examples (i.e., data files, NICER v1.01 instrument files,
-sampling files) may be obtained by contacting the repository owner.
+Read the `documentation <https://thomasedwardriley.github.io/xpsi/>`_.

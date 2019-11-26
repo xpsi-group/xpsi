@@ -17,22 +17,21 @@ class BoundsError(Exception):
     """
 
 class ParameterSubspace(object):
-    """ Abstract parameter subspace. """
+    """ Abstract parameter subspace.
+
+    :param int num_params: The number of parameters in the subspace of
+                               :math:`\mathbb{R}^{d}`.
+
+    :param list bounds: One 2-tuple of hard bounds per parameter. Can 
+                        be unbounded *in principle*, but read the
+                        documentation for the :class:`~.Prior.Prior` class
+                        first.
+    """
 
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(self, num_params, bounds):
-        """
-        :param int num_params: The number of parameters in the subspace of
-                               :math:`\mathbb{R}^{d}`.
-
-        :param list bounds: One 2-tuple of hard bounds per parameter. Can 
-                            be unbounded *in principle*, but read the
-                            documentation for the :class:`~.Prior.Prior` class
-                            first.
-
-        """
         try:
             self._num_params = int(num_params)
         except TypeError:
@@ -43,12 +42,13 @@ class ParameterSubspace(object):
             assert len(bounds) == self._num_params
             for b in bounds:
                 assert len(b) == 2
-                assert b[0] < b[1]
+                if b[0] is not None and b[1] is not None:
+                    assert b[0] < b[1]
         except AssertionError:
             raise BoundsError('The bounds must be passed as a list of lists or '
                               'a list of tuples, where each list or tuple has '
                               'a length of two, and a first element less than '
-                              'the second element.')
+                              'the second element if not ``[None,None]``.')
         else:
             self._bounds = bounds
 

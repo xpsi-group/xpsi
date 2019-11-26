@@ -1,0 +1,30 @@
+.. _readme:
+
+*****
+X-PSI
+*****
+
+**A prototype open-source package for neutron star**
+**\ X-ray Pulsation Simulation and Inference.**
+
+The initial development of X-PSI was checkpointed with the completion of
+:ref:`R19`, and tagged as ``v0.1``. X-PSI remains, however, in the
+`initial development stage <https://semver.org/>`_. Backwards incompatible
+changes will be committed without incrementing the major version.
+The package should not be considered stable, and as such has not been
+packaged for automatic installation via a package manager (namely Conda). To
+install X-PSI from source, and to install dependencies, see the
+:ref:`install` page.
+
+Files for the examples on path ``xpsi/examples`` (i.e., data files,
+NICER v1.01 instrument files, sampling files) may be obtained from the
+repository owner until they are archived with Zenodo to accompany the paper.
+
+.. note::
+
+    These documentation pages are being rapidly updated during development.
+
+    These pages were generated from a local development build prior to release
+    ``v0.2.0``. They are hosted on GitHub due to requests from potential users.
+    The pages reference ``v0.1`` that is currently on the ``master`` branch
+    of the repo, but do not aim to comprehensively document that version.

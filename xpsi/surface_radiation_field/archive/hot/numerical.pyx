@@ -36,7 +36,7 @@ ctypedef struct DATA:
     size_t ndims
     size_t N[4]
     size_t BLOCKS[3]
-    const srcRadField_PRELOAD *p
+    const hotRadField_PRELOAD *p
     ACCELERATE acc
 
 #----------------------------------------------------------------------->>>
@@ -46,8 +46,8 @@ ctypedef struct DATA:
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_srcRadField(size_t numThreads, const srcRadField_PRELOAD *const preload) nogil:
-    # This function must match the free management routine free_srcRadField()
+cdef void* init_hotRadField(size_t numThreads, const hotRadField_PRELOAD *const preload) nogil:
+    # This function must match the free management routine free_hotRadField()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
     # Return NULL if dynamic memory is not required for the model
@@ -139,15 +139,15 @@ cdef void* init_srcRadField(size_t numThreads, const srcRadField_PRELOAD *const 
     return <void*> D
 
 
-cdef int free_srcRadField(size_t numThreads, void *const data) nogil:
-    # This function must match the initialisation routine init_srcRadField()
+cdef int free_hotRadField(size_t numThreads, void *const data) nogil:
+    # This function must match the initialisation routine init_hotRadField()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
     # The void pointer must be appropriately cast before memory is freed --
     # only the user can know this at compile time.
     # Just use free(<void*> data) iff no memory was dynamically
     # allocated in the function:
-    #   init_srcRadField()
+    #   init_hotRadField()
     # because data is expected to be NULL in this case
 
     cdef DATA *D = <DATA*> data
@@ -178,7 +178,7 @@ cdef int free_srcRadField(size_t numThreads, void *const data) nogil:
 # >>> Improve acceleration properties... i.e. do not recompute numerical
 # ... weights or re-read intensities if not necessary.
 #----------------------------------------------------------------------->>>
-cdef double eval_srcRadField(size_t THREAD,
+cdef double eval_hotRadField(size_t THREAD,
                              double E,
                              double mu,
                              const double *const VEC,
@@ -342,7 +342,7 @@ cdef double eval_srcRadField(size_t THREAD,
     return I * pow(10.0, 3.0 * vec[0])
 
 
-cdef double eval_srcRadField_norm() nogil:
+cdef double eval_hotRadField_norm() nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.

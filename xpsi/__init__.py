@@ -1,6 +1,7 @@
-""" X-PSI: A prototype open-source package for X-ray Pulse Simulation and Inference. """
+""" X-PSI: A prototype open-source package for neutron star
+    X-ray Pulse Simulation and Inference. """
 from __future__ import print_function
-__version__ = "0.1"
+__version__ = "0.2.0-alpha"
 __author__ = "Thomas E. Riley"
 
 try:
@@ -28,25 +29,27 @@ if not __XPSI_SETUP__:
 
     import six as _six
     from inspect import isgeneratorfunction as _isgeneratorfunction
+    from functools import wraps
 
     def make_verbose(enter_msg='', exit_msg=''):
         def decorator(func):
+            @wraps(func)
             def wrapper(*args, **kwargs):
                 if _verbose:
                     if enter_msg and isinstance(enter_msg, _six.string_types):
-                        msg = '>> ' + enter_msg
+                        msg = enter_msg
                         print(msg + ('...' if enter_msg[-1] != ':' else ''))
                 if _isgeneratorfunction(func):
                     for msg in func(*args, **kwargs):
                         if _verbose:
                             if msg and isinstance(msg, _six.string_types):
-                                print(msg)
+                                print(msg + ('...' if msg[-1] != '.' else ''))
                         _ = msg # catch last yield if generator
                 else:
                     _ = func(*args, **kwargs)
                 if _verbose:
                     if exit_msg and isinstance(exit_msg, _six.string_types):
-                        print('>> ' + exit_msg + '.')
+                        print(exit_msg + '.')
                 return _
             return wrapper
         return decorator
@@ -59,12 +62,12 @@ if not __XPSI_SETUP__:
 
         def __enter__(self):
             if self.condition and _verbose:
-                print('>> ' + self.enter_msg + '...')
+                print(self.enter_msg + '...')
             return self.condition
 
         def __exit__(self, *args, **kwargs):
             if self.condition and _verbose:
-                print('>> ' + self.exit_msg + '.')
+                print(self.exit_msg + '.')
 
     class fragile(object):
         class Break(Exception):
@@ -83,10 +86,15 @@ if not __XPSI_SETUP__:
             return error
 
     if _verbose:
+        vstring = "Version: %s" % __version__
+        name = "X-PSI: X-ray Pulse Simulation and Inference"
+        rtds = "https://thomasedwardriley.github.io/xpsi/"
         print("/=============================================\\")
-        print("| X-PSI: X-ray Pulse Simulation and Inference |")
+        print("| " + name + " |")
         print("|---------------------------------------------|")
-        print("|              Version: %s                 |" % __version__)
+        print("|" + vstring.center(len(name)+2) + "|")
+        print("|---------------------------------------------|")
+        print("|" + rtds.center(len(name)+2) + "|")
         print("\\=============================================/\n")
 
     import global_imports
@@ -99,15 +107,15 @@ if not __XPSI_SETUP__:
     from .Star import Star
     from .Spacetime import Spacetime
     from .Photosphere import Photosphere
-    from .Spot import Spot
-    from .Spots import Spots
-    from .TwoSpots import TwoSpots
+    from .HotRegion import HotRegion
+    from .TwoHotRegions import TwoHotRegions
+    from .HotRegions import HotRegions
     from .Elsewhere import Elsewhere
 
     from .Background import Background
     from .Interstellar import Interstellar
 
-    from .Sample import MultiNest
+    from .Sample import nested
     from .Prior import Prior
 
     if global_imports._size == 1:

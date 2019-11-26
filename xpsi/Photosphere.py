@@ -3,49 +3,38 @@ from __future__ import division, print_function
 from .global_imports import *
 from . import global_imports
 
-from .Spot import Spot
+from .HotRegion import HotRegion
 from .Elsewhere import Elsewhere
 
 from .ParameterSubspace import ParameterSubspace, BoundsError
 
 class Photosphere(ParameterSubspace):
+    """ A photosphere embedded in an ambient Schwarzschild spacetime.
+
+    :param str tag: An identification tag to enforce intended pairing with
+                    a :class:`~.Pulse.Pulse` object.
+
+    :param obj hot: An instance of :class:`~.HotRegion.HotRegion` (or a
+                    derived class). This objects represents the hot
+                    regions of the surface that in most use-cases will be
+                    assumed to contain radiating material that is hotter
+                    than that *elsewhere*.
+
+    :param obj elsewhere: An instance of :class:`~.Elsewhere.Elsewhere`
+                          (or a derived class).
+
+    :param bool locked:
+        Has no effect. However, if one wanted the coordinate rotation
+        frequency of a mode of asymmetry in the photosphere to *not be
+        locked* to the stellar rotation frequency, a parameter could
+        be defined for this object and the hot region base class could
+        be modified to normalise the ray lags by this frequency instead
+        of the stellar rotation frequency.
+
     """
-    A photosphere embedded in an ambient spacetime for use with the CellMesh
-    algorithm.
-
-    The exterior domain of the photosphere is everywhere vacuum.
-
-    """
-    def __init__(self, num_params, bounds, tag, spot, elsewhere=None):
-        """
-        :param num_params: Number of parameters for the *global* photosphere,
-                           which are not defined by the :class:`~.Spot.Spot`
-                           or :class:`~.Elsewhere.Elsewhere` parameter
-                           subspaces. At present this is restricted to the
-                           coordinate rotation frequency if not *locked*
-                           to the stellar rotation frequency.
-
-        :param list bounds: Hard parameter bounds for the instance of
-                            :class:`.ParameterSubspace.ParameterSubspace`.
-
-        :param str tag: An identification tag to enforce intended pairing with
-                        a :class:`~.Pulse.Pulse` object.
-
-        :param spot: An instance of :class:`~.Spot.Spot` (or a derived class).
-
-        :param elsewhere: An instance of :class:`~.Elsewhere.Elsewhere` (or a
-                          derived class).
-
-        """
+    def __init__(self, tag, hot, elsewhere=None, locked=True):
+        num_params = 0; bounds = []
         super(Photosphere, self).__init__(num_params, bounds)
-
-        if self._num_params > 1:
-            raise ValueError('Photosphere parameter subspace dimensionality '
-                             'can be a maximum of one.')
-        elif self._num_params == 1:
-            for frequency in self._bounds[0]:
-                if not 0.0 < frequency <= 1000.0:
-                    raise BoundsError('Invalid spot rotation frequency bound.')
 
         try:
             self._tag = str(tag)
@@ -53,30 +42,29 @@ class Photosphere(ParameterSubspace):
             raise TypeError('Incompatible type for identification tag.')
 
         if elsewhere is not None:
-            try:
-                assert isinstance(elsewhere, Elsewhere)
-            except AssertionError:
+            if not isinstance(elsewhere, Elsewhere):
                 raise TypeError('Invalid type for an elsewhere object.')
             else:
                 self._elsewhere = elsewhere
         else:
             self._elsewhere = None
 
-        if not isinstance(spot, Spot): # including derived classes
-            if hasattr(spot, 'objects'):
-                for obj in getattr(spot, 'objects'):
-                    if not isinstance(obj, Spot):
-                        raise TypeError('Invalid type for a spot object')
+        if not isinstance(hot, HotRegion): # including derived classes
+            if hasattr(hot, 'objects'):
+                for obj in getattr(hot, 'objects'):
+                    if not isinstance(obj, HotRegion):
+                        raise TypeError('Invalid object for the hot '
+                                        'region(s).')
             else:
-                raise TypeError('Invalid type for a spot object.')
+                raise TypeError('Invalid object for the hot region(s).')
 
-        self._spot = spot
+        self._hot = hot
 
-        self._total_params = self._num_params + self._spot.num_params
+        self._total_params = self._num_params + self._hot.num_params
         if self._elsewhere is not None:
             self._total_params += self._elsewhere.num_params
 
-        self._spot_atmosphere = ()
+        self._hot_atmosphere = ()
         self._elsewhere_atmosphere = ()
 
     @property
@@ -90,8 +78,8 @@ class Photosphere(ParameterSubspace):
         return self._tag
 
     @property
-    def spot_atmosphere(self):
-        """ Get the numerical atmosphere buffers for spots if used.
+    def hot_atmosphere(self):
+        """ Get the numerical atmosphere buffers for hot regions if used.
 
         To preload a numerical atmosphere into a buffer, subclass and
         overwrite the setter. The underscore attribute set by the setter
@@ -103,7 +91,7 @@ class Photosphere(ParameterSubspace):
         multi-dimensional interpolation in the :math:`n^{th}` buffer. The
         first :math:`n-1` elements must be ordered to match the index
         arithmetic applied to the :math:`n^{th}` buffer. An example would be
-        ``self._spot_atmosphere = (logT, logg, mu, logE, buf)``, where:
+        ``self._hot_atmosphere = (logT, logg, mu, logE, buf)``, where:
         ``logT`` is a logarithm of local comoving effective temperature;
         ``logg`` is a logarithm of effective surface gravity;
         ``mu`` is the cosine of the angle from the local surface normal;
@@ -113,7 +101,7 @@ class Photosphere(ParameterSubspace):
 
         It is highly recommended that buffer preloading is used, instead
         of loading from disk in the customisable radiation field extension
-        module, to avoid reading from disk for every spot and signal
+        module, to avoid reading from disk for every signal
         (likelihood) evaluation. This can be a non-negligible waste of compute
         resources. By preloading in Python, the memory is allocated and
         references to that memory are not in general deleted until a sampling
@@ -121,12 +109,12 @@ class Photosphere(ParameterSubspace):
         the same memory upon each call without I/O.
 
         """
-        return self._spot_atmosphere
+        return self._hot_atmosphere
 
-    @spot_atmosphere.setter
-    def spot_atmosphere(self, path):
+    @hot_atmosphere.setter
+    def hot_atmosphere(self, path):
         """ Implement if required. """
-        pass
+        raise NotImplementedError('Implement setter if required.')
 
     @property
     def elsewhere_atmosphere(self):
@@ -142,7 +130,7 @@ class Photosphere(ParameterSubspace):
         multi-dimensional interpolation in the :math:`n^{th}` buffer. The
         first :math:`n-1` elements must be ordered to match the index
         arithmetic applied to the :math:`n^{th}` buffer. An example would be
-        ``self._spot_atmosphere = (logT, logg, mu, logE, buf)``, where:
+        ``self._hot_atmosphere = (logT, logg, mu, logE, buf)``, where:
         ``logT`` is a logarithm of local comoving effective temperature;
         ``logg`` is a logarithm of effective surface gravity;
         ``mu`` is the cosine of the angle from the local surface normal;
@@ -152,7 +140,7 @@ class Photosphere(ParameterSubspace):
 
         It is highly recommended that buffer preloading is used, instead
         of loading from disk in the customisable radiation field extension
-        module, to avoid reading from disk for every spot and signal
+        module, to avoid reading from disk for every signal
         (likelihood) evaluation. This can be a non-negligible waste of compute
         resources. By preloading in Python, the memory is allocated and
         references to that memory are not in general deleted until a sampling
@@ -165,12 +153,12 @@ class Photosphere(ParameterSubspace):
     @elsewhere_atmosphere.setter
     def elsewhere_atmosphere(self, path):
         """ Implement if required. """
-        pass
+        raise NotImplementedError('Implement setter if required.')
 
     @property
-    def spot(self):
-        """ Get the instance of :class:`~.Spot.Spot`. """
-        return self._spot
+    def hot(self):
+        """ Get the instance of :class:`~.HotRegion.HotRegion`. """
+        return self._hot
 
     @property
     def elsewhere(self):
@@ -191,26 +179,28 @@ class Photosphere(ParameterSubspace):
         Parameter vector:
 
         * ``p[i]`` = coordinate mode/oscillation frequency, *if not locked*
-        * ``p[i:j]`` = parameters for photospheric spot(s)
+        * ``p[i:j]`` = parameters for photospheric hot region(s)
         * ``p[j:]`` = parameters for radiation field elsewhere
 
-        where ``i = self._num_params`` and ``j = 1 + self._spot.num_params``.
+        where ``i = self._num_params`` and ``j = 1 + self._hot.num_params``.
 
         """
         i = self._num_params
 
         if self._elsewhere is not None:
-            j = i + self._spot.num_params
-            self._spot.embed(spacetime, p[i:j],
+            j = i + self._hot.num_params
+
+            self._elsewhere.embed(spacetime, p[j:], threads)
+
+            self._hot.embed(spacetime, p[i:j],
                              fast_total_counts,
                              threads,
-                             self._elsewhere.eval_srcRadFieldParamVectors,
+                             self._elsewhere._compute_cellParamVecs,
                              p[j:])
-            self._elsewhere.embed(spacetime, p[j:], threads)
         else:
-            self._spot.embed(spacetime, p[i:],
-                             fast_total_counts,
-                             threads)
+            self._hot.embed(spacetime, p[i:],
+                               fast_total_counts,
+                               threads)
 
         self._spacetime = spacetime # store a reference to the spacetime object
 
@@ -225,21 +215,31 @@ class Photosphere(ParameterSubspace):
 
         """
         if self._elsewhere is not None:
+            if isinstance(energies, tuple):
+                if not isinstance(energies[0], tuple):
+                    _energies = energies[0]
+                else:
+                    _energies = energies[0][0]
+            else:
+                _energies = energies
             time_invariant = self._elsewhere.integrate(self._spacetime,
-                                                       energies,
+                                                       _energies,
                                                        threads,
                                                        *self._elsewhere_atmosphere)
 
-        self._pulse = self._spot.integrate(self._spacetime,
-                                           energies,
-                                           threads,
-                                           self._spot_atmosphere,
-                                           self._elsewhere_atmosphere)
+        self._pulse = self._hot.integrate(self._spacetime,
+                                             energies,
+                                             threads,
+                                             self._hot_atmosphere,
+                                             self._elsewhere_atmosphere)
+
+        if not isinstance(self._pulse[0], tuple):
+            self._pulse = (self._pulse,)
 
         # add time-invariant component to first time-dependent component
         if self._elsewhere is not None:
-            for i in range(self._pulse[0].shape[1]):
-                self._pulse[0][:,i] += time_invariant
+            for i in range(self._pulse[0][0].shape[1]):
+                self._pulse[0][0][:,i] += time_invariant
 
     @property
     def pulse(self):
@@ -252,8 +252,3 @@ class Photosphere(ParameterSubspace):
 
         """
         return self._pulse
-
-
-
-
-

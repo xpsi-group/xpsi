@@ -17,8 +17,8 @@ from .Pulse import Pulse, LikelihoodError
 from .Background import Background
 from .Prior import Prior
 from .ParameterSpace import ParameterSpace
-from . import Spot
-from . import Spots
+from . import HotRegion
+from . import TwoHotRegions
 from . import Elsewhere
 
 class TagError(xpsiError):
@@ -36,32 +36,32 @@ class Likelihood(ParameterSpace):
     instruments used to acquire these data sets, and the model star and
     model backgrounds.
 
+    :param obj star: An instance of :class:`~.Star.Star`. This instance
+                     is the model star.
+
+    :param list pulses: A list of :class:`~.Pulse.Pulse`
+                        instances.
+
+    :param int threads: The number of ``OpenMP`` threads to spawn for
+                        integration. The default number of threads used
+                        by low-level integration routines is ``1``. The
+                        number can be increased if the parallelisation
+                        paradigm on a cluster is changed such that, e.g.,
+                        per node there is one thread per CPU, instead of
+                        one ``OpenMPI`` process. It is recommended that
+                        :obj:`threads` is ``1``; more threads are useful
+                        when performing integrals at high resolution, but
+                        not necessarily when integrating *many* times as
+                        when sampling, because the MPI parallelisation
+                        paradigm is invoked.
+
+    :param float llzero: The minimum log-likelihood setting for
+                         MultiNest. Points whose log-likelihood is lower
+                         than this value are ignored, which is useful for
+                         defining complicated priors.
+
     """
     def __init__(self, star, pulses, threads=1, llzero=-1.0e90):
-        """
-        :param obj star: An instance of :class:`~.Star.Star`. This instance
-                         is the model star.
-
-        :param list pulses: A list of :class:`~.Pulse.Pulse`
-                            instances.
-
-        :param int threads: The number of ``OpenMP`` threads to spawn for
-                            integration. The default number of threads used
-                            by low-level integration routines is ``1``. The
-                            number can be increased if the parallelisation
-                            paradigm on a cluster is changed such that, e.g.,
-                            per node there is one thread per CPU, instead of
-                            one ``OpenMPI`` process. It is recommended that
-                            :obj:`threads` is ``1``; more threads are useful
-                            when performing integrals at high resolution, and
-                            not necessarily when integrating *many* times as
-                            when sampling.
-
-        :param float llzero: The minimum log-likelihood setting for
-                             MultiNest. Points whose log-likelihood is lower
-                             than this value are ignored, which is useful for
-                             defining complicated priors.
-        """
         if not isinstance(star, Star):
             raise TypeError('Invalid type for a Star object.')
         else:
@@ -87,14 +87,15 @@ class Likelihood(ParameterSpace):
                 'Photosphere and pulse object lists must have matching \
                  identification tags.'
 
-            pulse.phases = photosphere.spot.phases_in_cycles
-            pulse.fast_phases = photosphere.spot.fast_phases_in_cycles
-            if photosphere.spot.do_fast: self._do_fast = True
+            pulse.phases = photosphere.hot.phases_in_cycles
+            if photosphere.hot.do_fast:
+                pulse.fast_phases = photosphere.hot.fast_phases_in_cycles
+                self._do_fast = True
 
         self._theta = [0.0] * self.num_params
 
         try:
-            assert int(threads) == threads
+            assert int(threads) == threads, 'Thread number must be an integer.'
         except TypeError:
             raise TypeError('Thread number must be an integer.')
         else:
@@ -136,7 +137,7 @@ class Likelihood(ParameterSpace):
 
         for photosphere in self._star.photospheres:
             b += photosphere.bounds
-            b += photosphere.spot.bounds
+            b += photosphere.hot.bounds
             if photosphere.elsewhere is not None:
                 b += photosphere.elsewhere.bounds
 
@@ -159,8 +160,8 @@ class Likelihood(ParameterSpace):
         for photosphere in self._star.photospheres:
             print("Photosphere ['%s']: %i"
                     % (photosphere.tag, photosphere.total_params))
-            print("   --> Spot ['%s']: %i"
-                    % (photosphere.tag, photosphere.spot.num_params))
+            print("   --> Hot ['%s']: %i"
+                    % (photosphere.tag, photosphere.hot.num_params))
             try:
                 print("   --> Elsewhere ['%s']: %i"
                         % (photosphere.tag, photosphere.elsewhere.num_params))
@@ -242,7 +243,13 @@ class Likelihood(ParameterSpace):
         return 1.1 * self._llzero
 
     @staticmethod
-    def divide(obj, x):
+    def _divide(obj, x):
+        """ Helper operator to check for compatibility first.
+
+        As an example, if fast mode is activated for some hot region but not
+        another, :obj:`obj` would be ``None`` and thus a safeguard is needed.
+
+        """
         if isinstance(obj, _np.ndarray):
             return obj / x
         else:
@@ -259,15 +266,15 @@ class Likelihood(ParameterSpace):
         if (p[1:s] != self._theta[1:s]).any():
             try:
                 if fast_mode or not self._do_fast:
-                    fast_total_counts = tuple([None]*len(self._pulses))
+                    fast_total_counts = None
                 else:
                     fast_total_counts = tuple(pulse.fast_total_counts for\
                                                         pulse in self._pulses)
 
                 self._star.update(p[:s], fast_total_counts, self.threads)
             except xpsiError as e:
-                if isinstance(e, Spot.RayError):
-                    print('Warning: Spot.RayError raised.')
+                if isinstance(e, HotRegion.RayError):
+                    print('Warning: HotRegion.RayError raised.')
                 elif isinstance(e, Elsewhere.RayError):
                     print('Warning: Elsewhere.RayError raised.')
 
@@ -288,11 +295,8 @@ class Likelihood(ParameterSpace):
 
                     photosphere.integrate(energies, self.threads)
                 except xpsiError as e:
-                    if isinstance(e, Spot.PulseError):
-                        print('Warning: Spot.PulseError raised for '
-                              'photosphere tag %s.' % photosphere.tag)
-                    elif isinstance(e, Spots.PulseError):
-                        print('Warning: Spots.PulseError raised for '
+                    if isinstance(e, HotRegion.PulseError):
+                        print('Warning: HotRegion.PulseError raised for '
                               'photosphere tag %s.' % photosphere.tag)
                     elif isinstance(e, Elsewhere.IntegrationError):
                         print('Warning: Elsewhere.IntegrationError for '
@@ -315,10 +319,10 @@ class Likelihood(ParameterSpace):
 
             if star_updated or (p[i:j] != self._theta[i:j]).any():
                 pulse.fold(tuple(
-                                 tuple(self.divide(component,
-                                                   self._star.spacetime.d_sq)
-                                       for component in cap)
-                                 for cap in photosphere.pulse),
+                                 tuple(self._divide(component,
+                                                    self._star.spacetime.d_sq)
+                                       for component in hotRegion)
+                                 for hotRegion in photosphere.pulse),
                            p[i:j], fast_mode=fast_mode, threads=self.threads)
                 refolded = True
             else:
@@ -341,19 +345,42 @@ class Likelihood(ParameterSpace):
                             print('Parameter vector: ', p)
                             return self.random_near_llzero
 
-
             i = j
 
         return star_updated
 
-    def __call__(self, p):
+    def reinitialise(self):
+        """ Reinitialise the likelihood object.
+
+        Useful if some resolution settings in child
+        objects were changed (namely, the number of pulse phases) that
+        need to be communicated to other child objects.
+
+        """
+
+        self.__init__(self._star,
+                          self._pulses,
+                          self._threads,
+                          self._llzero)
+
+    def __call__(self, p, reinitialise=False, force=False):
         """ Evaluate the logarithm of the joint likelihood over all pulsations.
 
-        :param list p: The parameter vector.
+        :param list p: Parameter vector.
+
+        :param optional[bool] reinitialise: Call self.reinitialise()?
+
+        :param optional[bool] force:
+            Force complete reevaluation even if some parameters are unchanged.
 
         :return: The logarithm of the likelihood.
 
         """
+        if reinitialise:
+            self.reinitialise()
+        elif force:
+            self._theta = [0.0] * self.num_params
+
         p = _np.array(p)
 
         if (p != self._theta).any():
@@ -363,26 +390,26 @@ class Likelihood(ParameterSpace):
                 pass
             else:
                 if not _np.isfinite(logprior):
-                    #print('p, ll = ', p, self.less_than_llzero)
                     self._theta = p
                     return self.less_than_llzero
 
             if self._do_fast:
-                # perform a low-resolution precomputation to direct cell allocation
-                _ = self._driver(p, fast_mode=True)
-                if not isinstance(_, bool):
+                # perform a low-resolution precomputation to direct cell
+                # allocation
+                x = self._driver(p, fast_mode=True)
+                if not isinstance(x, bool):
                     self._theta = p
-                    return _
-                elif _:
-                    _ = self._driver(p)
-                    if not isinstance(_, bool):
+                    return x
+                elif x:
+                    x = self._driver(p)
+                    if not isinstance(x, bool):
                         self._theta = p
-                        return _
+                        return x
             else:
-                _ = self._driver(p)
-                if not isinstance(_, bool):
+                x = self._driver(p)
+                if not isinstance(x, bool):
                     self._theta = p
-                    return _
+                    return x
 
         # store parameter vector for next iteration
         self._theta = p
@@ -390,8 +417,6 @@ class Likelihood(ParameterSpace):
         loglikelihood = 0.0
         for pulse in self._pulses:
             loglikelihood += pulse.loglikelihood
-
-        #print('p, ll, lp = ', p, loglikelihood, logprior)
 
         try:
             return loglikelihood + logprior
@@ -409,16 +434,21 @@ class Likelihood(ParameterSpace):
               rtol_logprior=None,
               atol_logprior=None,
               physical_points=None):
-        """ Perform checks on the likelihood evaluator and the prior
-            density function.
+        """ Perform checks on the likelihood evaluator and the prior density.
 
-        :param hypercube_points:
-            :class:`numpy.ndarray` of ``n`` points in the unit hypercube, with
-            shape ``(n, m)``, where ``m`` is the dimensionality of the sampling
-            space -- i.e., of the hypercube.
+        Can be called from :func:`~.Sample.nested` to execute a check before
+        automatically commencing a sampling process.
 
-        .. todo::
-            Write a fallback routine porting directly from NumPy?
+        :param ndarray[n,m] hypercube_points:
+            A set of ``n`` points in the unit hypercube, where ``m`` is
+            dimensionality (``self.num_params``) of the sampling space -- i.e.,
+            of the hypercube. If you want to pass the physical points instead,
+            just pass ``None`` here.
+
+        :param optional(ndarray[n,m]) physical_points:
+            A set of ``n`` points in the physical parameter space, where
+            ``m`` is dimensionality (``self.num_params``) of the sampling space.
+            The ``hypercube_points``, if not ``None``, will be ignored.
 
         """
 
@@ -429,7 +459,7 @@ class Likelihood(ParameterSpace):
             yield 'Using fallback implementation...'
 
             def allclose(a, b, rtol, atol, equal_nan):
-                return False
+                raise NotImplementedError('Implement a fallback.')
 
         lls = []
         lps = [] if logprior_call_vals is not None else None
@@ -472,15 +502,22 @@ class Likelihood(ParameterSpace):
                                 'with exception value: %s' % (_rank, e.value))
 
 
-    def synthesise(self, p, **kwargs):
-        """ Synthesise pulsation data according to the generative model.
+    def synthesise(self, p, reinitialise=False, force=False, **kwargs):
+        """ Synthesise pulsation data.
 
-        :param list p: The injection parameter vector.
+        :param list p: Parameter vector.
 
-        .. todo::
-            Update.
+        :param optional[bool] reinitialise: Call self.reinitialise()?
+
+        :param optional[bool] force:
+            Force complete reevaluation even if some parameters are unchanged.
 
         """
+        if reinitialise:
+            self.reinitialise()
+        elif force:
+            self._theta = [0.0] * self.num_params
+
         p = _np.array(p)
 
         if (p != self._theta).any():
@@ -494,19 +531,20 @@ class Likelihood(ParameterSpace):
                     return None
 
             if self._do_fast:
-                # perform a low-resolution precomputation to direct cell allocation
-                _ = self._driver(p, fast_mode=True)
-                if not isinstance(_, bool):
+                # perform a low-resolution precomputation to direct cell
+                # allocation
+                x = self._driver(p, fast_mode=True)
+                if not isinstance(x, bool):
                     self._theta = p
                     return None
-                elif _:
-                    _ = self._driver(p, synthesise=True, **kwargs)
-                    if not isinstance(_, bool):
+                elif x:
+                    x = self._driver(p, synthesise=True, **kwargs)
+                    if not isinstance(x, bool):
                         self._theta = p
                         return None
             else:
-                _ = self._driver(p, synthesise=True, **kwargs)
-                if not isinstance(_, bool):
+                x = self._driver(p, synthesise=True, **kwargs)
+                if not isinstance(x, bool):
                     self._theta = p
                     return None
 

@@ -46,17 +46,17 @@ cdef int ERROR = 1
 cdef int VERBOSE = 1
 cdef int QUIET = 0
 
-from xpsi.surface_radiation_field.closed_radiation_field cimport (init_srcRadField,
-                                                       free_srcRadField,
-                                                       eval_srcRadField,
-                                                       eval_srcRadField_norm,
-                                                       srcRadField_PRELOAD)
+from xpsi.surface_radiation_field.hot_radiation_field cimport (init_hotRadField,
+                                                       free_hotRadField,
+                                                       eval_hotRadField,
+                                                       eval_hotRadField_norm,
+                                                       hotRadField_PRELOAD)
 
-from xpsi.surface_radiation_field.open_radiation_field cimport (init_extRadField,
-                                                    free_extRadField,
-                                                    eval_extRadField,
-                                                    eval_extRadField_norm,
-                                                    extRadField_PRELOAD)
+from xpsi.surface_radiation_field.elsewhere_radiation_field cimport (init_elsewhereRadField,
+                                                    free_elsewhereRadField,
+                                                    eval_elsewhereRadField,
+                                                    eval_elsewhereRadField_norm,
+                                                    elsewhereRadField_PRELOAD)
 
 cdef void INVIS(size_t k,
                 size_t N_L,
@@ -215,8 +215,8 @@ def integrate_radField(size_t numThreads,
             cos_deflection[i,j] = cos(deflection[i,j])
 
     # Initialise the source radiation field
-    cdef srcRadField_PRELOAD *src_preload = NULL
-    cdef extRadField_PRELOAD *ext_preload = NULL
+    cdef hotRadField_PRELOAD *src_preload = NULL
+    cdef elsewhereRadField_PRELOAD *ext_preload = NULL
     cdef double[::1] cast
     cdef double[::1] intensity
     cdef void *data = NULL
@@ -225,7 +225,7 @@ def integrate_radField(size_t numThreads,
     if spot_atmosphere:
         args = spot_atmosphere
         num_args = len(args)
-        src_preload = <srcRadField_PRELOAD*> malloc(sizeof(srcRadField_PRELOAD))
+        src_preload = <hotRadField_PRELOAD*> malloc(sizeof(hotRadField_PRELOAD))
         src_preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
         src_preload.S = <size_t*> malloc(sizeof(size_t) * (num_args - 2))
         for i in range(num_args - 1):
@@ -240,9 +240,9 @@ def integrate_radField(size_t numThreads,
                         src_preload.S[i] *= cast.shape[0]
         intensity = args[i+1]
         src_preload.I = &intensity[0]
-        data = init_srcRadField(N_T, src_preload)
+        data = init_hotRadField(N_T, src_preload)
     else:
-        data = init_srcRadField(N_T, NULL)
+        data = init_hotRadField(N_T, NULL)
 
     cdef double[:,:,::1] correction
     cdef int perform_correction
@@ -257,7 +257,7 @@ def integrate_radField(size_t numThreads,
         if elsewhere_atmosphere:
             args = elsewhere_atmosphere
             num_args = len(args)
-            ext_preload = <extRadField_PRELOAD*> malloc(sizeof(extRadField_PRELOAD))
+            ext_preload = <elsewhereRadField_PRELOAD*> malloc(sizeof(elsewhereRadField_PRELOAD))
             ext_preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
             ext_preload.S = <size_t*> malloc(sizeof(size_t) * (num_args - 2))
             for i in range(num_args - 1):
@@ -272,9 +272,9 @@ def integrate_radField(size_t numThreads,
                             ext_preload.S[i] *= cast.shape[0]
             intensity = args[i+1]
             ext_preload.I = &intensity[0]
-            ext_data = init_extRadField(N_T, ext_preload)
+            ext_data = init_elsewhereRadField(N_T, ext_preload)
         else:
-            ext_data = init_extRadField(N_T, NULL)
+            ext_data = init_elsewhereRadField(N_T, NULL)
     #----------------------------------------------------------------------->>>
     # >>> Integrate.
     # >>>
@@ -402,21 +402,21 @@ def integrate_radField(size_t numThreads,
                     for p in range(N_E):
                         E_prime = energies[p] / _Z
 
-                        I_E = eval_srcRadField(T,
+                        I_E = eval_hotRadField(T,
                                                E_prime,
                                                _ABB,
                                                &(srcCellParams[i,J,0]),
                                                data)
 
                         if perform_correction == 1:
-                            correction_I_E = eval_extRadField(T,
+                            correction_I_E = eval_elsewhereRadField(T,
                                                               E_prime,
                                                               _ABB,
                                                               &(correction[i,J,0]),
                                                               ext_data)
-                            correction_I_E = correction_I_E * eval_extRadField_norm()
+                            correction_I_E = correction_I_E * eval_elsewhereRadField_norm()
 
-                        (PROFILE[T] + BLOCK[p] + k)[0] = (I_E * eval_srcRadField_norm() - correction_I_E) * _GEOM
+                        (PROFILE[T] + BLOCK[p] + k)[0] = (I_E * eval_hotRadField_norm() - correction_I_E) * _GEOM
 
                     # Check whether cell was visible at previous rotation step
                     if InvisFlag[T] == 1 or (k != 0 and InvisFlag[T] == 2):
@@ -565,7 +565,7 @@ def integrate_radField(size_t numThreads,
         free(src_preload.S)
         free(src_preload)
 
-    free_srcRadField(N_T, data)
+    free_hotRadField(N_T, data)
 
     if perform_correction == 1:
         if elsewhere_atmosphere:
@@ -573,7 +573,7 @@ def integrate_radField(size_t numThreads,
             free(ext_preload.S)
             free(ext_preload)
 
-        free_extRadField(N_T, ext_data)
+        free_elsewhereRadField(N_T, ext_data)
 
     for T in range(N_T):
         if terminate[T] == 1:

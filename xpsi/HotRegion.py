@@ -11,13 +11,123 @@ from .cellmesh.rays import compute_rays as _compute_rays
 from .ParameterSubspace import ParameterSubspace, BoundsError
 
 class RayError(xpsiError):
-    """ Raised if a numerical problems encountered during ray integration. """
+    """ Raised if a problem was encountered during ray integration. """
 
 class PulseError(xpsiError):
-    """ Raised if a numerical problems encountered during integration. """
+    """ Raised if a problem was encountered during signal integration. """
 
-class Spot(ParameterSubspace):
-    """ A photospheric spot. """
+class HotRegion(ParameterSubspace):
+    """ A photospheric hot region that is contiguous.
+
+    Instances of this class can take the following forms:
+
+        * a circular, simply-connected region;
+        * a ceding region with a non-radiating superseding region;
+        * a ceding region with a radiating superseding region.
+
+    For the first option, set ``hole=False`` and ``cede=False``.
+    For the third option, set ``hole=False`` and ``cede=True``.
+
+    For the second option, set ``hole=True`` and ``cede=False``. This is
+    counter-intuitive. These settings produce a superseding region with a
+    non-radiating hole, which is equivalent to a ceding region with a
+    non-radiating superseding region. The *hole* may not strictly always be
+    a hole, because it behaves as a superseding region that does not radiate.
+    A superseding region can exist partially outside its relative ceding
+    region, so the non-superseded subset of the ceding region is
+    simply-connected (i.e., does not have a hole).
+
+    .. note:: Setting ``hole=True`` and ``cede=True`` ignores the hole.
+
+    The ``concentric`` setting defines whether the superseding region is
+    concentric with the ceding region or a hole, supposing either
+    ``hole=True`` or ``cede=True``.
+
+    :param num_params: Number of parameters for hot region model. For a
+                       circular hot-spot, this includes the
+                       the spot centre colatitude and spot angular radius.
+
+    :param list bounds: Hard parameter bounds for the instance of
+                        :class:`.ParameterSubspace.ParameterSubspace`.
+
+    .. note::
+
+        The order of the list of the parameter bounds must follow an order
+        of precedence:
+
+        * super colatitude
+        * super angular radius
+        * cede or hole colatitude
+        * cede or hole angular radius
+        * cede or hole relative azimuth
+        * parameters controlling the local comoving radiation field over
+          the photospheric 2-surface (entirely the user's responsibility)
+
+        If the ceding region or the hole are concentric with the
+        superseding region, the colatitude and relative azimuth of the
+        ceding region or hole are not parameters.
+
+        These bounds might not be actually used, depending the user's
+        implementation of the joint prior, and the user can in that case
+        specify ``[None,None]`` for bounds pertaining to the ceding region
+        or the hole.
+
+    :param bool symmetry:
+        Is the radiation field axisymmetric (w.r.t the stellar rotation
+        axis) within a hot region with only a superseding region?
+        This determines which ``CellMesh`` integrator to
+        deploy.
+
+    :param sqrt_num_cells:
+        Number of cells in both colatitude and azimuth which form a
+        regular mesh on a curved 2-surface (a spacelike leaf of the
+        spacetime foliation). This is the square-root of the approximate
+        number of cells whose centres should lie within a hot region.
+
+    :param min_sqrt_num_cells:
+        Sets the minimum number of cells per *subregion*, discretised to
+        the same degree in colatitude and azimuth. This setting has an
+        effect only when the hot region has two temperature components, in
+        the form of a superseding region and a ceding region.
+
+    :param min_sqrt_num_cells:
+        Sets the maximum number of cells per *subregion*, discretised to
+        the same degree in colatitude and azimuth. This setting has an
+        effect even when there is only one temperature component.
+
+    :param num_rays: Number of rays to trace (integrate) at each colatitude,
+                     distributed in angle subtended between ray tangent
+                     4-vector and radial outward unit vector w.r.t a local
+                     orthonormal tetrad.
+
+    :param int num_leaves: Number of leaves mesh motion is discretised into.
+
+    :param int num_phases: Number of phases in a discrete representation of
+                           the specific flux pulses on the interval
+                           :math:`[0,1]`.
+
+    :param phases: If not ``None``, a :class:`numpy.ndarray` of phases
+                   for a discrete representation of the specific flux
+                   pulses on the interval :math:`[0,1]`. If ``None``
+                   (default), the :obj:`num_phases` argument is utilised.
+
+    :param bool do_fast:
+        Activate fast precomputation to guide cell distribution between
+        two radiating regions at distinct temperatures.
+
+    .. note:: For each of the resolution parameters listed above, there is
+              a corresponding parameter whose value is respected if the
+              fast precomputation mode is activated.
+
+    :param bool is_secondary:
+        If ``True``, shifts the cell mesh by :math:`\pi` radians about
+        the stellar rotation axis for pulse integration. This is merely
+        a choice that can be made, and is not crucial. Note that the
+        (fast) phase-shifting applied near the end of the likelihood
+        evaluation is related to this choice and thus phase-shift parameter
+        prior support can be chosen accordingly.
+
+    """
 
     def __init__(self,
                  num_params,
@@ -39,70 +149,15 @@ class Spot(ParameterSubspace):
                  fast_max_sqrt_num_cells = 16,
                  fast_num_rays = 100,
                  fast_num_leaves = 32,
+                 fast_num_phases = None,
+                 fast_phases = None,
                  is_secondary = False):
-        """
-        :param num_params: Number of parameters for spot model, including the
-                           spot centre colatitude and spot angular radius.
 
-        :param list bounds: Hard parameter bounds for the instance of
-                            :class:`.ParameterSubspace.ParameterSubspace`.
-
-        :param bool symmetry: Is the radiation field axisymmetric (w.r.t the
-                              stellar rotation axis)? This determines which
-                              ``CellMesh`` integrator to deploy. Only set to
-                              ``False`` if you overwrite
-                              :meth:`_eval_srcRadFieldParamVectors` in a
-                              custom subclass.
-
-        :param sqrt_num_cells:
-            Number of cells in both colatitude and azimuth which form a
-            regular mesh on a curved 2-surface (a spacelike leaf of the
-            spacetime foliation). This is square-root of the approximate
-            number of cells which constitute a spot.
-
-        :param min_sqrt_num_cells:
-            Sets the minimum number of cells per *region*, discretised to
-            the same degree in colatitude and azimuth.
-
-        :param num_rays: Number of rays to trace (integrate) at each colatitude,
-                         distributed in angle subtended between ray tangent
-                         4-vector and radial outward unit vector w.r.t a local
-                         orthonormal tetrad.
-
-        :param int num_leaves: Number of leaves mesh motion is discretised into.
-
-        :param int num_phases: Number of phases in a discrete representation of
-                               the specific flux pulses on the interval
-                               :math:`[0,1]`.
-
-        :param phases: If not ``None``, a :class:`numpy.ndarray` of phases
-                       for a discrete representation of the specific flux
-                       pulses on the interval :math:`[0,1]`. If ``None``
-                       (default), the :obj:`num_phases` argument is utilised.
-
-        :param bool do_fast:
-            Activate fast precomputation to guide cell distribution between
-            two radiating regions at distinct temperatures.
-
-        :param bool is_secondary:
-            If ``True``, shifts the cell mesh by :math:`\pi` radians about
-            the stellar rotation axis for pulse integration.
-
-        .. note:: The order of the list of the parameter bounds must be:
-
-            * spot colatitude, restricted to :math:`\Theta\in(0.0,\pi)` or
-              a subinterval
-            * spot angular radius, restricted to :math:`\zeta\in(0.0,\pi/2]`
-              or a subinterval
-            * parameters controlling the local comoving radiation field over
-              the photospheric 2-surface (entirely the user's responsibility)
-
-        """
-        super(Spot, self).__init__(num_params, bounds)
+        super(HotRegion, self).__init__(num_params, bounds)
 
         if self._num_params < 3:
-            raise BoundsError('A spot requires at least three sets of '
-                              'parameter bounds.')
+            raise BoundsError('A hot region requires at least three '
+                              'sets of parameter bounds.')
 
         for colatitude in self._bounds[0]:
             if not 0.0 < colatitude < _pi:
@@ -121,7 +176,8 @@ class Spot(ParameterSubspace):
                            min_sqrt_num_cells, max_sqrt_num_cells,
                            fast_sqrt_num_cells,
                            fast_min_sqrt_num_cells, fast_max_sqrt_num_cells)
-        self.set_phases(num_leaves, fast_num_leaves, num_phases, phases)
+        self.set_phases(num_leaves, num_phases, phases,
+                        fast_num_leaves, fast_num_phases, fast_phases)
 
         if symmetry:
             from .cellmesh.integrator_for_azimuthal_invariance import integrate_radField as _integrator
@@ -152,10 +208,12 @@ class Spot(ParameterSubspace):
         except TypeError:
             raise TypeError('Number of rays must be an integer.')
 
-    def set_num_cells(self, sqrt_num_cells,
-                      min_sqrt_num_cells, max_sqrt_num_cells,
-                      fast_sqrt_num_cells,
-                      fast_min_sqrt_num_cells, fast_max_sqrt_num_cells):
+    def set_num_cells(self, sqrt_num_cells = 32,
+                      min_sqrt_num_cells = 10,
+                      max_sqrt_num_cells = 80,
+                      fast_sqrt_num_cells = 16,
+                      fast_min_sqrt_num_cells = 4,
+                      fast_max_sqrt_num_cells = 16):
 
         self.sqrt_num_cells = sqrt_num_cells
         self._num_cells = int(self.sqrt_num_cells**2)
@@ -197,8 +255,9 @@ class Spot(ParameterSubspace):
         """ Get the leaves of the photospheric foliation. """
         return self._phases
 
-    def set_phases(self, num_leaves, fast_num_leaves,
-                   num_phases=None, phases=None):
+    def set_phases(self, num_leaves, num_phases=None, phases=None,
+                   fast_num_leaves=None, fast_num_phases=None,
+                   fast_phases=None):
         """ Construct the set of interpolation phases and foliation leaves.
 
         :param int num_leaves: Number of leaves mesh motion is discretised into.
@@ -216,12 +275,10 @@ class Spot(ParameterSubspace):
         """
         if num_phases is None:
             num_phases = num_leaves
-            fast_num_phases = fast_num_leaves
 
         if phases is None:
             try:
                 self._phases_cycles = _np.linspace(0.0, 1.0, int(num_phases))
-                self._fast_phases_cycles = _np.linspace(0.0, 1.0, int(fast_num_phases))
             except TypeError:
                 raise TypeError('Number of phases must be an integer.')
         else:
@@ -239,17 +296,45 @@ class Spot(ParameterSubspace):
                 self._phases_cycles = phases
 
         self._phases = _2pi * self._phases_cycles
-        self._fast_phases = _2pi * self._fast_phases_cycles
 
         try:
             self._leaves =  _np.linspace(0.0, _2pi, int(num_leaves))
-            self._fast_leaves =  _np.linspace(0.0, _2pi, int(fast_num_leaves))
         except TypeError:
             raise TypeError('Number of leaves must be an integer.')
 
+        if self.do_fast:
+            if fast_num_phases is None:
+                fast_num_phases = fast_num_leaves
+
+            if fast_phases is None:
+                try:
+                    self._fast_phases_cycles = _np.linspace(0.0, 1.0, int(fast_num_phases))
+                except TypeError:
+                    raise TypeError('Number of phases must be an integer.')
+            else:
+                try:
+                    assert isinstance(fast_phases, _np.ndarray)
+                    assert fast_phases.ndim == 1
+                    assert (fast_phases >= 0.0).all() & (fast_phases <= 1.0).all()
+                    for i in range(fast_phases.shape[0] - 1):
+                        assert fast_phases[i] < fast_phases[i+1]
+                except AssertionError:
+                    raise TypeError('Phases must be a one-dimensional '
+                                    '``numpy.ndarray`` with monotonically '
+                                    'increasing elements on the interval [0,1].')
+                else:
+                    self._fast_phases_cycles = fast_phases
+
+            self._fast_phases = _2pi * self._fast_phases_cycles
+
+            try:
+                self._fast_leaves =  _np.linspace(0.0, _2pi, int(fast_num_leaves))
+            except TypeError:
+                raise TypeError('Number of leaves must be an integer.')
+
     @property
     def phases_in_cycles(self):
-        """ Get the phases (in cycles) the spot pulse is interpolated at. """
+        """ Get the phases (in cycles) the pulse is interpolated at. """
         return self._phases_cycles
 
     @property
@@ -383,6 +468,14 @@ class Spot(ParameterSubspace):
             if self._is_secondary:
                 self._cede_phi += _pi
 
+    @property
+    def __cellArea(self):
+        """ Get the areas of cells in the secondary-spot mesh. """
+        try:
+            return (self._super_cellArea, self._cede_cellArea)
+        except AttributeError:
+            return (self._super_cellArea, None)
+
     def __calibrate_lag(self, st):
         """ Calibrate lag for cell mesh and normalise by oscillation period. """
 
@@ -501,43 +594,18 @@ class Spot(ParameterSubspace):
                        * _sin(theta)
                        * _cos(phi))
 
-    @staticmethod
-    def _eval_srcRadFieldParamVectors(psi, p, *args):
-        """
-        .. note:: Default. Can be overwritten in a custom subclass, *if you know
-                  what you are doing*\ .
-
-        Optional function to evaluate the source radiation field parameter
-        vector at points on a curved 2-surface (a spacelike leaf of the
-        spacetime foliation).
-
-        Returns the source radiation field parameters of a uniform spot on
-        a Schwarzschild temporal hyperslice.
-
-        The first parameter is a matrix, and a matrix must be returned.
-
-        :param list p: The local radiation field parameter vector, which
-                       is to be passed to the low-level routines.
-
-        """
-        cellParamVecs = _np.ones((psi.shape[0], psi.shape[1], len(p)+1),
-                                  dtype=_np.double)
-
-        cellParamVecs[...,:-1] *= _np.array(p)
-
-        return cellParamVecs
-
     def embed(self, spacetime, p, fast_total_counts, threads, *args):
-        """ Embed the spot.
+        """ Embed the hot region.
 
         :param bool correction: Correct the integral over the radiation field
                                 *elsewhere* by accounting for the time-dependent
-                                component arising from the presence of the spot.
+                                component arising from the presence of the
+                                hot region.
 
         :param cellParamVecs: A :class:`numpy.ndarray` of ``float``\ s. If a
                               :obj:`correction` is to be made, this array
                               contains a parameter vector for each cell of the
-                              spot mesh. The parameter vectors should be
+                              hot region mesh. The parameter vectors should be
                               identical and equivalent to the parameter vector
                               used for the radiation field *elsewhere*\ . If no
                               correction is to be made, the array needs to be
@@ -616,8 +684,7 @@ class Spot(ParameterSubspace):
         self.__compute_rays(spacetime, threads)
 
         try:
-            if self._cede:
-                self.__compute_cellParamVecs(p[3:5])
+            self._cede
         except AttributeError:
             if self._hole:
                 if self._concentric:
@@ -627,16 +694,18 @@ class Spot(ParameterSubspace):
             else:
                 self.__compute_cellParamVecs(p[2:3])
         else:
-            if not self._cede:
+            if self._concentric:
+                self.__compute_cellParamVecs(p[3:5])
+            else:
                 self.__compute_cellParamVecs(p[5:7])
 
         if args:
-            self._super_correctionVecs = args[0](self._super_theta.shape, args[1])
+            self._super_correctionVecs = args[0](args[1], self._super_cellArea)
             for i in range(self._super_theta.shape[1]):
                 self._super_correctionVecs[:,i,-1] *= self._super_effGrav
 
             try:
-                self._cede_correctionVecs = args[0](self._cede_theta.shape, args[1])
+                self._cede_correctionVecs = args[0](args[1], self._cede_cellArea)
             except AttributeError:
                 pass
             else:
@@ -662,12 +731,22 @@ class Spot(ParameterSubspace):
     def fast_mode(self, activate):
         self._fast_mode = activate
 
+    @property
+    def cede(self):
+        """ Does the hot region have a ceding member? """
+        return self._cede
+
+    @property
+    def concentric(self):
+        """ Is the superseding region concentric with ceding member or hole? """
+        return self._cede
+
     def integrate(self, st, energies, threads,
-                  spot_atmosphere, elsewhere_atmosphere):
+                  hot_atmosphere, elsewhere_atmosphere):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
-        azimuthal invariance of the spot radiation field.
+        azimuthal invariance of the radiation field of the hot region.
 
         :param st: Instance of :class:`~.Spacetime.Spacetime`.
 
@@ -703,12 +782,6 @@ class Spot(ParameterSubspace):
         else:
             super_energies = cede_energies = energies
 
-        #print('Primary super energies', super_energies)
-        #print('Primary cede energies', cede_energies)
-
-        # change low-level code so as to require only a parameter vector
-        # for the correction, and not a larger array of the same parameter
-        # vector? Effective gravity varies with colatitude however.
         super_pulse = self._integrator(threads,
                                        st.M,
                                        st.R,
@@ -734,7 +807,7 @@ class Spot(ParameterSubspace):
                                        super_energies,
                                        leaves,
                                        phases,
-                                       spot_atmosphere,
+                                       hot_atmosphere,
                                        elsewhere_atmosphere)
 
         if super_pulse[0] == 1:
@@ -767,7 +840,7 @@ class Spot(ParameterSubspace):
                                           cede_energies,
                                           leaves,
                                           phases,
-                                          spot_atmosphere,
+                                          hot_atmosphere,
                                           elsewhere_atmosphere)
         except AttributeError:
             pass
