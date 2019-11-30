@@ -30,8 +30,9 @@ GSL entry from the environment file prior to creation.
 
 If you want to run X-PSI in a
 `Jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_
-notebook, you can add this as an entry to the environment file or you can
-install it via Conda (or pip) after environment creation.
+notebook, you can add this as an entry (e.g., ``- jupyter=1.0``) to the
+environment file or you can install it via Conda (or pip) after environment
+creation.
 
 To create a virtual environment from file:
 
