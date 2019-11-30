@@ -5,19 +5,64 @@ Installation
 
 .. _dev_env:
 
+Python environment
+------------------
+
+X-PSI was developed in Python 2.7, and has not yet been ported to Python 3.
+Fortunately, there are several ways to create a virtual environment with a
+different version of Python, without disrupting your Python ecosystem.
+
+Basic Conda environment
+-----------------------
+
+In the source directory we provide a basic dependency file that installs
+the core Python packages required for *likelihood* functionality. These
+packages are:
+
+* `NumPy <https://docs.scipy.org/doc/numpy/index.html>`_
+* `Cython <http://cython.readthedocs.io/en/latest>`_
+
+For likelihood evaluation, you also require the GNU Scientific Library
+(`GSL <https://www.gnu.org/software/gsl/>`_). We have included this in the
+Conda environment file, but we give installation
+instructions from `source`_ below; in the latter case, you can remove the
+GSL entry from the environment file prior to creation.
+
+If you want to run X-PSI in a
+`Jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_
+notebook, you can add this as an entry to the environment file or you can
+install it via Conda (or pip) after environment creation.
+
+To create a virtual environment from file:
+
+.. code-block:: bash
+
+     conda env create -f <path/to/xpsi>/basic_environment.yml
+
+If Conda does not solve the environment dependencies, you may need to create
+an environment manually via
+
+.. code-block:: bash
+
+     conda create -n xpsi python=2.7
+
+and then install the core dependencies `NumPy`_ and `Cython`_, and also `GSL`_
+if you do not have it elsewhere on your system.
+
 Conda environment duplication
 -----------------------------
 
 In the source repository we provide a dependency file that can facilitate
-the duplication of the environment from which X-PSI ``v0.1`` was released.
-This information may be useful if trying to diagnose installation problems.
+exact duplication of the environment from which X-PSI ``v0.2.0-alpha`` was
+released. This information may be useful if trying to diagnose installation
+problems, but can only be expected to be compatible with the same platform.
 
 The development environment:
 
     * Ubuntu 14.04
     * Installed globally via ``apt``:
         * GCC 4.8.4
-        * Open MPI 1.6.5
+        * Open MPI 1.6.5 ("ancient")
         * BLAS, LAPACK, ATLAS
     * `Miniconda2 <https://docs.conda.io/en/latest/miniconda.html>`_
       (Python 2.7; 64-bit)
@@ -48,16 +93,10 @@ To duplicate from file:
 
 .. code-block:: bash
 
-     conda env create -f <path/to/xpsi>/environment.yaml
+     conda env create -f <path/to/xpsi>/environment.yml
 
 Dependencies
 ------------
-
-X-PSI was developed in Python 2.7 environments. The following
-Python packages are required for likelihood functionality:
-
-* `NumPy <https://docs.scipy.org/doc/numpy/index.html>`_
-* `Cython <http://cython.readthedocs.io/en/latest>`_
 
 The following Python packages are required for nested sampling:
 
@@ -134,9 +173,6 @@ install guidelines are given below.
 
 GSL
 ^^^
-
-For likelihood evaluation, you require the GNU Scientific Library
-(`GSL <https://www.gnu.org/software/gsl/>`_).
 
 To obtain the latest GSL_ source code (otherwise ``v2.5`` works):
 

@@ -153,5 +153,3 @@ dependencies:
     - mpi4py==3.0.0
     - schwimmbad==0.3.0
     - sphinx-rtd-theme==0.4.3
-prefix: /home/thomas/miniconda2/envs/xpsi
-
