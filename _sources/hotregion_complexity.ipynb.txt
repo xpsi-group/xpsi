@@ -19,14 +19,13 @@
       "/=============================================\\\n",
       "| X-PSI: X-ray Pulse Simulation and Inference |\n",
       "|---------------------------------------------|\n",
-      "|                 Version: 0.1                |\n",
+      "|             Version: 0.2.0-alpha            |\n",
       "|---------------------------------------------|\n",
       "|  https://thomasedwardriley.github.io/xpsi/  |\n",
       "\\=============================================/\n",
       "\n",
-      "Warning: Cannot import GetDist.\n",
-      "Warning: Cannot import nestcheck.\n",
-      "Warning: Cannot import fgivenx.\n"
+      "Imported GetDist version: 0.3.1\n",
+      "Imported nestcheck version: 0.2.0\n"
      ]
     }
    ],
@@ -1220,7 +1219,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 45,
+   "execution_count": 32,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1405,7 +1404,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 46,
+   "execution_count": 36,
    "metadata": {},
    "outputs": [
     {
@@ -1446,7 +1445,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 47,
+   "execution_count": 37,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1455,7 +1454,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 48,
+   "execution_count": 38,
    "metadata": {},
    "outputs": [
     {
@@ -1495,7 +1494,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 51,
+   "execution_count": 39,
    "metadata": {},
    "outputs": [
     {

@@ -90,10 +90,12 @@
               <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#python-environment">Python environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-conda-environment">Basic Conda environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#conda-environment-duplication">Conda environment duplication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#from-source">From source</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#gsl">GSL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">GSL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#multinest">MultiNest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#x-psi">X-PSI</a></li>
 </ul>
@@ -228,11 +230,49 @@
 </style>
 <div class="section" id="installation">
 <span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="python-environment">
+<span id="dev-env"></span><h2>Python environment<a class="headerlink" href="#python-environment" title="Permalink to this headline">¶</a></h2>
+<p>X-PSI was developed in Python 2.7, and has not yet been ported to Python 3.
+Fortunately, there are several ways to create a virtual environment with a
+different version of Python, without disrupting your Python ecosystem.</p>
+</div>
+<div class="section" id="basic-conda-environment">
+<h2>Basic Conda environment<a class="headerlink" href="#basic-conda-environment" title="Permalink to this headline">¶</a></h2>
+<p>In the source directory we provide a basic dependency file that installs
+the core Python packages required for <em>likelihood</em> functionality. These
+packages are:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://docs.scipy.org/doc/numpy/index.html">NumPy</a></li>
+<li><a class="reference external" href="http://cython.readthedocs.io/en/latest">Cython</a></li>
+</ul>
+<p>For likelihood evaluation, you also require the GNU Scientific Library
+(<a class="reference external" href="https://www.gnu.org/software/gsl/">GSL</a>). We have included this in the
+Conda environment file, but we give installation
+instructions from <a class="reference internal" href="#source">source</a> below; in the latter case, you can remove the
+GSL entry from the environment file prior to creation.</p>
+<p>If you want to run X-PSI in a
+<a class="reference external" href="https://jupyter-notebook.readthedocs.io/en/stable/">Jupyter</a>
+notebook, you can add this as an entry (e.g., <code class="docutils literal notranslate"><span class="pre">-</span> <span class="pre">jupyter=1.0</span></code>) to the
+environment file or you can install it via Conda (or pip) after environment
+creation.</p>
+<p>To create a virtual environment from file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda env create -f &lt;path/to/xpsi&gt;/basic_environment.yml
+</pre></div>
+</div>
+<p>If Conda does not solve the environment dependencies, you may need to create
+an environment manually via</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n xpsi <span class="nv">python</span><span class="o">=</span><span class="m">2</span>.7
+</pre></div>
+</div>
+<p>and then install the core dependencies <a class="reference external" href="https://docs.scipy.org/doc/numpy/index.html">NumPy</a> and <a class="reference external" href="http://cython.readthedocs.io/en/latest">Cython</a>, and also <a class="reference external" href="https://www.gnu.org/software/gsl/">GSL</a>
+if you do not have it elsewhere on your system.</p>
+</div>
 <div class="section" id="conda-environment-duplication">
-<span id="dev-env"></span><h2>Conda environment duplication<a class="headerlink" href="#conda-environment-duplication" title="Permalink to this headline">¶</a></h2>
+<h2>Conda environment duplication<a class="headerlink" href="#conda-environment-duplication" title="Permalink to this headline">¶</a></h2>
 <p>In the source repository we provide a dependency file that can facilitate
-the duplication of the environment from which X-PSI <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> was released.
-This information may be useful if trying to diagnose installation problems.</p>
+exact duplication of the environment from which X-PSI <code class="docutils literal notranslate"><span class="pre">v0.2.0-alpha</span></code> was
+released. This information may be useful if trying to diagnose installation
+problems, but can only be expected to be compatible with the same platform.</p>
 <p>The development environment:</p>
 <blockquote>
 <div><ul class="simple">
@@ -241,7 +281,7 @@ This information may be useful if trying to diagnose installation problems.</p>
 <dt>Installed globally via <code class="docutils literal notranslate"><span class="pre">apt</span></code>:</dt>
 <dd><ul class="first last">
 <li>GCC 4.8.4</li>
-<li>Open MPI 1.6.5</li>
+<li>Open MPI 1.6.5 (“ancient”)</li>
 <li>BLAS, LAPACK, ATLAS</li>
 </ul>
 </dd>
@@ -278,12 +318,6 @@ guidance.</p>
 </div>
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>X-PSI was developed in Python 2.7 environments. The following
-Python packages are required for likelihood functionality:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://docs.scipy.org/doc/numpy/index.html">NumPy</a></li>
-<li><a class="reference external" href="http://cython.readthedocs.io/en/latest">Cython</a></li>
-</ul>
 <p>The following Python packages are required for nested sampling:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest">PyMultiNest</a>
@@ -357,10 +391,8 @@ interfaces may be cloned as follows:</p>
 <span id="source"></span><h2>From source<a class="headerlink" href="#from-source" title="Permalink to this headline">¶</a></h2>
 <p>X-PSI has several dependencies that are not Python packages. Build and
 install guidelines are given below.</p>
-<div class="section" id="gsl">
-<h3>GSL<a class="headerlink" href="#gsl" title="Permalink to this headline">¶</a></h3>
-<p>For likelihood evaluation, you require the GNU Scientific Library
-(<a class="reference external" href="https://www.gnu.org/software/gsl/">GSL</a>).</p>
+<div class="section" id="id6">
+<h3>GSL<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>To obtain the latest <a class="reference external" href="https://www.gnu.org/software/gsl/">GSL</a> source code (otherwise <code class="docutils literal notranslate"><span class="pre">v2.5</span></code> works):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
 </pre></div>
@@ -390,7 +422,7 @@ you require an MPI-wrapped Fortran compiler (e.g., <code class="docutils literal
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The following assumes an environment similar to that summarised in
-the in the <a class="reference internal" href="#dev-env"><span class="std std-ref">Conda environment duplication</span></a> section above, specifically to emphasise where an
+the in the <a class="reference internal" href="#dev-env"><span class="std std-ref">Python environment</span></a> section above, specifically to emphasise where an
 MPI compiler wrapper is required.</p>
 </div>
 <p>First clone the repository:</p>
@@ -406,7 +438,7 @@ ls ../lib/
 <p>Use the last command to check for the presence of shared objects. There is
 <em>no</em> need to <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> as suggested in the source code documentation.</p>
 <p>If you have not already installed mpi4py using pip (or Conda assuming a
-different environment setup to that summarised in <a class="reference internal" href="#dev-env"><span class="std std-ref">Conda environment duplication</span></a>), then here
+different environment setup to that summarised in <a class="reference internal" href="#dev-env"><span class="std std-ref">Python environment</span></a>), then here
 is how to do it from source (e.g., on some path such as <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
 
