@@ -1,11 +1,11 @@
 """
 To compile to C code, and then compile the C code and link libraries:
-    --> python setup.py install [--user]
+    --> CC=</path/to/compiler/executable> python setup.py install [--user]
 
-If compiling and linking with gcc:
+If compiling and linking with gcc, which is on $PATH:
         --> CC=gcc python setup.py install [--user]
 
-If compiling and linking with Intel icc:
+If compiling and linking with Intel icc, with is on $PATH:
     --> LDSHARED="icc -shared" CC=icc python setup.py install [--user]
 """
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         # point to shared library at compile time so runtime resolution
         # is not affected by environment variables, but is determined
         # by the binary itself
-        extra_link_args = ['-Wl,-rpath=%s'%(gsl_prefix+'/lib')]
+        extra_link_args = ['-Wl,-rpath,%s'%(gsl_prefix+'/lib')]
         try:
             if 'gcc' in os.environ['CC']:
                 extra_compile_args=['-fopenmp',
@@ -55,7 +55,7 @@ if __name__ == '__main__':
                                     '-Wno-unused-function',
                                     '-Wno-uninitialized',
                                     '-Wno-cpp']
-                extra_link_args += ['-fopenmp']
+                extra_link_args.append('-fopenmp')
             elif 'icc' in os.environ['CC']:
                 extra_compile_args=['-qopenmp',
                                     '-O3',
@@ -63,23 +63,25 @@ if __name__ == '__main__':
                                     '-axCORE-AVX2,AVX',
                                     '-funroll-loops',
                                     '-Wno-unused-function']
-                extra_link_args += ['-qopenmp']
+                extra_link_args.append('-qopenmp')
             elif 'clang' in os.environ['CC']:
-                library_dirs.append('/usr/local/opt/llvm/lib')
                 extra_compile_args=['-fopenmp',
                                     '-Wno-unused-function',
                                     '-Wno-uninitialized',
                                     '-Wno-#warnings',
                                     '-Wno-error=format-security']
-                extra_link_args += ['-fopenmp']
-                include_dirs = ['/usr/local/opt/llvm/include']
+                extra_link_args.append('-fopenmp')
+                # you might need these lookup paths for llvm clang on macOS
+                # or you might need to edit these paths for your compiler
+                #library_dirs.append('/usr/local/opt/llvm/lib')
+                #include_dirs.append('/usr/local/opt/llvm/include')
         except KeyError:
-            print('Export CC environment variable to "icc" or "gcc", or '
-                  'modify the setup script for a bespoke compiler.')
+            print('Export CC environment variable to "icc" or "gcc" or '
+                  '"clang", or modify the setup script for your compiler.')
             raise
     else:
         print('Unsupported operating system. Manually inspect and modify '
-              'setup script.')
+              'setup.py script.')
         raise Exception
 
     cmdclass = {}
@@ -166,7 +168,7 @@ if __name__ == '__main__':
         cmdclass = cmdclass,
         classifiers = ['Development Status :: 3 - Alpha',
                        'Intended Audience :: Science/Research',
-                       'Operating System :: macOS, Linux',
+                       'Operating System :: Linux, macOS',
                        'License :: OSI Approved :: MIT License',
                        'Programming Language :: Python'],
         zip_safe = False,
