@@ -69,7 +69,9 @@ The development environment:
       (Python 2.7; 64-bit)
     * Conda environment exported to ``xpsi/environment.yml``
 
-When inspecting the ``xpsi/environment.yml`` file, note the packages that
+When inspecting the ``xpsi/environment.yml`` file, note that most of the
+entries were installed via automatic resolution of a strict dependency chain
+when core packages were specified. Also note the packages that
 were installed into a Conda environment via pip. There are a few reasons
 for these choices, but the main one is that pip is purely for Python
 packages and will not install unwanted non-Python libraries. To be clear, such
@@ -186,7 +188,7 @@ then build and install:
 
 .. code-block:: bash
 
-    ./configure CC=<path/to/compiler/executable> --prefix=$HOME/gsl
+    ../configure CC=<path/to/compiler/executable> --prefix=$HOME/gsl
     make
     make check
     make install
@@ -217,7 +219,7 @@ you require an MPI-wrapped Fortran compiler (e.g., ``mpifort`` from Open MPI).
     the in the :ref:`dev_env` section above, specifically to emphasise where an
     MPI compiler wrapper is required.
 
-First clone the repository:
+First clone the repository, then navigate to it and build:
 
 .. code-block:: bash
 
@@ -301,7 +303,7 @@ To build and install from the clone root, you require an
 
     CC=<path/to/compiler/executable> python setup.py install --user
 
-For ``icc``, You may need to prepend this command with
+For ``icc``, you may need to prepend this command with
 ``LDSHARED="icc -shared"``. This ensures that both the compiler and linker
 are Intel, otherwise the ``gcc`` linker might be invoked.
 
