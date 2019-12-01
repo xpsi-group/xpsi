@@ -271,8 +271,7 @@ Spacetime
     class CustomSpacetime(xpsi.Spacetime):
         """ A custom spacetime object.
 
-        For the NICER SWG synthetic data parameter recovery exercise, the coordinate
-        rotation frequency of the star is fixed.
+        The coordinate rotation frequency of the star is fixed.
 
         """
 
