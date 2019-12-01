@@ -500,7 +500,7 @@ class HotRegion(ParameterSubspace):
             self._cede_lag *= st.Omega
 
     def __compute_rays(self, st, threads):
-        """ Integrate rays for null mapping.
+        """ Integrate rays.
 
         These rays represent a null mapping from photosphere to a point at
         some effective infinity.
@@ -557,7 +557,8 @@ class HotRegion(ParameterSubspace):
         Designed here simply for uniform effective temperature superseding
         and ceding regions.
 
-        :params p: Arguments for :meth:`_eval_srcRadFieldParamVectors`.
+        :params array-like p:
+            Parameters for evaluating cell-by-cell radiation field parameters.
 
         """
         self._super_radiates = _np.greater(self._super_cellArea, 0.0).astype(_np.int32)
