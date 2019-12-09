@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Elsewhere &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Elsewhere &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -197,6 +197,7 @@
 <span class="kn">from</span> <span class="nn">.cellmesh.rays</span> <span class="k">import</span> <span class="n">compute_rays</span> <span class="k">as</span> <span class="n">_compute_rays</span>
 <span class="kn">from</span> <span class="nn">.cellmesh.integrator_for_time_invariance</span> <span class="k">import</span> <span class="n">integrate_radField</span> <span class="k">as</span> <span class="n">_integrator</span>
 
+<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="k">import</span> <span class="n">Parameter</span>
 <span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
 
 <div class="viewcode-block" id="RayError"><a class="viewcode-back" href="../../elsewhere.html#xpsi.Elsewhere.RayError">[docs]</a><span class="k">class</span> <span class="nc">RayError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
@@ -206,13 +207,11 @@
     <span class="sd">&quot;&quot;&quot; Raised if a problem was encountered during signal integration. &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="Elsewhere"><a class="viewcode-back" href="../../elsewhere.html#xpsi.Elsewhere.Elsewhere">[docs]</a><span class="k">class</span> <span class="nc">Elsewhere</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; The photospheric radiation field elsewhere (other than the spot).</span>
+    <span class="sd">&quot;&quot;&quot; The photospheric radiation field *elsewhere*.</span>
 
-<span class="sd">    :param int num_params: Number of parameters for model of photospheric</span>
-<span class="sd">                           radiation field elsewhere.</span>
-
-<span class="sd">    :param list bounds: Hard parameter bounds for the instance of</span>
-<span class="sd">                        :class:`.ParameterSubspace.ParameterSubspace`.</span>
+<span class="sd">    This means the radiation field exterior to the hot regions. The local</span>
+<span class="sd">    comoving radiation field properties are *assumed* (for now) to be</span>
+<span class="sd">    azimuthally invariant but can in principle vary colatitudinally.</span>
 
 <span class="sd">    :param int num_rays: Number of rays to trace (integrate) at each</span>
 <span class="sd">                         colatitude, distributed in angle subtended between</span>
@@ -224,26 +223,54 @@
 <span class="sd">                               2-surface (which is a compact subset of a</span>
 <span class="sd">                               spacelike leaf of the spacetime foliation).</span>
 
+<span class="sd">    :param iterable custom:</span>
+<span class="sd">        Iterable over :class:`~.Parameter.Parameter` instances. If you</span>
+<span class="sd">        supply custom parameter definitions, you need to overwrite the</span>
+<span class="sd">        :func:`~.Elsewhere.Elsewhere._compute_cellParamVecs` method to</span>
+<span class="sd">        handle your custom behaviour.</span>
+
+<span class="sd">    :param dict bounds:</span>
+<span class="sd">        If ``custom is None`` is, these bounds are supplied for instantiation</span>
+<span class="sd">        of a temperature parameter. The intended parameter name must be</span>
+<span class="sd">        a key in the dictionary. If a bound is ``None`` that bound is set</span>
+<span class="sd">        equal to a strict hard-coded bound.</span>
+
+<span class="sd">    :param float value:</span>
+<span class="sd">        Either the fixed value of the temperature elsewhere, or value upon</span>
+<span class="sd">        initialisation if the temperature is free.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">num_params</span><span class="p">,</span>
-                 <span class="n">bounds</span><span class="p">,</span>
+                 <span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
                  <span class="n">num_rays</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
-                 <span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="mi">64</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Elsewhere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+                 <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                 <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">custom</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_rays</span> <span class="o">=</span> <span class="n">num_rays</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="n">sqrt_num_cells</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_rays</span> <span class="o">=</span> <span class="n">num_rays</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">custom</span><span class="p">:</span> <span class="c1"># setup default temperature parameter</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;elsewhere_temperature&#39;</span><span class="p">,</span>
+                          <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">),</span> <span class="c1"># very cold --&gt; very hot</span>
+                          <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">,</span>
+                          <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;log10 of the effective temperature elsewhere&#39;</span><span class="p">,</span>
+                          <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\log_</span><span class="si">{10}</span><span class="s1">(T_{\rm EW}\;[\rm</span><span class="si">{K}</span><span class="s1">])$&#39;</span><span class="p">,</span>
+                          <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># let the custom subclass handle definitions; ignore bounds</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Elsewhere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">custom</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the number of rays integrated per parallel. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Get the number of rays integrated per colatitude. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span>
 
     <span class="nd">@num_rays</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">num_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Set the number of rays integrated per parallel. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Set the number of rays integrated per colatitude. &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
@@ -251,12 +278,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sqrt_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the number of cell parallels. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span>
+        <span class="sd">&quot;&quot;&quot; Get the number of cell colatitudes. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span>
 
     <span class="nd">@sqrt_num_cells</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">sqrt_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Set the number of cell parallels. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Set the number of cell colatitudes. &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
@@ -271,8 +298,8 @@
 
 <div class="viewcode-block" id="Elsewhere.print_settings"><a class="viewcode-back" href="../../elsewhere.html#xpsi.Elsewhere.Elsewhere.print_settings">[docs]</a>    <span class="k">def</span> <span class="nf">print_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Print numerical settings. &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of cell parallels: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rays per parallel: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rays</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of cell colatitudes: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sqrt_num_cells</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of rays per colatitude: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rays</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Elsewhere._construct_cellMesh"><a class="viewcode-back" href="../../elsewhere.html#xpsi.Elsewhere.Elsewhere._construct_cellMesh">[docs]</a>    <span class="k">def</span> <span class="nf">_construct_cellMesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Call a low-level routine to construct a mesh representation.</span>
@@ -324,42 +351,48 @@
         <span class="k">if</span> <span class="n">terminate_calculation</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">RayError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical problem during ray integration.&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Elsewhere._compute_cellParamVecs"><a class="viewcode-back" href="../../elsewhere.html#xpsi.Elsewhere.Elsewhere._compute_cellParamVecs">[docs]</a>    <span class="k">def</span> <span class="nf">_compute_cellParamVecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="Elsewhere._compute_cellParamVecs"><a class="viewcode-back" href="../../elsewhere.html#xpsi.Elsewhere.Elsewhere._compute_cellParamVecs">[docs]</a>    <span class="k">def</span> <span class="nf">_compute_cellParamVecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Precompute photospheric source radiation field parameter vectors</span>
-<span class="sd">        cell-by-cell.</span>
+<span class="sd">        cell-by-cell. Free model parameters and derived (fixed) variables can</span>
+<span class="sd">        be transformed into local comoving radiation field variables.</span>
 
-<span class="sd">        :param list p:</span>
-<span class="sd">            Parameters to transform into local comoving radiation field</span>
-<span class="sd">            variables.</span>
+<span class="sd">        Subclass and overwrite with custom functionality if you desire.</span>
+
+<span class="sd">        :param tuple args:</span>
+<span class="sd">            An *ndarray[n,n]* of mesh-point colatitudes.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span> <span class="c1"># hot region mesh shape information</span>
             <span class="n">cellParamVecs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                       <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                      <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+                                      <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span>
+                                     <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
 
-            <span class="n">cellParamVecs</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="c1"># get self.vector because there may be fixed variables</span>
+            <span class="c1"># that also need to be directed to the integrators</span>
+            <span class="c1"># for intensity evaluation</span>
+            <span class="n">cellParamVecs</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">cellParamVecs</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                             <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                            <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+                                            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span>
+                                           <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_effGrav</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_effGrav</span></div>
 
-        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cellParamVecs</span></div>
-
-    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Embed the photosphere elsewhere. &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_construct_cellMesh</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compute_rays</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Elsewhere.integrate"><a class="viewcode-back" href="../../elsewhere.html#xpsi.Elsewhere.Elsewhere.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">atmosphere</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instrument &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Instrument &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -221,7 +221,7 @@
 instruments.</p>
 <dl class="class">
 <dt id="xpsi.Instrument.Instrument">
-<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">Instrument</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>matrix</em>, <em>energy_edges</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">Instrument</code><span class="sig-paren">(</span><em>matrix</em>, <em>energy_edges</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for astronomical X-ray instruments such as NICER.</p>
 <p>The body of the initialiser must not be changed to ensure inter-module
 compatibility, but can be extended if appropriate using a call to
@@ -238,12 +238,16 @@ vector. The input energy intervals must increase along
 the columns of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>, and the output channels
 must increase along the rows of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>. The
 <em>units</em> of the elements must be that of an <em>effective</em>
-area (<span class="math notranslate nohighlight">\(cm^2\)</span>).</li>
+area (<span class="math notranslate nohighlight">\(cm^2\)</span>). Generally there will be some available
+calibration product, and deviations from this nominal response
+model will be parametrised. So here load some nominal
+response matrix.</li>
 <li><strong>energy_edges</strong> (<em>ndarray</em><em>[</em><em>q+1</em><em>]</em>) – Energy edges of the instrument energy intervals which
 must be congruent to the first dimension of the
 <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>: the number of edges must
 be <span class="math notranslate nohighlight">\(q + 1\)</span>. The edges must be monotonically
-increasing.</li>
+increasing. These edges will correspond to the nominal response
+matrix and any deviation from this matrix (see above).</li>
 </ul>
 </td>
 </tr>
@@ -254,12 +258,26 @@ increasing.</li>
 <p class="last">The dimensions of the response matrix need not be equal, but
 it is required that the number of input intervals be greater
 than or equal to the number of output channels – i.e.,
-<span class="math notranslate nohighlight">\(p \leq q\)</span>. If <span class="math notranslate nohighlight">\(p &lt; q\)</span> then it is implied that subsets of
-adjacent output channels are actually grouped together.</p>
+<span class="math notranslate nohighlight">\(p \leq q\)</span>. If <span class="math notranslate nohighlight">\(p &lt; q\)</span> then it is implied that
+subsets of adjacent output channels are actually grouped together.</p>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>tuple</em>) – Container of parameter instances.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) – If you want to prefix parameters of an instance of this instrument
+subspace with an identifier, pass it as keyword argument and it will
+find its way to the base class.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="xpsi.Instrument.Instrument.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em>, <em>signal</em>, <em>irange</em>, <em>orange</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>signal</em>, <em>irange</em>, <em>orange</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fold an incident signal.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -301,8 +319,11 @@ these numbers, i.e., they must satisfy <span class="math notranslate nohighlight
 
 <dl class="method">
 <dt id="xpsi.Instrument.Instrument.construct_matrix">
-<code class="descname">construct_matrix</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument.construct_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument.construct_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct the response matrix given parameter values (if any).</p>
+<code class="descname">construct_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument.construct_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument.construct_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct the response matrix if it is parametrised.</p>
+<p>If customising, just do stuff to calculate a matrix, and return
+it. You can access parameters (free, fixed, and derived) via
+the container access self[&lt;name&gt;].</p>
 </dd></dl>
 
 <dl class="attribute">

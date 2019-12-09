@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Pulse &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Pulse &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -221,53 +221,31 @@
 <span class="sd">    into a structure congruent to that of the data for the purpose of</span>
 <span class="sd">    evaluation of the likelihood.</span>
 
-<span class="sd">    :param str tag: An identification tag to enforce intended pairing with</span>
-<span class="sd">                    a :class:`~.Photosphere.Photosphere` object.</span>
+<span class="sd">    :param obj data: An instance of :class:`~.Data.Data`.</span>
 
-<span class="sd">    :param int num_params: Number of *fast* nuisance parameters associated</span>
-<span class="sd">                           with the model of the pulsation, excluding:</span>
+<span class="sd">    :param obj instrument: An instance of :class:`~.Instrument.Instrument`.</span>
 
-<span class="sd">                           * *slow* parameters associated with the star</span>
-<span class="sd">                             defined in :class:`~.Star.Star`;</span>
-<span class="sd">                           * parameters associated with an instance of</span>
-<span class="sd">                             :class:`~.Background.Background`;</span>
-<span class="sd">                           * parameters associated with an instance of</span>
-<span class="sd">                             :class:`~.Interstellar.Interstellar`.</span>
+<span class="sd">    :param obj background:</span>
+<span class="sd">        If not ``None``, an instance of :class:`~.Background.Background`.</span>
+<span class="sd">        It is assumed if one constructs a model using instances of</span>
+<span class="sd">        :class:`~.Background.Background` that the background needs to be</span>
+<span class="sd">        folded through a model instrument. If ``None``, it is still possible</span>
+<span class="sd">        for one to define and use background parameters in a custom subclass</span>
+<span class="sd">        of :class:`Pulsation`. In particular, background parameters for some</span>
+<span class="sd">        model which directly specifies background contribution in units of</span>
+<span class="sd">        count/s per *output* channels. These background parameters can even</span>
+<span class="sd">        *be* the counts/s in output channels.</span>
 
-<span class="sd">    :param list bounds: Hard parameter bounds for the instance of</span>
-<span class="sd">                        :class:`.ParameterSubspace.ParameterSubspace`.</span>
+<span class="sd">    :param obj interstellar:</span>
+<span class="sd">        If not ``None``, an instance of :class:`~.Interstellar.Interstellar`.</span>
+<span class="sd">        To be applied to the incident source pulsation as a modifier callable.</span>
 
-<span class="sd">    :param data: An instance of :class:`~.Data.Data`.</span>
-
-<span class="sd">    :param instrument: An instance of :class:`~.Instrument.Instrument`.</span>
-
-<span class="sd">    :param background: If not ``None``, an instance of</span>
-<span class="sd">                       :class:`~.Background.Background`. It is</span>
-<span class="sd">                       assumed if one constructs a model using instances</span>
-<span class="sd">                       of :class:`~.Background.Background` that the</span>
-<span class="sd">                       background needs to be folded through a model</span>
-<span class="sd">                       instrument. If ``None``, it is still possible for</span>
-<span class="sd">                       one to define and use background parameters in a</span>
-<span class="sd">                       custom subclass of :class:`Pulsation`. In</span>
-<span class="sd">                       particular, background parameters for some model</span>
-<span class="sd">                       which directly specifies background contribution</span>
-<span class="sd">                       in units of count/s per *output* channels. These</span>
-<span class="sd">                       background parameters can even *be* the counts/s in</span>
-<span class="sd">                       output channels.</span>
-
-<span class="sd">    :param interstellar: If not ``None``, an instance of</span>
-<span class="sd">                         :class:`~.Interstellar.Interstellar`. To be</span>
-<span class="sd">                         applied to the incident source pulsation.</span>
-
-<span class="sd">    :param int energies_per_interval: The number of energies to compute</span>
-<span class="sd">                                     photon fluxes, per input energy</span>
-<span class="sd">                                     channel of the instrument.</span>
+<span class="sd">    :param int energies_per_interval:</span>
+<span class="sd">        The number of energies to compute photon fluxes, per input energy</span>
+<span class="sd">        channel of the instrument.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">num_params</span><span class="p">,</span>
-                 <span class="n">bounds</span><span class="p">,</span>
-                 <span class="n">tag</span><span class="p">,</span>
                  <span class="n">data</span><span class="p">,</span>
                  <span class="n">instrument</span><span class="p">,</span>
                  <span class="n">background</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -277,18 +255,9 @@
                  <span class="n">fast_rel_energies_per_interval</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
                  <span class="n">adaptive_energies</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">adapt_exponent</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-                 <span class="n">store</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Pulse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Incompatible type for identification tag.&#39;</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_params</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of parameters must be an integer.&#39;</span><span class="p">)</span>
+                 <span class="n">store</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Data</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a data object.&#39;</span><span class="p">)</span>
@@ -323,49 +292,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">adaptive_energies</span> <span class="o">=</span> <span class="n">adaptive_energies</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">adapt_exponent</span> <span class="o">=</span> <span class="n">adapt_exponent</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="o">.</span><span class="n">num_params</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">num_params</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">num_params</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Activate or deactivate caching with a boolean.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store</span> <span class="o">=</span> <span class="n">store</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="o">.</span><span class="n">num_params</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">num_params</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">num_params</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_store</span> <span class="o">=</span> <span class="n">store</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the ID tag of the pulse object for photosphere pairing. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">total_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the number of (fast, nuisance) parameters of the pulse.</span>
-
-<span class="sd">        These parameters are nuisance parameters which are expected to be fast</span>
-<span class="sd">        in regards to likelihood recalculation, and include background and</span>
-<span class="sd">        interstellar process parameters.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span>
+        <span class="c1"># merge the subspaces; order unimportant</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Pulse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="p">,</span>
+                                    <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">background</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -392,12 +327,13 @@
 <span class="sd">        model instrument (in an instance of the :class:`~.Instrument.Instrument`</span>
 <span class="sd">        class).</span>
 
-<span class="sd">        :param int energies_per_interval: The number of energies to compute</span>
-<span class="sd">                                         photon fluxes, per input energy</span>
-<span class="sd">                                         channel of the instrument.</span>
+<span class="sd">        :param int energies_per_interval:</span>
+<span class="sd">            The number of energies to compute photon fluxes, per input energy</span>
+<span class="sd">            channel of the instrument.</span>
 
-<span class="sd">        :raises IndexError: If the channel range of the data object</span>
-<span class="sd">                            is not consistent with the instrument object.</span>
+<span class="sd">        :raises IndexError:</span>
+<span class="sd">            If the channel range of the data object is not consistent with</span>
+<span class="sd">            the instrument object.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channel_range</span>
@@ -458,12 +394,12 @@
                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_num_energies</span> <span class="o">*</span> <span class="mi">10</span><span class="p">,</span>
                                                     <span class="n">base</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_adapt_energies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_adapt_energies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">phases</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Calculate a set of adapted energies for pulse integration. &quot;&quot;&quot;</span>
         <span class="n">signal</span> <span class="o">=</span> <span class="n">phase_integrator</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span>
                                   <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]),</span>
                                   <span class="n">signal</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">fast_phases</span><span class="p">,</span>
+                                  <span class="n">phases</span><span class="p">,</span>
                                   <span class="mf">0.0</span><span class="p">)</span>
 
         <span class="n">energies</span> <span class="o">=</span> <span class="n">energy_adaptor</span><span class="p">((</span><span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fast_energies</span> \
@@ -526,7 +462,7 @@
         <span class="sd">&quot;&quot;&quot; Get a :class:`numpy.ndarray` of energy edges. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span>
 
-<div class="viewcode-block" id="Pulse.fold"><a class="viewcode-back" href="../../pulse.html#xpsi.Pulse.Pulse.fold">[docs]</a>    <span class="k">def</span> <span class="nf">fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="Pulse.fold"><a class="viewcode-back" href="../../pulse.html#xpsi.Pulse.Pulse.fold">[docs]</a>    <span class="k">def</span> <span class="nf">fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Fold a raw pulse signal through the response matrix.</span>
 
 <span class="sd">        A :class:`numpy.ndarray` is stored as an instance attribute containing</span>
@@ -551,7 +487,7 @@
                 <span class="n">fast_total_counts</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">energies</span> <span class="o">=</span> <span class="p">[]</span>
 
-                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">hotRegion</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">phases</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">hotRegion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_phases</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">component</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_energies</span><span class="p">)</span>
                         <span class="n">fast_total_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
@@ -560,7 +496,7 @@
 
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">adaptive_energies</span><span class="p">:</span>
-                            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adapt_energies</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+                            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adapt_energies</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">phases</span><span class="p">)</span>
                             <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_energies</span><span class="p">)</span>
@@ -571,14 +507,12 @@
                                                          <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">))</span>
 
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span>
-                             <span class="n">integrated</span><span class="p">)</span>
+                            <span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mf">2.0</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">integrated</span><span class="p">)</span>
 
-                        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                                                      <span class="n">integrated</span><span class="p">,</span>
-                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
-                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span>
+                        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="n">integrated</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span>
 
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_fast_incident_spectrum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
@@ -626,8 +560,7 @@
 
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_signals</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="o">.</span><span class="n">interp_and_absorb</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                                                             <span class="bp">self</span><span class="o">.</span><span class="n">logspace_energies_hires</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="o">.</span><span class="n">interp_and_absorb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logspace_energies_hires</span><span class="p">,</span>
                                                              <span class="n">signal</span><span class="p">)</span>
 
                         <span class="bp">self</span><span class="o">.</span><span class="n">absorbed_raw_signals</span> <span class="o">=</span> <span class="n">signal</span>
@@ -656,44 +589,44 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">raw_signals_energy_intervals</span> <span class="o">=</span> <span class="n">integrated</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span>
-                            <span class="n">integrated</span><span class="p">)</span>
+                    <span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mf">2.0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_interstellar</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">integrated</span><span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                                              <span class="n">integrated</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="n">integrated</span><span class="p">,</span>
                                               <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
                                               <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">,</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error when evaluating the incident background.&#39;</span><span class="p">)</span>
                     <span class="k">raise</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">folded_background</span> <span class="o">=</span> \
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="bp">self</span><span class="o">.</span><span class="n">_idxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">phases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">phases</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">phases</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">]</span>
 
     <span class="nd">@phases</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">obj</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fast_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">phases</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">phases</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span><span class="p">]</span>
 
     <span class="nd">@fast_phases</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">fast_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fast_phases</span> <span class="o">=</span> <span class="n">obj</span>
 
     <span class="nd">@property</span>
@@ -835,7 +768,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span> <span class="o">=</span> <span class="n">values</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Store phase shift parameters as a 1D np.ndarray.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Store phase shift parameters as a 1D ndarray.&#39;</span><span class="p">)</span>
 
     <span class="nd">@shift</span><span class="o">.</span><span class="n">deleter</span>
     <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -896,25 +829,29 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_loglikelihood</span> <span class="o">=</span> <span class="n">ll</span>
 
 <div class="viewcode-block" id="Pulse.__call__"><a class="viewcode-back" href="../../pulse.html#xpsi.Pulse.Pulse.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_shifts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute the logarithm of the likelihood and store it as a property.</span>
 
-<span class="sd">        :param list p: Model nuisance parameters (fast). The length of this</span>
-<span class="sd">                       list will be equal to the ``total_params`` property.</span>
+<span class="sd">        :param iterable phase_shifts:</span>
+<span class="sd">            Container of phase shift :class:`.~Parameter.Parameter` instances,</span>
+<span class="sd">            one per hot region, communicated by the likelihood object from</span>
+<span class="sd">            the star object. The order is equal to the order of the hot</span>
+<span class="sd">            region objects stored in ``photosphere.hot.objects``.</span>
 
-<span class="sd">        :param int threads: Number of ``OpenMP`` threads to use for likelihood</span>
-<span class="sd">                            evaluation. This argument can be ignored if not</span>
-<span class="sd">                            required.</span>
+<span class="sd">        :param dict kwargs:</span>
+<span class="sd">            The following keyword arguments may be accessed.</span>
 
-<span class="sd">        :param tuple args:</span>
-<span class="sd">            The other parameters, in case required. Note that the</span>
-<span class="sd">            :class:`~.Likelihood.Likelihood` class expects this method</span>
-<span class="sd">            signature, and an exception will be raised if it is not adhered</span>
-<span class="sd">            to when implementing ``__call__`` in a custom subclass.</span>
+<span class="sd">        :param int threads:</span>
+<span class="sd">            Number of ``OpenMP`` threads to use for likelihood evaluation.</span>
+<span class="sd">            This argument can be ignored if not required.</span>
+
+<span class="sd">        :param float llzero:</span>
+<span class="sd">            The minimum log-likelihood setting for MultiNest. Points whose</span>
+<span class="sd">            log-likelihood is lower than this value are ignored.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
-    <span class="k">def</span> <span class="nf">synthesise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">synthesise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_shifts</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Synthesise pulsation data according to the generative model.</span>
 
 <span class="sd">        :param list p: Model nuisance parameters (fast). The length of this</span>

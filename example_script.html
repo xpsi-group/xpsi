@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example script and modules &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Example script and modules &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -115,7 +115,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -240,16 +240,16 @@ four physical cores, we spawn as many MPI processes.</p>
 (see, e.g., <a class="reference internal" href="SURFsara_systems.html#surfsystems"><span class="std std-ref">SURFsara systems</span></a>) to avoid hybrid parallelisation by
 libraries linked to NumPy and GSL, for instance.</p>
 </div>
-<p>The script below is an example like that found on the <cite>Model construction</cite>
+<p>The script below is an example like that found on the <cite>Modelling</cite>
 page, but without being interleaved with verbose explanations. The model
-implemented here is more involved than shown on the <cite>Model construction</cite>
+implemented here is more involved than shown on the <cite>Modelling</cite>
 page, and than those defined for the example parameter
 estimation problems that can be found in the <code class="docutils literal notranslate"><span class="pre">xpsi/examples</span></code> directory of
 the repository.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The script has been updated to use updated object names in the API
-since <code class="docutils literal notranslate"><span class="pre">v0.1</span></code>.</p>
+<p class="last">The script and modules below are being updated to use
+the current API.</p>
 </div>
 <div class="section" id="main">
 <h2>Main<a class="headerlink" href="#main" title="Permalink to this headline">¶</a></h2>
@@ -486,8 +486,7 @@ applicable.</p>
 <span class="k">class</span> <span class="nc">CustomSpacetime</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A custom spacetime object.</span>
 
-<span class="sd">    For the NICER SWG synthetic data parameter recovery exercise, the coordinate</span>
-<span class="sd">    rotation frequency of the star is fixed.</span>
+<span class="sd">    The coordinate rotation frequency of the star is fixed.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

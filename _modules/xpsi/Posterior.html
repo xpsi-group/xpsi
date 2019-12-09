@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Posterior &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Posterior &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -199,6 +199,8 @@
 <span class="kn">from</span> <span class="nn">.Pulse</span> <span class="k">import</span> <span class="n">LikelihoodError</span>
 
 <span class="kn">from</span> <span class="nn">.Prior</span> <span class="k">import</span> <span class="n">Prior</span>
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
+<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="k">import</span> <span class="n">StrictBoundsError</span>
 
 <div class="viewcode-block" id="PriorError"><a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.PriorError">[docs]</a><span class="k">class</span> <span class="nc">PriorError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Raised if there is a problem with the value of the log-prior. &quot;&quot;&quot;</span></div>
@@ -221,13 +223,16 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">Likelihood</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for likelihood object.&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span> <span class="o">=</span> <span class="n">likelihood</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span> <span class="o">=</span> <span class="n">likelihood</span>
+        <span class="c1"># no inverse sampling but best to update before prior check</span>
+        <span class="c1"># and then revert if not in prior support</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">Prior</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for prior object.&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span> <span class="o">=</span> <span class="n">prior</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span> <span class="o">=</span> <span class="n">prior</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -242,9 +247,19 @@
 <div class="viewcode-block" id="Posterior.__call__"><a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.Posterior.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Special method to make callable instances to feed to ``emcee``.</span>
 
-<span class="sd">        :return: The logarithm of the posterior density (up to a</span>
-<span class="sd">                 normalising constant), evaluated at :obj:`p`.</span>
+<span class="sd">        :returns:</span>
+<span class="sd">            The logarithm of the posterior density (up to a normalising</span>
+<span class="sd">            constant), evaluated at :obj:`p`.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="o">.</span><span class="n">vector</span> <span class="c1"># make our own cache here</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ParameterSubspace</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">StrictBoundsError</span><span class="p">:</span>
+            <span class="n">ParameterSubspace</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span>
+
         <span class="n">lp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">lp</span><span class="p">):</span>
@@ -252,11 +267,12 @@
 
         <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">lp</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">ll</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="n">ll</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">()</span>
             <span class="k">except</span> <span class="n">LikelihoodError</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
                 <span class="k">raise</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">ParameterSubspace</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
             <span class="n">ll</span> <span class="o">=</span> <span class="mf">0.0</span>
 
         <span class="k">return</span> <span class="n">ll</span> <span class="o">+</span> <span class="n">lp</span></div></div>

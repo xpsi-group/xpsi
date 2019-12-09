@@ -15,7 +15,7 @@ parameters; the regions do not need to be related via antipodal reflection
 symmetry.
 
 .. autoclass:: xpsi.TwoHotRegions.TwoHotRegions
-    :members: embed, integrate, print_settings, num_params, bounds, cellArea
+    :members: embed, integrate, print_settings, cellArea
     :show-inheritance:
 
 .. autoclass:: xpsi.TwoHotRegions.PulseError

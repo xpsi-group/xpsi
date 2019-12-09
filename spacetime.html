@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Spacetime &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Spacetime &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -220,7 +220,7 @@
 <p>Instances of <a class="reference internal" href="#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a> are ambient Schwarzschild spacetimes in which photospheres are embedded.</p>
 <dl class="class">
 <dt id="xpsi.Spacetime.Spacetime">
-<em class="property">class </em><code class="descclassname">xpsi.Spacetime.</code><code class="descname">Spacetime</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Spacetime.html#Spacetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Spacetime.Spacetime" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Spacetime.</code><code class="descname">Spacetime</code><span class="sig-paren">(</span><em>bounds</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Spacetime.html#Spacetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Spacetime.Spacetime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>The ambient Schwarzschild spacetime and Earth coordinates.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -228,129 +228,105 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>num_params</strong> (<em>int</em>) – Number of free spacetime parameters.</li>
-<li><strong>bounds</strong> (<em>list</em>) – Tuples of hard bounds on parameters.</li>
+<li><strong>bounds</strong> (<em>dict</em>) – Tuples of hard bounds on parameters with keys matching the names
+in the initialiser body. A <code class="docutils literal notranslate"><span class="pre">None</span></code> bound will be interpreted as
+fixed variable, in which case a value must be supplied in the
+corresponding dictionary. If there is no entry for a default
+parameter, it will be assumed to be fixed, but an exception
+will be raised if there is no associated value.</li>
+<li><strong>values</strong> (<em>dict</em>) – Values of fixed parameters or initial values for free parameters,
+with keys matching the names in the initialiser body. If there is
+no entry for a default parameter, no initial value will be specified,
+but an exception will be raised if there is also no bound specified.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>The default parameter order is:</p>
+<p>We define a property for parameters and combinations of parameters to
+shortcut access, given that this subspace is passed to other subspaces
+for model computation. We would like to access the values with fewer
+characters than <code class="docutils literal notranslate"><span class="pre">self[&lt;name&gt;]</span></code>.</p>
+<p>Required parameter names
+- - - - - - - - - - - - -</p>
 <blockquote>
-<div><ul class="simple">
-<li>Earth distance</li>
-<li>(rotationally deformed) gravitational mass</li>
-<li>coordinate equatorial radius</li>
-<li>inclination of Earth to stellar rotation axis</li>
-</ul>
-</div></blockquote>
+<div>&gt; frequency
+&gt; mass
+&gt; radius
+&gt; distance
+&gt; inclination</div></blockquote>
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.M">
 <code class="descname">M</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.M" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the (rotationally deformed) gravitational mass.</p>
+<dd><p>Get the (rotationally deformed) gravitational mass in SI.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.Omega">
 <code class="descname">Omega</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.Omega" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the coordinate <em>angular</em> rotation frequency.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>AttributeError</strong> – If the coordinate angular frequency is not
-set in the initialiser of a custom subclass, or
-in a custom <a class="reference internal" href="#xpsi.Spacetime.Spacetime.update" title="xpsi.Spacetime.Spacetime.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> method of a subclass.</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.R">
 <code class="descname">R</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.R" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coordinate equatorial radius.</p>
+<dd><p>Get the coordinate equatorial radius in SI.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xpsi.Spacetime.Spacetime.S">
-<code class="descname">S</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.S" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the coordinate rotation frequency.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>AttributeError</strong> – If the coordinate angular frequency is not
-set in the initialiser of a custom subclass, or
-in a custom <a class="reference internal" href="#xpsi.Spacetime.Spacetime.update" title="xpsi.Spacetime.Spacetime.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> method of a subclass.</td>
-</tr>
-</tbody>
-</table>
+<dt id="xpsi.Spacetime.Spacetime.R_r_s">
+<code class="descname">R_r_s</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.R_r_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the ratio of the equatorial radius to the Schwarzschild radius.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xpsi.Spacetime.Spacetime.bounds">
-<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of tuples of hard parameter bounds.</p>
+<dt id="xpsi.Spacetime.Spacetime.d">
+<code class="descname">d</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the distance of the Earth to the star in SI.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Spacetime.Spacetime.d_sq">
+<code class="descname">d_sq</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.d_sq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the squared distance of the Earth to the star in SI.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Spacetime.Spacetime.epsilon">
+<code class="descname">epsilon</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.epsilon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the derived parameter <code class="docutils literal notranslate"><span class="pre">epsilon</span></code> for universality relation.</p>
+<p>See Morsink et al. (2007), and AlGendy &amp; Morsink (2014).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Spacetime.Spacetime.f">
+<code class="descname">f</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the coordinate rotation frequency.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.i">
 <code class="descname">i</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.i" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the inclination of the Earth to the rotational axis.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Spacetime.Spacetime.num_params">
-<code class="descname">num_params</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.num_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of spacetime parameters.</p>
+<dd><p>Read the inclination of the Earth to the rotational axis.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.r_g">
 <code class="descname">r_g</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.r_g" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the Schwarzschild gravitational radius.</p>
+<dd><p>Get the Schwarzschild gravitational radius in SI.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.r_s">
 <code class="descname">r_s</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.r_s" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the Schwarzschild radius.</p>
+<dd><p>Get the Schwarzschild radius in SI.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="xpsi.Spacetime.Spacetime.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>d</em>, <em>M</em>, <em>R</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Spacetime.html#Spacetime.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Spacetime.Spacetime.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the spacetime properties.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>M</strong> – The (rotationally deformed) gravitational mass (solar masses).</li>
-<li><strong>R</strong> – The coordinate equatorial radius (km).</li>
-<li><strong>i</strong> – Inclination of the Earth to the rotational axis (radians).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><strong>TypeError</strong> – If the number of arguments passed based on the
-<code class="docutils literal notranslate"><span class="pre">num_params</span></code> property does not match the
-number of arguments in the function signature.</li>
-<li><strong>AttributeError</strong> – If the coordinate angular frequency is not
-set in the initialiser of a custom subclass, or
-in a custom <a class="reference internal" href="#xpsi.Spacetime.Spacetime.update" title="xpsi.Spacetime.Spacetime.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> method of a subclass.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If subclassing to handle a free spin parameter, take care with
-the argument (parameter) ordering, and set the rotation frequency
-before calling <code class="docutils literal notranslate"><span class="pre">super(CustomSpacetime,</span> <span class="pre">self).update()</span></code>.</p>
-</div>
+<dl class="attribute">
+<dt id="xpsi.Spacetime.Spacetime.zeta">
+<code class="descname">zeta</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.zeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the derived parameter <code class="docutils literal notranslate"><span class="pre">zeta</span></code> for universality relation.</p>
+<p>See Morsink et al. (2007), and AlGendy &amp; Morsink (2014).</p>
 </dd></dl>
 
 </dd></dl>

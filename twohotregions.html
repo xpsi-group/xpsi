@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TwoHotRegions &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>TwoHotRegions &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -227,33 +227,42 @@ parameters; the regions do not need to be related via antipodal reflection
 symmetry.</p>
 <dl class="class">
 <dt id="xpsi.TwoHotRegions.TwoHotRegions">
-<em class="property">class </em><code class="descclassname">xpsi.TwoHotRegions.</code><code class="descname">TwoHotRegions</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>antipodal_symmetry=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/TwoHotRegions.html#TwoHotRegions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.TwoHotRegions.</code><code class="descname">TwoHotRegions</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/TwoHotRegions.html#TwoHotRegions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.HotRegion.HotRegion</span></code></a></p>
-<p>Two photospheric hot regions, which may or may not be antipodal.</p>
+<p>Two photospheric hot regions, related via antipodal reflection symmetry.</p>
 <p>The <em>primary</em> hot region is represented by the class from which the
 <a class="reference internal" href="#xpsi.TwoHotRegions.TwoHotRegions" title="xpsi.TwoHotRegions.TwoHotRegions"><code class="xref py py-class docutils literal notranslate"><span class="pre">TwoHotRegions.TwoHotRegions</span></code></a> derives – i.e., the
 <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion.HotRegion</span></code></a> class.</p>
-<p>The <em>secondary</em> hot region is represented by adding behaviour to this parent
-class. This secondary hot region may or may not be <em>antipodal</em>.</p>
 <p>This class differs from the <a class="reference internal" href="hotregions.html#xpsi.HotRegions.HotRegions" title="xpsi.HotRegions.HotRegions"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegions.HotRegions</span></code></a> class because
-it works specifically for two hot regions of equal complexity via
-inheritance.</p>
-<dl class="attribute">
-<dt id="xpsi.TwoHotRegions.TwoHotRegions.bounds">
-<code class="descname">bounds</code><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions.bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of tuples of hard parameter bounds.</p>
-</dd></dl>
-
+it works <em>specifically</em> for two hot regions, via inheritance, where one
+is derived from the other purely via antipodal reflection symmetry.
+The <em>secondary</em> hot region is handled by adding behaviour to the parent
+class.</p>
+<p>This means that all parameters describing the secondary are
+derived from the primary: the secondary is antipodal and given by
+an equatorial reflection of the primary, followed by a rotation
+by <span class="math notranslate nohighlight">\(\pi\)</span> radians about the rotation axis. The mirroring is
+thus with respect to a 2-plane through the coordinate origin
+which is perpendicular to the line through the origin and the
+primary centre.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> (<em>dict</em>) – Keyword arguments passed to <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion.HotRegion</span></code></a> class.</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="xpsi.TwoHotRegions.TwoHotRegions.cellArea">
 <code class="descname">cellArea</code><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions.cellArea" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the areas of cells in the secondary-spot mesh.</p>
+<dd><p>Get the areas of cells in the secondary mesh.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="xpsi.TwoHotRegions.TwoHotRegions.embed">
-<code class="descname">embed</code><span class="sig-paren">(</span><em>spacetime</em>, <em>p</em>, <em>fast_total_counts</em>, <em>threads</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/TwoHotRegions.html#TwoHotRegions.embed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions.embed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Embed the spots.</p>
+<code class="descname">embed</code><span class="sig-paren">(</span><em>spacetime</em>, <em>photosphere</em>, <em>fast_total_counts</em>, <em>threads</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/TwoHotRegions.html#TwoHotRegions.embed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions.embed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Embed the hot regions.</p>
 </dd></dl>
 
 <dl class="method">
@@ -268,10 +277,8 @@ azimuthal invariance of the radiation field of the hot region.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</li>
-<li><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies
-in keV.</li>
-<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for pulse
-integration.</li>
+<li><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV.</li>
+<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for pulse integration.</li>
 </ul>
 </td>
 </tr>
@@ -279,15 +286,9 @@ integration.</li>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="xpsi.TwoHotRegions.TwoHotRegions.num_params">
-<code class="descname">num_params</code><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions.num_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of dimensions of the parameter subspace.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="xpsi.TwoHotRegions.TwoHotRegions.print_settings">
-<code class="descname">print_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/TwoHotRegions.html#TwoHotRegions.print_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions.print_settings" title="Permalink to this definition">¶</a></dt>
+<code class="descname">print_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions.print_settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print numerical settings.</p>
 </dd></dl>
 
@@ -295,7 +296,7 @@ integration.</li>
 
 <dl class="class">
 <dt id="xpsi.TwoHotRegions.PulseError">
-<em class="property">class </em><code class="descclassname">xpsi.TwoHotRegions.</code><code class="descname">PulseError</code><a class="reference internal" href="_modules/xpsi/HotRegion.html#PulseError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.TwoHotRegions.PulseError" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.TwoHotRegions.</code><code class="descname">PulseError</code><a class="headerlink" href="#xpsi.TwoHotRegions.PulseError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
 <p>Raised if a problem was encountered during signal integration.</p>
 </dd></dl>

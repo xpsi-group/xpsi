@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Prior &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Prior &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -190,7 +190,7 @@
   <h1>Source code for xpsi.Prior</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Prior&quot;</span><span class="p">,</span> <span class="s2">&quot;PriorError&quot;</span><span class="p">,</span> <span class="s2">&quot;BoundsError&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Prior&quot;</span><span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_comm</span><span class="p">,</span> <span class="n">_size</span><span class="p">,</span> <span class="n">_rank</span> <span class="c1"># of MPI.COMM_WORLD</span>
 
@@ -200,6 +200,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">make_verbose</span>
 
 <span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
 
 <div class="viewcode-block" id="Prior"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior">[docs]</a><span class="k">class</span> <span class="nc">Prior</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; The joint prior distribution.</span>
@@ -211,43 +212,66 @@
 <span class="sd">    The distribution must be integrable (proper) and is thus</span>
 <span class="sd">    *usually* bounded (compactly supported on a space).</span>
 
-<span class="sd">    :param list bounds: The set of 2-tuples of hard parameter bounds. The</span>
-<span class="sd">                        list has length :math:`d`, the dimensionality of</span>
-<span class="sd">                        the space :math:`\mathbb{R}^{d}`. Used to rapidly</span>
-<span class="sd">                        evaluate for finiteness.</span>
+<span class="sd">    In the ``__call__()`` method the parameter values are checked against the</span>
+<span class="sd">    hard parameter bounds of the prior support.</span>
 
 <span class="sd">    .. note:: If you wish to check bounds manually, implement</span>
 <span class="sd">              the ``__init__()`` and ``__call__()`` methods, and do not</span>
-<span class="sd">              access the default code (e.g., via ``super()``).</span>
+<span class="sd">              access the default code (e.g., via ``super()``) or only</span>
+<span class="sd">              use the default code for some parameters.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
 
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span> <span class="o">=</span> <span class="n">bounds</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        You might want to overwrite this initialiser to do some custom</span>
+<span class="sd">        setup for priors whose handling is moreinvolved.</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ndims</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the dimensionality of the parameter space. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Prior.__call__"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Evaluate distribution at :obj:`p` and store it as a property.</span>
-
-<span class="sd">        :param list p: Vector of model parameter values.</span>
+<span class="sd">        If you overwrite this initialiser, you do not need to take parameters</span>
+<span class="sd">        as an argument if you prefer not to. When the instance is passed to</span>
+<span class="sd">        a likelihood object, the likelihood object will use itself to store</span>
+<span class="sd">        a reference to the parameters to ensure interoperability.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">):</span>
-            <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Number of parameter dimensions. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">)</span> <span class="c1"># redirect</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get parameter subspace object. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span>
+
+    <span class="nd">@parameters</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ParameterSubspace</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;A ParameterSubspace object is required.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span> <span class="o">=</span> <span class="n">obj</span>
+
+<div class="viewcode-block" id="Prior.__call__"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluate distribution at :obj:`p` and store it as a property.</span>
+
+<span class="sd">        :param list p:</span>
+<span class="sd">            Vector of model parameter values, but typically unused.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">param</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                     <span class="k">return</span> <span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">inf</span>
 
         <span class="k">return</span> <span class="mf">0.0</span></div>
 
 <div class="viewcode-block" id="Prior.inverse_sample"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.inverse_sample">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">inverse_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">inverse_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Draw sample uniformly from the distribution via inverse sampling.</span>
 
 <span class="sd">        By default, implements a flat density between bounds. If ``None`` is</span>
@@ -257,16 +281,33 @@
 <span class="sd">        :param iterable hypercube:</span>
 <span class="sd">            A pseudorandom point in an n-dimensional hypercube.</span>
 
-<span class="sd">        :return: A parameter *list*.</span>
+<span class="sd">        :returns: A parameter *list*.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            If you call this base method via the ``super()`` built-in, the</span>
+<span class="sd">            current parameter values will be cached when new values are</span>
+<span class="sd">            assigned. If you then assign to a parameter again, the current</span>
+<span class="sd">            value will be automatically cached, thus overwriting the cache</span>
+<span class="sd">            established in the body of this present method. If you want to</span>
+<span class="sd">            call this present method and then assign again to a parameter,</span>
+<span class="sd">            you can restore the cached value so that it is pushed to the</span>
+<span class="sd">            cache when you reassign.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">hypercube</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">hypercube</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hypercube</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bounds</span><span class="p">):</span>
-            <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
-                <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">hypercube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">):</span>
+            <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span><span class="p">:</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">bounds</span>
+                <span class="n">param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">hypercube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Compact support required.&#39;</span><span class="p">)</span>
+
+            <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">value</span>
 
         <span class="k">return</span> <span class="n">p</span></div>
 
@@ -284,10 +325,15 @@
 
 <div class="viewcode-block" id="Prior.transform"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.transform">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A transformation for post-processing. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; A transformation for post-processing.</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="sd">        :returns: Transformed vector ``p`` where ``len(p) &gt; len(self)``.</span>
+<span class="sd">        :rtype: *list*</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># it is suggested that you copy like this when you overwrite</span>
+        <span class="c1"># to make a mutable container that can be appended to and returned</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Define a transformation.&#39;</span><span class="p">)</span></div>
 
@@ -295,14 +341,13 @@
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndraws</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Draw samples uniformly from the prior via inverse sampling.</span>
 
-<span class="sd">        :param ndraws: Number of draws.</span>
-<span class="sd">        :type ndraws: int</span>
+<span class="sd">        :param int ndraws: Number of draws.</span>
 <span class="sd">        :return: (samples, acceptance fraction)</span>
-<span class="sd">        :rtype: (*ndarray[ndraws, self.ndims]*, *float*)</span>
+<span class="sd">        :rtype: (*ndarray[ndraws, len(self)]*, *float*)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ndraws</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ndraws</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">transform</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -315,7 +360,7 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">samples</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">ndraws</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span>
-                                <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+                                <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">yield</span> <span class="s1">&#39;An error occurred when handling the output of a custom &#39;</span>\
                   <span class="s1">&#39;method&#39;</span>
@@ -336,7 +381,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">redraw</span> <span class="o">=</span> <span class="n">ndraws</span>
                 <span class="n">redraw</span> <span class="o">-=</span> <span class="n">finite_counter</span>
-                <span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">redraw</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">redraw</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">if</span> <span class="n">transform</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
@@ -353,7 +398,6 @@
             <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">yield</span> <span class="n">samples</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">finite_counter</span><span class="p">)</span> <span class="o">/</span> <span class="n">counter</span></div>
-
 
 <div class="viewcode-block" id="Prior.estimate_hypercube_frac"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.estimate_hypercube_frac">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Estimating fractional hypervolume of the unit hypercube &#39;</span>
                   <span class="s1">&#39;with finite prior density:&#39;</span><span class="p">,</span>

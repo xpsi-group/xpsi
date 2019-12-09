@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Sample &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Sample &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -255,7 +255,7 @@
             <span class="kn">from</span> <span class="nn">xpsi.EnsembleSampler</span> <span class="k">import</span> <span class="n">EnsembleSampler</span>
 
             <span class="c1"># Initialise emcee sampler</span>
-            <span class="n">sampler</span> <span class="o">=</span> <span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">num_params</span><span class="p">,</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">),</span>
                                       <span class="n">posterior</span> <span class="o">=</span> <span class="n">func</span><span class="p">,</span>
                                       <span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span><span class="p">,</span>
                                       <span class="n">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="p">,</span>
@@ -267,7 +267,7 @@
         <span class="kn">from</span> <span class="nn">xpsi.EnsembleSampler</span> <span class="k">import</span> <span class="n">EnsembleSampler</span>
 
         <span class="c1"># Initialise emcee sampler</span>
-        <span class="n">sampler</span> <span class="o">=</span> <span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="n">likelihood</span><span class="o">.</span><span class="n">num_params</span><span class="p">,</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">),</span>
                                   <span class="n">posterior</span> <span class="o">=</span> <span class="n">posterior</span><span class="p">,</span>
                                   <span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span><span class="p">,</span>
                                   <span class="n">pool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -301,9 +301,9 @@
     <span class="k">if</span> <span class="n">check_kwargs</span><span class="p">:</span>
         <span class="n">likelihood</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="o">**</span><span class="n">check_kwargs</span><span class="p">)</span>
 
-    <span class="n">sampler</span> <span class="o">=</span> <span class="n">NestedSampler</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">num_params</span><span class="p">,</span>
-                                  <span class="n">likelihood</span><span class="p">,</span>
-                                  <span class="n">prior</span><span class="p">)</span>
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">NestedSampler</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">),</span>
+                            <span class="n">likelihood</span><span class="p">,</span>
+                            <span class="n">prior</span><span class="p">)</span>
     <span class="n">sampler</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 

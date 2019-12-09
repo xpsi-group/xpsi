@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Likelihood &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Likelihood &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -221,8 +221,8 @@
 processes for evaluation of a likelihood function.</p>
 <dl class="class">
 <dt id="xpsi.Likelihood.Likelihood">
-<em class="property">class </em><code class="descclassname">xpsi.Likelihood.</code><code class="descname">Likelihood</code><span class="sig-paren">(</span><em>star</em>, <em>pulses</em>, <em>threads=1</em>, <em>llzero=-1e+90</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="parameterSpace.html#xpsi.ParameterSpace.ParameterSpace" title="xpsi.ParameterSpace.ParameterSpace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSpace.ParameterSpace</span></code></a></p>
+<em class="property">class </em><code class="descclassname">xpsi.Likelihood.</code><code class="descname">Likelihood</code><span class="sig-paren">(</span><em>star</em>, <em>pulses</em>, <em>threads=1</em>, <em>llzero=-1e+90</em>, <em>externally_updated=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>A container for all objects related to likelihood evaluation.</p>
 <p>A collective for objects pertaining to a statistical analysis of
 X-ray pulses. These objects include X-ray data (sub)sets, the model
@@ -233,26 +233,25 @@ model backgrounds.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>star</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="star.html#xpsi.Star.Star" title="xpsi.Star.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>. This instance
-is the model star.</li>
-<li><strong>pulses</strong> (<em>list</em>) – A list of <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse" title="xpsi.Pulse.Pulse"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pulse</span></code></a>
-instances.</li>
-<li><strong>threads</strong> (<em>int</em>) – The number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn for
-integration. The default number of threads used
-by low-level integration routines is <code class="docutils literal notranslate"><span class="pre">1</span></code>. The
-number can be increased if the parallelisation
-paradigm on a cluster is changed such that, e.g.,
-per node there is one thread per CPU, instead of
-one <code class="docutils literal notranslate"><span class="pre">OpenMPI</span></code> process. It is recommended that
-<a class="reference internal" href="#xpsi.Likelihood.Likelihood.threads" title="xpsi.Likelihood.Likelihood.threads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">threads</span></code></a> is <code class="docutils literal notranslate"><span class="pre">1</span></code>; more threads are useful
-when performing integrals at high resolution, but
-not necessarily when integrating <em>many</em> times as
-when sampling, because the MPI parallelisation
+<li><strong>star</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="star.html#xpsi.Star.Star" title="xpsi.Star.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>. This instance is the model star.</li>
+<li><strong>pulses</strong> (<em>list</em>) – A list of <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse" title="xpsi.Pulse.Pulse"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pulse</span></code></a> instances.</li>
+<li><strong>threads</strong> (<em>int</em>) – The number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn for integration. The default
+number of threads used by low-level integration routines is <code class="docutils literal notranslate"><span class="pre">1</span></code>. The
+number can be increased if the parallelisation paradigm on a cluster
+is changed such that, e.g., per node there is one thread per CPU,
+instead of one <code class="docutils literal notranslate"><span class="pre">OpenMPI</span></code> process. It is recommended that
+<a class="reference internal" href="#xpsi.Likelihood.Likelihood.threads" title="xpsi.Likelihood.Likelihood.threads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">threads</span></code></a> is <code class="docutils literal notranslate"><span class="pre">1</span></code>; more threads are useful when performing
+integrals at high resolution, but not necessarily when integrating
+<em>many</em> times as when sampling, because the MPI parallelisation
 paradigm is invoked.</li>
-<li><strong>llzero</strong> (<em>float</em>) – The minimum log-likelihood setting for
-MultiNest. Points whose log-likelihood is lower
-than this value are ignored, which is useful for
-defining complicated priors.</li>
+<li><strong>llzero</strong> (<em>float</em>) – The minimum log-likelihood setting for MultiNest. Points whose
+log-likelihood is lower than this value are ignored, which is useful
+for defining complicated priors.</li>
+<li><strong>externally_updated</strong> (<em>bool</em>) – Update the parameter values upon call to the likelihood object?
+If so, then pass <code class="docutils literal notranslate"><span class="pre">False</span></code>. A parameter vector then needs to be passed
+to the likelihood object. Otherwise, safely assume that the
+new parameter values are set externally, e.g., in a prior object
+when inverse sampling the prior for nested sampling.</li>
 </ul>
 </td>
 </tr>
@@ -260,7 +259,7 @@ defining complicated priors.</li>
 </table>
 <dl class="method">
 <dt id="xpsi.Likelihood.Likelihood.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em>, <em>reinitialise=False</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>p=None</em>, <em>reinitialise=False</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the logarithm of the joint likelihood over all pulsations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -269,7 +268,8 @@ defining complicated priors.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>p</strong> (<em>list</em>) – Parameter vector.</li>
 <li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Call self.reinitialise()?</li>
-<li><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.</li>
+<li><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.
+To faciliate this, all parameter caches are cleared.</li>
 </ul>
 </td>
 </tr>
@@ -282,14 +282,8 @@ defining complicated priors.</li>
 
 <dl class="method">
 <dt id="xpsi.Likelihood.Likelihood.__str__">
-<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__str__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print the model objects in order, with parameter numbers.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Likelihood.Likelihood.bounds">
-<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of tuples of hard parameter bounds.</p>
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a summary of the parameters constituting the subspace.</p>
 </dd></dl>
 
 <dl class="method">
@@ -330,12 +324,6 @@ The <code class="docutils literal notranslate"><span class="pre">hypercube_point
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xpsi.Likelihood.Likelihood.num_params">
-<code class="descname">num_params</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.num_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of dimensions of the parameter space.</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="xpsi.Likelihood.Likelihood.pulses">
 <code class="descname">pulses</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.pulses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the list of <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse" title="xpsi.Pulse.Pulse"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pulse</span></code></a> instances.</p>
@@ -366,26 +354,11 @@ order of magnitude.</p>
 <li><strong>p</strong> (<em>list</em>) – Parameter vector.</li>
 <li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Call self.reinitialise()?</li>
 <li><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) – Keyword arguments propagated to custom pulse synthesis methods.
+Examples of such arguments include exposure times or
+required total count numbers (see example notebooks0.</li>
 </ul>
 </td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Likelihood.Likelihood.theta">
-<code class="descname">theta</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.theta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the last parameter vector for joint likelihood evaluation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Setter:</th><td class="field-body">Stores the last parameter vector so that if only the fast
-parameters change, recompute only the fast contribution the
-likelihood.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> – A list of model parameters values.</td>
 </tr>
 </tbody>
 </table>
@@ -397,14 +370,6 @@ likelihood.</td>
 <dd><p>Get the number of threads spawned for integration.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
-<dt id="xpsi.Likelihood.TagError">
-<em class="property">class </em><code class="descclassname">xpsi.Likelihood.</code><code class="descname">TagError</code><a class="reference internal" href="_modules/xpsi/Likelihood.html#TagError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.TagError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
-<p>Raised if an ordered list of photosphere objects and an ordered list
-of pulse objects do have matching identification tags.</p>
 </dd></dl>
 
 </div>

@@ -1,0 +1,17 @@
+.. module:: xpsi.Parameter
+
+.. _parameter:
+
+Parameter
+=========
+
+Instances of :class:`~.Parameter.Parameter` represent *abstract*
+model parameters, both free and fixed/derived variables.
+
+.. autoclass:: xpsi.Parameter.Parameter
+    :members:
+    :special-members:
+
+.. autoclass:: xpsi.Parameter.Derive
+    :members:
+    :special-members:

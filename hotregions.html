@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HotRegions &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>HotRegions &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -226,9 +226,10 @@ photon pulses from a pair of spots which may be related under some model.</p>
 <em class="property">class </em><code class="descclassname">xpsi.HotRegions.</code><code class="descname">HotRegions</code><span class="sig-paren">(</span><em>hotregions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegions.html#HotRegions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegions.HotRegions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>Two photospheric hot regions, where the hot regions are objects.</p>
-<p>This class could be extended in principle to operate with multiple hot
-regions, but the computational expense scales ~linearly with number.
-Applications thus far have used two distinct hot regions with equal
+<p>The hot regions can be equal or different in parametrisation complexity.</p>
+<p>This class could be trivially extended in principle to operate with
+multiple hot regions, but the computational expense scales ~linearly with
+number. Applications thus far have used two distinct hot regions with equal
 and unequal complexity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -238,15 +239,9 @@ and unequal complexity.</p>
 </tr>
 </tbody>
 </table>
-<dl class="attribute">
-<dt id="xpsi.HotRegions.HotRegions.bounds">
-<code class="descname">bounds</code><a class="headerlink" href="#xpsi.HotRegions.HotRegions.bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of tuples of hard parameter bounds.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="xpsi.HotRegions.HotRegions.embed">
-<code class="descname">embed</code><span class="sig-paren">(</span><em>spacetime</em>, <em>p</em>, <em>fast_total_counts</em>, <em>threads</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegions.html#HotRegions.embed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegions.HotRegions.embed" title="Permalink to this definition">¶</a></dt>
+<code class="descname">embed</code><span class="sig-paren">(</span><em>spacetime</em>, <em>photosphere</em>, <em>fast_total_counts</em>, <em>threads</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegions.html#HotRegions.embed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegions.HotRegions.embed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Embed the hot regions.</p>
 </dd></dl>
 
@@ -262,21 +257,13 @@ azimuthal invariance of the radiation field.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>st</strong> – Instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</li>
-<li><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies
-in keV.</li>
-<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for pulse
-integration.</li>
+<li><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV.</li>
+<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads for pulse integration.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.HotRegions.HotRegions.num_params">
-<code class="descname">num_params</code><a class="headerlink" href="#xpsi.HotRegions.HotRegions.num_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of dimensions of the parameter subspace.</p>
 </dd></dl>
 
 <dl class="method">

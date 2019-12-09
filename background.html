@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Background &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Background &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -220,28 +220,32 @@
 <p>Instances of <a class="reference internal" href="#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a> are objects representing model backgrounds.</p>
 <dl class="class">
 <dt id="xpsi.Background.Background">
-<em class="property">class </em><code class="descclassname">xpsi.Background.</code><code class="descname">Background</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Background.html#Background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Background.Background" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Background.</code><code class="descname">Background</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Background.html#Background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Background.Background" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
-<p>Base class for astronomical X-ray background.</p>
+<p>Base class for astronomical photon X-ray background.</p>
 <dl class="method">
 <dt id="xpsi.Background.Background.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em>, <em>energy_edges</em>, <em>phases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Background.html#Background.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Background.Background.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate the background at store it as an attribute.</p>
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>energy_edges</em>, <em>phases</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Background.html#Background.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Background.Background.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the background and store it as an attribute.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>p</strong> (<em>list</em>) – Background parameters.</li>
-<li><strong>energy_edges</strong> – The <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energy edges the
-photon events span.</li>
-<li><strong>phases</strong> – The <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phases (in cycles) the
-pulse was evaluated at.</li>
+<li><strong>energy_edges</strong> – The <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energy edges the photon events span.</li>
+<li><strong>phases</strong> – The <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phases (in cycles) the pulse was
+evaluated at.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Notice that the background can be phase-dependent, and that the
+cached background must be a two-dimensional matrix equal in shape
+to that of the pulse signal incident on the telescope.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -251,18 +255,6 @@ pulse was evaluated at.</li>
 <p>Note that the area units need to be consistent with the units
 the effective area is expressed in within the response matrix of
 the instrument object.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Background.Background.bounds">
-<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Background.Background.bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of tuples of hard parameter bounds.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Background.Background.num_params">
-<code class="descname">num_params</code><a class="headerlink" href="#xpsi.Background.Background.num_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of dimensions of the parameter subspace.</p>
 </dd></dl>
 
 </dd></dl>

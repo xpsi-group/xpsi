@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Likelihood &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Likelihood &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -194,7 +194,7 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Likelihood&quot;</span><span class="p">,</span> <span class="s2">&quot;TagError&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Likelihood&quot;</span><span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_rank</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">make_verbose</span>
@@ -206,19 +206,12 @@
 <span class="kn">from</span> <span class="nn">.Pulse</span> <span class="k">import</span> <span class="n">Pulse</span><span class="p">,</span> <span class="n">LikelihoodError</span>
 <span class="kn">from</span> <span class="nn">.Background</span> <span class="k">import</span> <span class="n">Background</span>
 <span class="kn">from</span> <span class="nn">.Prior</span> <span class="k">import</span> <span class="n">Prior</span>
-<span class="kn">from</span> <span class="nn">.ParameterSpace</span> <span class="k">import</span> <span class="n">ParameterSpace</span>
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">HotRegion</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">TwoHotRegions</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Elsewhere</span>
 
-<div class="viewcode-block" id="TagError"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.TagError">[docs]</a><span class="k">class</span> <span class="nc">TagError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised if an ordered list of photosphere objects and an ordered list</span>
-<span class="sd">    of pulse objects do have matching identification tags.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span></div>
-
-<div class="viewcode-block" id="Likelihood"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood">[docs]</a><span class="k">class</span> <span class="nc">Likelihood</span><span class="p">(</span><span class="n">ParameterSpace</span><span class="p">):</span>
+<div class="viewcode-block" id="Likelihood"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood">[docs]</a><span class="k">class</span> <span class="nc">Likelihood</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A container for all objects related to likelihood evaluation.</span>
 
 <span class="sd">    A collective for objects pertaining to a statistical analysis of</span>
@@ -226,44 +219,47 @@
 <span class="sd">    instruments used to acquire these data sets, and the model star and</span>
 <span class="sd">    model backgrounds.</span>
 
-<span class="sd">    :param obj star: An instance of :class:`~.Star.Star`. This instance</span>
-<span class="sd">                     is the model star.</span>
+<span class="sd">    :param obj star:</span>
+<span class="sd">        An instance of :class:`~.Star.Star`. This instance is the model star.</span>
 
-<span class="sd">    :param list pulses: A list of :class:`~.Pulse.Pulse`</span>
-<span class="sd">                        instances.</span>
+<span class="sd">    :param list pulses: A list of :class:`~.Pulse.Pulse` instances.</span>
 
-<span class="sd">    :param int threads: The number of ``OpenMP`` threads to spawn for</span>
-<span class="sd">                        integration. The default number of threads used</span>
-<span class="sd">                        by low-level integration routines is ``1``. The</span>
-<span class="sd">                        number can be increased if the parallelisation</span>
-<span class="sd">                        paradigm on a cluster is changed such that, e.g.,</span>
-<span class="sd">                        per node there is one thread per CPU, instead of</span>
-<span class="sd">                        one ``OpenMPI`` process. It is recommended that</span>
-<span class="sd">                        :obj:`threads` is ``1``; more threads are useful</span>
-<span class="sd">                        when performing integrals at high resolution, but</span>
-<span class="sd">                        not necessarily when integrating *many* times as</span>
-<span class="sd">                        when sampling, because the MPI parallelisation</span>
-<span class="sd">                        paradigm is invoked.</span>
+<span class="sd">    :param int threads:</span>
+<span class="sd">        The number of ``OpenMP`` threads to spawn for integration. The default</span>
+<span class="sd">        number of threads used by low-level integration routines is ``1``. The</span>
+<span class="sd">        number can be increased if the parallelisation paradigm on a cluster</span>
+<span class="sd">        is changed such that, e.g., per node there is one thread per CPU,</span>
+<span class="sd">        instead of one ``OpenMPI`` process. It is recommended that</span>
+<span class="sd">        :obj:`threads` is ``1``; more threads are useful when performing</span>
+<span class="sd">        integrals at high resolution, but not necessarily when integrating</span>
+<span class="sd">        *many* times as when sampling, because the MPI parallelisation</span>
+<span class="sd">        paradigm is invoked.</span>
 
-<span class="sd">    :param float llzero: The minimum log-likelihood setting for</span>
-<span class="sd">                         MultiNest. Points whose log-likelihood is lower</span>
-<span class="sd">                         than this value are ignored, which is useful for</span>
-<span class="sd">                         defining complicated priors.</span>
+<span class="sd">    :param float llzero:</span>
+<span class="sd">        The minimum log-likelihood setting for MultiNest. Points whose</span>
+<span class="sd">        log-likelihood is lower than this value are ignored, which is useful</span>
+<span class="sd">        for defining complicated priors.</span>
+
+<span class="sd">    :param bool externally_updated:</span>
+<span class="sd">        Update the parameter values upon call to the likelihood object?</span>
+<span class="sd">        If so, then pass ``False``. A parameter vector then needs to be passed</span>
+<span class="sd">        to the likelihood object. Otherwise, safely assume that the</span>
+<span class="sd">        new parameter values are set externally, e.g., in a prior object</span>
+<span class="sd">        when inverse sampling the prior for nested sampling.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">star</span><span class="p">,</span> <span class="n">pulses</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">llzero</span><span class="o">=-</span><span class="mf">1.0e90</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">star</span><span class="p">,</span> <span class="n">pulses</span><span class="p">,</span>
+                 <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">llzero</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0e90</span><span class="p">,</span>
+                 <span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+
+        <span class="c1"># only one star object for this version</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">star</span><span class="p">,</span> <span class="n">Star</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a Star object.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_star</span> <span class="o">=</span> <span class="n">star</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="nb">iter</span><span class="p">(</span><span class="n">pulses</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulses</span><span class="p">,</span> <span class="n">Pulse</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span> <span class="o">=</span> <span class="p">[</span><span class="n">pulses</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a pulse object.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulses</span><span class="p">,</span> <span class="n">Pulse</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span> <span class="o">=</span> <span class="p">[</span><span class="n">pulses</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="n">pulses</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pulse</span><span class="p">,</span> <span class="n">Pulse</span><span class="p">):</span>
@@ -273,25 +269,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">for</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="n">pulse</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> \
-                <span class="s1">&#39;Photosphere and pulse object lists must have matching </span><span class="se">\</span>
-<span class="s1">                 identification tags.&#39;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">prefix</span> <span class="o">==</span> <span class="n">pulse</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> \
+                    <span class="s1">&#39;Photosphere and pulse subspaces must have matching </span><span class="se">\</span>
+<span class="s1">                     identification prefixes by convention, and also be </span><span class="se">\</span>
+<span class="s1">                     have matching orders.&#39;</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span> <span class="c1"># no prefixes</span>
 
             <span class="n">pulse</span><span class="o">.</span><span class="n">phases</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span>
+
             <span class="k">if</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
                 <span class="n">pulse</span><span class="o">.</span><span class="n">fast_phases</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">fast_phases_in_cycles</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="n">threads</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span> <span class="o">==</span> <span class="n">threads</span><span class="p">,</span> <span class="s1">&#39;Thread number must be an integer.&#39;</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Thread number must be an integer.&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">llzero</span> <span class="o">=</span> <span class="n">llzero</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span> <span class="o">=</span> <span class="n">llzero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="n">externally_updated</span>
+
+        <span class="c1"># merge subspaces</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">threads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -307,61 +306,9 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Thread number must be an integer.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">num_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the number of dimensions of the parameter space. &quot;&quot;&quot;</span>
-
-        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">num_params</span>
-
-        <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">:</span>
-            <span class="n">n</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">total_params</span>
-
-        <span class="k">return</span> <span class="n">n</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get a list of tuples of hard parameter bounds. &quot;&quot;&quot;</span>
-
-        <span class="n">b</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="n">b</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">spacetime</span><span class="o">.</span><span class="n">bounds</span>
-
-        <span class="k">for</span> <span class="n">photosphere</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">:</span>
-            <span class="n">b</span> <span class="o">+=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">bounds</span>
-            <span class="n">b</span> <span class="o">+=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">bounds</span>
-            <span class="k">if</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">b</span> <span class="o">+=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">elsewhere</span><span class="o">.</span><span class="n">bounds</span>
-
-        <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">pulse</span><span class="o">.</span><span class="n">interstellar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">b</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">interstellar</span><span class="o">.</span><span class="n">bounds</span>
-            <span class="k">if</span> <span class="n">pulse</span><span class="o">.</span><span class="n">instrument</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">b</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">bounds</span>
-            <span class="k">if</span> <span class="n">pulse</span><span class="o">.</span><span class="n">background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">b</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">bounds</span>
-            <span class="n">b</span> <span class="o">+=</span> <span class="n">pulse</span><span class="o">.</span><span class="n">bounds</span>
-        <span class="k">return</span> <span class="n">b</span>
-
-<div class="viewcode-block" id="Likelihood.__str__"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Print the model objects in order, with parameter numbers. &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Printing the model objects in order...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Object [tag]: number of parameters&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------------------&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spacetime: </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">spacetime</span><span class="o">.</span><span class="n">num_params</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">photosphere</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Photosphere [&#39;</span><span class="si">%s</span><span class="s2">&#39;]: </span><span class="si">%i</span><span class="s2">&quot;</span>
-                    <span class="o">%</span> <span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">total_params</span><span class="p">))</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   --&gt; Hot [&#39;</span><span class="si">%s</span><span class="s2">&#39;]: </span><span class="si">%i</span><span class="s2">&quot;</span>
-                    <span class="o">%</span> <span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">num_params</span><span class="p">))</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   --&gt; Elsewhere [&#39;</span><span class="si">%s</span><span class="s2">&#39;]: </span><span class="si">%i</span><span class="s2">&quot;</span>
-                        <span class="o">%</span> <span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">elsewhere</span><span class="o">.</span><span class="n">num_params</span><span class="p">))</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">pass</span>
-        <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pulse [&#39;</span><span class="si">%s</span><span class="s2">&#39;]: </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">pulse</span><span class="o">.</span><span class="n">total_params</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------------------&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="s1">&#39;Total number of model parameters: </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_params</span></div>
+    <span class="k">def</span> <span class="nf">do_fast</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Does fast mode need to be activated? &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">star</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -374,19 +321,6 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">theta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the last parameter vector for joint likelihood evaluation.</span>
-
-<span class="sd">        :setter: Stores the last parameter vector so that if only the fast</span>
-<span class="sd">                 parameters change, recompute only the fast contribution the</span>
-<span class="sd">                 likelihood.</span>
-
-<span class="sd">        :param p: A list of model parameters values.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">prior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span>
 
@@ -394,32 +328,42 @@
     <span class="k">def</span> <span class="nf">prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set the prior object if useful, e.g., in nested sampling.</span>
 
-<span class="sd">        :param prior: A callable instance of :class:`~.Prior.Prior` which is</span>
-<span class="sd">                      useful for nested sampling if inverse prior sampling</span>
-<span class="sd">                      is not possible or not straightforward. If not ``None``</span>
-<span class="sd">                      (default), the prior is called. If the point lies</span>
-<span class="sd">                      exterior to the prior hypervolume, ensure the callable</span>
-<span class="sd">                      returns minus :obj:`numpy.inf`. The purpose is to mix the</span>
-<span class="sd">                      likelihood function and the prior for definition of</span>
-<span class="sd">                      hard nested sampling boundaries. Inverse sampling is</span>
-<span class="sd">                      still performed between hard parameter bounds, or on</span>
-<span class="sd">                      any prior factors not handled in the call method. If the</span>
-<span class="sd">                      (conditional) prior to be evaluated is not uniform,</span>
-<span class="sd">                      return the logarithm of the prior density, which is</span>
-<span class="sd">                      combined with the likelihood evaluation. The likelihood</span>
-<span class="sd">                      is not evaluated if the log-prior is infinite.</span>
+<span class="sd">        :param prior:</span>
+<span class="sd">            A callable instance of :class:`~.Prior.Prior` which is</span>
+<span class="sd">            useful for nested sampling if inverse prior sampling</span>
+<span class="sd">            is not possible or not straightforward. If not ``None``</span>
+<span class="sd">            (default), the prior is called. If the point lies</span>
+<span class="sd">            exterior to the prior hypervolume, ensure the callable</span>
+<span class="sd">            returns minus :obj:`numpy.inf`. The purpose is to mix the</span>
+<span class="sd">            likelihood function and the prior for definition of</span>
+<span class="sd">            the prior support. Inverse sampling is</span>
+<span class="sd">            still performed between hard parameter bounds, or on</span>
+<span class="sd">            any prior factors not handled in the call method. If the</span>
+<span class="sd">            (conditional) prior to be evaluated is not uniform,</span>
+<span class="sd">            return the logarithm of the prior density, which is</span>
+<span class="sd">            combined with the likelihood evaluation. The likelihood</span>
+<span class="sd">            is not evaluated if the log-prior is infinite.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Prior</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span> <span class="o">=</span> <span class="n">obj</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Prior</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The prior object is not an instance of the &#39;</span>
                             <span class="s1">&#39;Prior class.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span> <span class="c1"># a reference to the parameter container</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">llzero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the minimum log-likelihood setting passed to MultiNest. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span>
+
+    <span class="nd">@llzero</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">llzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the minimum log-likelihood that is viewed as zero. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Zero log-likelihood number must be a float.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">random_near_llzero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -431,6 +375,17 @@
     <span class="k">def</span> <span class="nf">less_than_llzero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a number less than the minimum log-likelihood threshold. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mf">1.1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">externally_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Safely assume parameters are already updated upon call to self? &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_externally_updated</span>
+
+    <span class="nd">@externally_updated</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">externally_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updated</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">updated</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a boolean to define update protocol.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_externally_updated</span> <span class="o">=</span> <span class="n">updated</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_divide</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -445,15 +400,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_driver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">synthesise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_driver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">synthesise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Main likelihood evaluation driver routine. &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">activate_fast_mode</span><span class="p">(</span><span class="n">fast_mode</span><span class="p">)</span>
 
         <span class="n">star_updated</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">num_params</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">s</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">needs_update</span><span class="p">:</span> <span class="c1"># ignore fast parameters in this version</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">fast_mode</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span><span class="p">:</span>
                     <span class="n">fast_total_counts</span> <span class="o">=</span> <span class="kc">None</span>
@@ -461,14 +415,14 @@
                     <span class="n">fast_total_counts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">fast_total_counts</span> <span class="k">for</span>\
                                                         <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="n">s</span><span class="p">],</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fast_total_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">xpsiError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">HotRegion</span><span class="o">.</span><span class="n">RayError</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: HotRegion.RayError raised.&#39;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="o">.</span><span class="n">RayError</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Elsewhere.RayError raised.&#39;</span><span class="p">)</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">())</span> <span class="c1"># decide how to print</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
 
             <span class="k">for</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">):</span>
@@ -485,57 +439,55 @@
 
                     <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">xpsiError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39; prefix &#39;</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">prefix</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">HotRegion</span><span class="o">.</span><span class="n">PulseError</span><span class="p">):</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: HotRegion.PulseError raised for &#39;</span>
-                              <span class="s1">&#39;photosphere tag </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+                              <span class="s1">&#39;photosphere</span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">prefix</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="o">.</span><span class="n">IntegrationError</span><span class="p">):</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Elsewhere.IntegrationError for &#39;</span>
-                              <span class="s1">&#39;photosphere tag </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+                              <span class="s1">&#39;photosphere</span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">prefix</span><span class="p">)</span>
 
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">())</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
 
             <span class="n">star_updated</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="c1"># update distance if changed</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">star_updated</span> <span class="ow">and</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">star_updated</span> <span class="o">=</span> <span class="kc">True</span>
-
         <span class="c1"># fold the pulse through the instrument response</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">s</span>
         <span class="k">for</span> <span class="n">pulse</span><span class="p">,</span> <span class="n">photosphere</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">):</span>
-            <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">pulse</span><span class="o">.</span><span class="n">total_params</span> <span class="o">-</span> <span class="n">pulse</span><span class="o">.</span><span class="n">num_params</span>
-
-            <span class="k">if</span> <span class="n">star_updated</span> <span class="ow">or</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">star_updated</span> <span class="ow">or</span> <span class="n">pulse</span><span class="o">.</span><span class="n">needs_update</span><span class="p">:</span>
                 <span class="n">pulse</span><span class="o">.</span><span class="n">fold</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span>
                                  <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_divide</span><span class="p">(</span><span class="n">component</span><span class="p">,</span>
                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d_sq</span><span class="p">)</span>
-                                       <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">hotRegion</span><span class="p">)</span>
-                                 <span class="k">for</span> <span class="n">hotRegion</span> <span class="ow">in</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">),</span>
-                           <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span> <span class="n">fast_mode</span><span class="o">=</span><span class="n">fast_mode</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">)</span>
+                                       <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">hot_region</span><span class="p">)</span>
+                                 <span class="k">for</span> <span class="n">hot_region</span> <span class="ow">in</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">),</span>
+                           <span class="n">fast_mode</span><span class="o">=</span><span class="n">fast_mode</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">)</span>
                 <span class="n">refolded</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">refolded</span> <span class="o">=</span> <span class="kc">False</span>
 
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">fast_mode</span><span class="p">:</span>
-                <span class="n">k</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="n">pulse</span><span class="o">.</span><span class="n">num_params</span>
-                <span class="k">if</span> <span class="n">refolded</span> <span class="ow">or</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">k</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">synthesise</span><span class="p">:</span>
-                        <span class="n">pulse</span><span class="o">.</span><span class="n">synthesise</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">k</span><span class="p">],</span>
-                                         <span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span>
-                                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">fast_mode</span> <span class="ow">and</span> <span class="n">refolded</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">synthesise</span><span class="p">:</span>
+                    <span class="n">hot</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span>
+                    <span class="n">pulse</span><span class="o">.</span><span class="n">synthesise</span><span class="p">([</span><span class="n">h</span><span class="p">[</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">],</span>
+                                     <span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">hot</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span>
+                        <span class="n">pulse</span><span class="p">([</span><span class="n">h</span><span class="p">[</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">],</span>
+                              <span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span> <span class="n">llzero</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="n">LikelihoodError</span><span class="p">:</span>
                         <span class="k">try</span><span class="p">:</span>
-                            <span class="n">pulse</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">k</span><span class="p">],</span> <span class="o">*</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="n">s</span><span class="p">])</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">])],</span>
-                                  <span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span> <span class="n">llzero</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span><span class="p">)</span>
-                        <span class="k">except</span> <span class="n">LikelihoodError</span><span class="p">:</span>
-                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: LikelihoodError raised for &#39;</span>
-                                  <span class="s1">&#39;pulse tag </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">pulse</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
-                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-                            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
-
-            <span class="n">i</span> <span class="o">=</span> <span class="n">j</span>
+                            <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39; prefix &#39;</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">prefix</span>
+                        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                            <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: LikelihoodError raised for &#39;</span>
+                              <span class="s1">&#39;pulse</span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">prefix</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">())</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
 
         <span class="k">return</span> <span class="n">star_updated</span>
 
@@ -549,11 +501,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span><span class="p">)</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">,</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">_llzero</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Likelihood.__call__"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">reinitialise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Likelihood.__call__"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">reinitialise</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">force</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Evaluate the logarithm of the joint likelihood over all pulsations.</span>
 
 <span class="sd">        :param list p: Parameter vector.</span>
@@ -562,47 +514,50 @@
 
 <span class="sd">        :param optional[bool] force:</span>
 <span class="sd">            Force complete reevaluation even if some parameters are unchanged.</span>
+<span class="sd">            To faciliate this, all parameter caches are cleared.</span>
 
-<span class="sd">        :return: The logarithm of the likelihood.</span>
+<span class="sd">        :returns: The logarithm of the likelihood.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">reinitialise</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reinitialise</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">force</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_params</span>
+        <span class="k">if</span> <span class="n">reinitialise</span><span class="p">:</span> <span class="c1"># for safety if settings have been changed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reinitialise</span><span class="p">()</span> <span class="c1"># do setup again given exisiting object refs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span> <span class="c1"># clear cache and values</span>
+        <span class="k">elif</span> <span class="n">force</span><span class="p">:</span> <span class="c1"># no need to reinitialise, just clear cache and values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span>
 
-        <span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">externally_updated</span><span class="p">:</span> <span class="c1"># do not safely assume already handled</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># expected a vector of values instead of nothing</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Parameter values have not been updated.&#39;</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c1"># update free parameters</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">needs_update</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">logprior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="n">logprior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c1"># pass vector just in case wanted</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logprior</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="c1"># we need to restore due to premature return</span>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">less_than_llzero</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span><span class="p">:</span>
                 <span class="c1"># perform a low-resolution precomputation to direct cell</span>
                 <span class="c1"># allocation</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">fast_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span> <span class="c1"># restore</span>
                     <span class="k">return</span> <span class="n">x</span>
                 <span class="k">elif</span> <span class="n">x</span><span class="p">:</span>
-                    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">()</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                        <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span> <span class="c1"># restore</span>
                         <span class="k">return</span> <span class="n">x</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">()</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span> <span class="c1"># restore</span>
                     <span class="k">return</span> <span class="n">x</span>
-
-        <span class="c1"># store parameter vector for next iteration</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
 
         <span class="n">loglikelihood</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">for</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">:</span>
@@ -702,43 +657,51 @@
 <span class="sd">        :param optional[bool] force:</span>
 <span class="sd">            Force complete reevaluation even if some parameters are unchanged.</span>
 
+<span class="sd">        :param dict kwargs:</span>
+<span class="sd">            Keyword arguments propagated to custom pulse synthesis methods.</span>
+<span class="sd">            Examples of such arguments include exposure times or</span>
+<span class="sd">            required total count numbers (see example notebooks0.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">reinitialise</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reinitialise</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">force</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_params</span>
+        <span class="k">if</span> <span class="n">reinitialise</span><span class="p">:</span> <span class="c1"># for safety if settings have been changed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reinitialise</span><span class="p">()</span> <span class="c1"># do setup again given exisiting object refs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span> <span class="c1"># clear cache and values</span>
+        <span class="k">elif</span> <span class="n">force</span><span class="p">:</span> <span class="c1"># no need to reinitialise, just clear cache and values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span>
 
-        <span class="n">p</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">externally_updated</span><span class="p">:</span> <span class="c1"># do not safely assume already handled</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># expected a vector of values instead of nothing</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Parameter values have not been updated.&#39;</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c1"># update free parameters</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">needs_update</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">logprior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="n">logprior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c1"># pass vector just in case wanted</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logprior</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="c1"># we need to restore due to premature return</span>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span>
                     <span class="k">return</span> <span class="kc">None</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_fast</span><span class="p">:</span>
                 <span class="c1"># perform a low-resolution precomputation to direct cell</span>
                 <span class="c1"># allocation</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">fast_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">fast_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span> <span class="c1"># restore</span>
                     <span class="k">return</span> <span class="kc">None</span>
                 <span class="k">elif</span> <span class="n">x</span><span class="p">:</span>
-                    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">synthesise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">synthesise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
+                        <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span> <span class="c1"># restore</span>
                         <span class="k">return</span> <span class="kc">None</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">synthesise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">(</span><span class="n">synthesise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span>
-                    <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">p</span></div></div>
+                    <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span> <span class="c1"># restore</span>
+                    <span class="k">return</span> <span class="kc">None</span></div></div>
 </pre></div>
 
            </div>

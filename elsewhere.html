@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Elsewhere &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Elsewhere &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -221,18 +221,17 @@
 photosphere in which smaller radiative features (such as spots) are embedded.</p>
 <dl class="class">
 <dt id="xpsi.Elsewhere.Elsewhere">
-<em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">Elsewhere</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>num_rays=1000</em>, <em>sqrt_num_cells=64</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">Elsewhere</code><span class="sig-paren">(</span><em>sqrt_num_cells=64</em>, <em>num_rays=1000</em>, <em>bounds=(None</em>, <em>None)</em>, <em>value=None</em>, <em>custom=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
-<p>The photospheric radiation field elsewhere (other than the spot).</p>
+<p>The photospheric radiation field <em>elsewhere</em>.</p>
+<p>This means the radiation field exterior to the hot regions. The local
+comoving radiation field properties are <em>assumed</em> (for now) to be
+azimuthally invariant but can in principle vary colatitudinally.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>num_params</strong> (<em>int</em>) – Number of parameters for model of photospheric
-radiation field elsewhere.</li>
-<li><strong>bounds</strong> (<em>list</em>) – Hard parameter bounds for the instance of
-<a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace.ParameterSubspace</span></code></a>.</li>
 <li><strong>num_rays</strong> (<em>int</em>) – Number of rays to trace (integrate) at each
 colatitude, distributed in angle subtended between
 ray tangent 4-vector and radial outward unit
@@ -241,6 +240,16 @@ vector w.r.t a local orthonormal tetrad.</li>
 which form a regular mesh on a closed curved
 2-surface (which is a compact subset of a
 spacelike leaf of the spacetime foliation).</li>
+<li><strong>custom</strong> (<em>iterable</em>) – Iterable over <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instances. If you
+supply custom parameter definitions, you need to overwrite the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_compute_cellParamVecs()</span></code> method to
+handle your custom behaviour.</li>
+<li><strong>bounds</strong> (<em>dict</em>) – If <code class="docutils literal notranslate"><span class="pre">custom</span> <span class="pre">is</span> <span class="pre">None</span></code> is, these bounds are supplied for instantiation
+of a temperature parameter. The intended parameter name must be
+a key in the dictionary. If a bound is <code class="docutils literal notranslate"><span class="pre">None</span></code> that bound is set
+equal to a strict hard-coded bound.</li>
+<li><strong>value</strong> (<em>float</em>) – Either the fixed value of the temperature elsewhere, or value upon
+initialisation if the temperature is free.</li>
 </ul>
 </td>
 </tr>
@@ -248,15 +257,16 @@ spacelike leaf of the spacetime foliation).</li>
 </table>
 <dl class="method">
 <dt id="xpsi.Elsewhere.Elsewhere._compute_cellParamVecs">
-<code class="descname">_compute_cellParamVecs</code><span class="sig-paren">(</span><em>p</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere._compute_cellParamVecs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere._compute_cellParamVecs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_compute_cellParamVecs</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere._compute_cellParamVecs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere._compute_cellParamVecs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Precompute photospheric source radiation field parameter vectors
-cell-by-cell.</p>
+cell-by-cell. Free model parameters and derived (fixed) variables can
+be transformed into local comoving radiation field variables.</p>
+<p>Subclass and overwrite with custom functionality if you desire.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> (<em>list</em>) – Parameters to transform into local comoving radiation field
-variables.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>tuple</em>) – An <em>ndarray[n,n]</em> of mesh-point colatitudes.</td>
 </tr>
 </tbody>
 </table>
@@ -300,12 +310,6 @@ some effective infinity.</p>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="xpsi.Elsewhere.Elsewhere.bounds">
-<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of tuples of hard parameter bounds.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="xpsi.Elsewhere.Elsewhere.integrate">
 <code class="descname">integrate</code><span class="sig-paren">(</span><em>st</em>, <em>energies</em>, <em>threads</em>, <em>*atmosphere</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere.integrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.integrate" title="Permalink to this definition">¶</a></dt>
@@ -334,15 +338,9 @@ permitted to spawn.</li>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xpsi.Elsewhere.Elsewhere.num_params">
-<code class="descname">num_params</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.num_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of dimensions of the parameter subspace.</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="xpsi.Elsewhere.Elsewhere.num_rays">
 <code class="descname">num_rays</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.num_rays" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of rays integrated per parallel.</p>
+<dd><p>Get the number of rays integrated per colatitude.</p>
 </dd></dl>
 
 <dl class="method">
@@ -354,7 +352,7 @@ permitted to spawn.</li>
 <dl class="attribute">
 <dt id="xpsi.Elsewhere.Elsewhere.sqrt_num_cells">
 <code class="descname">sqrt_num_cells</code><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere.sqrt_num_cells" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of cell parallels.</p>
+<dd><p>Get the number of cell colatitudes.</p>
 </dd></dl>
 
 </dd></dl>

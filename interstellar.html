@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Interstellar &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Interstellar &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -221,7 +221,7 @@
 interstellar processes which modify source intensities.</p>
 <dl class="class">
 <dt id="xpsi.Interstellar.Interstellar">
-<em class="property">class </em><code class="descclassname">xpsi.Interstellar.</code><code class="descname">Interstellar</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Interstellar.html#Interstellar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Interstellar.Interstellar" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Interstellar.</code><code class="descname">Interstellar</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Interstellar.html#Interstellar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Interstellar.Interstellar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>Base class for model interstellar X-ray processes (e.g., absorption).</p>
 <dl class="method">
@@ -252,18 +252,6 @@ specific fluxes need to be applied identically to all other
 columns. The referenced object <code class="xref py py-obj docutils literal notranslate"><span class="pre">pulse</span></code> needs to be
 directly modified, and <em>not</em> copied.</p>
 </div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Interstellar.Interstellar.bounds">
-<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Interstellar.Interstellar.bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of tuples of hard parameter bounds.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Interstellar.Interstellar.num_params">
-<code class="descname">num_params</code><a class="headerlink" href="#xpsi.Interstellar.Interstellar.num_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of dimensions of the parameter subspace.</p>
 </dd></dl>
 
 </dd></dl>

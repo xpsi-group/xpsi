@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>X-PSI &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>X-PSI &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -104,7 +104,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -226,17 +226,27 @@ The package should not be considered stable, and as such has not been
 packaged for automatic installation via a package manager (namely Conda). To
 install X-PSI from source, and to install dependencies, see the
 <a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a> page.</p>
-<p>Files for the examples on path <code class="docutils literal notranslate"><span class="pre">xpsi/examples</span></code> (i.e., data files,
-NICER v1.01 instrument files, sampling files) may be obtained from the
-repository owner until they are archived with Zenodo to accompany the paper.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>These documentation pages are being rapidly updated during development.</p>
 <p class="last">These pages were generated from a local development build prior to release
-<code class="docutils literal notranslate"><span class="pre">v0.2.0</span></code>. They are hosted on GitHub due to requests from potential users.
-The pages reference <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> that is currently on the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch
-of the repo, but do not aim to comprehensively document that version.</p>
+<code class="docutils literal notranslate"><span class="pre">v0.3</span></code>. The pages often reference <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> that is tagged on the
+<code class="docutils literal notranslate"><span class="pre">master</span></code> branch of the repo, but that version is not explicitly
+documented.</p>
 </div>
+<p>The <em>Modelling</em> and <em>Hot region complexity</em> tutorials in these
+documentation pages however, use <code class="docutils literal notranslate"><span class="pre">v0.3</span></code> of X-PSI. The required files
+(i.e., data files and NICER v1.01 instrument files) may be obtained from a
+different repository due to file size considerations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
+</pre></div>
+</div>
+<p>This repository also contains unexecuted tutorial notebooks with less
+less verbosity if this is preferred.</p>
+<p>Ohter examples may be found on path <code class="docutils literal notranslate"><span class="pre">xpsi/examples</span></code>. Note, however, that these
+examples used <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> of X-PSI, which can be checked out via the tag on the
+<code class="docutils literal notranslate"><span class="pre">master</span></code> branch. Eventually, example files will be archived with Zenodo
+to accompany the paper.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -260,7 +270,7 @@ of the repo, but do not aim to comprehensively document that version.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>

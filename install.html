@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Installation &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -118,7 +118,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -292,7 +292,9 @@ problems, but can only be expected to be compatible with the same platform.</p>
 <li>Conda environment exported to <code class="docutils literal notranslate"><span class="pre">xpsi/environment.yml</span></code></li>
 </ul>
 </div></blockquote>
-<p>When inspecting the <code class="docutils literal notranslate"><span class="pre">xpsi/environment.yml</span></code> file, note the packages that
+<p>When inspecting the <code class="docutils literal notranslate"><span class="pre">xpsi/environment.yml</span></code> file, note that most of the
+entries were installed via automatic resolution of a strict dependency chain
+when core packages were specified. Also note the packages that
 were installed into a Conda environment via pip. There are a few reasons
 for these choices, but the main one is that pip is purely for Python
 packages and will not install unwanted non-Python libraries. To be clear, such
@@ -399,7 +401,7 @@ install guidelines are given below.</p>
 </div>
 <p>Untar, navigate to the build directory (e.g., <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">gsl-latest/build</span></code>), and
 then build and install:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./configure <span class="nv">CC</span><span class="o">=</span>&lt;path/to/compiler/executable&gt; --prefix<span class="o">=</span><span class="nv">$HOME</span>/gsl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>../configure <span class="nv">CC</span><span class="o">=</span>&lt;path/to/compiler/executable&gt; --prefix<span class="o">=</span><span class="nv">$HOME</span>/gsl
 make
 make check
 make install
@@ -425,7 +427,7 @@ you require an MPI-wrapped Fortran compiler (e.g., <code class="docutils literal
 the in the <a class="reference internal" href="#dev-env"><span class="std std-ref">Python environment</span></a> section above, specifically to emphasise where an
 MPI compiler wrapper is required.</p>
 </div>
-<p>First clone the repository:</p>
+<p>First clone the repository, then navigate to it and build:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/farhanferoz/MultiNest.git &lt;path/to/clone&gt;/multinest
 <span class="nb">cd</span> &lt;path/to/clone&gt;/multinest/MultiNest_v3.11_CMake/multinest
 mkdir build
@@ -488,7 +490,7 @@ To clone this version instead:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC</span><span class="o">=</span>&lt;path/to/compiler/executable&gt; python setup.py install --user
 </pre></div>
 </div>
-<p>For <code class="docutils literal notranslate"><span class="pre">icc</span></code>, You may need to prepend this command with
+<p>For <code class="docutils literal notranslate"><span class="pre">icc</span></code>, you may need to prepend this command with
 <code class="docutils literal notranslate"><span class="pre">LDSHARED=&quot;icc</span> <span class="pre">-shared&quot;</span></code>. This ensures that both the compiler and linker
 are Intel, otherwise the <code class="docutils literal notranslate"><span class="pre">gcc</span></code> linker might be invoked.</p>
 <p>Provided the GSL <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;/bin</span></code> is in your <code class="docutils literal notranslate"><span class="pre">PATH</span></code>

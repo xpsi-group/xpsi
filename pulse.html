@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Pulse &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Pulse &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Pulse</a></li>
@@ -222,7 +222,7 @@ generative relationship between the pulse and X-ray photon data.
 That is, the parametrised sampling distribution of the photon data is defined.</p>
 <dl class="class">
 <dt id="xpsi.Pulse.Pulse">
-<em class="property">class </em><code class="descclassname">xpsi.Pulse.</code><code class="descname">Pulse</code><span class="sig-paren">(</span><em>num_params</em>, <em>bounds</em>, <em>tag</em>, <em>data</em>, <em>instrument</em>, <em>background=None</em>, <em>interstellar=None</em>, <em>energies_per_interval=0.25</em>, <em>default_energy_spacing='logspace'</em>, <em>fast_rel_energies_per_interval=0.5</em>, <em>adaptive_energies=False</em>, <em>adapt_exponent=0.5</em>, <em>store=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Pulse.</code><code class="descname">Pulse</code><span class="sig-paren">(</span><em>data</em>, <em>instrument</em>, <em>background=None</em>, <em>interstellar=None</em>, <em>energies_per_interval=0.25</em>, <em>default_energy_spacing='logspace'</em>, <em>fast_rel_energies_per_interval=0.5</em>, <em>adaptive_energies=False</em>, <em>adapt_exponent=0.5</em>, <em>store=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>A pulse is constituted by some X-ray dataset, a model instrument
 with which that data was acquired, a model background, and an object for
@@ -235,41 +235,20 @@ evaluation of the likelihood.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tag</strong> (<em>str</em>) – An identification tag to enforce intended pairing with
-a <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere" title="xpsi.Photosphere.Photosphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Photosphere</span></code></a> object.</li>
-<li><strong>num_params</strong> (<em>int</em>) – <p>Number of <em>fast</em> nuisance parameters associated
-with the model of the pulsation, excluding:</p>
-<ul>
-<li><em>slow</em> parameters associated with the star
-defined in <a class="reference internal" href="star.html#xpsi.Star.Star" title="xpsi.Star.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>;</li>
-<li>parameters associated with an instance of
-<a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a>;</li>
-<li>parameters associated with an instance of
-<a class="reference internal" href="interstellar.html#xpsi.Interstellar.Interstellar" title="xpsi.Interstellar.Interstellar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interstellar</span></code></a>.</li>
-</ul>
-</li>
-<li><strong>bounds</strong> (<em>list</em>) – Hard parameter bounds for the instance of
-<a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace.ParameterSubspace</span></code></a>.</li>
-<li><strong>data</strong> – An instance of <a class="reference internal" href="data.html#xpsi.Data.Data" title="xpsi.Data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>.</li>
-<li><strong>instrument</strong> – An instance of <a class="reference internal" href="instrument.html#xpsi.Instrument.Instrument" title="xpsi.Instrument.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>.</li>
-<li><strong>background</strong> – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, an instance of
-<a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a>. It is
-assumed if one constructs a model using instances
-of <a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a> that the
-background needs to be folded through a model
-instrument. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, it is still possible for
-one to define and use background parameters in a
-custom subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Pulsation</span></code>. In
-particular, background parameters for some model
-which directly specifies background contribution
-in units of count/s per <em>output</em> channels. These
-background parameters can even <em>be</em> the counts/s in
-output channels.</li>
-<li><strong>interstellar</strong> – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, an instance of
-<a class="reference internal" href="interstellar.html#xpsi.Interstellar.Interstellar" title="xpsi.Interstellar.Interstellar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interstellar</span></code></a>. To be
-applied to the incident source pulsation.</li>
-<li><strong>energies_per_interval</strong> (<em>int</em>) – The number of energies to compute
-photon fluxes, per input energy
+<li><strong>data</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="data.html#xpsi.Data.Data" title="xpsi.Data.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>.</li>
+<li><strong>instrument</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="instrument.html#xpsi.Instrument.Instrument" title="xpsi.Instrument.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>.</li>
+<li><strong>background</strong> (<em>obj</em>) – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, an instance of <a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a>.
+It is assumed if one constructs a model using instances of
+<a class="reference internal" href="background.html#xpsi.Background.Background" title="xpsi.Background.Background"><code class="xref py py-class docutils literal notranslate"><span class="pre">Background</span></code></a> that the background needs to be
+folded through a model instrument. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, it is still possible
+for one to define and use background parameters in a custom subclass
+of <code class="xref py py-class docutils literal notranslate"><span class="pre">Pulsation</span></code>. In particular, background parameters for some
+model which directly specifies background contribution in units of
+count/s per <em>output</em> channels. These background parameters can even
+<em>be</em> the counts/s in output channels.</li>
+<li><strong>interstellar</strong> (<em>obj</em>) – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, an instance of <a class="reference internal" href="interstellar.html#xpsi.Interstellar.Interstellar" title="xpsi.Interstellar.Interstellar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interstellar</span></code></a>.
+To be applied to the incident source pulsation as a modifier callable.</li>
+<li><strong>energies_per_interval</strong> (<em>int</em>) – The number of energies to compute photon fluxes, per input energy
 channel of the instrument.</li>
 </ul>
 </td>
@@ -278,22 +257,22 @@ channel of the instrument.</li>
 </table>
 <dl class="method">
 <dt id="xpsi.Pulse.Pulse.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>p</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>phase_shifts</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the logarithm of the likelihood and store it as a property.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>p</strong> (<em>list</em>) – Model nuisance parameters (fast). The length of this
-list will be equal to the <code class="docutils literal notranslate"><span class="pre">total_params</span></code> property.</li>
-<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to use for likelihood
-evaluation. This argument can be ignored if not
-required.</li>
-<li><strong>args</strong> (<em>tuple</em>) – The other parameters, in case required. Note that the
-<a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> class expects this method
-signature, and an exception will be raised if it is not adhered
-to when implementing <code class="docutils literal notranslate"><span class="pre">__call__</span></code> in a custom subclass.</li>
+<li><strong>phase_shifts</strong> (<em>iterable</em>) – Container of phase shift <code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code> instances,
+one per hot region, communicated by the likelihood object from
+the star object. The order is equal to the order of the hot
+region objects stored in <code class="docutils literal notranslate"><span class="pre">photosphere.hot.objects</span></code>.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) – The following keyword arguments may be accessed.</li>
+<li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to use for likelihood evaluation.
+This argument can be ignored if not required.</li>
+<li><strong>llzero</strong> (<em>float</em>) – The minimum log-likelihood setting for MultiNest. Points whose
+log-likelihood is lower than this value are ignored.</li>
 </ul>
 </td>
 </tr>
@@ -315,26 +294,19 @@ class).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>energies_per_interval</strong> (<em>int</em>) – The number of energies to compute
-photon fluxes, per input energy
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>energies_per_interval</strong> (<em>int</em>) – The number of energies to compute photon fluxes, per input energy
 channel of the instrument.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>IndexError</strong> – If the channel range of the data object
-is not consistent with the instrument object.</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>IndexError</strong> – If the channel range of the data object is not consistent with
+the instrument object.</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="xpsi.Pulse.Pulse.bounds">
-<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Pulse.Pulse.bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of tuples of hard parameter bounds.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="xpsi.Pulse.Pulse.fold">
-<code class="descname">fold</code><span class="sig-paren">(</span><em>signals</em>, <em>p</em>, <em>fast_mode=False</em>, <em>threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse.fold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse.fold" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fold</code><span class="sig-paren">(</span><em>signals</em>, <em>fast_mode=False</em>, <em>threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Pulse.html#Pulse.fold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Pulse.Pulse.fold" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fold a raw pulse signal through the response matrix.</p>
 <p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> is stored as an instance attribute containing
 source pulsation for each <em>output</em> channel in units of counts cm^2/s
@@ -353,21 +325,6 @@ source pulsation for each <em>output</em> channel in units of counts cm^2/s
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Pulse.Pulse.num_params">
-<code class="descname">num_params</code><a class="headerlink" href="#xpsi.Pulse.Pulse.num_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of dimensions of the parameter subspace.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Pulse.Pulse.total_params">
-<code class="descname">total_params</code><a class="headerlink" href="#xpsi.Pulse.Pulse.total_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of (fast, nuisance) parameters of the pulse.</p>
-<p>These parameters are nuisance parameters which are expected to be fast
-in regards to likelihood recalculation, and include background and
-interstellar process parameters.</p>
 </dd></dl>
 
 </dd></dl>

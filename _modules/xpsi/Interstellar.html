@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Interstellar &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Interstellar &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -205,13 +205,15 @@
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">pulse</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Subclass to write a specialised specific flux modifier.</span>
 
-<span class="sd">        :param energies: A :class:`numpy.ndarray` of energies in keV at which</span>
-<span class="sd">                         the specific fluxes in :obj:`pulse` are calculated.</span>
+<span class="sd">        :param energies:</span>
+<span class="sd">            A :class:`numpy.ndarray` of energies in keV at which</span>
+<span class="sd">            the specific fluxes in :obj:`pulse` are calculated.</span>
 
-<span class="sd">        :param pulse: A :class:`numpy.ndarray` of specific fluxes, with energy</span>
-<span class="sd">                      increasing along rows and phase increasing along columns.</span>
+<span class="sd">        :param pulse:</span>
+<span class="sd">            A :class:`numpy.ndarray` of specific fluxes, with energy</span>
+<span class="sd">            increasing along rows and phase increasing along columns.</span>
 
-<span class="sd">        :return: ``None``.</span>
+<span class="sd">        :returns: ``None``.</span>
 
 <span class="sd">        .. note:: It is expected that the operations performed on a column of</span>
 <span class="sd">                  specific fluxes need to be applied identically to all other</span>
@@ -219,14 +221,6 @@
 <span class="sd">                  directly modified, and *not* copied.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span></div></div>
-
-
-
-
-
-
-
-
 </pre></div>
 
            </div>

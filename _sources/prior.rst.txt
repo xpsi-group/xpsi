@@ -10,5 +10,4 @@ evaluation of a joint prior distribution.
 
 .. autoclass:: xpsi.Prior.Prior
     :members: __call__, inverse_sample, draw, inverse_sample_and_transform,
-              transform, estimate_hypercube_frac, unit_hypercube_frac,
-              ndims
+              transform, estimate_hypercube_frac, unit_hypercube_frac

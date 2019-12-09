@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Background &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Background &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -202,21 +202,28 @@
     <span class="sd">&quot;&quot;&quot; Raised if there is an issue with the incident background . &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="Background"><a class="viewcode-back" href="../../background.html#xpsi.Background.Background">[docs]</a><span class="k">class</span> <span class="nc">Background</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Base class for astronomical X-ray background. &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Base class for astronomical photon X-ray background. &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Background.__call__"><a class="viewcode-back" href="../../background.html#xpsi.Background.Background.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">,</span> <span class="n">phases</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Evaluate the background at store it as an attribute.</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">,</span> <span class="n">phases</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluate the background and store it as an attribute.</span>
 
-<span class="sd">        :param list p: Background parameters.</span>
+<span class="sd">        :param energy_edges:</span>
+<span class="sd">            The :class:`numpy.ndarray` of energy edges the photon events span.</span>
 
-<span class="sd">        :param energy_edges: The :class:`numpy.ndarray` of energy edges the</span>
-<span class="sd">                             photon events span.</span>
+<span class="sd">        :param phases:</span>
+<span class="sd">            The :class:`numpy.ndarray` of phases (in cycles) the pulse was</span>
+<span class="sd">            evaluated at.</span>
 
-<span class="sd">        :param phases: The :class:`numpy.ndarray` of phases (in cycles) the</span>
-<span class="sd">                       pulse was evaluated at.</span>
+<span class="sd">        .. note::</span>
+
+<span class="sd">            Notice that the background can be phase-dependent, and that the</span>
+<span class="sd">            cached background must be a two-dimensional matrix equal in shape</span>
+<span class="sd">            to that of the pulse signal incident on the telescope.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="c1"># do some stuff and set:</span>
+        <span class="c1"># self.background = ...</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">background</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -238,15 +245,10 @@
             <span class="k">assert</span> <span class="p">(</span><span class="n">obj</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">BackgroundError</span><span class="p">(</span><span class="s1">&#39;Stored background needs to be a &#39;</span>
-                                  <span class="s1">&#39;two-dimensional ``numpy.ndarray`` with &#39;</span>
+                                  <span class="s1">&#39;two-dimensional ndarray with &#39;</span>
                                   <span class="s1">&#39;elements which are zero or positive.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="o">=</span> <span class="n">obj</span></div>
-
-
-
-
-
 </pre></div>
 
            </div>

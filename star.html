@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Star &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>Star &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -105,7 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
@@ -244,7 +244,7 @@ time.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>spacetime</strong> – An instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</li>
+<li><strong>spacetime</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</li>
 <li><strong>photospheres</strong> (<em>list</em>) – Each element must be an instance of
 <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere" title="xpsi.Photosphere.Photosphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Photosphere</span></code></a>.</li>
 </ul>
@@ -253,12 +253,6 @@ time.</p>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="xpsi.Star.Star.num_params">
-<code class="descname">num_params</code><a class="headerlink" href="#xpsi.Star.Star.num_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of (slow) parameters describing the star.</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="xpsi.Star.Star.photospheres">
 <code class="descname">photospheres</code><a class="headerlink" href="#xpsi.Star.Star.photospheres" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the list of photosphere objects.</p>
@@ -266,15 +260,19 @@ time.</p>
 
 <dl class="method">
 <dt id="xpsi.Star.Star.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>p</em>, <em>fast_counts=None</em>, <em>threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Star.html#Star.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Star.Star.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><em>fast_counts=None</em>, <em>threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Star.html#Star.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Star.Star.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the star.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>p</strong> (<em>list</em>) – Model parameters relevant to ambient spacetime solution
-and photosphere objects.</li>
+<li><strong>fast_counts</strong> (<em>tuple</em>) – Total count numbers from two or more temperature components of
+a hot region. Each <em>tuple</em> element is itself a <em>tuple</em> over hot
+regions, and if a hot region has two temperature components
+that were integrated over during the fast mode, the total counts
+per component are elements of another <em>tuple</em>. This nested
+containerisation is handled automatically.</li>
 <li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn for embedding
 photosphere objects in the ambient spacetime.</li>
 </ul>
@@ -282,15 +280,6 @@ photosphere objects in the ambient spacetime.</li>
 </tr>
 </tbody>
 </table>
-<p>Parameter vector:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">p[:i]</span></code> = spacetime parameters</li>
-<li><code class="docutils literal notranslate"><span class="pre">p[i:]</span></code> = photospheric radiation field parameters</li>
-</ul>
-<p>where</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="o">.</span><span class="n">num_params</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </dd></dl>

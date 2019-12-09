@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.HotRegions &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.HotRegions &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -193,48 +193,33 @@
 <span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
 
-<span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="k">import</span> <span class="n">HotRegion</span>
-
 <span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
+
+<span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="k">import</span> <span class="n">HotRegion</span>
 
 <div class="viewcode-block" id="HotRegions"><a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions">[docs]</a><span class="k">class</span> <span class="nc">HotRegions</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Two photospheric hot regions, where the hot regions are objects.</span>
 
-<span class="sd">    This class could be extended in principle to operate with multiple hot</span>
-<span class="sd">    regions, but the computational expense scales ~linearly with number.</span>
-<span class="sd">    Applications thus far have used two distinct hot regions with equal</span>
+<span class="sd">    The hot regions can be equal or different in parametrisation complexity.</span>
+
+<span class="sd">    This class could be trivially extended in principle to operate with</span>
+<span class="sd">    multiple hot regions, but the computational expense scales ~linearly with</span>
+<span class="sd">    number. Applications thus far have used two distinct hot regions with equal</span>
 <span class="sd">    and unequal complexity.</span>
 
 <span class="sd">    :param tuple hotregions:</span>
-<span class="sd">            Two-element container of :class:`.HotRegion.HotRegion` instances.</span>
+<span class="sd">        Two-element container of :class:`.HotRegion.HotRegion` instances.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hotregions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">objects</span> <span class="o">=</span> <span class="n">hotregions</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_primary_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">num_params</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_secondary_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">num_params</span>
-
-        <span class="nb">super</span><span class="p">(</span><span class="n">HotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_primary_params</span>\
-                                         <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_secondary_params</span><span class="p">,</span>
-                                         <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bounds</span>\
-                                         <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">phases_in_cycles</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fast_phases_in_cycles</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fast_phases_in_cycles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">fast_phases_in_cycles</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">pass</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">hotregions</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get an iterable of hot region objects. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span>
 
     <span class="nd">@objects</span><span class="o">.</span><span class="n">setter</span>
@@ -249,7 +234,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span> <span class="o">=</span> <span class="n">objs</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phases_in_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">phases_in_cycles</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fast_phases_in_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;  &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">fast_phases_in_cycles</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">do_fast</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Should fast-mode be invoked for some subset of hot regions. &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">do_fast</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -257,6 +253,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fast_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Is fast-mode currently activated? &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">fast_mode</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -264,6 +261,7 @@
 
     <span class="nd">@fast_mode</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">fast_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activate</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Activate or deactivate fast-mode. &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">fast_mode</span> <span class="o">=</span> <span class="n">activate</span>
 
@@ -272,7 +270,7 @@
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">print_settings</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="HotRegions.embed"><a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="HotRegions.embed"><a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Embed the hot regions. &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">fast_total_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -282,13 +280,13 @@
             <span class="n">fast_primary_total_counts</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">fast_secondary_total_counts</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="n">pp</span> <span class="o">=</span> <span class="n">p</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_primary_params</span><span class="p">]</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_primary_params</span><span class="p">:]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">pp</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
+                               <span class="n">photosphere</span><span class="p">,</span>
                                <span class="n">fast_primary_total_counts</span><span class="p">,</span>
                                <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
+                               <span class="n">photosphere</span><span class="p">,</span>
                                <span class="n">fast_secondary_total_counts</span><span class="p">,</span>
                                <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
 
@@ -301,11 +299,11 @@
 
 <span class="sd">        :param st: Instance of :class:`~.Spacetime.Spacetime`.</span>
 
-<span class="sd">        :param energies: A one-dimensional :class:`numpy.ndarray` of energies</span>
-<span class="sd">                         in keV.</span>
+<span class="sd">        :param energies:</span>
+<span class="sd">            A one-dimensional :class:`numpy.ndarray` of energies in keV.</span>
 
-<span class="sd">        :param int threads: Number of ``OpenMP`` threads for pulse</span>
-<span class="sd">                            integration.</span>
+<span class="sd">        :param int threads:</span>
+<span class="sd">            Number of ``OpenMP`` threads for pulse integration.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
@@ -318,6 +316,7 @@
                                              <span class="n">threads</span><span class="p">,</span>
                                              <span class="n">hot_atmosphere</span><span class="p">,</span>
                                              <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
+
         <span class="n">secondary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">secondary_energies</span><span class="p">,</span>
                                                <span class="n">threads</span><span class="p">,</span>
                                                <span class="n">hot_atmosphere</span><span class="p">,</span>

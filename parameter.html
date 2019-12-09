@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Parameter &mdash; xpsi 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ParameterSubspace" href="parameterSubspace.html" />
+    <link rel="prev" title="Extension modules" href="extensions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Parameter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/parameter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<span class="target" id="module-xpsi.Parameter"></span><div class="section" id="parameter">
+<span id="id1"></span><h1>Parameter<a class="headerlink" href="#parameter" title="Permalink to this headline">¶</a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> represent <em>abstract</em>
+model parameters, both free and fixed/derived variables.</p>
+<dl class="class">
+<dt id="xpsi.Parameter.Parameter">
+<em class="property">class </em><code class="descclassname">xpsi.Parameter.</code><code class="descname">Parameter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parameter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) – A unique parameter name for identification in attribute lookup.</li>
+<li><strong>strict_bounds</strong> (<em>tuple</em>) – One 2-tuple of hard bounds per parameter. Can be unbounded
+<em>in principle</em>, but read the documentation for the
+<a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a> class first.</li>
+<li><strong>bounds</strong> (<em>tuple</em>) – One 2-tuple of hard bounds per parameter. Can be unbounded
+<em>in principle</em>, but read the documentation for the
+<a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a> class first.</li>
+<li><strong>permit_prepend</strong> (<em>bool</em>) – Allow encapsulating subspaces to prepend the parameter name with
+a prefix? Note that this gives permission recursively to all
+encapsulating subspaces higher in the hierarchy.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xpsi.Parameter.Parameter.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update or get current point if the parameter is <em>free</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> (<em>array-like</em>) – New point to update to. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the current point is returned.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Current point (if the call was not an update).</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array-like</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>AttributeError</strong> – If parameter is derived or has no value yet but the argument is
+<code class="docutils literal notranslate"><span class="pre">None</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Parameter.Parameter.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__init__(…) initializes x; see help(type(x)) for signature</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Parameter.Parameter.__repr__">
+<code class="descname">__repr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a string summary of the parameter and current value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Parameter.Parameter.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redirect to the magic doctring.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#xpsi.Parameter.Parameter.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.bounds">
+<code class="descname">bounds</code><a class="headerlink" href="#xpsi.Parameter.Parameter.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hard bounds of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.cached">
+<code class="descname">cached</code><a class="headerlink" href="#xpsi.Parameter.Parameter.cached" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the cached value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.doc">
+<code class="descname">doc</code><a class="headerlink" href="#xpsi.Parameter.Parameter.doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redirect to the magic docstring.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Parameter.Parameter.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>caller=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symlink to property pending dynamic overwrite.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>caller</strong> (<em>obj</em>) – An object, such as the calling class itself, used to transfer
+information from higher in the hierarchy.</td>
+</tr>
+</tbody>
+</table>
+<p>Overwrite if value must be explicitly computed from other variables
+and parameters. That is, subclass <a class="reference internal" href="#xpsi.Parameter.Derive" title="xpsi.Parameter.Derive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Derive</span></code></a>, instantiate,
+and pass as a callable to the initialiser of the present class as
+a value of a <em>derived</em> parameter. The callable will automatically
+replace the bound variant of this present method and will have access
+to some caller object, plus other references (class and/or instance)
+attributes you define in the subclass.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.fixed">
+<code class="descname">fixed</code><a class="headerlink" href="#xpsi.Parameter.Parameter.fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the variable fixed (or derived) or a free parameter?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.name">
+<code class="descname">name</code><a class="headerlink" href="#xpsi.Parameter.Parameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the name of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.needs_update">
+<code class="descname">needs_update</code><a class="headerlink" href="#xpsi.Parameter.Parameter.needs_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do cached dependencies need to be updated?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.permit_prepend">
+<code class="descname">permit_prepend</code><a class="headerlink" href="#xpsi.Parameter.Parameter.permit_prepend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allow subspaces to prepend parameter with prefixes?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.strict_bounds">
+<code class="descname">strict_bounds</code><a class="headerlink" href="#xpsi.Parameter.Parameter.strict_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the strict bounds of the parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.symbol">
+<code class="descname">symbol</code><a class="headerlink" href="#xpsi.Parameter.Parameter.symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get TeX-compatible symbol.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.value">
+<code class="descname">value</code><a class="headerlink" href="#xpsi.Parameter.Parameter.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current parameter value.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.Parameter.Derive">
+<em class="property">class </em><code class="descclassname">xpsi.Parameter.</code><code class="descname">Derive</code><span class="sig-paren">(</span><em>refs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Derive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Derive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper class to bind to parameter instances as a method.</p>
+<p>This is a powerful abstract base class for customisting how derived
+parameters are evaluated from references to existing parameter objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>refs</strong> (<em>obj</em>) – Some references to parameter objects or subspace objects that
+need to be stored for deriving variable values. For example,
+a dictionary with key-ref pairs.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In principle, it might be the case that the calling parameter
+subspace does not have references to other parameter objects
+required, <em>and</em> that distinct subspaces require mutual references
+to each other. An example would be two hot regions, each of which
+as one or more parameters that are derived in part from parameters
+of the other hot region. In this case you need to instantiate
+the subspaces first by binding instances of this present
+class to parameters. However, you then need to complete these instances
+of this present class (or more precisely instances of subclasses) with
+the required references. As an example, consider the following:</p>
+</div>
+<dl class="method">
+<dt id="xpsi.Parameter.Derive.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>boundto</em>, <em>caller=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Derive.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Derive.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derive value from some parameters.</p>
+<p>The second argument is the parameter object to which this callable
+is bound. The third argument is a subspace from which the call
+comes, which might be useful or even sufficient for retrieving the
+required information, in which case write an initialiser with <code class="docutils literal notranslate"><span class="pre">pass</span></code>
+as the body.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Parameter.Derive.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>refs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Derive.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Derive.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__init__(…) initializes x; see help(type(x)) for signature</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Derive.__metaclass__">
+<code class="descname">__metaclass__</code><a class="headerlink" href="#xpsi.Parameter.Derive.__metaclass__" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Derive.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#xpsi.Parameter.Derive.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="parameterSubspace.html" class="btn btn-neutral float-right" title="ParameterSubspace" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="extensions.html" class="btn btn-neutral float-left" title="Extension modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Instrument &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Instrument &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -219,27 +219,40 @@
 <span class="sd">        the columns of :attr:`matrix`, and the output channels</span>
 <span class="sd">        must increase along the rows of :attr:`matrix`. The</span>
 <span class="sd">        *units* of the elements must be that of an *effective*</span>
-<span class="sd">        area (:math:`cm^2`).</span>
+<span class="sd">        area (:math:`cm^2`). Generally there will be some available</span>
+<span class="sd">        calibration product, and deviations from this nominal response</span>
+<span class="sd">        model will be parametrised. So here load some nominal</span>
+<span class="sd">        response matrix.</span>
 
 <span class="sd">    :param ndarray[q+1] energy_edges:</span>
 <span class="sd">        Energy edges of the instrument energy intervals which</span>
 <span class="sd">        must be congruent to the first dimension of the</span>
 <span class="sd">        :attr:`matrix`: the number of edges must</span>
 <span class="sd">        be :math:`q + 1`. The edges must be monotonically</span>
-<span class="sd">        increasing.</span>
+<span class="sd">        increasing. These edges will correspond to the nominal response</span>
+<span class="sd">        matrix and any deviation from this matrix (see above).</span>
 
 <span class="sd">    .. note:: The dimensions of the response matrix need not be equal, but</span>
 <span class="sd">              it is required that the number of input intervals be greater</span>
 <span class="sd">              than or equal to the number of output channels -- i.e.,</span>
-<span class="sd">              :math:`p \leq q`. If :math:`p &lt; q` then it is implied that subsets of</span>
-<span class="sd">              adjacent output channels are actually grouped together.</span>
+<span class="sd">              :math:`p \leq q`. If :math:`p &lt; q` then it is implied that</span>
+<span class="sd">              subsets of adjacent output channels are actually grouped together.</span>
+
+<span class="sd">    :param tuple args:</span>
+<span class="sd">        Container of parameter instances.</span>
+
+<span class="sd">    :param dict kwargs:</span>
+<span class="sd">        If you want to prefix parameters of an instance of this instrument</span>
+<span class="sd">        subspace with an identifier, pass it as keyword argument and it will</span>
+<span class="sd">        find its way to the base class.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Instrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span> <span class="o">=</span> <span class="n">energy_edges</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Instrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -267,9 +280,9 @@
             <span class="k">assert</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">assert</span> <span class="p">(</span><span class="n">matrix</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ResponseError</span><span class="p">(</span><span class="s1">&#39;Input matrix must be a two-dimensional&#39;</span>
-                                <span class="s1">&#39;``numpy.ndarray`` with elements &#39;</span>
-                                <span class="s1">&#39;which are zero or positive.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ResponseError</span><span class="p">(</span><span class="s1">&#39;Input matrix must be a two-dimensional &#39;</span>
+                                <span class="s1">&#39;ndarray awith elements &#39;</span>
+                                <span class="s1">&#39;that are zero or positive.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
@@ -281,6 +294,57 @@
                                     <span class="s1">&#39;one positive number.&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span> <span class="o">=</span> <span class="n">matrix</span>
+
+<div class="viewcode-block" id="Instrument.construct_matrix"><a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.Instrument.construct_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">construct_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Construct the response matrix if it is parametrised.</span>
+
+<span class="sd">        If customising, just do stuff to calculate a matrix, and return</span>
+<span class="sd">        it. You can access parameters (free, fixed, and derived) via</span>
+<span class="sd">        the container access self[&lt;name&gt;].</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span></div>
+
+<div class="viewcode-block" id="Instrument.__call__"><a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.Instrument.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">irange</span><span class="p">,</span> <span class="n">orange</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Fold an incident signal.</span>
+
+<span class="sd">        :param ndarray[m,n] signal:</span>
+<span class="sd">            An :math:`m \\times n` matrix, where input energy interval</span>
+<span class="sd">            increments along rows, and phase increases along columns.</span>
+<span class="sd">            The number of rows, :math:`m`, must equal the number of columns of</span>
+<span class="sd">            :attr:`matrix`: :math:`m=q`.</span>
+
+<span class="sd">        :param array-like irange:</span>
+<span class="sd">            Indexable object with two elements respectively denoting</span>
+<span class="sd">            the indices of the first and last *input* intervals. The</span>
+<span class="sd">            response matrix :attr:`matrix` must be indexable with</span>
+<span class="sd">            these numbers, i.e., they must satisfy :math:`i &lt; q`.</span>
+
+<span class="sd">        :param array-like orange:</span>
+<span class="sd">            Indexable object with two elements respectively denoting</span>
+<span class="sd">            the indices of the first and last *output* channels. The</span>
+<span class="sd">            response matrix :attr:`matrix` must be indexable with</span>
+<span class="sd">            these numbers, i.e., they must satisfy :math:`i &lt; p`.</span>
+
+<span class="sd">        :return: *ndarray[p,n]* containing the folded signal.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            The product of the most recent operation is stored as the property</span>
+<span class="sd">            :attr:`cached_signal`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_matrix</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">orange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">orange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                             <span class="n">irange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">irange</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">signal</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cached_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the cached folded signal. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">energy_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -314,53 +378,7 @@
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Energy edges must be in a one-dimensional &#39;</span>
-                             <span class="s1">&#39;array, and must be postive.&#39;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Instrument.__call__"><a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.Instrument.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">irange</span><span class="p">,</span> <span class="n">orange</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Fold an incident signal.</span>
-
-<span class="sd">        :param ndarray[m,n] signal:</span>
-<span class="sd">            An :math:`m \\times n` matrix, where input energy interval</span>
-<span class="sd">            increments along rows, and phase increases along columns.</span>
-<span class="sd">            The number of rows, :math:`m`, must equal the number of columns of</span>
-<span class="sd">            :attr:`matrix`: :math:`m=q`.</span>
-
-<span class="sd">        :param array-like irange:</span>
-<span class="sd">            Indexable object with two elements respectively denoting</span>
-<span class="sd">            the indices of the first and last *input* intervals. The</span>
-<span class="sd">            response matrix :attr:`matrix` must be indexable with</span>
-<span class="sd">            these numbers, i.e., they must satisfy :math:`i &lt; q`.</span>
-
-<span class="sd">        :param array-like orange:</span>
-<span class="sd">            Indexable object with two elements respectively denoting</span>
-<span class="sd">            the indices of the first and last *output* channels. The</span>
-<span class="sd">            response matrix :attr:`matrix` must be indexable with</span>
-<span class="sd">            these numbers, i.e., they must satisfy :math:`i &lt; p`.</span>
-
-<span class="sd">        :return: *ndarray[p,n]* containing the folded signal.</span>
-
-<span class="sd">        .. note::</span>
-
-<span class="sd">            The product of the most recent operation is stored as the property</span>
-<span class="sd">            :attr:`cached_signal`.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">construct_matrix</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="p">[</span><span class="n">orange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">orange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                                   <span class="n">irange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">irange</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">signal</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cached_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the cached folded signal. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_signal</span>
-
-<div class="viewcode-block" id="Instrument.construct_matrix"><a class="viewcode-back" href="../../instrument.html#xpsi.Instrument.Instrument.construct_matrix">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">construct_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Construct the response matrix given parameter values (if any). &quot;&quot;&quot;</span></div></div>
+                             <span class="s1">&#39;array, and must be postive.&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Photosphere &mdash; xpsi 0.2.0-alpha documentation</title>
+  <title>xpsi.Photosphere &mdash; xpsi 0.3.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2
+                0.3
               </div>
             
           
@@ -103,7 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../parameterSpace.html">ParameterSpace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
@@ -193,43 +193,55 @@
 <span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
 
+<span class="kn">from</span> <span class="nn">.Spacetime</span> <span class="k">import</span> <span class="n">Spacetime</span>
 <span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="k">import</span> <span class="n">HotRegion</span>
 <span class="kn">from</span> <span class="nn">.Elsewhere</span> <span class="k">import</span> <span class="n">Elsewhere</span>
 
-<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span><span class="p">,</span> <span class="n">BoundsError</span>
+<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="k">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
 
 <div class="viewcode-block" id="Photosphere"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere">[docs]</a><span class="k">class</span> <span class="nc">Photosphere</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A photosphere embedded in an ambient Schwarzschild spacetime.</span>
 
-<span class="sd">    :param str tag: An identification tag to enforce intended pairing with</span>
-<span class="sd">                    a :class:`~.Pulse.Pulse` object.</span>
+<span class="sd">    :param obj hot:</span>
+<span class="sd">        An instance of :class:`~.HotRegion.HotRegion` (or a</span>
+<span class="sd">        derived class). This objects represents the hot</span>
+<span class="sd">        regions of the surface that in most use-cases will be</span>
+<span class="sd">        assumed to contain radiating material that is hotter</span>
+<span class="sd">        than that *elsewhere*.</span>
 
-<span class="sd">    :param obj hot: An instance of :class:`~.HotRegion.HotRegion` (or a</span>
-<span class="sd">                    derived class). This objects represents the hot</span>
-<span class="sd">                    regions of the surface that in most use-cases will be</span>
-<span class="sd">                    assumed to contain radiating material that is hotter</span>
-<span class="sd">                    than that *elsewhere*.</span>
+<span class="sd">    :param obj elsewhere:</span>
+<span class="sd">        An instance of :class:`~.Elsewhere.Elsewhere` (or a derived class).</span>
 
-<span class="sd">    :param obj elsewhere: An instance of :class:`~.Elsewhere.Elsewhere`</span>
-<span class="sd">                          (or a derived class).</span>
+<span class="sd">    :param tuple bounds:</span>
+<span class="sd">        If ``None``, lock the coordinate rotation frequency of a mode of</span>
+<span class="sd">        asymmetry in the photosphere to a fixed frequency, e.g., the stellar</span>
+<span class="sd">        rotation frequency. If bounds are passed, the frequency is interpreted</span>
+<span class="sd">        as a free parameter.</span>
 
-<span class="sd">    :param bool locked:</span>
-<span class="sd">        Has no effect. However, if one wanted the coordinate rotation</span>
-<span class="sd">        frequency of a mode of asymmetry in the photosphere to *not be</span>
-<span class="sd">        locked* to the stellar rotation frequency, a parameter could</span>
-<span class="sd">        be defined for this object and the hot region base class could</span>
-<span class="sd">        be modified to normalise the ray lags by this frequency instead</span>
-<span class="sd">        of the stellar rotation frequency.</span>
+<span class="sd">    :param float value:</span>
+<span class="sd">        If the asymmetry is locked to the stellar spin, then you need to pass</span>
+<span class="sd">        the spin frequency. If fixed but different to the spin frequency, this</span>
+<span class="sd">        value needs to be passed instead. In the hot region base class this</span>
+<span class="sd">        mode frequency is applied to normalise the ray lags instead of the</span>
+<span class="sd">        stellar rotation frequency.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        In basic modelling patterns the frequency is the spin frequency,</span>
+<span class="sd">        and thus you only need to explicitly pass the spin as ``value`` whilst</span>
+<span class="sd">        leaving ``bounds`` to default. If the spin frequency happens to be a</span>
+<span class="sd">        free parameter (perhaps with informative prior information), then</span>
+<span class="sd">        pass a callable instead that can be used to get the spin frequency</span>
+<span class="sd">        dynamically when the derived mode frequency variable is called for.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">locked</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="n">num_params</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Photosphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_params</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+    <span class="n">required_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">]</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Incompatible type for identification tag.&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">hot</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elsewhere</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="p">):</span>
@@ -238,8 +250,11 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="n">elsewhere</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">hot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The photosphere must radiate.&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span> <span class="c1"># including derived classes</span>
+                                          <span class="c1"># including derived classes</span>
+        <span class="k">if</span> <span class="n">hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
@@ -250,22 +265,24 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="o">=</span> <span class="n">hot</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">num_params</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">num_params</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">total_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the total number of photospheric radiation field parameters. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_params</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        Coordinate frequency of the mode of radiative asymmetry in the</span>
+<span class="s2">        photosphere that is assumed to generate the pulsed signal [Hz].</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="n">value</span> <span class="o">*=</span> <span class="n">_2pi</span> <span class="c1"># need angular frequency</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the ID tag of the photosphere object for pulse pairing. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span>
+        <span class="n">mode_frequency</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span>
+                                   <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2000.0</span><span class="p">),</span>
+                                   <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">,</span>
+                                   <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                                   <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$f_{\rm mode}$&#39;</span><span class="p">,</span>
+                                   <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Photosphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mode_frequency</span><span class="p">,</span>
+                                          <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hot_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -355,93 +372,105 @@
         <span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.Elsewhere.Elsewhere`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span>
 
-<div class="viewcode-block" id="Photosphere.embed"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spacetime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return instance of :class:`~.Spacetime.Spacetime`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span>
+
+    <span class="nd">@spacetime</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">spacetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Spacetime</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for spacetime object.&#39;</span><span class="p">)</span>
+        <span class="c1"># otherwise store a reference to the spacetime object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span> <span class="o">=</span> <span class="n">obj</span>
+
+<div class="viewcode-block" id="Photosphere.embed"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Embed the photosphere in an ambient Schwarzschild spacetime.</span>
 
 <span class="sd">        In other words, generate a discrete representation of the photospheric</span>
 <span class="sd">        radiation field and the null mapping from the photosphere to infinity,</span>
 <span class="sd">        for use in flux integrators called by distant observers.</span>
 
-<span class="sd">        :param obj spacetime: Instance of :class:`~.Spacetime.Spacetime`.</span>
-
-<span class="sd">        :param list p: Parameters of photospheric radiation field.</span>
-
-<span class="sd">        Parameter vector:</span>
-
-<span class="sd">        * ``p[i]`` = coordinate mode/oscillation frequency, *if not locked*</span>
-<span class="sd">        * ``p[i:j]`` = parameters for photospheric hot region(s)</span>
-<span class="sd">        * ``p[j:]`` = parameters for radiation field elsewhere</span>
-
-<span class="sd">        where ``i = self._num_params`` and ``j = 1 + self._hot.num_params``.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_params</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">num_params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:],</span> <span class="n">threads</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">],</span>
-                             <span class="n">fast_total_counts</span><span class="p">,</span>
-                             <span class="n">threads</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">,</span>
-                             <span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">:])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="p">,</span>
+                                <span class="n">fast_total_counts</span><span class="p">,</span>
+                                <span class="n">threads</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">:],</span>
-                               <span class="n">fast_total_counts</span><span class="p">,</span>
-                               <span class="n">threads</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span> <span class="o">=</span> <span class="n">spacetime</span> <span class="c1"># store a reference to the spacetime object</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="p">,</span>
+                            <span class="n">fast_total_counts</span><span class="p">,</span>
+                            <span class="n">threads</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Photosphere.integrate"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>
 
-<span class="sd">        :param energies: A one-dimensional :class:`numpy.ndarray` of energies</span>
-<span class="sd">                         in keV.</span>
+<span class="sd">        :param energies:</span>
+<span class="sd">            A one-dimensional :class:`numpy.ndarray` of energies in keV.</span>
 
-<span class="sd">        :param int threads: Number of ``OpenMP`` threads to spawn for pulse</span>
-<span class="sd">                            integration.</span>
+<span class="sd">        :param int threads:</span>
+<span class="sd">            Number of ``OpenMP`` threads to spawn for pulse integration.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span> <span class="c1"># resolve energy container type</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
                     <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span>
-            <span class="n">time_invariant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
-                                                       <span class="n">_energies</span><span class="p">,</span>
-                                                       <span class="n">threads</span><span class="p">,</span>
-                                                       <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                                   <span class="n">_energies</span><span class="p">,</span>
+                                                   <span class="n">threads</span><span class="p">,</span>
+                                                   <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
-                                             <span class="n">energies</span><span class="p">,</span>
-                                             <span class="n">threads</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                              <span class="n">energies</span><span class="p">,</span>
+                                              <span class="n">threads</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">,)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">,)</span>
 
-        <span class="c1"># add time-invariant component to first time-dependent component</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">time_invariant</span></div>
+            <span class="c1"># add time-invariant component to first time-dependent component</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the stored pulse.</span>
 
-<span class="sd">        :return: A :class:`numpy.ndarray` of size ``m x n``, where ``m`` is</span>
-<span class="sd">                 the number of energies, and ``n`` is the number of phases.</span>
+<span class="sd">        :return: *ndarray[m,n]*, where :math:`m` is</span>
+<span class="sd">                 the number of energies, and :math:`n` is the number of phases.</span>
 <span class="sd">                 Units are photon/s/keV; the distance is a fast parameter so</span>
-<span class="sd">                 the area units are not yet factored in.</span>
+<span class="sd">                 the areal units are not yet factored in.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">time_invariant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the stored time-invariant signal.</span>
+
+
+<span class="sd">        :returns:</span>
+<span class="sd">            *ndarray[n]* containing the time-invariant signal at</span>
+<span class="sd">            :math:`n` energies. Units are photon/s/keV. The distance is a</span>
+<span class="sd">            fast parameter so the areal units are not yet factored in.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span></div>
+
+<span class="n">Photosphere</span><span class="o">.</span><span class="n">_update_doc</span><span class="p">()</span>
 </pre></div>
 
            </div>
