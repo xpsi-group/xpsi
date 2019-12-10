@@ -65,7 +65,7 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
             from xpsi.EnsembleSampler import EnsembleSampler
 
             # Initialise emcee sampler
-            sampler = EnsembleSampler(ndims = likelihood.num_params,
+            sampler = EnsembleSampler(ndims = len(likelihood),
                                       posterior = func,
                                       prior = prior,
                                       pool = pool,
@@ -77,7 +77,7 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
         from xpsi.EnsembleSampler import EnsembleSampler
 
         # Initialise emcee sampler
-        sampler = EnsembleSampler(ndims = likelihood.num_params,
+        sampler = EnsembleSampler(ndims = len(likelihood),
                                   posterior = posterior,
                                   prior = prior,
                                   pool = None,
@@ -111,7 +111,7 @@ def nested(likelihood, prior, check_kwargs={}, **kwargs):
     if check_kwargs:
         likelihood.check(**check_kwargs)
 
-    sampler = NestedSampler(likelihood.num_params,
-                                  likelihood,
-                                  prior)
+    sampler = NestedSampler(len(likelihood),
+                            likelihood,
+                            prior)
     sampler(**kwargs)

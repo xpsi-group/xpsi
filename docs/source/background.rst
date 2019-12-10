@@ -8,7 +8,7 @@ Background
 Instances of :class:`~.Background.Background` are objects representing model backgrounds.
 
 .. autoclass:: xpsi.Background.Background
-    :members: __call__, background, num_params, bounds
+    :members: __call__, background
     :show-inheritance:
 
 .. autoclass:: xpsi.Background.BackgroundError

@@ -32,13 +32,16 @@ __all__ = ["_np",
            "_log",
            "_time",
            "gravradius",
-           "xpsiError"]
+           "xpsiError",
+           "_six"]
 
 import os as _os
 import sys as _sys
 
 import numpy as _np
 import math as _m
+
+import six as _six
 
 from numpy import ascontiguousarray as _contig
 from numpy import cos as _cos

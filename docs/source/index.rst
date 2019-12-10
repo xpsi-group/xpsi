@@ -26,7 +26,7 @@
    :maxdepth: 1
    :caption: Likelihood API
 
-   parameterSpace
+   parameter
    parameterSubspace
    likelihood
    pulse

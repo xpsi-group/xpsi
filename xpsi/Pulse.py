@@ -31,53 +31,31 @@ class Pulse(ParameterSubspace):
     into a structure congruent to that of the data for the purpose of
     evaluation of the likelihood.
 
-    :param str tag: An identification tag to enforce intended pairing with
-                    a :class:`~.Photosphere.Photosphere` object.
+    :param obj data: An instance of :class:`~.Data.Data`.
 
-    :param int num_params: Number of *fast* nuisance parameters associated
-                           with the model of the pulsation, excluding:
+    :param obj instrument: An instance of :class:`~.Instrument.Instrument`.
 
-                           * *slow* parameters associated with the star
-                             defined in :class:`~.Star.Star`;
-                           * parameters associated with an instance of
-                             :class:`~.Background.Background`;
-                           * parameters associated with an instance of
-                             :class:`~.Interstellar.Interstellar`.
+    :param obj background:
+        If not ``None``, an instance of :class:`~.Background.Background`.
+        It is assumed if one constructs a model using instances of
+        :class:`~.Background.Background` that the background needs to be
+        folded through a model instrument. If ``None``, it is still possible
+        for one to define and use background parameters in a custom subclass
+        of :class:`Pulsation`. In particular, background parameters for some
+        model which directly specifies background contribution in units of
+        count/s per *output* channels. These background parameters can even
+        *be* the counts/s in output channels.
 
-    :param list bounds: Hard parameter bounds for the instance of
-                        :class:`.ParameterSubspace.ParameterSubspace`.
+    :param obj interstellar:
+        If not ``None``, an instance of :class:`~.Interstellar.Interstellar`.
+        To be applied to the incident source pulsation as a modifier callable.
 
-    :param data: An instance of :class:`~.Data.Data`.
-
-    :param instrument: An instance of :class:`~.Instrument.Instrument`.
-
-    :param background: If not ``None``, an instance of
-                       :class:`~.Background.Background`. It is
-                       assumed if one constructs a model using instances
-                       of :class:`~.Background.Background` that the
-                       background needs to be folded through a model
-                       instrument. If ``None``, it is still possible for
-                       one to define and use background parameters in a
-                       custom subclass of :class:`Pulsation`. In
-                       particular, background parameters for some model
-                       which directly specifies background contribution
-                       in units of count/s per *output* channels. These
-                       background parameters can even *be* the counts/s in
-                       output channels.
-
-    :param interstellar: If not ``None``, an instance of
-                         :class:`~.Interstellar.Interstellar`. To be
-                         applied to the incident source pulsation.
-
-    :param int energies_per_interval: The number of energies to compute
-                                     photon fluxes, per input energy
-                                     channel of the instrument.
+    :param int energies_per_interval:
+        The number of energies to compute photon fluxes, per input energy
+        channel of the instrument.
 
     """
     def __init__(self,
-                 num_params,
-                 bounds,
-                 tag,
                  data,
                  instrument,
                  background = None,
@@ -87,18 +65,9 @@ class Pulse(ParameterSubspace):
                  fast_rel_energies_per_interval = 0.5,
                  adaptive_energies = False,
                  adapt_exponent = 0.5,
-                 store = False):
-        super(Pulse, self).__init__(num_params, bounds)
-
-        try:
-            self._tag = str(tag)
-        except TypeError:
-            raise TypeError('Incompatible type for identification tag.')
-
-        try:
-            self._num_params = int(num_params)
-        except TypeError:
-            raise TypeError('Number of parameters must be an integer.')
+                 store = False,
+                 *args,
+                 **kwargs):
 
         if not isinstance(data, Data):
             raise TypeError('Invalid type for a data object.')
@@ -133,49 +102,15 @@ class Pulse(ParameterSubspace):
         self.adaptive_energies = adaptive_energies
         self.adapt_exponent = adapt_exponent
 
-        self._total_params = self._num_params
-        if self._interstellar is not None:
-            self._total_params += self._interstellar.num_params
-        if self._background is not None:
-            self._total_params += self._background.num_params
-        if self._instrument is not None:
-            self._total_params += self._instrument.num_params
+        if not isinstance(store, bool):
+            raise TypeError('Activate or deactivate caching with a boolean.')
+        self._store = store
 
-        self._idxs = [None] * 3
-
-        if self._interstellar is not None:
-            self._idxs[0] = self._interstellar.num_params
-        else:
-            self._idxs[0] = 0
-
-        if self._instrument is not None:
-            self._idxs[1] = self._idxs[0] + self._instrument.num_params
-        else:
-            self._idxs[1] = self._idxs[0]
-
-        if self._background is not None:
-            self._idxs[2] = self._idxs[1] + self._background.num_params
-        else:
-            self._idxs[2] = self._idxs[1]
-
-        if isinstance(store, bool):
-            self._store = store
-
-    @property
-    def tag(self):
-        """Get the ID tag of the pulse object for photosphere pairing. """
-        return self._tag
-
-    @property
-    def total_params(self):
-        """ Get the number of (fast, nuisance) parameters of the pulse.
-
-        These parameters are nuisance parameters which are expected to be fast
-        in regards to likelihood recalculation, and include background and
-        interstellar process parameters.
-
-        """
-        return self._total_params
+        # merge the subspaces; order unimportant
+        super(Pulse, self).__init__(self._instrument,
+                                    self._background,
+                                    self._interstellar,
+                                    *args, **kwargs)
 
     @property
     def background(self):
@@ -202,12 +137,13 @@ class Pulse(ParameterSubspace):
         model instrument (in an instance of the :class:`~.Instrument.Instrument`
         class).
 
-        :param int energies_per_interval: The number of energies to compute
-                                         photon fluxes, per input energy
-                                         channel of the instrument.
+        :param int energies_per_interval:
+            The number of energies to compute photon fluxes, per input energy
+            channel of the instrument.
 
-        :raises IndexError: If the channel range of the data object
-                            is not consistent with the instrument object.
+        :raises IndexError:
+            If the channel range of the data object is not consistent with
+            the instrument object.
 
         """
         a, b = self._data.channel_range
@@ -268,12 +204,12 @@ class Pulse(ParameterSubspace):
                                                     self._num_energies * 10,
                                                     base=10.0)
 
-    def _adapt_energies(self, signal):
+    def _adapt_energies(self, signal, phases):
         """ Calculate a set of adapted energies for pulse integration. """
         signal = phase_integrator(1.0,
                                   _np.array([0.0,1.0]),
                                   signal,
-                                  self.fast_phases,
+                                  phases,
                                   0.0)
 
         energies = energy_adaptor((_np.log(10.0) * (self.fast_energies \
@@ -336,7 +272,7 @@ class Pulse(ParameterSubspace):
         """ Get a :class:`numpy.ndarray` of energy edges. """
         return self._energy_edges
 
-    def fold(self, signals, p, fast_mode=False, threads=1):
+    def fold(self, signals, fast_mode=False, threads=1):
         """ Fold a raw pulse signal through the response matrix.
 
         A :class:`numpy.ndarray` is stored as an instance attribute containing
@@ -361,7 +297,7 @@ class Pulse(ParameterSubspace):
                 fast_total_counts = []
                 energies = []
 
-                for component in hotRegion:
+                for component, phases in zip(hotRegion, self.fast_phases):
                     if component is None:
                         energies.append(self.default_energies)
                         fast_total_counts.append(None)
@@ -370,7 +306,7 @@ class Pulse(ParameterSubspace):
 
                     else:
                         if self.adaptive_energies:
-                            _ = self._adapt_energies(component)
+                            _ = self._adapt_energies(component, phases)
                             energies.append(_)
                         else:
                             energies.append(self.default_energies)
@@ -381,14 +317,12 @@ class Pulse(ParameterSubspace):
                                                          _np.log10(self._energy_edges))
 
                         if self._interstellar is not None:
-                            self._interstellar(p[:self._idxs[0]],
-                             (self._energy_edges[:-1] + self._energy_edges[1:])/2.0,
-                             integrated)
+                            e = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
+                            self._interstellar(e, integrated)
 
-                        _ = self._instrument(p[self._idxs[0]:self._idxs[1]],
-                                                      integrated,
-                                                      self._input_interval_range,
-                                                      self._data.channel_range)
+                        _ = self._instrument(integrated,
+                                             self._input_interval_range,
+                                             self._data.channel_range)
 
                         if self.store:
                             self._fast_incident_spectrum.append(_np.sum(_, axis=1))
@@ -436,8 +370,7 @@ class Pulse(ParameterSubspace):
 
                 if self._interstellar is not None:
                     for signal in self.raw_signals:
-                        self._interstellar.interp_and_absorb(p[:self._idxs[0]],
-                                                             self.logspace_energies_hires,
+                        self._interstellar.interp_and_absorb(self.logspace_energies_hires,
                                                              signal)
 
                         self.absorbed_raw_signals = signal
@@ -466,44 +399,44 @@ class Pulse(ParameterSubspace):
                     self.raw_signals_energy_intervals = integrated.copy()
 
                 if self._interstellar is not None:
-                    self._interstellar(p[:self._idxs[0]],
-                            (self._energy_edges[:-1] + self._energy_edges[1:])/2.0,
-                            integrated)
+                    e = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
+                    self._interstellar(e, integrated)
 
-                self.pulse = self._instrument(p[self._idxs[0]:self._idxs[1]],
-                                              integrated,
+                self.pulse = self._instrument(integrated,
                                               self._input_interval_range,
                                               self._data.channel_range)
 
             if self._background is not None:
                 try:
-                    self._background(p[self._idxs[1]:self._idxs[2]],
-                                     self._energy_edges,
+                    self._background(self._energy_edges,
                                      self._data.phases)
                 except TypeError:
                     print('Error when evaluating the incident background.')
                     raise
 
                 self._background.folded_background = \
-                    self._instrument(p[self._idxs[0]:self._idxs[1]],
-                                     self._background.background,
+                    self._instrument(self._background.background,
                                      self._input_interval_range,
                                      self._data.channel_range)
 
     @property
     def phases(self):
-        return self._phases.copy()
+        return [phases.copy() for phases in self._phases]
 
     @phases.setter
     def phases(self, obj):
+        if not isinstance(obj, list):
+            obj = [obj]
         self._phases = obj
 
     @property
     def fast_phases(self):
-        return self._fast_phases.copy()
+        return [phases.copy() for phases in self._fast_phases]
 
     @fast_phases.setter
     def fast_phases(self, obj):
+        if not isinstance(obj, list):
+            obj = [obj]
         self._fast_phases = obj
 
     @property
@@ -645,7 +578,7 @@ class Pulse(ParameterSubspace):
         if isinstance(values, _np.ndarray):
             self._shift = values
         else:
-            raise TypeError('Store phase shift parameters as a 1D np.ndarray.')
+            raise TypeError('Store phase shift parameters as a 1D ndarray.')
 
     @shift.deleter
     def shift(self):
@@ -706,25 +639,29 @@ class Pulse(ParameterSubspace):
             self._loglikelihood = ll
 
     @abstractmethod
-    def __call__(self, p, *args, **kwargs):
+    def __call__(self, phase_shifts, **kwargs):
         """ Compute the logarithm of the likelihood and store it as a property.
 
-        :param list p: Model nuisance parameters (fast). The length of this
-                       list will be equal to the ``total_params`` property.
+        :param iterable phase_shifts:
+            Container of phase shift :class:`.~Parameter.Parameter` instances,
+            one per hot region, communicated by the likelihood object from
+            the star object. The order is equal to the order of the hot
+            region objects stored in ``photosphere.hot.objects``.
 
-        :param int threads: Number of ``OpenMP`` threads to use for likelihood
-                            evaluation. This argument can be ignored if not
-                            required.
+        :param dict kwargs:
+            The following keyword arguments may be accessed.
 
-        :param tuple args:
-            The other parameters, in case required. Note that the
-            :class:`~.Likelihood.Likelihood` class expects this method
-            signature, and an exception will be raised if it is not adhered
-            to when implementing ``__call__`` in a custom subclass.
+        :param int threads:
+            Number of ``OpenMP`` threads to use for likelihood evaluation.
+            This argument can be ignored if not required.
+
+        :param float llzero:
+            The minimum log-likelihood setting for MultiNest. Points whose
+            log-likelihood is lower than this value are ignored.
 
         """
 
-    def synthesise(self, p, directory, *args, **kwargs):
+    def synthesise(self, phase_shifts, directory, *args, **kwargs):
         """ Synthesise pulsation data according to the generative model.
 
         :param list p: Model nuisance parameters (fast). The length of this

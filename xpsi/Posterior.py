@@ -9,6 +9,8 @@ from .Likelihood import Likelihood
 from .Pulse import LikelihoodError
 
 from .Prior import Prior
+from .ParameterSubspace import ParameterSubspace
+from .Parameter import StrictBoundsError
 
 class PriorError(ValueError):
     """ Raised if there is a problem with the value of the log-prior. """
@@ -31,13 +33,16 @@ class Posterior(object):
 
         if not isinstance(likelihood, Likelihood):
             raise TypeError('Invalid type for likelihood object.')
-        else:
-            self._likelihood = likelihood
+
+        self._likelihood = likelihood
+        # no inverse sampling but best to update before prior check
+        # and then revert if not in prior support
+        self._likelihood.externally_updated = True
 
         if not isinstance(prior, Prior):
             raise TypeError('Invalid type for prior object.')
-        else:
-            self._prior = prior
+
+        self._prior = prior
 
     @property
     def likelihood(self):
@@ -52,9 +57,19 @@ class Posterior(object):
     def __call__(self, p):
         """ Special method to make callable instances to feed to ``emcee``.
 
-        :return: The logarithm of the posterior density (up to a
-                 normalising constant), evaluated at :obj:`p`.
+        :returns:
+            The logarithm of the posterior density (up to a normalising
+            constant), evaluated at :obj:`p`.
+
         """
+        q = self._likelihood.vector # make our own cache here
+
+        try:
+            ParameterSubspace.__call__(self._likelihood, p)
+        except StrictBoundsError:
+            ParameterSubspace.__call__(self._likelihood, q)
+            return -_np.inf
+
         lp = self._prior(p)
 
         if _np.isnan(lp):
@@ -62,11 +77,12 @@ class Posterior(object):
 
         if _np.isfinite(lp):
             try:
-                ll = self._likelihood(p)
+                ll = self._likelihood()
             except LikelihoodError:
                 print('Parameter vector: ', p)
                 raise
         else:
+            ParameterSubspace.__call__(self._likelihood, q)
             ll = 0.0
 
         return ll + lp

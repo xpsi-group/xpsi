@@ -16,6 +16,3 @@ and this project adheres to
 ### Deprecated
 
 ### Removed
-
-## [0.2] - 11/11/2019
-

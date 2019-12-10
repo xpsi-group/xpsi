@@ -1,7 +1,7 @@
 """ X-PSI: A prototype open-source package for neutron star
     X-ray Pulse Simulation and Inference. """
 from __future__ import print_function
-__version__ = "0.2.0-alpha"
+__version__ = "0.3.0"
 __author__ = "Thomas E. Riley"
 
 try:
@@ -49,7 +49,10 @@ if not __XPSI_SETUP__:
                     _ = func(*args, **kwargs)
                 if _verbose:
                     if exit_msg and isinstance(exit_msg, _six.string_types):
-                        print(exit_msg + '.')
+                        if exit_msg == '\n':
+                            print(exit_msg)
+                        else:
+                            print(exit_msg + ('.' if exit_msg[-1] != '.' else ''))
                 return _
             return wrapper
         return decorator
@@ -98,6 +101,9 @@ if not __XPSI_SETUP__:
         print("\\=============================================/\n")
 
     import global_imports
+
+    from .Parameter import Parameter, Derive
+    from .ParameterSubspace import ParameterSubspace
 
     from .Likelihood import Likelihood
     from .Data import Data
