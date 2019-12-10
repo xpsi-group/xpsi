@@ -244,6 +244,12 @@ encapsulating subspaces higher in the hierarchy.</li>
 </tbody>
 </table>
 <dl class="method">
+<dt id="xpsi.Parameter.Parameter.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>name</em>, <em>strict_bounds</em>, <em>bounds=(None</em>, <em>None)</em>, <em>doc=None</em>, <em>symbol=r''</em>, <em>value=None</em>, <em>permit_prepend=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__init__(…) initializes x; see help(type(x)) for signature</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="xpsi.Parameter.Parameter.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update or get current point if the parameter is <em>free</em>.</p>
@@ -265,12 +271,6 @@ encapsulating subspaces higher in the hierarchy.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="xpsi.Parameter.Parameter.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__init__(…) initializes x; see help(type(x)) for signature</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="xpsi.Parameter.Parameter.__repr__">
 <code class="descname">__repr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a string summary of the parameter and current value.</p>
@@ -280,12 +280,6 @@ encapsulating subspaces higher in the hierarchy.</li>
 <dt id="xpsi.Parameter.Parameter.__str__">
 <code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redirect to the magic doctring.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Parameter.Parameter.__weakref__">
-<code class="descname">__weakref__</code><a class="headerlink" href="#xpsi.Parameter.Parameter.__weakref__" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -410,24 +404,6 @@ is bound. The third argument is a subspace from which the call
 comes, which might be useful or even sufficient for retrieving the
 required information, in which case write an initialiser with <code class="docutils literal notranslate"><span class="pre">pass</span></code>
 as the body.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="xpsi.Parameter.Derive.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>refs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Derive.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Derive.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__init__(…) initializes x; see help(type(x)) for signature</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Parameter.Derive.__metaclass__">
-<code class="descname">__metaclass__</code><a class="headerlink" href="#xpsi.Parameter.Derive.__metaclass__" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.Parameter.Derive.__weakref__">
-<code class="descname">__weakref__</code><a class="headerlink" href="#xpsi.Parameter.Derive.__weakref__" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
 </dd></dl>

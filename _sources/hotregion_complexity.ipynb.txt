@@ -568,7 +568,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "We have a crescent that is symmetric about the equator. Note that, confusingly, the *hole* is not actually a hole. The current object naming convention in the source code means that this is referred to as a hole, although it is not topologically true. A better way to think about this configuration is to consider a superseding member that supersedes a ceding member with the *elsewhere* radiation field."
+    "We have a crescent that is symmetric about the equator. A way to think about this configuration is to consider the omission region as a a superseding member that supersedes a ceding member with the *elsewhere* radiation field."
    ]
   },
   {
@@ -650,7 +650,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Note that a fundamental property of the topmost mesh has now changed: the boundary in azimuth is periodic because the spot encompasses a pole (the southern rotational pole), whilst the lower boundary in colatitude is actually a coordinate singularity. The boundary in azimuth for the bottommost mesh is *not* periodic. The *hole* is close enough to being a topological hole that we cannot distinguish whether or not it is from the mesh, and we would need to calulate the sum of the angular radius of the hole with the angular separation between the centres."
+    "Note that a fundamental property of the topmost mesh has now changed: the boundary in azimuth is periodic because the spot encompasses a pole (the southern rotational pole), whilst the lower boundary in colatitude is actually a coordinate singularity. The boundary in azimuth for the bottommost mesh is *not* periodic. The omission region is close enough to being a topological hole that we cannot distinguish whether or not it is from the mesh, and we would need to calulate the sum of the angular radius of the hole with the angular separation between the centres."
    ]
   },
   {
@@ -745,7 +745,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "The primary spot centre is now almost coincident with a pole, with the angular separation between pole and centre much smaller than the angular radius of the spot. Meanwhile, the hole in the secondary hot region is a topological hole, but does not encompass a pole, whilst the outer boundary of the resulting ring *does*."
+    "The primary spot centre is now almost coincident with a pole, with the angular separation between pole and centre much smaller than the angular radius of the spot. Meanwhile, the omission member of the secondary hot region is a hole, but does not encompass a pole, whilst the outer boundary of the resulting ring *does*."
    ]
   },
   {
@@ -811,10 +811,10 @@
     "    \n",
     "    Specifically, the input vector ``p`` is constituted by:\n",
     "    \n",
-    "        * the fractional angular offset between the centres of the \"hole\" and ceding member\n",
-    "        * the azimuthal offset of the ceding member about the centre of the \"hole\"\n",
+    "        * the fractional angular offset between the centres of superseding and ceding members\n",
+    "        * the azimuthal offset of the ceding member about the centre of the superseding member\n",
     "        \n",
-    "    The \"hole\" is a non-radiating superseding region that *might* be a topological hole\n",
+    "    An omission member is a non-radiating superseding region that *might* be a topological hole\n",
     "    in the ceding member region.\n",
     "        \n",
     "    \"\"\"\n",
@@ -864,7 +864,7 @@
    "source": [
     "set_defaults()                            # defaults\n",
     "star['p__super_radius'] = 0.25            # increase the primary spot angular radius\n",
-    "star['s__omit_radius'] = 0.31             # increase the angular radius of the hole\n",
+    "star['s__omit_radius'] = 0.31             # increase the angular radius of the omission region\n",
     "star['s__omit_colatitude'] = math.pi/2.0\n",
     "\n",
     "p = [0.05, math.pi/2.0]\n",
@@ -879,8 +879,9 @@
     "h = hot.objects[1]\n",
     "\n",
     "# in the source code, there is always a radiating \"super\" region\n",
-    "# even if the \"hole\" is equivalent to a non-radiating superseding member\n",
-    "# and the \"super\" region is then really a ceding member\n",
+    "# even if the omission region is equivalent to a non-radiating\n",
+    "# superseding member and the \"super\" region is then really a\n",
+    "# ceding member\n",
     "h._super_cellArea[h._super_cellArea > 0.0] = 1.0\n",
     "\n",
     "plot_meshes()"

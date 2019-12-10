@@ -913,7 +913,7 @@ representing the proper area covered by the hot region within a given element. T
 <img alt="_images/hotregion_complexity_20_0.png" src="_images/hotregion_complexity_20_0.png" />
 </div>
 </div>
-<p>We have a crescent that is symmetric about the equator. Note that, confusingly, the <em>hole</em> is not actually a hole. The current object naming convention in the source code means that this is referred to as a hole, although it is not topologically true. A better way to think about this configuration is to consider a superseding member that supersedes a ceding member with the <em>elsewhere</em> radiation field.</p>
+<p>We have a crescent that is symmetric about the equator. A way to think about this configuration is to consider the omission region as a a superseding member that supersedes a ceding member with the <em>elsewhere</em> radiation field.</p>
 <p>Given that the superseding member is not a topological hole, the resulting crescent has <em>terminal points</em> or <em>horns</em>. As one approaches the horns around the crescent, the cell areas approach zero, and the two cells containing the two terminal points, and the adjacent cells cannot be resolved in colour from the cells that have zero coverage of the hot region. We can pick out these cells at the horns by setting a uniform colour for cells of finite area:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -965,8 +965,8 @@ representing the proper area covered by the hot region within a given element. T
 <img alt="_images/hotregion_complexity_25_0.png" src="_images/hotregion_complexity_25_0.png" />
 </div>
 </div>
-<p>Note that a fundamental property of the topmost mesh has now changed: the boundary in azimuth is periodic because the spot encompasses a pole (the southern rotational pole), whilst the lower boundary in colatitude is actually a coordinate singularity. The boundary in azimuth for the bottommost mesh is <em>not</em> periodic. The <em>hole</em> is close enough to being a topological hole that we cannot distinguish whether or not it is from the mesh, and we would need to calulate the sum of the angular radius of
-the hole with the angular separation between the centres.</p>
+<p>Note that a fundamental property of the topmost mesh has now changed: the boundary in azimuth is periodic because the spot encompasses a pole (the southern rotational pole), whilst the lower boundary in colatitude is actually a coordinate singularity. The boundary in azimuth for the bottommost mesh is <em>not</em> periodic. The omission region is close enough to being a topological hole that we cannot distinguish whether or not it is from the mesh, and we would need to calulate the sum of the angular
+radius of the hole with the angular separation between the centres.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -1032,7 +1032,7 @@ reflection-symmetric properties intact.</p>
 <img alt="_images/hotregion_complexity_30_0.png" src="_images/hotregion_complexity_30_0.png" />
 </div>
 </div>
-<p>The primary spot centre is now almost coincident with a pole, with the angular separation between pole and centre much smaller than the angular radius of the spot. Meanwhile, the hole in the secondary hot region is a topological hole, but does not encompass a pole, whilst the outer boundary of the resulting ring <em>does</em>.</p>
+<p>The primary spot centre is now almost coincident with a pole, with the angular separation between pole and centre much smaller than the angular radius of the spot. Meanwhile, the omission member of the secondary hot region is a hole, but does not encompass a pole, whilst the outer boundary of the resulting ring <em>does</em>.</p>
 <p>Let’s increase the resolution for one of the examples above to some ridiculous level that is not even accurately rendered:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -1075,10 +1075,10 @@ reflection-symmetric properties intact.</p>
 
 <span class="sd">    Specifically, the input vector ``p`` is constituted by:</span>
 
-<span class="sd">        * the fractional angular offset between the centres of the &quot;hole&quot; and ceding member</span>
-<span class="sd">        * the azimuthal offset of the ceding member about the centre of the &quot;hole&quot;</span>
+<span class="sd">        * the fractional angular offset between the centres of superseding and ceding members</span>
+<span class="sd">        * the azimuthal offset of the ceding member about the centre of the superseding member</span>
 
-<span class="sd">    The &quot;hole&quot; is a non-radiating superseding region that *might* be a topological hole</span>
+<span class="sd">    An omission member is a non-radiating superseding region that *might* be a topological hole</span>
 <span class="sd">    in the ceding member region.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1107,7 +1107,7 @@ reflection-symmetric properties intact.</p>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">set_defaults</span><span class="p">()</span>                            <span class="c1"># defaults</span>
 <span class="n">star</span><span class="p">[</span><span class="s1">&#39;p__super_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.25</span>            <span class="c1"># increase the primary spot angular radius</span>
-<span class="n">star</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.31</span>             <span class="c1"># increase the angular radius of the hole</span>
+<span class="n">star</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.31</span>             <span class="c1"># increase the angular radius of the omission region</span>
 <span class="n">star</span><span class="p">[</span><span class="s1">&#39;s__omit_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span>
 
 <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">]</span>
@@ -1122,8 +1122,9 @@ reflection-symmetric properties intact.</p>
 <span class="n">h</span> <span class="o">=</span> <span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 <span class="c1"># in the source code, there is always a radiating &quot;super&quot; region</span>
-<span class="c1"># even if the &quot;hole&quot; is equivalent to a non-radiating superseding member</span>
-<span class="c1"># and the &quot;super&quot; region is then really a ceding member</span>
+<span class="c1"># even if the omission region is equivalent to a non-radiating</span>
+<span class="c1"># superseding member and the &quot;super&quot; region is then really a</span>
+<span class="c1"># ceding member</span>
 <span class="n">h</span><span class="o">.</span><span class="n">_super_cellArea</span><span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">_super_cellArea</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
 
 <span class="n">plot_meshes</span><span class="p">()</span>

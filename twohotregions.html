@@ -220,11 +220,13 @@
 <p>Instances of <a class="reference internal" href="#xpsi.TwoHotRegions.TwoHotRegions" title="xpsi.TwoHotRegions.TwoHotRegions"><code class="xref py py-class docutils literal notranslate"><span class="pre">TwoHotRegions</span></code></a> are represent pair of
 radiatively intense regions of the source photosphere. The class inherits
 from <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a>, and applies the methods to compute photon
-pulses from a pair of spots which may be related under some model; useful for
-pulsars under the assumption of a dominantly dipolar magnetic field with two
-magnetic polar caps. The regions must share a parameterisation, but not
-parameters; the regions do not need to be related via antipodal reflection
-symmetry.</p>
+pulses from a pair of spots where one is derived from the other.
+Specifically, the regions are related via antipodal reflection symmetry.
+Useful for pulsars under the assumption of a dominantly dipolar magnetic
+field with two magnetic polar caps.</p>
+<p>The same configuration can be achieved manually via application of the
+<a class="reference internal" href="hotregions.html#xpsi.HotRegions.HotRegions" title="xpsi.HotRegions.HotRegions"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegions</span></code></a> class, with very slightly higher likelihood
+expense (the difference is not significant enough to concern oneself with).</p>
 <dl class="class">
 <dt id="xpsi.TwoHotRegions.TwoHotRegions">
 <em class="property">class </em><code class="descclassname">xpsi.TwoHotRegions.</code><code class="descname">TwoHotRegions</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/TwoHotRegions.html#TwoHotRegions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.TwoHotRegions.TwoHotRegions" title="Permalink to this definition">¶</a></dt>

@@ -100,7 +100,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modelling</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Likelihood">Likelihood</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#The-parameter-space">The parameter space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#An-interlude">An interlude</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Interlude:-fast-and-slow-parameters">Interlude: fast and slow parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Data">Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Instrument">Instrument</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Pulse">Pulse</a></li>
@@ -600,7 +600,7 @@ flexible and thus more powerful. More extensive examples of this paradigm are gi
 </div>
 <p>If there are multiple instances of the <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere"><span class="std std-ref">Photosphere</span></a> class, and thus multiple instances of the <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse"><span class="std std-ref">Pulse</span></a> class (since by definition a one-to-one mapping between is required), the parameter set would assume the following form:</p>
 <ul class="simple">
-<li>coordinate spin frequency (if not fixed upon star construction)</li>
+<li>coordinate spin frequency</li>
 <li>(rotationally deformed) gravitational mass</li>
 <li>coordinate equatorial radius</li>
 <li>distance from Earth</li>
@@ -639,8 +639,8 @@ flexible and thus more powerful. More extensive examples of this paradigm are gi
 <p>where <span class="math notranslate nohighlight">\(\forall i\in[1,n]\)</span> <code class="docutils literal notranslate"><span class="pre">photosphere_i</span></code> and <code class="docutils literal notranslate"><span class="pre">pulse_i</span></code> share an identification <code class="docutils literal notranslate"><span class="pre">tag</span></code>.</p>
 <p>Most model parameters that are <em>not</em> associated with <code class="docutils literal notranslate"><span class="pre">Pulse</span></code> instances are considered <em>slow</em> parameters; see the interlude below for definition of <em>slow</em> and <em>fast</em>. An example of a <em>slow</em> parameter is the gravitational mass, whilst an example of a <em>fast</em> parameter is the initial phase of the photosphere.</p>
 </div>
-<div class="section" id="An-interlude">
-<h3>An interlude<a class="headerlink" href="#An-interlude" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Interlude:-fast-and-slow-parameters">
+<h3>Interlude: fast and slow parameters<a class="headerlink" href="#Interlude:-fast-and-slow-parameters" title="Permalink to this headline">¶</a></h3>
 <p>A subset of model parameters are <em>slow</em> because varying those parameters requires <em>likelihood</em> re-evaluation, and the compute time required to perform that re-evaluation is slow <em>relative</em> to re-evaluation when varying only a distinct <em>subset</em> of the model parameters: the <em>fast</em> parameters. In general there can be multiple subsets of parameters forming a <em>speed hierarchy</em>; see <a class="reference external" href="https://arxiv.org/abs/1304.4473">A. Lewis, “Efficient sampling of fast and slow cosmological parameters”
 (arXiv:1304.4473)</a>.</p>
 <p>X-PSI, during developement, supported the use of the nested sampler PolyChord, whose internals require that parameters forming a speed hierarchy are ordered in subsets (or blocks) from <em>slow</em> to <em>fast</em> in an array passed to a <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> callback function (if one wishes to exploit a speed hierarchy that is). Thus the ordering of an array of parameter values passed to a general instance of the <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood"><span class="std std-ref">Likelihood</span></a> class was of crucial importance. During
@@ -1160,7 +1160,7 @@ Earth inclination to rotation axis [radians].
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>xpsi.Spacetime<span class="o">?</span>
+<span></span><span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="c1">#? # uncomment to query</span>
 </pre></div>
 </div>
 </div>
@@ -1873,39 +1873,9 @@ to evaluate the likelihood.</p>
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">likelihood</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
-</pre></div>
-</div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
----------------
-mass: Gravitational masses [solar masses].
-radius: Coordinate equatorial radius [km].
-distance: Earth distance [kpc].
-inclination: Earth inclination to rotation axis [radians].
-p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
-p__super_colatitude: The colatitude of the centre of the superseding region [radians].
-p__super_radius: The angular radius of the (circular) superseding region [radians].
-p__super_temperature: log10(superseding region effective temperature [K]).
-s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
-s__super_colatitude: The colatitude of the centre of the superseding region [radians].
-s__super_radius: The angular radius of the (circular) superseding region [radians].
-</pre></div>
-</div>
-</div>
 <p>Let’s retrieve the total number of free model parameters merged into the full parameter space:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1914,7 +1884,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1935,7 +1905,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1944,7 +1914,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -1952,11 +1922,10 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </pre></div>
 </div>
 </div>
-<p>We could in principle set the number of OpenMP threads we want to spawn in low-level functions (such as the integrator) which are parallelised, but we will leave it at the default value of <code class="docutils literal notranslate"><span class="pre">1</span></code> since we intend to invoke MPI and it is best not to experiment with the parallelisation paradigm when preparing a model as a callback for a sampling process.</p>
 <p><strong>Note that if you want to modify the definition of the model parameter space you should restart the process of constructing a</strong> <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> <strong>object, intead of manipulating existing objects, for ultimate safety.</strong> (You can also restart the kernel although if this is required it is a bug.)</p>
 <p>Let’s call the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object with the true model parameter values that we injected to generate the synthetic data rendered above, omitting background parameters:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1984,12 +1953,12 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-ll = -26713.61367769; time = 1.120
+ll = -26713.61367769; time = 1.140
 </pre></div></div>
 </div>
 <p>If the secondary temperature was free, we would extend the vector <code class="docutils literal notranslate"><span class="pre">p</span></code> by one element, passing the injected value of <code class="docutils literal notranslate"><span class="pre">6.0</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1998,7 +1967,7 @@ ll = -26713.61367769; time = 1.120
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2013,7 +1982,7 @@ from the joint prior distribution. Our <code class="docutils literal notranslate
 <h3>Inspecting functionality<a class="headerlink" href="#Inspecting-functionality" title="Permalink to this headline">¶</a></h3>
 <p>Calling the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object also modified the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> property of the <code class="docutils literal notranslate"><span class="pre">photosphere</span></code> object. Let’s plot the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> by summing the count-rate over output instrument channels. We first define a helper function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2040,7 +2009,7 @@ from the joint prior distribution. Our <code class="docutils literal notranslate
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2053,14 +2022,14 @@ from the joint prior distribution. Our <code class="docutils literal notranslate
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_123_0.png" src="_images/model_construction_123_0.png" />
+<img alt="_images/model_construction_121_0.png" src="_images/model_construction_121_0.png" />
 </div>
 </div>
 <p>The pulse profiles with markers are the signals incident on the telescope, before operating on them with the response model. The markers, linearly spaced in phase, denote the phase resolution.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object calls the <code class="docutils literal notranslate"><span class="pre">star.update</span></code> method which in-turn calls the <code class="docutils literal notranslate"><span class="pre">photosphere.embed</span></code> method. The <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object then calls the <code class="docutils literal notranslate"><span class="pre">photosphere.integrate</span></code> method, passing the energies stored as the property <code class="docutils literal notranslate"><span class="pre">pulse.energies</span></code>. We can do this manually if we wish to integrate pulses but not calculate likelihoods. Here we sum over incident specific photon flux pulses as an approximation to integrating over energy. Note that we do not change the <code class="docutils literal notranslate"><span class="pre">pulse.pulses</span></code> traced by
 the solid curves without markers.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2079,13 +2048,13 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_126_0.png" src="_images/model_construction_126_0.png" />
+<img alt="_images/model_construction_124_0.png" src="_images/model_construction_124_0.png" />
 </div>
 </div>
 <p>Notice the solid pulses without markers are unchanged from the plot a few cells above, and can be used to guide the eye to the effect of a change in Earth inclination.</p>
 <p>Below we print crude representations of the cell meshes spanning each hot region. The elements of a mesh cell-area array which are finite are not all identical: at the boundary of a hot region the proper area elements are smaller because of partial coverage by radiating material. The sum of all finite proper areas effectively equals the total proper area within a hot-region boundary.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2137,13 +2106,13 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_129_0.png" src="_images/model_construction_129_0.png" />
+<img alt="_images/model_construction_127_0.png" src="_images/model_construction_127_0.png" />
 </div>
 </div>
 <p>Note that the lowest colatitude row is at zero on the y-axis.</p>
 <p>Let’s plot a pulse in two dimensions. Also note that we can interpolate the signal in phase as follows.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2152,7 +2121,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2215,7 +2184,7 @@ the solid curves without markers.</p>
 </div>
 <p>The incident specific flux signal, in units of photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV as output by the source code, and then normalised to the maximum in specific flux:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2231,12 +2200,12 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_135_0.png" src="_images/model_construction_135_0.png" />
+<img alt="_images/model_construction_133_0.png" src="_images/model_construction_133_0.png" />
 </div>
 </div>
 <p>The count rate signal in each channel:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2253,12 +2222,12 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_137_0.png" src="_images/model_construction_137_0.png" />
+<img alt="_images/model_construction_135_0.png" src="_images/model_construction_135_0.png" />
 </div>
 </div>
-<p>Now we use parameter vector <code class="docutils literal notranslate"><span class="pre">q</span></code>, increase the phase resolution, and plot a single rotational pulse.</p>
+<p>Now we increase the phase resolution, and plot a single rotational pulse:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2273,7 +2242,7 @@ the solid curves without markers.</p>
 </div>
 <p>Note that reinitialisation also returned the following to default:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2282,7 +2251,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2291,7 +2260,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2307,12 +2276,12 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_142_0.png" src="_images/model_construction_142_0.png" />
+<img alt="_images/model_construction_140_0.png" src="_images/model_construction_140_0.png" />
 </div>
 </div>
 <p>Let’s iterate over a monotonically increasing set of values of the hot-region angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many OpenMP threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2321,7 +2290,7 @@ the solid curves without markers.</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2330,39 +2299,9 @@ the solid curves without markers.</p>
 </div>
 </div>
 <p>Given that we are not currently using the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object as a callback function passed to posterior sampling software (which parallelises efficiently using MPI), we can safely spawn additional OpenMP threads for pulse integration; if likelihood evaluations are parallelised in an MPI environment on the other hand, one risks <em>losing</em> efficiency by spawning OpenMP threads for likelihood evaluation.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">likelihood</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
-</pre></div>
-</div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
----------------
-mass: Gravitational masses [solar masses].
-radius: Coordinate equatorial radius [km].
-distance: Earth distance [kpc].
-inclination: Earth inclination to rotation axis [radians].
-p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
-p__super_colatitude: The colatitude of the centre of the superseding region [radians].
-p__super_radius: The angular radius of the (circular) superseding region [radians].
-p__super_temperature: log10(superseding region effective temperature [K]).
-s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
-s__super_colatitude: The colatitude of the centre of the superseding region [radians].
-s__super_radius: The angular radius of the (circular) superseding region [radians].
-</pre></div>
-</div>
-</div>
 <p>For objects that derive from <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> we can get the current parameter vector in several ways:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2371,7 +2310,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2380,7 +2319,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2389,7 +2328,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2399,7 +2338,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">Likelihood</span></code> subclass overrides the <code class="docutils literal notranslate"><span class="pre">__call__</span></code> dunder, however, so we have to access it in the following ways:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2408,7 +2347,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2418,7 +2357,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 <p>Note that we did not define any other parameters other than those associated with the <code class="docutils literal notranslate"><span class="pre">star</span></code>, and thus:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2427,7 +2366,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2437,7 +2376,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 <p>Finally, let’s play with some geometric parameters:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2492,7 +2431,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_155_0.png" src="_images/model_construction_155_0.png" />
+<img alt="_images/model_construction_152_0.png" src="_images/model_construction_152_0.png" />
 </div>
 </div>
 </div>
@@ -2504,7 +2443,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <div class="section" id="Custom-subclass">
 <h3>Custom subclass<a class="headerlink" href="#Custom-subclass" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2513,7 +2452,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2651,7 +2590,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 <p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, passing the bounds from the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[64]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2660,7 +2599,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2669,7 +2608,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[64]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2678,7 +2617,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2687,7 +2626,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2697,7 +2636,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 <p>We also defined a transform method:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2706,7 +2645,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2729,7 +2668,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <p>The penultimate entry is the compactness ratio M/R_eq, which should have a familar magnitude. The last entry is the phase separation in cycles.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">prior.inverse_sample()</span></code> method is required by <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> to uniformly sample from the prior distribution and transform it into a posterior distribution. Let’s call the method, passing a vector of pseudorandom numbers drawn when each is drawn from a uniform distribution on the interval <span class="math notranslate nohighlight">\([0,1)\)</span>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2738,21 +2677,21 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[1.006294822583458,
- 9.506750973899113,
- 0.7478910939223062,
- 0.2528742325267714,
- -0.036505166323865246,
- 2.266726522951416,
- 0.47705570880504433,
- 4.970428922979272,
- -0.31447420412829985,
- 2.913532243508909,
- 1.3528994191068837]
+<span></span>[1.1227255397945624,
+ 6.3282562244123985,
+ 0.902829074735135,
+ 0.5319961259338499,
+ -0.4545208273909481,
+ 2.0716354163368873,
+ 0.6886504702807842,
+ 6.789034834547918,
+ 0.21096535563128527,
+ 0.11642604013474772,
+ 1.4926685479716524]
 </pre></div>
 </div>
 </div>
@@ -2762,7 +2701,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <h3>Density and support checking<a class="headerlink" href="#Density-and-support-checking" title="Permalink to this headline">¶</a></h3>
 <p>Let’s draw samples from the prior and plot them:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2780,7 +2719,7 @@ Samples drawn.
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2798,7 +2737,7 @@ Samples drawn.
 </div>
 <p>Let’s first plot the <span class="math notranslate nohighlight">\((M, R_{\rm eq})\)</span> samples:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2819,13 +2758,13 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_177_0.png" src="_images/model_construction_177_0.png" />
+<img alt="_images/model_construction_174_0.png" src="_images/model_construction_174_0.png" />
 </div>
 </div>
 <p>Note that the prior support is defined with a constraint that the polar radius <span class="math notranslate nohighlight">\(R_{\rm p}(R_{\rm eq}, M, \Omega)\geq 1.76r_{s}(M)\)</span>, which is why there is a region devoid of samples between the prior support and the dashed line <span class="math notranslate nohighlight">\(R_{\rm eq} = 1.76r_s(M)\)</span>.</p>
 <p>Let’s now plot the hot region (circular spot) colatitudes:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[73]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2843,13 +2782,13 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_180_0.png" src="_images/model_construction_180_0.png" />
+<img alt="_images/model_construction_177_0.png" src="_images/model_construction_177_0.png" />
 </div>
 </div>
 <p>Note that the samples, marginalised over other region geometry parameters, are sparser when both hot regions approach the poles because we exclude overlapping configurations from the prior support. This is because the hot regions are by convention defined as disjoint, and cannot merge. If one wanted a more complex hot region, one would not invoke multiple hot regions that are permitted to overlap, but one would instead handle the extra complexity within the <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> class or a subclass.</p>
 <p>Let’s plot the angular radii of the spots:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[74]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2865,13 +2804,13 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_183_0.png" src="_images/model_construction_183_0.png" />
+<img alt="_images/model_construction_180_0.png" src="_images/model_construction_180_0.png" />
 </div>
 </div>
 <p>Note that the prior density is greater for hot regions that subtend smaller solid angles at the centre of the star, which also derives from the non-overlapping criterion for prior support.</p>
 <p>Finally, let’s take a look at the phases:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[75]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[73]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2887,7 +2826,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_186_0.png" src="_images/model_construction_186_0.png" />
+<img alt="_images/model_construction_183_0.png" src="_images/model_construction_183_0.png" />
 </div>
 </div>
 <p>Note that again because the hot regions cannot overlap, rarefaction occurs in the vicinity of lines of minimal phase separation. Note that the boundaries are all periodic, so this pattern tesselates. Because we implemented a transformation in our <code class="docutils literal notranslate"><span class="pre">CustomPrior</span></code> subclass, we can actually draw the samples and transform them, which is useful in post-processing contexts. We defined the intervals <code class="docutils literal notranslate"><span class="pre">[-0.25,</span> <span class="pre">0.75]</span></code> for the inverse sampling so that the posterior mode(s) will not be near a boundary.
@@ -2895,7 +2834,7 @@ The nested sampling algorithm can handle periodic boundaries by defining <code c
 <p>Transformations for the purpose of likelihood evaluation must be handled in the <code class="docutils literal notranslate"><span class="pre">inverse_sample</span></code> method of an instance of the <code class="docutils literal notranslate"><span class="pre">Prior</span></code> class, but additional transformations that <em>extend</em> the parameter vector are written in the <code class="docutils literal notranslate"><span class="pre">transform</span></code> method.</p>
 <p>If we wanted to transform automatically upon drawing the samples, thereby extending the parameter vectors passed to the <code class="docutils literal notranslate"><span class="pre">__call__</span></code> method (so be careful with wrap-around indices when evaluating prior support conditions), we would do the following:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[74]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2914,7 +2853,7 @@ Samples drawn.
 </div>
 <p>We defined a transformation from the hot region centre phases to the phase separation:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[77]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[75]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2930,7 +2869,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_192_0.png" src="_images/model_construction_192_0.png" />
+<img alt="_images/model_construction_189_0.png" src="_images/model_construction_189_0.png" />
 </div>
 </div>
 <p>We can see the rarefaction occurs for <span class="math notranslate nohighlight">\(\Delta\phi\sim0.0=1.0\)</span>.</p>
@@ -3044,7 +2983,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_203_0.png" src="_images/model_construction_203_0.png" />
+<img alt="_images/model_construction_200_0.png" src="_images/model_construction_200_0.png" />
 </div>
 </div>
 <p>The chains rendered in the documentation were run on a desktop machine in about a day of wall-time. It is visually discernable that the ensemble distribution has not yet evolved to a stationary state: a rigourous application of ensemble MCMC would cover convergence criteria, auto-correlation, and examination of sensitivity to initial conditions and the transition kernel. In fact, based on the analysis with nested sampling on path <code class="docutils literal notranslate"><span class="pre">xpsi/examples/default_background</span></code>, we know that the posterior
@@ -3192,7 +3131,7 @@ mode in the vicinity of the above ensemble is rather non-linear in the space bei
 <h3>Background<a class="headerlink" href="#Background" title="Permalink to this headline">¶</a></h3>
 <p>The background radiation field incident on the model instrument for the purpose of generating synthetic data was a time-invariant powerlaw spectrum, and was transformed into a count-rate in each output channel using the response matrix for synthetic data generation. We would reproduce this background here by writing a custom subclass as follows.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3234,7 +3173,7 @@ mode in the vicinity of the above ensemble is rather non-linear in the space bei
 <p>We can now construct and instantiate a <code class="docutils literal notranslate"><span class="pre">background</span></code> object. The base clase <code class="docutils literal notranslate"><span class="pre">xpsi.Background</span></code> is inherited from the <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace"><span class="std std-ref">ParameterSubspace</span></a> ABC. We therefore need to specify the number of background parameters, and define the hard bounds on those parameters; in this case we have only a single parameter, the powerlaw index.</p>
 <p>We would then instantiate as follows:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[79]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[77]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3259,7 +3198,7 @@ Creating parameter:
 <h3>Data format<a class="headerlink" href="#Data-format" title="Permalink to this headline">¶</a></h3>
 <p>We are also in need of a simpler data object.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[80]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3285,7 +3224,7 @@ Creating parameter:
 </div>
 <p>Instantiate:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[81]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[79]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3298,7 +3237,7 @@ Creating parameter:
 <h3>Custom method<a class="headerlink" href="#Custom-method" title="Permalink to this headline">¶</a></h3>
 <p>We are in need of a <code class="docutils literal notranslate"><span class="pre">synthesise</span></code> method, which in this implementation wraps an extension module. Let’s check what the extension module offers:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[82]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[80]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3307,7 +3246,7 @@ Creating parameter:
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[81]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3316,7 +3255,7 @@ Creating parameter:
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[84]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[82]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3377,7 +3316,7 @@ Creating parameter:
 </div>
 <p>Add unbound methods:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[85]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3388,7 +3327,7 @@ Creating parameter:
 </div>
 <p>Instantiate, and reconfigure the likelihood object:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[86]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[84]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3426,7 +3365,7 @@ Warning: No data... can synthesise data but cannot evaluate a likelihood functio
 <h3>Synthesise<a class="headerlink" href="#Synthesise" title="Permalink to this headline">¶</a></h3>
 <p>We proceed to synthesise. First we set an environment variable to seed the random number generator being called:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[87]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[85]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3444,7 +3383,7 @@ env: GSL_RNG_SEED=0
 </div>
 <p>Check write path:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[88]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[86]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3461,7 +3400,7 @@ env: GSL_RNG_SEED=0
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[89]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[87]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3470,7 +3409,7 @@ env: GSL_RNG_SEED=0
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[89]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[87]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -3492,7 +3431,7 @@ powerlaw_index: Powerlaw spectral index.
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[88]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3528,7 +3467,7 @@ Background normalisation: 1.89127972e-05
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[91]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[89]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3540,12 +3479,12 @@ Background normalisation: 1.89127972e-05
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_240_0.png" src="_images/model_construction_240_0.png" />
+<img alt="_images/model_construction_237_0.png" src="_images/model_construction_237_0.png" />
 </div>
 </div>
 <p>Check we have generated the same count numbers, given the same seed and resolution settings:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[92]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -3555,7 +3494,7 @@ Background normalisation: 1.89127972e-05
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[92]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>

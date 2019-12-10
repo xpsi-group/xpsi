@@ -227,85 +227,85 @@
 <span class="sd">        of this present class (or more precisely instances of subclasses) with</span>
 <span class="sd">        the required references. As an example, consider the following:</span>
 
-<span class="sd">        .. code-block: python</span>
+<span class="sd">    .. code-block: python</span>
 
-<span class="sd">            bounds = dict(super_colatitude = (None, None),</span>
-<span class="sd">                          super_radius = (None, None),</span>
-<span class="sd">                          super_temperature = (None, None))</span>
+<span class="sd">        bounds = dict(super_colatitude = (None, None),</span>
+<span class="sd">                      super_radius = (None, None),</span>
+<span class="sd">                      super_temperature = (None, None))</span>
 
-<span class="sd">            class derive(xpsi.Derive):</span>
-<span class="sd">                def __init__(self):</span>
-<span class="sd">                    pass</span>
+<span class="sd">        class derive(xpsi.Derive):</span>
+<span class="sd">            def __init__(self):</span>
+<span class="sd">                pass</span>
 
-<span class="sd">                def __call__(self, boundto, caller = None):</span>
-<span class="sd">                    # ref is a reference to another hot region object</span>
-<span class="sd">                    return self.ref[&#39;phase_shift&#39;] - 0.5</span>
+<span class="sd">            def __call__(self, boundto, caller = None):</span>
+<span class="sd">                # ref is a reference to another hot region object</span>
+<span class="sd">                return self.ref[&#39;phase_shift&#39;] - 0.5</span>
 
-<span class="sd">            ref_1 = derive()</span>
+<span class="sd">        ref_1 = derive()</span>
 
-<span class="sd">            # a simple circular, simply-connected spot</span>
-<span class="sd">            primary = xpsi.HotRegion(bounds=bounds,</span>
-<span class="sd">                                        values={&#39;phase_shift&#39;: ref_1},</span>
-<span class="sd">                                        symmetry=True,</span>
-<span class="sd">                                        omit=False,</span>
-<span class="sd">                                        cede=False,</span>
-<span class="sd">                                        concentric=False,</span>
-<span class="sd">                                        sqrt_num_cells=32,</span>
-<span class="sd">                                        min_sqrt_num_cells=10,</span>
-<span class="sd">                                        max_sqrt_num_cells=64,</span>
-<span class="sd">                                        num_leaves=100,</span>
-<span class="sd">                                        num_rays=200,</span>
-<span class="sd">                                        do_fast=False,</span>
-<span class="sd">                                        prefix=&#39;p&#39;)</span>
+<span class="sd">        # a simple circular, simply-connected spot</span>
+<span class="sd">        primary = xpsi.HotRegion(bounds=bounds,</span>
+<span class="sd">                                    values={&#39;phase_shift&#39;: ref_1},</span>
+<span class="sd">                                    symmetry=True,</span>
+<span class="sd">                                    omit=False,</span>
+<span class="sd">                                    cede=False,</span>
+<span class="sd">                                    concentric=False,</span>
+<span class="sd">                                    sqrt_num_cells=32,</span>
+<span class="sd">                                    min_sqrt_num_cells=10,</span>
+<span class="sd">                                    max_sqrt_num_cells=64,</span>
+<span class="sd">                                    num_leaves=100,</span>
+<span class="sd">                                    num_rays=200,</span>
+<span class="sd">                                    do_fast=False,</span>
+<span class="sd">                                    prefix=&#39;p&#39;)</span>
 
-<span class="sd">            bounds = dict(omit_colatitude = (None, None),</span>
-<span class="sd">                          super_radius = (None, None),</span>
-<span class="sd">                          phase_shift = (None, None),</span>
-<span class="sd">                          super_temperature = (None, None),</span>
-<span class="sd">                          omit_radius = (None, None),</span>
-<span class="sd">                          omit_azimuth = (None, None))</span>
+<span class="sd">        bounds = dict(omit_colatitude = (None, None),</span>
+<span class="sd">                      super_radius = (None, None),</span>
+<span class="sd">                      phase_shift = (None, None),</span>
+<span class="sd">                      super_temperature = (None, None),</span>
+<span class="sd">                      omit_radius = (None, None),</span>
+<span class="sd">                      omit_azimuth = (None, None))</span>
 
-<span class="sd">            class derive(xpsi.Derive):</span>
-<span class="sd">                def __init__(self):</span>
-<span class="sd">                    pass</span>
+<span class="sd">        class derive(xpsi.Derive):</span>
+<span class="sd">            def __init__(self):</span>
+<span class="sd">                pass</span>
 
-<span class="sd">                def __call__(self, boundto, caller = None):</span>
-<span class="sd">                    return math.pi - self.ref[&#39;super_colatitude&#39;]</span>
+<span class="sd">            def __call__(self, boundto, caller = None):</span>
+<span class="sd">                return math.pi - self.ref[&#39;super_colatitude&#39;]</span>
 
-<span class="sd">            ref_2 = derive()</span>
+<span class="sd">        ref_2 = derive()</span>
 
-<span class="sd">            # overlap of an omission region and</span>
-<span class="sd">            # and a radiating super region</span>
-<span class="sd">            secondary = xpsi.HotRegion(bounds=bounds,</span>
-<span class="sd">                                          values={&#39;super_colatitude&#39;: ref_2},</span>
-<span class="sd">                                          symmetry=True,</span>
-<span class="sd">                                          omit=True,</span>
-<span class="sd">                                          cede=False,</span>
-<span class="sd">                                          concentric=False,</span>
-<span class="sd">                                          sqrt_num_cells=32,</span>
-<span class="sd">                                          min_sqrt_num_cells=10,</span>
-<span class="sd">                                          max_sqrt_num_cells=100,</span>
-<span class="sd">                                          num_leaves=100,</span>
-<span class="sd">                                          num_rays=200,</span>
-<span class="sd">                                          do_fast=False,</span>
-<span class="sd">                                          is_secondary=True,</span>
-<span class="sd">                                          prefix=&#39;s&#39;)</span>
+<span class="sd">        # overlap of an omission region and</span>
+<span class="sd">        # and a radiating super region</span>
+<span class="sd">        secondary = xpsi.HotRegion(bounds=bounds,</span>
+<span class="sd">                                      values={&#39;super_colatitude&#39;: ref_2},</span>
+<span class="sd">                                      symmetry=True,</span>
+<span class="sd">                                      omit=True,</span>
+<span class="sd">                                      cede=False,</span>
+<span class="sd">                                      concentric=False,</span>
+<span class="sd">                                      sqrt_num_cells=32,</span>
+<span class="sd">                                      min_sqrt_num_cells=10,</span>
+<span class="sd">                                      max_sqrt_num_cells=100,</span>
+<span class="sd">                                      num_leaves=100,</span>
+<span class="sd">                                      num_rays=200,</span>
+<span class="sd">                                      do_fast=False,</span>
+<span class="sd">                                      is_secondary=True,</span>
+<span class="sd">                                      prefix=&#39;s&#39;)</span>
 
-<span class="sd">            from xpsi import HotRegions</span>
+<span class="sd">        from xpsi import HotRegions</span>
 
-<span class="sd">            hot = HotRegions((primary, secondary))</span>
+<span class="sd">        hot = HotRegions((primary, secondary))</span>
 
-<span class="sd">            # the crux: resolve the mutual refs</span>
-<span class="sd">            ref_1.ref = secondary</span>
-<span class="sd">            ref_2.ref = primary</span>
+<span class="sd">        # the crux: resolve the mutual refs</span>
+<span class="sd">        ref_1.ref = secondary</span>
+<span class="sd">        ref_2.ref = primary</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
 
-<div class="viewcode-block" id="Derive.__init__"><a class="viewcode-back" href="../../parameter.html#xpsi.Parameter.Derive.__init__">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="n">refs</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="n">refs</span>
 
 <div class="viewcode-block" id="Derive.__call__"><a class="viewcode-back" href="../../parameter.html#xpsi.Parameter.Derive.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boundto</span><span class="p">,</span> <span class="n">caller</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
