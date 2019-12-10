@@ -3,162 +3,159 @@ from __future__ import division, print_function
 from .global_imports import *
 from . import global_imports
 
-from abc import ABCMeta, abstractmethod
-from .ParameterSubspace import ParameterSubspace, BoundsError
+from . import make_verbose
+
+from .Parameter import Parameter
+from .ParameterSubspace import ParameterSubspace
 
 class Spacetime(ParameterSubspace):
     """ The ambient Schwarzschild spacetime and Earth coordinates.
 
-    :param int num_params: Number of free spacetime parameters.
+    :param dict bounds:
+        Tuples of hard bounds on parameters with keys matching the names
+        in the initialiser body. A ``None`` bound will be interpreted as
+        fixed variable, in which case a value must be supplied in the
+        corresponding dictionary. If there is no entry for a default
+        parameter, it will be assumed to be fixed, but an exception
+        will be raised if there is no associated value.
 
-    :param list bounds: Tuples of hard bounds on parameters.
+    :param dict values:
+        Values of fixed parameters or initial values for free parameters,
+        with keys matching the names in the initialiser body. If there is
+        no entry for a default parameter, no initial value will be specified,
+        but an exception will be raised if there is also no bound specified.
 
-    The default parameter order is:
-
-        * Earth distance
-        * (rotationally deformed) gravitational mass
-        * coordinate equatorial radius
-        * inclination of Earth to stellar rotation axis
+    We define a property for parameters and combinations of parameters to
+    shortcut access, given that this subspace is passed to other subspaces
+    for model computation. We would like to access the values with fewer
+    characters than ``self[<name>]``.
 
     """
+    required_names = ['frequency',
+                      'mass',
+                      'radius',
+                      'distance',
+                      'inclination']
 
-    @abstractmethod
-    def __init__(self, num_params, bounds):
-        super(Spacetime, self).__init__(num_params, bounds)
+    def __init__(self, bounds, values):
 
-        if self._num_params < 4:
-            raise BoundsError('Spacetime specification requires at least '
-                              'three parameters.')
+        f = Parameter('frequency',
+                      strict_bounds = (0.0, 800.0),
+                      bounds = bounds.get('frequency', None),
+                      doc = 'Spin frequency [Hz]',
+                      symbol = r'$f$',
+                      value = values.get('frequency', None))
 
-        for mass in self._bounds[1]:
-            if not 0.8 <= mass <= 3.0:
-                raise BoundsError('Invalid Schwarzschild mass bound.')
+        M = Parameter('mass',
+                      strict_bounds = (0.8, 3.0),
+                      bounds = bounds.get('mass', None),
+                      doc = 'Gravitational masses [solar masses]',
+                      symbol = r'$M$',
+                      value = values.get('mass', None))
 
-        for radius in self._bounds[2]:
-            if not 0.0 <= radius <= 30.0:
-                raise BoundsError('Invalid coordinate equatorial radius bound.')
+        R = Parameter('radius',
+                      strict_bounds = (1.0, 20.0),
+                      bounds = bounds.get('radius', None),
+                      doc = 'Coordinate equatorial radius [km]',
+                      symbol = r'$R_{\rm eq}$',
+                      value = values.get('radius', None))
 
-        r_g = _G * self._bounds[1][0] * _M_s / _csq
+        D = Parameter('distance',
+                      strict_bounds = (0.0, 50.0),
+                      bounds = bounds.get('distance', None),
+                      doc = 'Earth distance [kpc]',
+                      symbol = r'$D$',
+                      value = values.get('distance', None))
 
-        if self._bounds[2][0] * _km <= 3.0 * r_g:
-            raise BoundsError('Lower radius bound is at or within the '
-                              'photon sphere for the lower mass bound.')
+        i = Parameter('inclination',
+                      strict_bounds = (0.0, _pi),
+                      bounds = bounds.get('inclination', None),
+                      doc = 'Earth inclination to rotation axis [radians]',
+                      symbol = r'$i$',
+                      value = values.get('inclination', None))
 
-        for inclination in self._bounds[3]:
-            if not 0.0 < inclination < _pi:
-                raise BoundsError('Invalid inclination bound.')
+        super(Spacetime, self).__init__(f, M, R, D, i)
 
-    def update(self, d, M, R, i):
-        """ Update the spacetime properties.
+    @classmethod
+    @make_verbose('Configuring default bounds with fixed spin',
+                  'Spacetime configured')
+    def fixed_spin(cls, frequency):
 
-        :param M: The (rotationally deformed) gravitational mass (solar masses).
-        :param R: The coordinate equatorial radius (km).
-        :param i: Inclination of the Earth to the rotational axis (radians).
+        bounds = dict(mass = (1.0, 3.0),
+                      radius = (gravradius(1.0), 16.0),
+                      distance = (0.05, 2.0),
+                      inclination = (0.0, _pi))
 
-        :raises TypeError: If the number of arguments passed based on the
-                           ``num_params`` property does not match the
-                           number of arguments in the function signature.
-
-        :raises AttributeError: If the coordinate angular frequency is not
-                                set in the initialiser of a custom subclass, or
-                                in a custom :meth:`update` method of a subclass.
-
-        .. note::
-            If subclassing to handle a free spin parameter, take care with
-            the argument (parameter) ordering, and set the rotation frequency
-            before calling ``super(CustomSpacetime, self).update()``.
-
-        """
-        self._M = M * _M_s
-        self._r_g = _G * self._M / _csq
-        self._r_s = 2.0 * self._r_g
-
-        self._R = R * _km
-        self._R_r_s = self._R / self._r_s
-
-        # Earth parameters
-        self._i = i
-        self.d = d
-
-        self._zeta = self._r_g / self._R
-        self._epsilon = self._Omega**2.0 * self._R**3.0 / (_G * self._M)
-
-    @property
-    def num_params(self):
-        """ Get the number of spacetime parameters. """
-        return self._num_params
+        return cls(bounds, dict(frequency = frequency))
 
     @property
     def M(self):
-        """ Get the (rotationally deformed) gravitational mass. """
-        return self._M
+        """ Get the (rotationally deformed) gravitational mass in SI. """
+        return self['mass'] * _M_s
 
     @property
     def r_g(self):
-        """ Get the Schwarzschild gravitational radius. """
-        return self._r_g
+        """ Get the Schwarzschild gravitational radius in SI. """
+        return _G * self.M / _csq
+
 
     @property
     def r_s(self):
-        """ Get the Schwarzschild radius. """
-        return self._r_s
+        """ Get the Schwarzschild radius in SI. """
+        return 2.0 * self.r_g
 
     @property
     def R(self):
-        """ Get the coordinate equatorial radius. """
-        return self._R
+        """ Get the coordinate equatorial radius in SI. """
+        return self['radius'] * _km
 
     @property
     def R_r_s(self):
-        """ Get the ratio of the equatorial radius to the Schwarzschild radius. """
-        return self._R_r_s
+        """ Get the ratio of the equatorial radius to the Schwarzschild radius.
+        """
+        return self.R / self.r_s
 
     @property
-    def S(self):
-        """ Get the coordinate rotation frequency.
-
-        :raises AttributeError: If the coordinate angular frequency is not
-                                set in the initialiser of a custom subclass, or
-                                in a custom :meth:`update` method of a subclass.
-
-        """
-        return self._S
+    def f(self):
+        """ Read the coordinate rotation frequency. """
+        return self['frequency']
 
     @property
     def Omega(self):
-        """Get the coordinate *angular* rotation frequency.
-
-        :raises AttributeError: If the coordinate angular frequency is not
-                                set in the initialiser of a custom subclass, or
-                                in a custom :meth:`update` method of a subclass.
-
-        """
-        return self._Omega
+        """ Get the coordinate *angular* rotation frequency. """
+        return _2pi * self['frequency']
 
     @property
     def i(self):
-        """ Get the inclination of the Earth to the rotational axis. """
-        return self._i
+        """ Read the inclination of the Earth to the rotational axis. """
+        return self['inclination']
 
     @property
     def d(self):
-        """ Get the distance of the Earth to the rotational axis. """
-        return self._d
-
-    @d.setter
-    def d(self, value):
-        self._d = value * _kpc
+        """ Get the distance of the Earth to the star in SI. """
+        return self['distance'] * _kpc
 
     @property
     def d_sq(self):
-        return self._d * self._d
+        """ Get the squared distance of the Earth to the star in SI. """
+        return self.d * self.d
 
     @property
     def zeta(self):
-        """ Get the derived parameter ``zeta`` for universality relation. """
-        return self._zeta
+        """ Get the derived parameter ``zeta`` for universality relation.
+
+        See Morsink et al. (2007), and AlGendy & Morsink (2014).
+
+        """
+        return self.r_g / self.R
 
     @property
     def epsilon(self):
-        """ Get the derived parameter ``epsilon`` for universality relation. """
-        return self._epsilon
+        """ Get the derived parameter ``epsilon`` for universality relation.
+
+        See Morsink et al. (2007), and AlGendy & Morsink (2014).
+
+        """
+        return self.Omega**2.0 * self.R**3.0 / (_G * self.M)
+
+Spacetime._update_doc()

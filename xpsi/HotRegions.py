@@ -3,48 +3,33 @@ from __future__ import division, print_function
 from .global_imports import *
 from . import global_imports
 
-from .HotRegion import HotRegion
-
 from .ParameterSubspace import ParameterSubspace
+
+from .HotRegion import HotRegion
 
 class HotRegions(ParameterSubspace):
     """ Two photospheric hot regions, where the hot regions are objects.
 
-    This class could be extended in principle to operate with multiple hot
-    regions, but the computational expense scales ~linearly with number.
-    Applications thus far have used two distinct hot regions with equal
+    The hot regions can be equal or different in parametrisation complexity.
+
+    This class could be trivially extended in principle to operate with
+    multiple hot regions, but the computational expense scales ~linearly with
+    number. Applications thus far have used two distinct hot regions with equal
     and unequal complexity.
 
     :param tuple hotregions:
-            Two-element container of :class:`.HotRegion.HotRegion` instances.
+        Two-element container of :class:`.HotRegion.HotRegion` instances.
 
     """
 
     def __init__(self, hotregions):
         self.objects = hotregions
 
-        self._num_primary_params = self._objects[0].num_params
-        self._num_secondary_params = self._objects[1].num_params
-
-        super(HotRegions, self).__init__(self._num_primary_params\
-                                         + self._num_secondary_params,
-                                         self._objects[0].bounds\
-                                         + self._objects[1].bounds)
-
-        self.phases_in_cycles = []
-        for obj in self.objects:
-            self.phases_in_cycles.append(obj.phases_in_cycles)
-
-        if self.do_fast:
-            self.fast_phases_in_cycles = []
-            for obj in self.objects:
-                try:
-                    self.fast_phases_in_cycles.append(obj.fast_phases_in_cycles)
-                except AttributeError:
-                    pass
+        super(HotRegions, self).__init__(hotregions)
 
     @property
     def objects(self):
+        """ Get an iterable of hot region objects. """
         return self._objects
 
     @objects.setter
@@ -59,7 +44,18 @@ class HotRegions(ParameterSubspace):
         self._objects = objs
 
     @property
+    def phases_in_cycles(self):
+        return [obj.phases_in_cycles for obj in self.objects]
+
+    @property
+    def fast_phases_in_cycles(self):
+        """  """
+        if self.do_fast:
+            return [obj.fast_phases_in_cycles for obj in self.objects]
+
+    @property
     def do_fast(self):
+        """ Should fast-mode be invoked for some subset of hot regions. """
         for obj in self._objects:
             if obj.do_fast:
                 return True
@@ -67,6 +63,7 @@ class HotRegions(ParameterSubspace):
 
     @property
     def fast_mode(self):
+        """ Is fast-mode currently activated? """
         for obj in self._objects:
             if obj.fast_mode:
                 return True
@@ -74,6 +71,7 @@ class HotRegions(ParameterSubspace):
 
     @fast_mode.setter
     def fast_mode(self, activate):
+        """ Activate or deactivate fast-mode. """
         for obj in self._objects:
             obj.fast_mode = activate
 
@@ -82,7 +80,7 @@ class HotRegions(ParameterSubspace):
         for obj in self._objects:
             obj.print_settings()
 
-    def embed(self, spacetime, p, fast_total_counts, threads, *args):
+    def embed(self, spacetime, photosphere, fast_total_counts, threads, *args):
         """ Embed the hot regions. """
 
         if fast_total_counts is not None:
@@ -92,13 +90,13 @@ class HotRegions(ParameterSubspace):
             fast_primary_total_counts = None
             fast_secondary_total_counts = None
 
-        pp = p[:self._num_primary_params]
-        ps = p[self._num_primary_params:]
-
-        self._objects[0].embed(spacetime, pp,
+        self._objects[0].embed(spacetime,
+                               photosphere,
                                fast_primary_total_counts,
                                threads, *args)
-        self._objects[1].embed(spacetime, ps,
+
+        self._objects[1].embed(spacetime,
+                               photosphere,
                                fast_secondary_total_counts,
                                threads, *args)
 
@@ -111,11 +109,11 @@ class HotRegions(ParameterSubspace):
 
         :param st: Instance of :class:`~.Spacetime.Spacetime`.
 
-        :param energies: A one-dimensional :class:`numpy.ndarray` of energies
-                         in keV.
+        :param energies:
+            A one-dimensional :class:`numpy.ndarray` of energies in keV.
 
-        :param int threads: Number of ``OpenMP`` threads for pulse
-                            integration.
+        :param int threads:
+            Number of ``OpenMP`` threads for pulse integration.
 
         """
         if isinstance(energies, tuple):
@@ -128,6 +126,7 @@ class HotRegions(ParameterSubspace):
                                              threads,
                                              hot_atmosphere,
                                              elsewhere_atmosphere)
+
         secondary = self._objects[1].integrate(st, secondary_energies,
                                                threads,
                                                hot_atmosphere,

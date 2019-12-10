@@ -1,6 +1,6 @@
 from __future__ import division, print_function
 
-__all__ = ["Prior", "PriorError", "BoundsError"]
+__all__ = ["Prior"]
 
 from . import _comm, _size, _rank # of MPI.COMM_WORLD
 
@@ -10,6 +10,7 @@ from . import global_imports
 from . import make_verbose
 
 from abc import ABCMeta, abstractmethod
+from .ParameterSubspace import ParameterSubspace
 
 class Prior(object):
     """ The joint prior distribution.
@@ -21,43 +22,66 @@ class Prior(object):
     The distribution must be integrable (proper) and is thus
     *usually* bounded (compactly supported on a space).
 
-    :param list bounds: The set of 2-tuples of hard parameter bounds. The
-                        list has length :math:`d`, the dimensionality of
-                        the space :math:`\mathbb{R}^{d}`. Used to rapidly
-                        evaluate for finiteness.
+    In the ``__call__()`` method the parameter values are checked against the
+    hard parameter bounds of the prior support.
 
     .. note:: If you wish to check bounds manually, implement
               the ``__init__()`` and ``__call__()`` methods, and do not
-              access the default code (e.g., via ``super()``).
+              access the default code (e.g., via ``super()``) or only
+              use the default code for some parameters.
 
     """
     __metaclass__ = ABCMeta
 
-    @abstractmethod
-    def __init__(self, bounds):
-        self._bounds = bounds
+    def __init__(self, parameters):
+        """
+        You might want to overwrite this initialiser to do some custom
+        setup for priors whose handling is moreinvolved.
 
-    @property
-    def ndims(self):
-        """ Get the dimensionality of the parameter space. """
-        return len(self._bounds)
-
-    @abstractmethod
-    def __call__(self, p):
-        """ Evaluate distribution at :obj:`p` and store it as a property.
-
-        :param list p: Vector of model parameter values.
+        If you overwrite this initialiser, you do not need to take parameters
+        as an argument if you prefer not to. When the instance is passed to
+        a likelihood object, the likelihood object will use itself to store
+        a reference to the parameters to ensure interoperability.
 
         """
-        for i, b in enumerate(self._bounds):
-            if None not in b:
-                if not b[0] <= p[i] <= b[1]:
+        self.parameters = parameters
+
+    def __len__(self):
+        """ Number of parameter dimensions. """
+        return len(self._parameters) # redirect
+
+    @property
+    def parameters(self):
+        """ Get parameter subspace object. """
+        return self._parameters
+
+    @parameters.setter
+    def parameters(self, obj):
+        if not isinstance(obj, ParameterSubspace):
+            raise TypeError('A ParameterSubspace object is required.')
+
+        self._parameters = obj
+
+    @abstractmethod
+    def __call__(self, p = None):
+        """ Evaluate distribution at :obj:`p` and store it as a property.
+
+        :param list p:
+            Vector of model parameter values, but typically unused.
+
+        """
+        for param in self.parameters:
+            if param.bounds[0] is not None:
+                if not param.bounds[0] <= param.value:
+                    return -_np.inf
+            if param.bounds[1] is not None:
+                if not param.value <= param.bounds[1]:
                     return -_np.inf
 
         return 0.0
 
     @abstractmethod
-    def inverse_sample(self, hypercube):
+    def inverse_sample(self, hypercube = None):
         """ Draw sample uniformly from the distribution via inverse sampling.
 
         By default, implements a flat density between bounds. If ``None`` is
@@ -67,16 +91,33 @@ class Prior(object):
         :param iterable hypercube:
             A pseudorandom point in an n-dimensional hypercube.
 
-        :return: A parameter *list*.
+        :returns: A parameter *list*.
+
+        .. note::
+
+            If you call this base method via the ``super()`` built-in, the
+            current parameter values will be cached when new values are
+            assigned. If you then assign to a parameter again, the current
+            value will be automatically cached, thus overwriting the cache
+            established in the body of this present method. If you want to
+            call this present method and then assign again to a parameter,
+            you can restore the cached value so that it is pushed to the
+            cache when you reassign.
 
         """
-        p = [0.0] * len(hypercube)
+        if hypercube is None:
+            hypercube = _np.random.rand(len(self))
 
-        for i, b in enumerate(self._bounds):
-            if None not in b:
-                p[i] = b[0] + (b[1] - b[0]) * hypercube[i]
+        p = [None] * len(self)
+
+        for i, param in enumerate(self.parameters):
+            if None not in param.bounds:
+                b = param.bounds
+                param.value = b[0] + (b[1] - b[0]) * hypercube[i]
             else:
-                p[i] = None
+                raise ValueError('Compact support required.')
+
+            p[i] = param.value
 
         return p
 
@@ -94,10 +135,15 @@ class Prior(object):
 
     @staticmethod
     def transform(p):
-        """ A transformation for post-processing. """
+        """ A transformation for post-processing.
 
-        if not isinstance(p, list):
-            p = list(p)
+        :returns: Transformed vector ``p`` where ``len(p) > len(self)``.
+        :rtype: *list*
+
+        """
+        # it is suggested that you copy like this when you overwrite
+        # to make a mutable container that can be appended to and returned
+        p = list(p)
 
         raise NotImplementedError('Define a transformation.')
 
@@ -105,14 +151,13 @@ class Prior(object):
     def draw(self, ndraws, transform=False):
         """ Draw samples uniformly from the prior via inverse sampling.
 
-        :param ndraws: Number of draws.
-        :type ndraws: int
+        :param int ndraws: Number of draws.
         :return: (samples, acceptance fraction)
-        :rtype: (*ndarray[ndraws, self.ndims]*, *float*)
+        :rtype: (*ndarray[ndraws, len(self)]*, *float*)
 
         """
 
-        h = _np.random.rand(int(ndraws), self.ndims)
+        h = _np.random.rand(int(ndraws), len(self))
 
         if transform:
             try:
@@ -125,7 +170,7 @@ class Prior(object):
 
         try:
             samples = _np.zeros((int(ndraws), len(p)),
-                                dtype=_np.double)
+                                dtype = _np.double)
         except TypeError:
             yield 'An error occurred when handling the output of a custom '\
                   'method'
@@ -146,7 +191,7 @@ class Prior(object):
                 else:
                     redraw = ndraws
                 redraw -= finite_counter
-                h = _np.random.rand(int(redraw)+1, self.ndims)
+                h = _np.random.rand(int(redraw)+1, len(self))
                 index = 0
                 if transform:
                     try:
@@ -163,7 +208,6 @@ class Prior(object):
             index += 1
 
         yield samples, float(finite_counter) / counter
-
 
     @make_verbose('Estimating fractional hypervolume of the unit hypercube '
                   'with finite prior density:',

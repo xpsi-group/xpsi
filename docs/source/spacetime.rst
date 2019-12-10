@@ -8,5 +8,6 @@ Spacetime
 Instances of :class:`~.Spacetime.Spacetime` are ambient Schwarzschild spacetimes in which photospheres are embedded.
 
 .. autoclass:: xpsi.Spacetime.Spacetime
-    :members: update, M, r_g, r_s, R, S, Omega, i, num_params, bounds
+    :members: M, r_g, r_s, R, R_r_s, f, Omega, i, fixed_spin, d, d_sq,
+              zeta, epsilon
     :show-inheritance:

@@ -3,107 +3,51 @@ from __future__ import division, print_function
 from .global_imports import *
 from . import global_imports
 
+from .Parameter import Parameter
+
 from .HotRegion import HotRegion, PulseError
 
-from .ParameterSubspace import BoundsError
-
 class TwoHotRegions(HotRegion):
-    """ Two photospheric hot regions, which may or may not be antipodal.
+    """ Two photospheric hot regions, related via antipodal reflection symmetry.
 
     The *primary* hot region is represented by the class from which the
     :class:`.TwoHotRegions.TwoHotRegions` derives -- i.e., the
     :class:`.HotRegion.HotRegion` class.
 
-    The *secondary* hot region is represented by adding behaviour to this parent
-    class. This secondary hot region may or may not be *antipodal*.
-
     This class differs from the :class:`.HotRegions.HotRegions` class because
-    it works specifically for two hot regions of equal complexity via
-    inheritance.
+    it works *specifically* for two hot regions, via inheritance, where one
+    is derived from the other purely via antipodal reflection symmetry.
+    The *secondary* hot region is handled by adding behaviour to the parent
+    class.
+
+    This means that all parameters describing the secondary are
+    derived from the primary: the secondary is antipodal and given by
+    an equatorial reflection of the primary, followed by a rotation
+    by :math:`\pi` radians about the rotation axis. The mirroring is
+    thus with respect to a 2-plane through the coordinate origin
+    which is perpendicular to the line through the origin and the
+    primary centre.
+
+    :param dict kwargs:
+        Keyword arguments passed to :class:`.HotRegion.HotRegion` class.
 
     """
-
-    def __init__(self,
-                 num_params,
-                 bounds,
-                 antipodal_symmetry = True,
-                 **kwargs):
-        """
-        :param tuple num_params: Number of parameters for model. The tuple
-                                 must have two elements, specifying the number
-                                 of parameters per spot.
-
-        :param list bounds: Hard parameter bounds for the instance of
-                            :class:`.ParameterSubspace.ParameterSubspace`.
-
-        :param bool antipodal_symmetry: Apply antipodal reflection symmetry?
-                            This means that all parameters describing the
-                            secondary spot are derived from the primary spot:
-                            the secondary is antipodal and given by an
-                            equatorial reflection of the primary spot,
-                            followed by a rotation by :math:`\pi` radians
-                            about the rotation axis. The mirroring is thus
-                            with respect to a 2-plane through the coordinate
-                            origin which is perpendicular to the line
-                            through the origin and the primary spot centre.
-
-        :param kwargs:
-            Keyword arguments passed to :class:`.HotRegion.HotRegion` class.
-
-        .. note:: The parameter bounds of the secondary spot must satisfy:
-
-            * the colatitude is restricted to :math:`\Theta\in(0.0,\pi)`
-            * the angular radius is restricted to :math:`\zeta\in(0.0,\pi/2)`
-
-        """
-        if len(num_params) == 2:
-            super(TwoHotRegions, self).__init__(sum(num_params), bounds, **kwargs)
-        else:
-            raise ValueError('Number of parameters must be passed as a '
-                             '2-tuple in order to parse a parameter vector '
-                             'for passing parameters to methods.')
-
-        self._num_primary_params = num_params[0]
-
-        if not isinstance(antipodal_symmetry, bool):
-            raise TypeError('Use a boolean to specify whether or not the '
-                            'secondary spot is an antipodal reflection of '
-                            'the primary.')
-        else:
-            self._antipodal_symmetry = antipodal_symmetry
-
-        # Check derived parameter settings match cardiality of set of input
-        # parameter bounds
-        if antipodal_symmetry:
-            if num_params[1] > 0:
-                msg = ('The parameters of the secondary spot are all derived '
-                       'from the parameters of the primary.')
-                raise BoundsError(msg)
-
-        if not antipodal_symmetry:
-            for colatitude in self._bounds[num_params[0]]:
-                if not 0.0 < colatitude < _pi:
-                    raise BoundsError('Invalid secondary spot colatitude '
-                                      'bound.')
-            for radius in self._bounds[num_params[0] + 1]:
-                if not 0.0 < radius <= _pi/2.0:
-                    raise BoundsError('Invalid spot angular radius bound.')
-
-    def print_settings(self):
-        """ Print numerical settings. """
-        super(TwoHotRegions, self).print_settings()
-        print('Antipodal symmetry: %s' % str(self._antipodal_symmetry))
+    def __init__(self, *args, **kwargs):
+        # force primary because secondary phase  handled in subclass methods
+        _ = kwargs.pop('is_secondary', None)
+        super(TwoHotRegions, self).__init__(is_secondary = False,
+                                            *args, **kwargs)
 
     @property
     def cellArea(self):
-        """ Get the areas of cells in the secondary-spot mesh. """
+        """ Get the areas of cells in the secondary mesh. """
         try:
             return (self.__super_cellArea, self.__cede_cellArea)
         except AttributeError:
             return (self.__super_cellArea, None)
 
-    def embed(self, spacetime, p, fast_total_counts, threads, *args):
-        """ Embed the spots. """
+    def embed(self, spacetime, photosphere, fast_total_counts, threads, *args):
+        """ Embed the hot regions. """
 
         if fast_total_counts is not None:
             fast_primary_total_counts = fast_total_counts[0]
@@ -112,35 +56,23 @@ class TwoHotRegions(HotRegion):
             fast_primary_total_counts = None
             fast_secondary_total_counts = None
 
-        # embed secondary spot first using methods of parent class, using
+        # embed secondary first using methods of parent class, using
         # derived parameters as required
-        if self._antipodal_symmetry:
-            pass
-        else:
-            ps = p[self._num_primary_params:]
+        super(TwoHotRegions, self).embed(spacetime,
+                                         photosphere,
+                                         fast_secondary_total_counts,
+                                         threads, *args)
 
-        if not self._antipodal_symmetry:
-            super(TwoHotRegions, self).embed(spacetime, ps,
-                                             fast_secondary_total_counts,
-                                             threads, *args)
-            self.__super_theta = self._super_theta
-            try:
-                self.__cede_theta = self._cede_theta
-            except AttributeError:
-                pass
-        else:
-            super(TwoHotRegions, self).embed(spacetime, p,
-                                             fast_secondary_total_counts,
-                                             threads, *args)
-            self.__super_theta = _pi - self._super_theta
-            try:
-                self.__cede_theta = _pi - self._cede_theta
-            except AttributeError:
-                pass
+        # reflect in equatorial plane
+        self.__super_theta = _pi - self._super_theta
+        try:
+            self.__cede_theta = _pi - self._cede_theta
+        except AttributeError:
+            pass
 
         # bind NumPy arrays to new name with mangle; no shallow/deep copy
         # required. The data in these arrays is required for integration of
-        # secondary spot pulse.
+        # secondary pulse.
         self.__super_phi = self._super_phi + _pi
         self.__super_r = self._super_r
         self.__super_cellArea = self._super_cellArea
@@ -171,10 +103,9 @@ class TwoHotRegions(HotRegion):
             self.__cede_cellParamVecs = self._cede_cellParamVecs
             self.__cede_correctionVecs = self._cede_correctionVecs
 
-        if not self._antipodal_symmetry or fast_total_counts is not None:
-            # embed primary spot; names (attributes) in parent class rebound
-            pp = p[:self._num_primary_params]
-            super(TwoHotRegions, self).embed(spacetime, pp,
+        if fast_total_counts is not None:
+            # embed primary; names (attributes) in parent class rebound
+            super(TwoHotRegions, self).embed(spacetime, photosphere,
                                              fast_primary_total_counts,
                                              threads, *args)
 
@@ -187,11 +118,11 @@ class TwoHotRegions(HotRegion):
 
         :param st: Instance of :class:`~.Spacetime.Spacetime`.
 
-        :param energies: A one-dimensional :class:`numpy.ndarray` of energies
-                         in keV.
+        :param energies:
+            A one-dimensional :class:`numpy.ndarray` of energies in keV.
 
-        :param int threads: Number of ``OpenMP`` threads for pulse
-                            integration.
+        :param int threads:
+            Number of ``OpenMP`` threads for pulse integration.
 
         """
         if isinstance(energies, tuple):

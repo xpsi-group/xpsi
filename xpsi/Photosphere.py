@@ -3,43 +3,55 @@ from __future__ import division, print_function
 from .global_imports import *
 from . import global_imports
 
+from .Spacetime import Spacetime
 from .HotRegion import HotRegion
 from .Elsewhere import Elsewhere
 
-from .ParameterSubspace import ParameterSubspace, BoundsError
+from .Parameter import Parameter
+from .ParameterSubspace import ParameterSubspace
 
 class Photosphere(ParameterSubspace):
     """ A photosphere embedded in an ambient Schwarzschild spacetime.
 
-    :param str tag: An identification tag to enforce intended pairing with
-                    a :class:`~.Pulse.Pulse` object.
+    :param obj hot:
+        An instance of :class:`~.HotRegion.HotRegion` (or a
+        derived class). This objects represents the hot
+        regions of the surface that in most use-cases will be
+        assumed to contain radiating material that is hotter
+        than that *elsewhere*.
 
-    :param obj hot: An instance of :class:`~.HotRegion.HotRegion` (or a
-                    derived class). This objects represents the hot
-                    regions of the surface that in most use-cases will be
-                    assumed to contain radiating material that is hotter
-                    than that *elsewhere*.
+    :param obj elsewhere:
+        An instance of :class:`~.Elsewhere.Elsewhere` (or a derived class).
 
-    :param obj elsewhere: An instance of :class:`~.Elsewhere.Elsewhere`
-                          (or a derived class).
+    :param tuple bounds:
+        If ``None``, lock the coordinate rotation frequency of a mode of
+        asymmetry in the photosphere to a fixed frequency, e.g., the stellar
+        rotation frequency. If bounds are passed, the frequency is interpreted
+        as a free parameter.
 
-    :param bool locked:
-        Has no effect. However, if one wanted the coordinate rotation
-        frequency of a mode of asymmetry in the photosphere to *not be
-        locked* to the stellar rotation frequency, a parameter could
-        be defined for this object and the hot region base class could
-        be modified to normalise the ray lags by this frequency instead
-        of the stellar rotation frequency.
+    :param float value:
+        If the asymmetry is locked to the stellar spin, then you need to pass
+        the spin frequency. If fixed but different to the spin frequency, this
+        value needs to be passed instead. In the hot region base class this
+        mode frequency is applied to normalise the ray lags instead of the
+        stellar rotation frequency.
+
+    .. note::
+
+        In basic modelling patterns the frequency is the spin frequency,
+        and thus you only need to explicitly pass the spin as ``value`` whilst
+        leaving ``bounds`` to default. If the spin frequency happens to be a
+        free parameter (perhaps with informative prior information), then
+        pass a callable instead that can be used to get the spin frequency
+        dynamically when the derived mode frequency variable is called for.
 
     """
-    def __init__(self, tag, hot, elsewhere=None, locked=True):
-        num_params = 0; bounds = []
-        super(Photosphere, self).__init__(num_params, bounds)
+    required_names = ['mode_frequency']
 
-        try:
-            self._tag = str(tag)
-        except TypeError:
-            raise TypeError('Incompatible type for identification tag.')
+    def __init__(self,
+                 hot = None, elsewhere = None,
+                 bounds = None, value = None,
+                 **kwargs):
 
         if elsewhere is not None:
             if not isinstance(elsewhere, Elsewhere):
@@ -48,8 +60,11 @@ class Photosphere(ParameterSubspace):
                 self._elsewhere = elsewhere
         else:
             self._elsewhere = None
+            if hot is None:
+                raise ValueError('The photosphere must radiate.')
 
-        if not isinstance(hot, HotRegion): # including derived classes
+                                          # including derived classes
+        if hot is not None and hot is not isinstance(hot, HotRegion):
             if hasattr(hot, 'objects'):
                 for obj in getattr(hot, 'objects'):
                     if not isinstance(obj, HotRegion):
@@ -60,22 +75,24 @@ class Photosphere(ParameterSubspace):
 
         self._hot = hot
 
-        self._total_params = self._num_params + self._hot.num_params
-        if self._elsewhere is not None:
-            self._total_params += self._elsewhere.num_params
-
         self._hot_atmosphere = ()
         self._elsewhere_atmosphere = ()
 
-    @property
-    def total_params(self):
-        """ Get the total number of photospheric radiation field parameters. """
-        return self._total_params
+        doc = """
+        Coordinate frequency of the mode of radiative asymmetry in the
+        photosphere that is assumed to generate the pulsed signal [Hz].
+        """
+        if value is not None: value *= _2pi # need angular frequency
 
-    @property
-    def tag(self):
-        """Get the ID tag of the photosphere object for pulse pairing. """
-        return self._tag
+        mode_frequency = Parameter('mode_frequency',
+                                   strict_bounds = (0.0, 2000.0),
+                                   bounds = bounds,
+                                   doc = doc,
+                                   symbol = r'$f_{\rm mode}$',
+                                   value = value)
+
+        super(Photosphere, self).__init__(mode_frequency,
+                                          hot, elsewhere, **kwargs)
 
     @property
     def hot_atmosphere(self):
@@ -165,90 +182,102 @@ class Photosphere(ParameterSubspace):
         """ Get the instance of :class:`~.Elsewhere.Elsewhere`. """
         return self._elsewhere
 
-    def embed(self, spacetime, p, fast_total_counts, threads):
+    @property
+    def spacetime(self):
+        """ Return instance of :class:`~.Spacetime.Spacetime`. """
+        return self._spacetime
+
+    @spacetime.setter
+    def spacetime(self, obj):
+        if not isinstance(obj, Spacetime):
+            raise TypeError('Invalid type for spacetime object.')
+        # otherwise store a reference to the spacetime object
+        self._spacetime = obj
+
+    def embed(self, fast_total_counts, threads):
         """ Embed the photosphere in an ambient Schwarzschild spacetime.
 
         In other words, generate a discrete representation of the photospheric
         radiation field and the null mapping from the photosphere to infinity,
         for use in flux integrators called by distant observers.
 
-        :param obj spacetime: Instance of :class:`~.Spacetime.Spacetime`.
-
-        :param list p: Parameters of photospheric radiation field.
-
-        Parameter vector:
-
-        * ``p[i]`` = coordinate mode/oscillation frequency, *if not locked*
-        * ``p[i:j]`` = parameters for photospheric hot region(s)
-        * ``p[j:]`` = parameters for radiation field elsewhere
-
-        where ``i = self._num_params`` and ``j = 1 + self._hot.num_params``.
-
         """
-        i = self._num_params
-
         if self._elsewhere is not None:
-            j = i + self._hot.num_params
+            self._elsewhere.embed(self._spacetime, threads)
 
-            self._elsewhere.embed(spacetime, p[j:], threads)
-
-            self._hot.embed(spacetime, p[i:j],
-                             fast_total_counts,
-                             threads,
-                             self._elsewhere._compute_cellParamVecs,
-                             p[j:])
+            if self._hot is not None:
+                self._hot.embed(self._spacetime,
+                                self,
+                                fast_total_counts,
+                                threads,
+                                self._elsewhere._compute_cellParamVecs)
         else:
-            self._hot.embed(spacetime, p[i:],
-                               fast_total_counts,
-                               threads)
-
-        self._spacetime = spacetime # store a reference to the spacetime object
+            self._hot.embed(self._spacetime,
+                            self,
+                            fast_total_counts,
+                            threads)
 
     def integrate(self, energies, threads):
         """ Integrate over the photospheric radiation field.
 
-        :param energies: A one-dimensional :class:`numpy.ndarray` of energies
-                         in keV.
+        :param energies:
+            A one-dimensional :class:`numpy.ndarray` of energies in keV.
 
-        :param int threads: Number of ``OpenMP`` threads to spawn for pulse
-                            integration.
+        :param int threads:
+            Number of ``OpenMP`` threads to spawn for pulse integration.
 
         """
         if self._elsewhere is not None:
-            if isinstance(energies, tuple):
+            if isinstance(energies, tuple): # resolve energy container type
                 if not isinstance(energies[0], tuple):
                     _energies = energies[0]
                 else:
                     _energies = energies[0][0]
             else:
                 _energies = energies
-            time_invariant = self._elsewhere.integrate(self._spacetime,
-                                                       _energies,
-                                                       threads,
-                                                       *self._elsewhere_atmosphere)
+            self._time_invariant = self._elsewhere.integrate(self._spacetime,
+                                                   _energies,
+                                                   threads,
+                                                   *self._elsewhere_atmosphere)
 
-        self._pulse = self._hot.integrate(self._spacetime,
-                                             energies,
-                                             threads,
-                                             self._hot_atmosphere,
-                                             self._elsewhere_atmosphere)
+        if self._hot is not None:
+            self._pulse = self._hot.integrate(self._spacetime,
+                                              energies,
+                                              threads,
+                                              self._hot_atmosphere,
+                                              self._elsewhere_atmosphere)
 
-        if not isinstance(self._pulse[0], tuple):
-            self._pulse = (self._pulse,)
+            if not isinstance(self._pulse[0], tuple):
+                self._pulse = (self._pulse,)
 
-        # add time-invariant component to first time-dependent component
-        if self._elsewhere is not None:
-            for i in range(self._pulse[0][0].shape[1]):
-                self._pulse[0][0][:,i] += time_invariant
+            # add time-invariant component to first time-dependent component
+            if self._elsewhere is not None:
+                for i in range(self._pulse[0][0].shape[1]):
+                    self._pulse[0][0][:,i] += self._time_invariant
 
     @property
     def pulse(self):
         """ Get the stored pulse.
 
-        :return: A :class:`numpy.ndarray` of size ``m x n``, where ``m`` is
-                 the number of energies, and ``n`` is the number of phases.
+        :return: *ndarray[m,n]*, where :math:`m` is
+                 the number of energies, and :math:`n` is the number of phases.
                  Units are photon/s/keV; the distance is a fast parameter so
-                 the area units are not yet factored in.
+                 the areal units are not yet factored in.
 
         """
         return self._pulse
+
+    @property
+    def time_invariant(self):
+        """ Get the stored time-invariant signal.
+
+
+        :returns:
+            *ndarray[n]* containing the time-invariant signal at
+            :math:`n` energies. Units are photon/s/keV. The distance is a
+            fast parameter so the areal units are not yet factored in.
+
+        """
+        return self._time_invariant
+
+Photosphere._update_doc()

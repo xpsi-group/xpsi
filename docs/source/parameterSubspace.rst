@@ -6,11 +6,9 @@ ParameterSubspace
 =================
 
 Instances of :class:`~.ParameterSubspace.ParameterSubspace` represent *abstract*
-subspaces of the model global parameter space. The class itself is an
-Abstract Base Class for derived classes.
+subspaces of the model global parameter space.
 
 .. autoclass:: xpsi.ParameterSubspace.ParameterSubspace
     :members:
-
-.. autoclass:: xpsi.ParameterSubspace.BoundsError
-    :show-inheritance:
+    :special-members: __call__, __getitem, __setitem__, __iter__, __next__,
+                      __str__, __repr__

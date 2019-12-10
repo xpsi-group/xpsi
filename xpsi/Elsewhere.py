@@ -7,6 +7,7 @@ from .cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed
 from .cellmesh.rays import compute_rays as _compute_rays
 from .cellmesh.integrator_for_time_invariance import integrate_radField as _integrator
 
+from .Parameter import Parameter
 from .ParameterSubspace import ParameterSubspace
 
 class RayError(xpsiError):
@@ -16,13 +17,11 @@ class IntegrationError(xpsiError):
     """ Raised if a problem was encountered during signal integration. """
 
 class Elsewhere(ParameterSubspace):
-    """ The photospheric radiation field elsewhere (other than the spot).
+    """ The photospheric radiation field *elsewhere*.
 
-    :param int num_params: Number of parameters for model of photospheric
-                           radiation field elsewhere.
-
-    :param list bounds: Hard parameter bounds for the instance of
-                        :class:`.ParameterSubspace.ParameterSubspace`.
+    This means the radiation field exterior to the hot regions. The local
+    comoving radiation field properties are *assumed* (for now) to be
+    azimuthally invariant but can in principle vary colatitudinally.
 
     :param int num_rays: Number of rays to trace (integrate) at each
                          colatitude, distributed in angle subtended between
@@ -34,26 +33,54 @@ class Elsewhere(ParameterSubspace):
                                2-surface (which is a compact subset of a
                                spacelike leaf of the spacetime foliation).
 
+    :param iterable custom:
+        Iterable over :class:`~.Parameter.Parameter` instances. If you
+        supply custom parameter definitions, you need to overwrite the
+        :func:`~.Elsewhere.Elsewhere._compute_cellParamVecs` method to
+        handle your custom behaviour.
+
+    :param dict bounds:
+        If ``custom is None`` is, these bounds are supplied for instantiation
+        of a temperature parameter. The intended parameter name must be
+        a key in the dictionary. If a bound is ``None`` that bound is set
+        equal to a strict hard-coded bound.
+
+    :param float value:
+        Either the fixed value of the temperature elsewhere, or value upon
+        initialisation if the temperature is free.
+
     """
 
     def __init__(self,
-                 num_params,
-                 bounds,
+                 sqrt_num_cells = 64,
                  num_rays = 1000,
-                 sqrt_num_cells = 64):
-        super(Elsewhere, self).__init__(num_params, bounds)
+                 bounds = (None, None),
+                 value = None,
+                 custom = None):
 
-        self.num_rays = num_rays
         self.sqrt_num_cells = sqrt_num_cells
+        self.num_rays = num_rays
+
+        if not custom: # setup default temperature parameter
+            T = Parameter('elsewhere_temperature',
+                          strict_bounds = (3.0, 7.0), # very cold --> very hot
+                          bounds = bounds,
+                          doc = 'log10 of the effective temperature elsewhere',
+                          symbol = r'$\log_{10}(T_{\rm EW}\;[\rm{K}])$',
+                          value = value)
+        else: # let the custom subclass handle definitions; ignore bounds
+            T = None
+
+        super(Elsewhere, self).__init__(T, custom)
 
     @property
     def num_rays(self):
-        """ Get the number of rays integrated per parallel. """
+        """ Get the number of rays integrated per colatitude. """
         return self._num_rays
 
     @num_rays.setter
     def num_rays(self, n):
-        """ Set the number of rays integrated per parallel. """
+        """ Set the number of rays integrated per colatitude. """
         try:
             self._num_rays = int(n)
         except TypeError:
@@ -61,12 +88,12 @@ class Elsewhere(ParameterSubspace):
 
     @property
     def sqrt_num_cells(self):
-        """ Get the number of cell parallels. """
-        return self._num_rays
+        """ Get the number of cell colatitudes. """
+        return self._sqrt_num_cells
 
     @sqrt_num_cells.setter
     def sqrt_num_cells(self, n):
-        """ Set the number of cell parallels. """
+        """ Set the number of cell colatitudes. """
         try:
             self._sqrt_num_cells = int(n)
         except TypeError:
@@ -81,8 +108,8 @@ class Elsewhere(ParameterSubspace):
 
     def print_settings(self):
         """ Print numerical settings. """
-        print('Number of cell parallels: ', self.sqrt_num_cells)
-        print('Number of rays per parallel: ', self.num_rays)
+        print('Number of cell colatitudes: ', self.sqrt_num_cells)
+        print('Number of rays per colatitude: ', self.num_rays)
 
     def _construct_cellMesh(self, st, threads):
         """ Call a low-level routine to construct a mesh representation.
@@ -134,42 +161,48 @@ class Elsewhere(ParameterSubspace):
         if terminate_calculation == 1:
             raise RayError('Fatal numerical problem during ray integration.')
 
-    def _compute_cellParamVecs(self, p, *args):
+    def _compute_cellParamVecs(self, *args):
         """
         Precompute photospheric source radiation field parameter vectors
-        cell-by-cell.
+        cell-by-cell. Free model parameters and derived (fixed) variables can
+        be transformed into local comoving radiation field variables.
 
-        :param list p:
-            Parameters to transform into local comoving radiation field
-            variables.
+        Subclass and overwrite with custom functionality if you desire.
+
+        :param tuple args:
+            An *ndarray[n,n]* of mesh-point colatitudes.
 
         """
-        if args:
+        if args: # hot region mesh shape information
             cellParamVecs = _np.ones((args[0].shape[0],
                                       args[0].shape[1],
-                                      len(p)+1), dtype=_np.double)
+                                      len(self.vector)+1),
+                                     dtype=_np.double)
 
-            cellParamVecs[...,:-1] *= _np.array(p)
+            # get self.vector because there may be fixed variables
+            # that also need to be directed to the integrators
+            # for intensity evaluation
+            cellParamVecs[...,:-1] *= _np.array(self.vector)
+
+            return cellParamVecs
 
         else:
             self._cellParamVecs = _np.ones((self._theta.shape[0],
                                             self._theta.shape[1],
-                                            len(p)+1), dtype=_np.double)
+                                            len(self.vector)+1),
+                                           dtype=_np.double)
 
-            self._cellParamVecs[...,:-1] *= _np.array(p)
+            self._cellParamVecs[...,:-1] *= _np.array(self.vector)
 
             for i in range(self._cellParamVecs.shape[1]):
                 self._cellParamVecs[:,i,-1] *= self._effGrav
 
-        if args:
-            return cellParamVecs
-
-    def embed(self, spacetime, p, threads):
+    def embed(self, spacetime, threads):
         """ Embed the photosphere elsewhere. """
 
         self._construct_cellMesh(spacetime, threads)
         self._compute_rays(spacetime, threads)
-        self._compute_cellParamVecs(p)
+        self._compute_cellParamVecs()
 
     def integrate(self, st, energies, threads, *atmosphere):
         """ Integrate over the photospheric radiation field.

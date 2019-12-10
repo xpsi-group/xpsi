@@ -12,21 +12,28 @@ class BackgroundError(xpsiError):
     """ Raised if there is an issue with the incident background . """
 
 class Background(ParameterSubspace):
-    """ Base class for astronomical X-ray background. """
+    """ Base class for astronomical photon X-ray background. """
 
     @abstractmethod
-    def __call__(self, p, energy_edges, phases):
-        """ Evaluate the background at store it as an attribute.
+    def __call__(self, energy_edges, phases):
+        """ Evaluate the background and store it as an attribute.
 
-        :param list p: Background parameters.
+        :param energy_edges:
+            The :class:`numpy.ndarray` of energy edges the photon events span.
 
-        :param energy_edges: The :class:`numpy.ndarray` of energy edges the
-                             photon events span.
+        :param phases:
+            The :class:`numpy.ndarray` of phases (in cycles) the pulse was
+            evaluated at.
 
-        :param phases: The :class:`numpy.ndarray` of phases (in cycles) the
-                       pulse was evaluated at.
+        .. note::
+
+            Notice that the background can be phase-dependent, and that the
+            cached background must be a two-dimensional matrix equal in shape
+            to that of the pulse signal incident on the telescope.
 
         """
+        # do some stuff and set:
+        # self.background = ...
 
     @property
     def background(self):
@@ -48,12 +55,7 @@ class Background(ParameterSubspace):
             assert (obj >= 0.0).all()
         except AssertionError:
             raise BackgroundError('Stored background needs to be a '
-                                  'two-dimensional ``numpy.ndarray`` with '
+                                  'two-dimensional ndarray with '
                                   'elements which are zero or positive.')
         else:
             self._background = obj
-
-
-
-
-

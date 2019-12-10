@@ -29,27 +29,40 @@ class Instrument(ParameterSubspace):
         the columns of :attr:`matrix`, and the output channels
         must increase along the rows of :attr:`matrix`. The
         *units* of the elements must be that of an *effective*
-        area (:math:`cm^2`).
+        area (:math:`cm^2`). Generally there will be some available
+        calibration product, and deviations from this nominal response
+        model will be parametrised. So here load some nominal
+        response matrix.
 
     :param ndarray[q+1] energy_edges:
         Energy edges of the instrument energy intervals which
         must be congruent to the first dimension of the
         :attr:`matrix`: the number of edges must
         be :math:`q + 1`. The edges must be monotonically
-        increasing.
+        increasing. These edges will correspond to the nominal response
+        matrix and any deviation from this matrix (see above).
 
     .. note:: The dimensions of the response matrix need not be equal, but
               it is required that the number of input intervals be greater
               than or equal to the number of output channels -- i.e.,
-              :math:`p \leq q`. If :math:`p < q` then it is implied that subsets of
-              adjacent output channels are actually grouped together.
+              :math:`p \leq q`. If :math:`p < q` then it is implied that
+              subsets of adjacent output channels are actually grouped together.
+
+    :param tuple args:
+        Container of parameter instances.
+
+    :param dict kwargs:
+        If you want to prefix parameters of an instance of this instrument
+        subspace with an identifier, pass it as keyword argument and it will
+        find its way to the base class.
 
     """
-    def __init__(self, num_params, bounds, matrix, energy_edges):
-        super(Instrument, self).__init__(num_params, bounds)
+    def __init__(self, matrix, energy_edges, *args, **kwargs):
 
         self.matrix = matrix
         self.energy_edges = energy_edges
+
+        super(Instrument, self).__init__(*args, **kwargs)
 
     @property
     def matrix(self):
@@ -77,9 +90,9 @@ class Instrument(ParameterSubspace):
             assert matrix.shape[0] <= matrix.shape[1]
             assert (matrix >= 0.0).all()
         except AssertionError:
-            raise ResponseError('Input matrix must be a two-dimensional'
-                                '``numpy.ndarray`` with elements '
-                                'which are zero or positive.')
+            raise ResponseError('Input matrix must be a two-dimensional '
+                                'ndarray awith elements '
+                                'that are zero or positive.')
         else:
             try:
                 for i in range(matrix.shape[0]):
@@ -91,6 +104,57 @@ class Instrument(ParameterSubspace):
                                     'one positive number.')
             else:
                 self._matrix = matrix
+
+    def construct_matrix(self):
+        """ Construct the response matrix if it is parametrised.
+
+        If customising, just do stuff to calculate a matrix, and return
+        it. You can access parameters (free, fixed, and derived) via
+        the container access self[<name>].
+
+        """
+        return self.matrix
+
+    def __call__(self, signal, irange, orange):
+        """ Fold an incident signal.
+
+        :param ndarray[m,n] signal:
+            An :math:`m \\times n` matrix, where input energy interval
+            increments along rows, and phase increases along columns.
+            The number of rows, :math:`m`, must equal the number of columns of
+            :attr:`matrix`: :math:`m=q`.
+
+        :param array-like irange:
+            Indexable object with two elements respectively denoting
+            the indices of the first and last *input* intervals. The
+            response matrix :attr:`matrix` must be indexable with
+            these numbers, i.e., they must satisfy :math:`i < q`.
+
+        :param array-like orange:
+            Indexable object with two elements respectively denoting
+            the indices of the first and last *output* channels. The
+            response matrix :attr:`matrix` must be indexable with
+            these numbers, i.e., they must satisfy :math:`i < p`.
+
+        :return: *ndarray[p,n]* containing the folded signal.
+
+        .. note::
+
+            The product of the most recent operation is stored as the property
+            :attr:`cached_signal`.
+
+        """
+        matrix = self.construct_matrix()
+
+        self._cached_signal = _np.dot(matrix[orange[0]:orange[1],
+                                             irange[0]:irange[1]], signal)
+
+        return self._cached_signal
+
+    @property
+    def cached_signal(self):
+        """ Get the cached folded signal. """
+        return self._cached_signal
 
     @property
     def energy_edges(self):
@@ -125,49 +189,3 @@ class Instrument(ParameterSubspace):
         except AssertionError:
             raise EdgesError('Energy edges must be in a one-dimensional '
                              'array, and must be postive.')
-
-    def __call__(self, p, signal, irange, orange):
-        """ Fold an incident signal.
-
-        :param ndarray[m,n] signal:
-            An :math:`m \\times n` matrix, where input energy interval
-            increments along rows, and phase increases along columns.
-            The number of rows, :math:`m`, must equal the number of columns of
-            :attr:`matrix`: :math:`m=q`.
-
-        :param array-like irange:
-            Indexable object with two elements respectively denoting
-            the indices of the first and last *input* intervals. The
-            response matrix :attr:`matrix` must be indexable with
-            these numbers, i.e., they must satisfy :math:`i < q`.
-
-        :param array-like orange:
-            Indexable object with two elements respectively denoting
-            the indices of the first and last *output* channels. The
-            response matrix :attr:`matrix` must be indexable with
-            these numbers, i.e., they must satisfy :math:`i < p`.
-
-        :return: *ndarray[p,n]* containing the folded signal.
-
-        .. note::
-
-            The product of the most recent operation is stored as the property
-            :attr:`cached_signal`.
-
-        """
-
-        self.construct_matrix(p)
-
-        self._cached_signal = _np.dot(self._matrix[orange[0]:orange[1],
-                                                   irange[0]:irange[1]], signal)
-
-        return self._cached_signal
-
-    @property
-    def cached_signal(self):
-        """ Get the cached folded signal. """
-        return self._cached_signal
-
-    @abstractmethod
-    def construct_matrix(self, p):
-        """ Construct the response matrix given parameter values (if any). """

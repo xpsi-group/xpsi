@@ -4,7 +4,7 @@
 
 from __future__ import division, print_function
 
-__all__ = ["Likelihood", "TagError"]
+__all__ = ["Likelihood"]
 
 from . import _rank
 from . import make_verbose
@@ -16,19 +16,12 @@ from .Star import Star
 from .Pulse import Pulse, LikelihoodError
 from .Background import Background
 from .Prior import Prior
-from .ParameterSpace import ParameterSpace
+from .ParameterSubspace import ParameterSubspace
 from . import HotRegion
 from . import TwoHotRegions
 from . import Elsewhere
 
-class TagError(xpsiError):
-    """
-    Raised if an ordered list of photosphere objects and an ordered list
-    of pulse objects do have matching identification tags.
-
-    """
-
-class Likelihood(ParameterSpace):
+class Likelihood(ParameterSubspace):
     """ A container for all objects related to likelihood evaluation.
 
     A collective for objects pertaining to a statistical analysis of
@@ -36,44 +29,47 @@ class Likelihood(ParameterSpace):
     instruments used to acquire these data sets, and the model star and
     model backgrounds.
 
-    :param obj star: An instance of :class:`~.Star.Star`. This instance
-                     is the model star.
+    :param obj star:
+        An instance of :class:`~.Star.Star`. This instance is the model star.
 
-    :param list pulses: A list of :class:`~.Pulse.Pulse`
-                        instances.
+    :param list pulses: A list of :class:`~.Pulse.Pulse` instances.
 
-    :param int threads: The number of ``OpenMP`` threads to spawn for
-                        integration. The default number of threads used
-                        by low-level integration routines is ``1``. The
-                        number can be increased if the parallelisation
-                        paradigm on a cluster is changed such that, e.g.,
-                        per node there is one thread per CPU, instead of
-                        one ``OpenMPI`` process. It is recommended that
-                        :obj:`threads` is ``1``; more threads are useful
-                        when performing integrals at high resolution, but
-                        not necessarily when integrating *many* times as
-                        when sampling, because the MPI parallelisation
-                        paradigm is invoked.
+    :param int threads:
+        The number of ``OpenMP`` threads to spawn for integration. The default
+        number of threads used by low-level integration routines is ``1``. The
+        number can be increased if the parallelisation paradigm on a cluster
+        is changed such that, e.g., per node there is one thread per CPU,
+        instead of one ``OpenMPI`` process. It is recommended that
+        :obj:`threads` is ``1``; more threads are useful when performing
+        integrals at high resolution, but not necessarily when integrating
+        *many* times as when sampling, because the MPI parallelisation
+        paradigm is invoked.
 
-    :param float llzero: The minimum log-likelihood setting for
-                         MultiNest. Points whose log-likelihood is lower
-                         than this value are ignored, which is useful for
-                         defining complicated priors.
+    :param float llzero:
+        The minimum log-likelihood setting for MultiNest. Points whose
+        log-likelihood is lower than this value are ignored, which is useful
+        for defining complicated priors.
+
+    :param bool externally_updated:
+        Update the parameter values upon call to the likelihood object?
+        If so, then pass ``False``. A parameter vector then needs to be passed
+        to the likelihood object. Otherwise, safely assume that the
+        new parameter values are set externally, e.g., in a prior object
+        when inverse sampling the prior for nested sampling.
 
     """
-    def __init__(self, star, pulses, threads=1, llzero=-1.0e90):
+    def __init__(self, star, pulses,
+                 threads = 1, llzero = -1.0e90,
+                 externally_updated = False):
+
+        # only one star object for this version
         if not isinstance(star, Star):
             raise TypeError('Invalid type for a Star object.')
         else:
             self._star = star
 
-        try:
-            iter(pulses)
-        except TypeError:
-            if isinstance(pulses, Pulse):
-                self._pulses = [pulses]
-            else:
-                raise TypeError('Invalid type for a pulse object.')
+        if isinstance(pulses, Pulse):
+            self._pulses = [pulses]
         else:
             for pulse in pulses:
                 if not isinstance(pulse, Pulse):
@@ -83,25 +79,28 @@ class Likelihood(ParameterSpace):
         self._do_fast = False
 
         for photosphere, pulse in zip(star.photospheres, self._pulses):
-            assert photosphere.tag == pulse.tag, \
-                'Photosphere and pulse object lists must have matching \
-                 identification tags.'
+            try:
+                assert photosphere.prefix == pulse.prefix, \
+                    'Photosphere and pulse subspaces must have matching \
+                     identification prefixes by convention, and also be \
+                     have matching orders.'
+            except AttributeError:
+                pass # no prefixes
 
             pulse.phases = photosphere.hot.phases_in_cycles
+
             if photosphere.hot.do_fast:
                 pulse.fast_phases = photosphere.hot.fast_phases_in_cycles
                 self._do_fast = True
 
-        self._theta = [0.0] * self.num_params
+        self.threads = threads
 
-        try:
-            assert int(threads) == threads, 'Thread number must be an integer.'
-        except TypeError:
-            raise TypeError('Thread number must be an integer.')
-        else:
-            self._threads = int(threads)
+        self.llzero = llzero
 
-        self._llzero = llzero
+        self.externally_updated = externally_updated
+
+        # merge subspaces
+        super(Likelihood, self).__init__(self._star, self._pulses)
 
     @property
     def threads(self):
@@ -117,61 +116,9 @@ class Likelihood(ParameterSpace):
             raise TypeError('Thread number must be an integer.')
 
     @property
-    def num_params(self):
-        """ Get the number of dimensions of the parameter space. """
-
-        n = self._star.num_params
-
-        for pulse in self._pulses:
-            n += pulse.total_params
-
-        return n
-
-    @property
-    def bounds(self):
-        """ Get a list of tuples of hard parameter bounds. """
-
-        b = []
-
-        b += self._star.spacetime.bounds
-
-        for photosphere in self._star.photospheres:
-            b += photosphere.bounds
-            b += photosphere.hot.bounds
-            if photosphere.elsewhere is not None:
-                b += photosphere.elsewhere.bounds
-
-        for pulse in self._pulses:
-            if pulse.interstellar is not None:
-                b += pulse.interstellar.bounds
-            if pulse.instrument is not None:
-                b += pulse.instrument.bounds
-            if pulse.background is not None:
-                b += pulse.background.bounds
-            b += pulse.bounds
-        return b
-
-    def __str__(self):
-        """ Print the model objects in order, with parameter numbers. """
-        print('Printing the model objects in order...\n')
-        print('Object [tag]: number of parameters')
-        print('--------------------------------------')
-        print('Spacetime: %i' % self._star.spacetime.num_params)
-        for photosphere in self._star.photospheres:
-            print("Photosphere ['%s']: %i"
-                    % (photosphere.tag, photosphere.total_params))
-            print("   --> Hot ['%s']: %i"
-                    % (photosphere.tag, photosphere.hot.num_params))
-            try:
-                print("   --> Elsewhere ['%s']: %i"
-                        % (photosphere.tag, photosphere.elsewhere.num_params))
-            except AttributeError:
-                pass
-        for pulse in self._pulses:
-            print("Pulse ['%s']: %i" % (pulse.tag, pulse.total_params))
-        print('--------------------------------------')
-
-        return 'Total number of model parameters: %i' % self.num_params
+    def do_fast(self):
+        """ Does fast mode need to be activated? """
+        return self._do_fast
 
     @property
     def star(self):
@@ -184,19 +131,6 @@ class Likelihood(ParameterSpace):
         return self._pulses
 
     @property
-    def theta(self):
-        """ Get the last parameter vector for joint likelihood evaluation.
-
-        :setter: Stores the last parameter vector so that if only the fast
-                 parameters change, recompute only the fast contribution the
-                 likelihood.
-
-        :param p: A list of model parameters values.
-
-        """
-        return self._theta
-
-    @property
     def prior(self):
         return self._prior
 
@@ -204,32 +138,42 @@ class Likelihood(ParameterSpace):
     def prior(self, obj):
         """ Set the prior object if useful, e.g., in nested sampling.
 
-        :param prior: A callable instance of :class:`~.Prior.Prior` which is
-                      useful for nested sampling if inverse prior sampling
-                      is not possible or not straightforward. If not ``None``
-                      (default), the prior is called. If the point lies
-                      exterior to the prior hypervolume, ensure the callable
-                      returns minus :obj:`numpy.inf`. The purpose is to mix the
-                      likelihood function and the prior for definition of
-                      hard nested sampling boundaries. Inverse sampling is
-                      still performed between hard parameter bounds, or on
-                      any prior factors not handled in the call method. If the
-                      (conditional) prior to be evaluated is not uniform,
-                      return the logarithm of the prior density, which is
-                      combined with the likelihood evaluation. The likelihood
-                      is not evaluated if the log-prior is infinite.
+        :param prior:
+            A callable instance of :class:`~.Prior.Prior` which is
+            useful for nested sampling if inverse prior sampling
+            is not possible or not straightforward. If not ``None``
+            (default), the prior is called. If the point lies
+            exterior to the prior hypervolume, ensure the callable
+            returns minus :obj:`numpy.inf`. The purpose is to mix the
+            likelihood function and the prior for definition of
+            the prior support. Inverse sampling is
+            still performed between hard parameter bounds, or on
+            any prior factors not handled in the call method. If the
+            (conditional) prior to be evaluated is not uniform,
+            return the logarithm of the prior density, which is
+            combined with the likelihood evaluation. The likelihood
+            is not evaluated if the log-prior is infinite.
 
         """
-        if isinstance(obj, Prior):
-            self._prior = obj
-        else:
+        if not isinstance(obj, Prior):
             raise TypeError('The prior object is not an instance of the '
                             'Prior class.')
+
+        self._prior = obj
+        self._prior.parameters = self # a reference to the parameter container
 
     @property
     def llzero(self):
         """ Get the minimum log-likelihood setting passed to MultiNest. """
         return self._llzero
+
+    @llzero.setter
+    def llzero(self, value):
+        """ Set the minimum log-likelihood that is viewed as zero. """
+        try:
+            self._llzero = float(value)
+        except TypeError:
+            raise TypeError('Zero log-likelihood number must be a float.')
 
     @property
     def random_near_llzero(self):
@@ -241,6 +185,17 @@ class Likelihood(ParameterSpace):
     def less_than_llzero(self):
         """ Get a number less than the minimum log-likelihood threshold. """
         return 1.1 * self._llzero
+
+    @property
+    def externally_updated(self):
+        """ Safely assume parameters are already updated upon call to self? """
+        return self._externally_updated
+
+    @externally_updated.setter
+    def externally_updated(self, updated):
+        if not isinstance(updated, bool):
+            raise TypeError('Provide a boolean to define update protocol.')
+        self._externally_updated = updated
 
     @staticmethod
     def _divide(obj, x):
@@ -255,15 +210,14 @@ class Likelihood(ParameterSpace):
         else:
             return None
 
-    def _driver(self, p, fast_mode=False, synthesise=False, **kwargs):
+    def _driver(self, fast_mode=False, synthesise=False, **kwargs):
         """ Main likelihood evaluation driver routine. """
 
         self._star.activate_fast_mode(fast_mode)
 
         star_updated = False
 
-        s = self._star.num_params
-        if (p[1:s] != self._theta[1:s]).any():
+        if self._star.needs_update: # ignore fast parameters in this version
             try:
                 if fast_mode or not self._do_fast:
                     fast_total_counts = None
@@ -271,14 +225,14 @@ class Likelihood(ParameterSpace):
                     fast_total_counts = tuple(pulse.fast_total_counts for\
                                                         pulse in self._pulses)
 
-                self._star.update(p[:s], fast_total_counts, self.threads)
+                self._star.update(fast_total_counts, self.threads)
             except xpsiError as e:
                 if isinstance(e, HotRegion.RayError):
                     print('Warning: HotRegion.RayError raised.')
                 elif isinstance(e, Elsewhere.RayError):
                     print('Warning: Elsewhere.RayError raised.')
 
-                print('Parameter vector: ', p)
+                print('Parameter vector: ', self()) # decide how to print
                 return self.random_near_llzero
 
             for photosphere, pulse in zip(self._star.photospheres, self._pulses):
@@ -295,57 +249,55 @@ class Likelihood(ParameterSpace):
 
                     photosphere.integrate(energies, self.threads)
                 except xpsiError as e:
+                    try:
+                        prefix = ' prefix ' + photosphere.prefix
+                    except AttributeError:
+                        prefix = ''
                     if isinstance(e, HotRegion.PulseError):
                         print('Warning: HotRegion.PulseError raised for '
-                              'photosphere tag %s.' % photosphere.tag)
+                              'photosphere%s.' % prefix)
                     elif isinstance(e, Elsewhere.IntegrationError):
                         print('Warning: Elsewhere.IntegrationError for '
-                              'photosphere tag %s.' % photosphere.tag)
+                              'photosphere%s.' % prefix)
 
-                    print('Parameter vector: ', p)
+                    print('Parameter vector: ', self())
                     return self.random_near_llzero
 
             star_updated = True
 
-        # update distance if changed
-        if not star_updated and p[0] != self._theta[0]:
-            self._star.spacetime.d = p[0]
-            star_updated = True
-
         # fold the pulse through the instrument response
-        i = s
         for pulse, photosphere in zip(self._pulses, self._star.photospheres):
-            j = i + pulse.total_params - pulse.num_params
-
-            if star_updated or (p[i:j] != self._theta[i:j]).any():
+            if star_updated or pulse.needs_update:
                 pulse.fold(tuple(
                                  tuple(self._divide(component,
                                                     self._star.spacetime.d_sq)
-                                       for component in hotRegion)
-                                 for hotRegion in photosphere.pulse),
-                           p[i:j], fast_mode=fast_mode, threads=self.threads)
+                                       for component in hot_region)
+                                 for hot_region in photosphere.pulse),
+                           fast_mode=fast_mode, threads=self.threads)
                 refolded = True
             else:
                 refolded = False
 
-            if not fast_mode:
-                k = j + pulse.num_params
-                if refolded or (p[j:k] != self._theta[j:k]).any():
-                    if synthesise:
-                        pulse.synthesise(p[j:k],
-                                         threads=self._threads,
-                                         **kwargs)
-                    else:
+            if not fast_mode and refolded:
+                if synthesise:
+                    hot = photosphere.hot
+                    pulse.synthesise([h['phase_shift'] for h in hot.objects],
+                                     threads=self._threads,
+                                     **kwargs)
+                else:
+                    try:
+                        hot = photosphere.hot
+                        pulse([h['phase_shift'] for h in hot.objects],
+                              threads=self._threads, llzero=self._llzero)
+                    except LikelihoodError:
                         try:
-                            pulse(p[j:k], *[list(p[:s]) + list(p[i:j])],
-                                  threads=self._threads, llzero=self._llzero)
-                        except LikelihoodError:
-                            print('Warning: LikelihoodError raised for '
-                                  'pulse tag %s.' % pulse.tag)
-                            print('Parameter vector: ', p)
-                            return self.random_near_llzero
-
-            i = j
+                            prefix = ' prefix ' + photosphere.prefix
+                        except AttributeError:
+                            prefix = ''
+                        print('Warning: LikelihoodError raised for '
+                              'pulse%s.' % prefix)
+                        print('Parameter vector: ', self())
+                        return self.random_near_llzero
 
         return star_updated
 
@@ -359,11 +311,11 @@ class Likelihood(ParameterSpace):
         """
 
         self.__init__(self._star,
-                          self._pulses,
-                          self._threads,
-                          self._llzero)
+                      self._pulses,
+                      self._threads,
+                      self._llzero)
 
-    def __call__(self, p, reinitialise=False, force=False):
+    def __call__(self, p = None, reinitialise = False, force = False):
         """ Evaluate the logarithm of the joint likelihood over all pulsations.
 
         :param list p: Parameter vector.
@@ -372,47 +324,50 @@ class Likelihood(ParameterSpace):
 
         :param optional[bool] force:
             Force complete reevaluation even if some parameters are unchanged.
+            To faciliate this, all parameter caches are cleared.
 
-        :return: The logarithm of the likelihood.
+        :returns: The logarithm of the likelihood.
 
         """
-        if reinitialise:
-            self.reinitialise()
-        elif force:
-            self._theta = [0.0] * self.num_params
+        if reinitialise: # for safety if settings have been changed
+            self.reinitialise() # do setup again given exisiting object refs
+            self.clear_cache() # clear cache and values
+        elif force: # no need to reinitialise, just clear cache and values
+            self.clear_cache()
 
-        p = _np.array(p)
+        if not self.externally_updated: # do not safely assume already handled
+            if p is None: # expected a vector of values instead of nothing
+                raise TypeError('Parameter values have not been updated.')
+            super(Likelihood, self).__call__(p) # update free parameters
 
-        if (p != self._theta).any():
+        if self.needs_update:
             try:
-                logprior = self._prior(p)
+                logprior = self._prior(p) # pass vector just in case wanted
             except AttributeError:
                 pass
             else:
                 if not _np.isfinite(logprior):
-                    self._theta = p
+                    # we need to restore due to premature return
+                    super(Likelihood, self).__call__(self.cached)
                     return self.less_than_llzero
 
             if self._do_fast:
                 # perform a low-resolution precomputation to direct cell
                 # allocation
-                x = self._driver(p, fast_mode=True)
+                x = self._driver(fast_mode=True)
                 if not isinstance(x, bool):
-                    self._theta = p
+                    super(Likelihood, self).__call__(self.cached) # restore
                     return x
                 elif x:
-                    x = self._driver(p)
+                    x = self._driver()
                     if not isinstance(x, bool):
-                        self._theta = p
+                        super(Likelihood, self).__call__(self.cached) # restore
                         return x
             else:
-                x = self._driver(p)
+                x = self._driver()
                 if not isinstance(x, bool):
-                    self._theta = p
+                    super(Likelihood, self).__call__(self.cached) # restore
                     return x
-
-        # store parameter vector for next iteration
-        self._theta = p
 
         loglikelihood = 0.0
         for pulse in self._pulses:
@@ -512,40 +467,48 @@ class Likelihood(ParameterSpace):
         :param optional[bool] force:
             Force complete reevaluation even if some parameters are unchanged.
 
+        :param dict kwargs:
+            Keyword arguments propagated to custom pulse synthesis methods.
+            Examples of such arguments include exposure times or
+            required total count numbers (see example notebooks0.
+
         """
-        if reinitialise:
-            self.reinitialise()
-        elif force:
-            self._theta = [0.0] * self.num_params
+        if reinitialise: # for safety if settings have been changed
+            self.reinitialise() # do setup again given exisiting object refs
+            self.clear_cache() # clear cache and values
+        elif force: # no need to reinitialise, just clear cache and values
+            self.clear_cache()
 
-        p = _np.array(p)
+        if not self.externally_updated: # do not safely assume already handled
+            if p is None: # expected a vector of values instead of nothing
+                raise TypeError('Parameter values have not been updated.')
+            super(Likelihood, self).__call__(p) # update free parameters
 
-        if (p != self._theta).any():
+        if self.needs_update:
             try:
-                logprior = self._prior(p)
+                logprior = self._prior(p) # pass vector just in case wanted
             except AttributeError:
                 pass
             else:
                 if not _np.isfinite(logprior):
-                    self._theta = p
+                    # we need to restore due to premature return
+                    super(Likelihood, self).__call__(self.cached)
                     return None
 
             if self._do_fast:
                 # perform a low-resolution precomputation to direct cell
                 # allocation
-                x = self._driver(p, fast_mode=True)
+                x = self._driver(fast_mode=True)
                 if not isinstance(x, bool):
-                    self._theta = p
+                    super(Likelihood, self).__call__(self.cached) # restore
                     return None
                 elif x:
-                    x = self._driver(p, synthesise=True, **kwargs)
+                    x = self._driver(synthesise=True, **kwargs)
                     if not isinstance(x, bool):
-                        self._theta = p
+                        super(Likelihood, self).__call__(self.cached) # restore
                         return None
             else:
-                x = self._driver(p, synthesise=True, **kwargs)
+                x = self._driver(synthesise=True, **kwargs)
                 if not isinstance(x, bool):
-                    self._theta = p
+                    super(Likelihood, self).__call__(self.cached) # restore
                     return None
-
-        self._theta = p

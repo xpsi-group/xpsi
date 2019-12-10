@@ -17,17 +17,17 @@ four physical cores, we spawn as many MPI processes.
           (see, e.g., :ref:`surfsystems`) to avoid hybrid parallelisation by
           libraries linked to NumPy and GSL, for instance.
 
-The script below is an example like that found on the `Model construction`
+The script below is an example like that found on the `Modelling`
 page, but without being interleaved with verbose explanations. The model
-implemented here is more involved than shown on the `Model construction`
+implemented here is more involved than shown on the `Modelling`
 page, and than those defined for the example parameter
 estimation problems that can be found in the ``xpsi/examples`` directory of
 the repository.
 
 .. note::
 
-    The script has been updated to use updated object names in the API
-    since ``v0.1``.
+    The script and modules below are being updated to use
+    the current API.
 
 Main
 ^^^^

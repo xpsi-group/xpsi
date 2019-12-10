@@ -15,13 +15,15 @@ class Interstellar(ParameterSubspace):
     def __call__(self, energies, pulse):
         """ Subclass to write a specialised specific flux modifier.
 
-        :param energies: A :class:`numpy.ndarray` of energies in keV at which
-                         the specific fluxes in :obj:`pulse` are calculated.
+        :param energies:
+            A :class:`numpy.ndarray` of energies in keV at which
+            the specific fluxes in :obj:`pulse` are calculated.
 
-        :param pulse: A :class:`numpy.ndarray` of specific fluxes, with energy
-                      increasing along rows and phase increasing along columns.
+        :param pulse:
+            A :class:`numpy.ndarray` of specific fluxes, with energy
+            increasing along rows and phase increasing along columns.
 
-        :return: ``None``.
+        :returns: ``None``.
 
         .. note:: It is expected that the operations performed on a column of
                   specific fluxes need to be applied identically to all other
@@ -29,11 +31,3 @@ class Interstellar(ParameterSubspace):
                   directly modified, and *not* copied.
 
         """
-
-
-
-
-
-
-
-
