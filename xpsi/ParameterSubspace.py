@@ -182,6 +182,8 @@ class ParameterSubspace(object):
                 raise
 
     def __setitem__(self, key, value):
+        """ Pass a string or an integer (latter only for free parameters). """
+
         if isinstance(key, _six.string_types):
             try:
                 if self.prefix + '__' not in key:
@@ -301,10 +303,9 @@ class ParameterSubspace(object):
         except AttributeError:
             pass
         else:
-            cls.__doc__ += '\n    Required parameter names'
-            cls.__doc__ += '\n    - - - - - - - - - - - - -\n'
+            cls.__doc__ += '\n    Required parameter names:'
             for name in cls.required_names:
-                cls.__doc__ += '\n        > ' + name
+                cls.__doc__ += '\n        * ' + name
 
         cls.__doc__ += '\n'
 
@@ -313,9 +314,8 @@ class ParameterSubspace(object):
         except AttributeError:
             pass
         else:
-            cls.__doc__ += '\n    Optional parameter names'
-            cls.__doc__ += '\n    - - - - - - - - - - - - -\n'
+            cls.__doc__ += '\n    Optional parameter names:'
             for name in cls.optional_names:
-                cls.__doc__ += '\n        > ' + name
+                cls.__doc__ += '\n        * ' + name
 
         cls.__doc__ += '\n'
