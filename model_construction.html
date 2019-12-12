@@ -2552,7 +2552,9 @@ the solid curves without markers.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;distance&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cached</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">truncnorm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">hypercube</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">p</span>
+        <span class="c1"># it is important that we return the desired vector because it is</span>
+        <span class="c1"># automatically written to disk by MultiNest and only by MultiNest</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">vector</span>
 
     <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; A transformation for post-processing. &quot;&quot;&quot;</span>
