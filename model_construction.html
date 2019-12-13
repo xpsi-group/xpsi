@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modelling &mdash; xpsi 0.3.0 documentation</title>
+  <title>Modelling &mdash; xpsi 0.3.1 documentation</title>
   
 
   
@@ -1155,12 +1155,21 @@ Earth inclination to rotation axis [radians].
 </pre></div></div>
 </div>
 <p>Alternatively we can specify bounds manually for the free parameters, and give the spin frequency.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="c1">#? # uncomment to query</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>xpsi.Spacetime.Spacetime
 </pre></div>
 </div>
 </div>
@@ -1953,7 +1962,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-ll = -26713.61367769; time = 1.140
+ll = -26713.61367769; time = 1.166
 </pre></div></div>
 </div>
 <p>If the secondary temperature was free, we would extend the vector <code class="docutils literal notranslate"><span class="pre">p</span></code> by one element, passing the injected value of <code class="docutils literal notranslate"><span class="pre">6.0</span></code>:</p>
@@ -2683,17 +2692,17 @@ the solid curves without markers.</p>
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[1.1227255397945624,
- 6.3282562244123985,
- 0.902829074735135,
- 0.5319961259338499,
- -0.4545208273909481,
- 2.0716354163368873,
- 0.6886504702807842,
- 6.789034834547918,
- 0.21096535563128527,
- 0.11642604013474772,
- 1.4926685479716524]
+<span></span>[2.824312452257232,
+ 4.5957342836298185,
+ 0.43667916115078986,
+ 0.9154371815747896,
+ -0.2900561956449089,
+ 0.5018487453822053,
+ 0.8874715364740365,
+ 4.284332241775428,
+ 0.22060051046670426,
+ 0.47469817115129526,
+ 0.18369348068868543]
 </pre></div>
 </div>
 </div>
@@ -2993,10 +3002,23 @@ mode in the vicinity of the above ensemble is rather non-linear in the space bei
 </div>
 <div class="section" id="Nested-sampling">
 <h3>Nested sampling<a class="headerlink" href="#Nested-sampling" title="Permalink to this headline">¶</a></h3>
-<p>We interface with the nested sampler MultiNest in a similar manner, by defining some runtime settings, and then passing those settings together with <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> and <code class="docutils literal notranslate"><span class="pre">prior</span></code> objects to a wrapper from the <a class="reference internal" href="sample.html"><span class="doc">Sample</span></a> module. We will run the sampler for a specified number (1000) of nested replacements (iterations).</p>
+<p>We interface with the nested sampler MultiNest in a similar manner, by defining some runtime settings, and then passing those settings together with <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> and <code class="docutils literal notranslate"><span class="pre">prior</span></code> objects to a wrapper from the <a class="reference internal" href="sample.html"><span class="doc">Sample</span></a> module. We will run the sampler for a specified number (1000) of nested replacements (iterations). Note that the output below was actually generated with the temperature of the secondary hot region as a <em>free</em> parameter, resulting in an additional dimension to the
+model above.</p>
 <p>The environment variable <code class="docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code> must be set before launching Jupyter as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export LD_LIBRARY_PATH=&lt;path/to/multinest&gt;/lib
 </pre></div>
+</div>
+<p>Get the parameters that are periodic or <em>wrapped</em> to inform MultiNest of boundary properties:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">wrapped_params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span>
+<span class="n">wrapped_params</span><span class="p">[</span><span class="n">likelihood</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;p__phase_shift&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">wrapped_params</span><span class="p">[</span><span class="n">likelihood</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;s__phase_shift&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -3012,7 +3034,7 @@ mode in the vicinity of the above ensemble is rather non-linear in the space bei
                   <span class="s1">&#39;n_live_points&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
                   <span class="s1">&#39;sampling_efficiency&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
                   <span class="s1">&#39;const_efficiency_mode&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
-                  <span class="s1">&#39;wrapped_params&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+                  <span class="s1">&#39;wrapped_params&#39;</span><span class="p">:</span> <span class="n">wrapped_params</span><span class="p">,</span>
                   <span class="s1">&#39;evidence_tolerance&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
                   <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
                   <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
@@ -3481,7 +3503,7 @@ Background normalisation: 1.89127972e-05
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_237_0.png" src="_images/model_construction_237_0.png" />
+<img alt="_images/model_construction_239_0.png" src="_images/model_construction_239_0.png" />
 </div>
 </div>
 <p>Check we have generated the same count numbers, given the same seed and resolution settings:</p>
