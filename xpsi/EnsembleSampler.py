@@ -19,8 +19,10 @@ else:
     if _verbose:
         print('Imported emcee version: %s' % emcee.__version__)
 
+from .Parameter import StrictBoundsError
+from .ParameterSubspace import ParameterSubspace
 from .Prior import Prior
-from .Posterior import PriorError
+from .Posterior import Posterior, PriorError
 
 class EnsembleSampler(_EnsembleSampler):
     """ Derives from `emcee`_'s :class:`~emcee.EnsembleSampler`.
@@ -31,7 +33,6 @@ class EnsembleSampler(_EnsembleSampler):
     def __init__(self,
                  ndims,
                  posterior,
-                 prior,
                  pool,
                  resume,
                  nwalkers,
@@ -41,9 +42,6 @@ class EnsembleSampler(_EnsembleSampler):
                  **kwargs):
         """
         :param callable posterior: The posterior function for MPI pickling.
-
-        :param callable prior: The prior object. An instance of
-                               :class:`~.Prior`.
 
         :param int ndims: Number of model parameters.
 
@@ -62,15 +60,16 @@ class EnsembleSampler(_EnsembleSampler):
                                          standard deviations. One per parameter.
 
         """
-        if not callable(posterior):
-            raise RuntimeError('Posterior function is not callable.')
-
-        try:
-            assert isinstance(prior, Prior)
-        except AssertionError:
-            raise TypeError('Invalid type for prior object.')
+        if not isinstance(posterior, Posterior):
+            raise TypeError('Invalid type for posterior object.')
         else:
-            self._prior = prior
+            if not callable(posterior):
+                raise RuntimeError('Posterior object is not callable.')
+
+        self._posterior = posterior
+
+        # get the prior object in case needed for initialisation
+        self._prior = self.posterior.prior
 
         try:
             self._root_dir = str(root_dir)
@@ -167,11 +166,48 @@ class EnsembleSampler(_EnsembleSampler):
 
         moments = map(list, zip(*moments))
 
-        p0 = _np.vstack([moments[0] + moments[1] * _np.random.normal(size=self._ndims) for i in range(self._nwalkers)])
+        def helper(p):
+            """ Check inclusion in prior support. """
+
+            try:
+                ParameterSubspace.__call__(self._posterior.likelihood, p)
+            except StrictBoundsError:
+                return False
+
+            lp = self._prior(p) # p object not used explicitly, but for clarity
+
+            if _np.isnan(lp):
+                raise PriorError('Failed to initialise walkers.')
+
+            if not _np.isfinite(lp):
+                return False
+
+            return True
+
+        p0 = _np.empty((self._nwalkers, self._ndims), dtype = _np.double)
+
+        q = self._posterior.likelihood.vector # make our own cache here
 
         for i in range(self._nwalkers):
-            if not _np.isfinite(self._prior(p0[i,:])):
-                raise PriorError('Failed to initialise walkers.')
+
+            included = False
+            counter = 0
+
+            try:
+                while not included and counter < 1000:
+                    p = moments[0] + moments[1] * _np.random.normal(size=self._ndims)
+                    included = helper(p)
+                    counter += 1
+
+                if not included:
+                    raise PriorError('Failed to initialise walkers.')
+
+                ParameterSubspace.__call__(self._posterior.likelihood, q)
+            except PriorError:
+                ParameterSubspace.__call__(self._posterior.likelihood, q)
+                raise
+
+            p0[i,:] = p
 
         return p0
 
@@ -186,6 +222,11 @@ class EnsembleSampler(_EnsembleSampler):
                       progress = True)
 
         print('\nSampling complete.')
+
+    @property
+    def posterior(self):
+        """ Get the posterior object. """
+        return self._posterior
 
     def get_backend(self):
         """ Get the :class:`emcee.backends.HDFBackend` instance. """

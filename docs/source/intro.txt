@@ -37,7 +37,7 @@ different repository due to file size considerations:
 This repository also contains unexecuted tutorial notebooks with less
 verbosity if this is preferred.
 
-Ohter examples may be found on path ``xpsi/examples``. Note, however, that these
+Other examples may be found on path ``xpsi/examples``. Note, however, that these
 examples used ``v0.1`` of X-PSI, which can be checked out via the tag on the
 ``master`` branch. Eventually, example files will be archived with Zenodo
 to accompany the paper.
