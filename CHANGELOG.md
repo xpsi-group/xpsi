@@ -22,10 +22,15 @@ and this project adheres to
 
 ### Summary
 
+* Bug fixes. Backwards compatible.
+
 * When initializing the ensemble-MCMC chains using an nd-ball, the inclusion
-    in the prior support is checked by passing a vector to `Prior.__call__` but
-    that code assumes that the parameter vector has already been assigned and
-    can be accessed through the `ParameterSubspace`.
+    in the prior support was checked by passing a vector to `Prior.__call__` but
+    that code assumed that the parameter vector had already been assigned and
+    can be accessed through the `ParameterSubspace`. As a result either an
+    exception would be thrown (if parameter objects have no value set) or the
+    support condition would be evaluated for some preset vector that does not
+    change has we iterate through chains.
 
 * The `Likelihood.check` method now has a fallback implementation given that
     the NumPy `allclose` function in v1.17 does not support Python 2.7.
