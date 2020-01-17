@@ -67,7 +67,6 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
             # Initialise emcee sampler
             sampler = EnsembleSampler(ndims = len(likelihood),
                                       posterior = func,
-                                      prior = prior,
                                       pool = pool,
                                       **kwargs)
 
@@ -79,7 +78,6 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
         # Initialise emcee sampler
         sampler = EnsembleSampler(ndims = len(likelihood),
                                   posterior = posterior,
-                                  prior = prior,
                                   pool = None,
                                   **kwargs)
 

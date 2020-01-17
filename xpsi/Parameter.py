@@ -30,7 +30,7 @@ class Derive(object):
         subspace does not have references to other parameter objects
         required, *and* that distinct subspaces require mutual references
         to each other. An example would be two hot regions, each of which
-        as one or more parameters that are derived in part from parameters
+        has one or more parameters that are derived in part from parameters
         of the other hot region. In this case you need to instantiate
         the subspaces first by binding instances of this present
         class to parameters. However, you then need to complete these instances

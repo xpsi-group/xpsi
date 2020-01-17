@@ -67,7 +67,8 @@ class Prior(object):
         """ Evaluate distribution at :obj:`p` and store it as a property.
 
         :param list p:
-            Vector of model parameter values, but typically unused.
+            Vector of model parameter values, but typically unused. If you
+            use it, handle it in a custom implementation of this method.
 
         """
         for param in self.parameters:

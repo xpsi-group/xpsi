@@ -413,17 +413,24 @@ class Likelihood(ParameterSubspace):
             yield 'Cannot import ``allclose`` function from NumPy...'
             yield 'Using fallback implementation...'
 
-            def allclose(a, b, rtol, atol, equal_nan):
-                raise NotImplementedError('Implement a fallback.')
+            def allclose(a, b, rtol, atol, equal_nan=None):
+                """ Fallback based on NumPy v1.17. """
+                return ~((_np.abs(a - b) > atol + rtol*_np.abs(b)).any())
+                #raise NotImplementedError('Implement a fallback.')
 
         lls = []
         lps = [] if logprior_call_vals is not None else None
 
         if physical_points is not None:
+            _cached = self.externally_updated
+
+            self.externally_updated = False
             for point in physical_points:
                 lls.append(self.__call__(point))
                 if lps is not None:
                     lps.append(self._prior(point))
+
+            self.externally_updated = _cached
         else:
             for point in hypercube_points:
                 phys_point = self._prior.inverse_sample(point)
@@ -432,30 +439,35 @@ class Likelihood(ParameterSubspace):
                     lps.append(self._prior(phys_point))
 
         try:
-            if allclose(_np.array(lls), loglikelihood_call_vals,
-                        rtol=rtol_loglike, atol=atol_loglike,
-                        equal_nan=False):
+            proceed = allclose(_np.array(lls),
+                               _np.array(loglikelihood_call_vals),
+                               rtol=rtol_loglike, atol=atol_loglike,
+                               equal_nan=False)
+        except Exception as e:
+            raise Exception('Log-likelihood value checks failed on process %i '
+                            'with exception value: %s' % (_rank, str(e)))
+        else:
+            if proceed:
                 yield 'Log-likelihood value checks passed on root process.'
             else:
                 raise ValueError('Log-likelihood value checks failed on process '
                                  '%i' % _rank)
-        except Exception as e:
-            raise Exception('Log-likelihood value checks failed on process %i'
-                            'with exception value: %s' % (_rank, e.value))
 
         if lps is not None:
             try:
-                if allclose(_np.array(lps), logprior_call_vals,
-                            rtol=rtol_logprior, atol=atol_logprior,
-                            equal_nan=False):
+                proceed = allclose(_np.array(lps),
+                                   _np.array(logprior_call_vals),
+                                   rtol=rtol_logprior, atol=atol_logprior,
+                                   equal_nan=False)
+            except Exception as e:
+                raise Exception('Log-prior value checks failed on process %i '
+                                'with exception value: %s' % (_rank, str(e)))
+            else:
+                if proceed:
                     yield 'Log-prior value checks passed on root process.'
                 else:
                     raise ValueError('Log-prior value checks failed on '
                                      'process %i' % _rank)
-            except Exception as e:
-                raise Exception('Log-prior value checks failed on process %i '
-                                'with exception value: %s' % (_rank, e.value))
-
 
     def synthesise(self, p, reinitialise=False, force=False, **kwargs):
         """ Synthesise pulsation data.
