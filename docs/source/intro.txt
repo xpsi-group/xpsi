@@ -20,13 +20,13 @@ install X-PSI from source, and to install dependencies, see the
 
     These documentation pages are being rapidly updated during development.
 
-    These pages were generated from a local development build prior to release
-    ``v0.3``. The pages often reference ``v0.1`` that is tagged on the
+    These pages were generated from a local development build using release
+    ``v0.4``. The pages often reference ``v0.1`` that is tagged on the
     ``master`` branch of the repo, but that version is not explicitly
     documented.
 
 The *Modelling* and *Hot region complexity* tutorials in these
-documentation pages however, use ``v0.3`` of X-PSI. The required files
+documentation pages however, use ``v0.4`` of X-PSI. The required files
 (i.e., data files and NICER v1.01 instrument files) may be obtained from a
 different repository due to file size considerations:
 
@@ -35,7 +35,8 @@ different repository due to file size considerations:
     git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git </path/to/clone>
 
 This repository also contains unexecuted tutorial notebooks with less
-verbosity if this is preferred.
+verbosity if this is preferred. Refer to the repository README for instructions
+regarding large files.
 
 Other examples may be found on path ``xpsi/examples``. Note, however, that these
 examples used ``v0.1`` of X-PSI, which can be checked out via the tag on the
