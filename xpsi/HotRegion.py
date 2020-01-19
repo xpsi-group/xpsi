@@ -46,12 +46,28 @@ class HotRegion(ParameterSubspace):
     concentric with the ceding region or a omission region, supposing either
     ``omit=True`` or ``cede=True``.
 
-    These helper settings simply set up the optional parameter definitions
+    These helper settings simply set up the *optional* parameter definitions
     so you do not have to do so more manually by providing keys-value pairs
     in the ``bounds`` and ``values`` dictionaries (see below).
 
     :param dict bounds:
-        Hard prior parameter bounds for the free parameters.
+        Hard prior parameter bounds for the free parameters. The dictionary
+        keys must match the required parameter names, at least. If a required
+        name is omitted as a key, the parameter is interpreted as *fixed* or
+        *derived*. A key-value pair can take the following forms:
+            * 'name': None
+            * 'name': (None, None), (None, x), (x, None)
+            * 'name': (x, y)
+        if a bound is ``None`` that bound is set equal to a strict
+        hard-coded bound.
+
+    :param dict values:
+        Initial values of *free* parameters, fixed values of *fixed* parameters,
+        and callables for *derived* parameters. If a key is omitted for a free
+        parameter, the initial value is ``None`` by default. A key cannot be
+        omitted for a required name that appears in the ``bounds`` dictionary
+        with value ``None``, or a required name that is omitted from the bounds
+        dictionary.
 
     :param bool symmetry:
         Is the radiation field axisymmetric (w.r.t the stellar rotation
@@ -374,7 +390,7 @@ class HotRegion(ParameterSubspace):
                                         super_temp, cede_colat, cede_radius,
                                         cede_azi, cede_temp,
                                         omit_colat, omit_radius, omit_azi,
-                                        custom, **kwargs) # prefix in kwargs
+                                        custom, **kwargs) # prefix in kwargs
 
     @property
     def objects(self):
@@ -803,7 +819,12 @@ class HotRegion(ParameterSubspace):
         if self.fast_mode and not self.do_fast:
             return None
         elif not self.needs_update: # dynamically evaluate if stuff to do
-            return None # what about change in mesh and ray resolution?
+            try:
+                self._super_theta
+            except AttributeError:
+                pass
+            else:
+                return None # what about change in mesh and ray resolution?
 
         self.__construct_cellMesh(spacetime,
                                   fast_total_counts,
