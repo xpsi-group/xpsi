@@ -422,6 +422,24 @@ class Likelihood(ParameterSubspace):
         lps = [] if logprior_call_vals is not None else None
 
         if physical_points is not None:
+            physical_points = _np.array(physical_points)
+
+            try:
+                if physical_points.ndim > 2:
+                    raise AttributeError
+
+                elif physical_points.ndim == 1:
+                    physical_points = physical_points.reshape(1,len(physical_points))
+
+            except AttributeError as e:
+                e.message = ('Physical points for likelihood check must form '
+                             'a numpy.ndarray with at most two dimensions.')
+                raise
+
+            if physical_points.shape[1] != len(self):
+                raise IndexError('Vector size does not match number of '
+                                 'free parameters of likelihood function.')
+
             _cached = self.externally_updated
 
             self.externally_updated = False
@@ -432,6 +450,24 @@ class Likelihood(ParameterSubspace):
 
             self.externally_updated = _cached
         else:
+            hypercube_points = _np.array(hypercube_points)
+
+            try:
+                if hypercube_points.ndim > 2:
+                    raise AttributeError
+
+                elif hypercube_points.ndim == 1:
+                    hypercube_points = hypercube_points.reshape(1,len(hypercube_points))
+
+            except AttributeError as e:
+                e.message = ('Unit hypercube points for likelihood check must '
+                             'form a numpy.ndarray with at most two dimensions.')
+                raise
+
+            if hypercube_points.shape[1] != len(self):
+                raise IndexError('Vector size does not match number of '
+                                 'free parameters of likelihood function.')
+
             for point in hypercube_points:
                 phys_point = self._prior.inverse_sample(point)
                 lls.append(self.__call__(phys_point))
