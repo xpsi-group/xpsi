@@ -49,7 +49,7 @@ class Spacetime(ParameterSubspace):
         M = Parameter('mass',
                       strict_bounds = (0.8, 3.0),
                       bounds = bounds.get('mass', None),
-                      doc = 'Gravitational masses [solar masses]',
+                      doc = 'Gravitational mass [solar masses]',
                       symbol = r'$M$',
                       value = values.get('mass', None))
 
