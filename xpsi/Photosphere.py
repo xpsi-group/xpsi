@@ -23,13 +23,21 @@ class Photosphere(ParameterSubspace):
     :param obj elsewhere:
         An instance of :class:`~.Elsewhere.Elsewhere` (or a derived class).
 
-    :param tuple bounds:
+    :param dict bounds:
+        Bounds are supplied for instantiation of a frequency parameter.
+        The parameter name ``'mode_frequency'`` must be a key in the
+        dictionary unless the parameter is *fixed* or *derived*. If a bound
+        is ``None`` that bound is set equal to a strict hard-coded bound.
         If ``None``, lock the coordinate rotation frequency of a mode of
         asymmetry in the photosphere to a fixed frequency, e.g., the stellar
         rotation frequency. If bounds are passed, the frequency is interpreted
         as a free parameter.
 
-    :param float value:
+    :param dict values:
+        Either the fixed value of the mode frequency, a callable if the
+        frequency is *derived*, or a value upon initialisation if the
+        frequency is free. The dictionary must have a key with name
+        ``'mode_frequency'`` if it is *fixed* or *derived*.
         If the asymmetry is locked to the stellar spin, then you need to pass
         the spin frequency. If fixed but different to the spin frequency, this
         value needs to be passed instead. In the hot region base class this
@@ -50,7 +58,7 @@ class Photosphere(ParameterSubspace):
 
     def __init__(self,
                  hot = None, elsewhere = None,
-                 bounds = None, value = None,
+                 bounds = {}, values = {},
                  **kwargs):
 
         if elsewhere is not None:
@@ -82,11 +90,12 @@ class Photosphere(ParameterSubspace):
         Coordinate frequency of the mode of radiative asymmetry in the
         photosphere that is assumed to generate the pulsed signal [Hz].
         """
+        value = values.get('mode_frequency', None)
         if value is not None: value *= _2pi # need angular frequency
 
         mode_frequency = Parameter('mode_frequency',
                                    strict_bounds = (0.0, 2000.0),
-                                   bounds = bounds,
+                                   bounds = bounds.get('mode_frequency', None),
                                    doc = doc,
                                    symbol = r'$f_{\rm mode}$',
                                    value = value)

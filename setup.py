@@ -3,7 +3,7 @@ To compile to C code, and then compile the C code and link libraries:
     --> CC=</path/to/compiler/executable> python setup.py install [--user]
 
 If compiling and linking with gcc, which is on $PATH:
-        --> CC=gcc python setup.py install [--user]
+    --> CC=gcc python setup.py install [--user]
 
 If compiling and linking with Intel icc, with is on $PATH:
     --> LDSHARED="icc -shared" CC=icc python setup.py install [--user]

@@ -23,15 +23,15 @@ class Elsewhere(ParameterSubspace):
     comoving radiation field properties are *assumed* (for now) to be
     azimuthally invariant but can in principle vary colatitudinally.
 
-    :param int num_rays: Number of rays to trace (integrate) at each
-                         colatitude, distributed in angle subtended between
-                         ray tangent 4-vector and radial outward unit
-                         vector w.r.t a local orthonormal tetrad.
+    :param int num_rays:
+        Number of rays to trace (integrate) at each colatitude, distributed
+        in angle subtended between ray tangent 4-vector and radial outward unit
+        vector w.r.t a local orthonormal tetrad.
 
-    :param int sqrt_num_cells: Number of cells in both colatitude and azimuth
-                               which form a regular mesh on a closed curved
-                               2-surface (which is a compact subset of a
-                               spacelike leaf of the spacetime foliation).
+    :param int sqrt_num_cells:
+        Number of cells in both colatitude and azimuth which form a regular
+        mesh on a closed curved 2-surface (which is a compact subset of a
+        spacelike leaf of the spacetime foliation).
 
     :param iterable custom:
         Iterable over :class:`~.Parameter.Parameter` instances. If you
@@ -40,22 +40,26 @@ class Elsewhere(ParameterSubspace):
         handle your custom behaviour.
 
     :param dict bounds:
-        If ``custom is None`` is, these bounds are supplied for instantiation
-        of a temperature parameter. The intended parameter name must be
-        a key in the dictionary. If a bound is ``None`` that bound is set
-        equal to a strict hard-coded bound.
+        If ``custom is None``, these bounds are supplied for instantiation
+        of a temperature parameter. The parameter name
+        ``'elsewhere_temperature'`` must be a key in the dictionary unless the
+        parameter is *fixed* or *derived*. If a bound is ``None`` that bound
+        is set equal to a strict hard-coded bound.
 
-    :param float value:
-        Either the fixed value of the temperature elsewhere, or value upon
-        initialisation if the temperature is free.
+    :param dict values:
+        Either the fixed value of the temperature elsewhere, a callable if the
+        temperature is *derived*, or a value upon initialisation if the
+        temperature is free. The dictionary must have a key with name
+        ``'elsewhere_temperature'`` if it is *fixed* or *derived*.
 
     """
+    required_names = ['elsewhere_temperature (if no custom specification)']
 
     def __init__(self,
                  sqrt_num_cells = 64,
                  num_rays = 1000,
-                 bounds = (None, None),
-                 value = None,
+                 bounds = {},
+                 values = {},
                  custom = None):
 
         self.sqrt_num_cells = sqrt_num_cells
@@ -64,10 +68,10 @@ class Elsewhere(ParameterSubspace):
         if not custom: # setup default temperature parameter
             T = Parameter('elsewhere_temperature',
                           strict_bounds = (3.0, 7.0), # very cold --> very hot
-                          bounds = bounds,
+                          bounds = bounds.get('elsewhere_temperature', None),
                           doc = 'log10 of the effective temperature elsewhere',
                           symbol = r'$\log_{10}(T_{\rm EW}\;[\rm{K}])$',
-                          value = value)
+                          value = values.get('elsewhere_temperature', None))
         else: # let the custom subclass handle definitions; ignore bounds
             T = None
 
@@ -239,3 +243,5 @@ class Elsewhere(ParameterSubspace):
             raise IntegrationError('Fatal numerical error during elsewhere integration.')
 
         return out[1]
+
+Elsewhere._update_doc()
