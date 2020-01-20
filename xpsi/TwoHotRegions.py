@@ -33,7 +33,7 @@ class TwoHotRegions(HotRegion):
 
     """
     def __init__(self, *args, **kwargs):
-        # force primary because secondary phase  handled in subclass methods
+        # force primary because secondary phase handled in subclass methods
         _ = kwargs.pop('is_secondary', None)
         super(TwoHotRegions, self).__init__(is_secondary = False,
                                             *args, **kwargs)

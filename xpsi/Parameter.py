@@ -170,11 +170,13 @@ class Parameter(object):
                 raise TypeError('It is recommended to subclass the prototype '
                                 'abstract base class ``Derive``.')
             self.evaluate = MethodType(value, self, Parameter)
+            self.derived = True
         else:
             self.value = value
+            self.derived = False
         self.permit_prepend = permit_prepend
 
-        if self.fixed: # fixed can also encapsulates derived variables
+        if self.fixed: # fixed can also encapsulate derived variables
             if callable(value):
                 end = 'that is derived from ulterior variables'
             else:
@@ -430,7 +432,9 @@ class Parameter(object):
     @property
     def needs_update(self):
         """ Do cached dependencies need to be updated? """
-        if self.fixed:
+        if self.derived:
+            return True # assume ulterior variables have changed
+        elif self.fixed:
             return False
 
         try:

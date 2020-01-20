@@ -254,7 +254,7 @@ class ParameterSubspace(object):
     @property
     def needs_update(self):
         """ Do cached dependencies need to be updated? """
-        for param in self:
+        for param in self.params:
             if param.needs_update:
                 return True
 
