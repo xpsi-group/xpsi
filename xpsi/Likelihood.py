@@ -233,6 +233,7 @@ class Likelihood(ParameterSubspace):
                     print('Warning: Elsewhere.RayError raised.')
 
                 print('Parameter vector: ', super(Likelihood,self).__call__())
+
                 return self.random_near_llzero
 
             for photosphere, pulse in zip(self._star.photospheres, self._pulses):

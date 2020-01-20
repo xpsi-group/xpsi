@@ -18,6 +18,15 @@ and this project adheres to
 ### Removed
 
 
+## [v0.3.3] - 2020-01-20
+
+### Fixed
+
+* At several places in the `Likelihood` class, calls were place to `self`,
+    forgetting that `Likelihood` overwrites `ParameterSubspace.__call__`.
+    Now calls are `super(Likelihood, self).__call__()` to obtain the current
+    parameter vector.
+
 ## [v0.3.2] - 2020-01-16
 
 ### Summary
