@@ -18,6 +18,34 @@ and this project adheres to
 ### Removed
 
 
+## [v0.3.4] - 2020-01-20
+
+### Summary
+
+* A few hotfixes and backwards compatible improvements.
+
+* Various docstring/comment/doc edits.
+
+* Update docs example model to use v0.3.4 API.
+
+### Fixed
+
+* Ensure consistency between input parameter `bounds` and `values` by
+    always requiring dictionaries. Fix applies to `Elsewhere` and 
+    `Photosphere`. Courtesy Sebastien Guillot.
+
+* Gravitational mass doc typo fix.
+
+### Changed
+
+* Add input argument checks to `Likelihood.check` method.
+
+* Add default `hypercube=None` to `Prior.inverse_sample_and_transform method.`
+
+* If derived parameters found in subspace, assume an update is needed because
+    cache mechanism not in place. (WIP.)
+
+
 ## [v0.3.3] - 2020-01-20
 
 ### Fixed
