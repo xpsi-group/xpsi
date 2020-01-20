@@ -160,7 +160,7 @@ class ParameterSubspace(object):
 
     @property
     def vector(self):
-        """ Get all variable values (free parameters and derived). """
+        """ Get all variable values (free parameters and fixed/derived). """
         return [p.evaluate(self) for p in self._params]
 
     def __getitem__(self, key):

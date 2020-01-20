@@ -365,8 +365,8 @@ class Parameter(object):
     def value(self, value):
         try:
             if not self.strict_bounds[0] <= float(value) <= self.strict_bounds[1]:
-                # handle this exception if sampling software can make
-                # proposals outside of strict bounds
+                # handle this exception externally if sampling software can
+                # make proposals outside of strict bounds
                 raise StrictBoundsError('Value is not within the strict bounds.')
         except TypeError:
             if self._fixed:
