@@ -27,7 +27,7 @@ the repository.
 .. note::
 
     The script and modules below are being updated to use
-    the current API.
+    the current API (``v0.3.2``).
 
 Main
 ^^^^
@@ -49,29 +49,31 @@ Main
     from CustomInstrument import CustomInstrument
     from CustomInterstellar import CustomInterstellar
     from CustomPulse import CustomPulse
-    from CustomSpacetime import CustomSpacetime
     from CustomPrior import CustomPrior
     from CustomPhotosphere import CustomPhotosphere
 
+    from xpsi.global_imports import _c, _G, _M_s, _dpr, gravradius
+
     data = CustomData.from_SWG('data/NICER_J0030_PaulRay_fixed_evt_25to299__preprocessed.txt', 1936864.0)
 
-    NICER = CustomInstrument.from_SWG(num_params=3,
-                        bounds=[(0.5,1.5),(0.0,1.0),(0.5,1.5)],
-                        ARF = 'model_data/ni_xrcall_onaxis_v1.02_arf.txt',
-                        RMF = 'model_data/nicer_upd_d49_matrix.txt',
-                        ratio = 'model_data/crab_ratio_SA80_d49.txt',
-                        max_input=700,
-                        min_input=0,
-                        chan_edges = 'model_data/nicer_upd_energy_bounds.txt')
+    # bounds on instrument model parameters
+    bounds = dict(alpha = (0.5,1.5),
+                  beta = (0.0,1.0),
+                  gamma = (0.5,1.5))
+
+    NICER = CustomInstrument.from_SWG(bounds = bounds,
+                                      values = {},
+                                      ARF = 'model_data/ni_xrcall_onaxis_v1.02_arf.txt',
+                                      RMF = 'model_data/nicer_upd_d49_matrix.txt',
+                                      ratio = 'model_data/crab_ratio_SA80_d49.txt', 
+                                      max_input=700,
+                                      min_input=0,
+                                      channel_edges = 'model_data/nicer_upd_energy_bounds.txt')
 
     interstellar = CustomInterstellar.from_SWG('model_data/interstellar_phot_frac.txt',
-                                               num_params = 1,
-                                               bounds = [(0.0, 5.0)])
+                                           bounds = dict(column_density = (0.0,5.0)))
 
-    pulse = CustomPulse(tag = 'all',
-                        num_params = 2,
-                        bounds = [(0.35, 0.55), (-0.25,0.75)],
-                        data = data,
+    pulse = CustomPulse(data = data,
                         instrument = NICER,
                         interstellar = interstellar,
                         energies_per_interval = 0.25,
@@ -85,103 +87,77 @@ Main
                         epsilon = 1.0e-3,
                         sigmas = 10.0)
 
-    from xpsi.global_imports import _c, _G, _M_s, _dpr, gravradius
+    spacetime = xpsi.Spacetime.fixed_spin(1.0/(4.87e-3))
 
-    bounds = [(0.235, 0.415),
-              (1.0, 3.0),
-              (3.0 * gravradius(1.0), 16.0),
-              (0.001, math.pi/2.0)]
+    bounds = dict(super_colatitude = (0.001, math.pi - 0.001),
+                  super_radius = (0.001, math.pi/2.0 - 0.001),
+                  phase_shift = (0.0, 0.2), # defined relative to 0.35 cycles
+                  super_temperature = (5.1, 6.8))
 
-    spacetime = CustomSpacetime(num_params = 4, bounds = bounds, S = 1.0/(4.87e-3))
+    bounds = [(0.35, 0.55), (-0.25,0.75)],
 
-    bounds = [(0.001, math.pi - 0.001),
-              (0.001, math.pi/2.0 - 0.001),
-              (5.1, 6.8)]
-
-    primary = xpsi.HotRegion(num_params=3, bounds=bounds,
+    primary = xpsi.HotRegion(bounds=bounds,
+                                values={},
                                 symmetry=True,
-                                hole=False,
+                                omit=False,
                                 cede=False,
                                 concentric=False,
                                 sqrt_num_cells=24,
                                 min_sqrt_num_cells=10,
                                 max_sqrt_num_cells=64,
                                 do_fast=False,
-                                fast_sqrt_num_cells=8,
-                                fast_min_sqrt_num_cells=8,
-                                fast_max_sqrt_num_cells=16,
-                                fast_num_leaves=32,
-                                fast_num_rays=100,
                                 num_leaves=80,
-                                num_rays=200)
+                                num_rays=200,
+                                is_secondary=False,
+                                prefix='p')
 
-    bounds = [(0.001, math.pi - 0.001),
-              (0.001, math.pi/2.0 - 0.001),
-              (0.001, math.pi - 0.001),
-              (0.0, 2.0),
-              (0.0, 2.0*math.pi),
-              (5.1, 6.8)]
+    # we transform to these geometric parameters, so see prior instead
+    # for inverse sampling setup
+    bounds = dict(super_colatitude = (None, None), # see prior
+                    super_radius = (None, None), # see prior
+                    phase_shift = (-0.5, 0.5),
+                    super_temperature = (5.1, 6.8),
+                    omit_colatitude = (None, None), # see prior
+                    omit_radius = (None, None), # see prior
+                    omit_azimuth = (None, None)) # see prior
 
-    secondary = xpsi.HotRegion(num_params=6, bounds=bounds,
-                                  symmetry=True,
-                                  hole=True,
-                                  cede=False,
-                                  concentric=False,
-                                  sqrt_num_cells=24,
-                                  min_sqrt_num_cells=10,
-                                  max_sqrt_num_cells=64,
-                                  do_fast=False,
-                                  fast_sqrt_num_cells=8,
-                                  fast_min_sqrt_num_cells=8,
-                                  fast_max_sqrt_num_cells=16,
-                                  fast_num_leaves=32,
-                                  fast_num_rays=100,
-                                  num_leaves=80,
-                                  num_rays=200,
-                                  is_secondary=True)
+    # overlap of an omission region and
+    # and a radiating super region
+    secondary = xpsi.HotRegion(bounds=bounds,
+                                values={},
+                                symmetry=True,
+                                omit=True,
+                                cede=False,
+                                concentric=False,
+                                sqrt_num_cells=24,
+                                min_sqrt_num_cells=10,
+                                max_sqrt_num_cells=64,
+                                num_leaves=80,
+                                num_rays=200,
+                                do_fast=False,
+                                is_secondary=True,
+                                prefix='s')
 
-    from xpsi import TwoHotRegions
+    from xpsi import HotRegions
 
-    hot = TwoHotRegions((primary, secondary))
+    hot = HotRegions((primary, secondary))
 
-    photosphere = CustomPhotosphere(num_params = 0, bounds = [],
-                                    tag = 'all', hot = hot, elsewhere = None)
+    photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
+                                    values=dict(mode_frequency = spacetime['frequency']))
 
     photosphere.hot_atmosphere = 'model_data/nsx_H_v171019.out'
 
     star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
 
-    likelihood = xpsi.Likelihood(star = star, pulses = pulse, threads=1)
+    likelihood = xpsi.Likelihood(star = star, pulses = pulse, threads=1,
+                                 externally_updated = True)
 
-    prior = CustomPrior(bounds=likelihood.bounds, spacetime=spacetime)
+    prior = CustomPrior()
 
     likelihood.prior = prior
 
-    import time
-
-    p = [0.328978844399083370E+00,
-            0.140337033600940120E+01,
-            0.133784624585842025E+02,
-            0.100434973113637094E+01,
-            0.219377527309307840E+01,
-            0.791608842011687908E-01,
-            0.610655622382022134E+01,
-            0.271629852479304956E+01,
-            0.322342254787806259E+00,
-            0.274633014642517770E+01,
-            0.284416965175110226E+00,
-            -0.483260905056053860E-01,
-            0.611730491798804454E+01,
-            0.460499862995095377E+00,
-            0.103356827187160971E+01,
-            0.222710719836020192E-01,
-            0.874856631973894849E+00,
-            0.454255509351488285E+00,
-            0.476829413031657379E+00]
-
-    t = time.time()
-    ll = likelihood(p) # check ll = -36316.354394388654
-    print('p: ', ll, time.time() - t)
+    wrapped_params = [0] * len(likelihood)
+    wrapped_params[likelihood.index('s__phase_shift')] = 1
 
     runtime_params = {'resume': False,
                       'importance_nested_sampling': False,
@@ -192,12 +168,39 @@ Main
                       'n_live_points': 1000,
                       'sampling_efficiency': 0.3,
                       'const_efficiency_mode': False,
-                      'wrapped_params': [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+                      'wrapped_params': wrapped_params,
                       'evidence_tolerance': 0.1,
                       'max_iter': -1,
                       'verbose': True}
 
-    xpsi.Sample.MultiNest(likelihood, prior, **runtime_params)
+    # see CustomPrior docstring for parameter names
+    p = [0.140337033600940120E+01,
+            0.133784624585842025E+02,
+            0.328978844399083370E+00,
+            0.100434973113637094E+01,
+            0.454255509351488285E+00,
+            0.219377527309307840E+01,
+            0.791608842011687908E-01,
+            0.610655622382022134E+01,
+            0.476829413031657379E+00,
+            0.271629852479304956E+01,
+            0.322342254787806259E+00,
+            0.274633014642517770E+01,
+            0.284416965175110226E+00,
+            -0.483260905056053860E-01,
+            0.611730491798804454E+01,
+            0.460499862995095377E+00,
+            0.103356827187160971E+01,
+            0.222710719836020192E-01,
+            0.874856631973894849E+00]
+
+    # let's require that checks pass before starting to sample
+    check_kwargs = dict(hypercube_points = None,
+                        physical_points = p,
+                        loglikelihood_call_vals = [-36316.35439439],
+                        rtol_loglike = 1.0e-8)
+
+    xpsi.Sample.nested(likelihood, prior, check_kwargs, **runtime_params)
 
 
 We proceed to show the custom modules required for the model.
@@ -256,40 +259,6 @@ Photosphere
                             buf[bufdex] = reorder_buf[i,j,k,l]; bufdex += 1
 
             self._hot_atmosphere = (logT, logg, mu, logE, buf)
-
-Spacetime
-^^^^^^^^^
-
-.. code-block:: python
-
-    """ CustomSpacetime.py """
-    import numpy as np
-    import math
-
-    import xpsi
-
-    class CustomSpacetime(xpsi.Spacetime):
-        """ A custom spacetime object.
-
-        The coordinate rotation frequency of the star is fixed.
-
-        """
-
-        def __init__(self, num_params, bounds, S):
-            """
-            :param int num_params: The number of spacetime parameters.
-
-            :param float S: The coordinate rotation frequency (Hz).
-
-            """
-            super(CustomSpacetime, self).__init__(num_params, bounds)
-
-            try:
-                self._S = float(S)
-            except TypeError:
-                raise TypeError('Coordinate spin frequency must be a ``float``.')
-            else:
-                self._Omega = 2.0 * math.pi * S
 
 Data
 ^^^^
@@ -399,102 +368,127 @@ Instrument
     import math
 
     import xpsi
+    from xpsi import Parameter
 
     class CustomInstrument(xpsi.Instrument):
-        """ Methods and attributes specific to the NICER instrument.
+    """ Methods and attributes specific to the NICER instrument.
+
+    Currently tailored to the NICER light-curve SWG model specification.
+
+    """
+    def __init__(self, ratio, channels, channel_edges, *args):
+        """ Set channel edges attribute. """
+        super(CustomInstrument, self).__init__(*args)
+
+        self._ratio = ratio
+        self._channels = channels
+        self._channel_edges = channel_edges
+
+        self._modified = self.matrix.copy()
+        for i in range(self._modified.shape[0]):
+            self._modified[i,:] *= self._ratio[i]
+
+    @property
+    def channels(self):
+        return self._channels
+
+    @property
+    def channel_edges(self):
+        """ Get the channel edges. """
+        return self._channel_edges
+
+    def construct_matrix(self):
+        """ Implement response matrix parameterisation. """
+        matrix = self['alpha']*self['beta']*self._modified
+        matrix += (1.0 - self['beta'])*self['gamma']*self.matrix
+
+        matrix[matrix < 0.0] = 0.0
+
+        return matrix
+
+    def __call__(self, signal, *args):
+        """ Overwrite. """
+
+        matrix = self.construct_matrix()
+
+        self._cached_signal = np.dot(matrix, signal)
+
+        return self._cached_signal
+
+    @classmethod
+    def from_SWG(cls,
+                 bounds, values,
+                 ARF, RMF, ratio,
+                 max_input, min_input=0,
+                 channel_edges=None):
+        """ Constructor which converts files into :class:`numpy.ndarray`s.
+
+        :param str ARF: Path to ARF which is compatible with
+                                :func:`numpy.loadtxt`.
+
+        :param str RMF: Path to RMF which is compatible with
+                                :func:`numpy.loadtxt`.
+
+        :param str ratio: Path to channel-by-channel ratio file.
+
+        :param str channel_edges: Optional path to edges which is compatible with
+                                :func:`numpy.loadtxt`.
 
         """
-        def __init__(self, ratio, PI_channels, chan_edges, *args):
-            """ Set channel edges attribute. """
-            super(CustomInstrument, self).__init__(*args)
-            self._ratio = ratio
-            self._PI_channels = PI_channels
-            self._chan_edges = chan_edges
+        ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
+        RMF = np.loadtxt(RMF, dtype=np.double, skiprows=3, usecols=-1)
+        ratio = np.loadtxt(ratio, dtype=np.double, skiprows=3)[:,2]
 
-            self._modified = self.matrix.copy()
-            for i in range(self._modified.shape[0]):
-                self._modified[i,:] *= self._ratio[i]
+        if channel_edges:
+            channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)
 
-        @property
-        def channels(self):
-            return self._PI_channels
+        matrix = np.zeros((1501,3980))
 
-        @property
-        def channel_edges(self):
-            """ Get the channel edges. """
-            return self._chan_edges
+        for i in range(3980):
+            matrix[:,i] = RMF[i*1501:(i+1)*1501]
 
-        def _construct_matrix(self, p):
-            """ Implement response matrix parameterisation. """
-            matrix = p[0]*p[1]*self._modified + (1.0 - p[1])*p[2]*self.matrix
+        if min_input != 0:
+            min_input = int(min_input)
 
-            matrix[matrix < 0.0] = 0.0
+        max_input = int(max_input)
 
-            return matrix
+        edges = np.zeros(ARF[min_input:max_input,3].shape[0]+1, dtype=np.double)
 
-        def __call__(self, p, signal, *args):
-            """ Overwrite. """
+        edges[0] = ARF[min_input,1]; edges[1:] = ARF[min_input:max_input,2]
 
-            matrix = self._construct_matrix(p)
+        RSP = np.ascontiguousarray(np.zeros(matrix[25:300,min_input:max_input].shape), dtype=np.double)
 
-            self._folded_signal = np.dot(matrix, signal)
+        for i in range(RSP.shape[0]):
+            RSP[i,:] = matrix[i+25,min_input:max_input] * ARF[min_input:max_input,3] * 49.0/52.0
 
-            return self._folded_signal
+        channels = np.arange(25, 300)
 
-        @classmethod
-        def from_SWG(cls, num_params, bounds,
-                     ARF, RMF, ratio, max_input, min_input=0, chan_edges=None,
-                     offset_correction=None):
-            """ Constructor which converts files into :class:`numpy.ndarray`s.
+        ratios = ratio[:275]
+        ratios[:10] = ratio[10]
 
-            :param str ARF: Path to ARF which is compatible with
-                                    :func:`numpy.loadtxt`.
+        alpha = Parameter('alpha',
+                          strict_bounds = (0.0,2.0),
+                          bounds = bounds.get('alpha', None),
+                          doc = 'alpha',
+                          symbol = r'$\alpha$',
+                          value = values.get('alpha', None))
 
-            :param str RMF: Path to RMF which is compatible with
-                                    :func:`numpy.loadtxt`.
+        beta = Parameter('beta',
+                          strict_bounds = (0.0,1.0),
+                          bounds = bounds.get('beta', None),
+                          doc = 'beta',
+                          symbol = r'$\beta$',
+                          value = values.get('beta', None))
 
-            :param str ratio: Path to channel-by-channel ratio file.
+        gamma = Parameter('gamma',
+                          strict_bounds = (0.0,2.0),
+                          bounds = bounds.get('gamma', None),
+                          doc = 'gamma',
+                          symbol = r'$\gamma$',
+                          value = values.get('gamma', None))
 
-            :param str chan_edges: Optional path to edges which is compatible with
-                                    :func:`numpy.loadtxt`.
-
-            """
-            try:
-                ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
-                RMF = np.loadtxt(RMF, dtype=np.double, skiprows=3, usecols=-1)
-                ratio = np.loadtxt(ratio, dtype=np.double, skiprows=3)[:,2]
-                if chan_edges:
-                    chan_edges = np.loadtxt(chan_edges, dtype=np.double, skiprows=3)
-            except (OSError, IOError, TypeError, ValueError):
-                print('A file could not be loaded.')
-                raise
-
-            matrix = np.zeros((1501,3980))
-
-            for i in range(3980):
-                matrix[:,i] = RMF[i*1501:(i+1)*1501]
-
-            if min_input != 0:
-                min_input = int(min_input)
-
-            max_input = int(max_input)
-
-            edges = np.zeros(ARF[min_input:max_input,3].shape[0]+1, dtype=np.double)
-
-            edges[0] = ARF[min_input,1]; edges[1:] = ARF[min_input:max_input,2]
-
-            RSP = np.ascontiguousarray(np.zeros(matrix[25:300,min_input:max_input].shape), dtype=np.double)
-
-            for i in range(RSP.shape[0]):
-                RSP[i,:] = matrix[i+25,min_input:max_input] * ARF[min_input:max_input,3] * 49.0/52.0
-
-            PI_channels = np.arange(25, 300)
-
-            ratios = ratio[:275]
-            ratios[:10] = ratio[10]
-
-            return cls(ratios, PI_channels, chan_edges[25:301,-2],
-                       num_params, bounds, RSP, edges)
+        return cls(ratios, channels, channel_edges,
+                   RSP, edges, alpha, beta, gamma)
 
 Interstellar
 ^^^^^^^^^^^^
@@ -515,9 +509,7 @@ Interstellar
     class CustomInterstellar(xpsi.Interstellar):
         """ Apply interstellar absorption. """
 
-        def __init__(self, absorption, **kwargs):
-
-            super(CustomInterstellar, self).__init__(**kwargs)
+        def __init__(self, absorption, bounds, values = {}):
 
             self._supplied = absorption[0:351,:]
 
@@ -532,14 +524,23 @@ Interstellar
                 self._energies[2*i] = self._supplied[i,0] + 0.25*E_diff
                 self._energies[2*i+1] = self._supplied[i,0] + 0.75*E_diff
 
+            N_H = Parameter('column_density',
+                            strict_bounds = (0.0,10.0),
+                            bounds = bounds.get('column_density', None),
+                            doc = 'Units of 10^20 cm^-2.',
+                            symbol = r'$N_{\rm H}$',
+                            value = values.get('column_density', None))
+
+            super(CustomInterstellar, self).__init__(N_H)
+
         @property
         def absorption(self):
             return self._absorption
 
-        def __call__(self, p, channel_range, pulse):
+        def __call__(self, energies, pulse):
 
             for i in range(pulse.shape[1]):
-                pulse[:,i] *= self._absorption**(p[0]/0.4)
+                pulse[:,i] *= self._absorption**(self['column_density']/0.4)
 
         def _interpolate(self, E):
             try:
@@ -551,11 +552,11 @@ Interstellar
 
             return self._interpolator(E)
 
-        def interp_and_absorb(self, p, E, signal):
+        def interp_and_absorb(self, E, signal):
             """ Interpolate the absorption coefficients and apply. """
 
             for i in range(signal.shape[1]):
-                signal[:,i] *= self._interpolate(E)**(p[0]/0.4)
+                signal[:,i] *= self._interpolate(E)**(self['column_density']/0.4)
 
         @classmethod
         def from_SWG(cls, path, **kwargs):
@@ -566,7 +567,6 @@ Interstellar
             absorption = temp[:,::2]
 
             return cls(absorption, **kwargs)
-
 
 Pulse
 ^^^^^
@@ -584,9 +584,6 @@ Pulse
 
     from xpsi.likelihoods.default_background_marginalisation import eval_loglike_phaseIntervals_maximise as eval_loglike_maximise
     from xpsi.likelihoods.default_background_marginalisation import precomputation
-    from xpsi.tools import phase_interpolator
-    from xpsi.tools.phase_integrator import phase_integrator
-    from xpsi.tools.synthesise import synthesise
     from xpsi.global_imports import _kpc
 
     class CustomPulse(xpsi.Pulse):
@@ -617,16 +614,8 @@ Pulse
                 self._epsilon = epsilon
                 self._sigmas = sigmas
 
-        def __call__(self, p, *args, **kwargs):
-            """
-
-            Parameter vector:
-
-            * p[0] = phase shift primary (alias for initial azimuth/phase of photosphere)
-            * p[1] = phase shift secondary
-
-            """
-            self.shift = np.array(p)
+        def __call__(self, phase_shifts, *args, **kwargs):
+            self.shift = np.array(phase_shifts)
 
             self.loglikelihood, self.expected_counts, self.background_signal = \
                     eval_loglike_maximise(self._data.exposure_time,
@@ -642,11 +631,6 @@ Pulse
                                           self._epsilon,
                                           self._sigmas,
                                           kwargs.get('llzero'))
-
-        __call__.__doc__ = xpsi.Pulse.__call__.__doc__ + __call__.__doc__
-
-        def synthesise(self):
-            """" Overwrite. """
 
 Prior
 ^^^^^
@@ -669,117 +653,113 @@ Prior
 
     from scipy.interpolate import Akima1DInterpolator
 
-    a_f = 0.0
-    b_f = 2.0
-    a_xi = 0.001
-    b_xi = math.pi/2.0 - a_xi
-
     class CustomPrior(xpsi.Prior):
         """ A custom (joint) prior distribution.
 
         Source: PSR J0030+0451
         Model variant: ST+PST
 
-        Parameter vector:
+        Parameter vector: (print the likelihood object)
 
-        * p[0] = distance (kpc)
-        * p[1] = (rotationally deformed) gravitational mass (solar masses)
-        * p[2] = coordinate equatorial radius (km)
+        * p[0] = (rotationally deformed) gravitational mass (solar masses)
+        * p[1] = coordinate equatorial radius (km)
+        * p[2] = distance (kpc)
         * p[3] = inclination of Earth to rotational axis (radians)
-        * p[4] = primary centre colatitude (radians)
-        * p[5] = primary angular radius (radians)
-        * p[6] = primary log10(comoving NSX FIH effective temperature [K])
-        * p[7] = secondary centre colatitude (radians)
-        * p[8] = secondary angular radius (radians)
-        * p[9] = secondary hole colatitude (radians)
-        * p[10] = secondary hole angular radius (radians)
-        * p[11] = secondary hole azimuth (radians); periodic
-        * p[12] = secondary log10(comoving NSX FIH effective temperature [K])
-        * p[13] = hydrogen column density (10^20 cm^-2)
-        * p[14] = instrument parameter a
-        * p[15] = instrument parameter b
-        * p[16] = instrument parameter c
-        * p[17] = primary cap phase shift (cycles); (alias for initial azimuth, periodic)
-        * p[18] = secondary cap phase shift (cycles)
-
-        Note that the unit hypercube to physical transformation is constructed
-        for the phases by inverse sampling a flat prior on [-0.25,0.75].
-        There is then no need for a periodic boundary and we need to worry about
-        accuracy at the boundary.
+        * p[4] = primary cap phase shift (cycles); (alias for initial azimuth, periodic)
+        * p[5] = primary centre colatitude (radians)
+        * p[6] = primary angular radius (radians)
+        * p[7] = primary log10(comoving NSX FIH effective temperature [K])
+        * p[8] = secondary cap phase shift (cycles)
+        * p[9] = secondary centre colatitude (radians)
+        * p[10] = secondary angular radius (radians)
+        * p[11] = secondary omit colatitude (radians)
+        * p[12] = secondary omit angular radius (radians)
+        * p[13] = secondary omit azimuth (radians); periodic
+        * p[14] = secondary log10(comoving NSX FIH effective temperature [K])
+        * p[15] = hydrogen column density (10^20 cm^-2)
+        * p[16] = instrument parameter alpha
+        * p[17] = instrument parameter beta
+        * p[18] = instrument parameter gamma
 
         """
-        def __init__(self, bounds, spacetime):
-            # Execute abstract parent initialiser
-            super(CustomPrior, self).__init__(bounds)
 
-            assert isinstance(spacetime, xpsi.Spacetime),\
-                    'Invalid type for ambient spacetime object.'
+        a_f = 0.0
+        b_f = 2.0
+        a_xi = 0.001
+        b_xi = math.pi/2.0 - a_xi
 
-            self._spacetime = spacetime
+        vals = np.linspace(0.0, b_xi, 1000)
 
-            vals = np.linspace(0.0, b_xi, 1000)
+        interpolator = Akima1DInterpolator(self._vector_super_radius_mass(vals), vals)
+        interpolator.extrapolate = True
 
-            self._interpolator = Akima1DInterpolator(self._vector_super_radius_mass(vals), vals)
-            self._interpolator.extrapolate = True
+        def __init__(self):
+            """ Nothing to be done. """
+            pass
 
-        def __call__(self, p):
-            """ Evaluate distribution at :obj:`p`.
+        def __call__(self, p = None):
+            """ Evaluate distribution at ``p``.
 
-            :param list p: Model parameters values.
+            :param list p: Model parameter values.
 
-            :return: Logarithm of the distribution evaluated at :obj:`p`.
+            :return: Logarithm of the distribution evaluated at ``p``.
 
             """
-            i = self._spacetime.num_params
-            self._spacetime.update(*p[:i])
+            temp = super(CustomPrior, self).__call__(p)
+            if not np.isfinite(temp):
+                return temp
 
-            if not self._spacetime.R <= 16.0*_km:
+            # based on contemporary EOS theory
+            if not self.parameters['radius'] <= 16.0:
                 return -np.inf
 
-            if not 1.5 < self._spacetime.R_r_s:
+            ref = self.parameters.star.spacetime # shortcut
+
+            # polar radius at photon sphere for ~static star (static ambient spacetime)
+            #if R_p < 1.5 / ref.R_r_s:
+            #    return -np.inf
+
+            # limit polar radius to try to exclude deflections >= \pi radians
+            # due to oblateness this does not quite eliminate all configurations
+            # with deflections >= \pi radians
+            R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
+            if R_p < 1.76 / ref.R_r_s:
                 return -np.inf
 
-            epsilon = self._spacetime.epsilon
-            zeta = self._spacetime.zeta
-            mu = math.sqrt(-1.0 / (3.0 * epsilon * (-0.788 + 1.030 * zeta)))
+            mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
 
             # 2-surface cross-section have a single maximum in |z|
-            # i.e., an elliptical surface
+            # i.e., an elliptical surface; minor effect on support, if any,
+            # for high spin frequenies
             if mu < 1.0:
                 return -np.inf
 
-            # polar radius causality for ~static star (static ambient spacetime)
-            R_p = 1.0 + epsilon * (-0.788 + 1.030 * zeta)
+            ref = self.parameters # redefine shortcut
 
-            if R_p < 1.5 / self._spacetime.R_r_s:
-                return -np.inf
+            phi = (0.5 + ref['s__phase_shift']) * _2pi
+            phi -= ref['s__omit_azimuth']
+            phi = ref['p__phase_shift'] * _2pi - phi
+
+            ang_sep = xpsi.HotRegion.psi(ref['s__super_colatitude'],
+                                         phi,
+                                         ref['p__super_colatitude'])
 
             # hot regions cannot overlap
-            theta_p = p[4]
-            phi_s = (0.5 + p[18]) * _2pi - p[11]
-            phi = p[17] * _2pi - phi_s # include ceding azimuth
-            rho_p = p[5]
-
-            theta_s = p[7]
-            rho_s = p[8]
-
-            ang_sep = xpsi.HotRegion._psi(theta_s, phi, theta_p)
-
-            if ang_sep < rho_p + rho_s:
+            if ang_sep < ref['p__super_radius'] + ref['s__super_radius']:
                 return -np.inf
 
             return 0.0
 
         @staticmethod
         def _I(x):
-            return x * np.log(b_xi/a_xi)
+            return x * np.log(self.b_xi/self.a_xi)
 
         @staticmethod
         def _II(x):
-            return 2.0*(x - a_xi) - x*np.log(x/b_xi)
+            return 2.0*(x - self.a_xi) - x*np.log(x/self.b_xi)
 
         def _scalar_super_radius_mass(self, x):
-            if x >= a_xi:
+            if x >= self.a_xi:
                 mass = self._II(x)
             else:
                 mass = self._I(x)
@@ -792,21 +772,21 @@ Prior
             for i, _ in enumerate(x):
                 masses[i] = self._scalar_super_radius_mass(_)
 
-            masses /= (b_f - a_f)
-            masses /= (b_xi - a_xi)
+            masses /= (self.b_f - self.a_f)
+            masses /= (self.b_xi - self.a_xi)
 
             return masses
 
         @staticmethod
         def _inverse_sample_cede_radius(x, psi):
-            if psi < a_xi:
-                return a_xi*np.exp(x * np.log(b_xi/a_xi))
-            elif psi >= a_xi and x <= 1.0/(1.0 + np.log(b_xi/psi)):
-                return x*psi*(1.0 + np.log(b_xi/psi))
+            if psi < self.a_xi:
+                return self.a_xi*np.exp(x * np.log(self.b_xi/self.a_xi))
+            elif psi >= self.a_xi and x <= 1.0/(1.0 + np.log(self.b_xi/psi)):
+                return x*psi*(1.0 + np.log(self.b_xi/psi))
             else:
-                return psi*np.exp(x*(1.0 + np.log(b_xi/psi)) - 1.0)
+                return psi*np.exp(x*(1.0 + np.log(self.b_xi/psi)) - 1.0)
 
-        def inverse_sample(self, hypercube):
+        def inverse_sample(self, hypercube = None):
             """ Draw sample uniformly from the distribution via inverse sampling.
 
             :param hypercube: A pseudorandom point in an n-dimensional hypercube.
@@ -814,41 +794,67 @@ Prior
             :return: A parameter ``list``.
 
             """
-            p = super(CustomPrior, self).inverse_sample(hypercube)
+            to_cache = self.parameters.vector
 
-            # distance
-            p[0] = truncnorm.ppf(hypercube[0], -10.0, 10.0, loc=0.325, scale=0.009)
+            super(CustomPrior, self).inverse_sample(hypercube)
 
-            # instrument parameter a
-            p[-5] = truncnorm.ppf(hypercube[-5], -5.0, 5.0, loc=1.0, scale=0.1)
+            ref = self.parameters # redefine shortcut
 
-            # instrument parameter c
-            p[-3] = truncnorm.ppf(hypercube[-3], -5.0, 5.0, loc=1.0, scale=0.1)
+            idx = ref.index('distance')
+            ref['distance'] = truncnorm.ppf(hypercube[idx],
+                                            -10.0, 10.0,
+                                            loc=0.325, scale=0.009)
 
-            # hole radius
-            p[10] = float(self._interpolator(hypercube[10]))
+            idx = ref.index('p__phase_shift')
+            ref['p_phase_shift'] = 0.35 + 0.2 * hypercube[idx]
+            if ref['p__phase_shift'] > 0.5:
+                ref['p__phase_shift'] -= 1.0
 
-            # cede radius
-            p[8] = self._inverse_sample_cede_radius(hypercube[8], p[10])
+            idx = ref.index('s__phase_shift')
+            ref['s_phase_shift'] = -0.25 + hypercube[idx]
+            if ref['s__phase_shift'] > 0.5:
+                ref['s__phase_shift'] -= 1.0
 
-            if p[10] <= p[8]:
-                p[7] = hypercube[7] * (p[8] + p[10])
+            idx = ref.index('s__omit_radius')
+            ref['s__omit_radius'] = float(self.interpolator(hypercube[idx]))
+
+            idx = ref.index('s__super_radius')
+            ref['s__super_radius'] = self._inverse_sample_cede_radius(hypercube[idx],
+                                                                      ref['s__omit_radius'])
+
+            idx = ref.index('s__super_colatitude')
+            if ref['s__omit_radius'] <= ref['s__super_radius']:
+                # temp var
+                t = hypercube[idx] * (ref['s__super_radius'] + ref['s__omit_radius'])
             else:
-                p[7] = p[10] - p[8] + 2.0*hypercube[7]*p[8]
+                t = ref['s__omit_radius'] - ref['s__super_radius']
+                t += 2.0 * hypercube[idx] * ref['s__super_radius']
 
-            p[7], p[11] = eval_cedeCentreCoords(p[9], p[7], p[11])
+            # function from mesh tools module
+            # in this case the ceding region is the "super" region, which
+            # cedes to the omission region
+            ref['s__super_colatitude'], ref['s__omit_azimuth'] = \
+                        eval_cedeCentreCoords(ref['s__omit_colatitude'], t, u)
 
-            p[11] *= -1.0
+            ref['s__omit_azimuth'] *= -1.0
 
-            if p[-2] > 0.5:
-                p[-2] -= 1.0
+            idx = ref.index('alpha')
+            ref['alpha'] = truncnorm.ppf(hypercube[idx],
+                                         -5.0, 5.0,
+                                         loc=1.0, scale=0.1)
 
-            if p[-1] > 0.5:
-                p[-1] -= 1.0
+            idx = ref.index('gamma')
+            ref['gamma'] = truncnorm.ppf(hypercube[idx],
+                                         -5.0, 5.0,
+                                         loc=1.0, scale=0.1)
 
-            return p
+            # restore proper cache
+            for parameter, cache in zip(self.parameters, to_cache):
+                parameter.cached = cache
 
-        def inverse_sample_and_transform(self, hypercube):
+            return self.parameters.vector # only free parameter values returned
+
+        def inverse_sample_and_transform(self, hypercube = None):
             """ A transformation for post-processing. """
 
             p = self.transform(self.inverse_sample(hypercube))
@@ -862,27 +868,27 @@ Prior
             if not isinstance(p, list):
                 p = list(p)
 
-            p += [gravradius(p[1]) / p[2]]
+            p += [gravradius(p[0]) / p[1]]
 
-            p += [p[8] - p[10]]
+            p += [p[10] - p[12]]
 
-            if p[18] > 0.0:
-                p += [p[18] - 1.0]
+            if p[8] > 0.0:
+                p += [p[8] - 1.0]
             else:
-                p += [p[18]]
+                p += [p[8]]
 
-            temp = eval_cedeCentreCoords(-1.0*p[9], p[7], -1.0*p[11])
+            temp = eval_cedeCentreCoords(-1.0*p[11], p[9], -1.0*p[13])
 
             azi = temp[1]
 
             if azi < 0.0:
                 azi += 2.0*math.pi
 
-            p += [p[10]/p[8] if p[10] <= p[8] else 2.0 - p[8]/p[10]] # f
+            p += [p[12]/p[10] if p[12] <= p[10] else 2.0 - p[10]/p[12]] # f
 
-            p += [p[8] if p[10] <= p[8] else p[10]] # xi
+            p += [p[10] if p[12] <= p[10] else p[12]] # xi
 
-            p += [temp[0]/(p[8] + p[10]) if p[10] <= p[8] else (temp[0] - p[10] + p[8])/(2.0*p[8])] # kappa
+            p += [temp[0]/(p[10] + p[12]) if p[12] <= p[10] else (temp[0] - p[12] + p[10])/(2.0*p[10])] # kappa
 
             p += [azi/math.pi]
 
