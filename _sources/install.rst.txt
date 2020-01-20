@@ -12,6 +12,12 @@ X-PSI was developed in Python 2.7, and has not yet been ported to Python 3.
 Fortunately, there are several ways to create a virtual environment with a
 different version of Python, without disrupting your Python ecosystem.
 
+Clone X-PSI:
+
+.. code-block:: bash
+
+    git clone https://github.com/ThomasEdwardRiley/xpsi.git <path/to/xpsi>
+
 Basic Conda environment
 -----------------------
 
@@ -287,15 +293,9 @@ The package will be installed in your Conda environment (if activated).
 X-PSI
 ^^^^^
 
-Clone X-PSI:
-
-.. code-block:: bash
-
-    git clone https://github.com/ThomasEdwardRiley/xpsi.git <path/to/xpsi>
-
 .. _OpenMP: http://www.openmp.org
 
-To build and install from the clone root, you require an
+To build and install from the X-PSI clone root, you require an
 `OpenMP`_-enabled C compiler (known compatibility with ``icc``, ``gcc``, and
 ``clang``):
 

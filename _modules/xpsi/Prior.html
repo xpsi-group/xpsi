@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Prior &mdash; xpsi 0.3.1 documentation</title>
+  <title>xpsi.Prior &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -257,7 +257,8 @@
         <span class="sd">&quot;&quot;&quot; Evaluate distribution at :obj:`p` and store it as a property.</span>
 
 <span class="sd">        :param list p:</span>
-<span class="sd">            Vector of model parameter values, but typically unused.</span>
+<span class="sd">            Vector of model parameter values, but typically unused. If you</span>
+<span class="sd">            use it, handle it in a custom implementation of this method.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
@@ -311,7 +312,7 @@
 
         <span class="k">return</span> <span class="n">p</span></div>
 
-<div class="viewcode-block" id="Prior.inverse_sample_and_transform"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.inverse_sample_and_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_sample_and_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span><span class="p">):</span>
+<div class="viewcode-block" id="Prior.inverse_sample_and_transform"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.inverse_sample_and_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_sample_and_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Inverse sample and then transform.</span>
 
 <span class="sd">        This method is useful for drawing from the prior when overplotting</span>

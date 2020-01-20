@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Photosphere &mdash; xpsi 0.3.1 documentation</title>
+  <title>xpsi.Photosphere &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -213,13 +213,21 @@
 <span class="sd">    :param obj elsewhere:</span>
 <span class="sd">        An instance of :class:`~.Elsewhere.Elsewhere` (or a derived class).</span>
 
-<span class="sd">    :param tuple bounds:</span>
+<span class="sd">    :param dict bounds:</span>
+<span class="sd">        Bounds are supplied for instantiation of a frequency parameter.</span>
+<span class="sd">        The parameter name ``&#39;mode_frequency&#39;`` must be a key in the</span>
+<span class="sd">        dictionary unless the parameter is *fixed* or *derived*. If a bound</span>
+<span class="sd">        is ``None`` that bound is set equal to a strict hard-coded bound.</span>
 <span class="sd">        If ``None``, lock the coordinate rotation frequency of a mode of</span>
 <span class="sd">        asymmetry in the photosphere to a fixed frequency, e.g., the stellar</span>
 <span class="sd">        rotation frequency. If bounds are passed, the frequency is interpreted</span>
 <span class="sd">        as a free parameter.</span>
 
-<span class="sd">    :param float value:</span>
+<span class="sd">    :param dict values:</span>
+<span class="sd">        Either the fixed value of the mode frequency, a callable if the</span>
+<span class="sd">        frequency is *derived*, or a value upon initialisation if the</span>
+<span class="sd">        frequency is free. The dictionary must have a key with name</span>
+<span class="sd">        ``&#39;mode_frequency&#39;`` if it is *fixed* or *derived*.</span>
 <span class="sd">        If the asymmetry is locked to the stellar spin, then you need to pass</span>
 <span class="sd">        the spin frequency. If fixed but different to the spin frequency, this</span>
 <span class="sd">        value needs to be passed instead. In the hot region base class this</span>
@@ -240,7 +248,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">hot</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bounds</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">values</span> <span class="o">=</span> <span class="p">{},</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -272,11 +280,12 @@
 <span class="s2">        Coordinate frequency of the mode of radiative asymmetry in the</span>
 <span class="s2">        photosphere that is assumed to generate the pulsed signal [Hz].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="n">value</span> <span class="o">*=</span> <span class="n">_2pi</span> <span class="c1"># need angular frequency</span>
 
         <span class="n">mode_frequency</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span>
                                    <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2000.0</span><span class="p">),</span>
-                                   <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">,</span>
+                                   <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                                    <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
                                    <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$f_{\rm mode}$&#39;</span><span class="p">,</span>
                                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">)</span>

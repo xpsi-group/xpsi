@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HotRegion &mdash; xpsi 0.3.1 documentation</title>
+  <title>HotRegion &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -221,7 +221,7 @@
 intense regions of the source photosphere.</p>
 <dl class="class">
 <dt id="xpsi.HotRegion.HotRegion">
-<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">HotRegion</code><span class="sig-paren">(</span><em>bounds</em>, <em>values</em>, <em>symmetry=True</em>, <em>omit=False</em>, <em>cede=False</em>, <em>concentric=False</em>, <em>sqrt_num_cells=32</em>, <em>min_sqrt_num_cells=10</em>, <em>max_sqrt_num_cells=80</em>, <em>num_rays=200</em>, <em>num_leaves=64</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>do_fast=False</em>, <em>fast_sqrt_num_cells=16</em>, <em>fast_min_sqrt_num_cells=4</em>, <em>fast_max_sqrt_num_cells=16</em>, <em>fast_num_rays=100</em>, <em>fast_num_leaves=32</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em>, <em>is_secondary=False</em>, <em>custom=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">HotRegion</code><span class="sig-paren">(</span><em>bounds</em>, <em>values</em>, <em>symmetry=True</em>, <em>omit=False</em>, <em>cede=False</em>, <em>concentric=False</em>, <em>sqrt_num_cells=32</em>, <em>min_sqrt_num_cells=10</em>, <em>max_sqrt_num_cells=80</em>, <em>num_rays=200</em>, <em>num_leaves=64</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>do_fast=False</em>, <em>fast_sqrt_num_cells=16</em>, <em>fast_min_sqrt_num_cells=4</em>, <em>fast_max_sqrt_num_cells=16</em>, <em>fast_num_rays=100</em>, <em>fast_num_leaves=32</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em>, <em>is_secondary=False</em>, <em>custom=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>A photospheric hot region that is contiguously radiating.</p>
 <p>Instances of this class can take the following forms:</p>
@@ -249,7 +249,7 @@ then simply-connected (i.e., does not have a hole).</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">concentric</span></code> setting defines whether the superseding region is
 concentric with the ceding region or a omission region, supposing either
 <code class="docutils literal notranslate"><span class="pre">omit=True</span></code> or <code class="docutils literal notranslate"><span class="pre">cede=True</span></code>.</p>
-<p>These helper settings simply set up the optional parameter definitions
+<p>These helper settings simply set up the <em>optional</em> parameter definitions
 so you do not have to do so more manually by providing keys-value pairs
 in the <code class="docutils literal notranslate"><span class="pre">bounds</span></code> and <code class="docutils literal notranslate"><span class="pre">values</span></code> dictionaries (see below).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -257,7 +257,26 @@ in the <code class="docutils literal notranslate"><span class="pre">bounds</span
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>bounds</strong> (<em>dict</em>) – Hard prior parameter bounds for the free parameters.</li>
+<li><strong>bounds</strong> (<em>dict</em>) – <p>Hard prior parameter bounds for the free parameters. The dictionary
+keys must match the required parameter names, at least. If a required
+name is omitted as a key, the parameter is interpreted as <em>fixed</em> or
+<em>derived</em>. A key-value pair can take the following forms:</p>
+<blockquote>
+<div><ul>
+<li>’name’: None</li>
+<li>’name’: (None, None), (None, x), (x, None)</li>
+<li>’name’: (x, y)</li>
+</ul>
+</div></blockquote>
+<p>if a bound is <code class="docutils literal notranslate"><span class="pre">None</span></code> that bound is set equal to a strict
+hard-coded bound.</p>
+</li>
+<li><strong>values</strong> (<em>dict</em>) – Initial values of <em>free</em> parameters, fixed values of <em>fixed</em> parameters,
+and callables for <em>derived</em> parameters. If a key is omitted for a free
+parameter, the initial value is <code class="docutils literal notranslate"><span class="pre">None</span></code> by default. A key cannot be
+omitted for a required name that appears in the <code class="docutils literal notranslate"><span class="pre">bounds</span></code> dictionary
+with value <code class="docutils literal notranslate"><span class="pre">None</span></code>, or a required name that is omitted from the bounds
+dictionary.</li>
 <li><strong>symmetry</strong> (<em>bool</em>) – Is the radiation field axisymmetric (w.r.t the stellar rotation
 axis) within superseding (and ceding) member regions? This determines
 which <code class="docutils literal notranslate"><span class="pre">CellMesh</span></code> integrator to deploy based on this safety check.</li>
@@ -433,7 +452,7 @@ some effective infinity.</p>
 
 <dl class="method">
 <dt id="xpsi.HotRegion.HotRegion.embed">
-<code class="descname">embed</code><span class="sig-paren">(</span><em>spacetime</em>, <em>photosphere</em>, <em>fast_total_counts</em>, <em>threads</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.embed" title="Permalink to this definition">¶</a></dt>
+<code class="descname">embed</code><span class="sig-paren">(</span><em>spacetime</em>, <em>photosphere</em>, <em>fast_total_counts</em>, <em>threads</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.embed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.embed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Embed the hot region of the photosphere into the ambient spacetime.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -449,7 +468,7 @@ presence of the hot region.</td>
 
 <dl class="method">
 <dt id="xpsi.HotRegion.HotRegion.integrate">
-<code class="descname">integrate</code><span class="sig-paren">(</span><em>st</em>, <em>energies</em>, <em>threads</em>, <em>hot_atmosphere</em>, <em>elsewhere_atmosphere</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.integrate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">integrate</code><span class="sig-paren">(</span><em>st</em>, <em>energies</em>, <em>threads</em>, <em>hot_atmosphere</em>, <em>elsewhere_atmosphere</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.integrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.integrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integrate over the photospheric radiation field.</p>
 <p>Calls the CellMesh integrator, with or without exploitation of
 azimuthal invariance of the radiation field of the hot region.</p>
@@ -502,13 +521,13 @@ integration.</li>
 
 <dl class="method">
 <dt id="xpsi.HotRegion.HotRegion.print_settings">
-<code class="descname">print_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.print_settings" title="Permalink to this definition">¶</a></dt>
+<code class="descname">print_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.print_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.print_settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print numerical settings.</p>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="xpsi.HotRegion.HotRegion.psi">
-<em class="property">static </em><code class="descname">psi</code><span class="sig-paren">(</span><em>theta</em>, <em>phi</em>, <em>colatitude</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.psi" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">psi</code><span class="sig-paren">(</span><em>theta</em>, <em>phi</em>, <em>colatitude</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.psi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.psi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Coordinates of cell centres in rotated spherical coordinate system.</p>
 <p>Transformation is anticlockwise rotation about y-axis of Cartesian
 basis.</p>
@@ -516,7 +535,7 @@ basis.</p>
 
 <dl class="method">
 <dt id="xpsi.HotRegion.HotRegion.set_phases">
-<code class="descname">set_phases</code><span class="sig-paren">(</span><em>num_leaves</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>fast_num_leaves=None</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.HotRegion.HotRegion.set_phases" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_phases</code><span class="sig-paren">(</span><em>num_leaves</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>fast_num_leaves=None</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion.set_phases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion.set_phases" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct the set of interpolation phases and foliation leaves.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -550,14 +569,14 @@ pulses on the interval <span class="math notranslate nohighlight">\([0,1]\)</spa
 
 <dl class="class">
 <dt id="xpsi.HotRegion.RayError">
-<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">RayError</code><a class="headerlink" href="#xpsi.HotRegion.RayError" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">RayError</code><a class="reference internal" href="_modules/xpsi/HotRegion.html#RayError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.RayError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
 <p>Raised if a problem was encountered during ray integration.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="xpsi.HotRegion.PulseError">
-<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">PulseError</code><a class="headerlink" href="#xpsi.HotRegion.PulseError" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">PulseError</code><a class="reference internal" href="_modules/xpsi/HotRegion.html#PulseError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.PulseError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
 <p>Raised if a problem was encountered during signal integration.</p>
 </dd></dl>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Elsewhere &mdash; xpsi 0.3.1 documentation</title>
+  <title>Elsewhere &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -221,7 +221,7 @@
 photosphere in which smaller radiative features (such as spots) are embedded.</p>
 <dl class="class">
 <dt id="xpsi.Elsewhere.Elsewhere">
-<em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">Elsewhere</code><span class="sig-paren">(</span><em>sqrt_num_cells=64</em>, <em>num_rays=1000</em>, <em>bounds=(None</em>, <em>None)</em>, <em>value=None</em>, <em>custom=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Elsewhere.</code><code class="descname">Elsewhere</code><span class="sig-paren">(</span><em>sqrt_num_cells=64</em>, <em>num_rays=1000</em>, <em>bounds={}</em>, <em>values={}</em>, <em>custom=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>The photospheric radiation field <em>elsewhere</em>.</p>
 <p>This means the radiation field exterior to the hot regions. The local
@@ -232,29 +232,37 @@ azimuthally invariant but can in principle vary colatitudinally.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>num_rays</strong> (<em>int</em>) – Number of rays to trace (integrate) at each
-colatitude, distributed in angle subtended between
-ray tangent 4-vector and radial outward unit
+<li><strong>num_rays</strong> (<em>int</em>) – Number of rays to trace (integrate) at each colatitude, distributed
+in angle subtended between ray tangent 4-vector and radial outward unit
 vector w.r.t a local orthonormal tetrad.</li>
-<li><strong>sqrt_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth
-which form a regular mesh on a closed curved
-2-surface (which is a compact subset of a
+<li><strong>sqrt_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth which form a regular
+mesh on a closed curved 2-surface (which is a compact subset of a
 spacelike leaf of the spacetime foliation).</li>
 <li><strong>custom</strong> (<em>iterable</em>) – Iterable over <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instances. If you
 supply custom parameter definitions, you need to overwrite the
 <code class="xref py py-func docutils literal notranslate"><span class="pre">_compute_cellParamVecs()</span></code> method to
 handle your custom behaviour.</li>
-<li><strong>bounds</strong> (<em>dict</em>) – If <code class="docutils literal notranslate"><span class="pre">custom</span> <span class="pre">is</span> <span class="pre">None</span></code> is, these bounds are supplied for instantiation
-of a temperature parameter. The intended parameter name must be
-a key in the dictionary. If a bound is <code class="docutils literal notranslate"><span class="pre">None</span></code> that bound is set
-equal to a strict hard-coded bound.</li>
-<li><strong>value</strong> (<em>float</em>) – Either the fixed value of the temperature elsewhere, or value upon
-initialisation if the temperature is free.</li>
+<li><strong>bounds</strong> (<em>dict</em>) – If <code class="docutils literal notranslate"><span class="pre">custom</span> <span class="pre">is</span> <span class="pre">None</span></code>, these bounds are supplied for instantiation
+of a temperature parameter. The parameter name
+<code class="docutils literal notranslate"><span class="pre">'elsewhere_temperature'</span></code> must be a key in the dictionary unless the
+parameter is <em>fixed</em> or <em>derived</em>. If a bound is <code class="docutils literal notranslate"><span class="pre">None</span></code> that bound
+is set equal to a strict hard-coded bound.</li>
+<li><strong>values</strong> (<em>dict</em>) – Either the fixed value of the temperature elsewhere, a callable if the
+temperature is <em>derived</em>, or a value upon initialisation if the
+temperature is free. The dictionary must have a key with name
+<code class="docutils literal notranslate"><span class="pre">'elsewhere_temperature'</span></code> if it is <em>fixed</em> or <em>derived</em>.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Required parameter names:</dt>
+<dd><ul class="first last simple">
+<li>elsewhere_temperature (if no custom specification)</li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="xpsi.Elsewhere.Elsewhere._compute_cellParamVecs">
 <code class="descname">_compute_cellParamVecs</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Elsewhere.html#Elsewhere._compute_cellParamVecs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Elsewhere.Elsewhere._compute_cellParamVecs" title="Permalink to this definition">¶</a></dt>

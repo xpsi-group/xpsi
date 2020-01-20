@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Parameter &mdash; xpsi 0.3.1 documentation</title>
+  <title>xpsi.Parameter &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -220,7 +220,7 @@
 <span class="sd">        subspace does not have references to other parameter objects</span>
 <span class="sd">        required, *and* that distinct subspaces require mutual references</span>
 <span class="sd">        to each other. An example would be two hot regions, each of which</span>
-<span class="sd">        as one or more parameters that are derived in part from parameters</span>
+<span class="sd">        has one or more parameters that are derived in part from parameters</span>
 <span class="sd">        of the other hot region. In this case you need to instantiate</span>
 <span class="sd">        the subspaces first by binding instances of this present</span>
 <span class="sd">        class to parameters. However, you then need to complete these instances</span>
@@ -360,11 +360,13 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;It is recommended to subclass the prototype &#39;</span>
                                 <span class="s1">&#39;abstract base class ``Derive``.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span> <span class="o">=</span> <span class="n">MethodType</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">Parameter</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">derived</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">derived</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">permit_prepend</span> <span class="o">=</span> <span class="n">permit_prepend</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span><span class="p">:</span> <span class="c1"># fixed can also encapsulates derived variables</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span><span class="p">:</span> <span class="c1"># fixed can also encapsulate derived variables</span>
             <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
                 <span class="n">end</span> <span class="o">=</span> <span class="s1">&#39;that is derived from ulterior variables&#39;</span>
             <span class="k">else</span><span class="p">:</span>
@@ -553,8 +555,8 @@
     <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="c1"># handle this exception if sampling software can make</span>
-                <span class="c1"># proposals outside of strict bounds</span>
+                <span class="c1"># handle this exception externally if sampling software can</span>
+                <span class="c1"># make proposals outside of strict bounds</span>
                 <span class="k">raise</span> <span class="n">StrictBoundsError</span><span class="p">(</span><span class="s1">&#39;Value is not within the strict bounds.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed</span><span class="p">:</span>
@@ -620,7 +622,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">needs_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Do cached dependencies need to be updated? &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">derived</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span> <span class="c1"># assume ulterior variables have changed</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">try</span><span class="p">:</span>

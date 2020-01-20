@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Photosphere &mdash; xpsi 0.3.1 documentation</title>
+  <title>Photosphere &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -221,7 +221,7 @@
 in an ambient Schwarzschild spacetime.</p>
 <dl class="class">
 <dt id="xpsi.Photosphere.Photosphere">
-<em class="property">class </em><code class="descclassname">xpsi.Photosphere.</code><code class="descname">Photosphere</code><span class="sig-paren">(</span><em>hot=None</em>, <em>elsewhere=None</em>, <em>bounds=None</em>, <em>value=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Photosphere.</code><code class="descname">Photosphere</code><span class="sig-paren">(</span><em>hot=None</em>, <em>elsewhere=None</em>, <em>bounds={}</em>, <em>values={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>A photosphere embedded in an ambient Schwarzschild spacetime.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -235,11 +235,19 @@ regions of the surface that in most use-cases will be
 assumed to contain radiating material that is hotter
 than that <em>elsewhere</em>.</li>
 <li><strong>elsewhere</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere" title="xpsi.Elsewhere.Elsewhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elsewhere</span></code></a> (or a derived class).</li>
-<li><strong>bounds</strong> (<em>tuple</em>) – If <code class="docutils literal notranslate"><span class="pre">None</span></code>, lock the coordinate rotation frequency of a mode of
+<li><strong>bounds</strong> (<em>dict</em>) – Bounds are supplied for instantiation of a frequency parameter.
+The parameter name <code class="docutils literal notranslate"><span class="pre">'mode_frequency'</span></code> must be a key in the
+dictionary unless the parameter is <em>fixed</em> or <em>derived</em>. If a bound
+is <code class="docutils literal notranslate"><span class="pre">None</span></code> that bound is set equal to a strict hard-coded bound.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, lock the coordinate rotation frequency of a mode of
 asymmetry in the photosphere to a fixed frequency, e.g., the stellar
 rotation frequency. If bounds are passed, the frequency is interpreted
 as a free parameter.</li>
-<li><strong>value</strong> (<em>float</em>) – If the asymmetry is locked to the stellar spin, then you need to pass
+<li><strong>values</strong> (<em>dict</em>) – Either the fixed value of the mode frequency, a callable if the
+frequency is <em>derived</em>, or a value upon initialisation if the
+frequency is free. The dictionary must have a key with name
+<code class="docutils literal notranslate"><span class="pre">'mode_frequency'</span></code> if it is <em>fixed</em> or <em>derived</em>.
+If the asymmetry is locked to the stellar spin, then you need to pass
 the spin frequency. If fixed but different to the spin frequency, this
 value needs to be passed instead. In the hot region base class this
 mode frequency is applied to normalise the ray lags instead of the

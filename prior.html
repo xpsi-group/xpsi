@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Prior &mdash; xpsi 0.3.1 documentation</title>
+  <title>Prior &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -245,7 +245,8 @@ use the default code for some parameters.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> (<em>list</em>) – Vector of model parameter values, but typically unused.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> (<em>list</em>) – Vector of model parameter values, but typically unused. If you
+use it, handle it in a custom implementation of this method.</td>
 </tr>
 </tbody>
 </table>
@@ -317,7 +318,7 @@ cache when you reassign.</p>
 
 <dl class="method">
 <dt id="xpsi.Prior.Prior.inverse_sample_and_transform">
-<code class="descname">inverse_sample_and_transform</code><span class="sig-paren">(</span><em>hypercube</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.inverse_sample_and_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior.inverse_sample_and_transform" title="Permalink to this definition">¶</a></dt>
+<code class="descname">inverse_sample_and_transform</code><span class="sig-paren">(</span><em>hypercube=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.inverse_sample_and_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior.inverse_sample_and_transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inverse sample and then transform.</p>
 <p>This method is useful for drawing from the prior when overplotting
 posterior and prior density functions.</p>

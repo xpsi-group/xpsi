@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Likelihood &mdash; xpsi 0.3.1 documentation</title>
+  <title>xpsi.Likelihood &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -422,7 +422,8 @@
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="o">.</span><span class="n">RayError</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Elsewhere.RayError raised.&#39;</span><span class="p">)</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">())</span> <span class="c1"># decide how to print</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">())</span>
+
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
 
             <span class="k">for</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">pulse</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="o">.</span><span class="n">photospheres</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulses</span><span class="p">):</span>
@@ -450,7 +451,7 @@
                         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Elsewhere.IntegrationError for &#39;</span>
                               <span class="s1">&#39;photosphere</span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">prefix</span><span class="p">)</span>
 
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">())</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">())</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
 
             <span class="n">star_updated</span> <span class="o">=</span> <span class="kc">True</span>
@@ -486,7 +487,7 @@
                             <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: LikelihoodError raised for &#39;</span>
                               <span class="s1">&#39;pulse</span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">prefix</span><span class="p">)</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">())</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Parameter vector: &#39;</span><span class="p">,</span> <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">())</span>
                         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_near_llzero</span>
 
         <span class="k">return</span> <span class="n">star_updated</span>
@@ -603,18 +604,61 @@
             <span class="k">yield</span> <span class="s1">&#39;Cannot import ``allclose`` function from NumPy...&#39;</span>
             <span class="k">yield</span> <span class="s1">&#39;Using fallback implementation...&#39;</span>
 
-            <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">equal_nan</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Implement a fallback.&#39;</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot; Fallback based on NumPy v1.17. &quot;&quot;&quot;</span>
+                <span class="k">return</span> <span class="o">~</span><span class="p">((</span><span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">atol</span> <span class="o">+</span> <span class="n">rtol</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="o">.</span><span class="n">any</span><span class="p">())</span>
+                <span class="c1">#raise NotImplementedError(&#39;Implement a fallback.&#39;)</span>
 
         <span class="n">lls</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">lps</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">logprior_call_vals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">physical_points</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">physical_points</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">physical_points</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">physical_points</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span>
+
+                <span class="k">elif</span> <span class="n">physical_points</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">physical_points</span> <span class="o">=</span> <span class="n">physical_points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">physical_points</span><span class="p">))</span>
+
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">e</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Physical points for likelihood check must form &#39;</span>
+                             <span class="s1">&#39;a numpy.ndarray with at most two dimensions.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span>
+
+            <span class="k">if</span> <span class="n">physical_points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Vector size does not match number of &#39;</span>
+                                 <span class="s1">&#39;free parameters of likelihood function.&#39;</span><span class="p">)</span>
+
+            <span class="n">_cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">externally_updated</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">physical_points</span><span class="p">:</span>
                 <span class="n">lls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">lps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">lps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="n">_cached</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">hypercube_points</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hypercube_points</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">hypercube_points</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span>
+
+                <span class="k">elif</span> <span class="n">hypercube_points</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">hypercube_points</span> <span class="o">=</span> <span class="n">hypercube_points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">hypercube_points</span><span class="p">))</span>
+
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">e</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Unit hypercube points for likelihood check must &#39;</span>
+                             <span class="s1">&#39;form a numpy.ndarray with at most two dimensions.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span>
+
+            <span class="k">if</span> <span class="n">hypercube_points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;Vector size does not match number of &#39;</span>
+                                 <span class="s1">&#39;free parameters of likelihood function.&#39;</span><span class="p">)</span>
+
             <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">hypercube_points</span><span class="p">:</span>
                 <span class="n">phys_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
                 <span class="n">lls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">phys_point</span><span class="p">))</span>
@@ -622,30 +666,35 @@
                     <span class="n">lps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="p">(</span><span class="n">phys_point</span><span class="p">))</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">allclose</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lls</span><span class="p">),</span> <span class="n">loglikelihood_call_vals</span><span class="p">,</span>
-                        <span class="n">rtol</span><span class="o">=</span><span class="n">rtol_loglike</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol_loglike</span><span class="p">,</span>
-                        <span class="n">equal_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="n">proceed</span> <span class="o">=</span> <span class="n">allclose</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lls</span><span class="p">),</span>
+                               <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">loglikelihood_call_vals</span><span class="p">),</span>
+                               <span class="n">rtol</span><span class="o">=</span><span class="n">rtol_loglike</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol_loglike</span><span class="p">,</span>
+                               <span class="n">equal_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Log-likelihood value checks failed on process </span><span class="si">%i</span><span class="s1"> &#39;</span>
+                            <span class="s1">&#39;with exception value: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_rank</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">proceed</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="s1">&#39;Log-likelihood value checks passed on root process.&#39;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Log-likelihood value checks failed on process &#39;</span>
                                  <span class="s1">&#39;</span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">_rank</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Log-likelihood value checks failed on process </span><span class="si">%i</span><span class="s1">&#39;</span>
-                            <span class="s1">&#39;with exception value: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_rank</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">lps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">allclose</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lps</span><span class="p">),</span> <span class="n">logprior_call_vals</span><span class="p">,</span>
-                            <span class="n">rtol</span><span class="o">=</span><span class="n">rtol_logprior</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol_logprior</span><span class="p">,</span>
-                            <span class="n">equal_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                <span class="n">proceed</span> <span class="o">=</span> <span class="n">allclose</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lps</span><span class="p">),</span>
+                                   <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">logprior_call_vals</span><span class="p">),</span>
+                                   <span class="n">rtol</span><span class="o">=</span><span class="n">rtol_logprior</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol_logprior</span><span class="p">,</span>
+                                   <span class="n">equal_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Log-prior value checks failed on process </span><span class="si">%i</span><span class="s1"> &#39;</span>
+                                <span class="s1">&#39;with exception value: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_rank</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">proceed</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="s1">&#39;Log-prior value checks passed on root process.&#39;</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Log-prior value checks failed on &#39;</span>
-                                     <span class="s1">&#39;process </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">_rank</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Log-prior value checks failed on process </span><span class="si">%i</span><span class="s1"> &#39;</span>
-                                <span class="s1">&#39;with exception value: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_rank</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span><span class="p">))</span></div>
-
+                                     <span class="s1">&#39;process </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">_rank</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Likelihood.synthesise"><a class="viewcode-back" href="../../likelihood.html#xpsi.Likelihood.Likelihood.synthesise">[docs]</a>    <span class="k">def</span> <span class="nf">synthesise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">reinitialise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Synthesise pulsation data.</span>

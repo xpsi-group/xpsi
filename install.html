@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; xpsi 0.3.1 documentation</title>
+  <title>Installation &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -235,6 +235,10 @@
 <p>X-PSI was developed in Python 2.7, and has not yet been ported to Python 3.
 Fortunately, there are several ways to create a virtual environment with a
 different version of Python, without disrupting your Python ecosystem.</p>
+<p>Clone X-PSI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi.git &lt;path/to/xpsi&gt;
+</pre></div>
+</div>
 </div>
 <div class="section" id="basic-conda-environment">
 <h2>Basic Conda environment<a class="headerlink" href="#basic-conda-environment" title="Permalink to this headline">¶</a></h2>
@@ -480,11 +484,7 @@ To clone this version instead:</p>
 </div>
 <div class="section" id="x-psi">
 <h3>X-PSI<a class="headerlink" href="#x-psi" title="Permalink to this headline">¶</a></h3>
-<p>Clone X-PSI:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi.git &lt;path/to/xpsi&gt;
-</pre></div>
-</div>
-<p>To build and install from the clone root, you require an
+<p>To build and install from the X-PSI clone root, you require an
 <a class="reference external" href="http://www.openmp.org">OpenMP</a>-enabled C compiler (known compatibility with <code class="docutils literal notranslate"><span class="pre">icc</span></code>, <code class="docutils literal notranslate"><span class="pre">gcc</span></code>, and
 <code class="docutils literal notranslate"><span class="pre">clang</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC</span><span class="o">=</span>&lt;path/to/compiler/executable&gt; python setup.py install --user

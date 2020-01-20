@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.ParameterSubspace &mdash; xpsi 0.3.1 documentation</title>
+  <title>xpsi.ParameterSubspace &mdash; xpsi 0.3.4 documentation</title>
   
 
   
@@ -350,7 +350,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get all variable values (free parameters and derived). &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Get all variable values (free parameters and fixed/derived). &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">]</span>
 
 <div class="viewcode-block" id="ParameterSubspace.__getitem__"><a class="viewcode-back" href="../../parameterSubspace.html#xpsi.Likelihood.ParameterSubspace.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
@@ -444,7 +444,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">needs_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Do cached dependencies need to be updated? &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">needs_update</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
