@@ -122,7 +122,7 @@ class Prior(object):
 
         return p
 
-    def inverse_sample_and_transform(self, hypercube):
+    def inverse_sample_and_transform(self, hypercube = None):
         """ Inverse sample and then transform.
 
         This method is useful for drawing from the prior when overplotting
