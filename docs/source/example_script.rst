@@ -111,15 +111,15 @@ Main
                                 is_secondary=False,
                                 prefix='p')
 
-    # we transform to these geometric parameters, so see prior instead
+    # we transform to these geometric parameters, so see CustomPrior instead
     # for inverse sampling setup
-    bounds = dict(super_colatitude = (None, None), # see prior
-                    super_radius = (None, None), # see prior
+    bounds = dict(super_colatitude = (None, None), # see CustomPrior
+                    super_radius = (None, None), # see CustomPrior
                     phase_shift = (-0.5, 0.5),
                     super_temperature = (5.1, 6.8),
-                    omit_colatitude = (None, None), # see prior
-                    omit_radius = (None, None), # see prior
-                    omit_azimuth = (None, None)) # see prior
+                    omit_colatitude = (0.0, math.pi),
+                    omit_radius = (None, None), # see CustomPrior
+                    omit_azimuth = (None, None)) # see CustomPrior
 
     # overlap of an omission region and
     # and a radiating super region
@@ -543,6 +543,7 @@ Interstellar
                 pulse[:,i] *= self._absorption**(self['column_density']/0.4)
 
         def _interpolate(self, E):
+            """ Helper. """
             try:
                 self._interpolator
             except AttributeError:
@@ -553,7 +554,11 @@ Interstellar
             return self._interpolator(E)
 
         def interp_and_absorb(self, E, signal):
-            """ Interpolate the absorption coefficients and apply. """
+            """ Interpolate the absorption coefficients and apply.
+
+            Useful for post-processing.
+
+            """
 
             for i in range(signal.shape[1]):
                 signal[:,i] *= self._interpolate(E)**(self['column_density']/0.4)
@@ -827,14 +832,19 @@ Prior
                 # temp var
                 t = hypercube[idx] * (ref['s__super_radius'] + ref['s__omit_radius'])
             else:
+                # temp var
                 t = ref['s__omit_radius'] - ref['s__super_radius']
                 t += 2.0 * hypercube[idx] * ref['s__super_radius']
+
+            idx = ref.index('s__omit_azimuth')
+            # temp var
+            u = hypercube[idx] * _2pi
 
             # function from mesh tools module
             # in this case the ceding region is the "super" region, which
             # cedes to the omission region
             ref['s__super_colatitude'], ref['s__omit_azimuth'] = \
-                        eval_cedeCentreCoords(ref['s__omit_colatitude'], t, u)
+                    eval_cedeCentreCoords(ref['s__omit_colatitude'], t, u)
 
             ref['s__omit_azimuth'] *= -1.0
 
