@@ -420,8 +420,8 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="Hot-region-complexity">
 <h1>Hot region complexity<a class="headerlink" href="#Hot-region-complexity" title="Permalink to this headline">¶</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -446,9 +446,26 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 0.3.4               |
+|---------------------------------------------|
+|  https://thomasedwardriley.github.io/xpsi/  |
+\=============================================/
+
+Imported GetDist version: 0.3.1
+Imported nestcheck version: 0.2.0
+</pre></div></div>
+</div>
 <p>Let’s explore higher-complexity surface hot regions models. First we need to do some setup of the ambient spacetime and the surface embedded in it that the photosphere exists on.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -497,7 +514,7 @@ Creating parameter:
 <h2>Single-temperature hot regions<a class="headerlink" href="#Single-temperature-hot-regions" title="Permalink to this headline">¶</a></h2>
 <p>First we play with two hot regions that each have a single temperature component, meaning that the local comoving effective temperature is uniform within the hot region boundary. We instantiate hot region objects:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -666,7 +683,7 @@ Creating parameter:
 <p>Note that the <code class="docutils literal notranslate"><span class="pre">{min,max}_sqrt_num_cells</span></code> keyword arguments set the maximum number of elements that the vicinity of a hot region will be discretised into in both colatitude and azimuth.</p>
 <p>Let’s also explicitly fill the photosphere <em>elsewhere</em> with a simple radiation field. We will return to this later when we integrate over the surface radiation field to calculate signals.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -687,7 +704,7 @@ Creating parameter:
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -710,7 +727,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -720,7 +737,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <p>We will now define helper functions for plotting mesh representations, together with some plot settings.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -780,7 +797,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -815,7 +832,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <p>Let’s form a vector of parameter values in the <em>conventional</em> order expected by the <code class="docutils literal notranslate"><span class="pre">Star</span></code> instance and the other objects it encapsulates references to.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -857,7 +874,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <p>We now prepare the star for pulse integration. In statistical contexts the likelihood function places this call automatically. The preparation involves embedding hot region objects into the photosphere (that also radiates elsewhere), by constructing element (or cell) meshes and precomputing ray mapping information for image integration. We place a call to our helper function to plot the meshes constructed: the mesh for the primary hot region is rendered in the topmost panel, with colour
 representing the proper area covered by the hot region within a given element. This area weights the pulse generated by an infinitesimal radiating element located at the proper-area-weighted centre of the element. The mesh associated with the secondary hot region is rendered in the bottommost panel.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -876,7 +893,7 @@ representing the proper area covered by the hot region within a given element. T
 </div>
 <p>We have a ring for secondary hot region. The hole would be automatically filled with the radiation field <em>elsewhere</em>, which might, e.g., be much cooler.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -900,7 +917,7 @@ representing the proper area covered by the hot region within a given element. T
 <p>We have a crescent that is symmetric about the equator. A way to think about this configuration is to consider the omission region as a a superseding member that supersedes a ceding member with the <em>elsewhere</em> radiation field.</p>
 <p>Given that the superseding member is not a topological hole, the resulting crescent has <em>terminal points</em> or <em>horns</em>. As one approaches the horns around the crescent, the cell areas approach zero, and the two cells containing the two terminal points, and the adjacent cells cannot be resolved in colour from the cells that have zero coverage of the hot region. We can pick out these cells at the horns by setting a uniform colour for cells of finite area:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -925,7 +942,7 @@ representing the proper area covered by the hot region within a given element. T
 </div>
 <p>We can now see all cells with finite hot region coverage, and the symmetry is perhaps clearer.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -952,7 +969,7 @@ representing the proper area covered by the hot region within a given element. T
 <p>Note that a fundamental property of the topmost mesh has now changed: the boundary in azimuth is periodic because the spot encompasses a pole (the southern rotational pole), whilst the lower boundary in colatitude is actually a coordinate singularity. The boundary in azimuth for the bottommost mesh is <em>not</em> periodic. The omission region is close enough to being a topological hole that we cannot distinguish whether or not it is from the mesh, and we would need to calulate the sum of the angular
 radius of the hole with the angular separation between the centres.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -986,7 +1003,7 @@ radius of the hole with the angular separation between the centres.</p>
 reflection-symmetric properties intact.</p>
 <p>The mesh for the secondary hot region has now joined that of the primary in having a periodic boundary in azimuth. Note that the hole also encompasses the southern rotational pole.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1019,7 +1036,7 @@ reflection-symmetric properties intact.</p>
 <p>The primary spot centre is now almost coincident with a pole, with the angular separation between pole and centre much smaller than the angular radius of the spot. Meanwhile, the omission member of the secondary hot region is a hole, but does not encompass a pole, whilst the outer boundary of the resulting ring <em>does</em>.</p>
 <p>Let’s increase the resolution for one of the examples above to some ridiculous level that is not even accurately rendered:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1050,7 +1067,7 @@ reflection-symmetric properties intact.</p>
 </div>
 <p>There are other parametrisations that are useful to consider that might be more natural for prior implementation. The helper function below is an example.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1085,7 +1102,7 @@ reflection-symmetric properties intact.</p>
 </div>
 <p>Let’s try to recreate (approximately, although it can of course be done exactly by inverting the transformation) the crescent above that is symmetric with respect to the equator.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1127,7 +1144,7 @@ reflection-symmetric properties intact.</p>
 <h2>Pulse integration<a class="headerlink" href="#Pulse-integration" title="Permalink to this headline">¶</a></h2>
 <p>Let’s compute some pulses. First we need a helper function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1192,7 +1209,7 @@ reflection-symmetric properties intact.</p>
 </div>
 <p>First we will make a configuration that resembles the first configuration in the <strong>Modelling</strong> notebook tutorial.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1217,7 +1234,7 @@ reflection-symmetric properties intact.</p>
 </div>
 <p>Let’s compute the incident specific flux signal, in units of photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV output as by the source code, and then normalise it to the maximum specific flux:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1226,7 +1243,7 @@ reflection-symmetric properties intact.</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1257,7 +1274,7 @@ reflection-symmetric properties intact.</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1283,7 +1300,7 @@ reflection-symmetric properties intact.</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1328,7 +1345,7 @@ reflection-symmetric properties intact.</p>
 <h2>Two-temperature hot regions<a class="headerlink" href="#Two-temperature-hot-regions" title="Permalink to this headline">¶</a></h2>
 <p>Now we play with two hot regions which each have two temperature components. First we need to do the usual type of setup:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1513,7 +1530,7 @@ Creating parameter:
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1534,7 +1551,7 @@ Creating parameter:
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[64]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1556,7 +1573,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1566,7 +1583,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <p>Let’s define a different helper function for plotting the meshes:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1652,7 +1669,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1705,7 +1722,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1725,7 +1742,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <p>The leftmost panels are the meshes associated with the primary hot region, whilst the rightmost panels are the meshes associated with the secondary hot region. The topmost panels are the meshes associated with the superseding members, whilst the bottommost panels are the meshes associated with the ceding members.</p>
 <p>Let’s play with the hot regions:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1749,7 +1766,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <p>Let’s move them to opposite poles:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1775,7 +1792,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <p>Let’s move them so that they do not encompass the poles and the meshes are inverted:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1804,7 +1821,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <p>Finally, let’s integrate a pulse:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1813,7 +1830,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[73]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1840,8 +1857,8 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 </div>
 <p>Let’s have a play with the temperatures, so show that the signal from <em>elsewhere</em> is affected by the now <em>cool</em> localised regions.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[74]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1870,20 +1887,6 @@ photosphere that is assumed to generate the pulsed signal [Hz].
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
               <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Energy (keV)&#39;</span><span class="p">)</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_69_0.png" src="_images/hotregion_complexity_69_0.png" />
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_69_1.png" src="_images/hotregion_complexity_69_1.png" />
 </div>
 </div>
 <p>Notice the phase shift relative to the previous pulse plot? The local maxima now are shifted by <span class="math notranslate nohighlight">\(\sim\!0.25\)</span> cycles.</p>
