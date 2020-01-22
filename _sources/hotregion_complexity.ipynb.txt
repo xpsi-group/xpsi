@@ -19,7 +19,7 @@
       "/=============================================\\\n",
       "| X-PSI: X-ray Pulse Simulation and Inference |\n",
       "|---------------------------------------------|\n",
-      "|                Version: 0.3.4               |\n",
+      "|                Version: 0.3.5               |\n",
       "|---------------------------------------------|\n",
       "|  https://thomasedwardriley.github.io/xpsi/  |\n",
       "\\=============================================/\n",
@@ -329,7 +329,7 @@
      "output_type": "stream",
      "text": [
       "Creating parameter:\n",
-      "    > Named \"mode_frequency\" with fixed value 1.885e+03.\n",
+      "    > Named \"mode_frequency\" with fixed value 3.000e+02.\n",
       "    > Coordinate frequency of the mode of radiative asymmetry in the\n",
       "photosphere that is assumed to generate the pulsed signal [Hz].\n",
       "\n",
@@ -1371,7 +1371,7 @@
      "output_type": "stream",
      "text": [
       "Creating parameter:\n",
-      "    > Named \"mode_frequency\" with fixed value 1.885e+03.\n",
+      "    > Named \"mode_frequency\" with fixed value 3.000e+02.\n",
       "    > Coordinate frequency of the mode of radiative asymmetry in the\n",
       "photosphere that is assumed to generate the pulsed signal [Hz].\n",
       "\n",
@@ -1742,7 +1742,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 38,
+   "execution_count": 37,
    "metadata": {},
    "outputs": [
     {

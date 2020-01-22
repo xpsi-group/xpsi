@@ -5,8 +5,8 @@
 ParameterSubspace
 =================
 
-Instances of :class:`~.ParameterSubspace.ParameterSubspace` represent *abstract*
-subspaces of the model global parameter space.
+Instances of :class:`~.ParameterSubspace.ParameterSubspace` represent subspaces
+of the global parameter space associated with a model.
 
 .. autoclass:: xpsi.ParameterSubspace.ParameterSubspace
     :members:

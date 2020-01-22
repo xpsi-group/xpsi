@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Photosphere &mdash; xpsi 0.3.4 documentation</title>
+  <title>xpsi.Photosphere &mdash; xpsi 0.3.5 documentation</title>
   
 
   
@@ -280,15 +280,12 @@
 <span class="s2">        Coordinate frequency of the mode of radiative asymmetry in the</span>
 <span class="s2">        photosphere that is assumed to generate the pulsed signal [Hz].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="n">value</span> <span class="o">*=</span> <span class="n">_2pi</span> <span class="c1"># need angular frequency</span>
-
         <span class="n">mode_frequency</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span>
                                    <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2000.0</span><span class="p">),</span>
                                    <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                                    <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
                                    <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$f_{\rm mode}$&#39;</span><span class="p">,</span>
-                                   <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">)</span>
+                                   <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">Photosphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mode_frequency</span><span class="p">,</span>
                                           <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

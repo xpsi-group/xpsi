@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HotRegion &mdash; xpsi 0.3.4 documentation</title>
+  <title>HotRegion &mdash; xpsi 0.3.5 documentation</title>
   
 
   
@@ -221,7 +221,7 @@
 intense regions of the source photosphere.</p>
 <dl class="class">
 <dt id="xpsi.HotRegion.HotRegion">
-<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">HotRegion</code><span class="sig-paren">(</span><em>bounds</em>, <em>values</em>, <em>symmetry=True</em>, <em>omit=False</em>, <em>cede=False</em>, <em>concentric=False</em>, <em>sqrt_num_cells=32</em>, <em>min_sqrt_num_cells=10</em>, <em>max_sqrt_num_cells=80</em>, <em>num_rays=200</em>, <em>num_leaves=64</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>do_fast=False</em>, <em>fast_sqrt_num_cells=16</em>, <em>fast_min_sqrt_num_cells=4</em>, <em>fast_max_sqrt_num_cells=16</em>, <em>fast_num_rays=100</em>, <em>fast_num_leaves=32</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em>, <em>is_secondary=False</em>, <em>custom=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">HotRegion</code><span class="sig-paren">(</span><em>bounds</em>, <em>values</em>, <em>symmetry=True</em>, <em>omit=False</em>, <em>cede=False</em>, <em>concentric=False</em>, <em>sqrt_num_cells=32</em>, <em>min_sqrt_num_cells=10</em>, <em>max_sqrt_num_cells=80</em>, <em>num_rays=200</em>, <em>num_leaves=64</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>do_fast=False</em>, <em>fast_sqrt_num_cells=16</em>, <em>fast_min_sqrt_num_cells=4</em>, <em>fast_max_sqrt_num_cells=16</em>, <em>fast_num_rays=100</em>, <em>fast_num_leaves=32</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em>, <em>is_antiphased=False</em>, <em>custom=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>A photospheric hot region that is contiguously radiating.</p>
 <p>Instances of this class can take the following forms:</p>
@@ -320,12 +320,23 @@ fast precomputation mode is activated.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>is_secondary</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, shifts the cell mesh by <span class="math notranslate nohighlight">\(\pi\)</span> radians about
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>is_antiphased</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, shifts the cell mesh by <span class="math notranslate nohighlight">\(\pi\)</span> radians about
 the stellar rotation axis for pulse integration. This is merely
 a choice that can be made, and is not crucial. Note that the
 (fast) phase-shifting applied near the end of the likelihood
 evaluation is related to this choice and thus phase-shift parameter
-prior support can be chosen accordingly.</td>
+prior support can be chosen accordingly. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the hot region
+at phase zero is aligned with the observer meridian. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the
+hot region at phase zero is aligned with the meridian on which
+the observer’s antipode lies. Alignment also depends on the structure
+of the hot region. As a rule, if the hot region has a superseding
+region (<em>superseding</em> region or an <em>omission</em> region) then the centre
+of that region is the point that is <em>aligned</em> to a meridian.</li>
+<li><strong>is_secondary</strong> (<em>bool</em>) – Deprecated. You can use or the <code class="docutils literal notranslate"><span class="pre">is_antiphased</span></code> keyword argument
+instead, which has precisely the same effect.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

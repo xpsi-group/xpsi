@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modelling &mdash; xpsi 0.3.4 documentation</title>
+  <title>Modelling &mdash; xpsi 0.3.5 documentation</title>
   
 
   
@@ -492,7 +492,7 @@ div.rendered_html tbody tr:hover {
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.3.4               |
+|                Version: 0.3.5               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -1067,7 +1067,7 @@ can compile your extension elsewhere and call those compiled binaries from your 
                     <span class="n">fast_rel_energies_per_interval</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
                     <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
                     <span class="n">adaptive_energies</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
-                    <span class="n">store</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                    <span class="n">cache</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
                     <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
                     <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
                     <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span>
@@ -1520,7 +1520,7 @@ Creating parameter:
                               <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                               <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
                               <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                              <span class="n">is_secondary</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                              <span class="n">is_antiphased</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                               <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="c1"># unique prefix needed because &gt;1 instance</span>
 </pre></div>
 </div>
@@ -1790,20 +1790,19 @@ centre of the superseding region [radians].
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Creating parameter:
-    &gt; Named &#34;mode_frequency&#34; with fixed value 1.885e+03.
+    &gt; Named &#34;mode_frequency&#34; with fixed value 3.000e+02.
     &gt; Coordinate frequency of the mode of radiative asymmetry in the
 photosphere that is assumed to generate the pulsed signal [Hz].
 
 
 </pre></div></div>
 </div>
-<p>The photospheric mode frequency in Hz is converted to an angular frequency automatically:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">photosphere</span><span class="p">[</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">global_imports</span><span class="o">.</span><span class="n">_2pi</span> <span class="o">==</span> <span class="n">spacetime</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span>
+<span></span><span class="n">photosphere</span><span class="p">[</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">spacetime</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -1960,7 +1959,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-ll = -26713.61367769; time = 1.106
+ll = -26713.61367769; time = 1.114
 </pre></div></div>
 </div>
 <p>If the secondary temperature was free, we would extend the vector <code class="docutils literal notranslate"><span class="pre">p</span></code> by one element, passing the injected value of <code class="docutils literal notranslate"><span class="pre">6.0</span></code>:</p>
@@ -2029,7 +2028,7 @@ from the joint prior distribution. Our <code class="docutils literal notranslate
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_121_0.png" src="_images/model_construction_121_0.png" />
+<img alt="_images/model_construction_120_0.png" src="_images/model_construction_120_0.png" />
 </div>
 </div>
 <p>The pulse profiles with markers are the signals incident on the telescope, before operating on them with the response model. The markers, linearly spaced in phase, denote the phase resolution.</p>
@@ -2055,7 +2054,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_124_0.png" src="_images/model_construction_124_0.png" />
+<img alt="_images/model_construction_123_0.png" src="_images/model_construction_123_0.png" />
 </div>
 </div>
 <p>Notice the solid pulses without markers are unchanged from the plot a few cells above, and can be used to guide the eye to the effect of a change in Earth inclination.</p>
@@ -2113,7 +2112,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_127_0.png" src="_images/model_construction_127_0.png" />
+<img alt="_images/model_construction_126_0.png" src="_images/model_construction_126_0.png" />
 </div>
 </div>
 <p>Note that the lowest colatitude row is at zero on the y-axis.</p>
@@ -2207,7 +2206,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_133_0.png" src="_images/model_construction_133_0.png" />
+<img alt="_images/model_construction_132_0.png" src="_images/model_construction_132_0.png" />
 </div>
 </div>
 <p>The count rate signal in each channel:</p>
@@ -2229,7 +2228,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_135_0.png" src="_images/model_construction_135_0.png" />
+<img alt="_images/model_construction_134_0.png" src="_images/model_construction_134_0.png" />
 </div>
 </div>
 <p>Now we increase the phase resolution, and plot a single rotational pulse:</p>
@@ -2283,7 +2282,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_140_0.png" src="_images/model_construction_140_0.png" />
+<img alt="_images/model_construction_139_0.png" src="_images/model_construction_139_0.png" />
 </div>
 </div>
 <p>Let’s iterate over a monotonically increasing set of values of the hot-region angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many OpenMP threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
@@ -2438,7 +2437,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_152_0.png" src="_images/model_construction_152_0.png" />
+<img alt="_images/model_construction_151_0.png" src="_images/model_construction_151_0.png" />
 </div>
 </div>
 </div>
@@ -2709,17 +2708,17 @@ the solid curves without markers.</p>
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[1.9994672290793583,
- 5.986778141501946,
- 0.3027864128841668,
- 0.952726449529373,
- -0.17592172348128754,
- 1.3466977405053813,
- 1.1554212715372498,
- 3.0189588897238506,
- 0.46726223739917816,
- 3.13830322457184,
- 0.9478808520470994]
+<span></span>[1.940366058288727,
+ 15.04544959886406,
+ 0.29554586225821994,
+ 1.2813449525822789,
+ 0.02948046043016872,
+ 2.174657776224,
+ 0.7614093849079002,
+ 4.250178657488857,
+ -0.05475860413253897,
+ 0.4730687756272196,
+ 1.3101739301897397]
 </pre></div>
 </div>
 </div>
@@ -2786,7 +2785,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_175_0.png" src="_images/model_construction_175_0.png" />
+<img alt="_images/model_construction_174_0.png" src="_images/model_construction_174_0.png" />
 </div>
 </div>
 <p>Note that the prior support is defined with a constraint that the polar radius <span class="math notranslate nohighlight">\(R_{\rm p}(R_{\rm eq}, M, \Omega)\geq 1.76r_{s}(M)\)</span>, which is why there is a region devoid of samples between the prior support and the dashed line <span class="math notranslate nohighlight">\(R_{\rm eq} = 1.76r_s(M)\)</span>.</p>
@@ -2810,7 +2809,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_178_0.png" src="_images/model_construction_178_0.png" />
+<img alt="_images/model_construction_177_0.png" src="_images/model_construction_177_0.png" />
 </div>
 </div>
 <p>Note that the samples, marginalised over other region geometry parameters, are sparser when both hot regions approach the poles because we exclude overlapping configurations from the prior support. This is because the hot regions are by convention defined as disjoint, and cannot merge. If one wanted a more complex hot region, one would not invoke multiple hot regions that are permitted to overlap, but one would instead handle the extra complexity within the <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> class or a subclass.</p>
@@ -2832,7 +2831,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_181_0.png" src="_images/model_construction_181_0.png" />
+<img alt="_images/model_construction_180_0.png" src="_images/model_construction_180_0.png" />
 </div>
 </div>
 <p>Note that the prior density is greater for hot regions that subtend smaller solid angles at the centre of the star, which also derives from the non-overlapping criterion for prior support.</p>
@@ -2854,7 +2853,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_184_0.png" src="_images/model_construction_184_0.png" />
+<img alt="_images/model_construction_183_0.png" src="_images/model_construction_183_0.png" />
 </div>
 </div>
 <p>Note that again because the hot regions cannot overlap, rarefaction occurs in the vicinity of lines of minimal phase separation. Note that the boundaries are all periodic, so this pattern tesselates. Because we implemented a transformation in our <code class="docutils literal notranslate"><span class="pre">CustomPrior</span></code> subclass, we can actually draw the samples and transform them, which is useful in post-processing contexts. We defined the intervals <code class="docutils literal notranslate"><span class="pre">[-0.25,</span> <span class="pre">0.75]</span></code> for the inverse sampling so that the posterior mode(s) will not be near a boundary.
@@ -2897,7 +2896,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_190_0.png" src="_images/model_construction_190_0.png" />
+<img alt="_images/model_construction_189_0.png" src="_images/model_construction_189_0.png" />
 </div>
 </div>
 <p>We can see the rarefaction occurs for <span class="math notranslate nohighlight">\(\Delta\phi\sim0.0=1.0\)</span>.</p>
@@ -3046,7 +3045,7 @@ Sampling complete.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_201_0.png" src="_images/model_construction_201_0.png" />
+<img alt="_images/model_construction_200_0.png" src="_images/model_construction_200_0.png" />
 </div>
 </div>
 <p>The chains rendered in the documentation were run on a desktop machine in about a day of wall-time. It is visually discernable that the ensemble distribution has not yet evolved to a stationary state: a rigourous application of ensemble MCMC would cover convergence criteria, auto-correlation, and examination of sensitivity to initial conditions and the transition kernel. In fact, based on the analysis with nested sampling on path <code class="docutils literal notranslate"><span class="pre">xpsi/examples/default_background</span></code>, we know that the posterior
@@ -3600,7 +3599,7 @@ Background normalisation: 1.89127972e-05
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_240_0.png" src="_images/model_construction_240_0.png" />
+<img alt="_images/model_construction_239_0.png" src="_images/model_construction_239_0.png" />
 </div>
 </div>
 <p>Check we have generated the same count numbers, given the same seed and resolution settings:</p>

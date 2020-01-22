@@ -485,7 +485,7 @@ Instrument
                               symbol = r'$\gamma$',
                               value = values.get('gamma', None))
 
-            return cls(ratios, channels, channel_edges,
+            return cls(ratios, channels, channel_edges[25:301, -2],
                        RSP, edges, alpha, beta, gamma)
 
 Interstellar
