@@ -94,8 +94,6 @@ Main
                   phase_shift = (0.0, 0.2), # defined relative to 0.35 cycles
                   super_temperature = (5.1, 6.8))
 
-    bounds = [(0.35, 0.55), (-0.25,0.75)],
-
     primary = xpsi.HotRegion(bounds=bounds,
                                 values={},
                                 symmetry=True,
@@ -371,124 +369,124 @@ Instrument
     from xpsi import Parameter
 
     class CustomInstrument(xpsi.Instrument):
-    """ Methods and attributes specific to the NICER instrument.
+        """ Methods and attributes specific to the NICER instrument.
 
-    Currently tailored to the NICER light-curve SWG model specification.
-
-    """
-    def __init__(self, ratio, channels, channel_edges, *args):
-        """ Set channel edges attribute. """
-        super(CustomInstrument, self).__init__(*args)
-
-        self._ratio = ratio
-        self._channels = channels
-        self._channel_edges = channel_edges
-
-        self._modified = self.matrix.copy()
-        for i in range(self._modified.shape[0]):
-            self._modified[i,:] *= self._ratio[i]
-
-    @property
-    def channels(self):
-        return self._channels
-
-    @property
-    def channel_edges(self):
-        """ Get the channel edges. """
-        return self._channel_edges
-
-    def construct_matrix(self):
-        """ Implement response matrix parameterisation. """
-        matrix = self['alpha']*self['beta']*self._modified
-        matrix += (1.0 - self['beta'])*self['gamma']*self.matrix
-
-        matrix[matrix < 0.0] = 0.0
-
-        return matrix
-
-    def __call__(self, signal, *args):
-        """ Overwrite. """
-
-        matrix = self.construct_matrix()
-
-        self._cached_signal = np.dot(matrix, signal)
-
-        return self._cached_signal
-
-    @classmethod
-    def from_SWG(cls,
-                 bounds, values,
-                 ARF, RMF, ratio,
-                 max_input, min_input=0,
-                 channel_edges=None):
-        """ Constructor which converts files into :class:`numpy.ndarray`s.
-
-        :param str ARF: Path to ARF which is compatible with
-                                :func:`numpy.loadtxt`.
-
-        :param str RMF: Path to RMF which is compatible with
-                                :func:`numpy.loadtxt`.
-
-        :param str ratio: Path to channel-by-channel ratio file.
-
-        :param str channel_edges: Optional path to edges which is compatible with
-                                :func:`numpy.loadtxt`.
+        Currently tailored to the NICER light-curve SWG model specification.
 
         """
-        ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
-        RMF = np.loadtxt(RMF, dtype=np.double, skiprows=3, usecols=-1)
-        ratio = np.loadtxt(ratio, dtype=np.double, skiprows=3)[:,2]
+        def __init__(self, ratio, channels, channel_edges, *args):
+            """ Set channel edges attribute. """
+            super(CustomInstrument, self).__init__(*args)
 
-        if channel_edges:
-            channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)
+            self._ratio = ratio
+            self._channels = channels
+            self._channel_edges = channel_edges
 
-        matrix = np.zeros((1501,3980))
+            self._modified = self.matrix.copy()
+            for i in range(self._modified.shape[0]):
+                self._modified[i,:] *= self._ratio[i]
 
-        for i in range(3980):
-            matrix[:,i] = RMF[i*1501:(i+1)*1501]
+        @property
+        def channels(self):
+            return self._channels
 
-        if min_input != 0:
-            min_input = int(min_input)
+        @property
+        def channel_edges(self):
+            """ Get the channel edges. """
+            return self._channel_edges
 
-        max_input = int(max_input)
+        def construct_matrix(self):
+            """ Implement response matrix parameterisation. """
+            matrix = self['alpha']*self['beta']*self._modified
+            matrix += (1.0 - self['beta'])*self['gamma']*self.matrix
 
-        edges = np.zeros(ARF[min_input:max_input,3].shape[0]+1, dtype=np.double)
+            matrix[matrix < 0.0] = 0.0
 
-        edges[0] = ARF[min_input,1]; edges[1:] = ARF[min_input:max_input,2]
+            return matrix
 
-        RSP = np.ascontiguousarray(np.zeros(matrix[25:300,min_input:max_input].shape), dtype=np.double)
+        def __call__(self, signal, *args):
+            """ Overwrite. """
 
-        for i in range(RSP.shape[0]):
-            RSP[i,:] = matrix[i+25,min_input:max_input] * ARF[min_input:max_input,3] * 49.0/52.0
+            matrix = self.construct_matrix()
 
-        channels = np.arange(25, 300)
+            self._cached_signal = np.dot(matrix, signal)
 
-        ratios = ratio[:275]
-        ratios[:10] = ratio[10]
+            return self._cached_signal
 
-        alpha = Parameter('alpha',
-                          strict_bounds = (0.0,2.0),
-                          bounds = bounds.get('alpha', None),
-                          doc = 'alpha',
-                          symbol = r'$\alpha$',
-                          value = values.get('alpha', None))
+        @classmethod
+        def from_SWG(cls,
+                     bounds, values,
+                     ARF, RMF, ratio,
+                     max_input, min_input=0,
+                     channel_edges=None):
+            """ Constructor which converts files into :class:`numpy.ndarray`s.
 
-        beta = Parameter('beta',
-                          strict_bounds = (0.0,1.0),
-                          bounds = bounds.get('beta', None),
-                          doc = 'beta',
-                          symbol = r'$\beta$',
-                          value = values.get('beta', None))
+            :param str ARF: Path to ARF which is compatible with
+                                    :func:`numpy.loadtxt`.
 
-        gamma = Parameter('gamma',
-                          strict_bounds = (0.0,2.0),
-                          bounds = bounds.get('gamma', None),
-                          doc = 'gamma',
-                          symbol = r'$\gamma$',
-                          value = values.get('gamma', None))
+            :param str RMF: Path to RMF which is compatible with
+                                    :func:`numpy.loadtxt`.
 
-        return cls(ratios, channels, channel_edges,
-                   RSP, edges, alpha, beta, gamma)
+            :param str ratio: Path to channel-by-channel ratio file.
+
+            :param str channel_edges: Optional path to edges which is compatible with
+                                    :func:`numpy.loadtxt`.
+
+            """
+            ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
+            RMF = np.loadtxt(RMF, dtype=np.double, skiprows=3, usecols=-1)
+            ratio = np.loadtxt(ratio, dtype=np.double, skiprows=3)[:,2]
+
+            if channel_edges:
+                channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)
+
+            matrix = np.zeros((1501,3980))
+
+            for i in range(3980):
+                matrix[:,i] = RMF[i*1501:(i+1)*1501]
+
+            if min_input != 0:
+                min_input = int(min_input)
+
+            max_input = int(max_input)
+
+            edges = np.zeros(ARF[min_input:max_input,3].shape[0]+1, dtype=np.double)
+
+            edges[0] = ARF[min_input,1]; edges[1:] = ARF[min_input:max_input,2]
+
+            RSP = np.ascontiguousarray(np.zeros(matrix[25:300,min_input:max_input].shape), dtype=np.double)
+
+            for i in range(RSP.shape[0]):
+                RSP[i,:] = matrix[i+25,min_input:max_input] * ARF[min_input:max_input,3] * 49.0/52.0
+
+            channels = np.arange(25, 300)
+
+            ratios = ratio[:275]
+            ratios[:10] = ratio[10]
+
+            alpha = Parameter('alpha',
+                              strict_bounds = (0.0,2.0),
+                              bounds = bounds.get('alpha', None),
+                              doc = 'alpha',
+                              symbol = r'$\alpha$',
+                              value = values.get('alpha', None))
+
+            beta = Parameter('beta',
+                              strict_bounds = (0.0,1.0),
+                              bounds = bounds.get('beta', None),
+                              doc = 'beta',
+                              symbol = r'$\beta$',
+                              value = values.get('beta', None))
+
+            gamma = Parameter('gamma',
+                              strict_bounds = (0.0,2.0),
+                              bounds = bounds.get('gamma', None),
+                              doc = 'gamma',
+                              symbol = r'$\gamma$',
+                              value = values.get('gamma', None))
+
+            return cls(ratios, channels, channel_edges[25:301, -2],
+                       RSP, edges, alpha, beta, gamma)
 
 Interstellar
 ^^^^^^^^^^^^

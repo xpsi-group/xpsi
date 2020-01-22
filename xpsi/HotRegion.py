@@ -55,10 +55,12 @@ class HotRegion(ParameterSubspace):
         keys must match the required parameter names, at least. If a required
         name is omitted as a key, the parameter is interpreted as *fixed* or
         *derived*. A key-value pair can take the following forms:
-            * 'name': None
-            * 'name': (None, None), (None, x), (x, None)
-            * 'name': (x, y)
-        if a bound is ``None`` that bound is set equal to a strict
+
+            * ``'name': None``
+            * ``'name': (None, None)``, ``(None, x)``, ``(x, None)``
+            * ``'name': (x, y)``
+
+        where if a bound is ``None`` that bound is set equal to a strict
         hard-coded bound.
 
     :param dict values:
@@ -115,13 +117,23 @@ class HotRegion(ParameterSubspace):
               a corresponding parameter whose value is respected if the
               fast precomputation mode is activated.
 
-    :param bool is_secondary:
+    :param bool is_antiphased:
         If ``True``, shifts the cell mesh by :math:`\pi` radians about
         the stellar rotation axis for pulse integration. This is merely
         a choice that can be made, and is not crucial. Note that the
         (fast) phase-shifting applied near the end of the likelihood
         evaluation is related to this choice and thus phase-shift parameter
-        prior support can be chosen accordingly.
+        prior support can be chosen accordingly. If ``False``, the hot region
+        at phase zero is aligned with the observer meridian. If ``True``, the
+        hot region at phase zero is aligned with the meridian on which
+        the observer's antipode lies. Alignment also depends on the structure
+        of the hot region. As a rule, if the hot region has a superseding
+        region (*superseding* region or an *omission* region) then the centre
+        of that region is the point that is *aligned* to a meridian.
+
+    :param bool is_secondary:
+        Deprecated. You can use or the ``is_antiphased`` keyword argument
+        instead, which has precisely the same effect.
 
     .. note::
 
@@ -191,11 +203,11 @@ class HotRegion(ParameterSubspace):
                  fast_num_leaves = 32,
                  fast_num_phases = None,
                  fast_phases = None,
-                 is_secondary = False,
+                 is_antiphased = False,
                  custom = None,
                  **kwargs):
 
-        self.is_secondary = is_secondary
+        self.is_antiphased = kwargs.get('is_secondary', is_antiphased)
 
         self.do_fast = do_fast
 
@@ -558,16 +570,29 @@ class HotRegion(ParameterSubspace):
 
     @property
     def is_secondary(self):
-        """ Shift the hot region by half a rotational cycle? """
-        return self._is_secondary
+        """ Shift the hot region by half a rotational cycle? Deprecated. """
+        return self._is_antiphased
 
     @is_secondary.setter
     def is_secondary(self, is_secondary):
-        if not isinstance(is_secondary, bool):
+        if not isinstance(is_antiphased, bool):
             raise TypeError('Use a boolean to specify whether or not the '
                             'hot region should be shifted by half a cycle.')
         else:
-            self._is_secondary = is_secondary
+            self._is_antiphased = is_antiphased
+
+    @property
+    def is_antiphased(self):
+        """ Shift the hot region by half a rotational cycle? """
+        return self._is_antiphased
+
+    @is_antiphased.setter
+    def is_antiphased(self, is_antiphased):
+        if not isinstance(is_antiphased, bool):
+            raise TypeError('Use a boolean to specify whether or not the '
+                            'hot region should be shifted by half a cycle.')
+        else:
+            self._is_antiphased = is_antiphased
 
     def print_settings(self):
         """ Print numerical settings. """
@@ -640,7 +665,7 @@ class HotRegion(ParameterSubspace):
 
         self._super_phi -= self['omit_azimuth']
 
-        if self._is_secondary:
+        if self._is_antiphased:
             self._super_phi += _pi
 
         if self['cede_radius'] > 0.0:
@@ -672,7 +697,7 @@ class HotRegion(ParameterSubspace):
 
             self._cede_phi += self['cede_azimuth']
 
-            if self._is_secondary:
+            if self._is_antiphased:
                 self._cede_phi += _pi
 
     @property
@@ -693,7 +718,7 @@ class HotRegion(ParameterSubspace):
         C *= st.r_s / _c
         for j in range(self._super_lag.shape[1]):
             self._super_lag[:,j] -= C
-        self._super_lag *= photosphere['mode_frequency']
+        self._super_lag *= photosphere['mode_frequency'] * _2pi
 
         try:
             C = (1.0 / self._cede_r_s_over_r - R_i)
@@ -704,7 +729,7 @@ class HotRegion(ParameterSubspace):
             C *= st.r_s / _c
             for j in range(self._cede_lag.shape[1]):
                 self._cede_lag[:,j] -= C
-            self._cede_lag *= photosphere['mode_frequency']
+            self._cede_lag *= photosphere['mode_frequency'] * _2pi
 
     def __compute_rays(self, st, photosphere, threads):
         """ Integrate rays.

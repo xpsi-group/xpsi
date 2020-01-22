@@ -1,7 +1,7 @@
 """ X-PSI: A prototype open-source package for neutron star
     X-ray Pulse Simulation and Inference. """
 from __future__ import print_function
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 __author__ = "Thomas E. Riley"
 
 try:

@@ -90,15 +90,12 @@ class Photosphere(ParameterSubspace):
         Coordinate frequency of the mode of radiative asymmetry in the
         photosphere that is assumed to generate the pulsed signal [Hz].
         """
-        value = values.get('mode_frequency', None)
-        if value is not None: value *= _2pi # need angular frequency
-
         mode_frequency = Parameter('mode_frequency',
                                    strict_bounds = (0.0, 2000.0),
                                    bounds = bounds.get('mode_frequency', None),
                                    doc = doc,
                                    symbol = r'$f_{\rm mode}$',
-                                   value = value)
+                                   value = values.get('mode_frequency', None))
 
         super(Photosphere, self).__init__(mode_frequency,
                                           hot, elsewhere, **kwargs)

@@ -18,6 +18,39 @@ and this project adheres to
 ### Removed
 
 
+## [v0.3.5] - 2020-01-22
+
+### Summary
+
+* Docstring edits and backwards compatible changes to several class
+    initialisation arguments.
+
+### Attribution
+
+* Based mostly on discussion with and feedback from Devarshi Choudhury.
+
+### Fixed
+
+* Some docs formatting problems.
+
+* Some corrections to example scripts/modules updated in v0.3.4 to use
+    current API.
+
+### Changed
+
+* The photospheric mode frequency parameter is not converted to an angular
+    frequency until it is used, so the cached value matches the docstring
+    description.
+
+### Deprecated
+
+* `is_secondary` argument of the `HotRegion` class. Use `is_antiphased` instead
+    to ensure future compatibility.
+
+* `store` argument of the `Pulse` class. Use `cache` instead to ensure future
+    compatibility.
+
+
 ## [v0.3.4] - 2020-01-20
 
 ### Summary
