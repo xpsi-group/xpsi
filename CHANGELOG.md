@@ -18,6 +18,19 @@ and this project adheres to
 ### Removed
 
 
+## [v0.3.6] - 2020-01-24
+
+### Fixed
+
+* Some code snippets in documentation examples of prior implementation
+    with the latest API minor version (v0.3).
+
+### Changed
+
+* Modify the `HotRegions` class to function with two *or more* hot region
+    objects.
+
+
 ## [v0.3.5] - 2020-01-22
 
 ### Summary

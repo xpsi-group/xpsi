@@ -145,7 +145,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.3.5',
+        version = '0.3.6',
         author = 'Thomas Edward Riley',
         author_email = 'T.E.Riley@uva.nl; t.riley.phd@gmail.com',
         url = 'https://github.com/ThomasEdwardRiley/xpsi',
