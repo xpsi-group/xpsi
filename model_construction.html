@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modelling &mdash; xpsi 0.3.5 documentation</title>
+  <title>Modelling &mdash; xpsi 0.3.6 documentation</title>
   
 
   
@@ -492,7 +492,7 @@ div.rendered_html tbody tr:hover {
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.3.5               |
+|                Version: 0.3.6               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -1959,7 +1959,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-ll = -26713.61367769; time = 1.114
+ll = -26713.61367769; time = 1.176
 </pre></div></div>
 </div>
 <p>If the secondary temperature was free, we would extend the vector <code class="docutils literal notranslate"><span class="pre">p</span></code> by one element, passing the injected value of <code class="docutils literal notranslate"><span class="pre">6.0</span></code>:</p>
@@ -2568,12 +2568,11 @@ the solid curves without markers.</p>
 
         <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c1"># copy</span>
 
-        <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">star</span><span class="o">.</span><span class="n">spacetime</span> <span class="c1"># shortcut</span>
+        <span class="c1"># used ordered names and values</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
 
         <span class="c1"># compactness ratio M/R_eq</span>
-        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ref</span><span class="o">.</span><span class="n">r_g</span> <span class="o">/</span> <span class="n">ref</span><span class="o">.</span><span class="n">R</span><span class="p">]</span>
-
-        <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">gravradius</span><span class="p">(</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]]</span>
 
         <span class="c1"># phase separation between hot regions</span>
         <span class="c1"># first some temporary variables:</span>
@@ -2687,7 +2686,7 @@ the solid curves without markers.</p>
  0.025,
  2.141592653589793,
  0.2,
- 0.16538200431199998,
+ 0.165382004312,
  0.525]
 </pre></div>
 </div>
@@ -2708,17 +2707,17 @@ the solid curves without markers.</p>
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[1.940366058288727,
- 15.04544959886406,
- 0.29554586225821994,
- 1.2813449525822789,
- 0.02948046043016872,
- 2.174657776224,
- 0.7614093849079002,
- 4.250178657488857,
- -0.05475860413253897,
- 0.4730687756272196,
- 1.3101739301897397]
+<span></span>[1.204356018428549,
+ 13.026932977271503,
+ 0.18379303046691553,
+ 1.3429668136230803,
+ -0.20921697791695482,
+ 0.45210634015310613,
+ 0.8979967358837991,
+ 4.16214901406841,
+ 0.06956087836941094,
+ 0.6468790949853735,
+ 0.7592644904882911]
 </pre></div>
 </div>
 </div>
@@ -2771,7 +2770,8 @@ Samples drawn.
 <span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot_samps</span><span class="p">(</span><span class="n">samps</span><span class="p">,</span>
                 <span class="n">likelihood</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">),</span> <span class="c1"># we can find the index for __getitem__ magic</span>
                 <span class="n">likelihood</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;mass&#39;</span><span class="p">),</span>
-                <span class="sa">r</span><span class="s1">&#39;$R_{\rm eq}$ [km]&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$M$ [M$_{\odot}$]&#39;</span><span class="p">)</span>
+                <span class="n">likelihood</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">symbol</span> <span class="o">+</span> <span class="s1">&#39; [km]&#39;</span><span class="p">,</span> <span class="c1"># can use symbols like so</span>
+                <span class="sa">r</span><span class="s1">&#39;$M$ [M$_{\odot}$]&#39;</span><span class="p">)</span> <span class="c1"># or manual entry</span>
 
 <span class="c1"># the Schwarzschild photon sphere R_eq = 1.5 x r_s(M)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mf">3.0</span><span class="o">*</span><span class="n">gravradius</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mi">100</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>

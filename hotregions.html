@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HotRegions &mdash; xpsi 0.3.5 documentation</title>
+  <title>HotRegions &mdash; xpsi 0.3.6 documentation</title>
   
 
   
@@ -225,17 +225,16 @@ photon pulses from a pair of spots which may be related under some model.</p>
 <dt id="xpsi.HotRegions.HotRegions">
 <em class="property">class </em><code class="descclassname">xpsi.HotRegions.</code><code class="descname">HotRegions</code><span class="sig-paren">(</span><em>hotregions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegions.html#HotRegions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegions.HotRegions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
-<p>Two photospheric hot regions, where the hot regions are objects.</p>
+<p>Two or more photospheric hot regions, where the hot regions are objects.</p>
 <p>The hot regions can be equal or different in parametrisation complexity.</p>
-<p>This class could be trivially extended in principle to operate with
-multiple hot regions, but the computational expense scales ~linearly with
-number. Applications thus far have used two distinct hot regions with equal
-and unequal complexity.</p>
+<p>In principle you can construct multiple hot regions, but the computational
+expense scales ~linearly with number. Applications thus far have used two
+distinct hot regions with equal and unequal complexities.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hotregions</strong> (<em>tuple</em>) – Two-element container of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion.HotRegion</span></code></a> instances.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hotregions</strong> (<em>tuple</em>) – Iterable container of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion.HotRegion</span></code></a> instances.</td>
 </tr>
 </tbody>
 </table>

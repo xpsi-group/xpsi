@@ -799,7 +799,10 @@ Prior
             """
             to_cache = self.parameters.vector
 
-            super(CustomPrior, self).inverse_sample(hypercube)
+            if hypercube is None:
+                hypercube = np.random.rand(len(self))
+
+            _ = super(CustomPrior, self).inverse_sample(hypercube)
 
             ref = self.parameters # redefine shortcut
 
@@ -809,14 +812,18 @@ Prior
                                             loc=0.325, scale=0.009)
 
             idx = ref.index('p__phase_shift')
-            ref['p_phase_shift'] = 0.35 + 0.2 * hypercube[idx]
-            if ref['p__phase_shift'] > 0.5:
-                ref['p__phase_shift'] -= 1.0
+            phase = 0.35 + 0.2 * hypercube[idx]
+            if phase > 0.5:
+                ref['p__phase_shift'] = phase - 1.0
+            else:
+                ref['p__phase_shift'] = phase
 
             idx = ref.index('s__phase_shift')
-            ref['s_phase_shift'] = -0.25 + hypercube[idx]
-            if ref['s__phase_shift'] > 0.5:
-                ref['s__phase_shift'] -= 1.0
+            phase = -0.25 + hypercube[idx]
+            if phase > 0.5:
+                ref['s__phase_shift'] = phase - 1.0
+            else:
+                ref['s__phase_shift'] = phase
 
             idx = ref.index('s__omit_radius')
             ref['s__omit_radius'] = float(self.interpolator(hypercube[idx]))
@@ -862,16 +869,21 @@ Prior
 
             return self.parameters.vector # only free parameter values returned
 
-        def inverse_sample_and_transform(self, hypercube = None):
-            """ A transformation for post-processing. """
-
-            p = self.transform(self.inverse_sample(hypercube))
-
-            return p
-
         @staticmethod
         def transform(p):
-            """ A transformation for post-processing. """
+            """ A transformation for post-processing.
+
+            Note that if you want to use dictionary-like access to values,
+            you could make a dictionary, e.g.:
+
+            .. code-block:: python
+
+                ref = dict(zip(self.parameters.names, p))
+
+            and use the ``__getitem__`` functionality of ``ref`` instead of
+            numeric indexing.
+
+            """
 
             if not isinstance(p, list):
                 p = list(p)

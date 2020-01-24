@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.HotRegions &mdash; xpsi 0.3.5 documentation</title>
+  <title>xpsi.HotRegions &mdash; xpsi 0.3.6 documentation</title>
   
 
   
@@ -198,23 +198,22 @@
 <span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="k">import</span> <span class="n">HotRegion</span>
 
 <div class="viewcode-block" id="HotRegions"><a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions">[docs]</a><span class="k">class</span> <span class="nc">HotRegions</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Two photospheric hot regions, where the hot regions are objects.</span>
+    <span class="sd">&quot;&quot;&quot; Two or more photospheric hot regions, where the hot regions are objects.</span>
 
 <span class="sd">    The hot regions can be equal or different in parametrisation complexity.</span>
 
-<span class="sd">    This class could be trivially extended in principle to operate with</span>
-<span class="sd">    multiple hot regions, but the computational expense scales ~linearly with</span>
-<span class="sd">    number. Applications thus far have used two distinct hot regions with equal</span>
-<span class="sd">    and unequal complexity.</span>
+<span class="sd">    In principle you can construct multiple hot regions, but the computational</span>
+<span class="sd">    expense scales ~linearly with number. Applications thus far have used two</span>
+<span class="sd">    distinct hot regions with equal and unequal complexities.</span>
 
 <span class="sd">    :param tuple hotregions:</span>
-<span class="sd">        Two-element container of :class:`.HotRegion.HotRegion` instances.</span>
+<span class="sd">        Iterable container of :class:`.HotRegion.HotRegion` instances.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hotregions</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">objects</span> <span class="o">=</span> <span class="n">hotregions</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">objects</span> <span class="o">=</span> <span class="n">hotregions</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">HotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">hotregions</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -270,25 +269,25 @@
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">:</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">print_settings</span><span class="p">()</span></div>
 
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the number of hot region objects referenced.</span>
+
+<span class="sd">        Overwrites the base class magic method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">)</span>
+
 <div class="viewcode-block" id="HotRegions.embed"><a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Embed the hot regions. &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">fast_total_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fast_primary_total_counts</span> <span class="o">=</span> <span class="n">fast_total_counts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">fast_secondary_total_counts</span> <span class="o">=</span> <span class="n">fast_total_counts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">fast_primary_total_counts</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">fast_secondary_total_counts</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">fast_total_counts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fast_total_counts</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
-                               <span class="n">photosphere</span><span class="p">,</span>
-                               <span class="n">fast_primary_total_counts</span><span class="p">,</span>
-                               <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
-                               <span class="n">photosphere</span><span class="p">,</span>
-                               <span class="n">fast_secondary_total_counts</span><span class="p">,</span>
-                               <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">obj</span><span class="p">,</span> <span class="n">fast</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">,</span> <span class="n">fast_total_counts</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span>
+                      <span class="n">photosphere</span><span class="p">,</span>
+                      <span class="n">fast</span><span class="p">,</span>
+                      <span class="n">threads</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HotRegions.integrate"><a class="viewcode-back" href="../../hotregions.html#xpsi.HotRegions.HotRegions.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">,</span>
                   <span class="n">hot_atmosphere</span><span class="p">,</span> <span class="n">elsewhere_atmosphere</span><span class="p">):</span>
@@ -306,23 +305,17 @@
 <span class="sd">            Number of ``OpenMP`` threads for pulse integration.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">primary_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">secondary_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">primary_energies</span> <span class="o">=</span> <span class="n">secondary_energies</span> <span class="o">=</span> <span class="n">energies</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">energies</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="n">primary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">primary_energies</span><span class="p">,</span>
-                                             <span class="n">threads</span><span class="p">,</span>
-                                             <span class="n">hot_atmosphere</span><span class="p">,</span>
-                                             <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
+        <span class="n">signals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">obj</span><span class="p">,</span> <span class="n">E</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">,</span> <span class="n">energies</span><span class="p">):</span>
+            <span class="n">signals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span>
+                                         <span class="n">threads</span><span class="p">,</span>
+                                         <span class="n">hot_atmosphere</span><span class="p">,</span>
+                                         <span class="n">elsewhere_atmosphere</span><span class="p">))</span>
 
-        <span class="n">secondary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">secondary_energies</span><span class="p">,</span>
-                                               <span class="n">threads</span><span class="p">,</span>
-                                               <span class="n">hot_atmosphere</span><span class="p">,</span>
-                                               <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="p">(</span><span class="n">primary</span><span class="p">,</span> <span class="n">secondary</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">signals</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
