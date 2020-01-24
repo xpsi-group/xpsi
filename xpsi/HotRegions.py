@@ -8,23 +8,22 @@ from .ParameterSubspace import ParameterSubspace
 from .HotRegion import HotRegion
 
 class HotRegions(ParameterSubspace):
-    """ Two photospheric hot regions, where the hot regions are objects.
+    """ Two or more photospheric hot regions, where the hot regions are objects.
 
     The hot regions can be equal or different in parametrisation complexity.
 
-    This class could be trivially extended in principle to operate with
-    multiple hot regions, but the computational expense scales ~linearly with
-    number. Applications thus far have used two distinct hot regions with equal
-    and unequal complexity.
+    In principle you can construct multiple hot regions, but the computational
+    expense scales ~linearly with number. Applications thus far have used two
+    distinct hot regions with equal and unequal complexities.
 
     :param tuple hotregions:
-        Two-element container of :class:`.HotRegion.HotRegion` instances.
+        Iterable container of :class:`.HotRegion.HotRegion` instances.
 
     """
 
     def __init__(self, hotregions):
-        self.objects = hotregions
 
+        self.objects = hotregions
         super(HotRegions, self).__init__(hotregions)
 
     @property
@@ -80,25 +79,25 @@ class HotRegions(ParameterSubspace):
         for obj in self._objects:
             obj.print_settings()
 
+    def __len__(self):
+        """ Get the number of hot region objects referenced.
+
+        Overwrites the base class magic method.
+
+        """
+        return len(self._objects)
+
     def embed(self, spacetime, photosphere, fast_total_counts, threads, *args):
         """ Embed the hot regions. """
 
-        if fast_total_counts is not None:
-            fast_primary_total_counts = fast_total_counts[0]
-            fast_secondary_total_counts = fast_total_counts[1]
-        else:
-            fast_primary_total_counts = None
-            fast_secondary_total_counts = None
+        if fast_total_counts is None:
+            fast_total_counts = [None] * len(self)
 
-        self._objects[0].embed(spacetime,
-                               photosphere,
-                               fast_primary_total_counts,
-                               threads, *args)
-
-        self._objects[1].embed(spacetime,
-                               photosphere,
-                               fast_secondary_total_counts,
-                               threads, *args)
+        for obj, fast in zip(self._objects, fast_total_counts):
+            obj.embed(spacetime,
+                      photosphere,
+                      fast,
+                      threads, *args)
 
     def integrate(self, st, energies, threads,
                   hot_atmosphere, elsewhere_atmosphere):
@@ -116,20 +115,14 @@ class HotRegions(ParameterSubspace):
             Number of ``OpenMP`` threads for pulse integration.
 
         """
-        if isinstance(energies, tuple):
-            primary_energies = energies[0]
-            secondary_energies = energies[1]
-        else:
-            primary_energies = secondary_energies = energies
+        if not isinstance(energies, tuple):
+            energies = [energies] * len(self)
 
-        primary = self._objects[0].integrate(st, primary_energies,
-                                             threads,
-                                             hot_atmosphere,
-                                             elsewhere_atmosphere)
+        signals = []
+        for obj, E in zip(self._objects, energies):
+            signals.append(obj.integrate(st, E,
+                                         threads,
+                                         hot_atmosphere,
+                                         elsewhere_atmosphere))
 
-        secondary = self._objects[1].integrate(st, secondary_energies,
-                                               threads,
-                                               hot_atmosphere,
-                                               elsewhere_atmosphere)
-
-        return (primary, secondary)
+        return tuple(signals)
