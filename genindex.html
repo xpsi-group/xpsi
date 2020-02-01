@@ -117,6 +117,7 @@
 <li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
 </ul>
@@ -247,8 +248,6 @@
 </li>
       <li><a href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace.__iter__">__iter__() (xpsi.ParameterSubspace.ParameterSubspace method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace.__next__">__next__() (xpsi.ParameterSubspace.ParameterSubspace method)</a>
 </li>
       <li><a href="parameter.html#xpsi.Parameter.Parameter.__repr__">__repr__() (xpsi.Parameter.Parameter method)</a>
@@ -257,6 +256,8 @@
         <li><a href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace.__repr__">(xpsi.ParameterSubspace.ParameterSubspace method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace.__setitem__">__setitem__() (xpsi.ParameterSubspace.ParameterSubspace method)</a>
 </li>
       <li><a href="likelihood.html#xpsi.Likelihood.Likelihood.__str__">__str__() (xpsi.Likelihood.Likelihood method)</a>
@@ -267,19 +268,37 @@
         <li><a href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace.__str__">(xpsi.ParameterSubspace.ParameterSubspace method)</a>
 </li>
       </ul></li>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere._animate">_animate() (xpsi.Photosphere.Photosphere static method)</a>
+</li>
       <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere._compute_cellParamVecs">_compute_cellParamVecs() (xpsi.Elsewhere.Elsewhere method)</a>
+
+      <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.Everywhere._compute_cellParamVecs">(xpsi.Everywhere.Everywhere method)</a>
 </li>
+      </ul></li>
       <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere._compute_rays">_compute_rays() (xpsi.Elsewhere.Elsewhere method)</a>
+
+      <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.Everywhere._compute_rays">(xpsi.Everywhere.Everywhere method)</a>
 </li>
+      </ul></li>
       <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere._construct_cellMesh">_construct_cellMesh() (xpsi.Elsewhere.Elsewhere method)</a>
+
+      <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.Everywhere._construct_cellMesh">(xpsi.Everywhere.Everywhere method)</a>
 </li>
+      </ul></li>
       <li><a href="pulse.html#xpsi.Pulse.Pulse._construct_energy_array">_construct_energy_array() (xpsi.Pulse.Pulse method)</a>
+</li>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere._global_variables">_global_variables() (xpsi.Photosphere.Photosphere method)</a>
 </li>
       <li><a href="hotregion.html#xpsi.HotRegion.HotRegion._HotRegion__compute_cellParamVecs">_HotRegion__compute_cellParamVecs() (xpsi.HotRegion.HotRegion method)</a>
 </li>
       <li><a href="hotregion.html#xpsi.HotRegion.HotRegion._HotRegion__compute_rays">_HotRegion__compute_rays() (xpsi.HotRegion.HotRegion method)</a>
 </li>
       <li><a href="hotregion.html#xpsi.HotRegion.HotRegion._HotRegion__construct_cellMesh">_HotRegion__construct_cellMesh() (xpsi.HotRegion.HotRegion method)</a>
+</li>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere._plot_sky_maps">_plot_sky_maps() (xpsi.Photosphere.Photosphere method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -365,11 +384,17 @@
 </li>
       <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere">Elsewhere (class in xpsi.Elsewhere)</a>
 </li>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.elsewhere">elsewhere (xpsi.Photosphere.Photosphere attribute)</a>
+</li>
       <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.elsewhere_atmosphere">elsewhere_atmosphere (xpsi.Photosphere.Photosphere attribute)</a>
 </li>
-      <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.embed">embed() (xpsi.HotRegion.HotRegion method)</a>
+      <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere.embed">embed() (xpsi.Elsewhere.Elsewhere method)</a>
 
       <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.Everywhere.embed">(xpsi.Everywhere.Everywhere method)</a>
+</li>
+        <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.embed">(xpsi.HotRegion.HotRegion method)</a>
+</li>
         <li><a href="hotregions.html#xpsi.HotRegions.HotRegions.embed">(xpsi.HotRegions.HotRegions method)</a>
 </li>
         <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.embed">(xpsi.Photosphere.Photosphere method)</a>
@@ -388,6 +413,8 @@
       <li><a href="prior.html#xpsi.Prior.Prior.estimate_hypercube_frac">estimate_hypercube_frac() (xpsi.Prior.Prior method)</a>
 </li>
       <li><a href="parameter.html#xpsi.Parameter.Parameter.evaluate">evaluate() (xpsi.Parameter.Parameter method)</a>
+</li>
+      <li><a href="everywhere.html#xpsi.Everywhere.Everywhere">Everywhere (class in xpsi.Everywhere)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -423,6 +450,8 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.hot">hot (xpsi.Photosphere.Photosphere attribute)</a>
+</li>
       <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.hot_atmosphere">hot_atmosphere (xpsi.Photosphere.Photosphere attribute)</a>
 </li>
   </ul></td>
@@ -441,6 +470,10 @@
 </li>
       <li><a href="postprocessing.html#xpsi.PostProcessing.Run.ID">ID (xpsi.PostProcessing.Run attribute)</a>
 </li>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.image">image() (xpsi.Photosphere.Photosphere method)</a>
+</li>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.images">images (xpsi.Photosphere.Photosphere attribute)</a>
+</li>
       <li><a href="postprocessing.html#xpsi.PostProcessing.Run.implementation">implementation (xpsi.PostProcessing.Run attribute)</a>
 </li>
       <li><a href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace.index">index() (xpsi.ParameterSubspace.ParameterSubspace method)</a>
@@ -450,6 +483,8 @@
       <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere.integrate">integrate() (xpsi.Elsewhere.Elsewhere method)</a>
 
       <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.Everywhere.integrate">(xpsi.Everywhere.Everywhere method)</a>
+</li>
         <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.integrate">(xpsi.HotRegion.HotRegion method)</a>
 </li>
         <li><a href="hotregions.html#xpsi.HotRegions.HotRegions.integrate">(xpsi.HotRegions.HotRegions method)</a>
@@ -462,7 +497,11 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="elsewhere.html#xpsi.Elsewhere.IntegrationError">IntegrationError (class in xpsi.Elsewhere)</a>
+
+      <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.IntegrationError">(class in xpsi.Everywhere)</a>
 </li>
+      </ul></li>
       <li><a href="interstellar.html#xpsi.Interstellar.Interstellar">Interstellar (class in xpsi.Interstellar)</a>
 </li>
       <li><a href="prior.html#xpsi.Prior.Prior.inverse_sample">inverse_sample() (xpsi.Prior.Prior method)</a>
@@ -551,10 +590,10 @@
       </ul></li>
       <li><a href="postprocessing.html#xpsi.PostProcessing.NSBackend.nestcheck_backend">nestcheck_backend (xpsi.PostProcessing.NSBackend attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sample.html#xpsi.Sample.nested">nested() (in module xpsi.Sample)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace.next">next() (xpsi.ParameterSubspace.ParameterSubspace method)</a>
 </li>
       <li><a href="postprocessing.html#xpsi.PostProcessing.NSBackend">NSBackend (class in xpsi.PostProcessing)</a>
@@ -562,12 +601,16 @@
       <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere.num_cells">num_cells (xpsi.Elsewhere.Elsewhere attribute)</a>
 
       <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.Everywhere.num_cells">(xpsi.Everywhere.Everywhere attribute)</a>
+</li>
         <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.num_cells">(xpsi.HotRegion.HotRegion attribute)</a>
 </li>
       </ul></li>
       <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere.num_rays">num_rays (xpsi.Elsewhere.Elsewhere attribute)</a>
 
       <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.Everywhere.num_rays">(xpsi.Everywhere.Everywhere attribute)</a>
+</li>
         <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.num_rays">(xpsi.HotRegion.HotRegion attribute)</a>
 </li>
       </ul></li>
@@ -599,8 +642,12 @@
 </li>
       <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.phases">phases (xpsi.HotRegion.HotRegion attribute)</a>
 </li>
-      <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.phases_in_cycles">phases_in_cycles (xpsi.HotRegion.HotRegion attribute)</a>
+      <li><a href="everywhere.html#xpsi.Everywhere.Everywhere.phases_in_cycles">phases_in_cycles (xpsi.Everywhere.Everywhere attribute)</a>
+
+      <ul>
+        <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.phases_in_cycles">(xpsi.HotRegion.HotRegion attribute)</a>
 </li>
+      </ul></li>
       <li><a href="photosphere.html#xpsi.Photosphere.Photosphere">Photosphere (class in xpsi.Photosphere)</a>
 </li>
       <li><a href="star.html#xpsi.Star.Star.photospheres">photospheres (xpsi.Star.Star attribute)</a>
@@ -620,6 +667,8 @@
       <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere.print_settings">print_settings() (xpsi.Elsewhere.Elsewhere method)</a>
 
       <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.Everywhere.print_settings">(xpsi.Everywhere.Everywhere method)</a>
+</li>
         <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.print_settings">(xpsi.HotRegion.HotRegion method)</a>
 </li>
         <li><a href="hotregions.html#xpsi.HotRegions.HotRegions.print_settings">(xpsi.HotRegions.HotRegions method)</a>
@@ -637,7 +686,7 @@
 </li>
       <li><a href="pulse.html#xpsi.Pulse.Pulse">Pulse (class in xpsi.Pulse)</a>
 </li>
-      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.pulse">pulse (xpsi.Photosphere.Photosphere attribute)</a>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.pulse">pulse (xpsi.Photosphere.Photosphere attribute)</a>, <a href="photosphere.html#xpsi.Photosphere.Photosphere.pulse">[1]</a>
 </li>
       <li><a href="hotregion.html#xpsi.HotRegion.PulseError">PulseError (class in xpsi.HotRegion)</a>
 
@@ -663,14 +712,16 @@
 </li>
       <li><a href="likelihood.html#xpsi.Likelihood.Likelihood.random_near_llzero">random_near_llzero (xpsi.Likelihood.Likelihood attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="elsewhere.html#xpsi.Elsewhere.RayError">RayError (class in xpsi.Elsewhere)</a>
 
       <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.RayError">(class in xpsi.Everywhere)</a>
+</li>
         <li><a href="hotregion.html#xpsi.HotRegion.RayError">(class in xpsi.HotRegion)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="instrument.html#xpsi.Instrument.ResponseError">ResponseError (class in xpsi.Instrument)</a>
 </li>
       <li><a href="postprocessing.html#xpsi.PostProcessing.Run">Run (class in xpsi.PostProcessing)</a>
@@ -689,15 +740,23 @@
 </li>
       <li><a href="postprocessing.html#xpsi.PostProcessing.Runs.set_params">set_params() (xpsi.PostProcessing.Runs method)</a>
 </li>
-      <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.set_phases">set_phases() (xpsi.HotRegion.HotRegion method)</a>
+      <li><a href="everywhere.html#xpsi.Everywhere.Everywhere.set_phases">set_phases() (xpsi.Everywhere.Everywhere method)</a>
+
+      <ul>
+        <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.set_phases">(xpsi.HotRegion.HotRegion method)</a>
 </li>
+      </ul></li>
       <li><a href="postprocessing.html#xpsi.PostProcessing.Runs.set_subset">set_subset() (xpsi.PostProcessing.Runs method)</a>
 </li>
       <li><a href="spacetime.html#xpsi.Spacetime.Spacetime">Spacetime (class in xpsi.Spacetime)</a>
 </li>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.spacetime">spacetime (xpsi.Photosphere.Photosphere attribute)</a>
+</li>
       <li><a href="elsewhere.html#xpsi.Elsewhere.Elsewhere.sqrt_num_cells">sqrt_num_cells (xpsi.Elsewhere.Elsewhere attribute)</a>
 
       <ul>
+        <li><a href="everywhere.html#xpsi.Everywhere.Everywhere.sqrt_num_cells">(xpsi.Everywhere.Everywhere attribute)</a>
+</li>
         <li><a href="hotregion.html#xpsi.HotRegion.HotRegion.sqrt_num_cells">(xpsi.HotRegion.HotRegion attribute)</a>
 </li>
       </ul></li>
@@ -722,6 +781,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="likelihood.html#xpsi.Likelihood.Likelihood.threads">threads (xpsi.Likelihood.Likelihood attribute)</a>
+</li>
+      <li><a href="photosphere.html#xpsi.Photosphere.Photosphere.time_invariant">time_invariant (xpsi.Photosphere.Photosphere attribute)</a>
 </li>
       <li><a href="prior.html#xpsi.Prior.Prior.transform">transform() (xpsi.Prior.Prior static method)</a>
 </li>
@@ -771,6 +832,8 @@
 </li>
       <li><a href="elsewhere.html#module-xpsi.Elsewhere">xpsi.Elsewhere (module)</a>
 </li>
+      <li><a href="everywhere.html#module-xpsi.Everywhere">xpsi.Everywhere (module)</a>
+</li>
       <li><a href="hotregion.html#module-xpsi.HotRegion">xpsi.HotRegion (module)</a>
 </li>
       <li><a href="hotregions.html#module-xpsi.HotRegions">xpsi.HotRegions (module)</a>
@@ -781,10 +844,10 @@
 </li>
       <li><a href="likelihood.html#module-xpsi.Likelihood">xpsi.Likelihood (module)</a>
 </li>
-      <li><a href="parameter.html#module-xpsi.Parameter">xpsi.Parameter (module)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="parameter.html#module-xpsi.Parameter">xpsi.Parameter (module)</a>
+</li>
       <li><a href="parameterSubspace.html#module-xpsi.ParameterSubspace">xpsi.ParameterSubspace (module)</a>
 </li>
       <li><a href="photosphere.html#module-xpsi.Photosphere">xpsi.Photosphere (module)</a>

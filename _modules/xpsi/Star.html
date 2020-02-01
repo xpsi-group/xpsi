@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 </ul>
@@ -188,15 +189,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for xpsi.Star</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
 
-<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="kn">import</span> <span class="n">ParameterSubspace</span>
 
-<span class="kn">from</span> <span class="nn">.Spacetime</span> <span class="k">import</span> <span class="n">Spacetime</span>
-<span class="kn">from</span> <span class="nn">.Photosphere</span> <span class="k">import</span> <span class="n">Photosphere</span>
+<span class="kn">from</span> <span class="nn">.Spacetime</span> <span class="kn">import</span> <span class="n">Spacetime</span>
+<span class="kn">from</span> <span class="nn">.Photosphere</span> <span class="kn">import</span> <span class="n">Photosphere</span>
 
 <div class="viewcode-block" id="Star"><a class="viewcode-back" href="../../star.html#xpsi.Star.Star">[docs]</a><span class="k">class</span> <span class="nc">Star</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Instances of :class:`Star` represent model stars.</span>
@@ -212,7 +213,7 @@
 <span class="sd">                              :class:`~.Photosphere`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photospheres</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photospheres</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">Spacetime</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for ambient spacetime object.&#39;</span><span class="p">)</span>
 
@@ -252,8 +253,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_photospheres</span>
 
     <span class="k">def</span> <span class="nf">activate_fast_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activate</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">photosphere</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_photospheres</span><span class="p">:</span>
-            <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">fast_mode</span> <span class="o">=</span> <span class="n">activate</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">photosphere</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_photospheres</span><span class="p">:</span>
+                <span class="n">photosphere</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">fast_mode</span> <span class="o">=</span> <span class="n">activate</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span> <span class="c1"># no hot regions to worry about</span>
 
 <div class="viewcode-block" id="Star.update"><a class="viewcode-back" href="../../star.html#xpsi.Star.Star.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fast_counts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Update the star.</span>

@@ -39,6 +39,7 @@
    twohotregions
    hotregions
    elsewhere
+   everywhere
    interstellar
    background
 

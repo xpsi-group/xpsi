@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 </ul>
@@ -188,12 +189,12 @@
            <div itemprop="articleBody">
             
   <h1>Source code for xpsi.Sample</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;nested&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
 
 <span class="n">posterior</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -233,7 +234,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># use the globally scoped variable</span>
     <span class="k">global</span> <span class="n">posterior</span>
-    <span class="kn">from</span> <span class="nn">xpsi.Posterior</span> <span class="k">import</span> <span class="n">Posterior</span>
+    <span class="kn">from</span> <span class="nn">xpsi.Posterior</span> <span class="kn">import</span> <span class="n">Posterior</span>
     <span class="c1"># Callable instance of the posterior</span>
     <span class="n">posterior</span> <span class="o">=</span> <span class="n">Posterior</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span>
                           <span class="n">prior</span><span class="p">,</span>
@@ -241,7 +242,7 @@
 
     <span class="k">if</span> <span class="n">MPI</span> <span class="ow">or</span> <span class="n">global_imports</span><span class="o">.</span><span class="n">_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">schwimmbad</span> <span class="k">import</span> <span class="n">MPIPool</span>
+            <span class="kn">from</span> <span class="nn">schwimmbad</span> <span class="kn">import</span> <span class="n">MPIPool</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;Check your schwimmbad package installation.&#39;</span><span class="p">)</span>
 
@@ -252,7 +253,7 @@
                 <span class="n">pool</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
                 <span class="n">_sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-            <span class="kn">from</span> <span class="nn">xpsi.EnsembleSampler</span> <span class="k">import</span> <span class="n">EnsembleSampler</span>
+            <span class="kn">from</span> <span class="nn">xpsi.EnsembleSampler</span> <span class="kn">import</span> <span class="n">EnsembleSampler</span>
 
             <span class="c1"># Initialise emcee sampler</span>
             <span class="n">sampler</span> <span class="o">=</span> <span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">),</span>
@@ -263,7 +264,7 @@
             <span class="c1"># Commence emcee sampling process</span>
             <span class="n">sampler</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">xpsi.EnsembleSampler</span> <span class="k">import</span> <span class="n">EnsembleSampler</span>
+        <span class="kn">from</span> <span class="nn">xpsi.EnsembleSampler</span> <span class="kn">import</span> <span class="n">EnsembleSampler</span>
 
         <span class="c1"># Initialise emcee sampler</span>
         <span class="n">sampler</span> <span class="o">=</span> <span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">),</span>
@@ -294,7 +295,7 @@
 <span class="sd">    :param kwargs: Keyword arguments for PyMultiNest.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">xpsi.NestedSampler</span> <span class="k">import</span> <span class="n">NestedSampler</span>
+    <span class="kn">from</span> <span class="nn">xpsi.NestedSampler</span> <span class="kn">import</span> <span class="n">NestedSampler</span>
 
     <span class="k">if</span> <span class="n">check_kwargs</span><span class="p">:</span>
         <span class="n">likelihood</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="o">**</span><span class="n">check_kwargs</span><span class="p">)</span>

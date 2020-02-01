@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 </ul>
@@ -188,7 +189,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for xpsi.PostProcessing</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Run&quot;</span><span class="p">,</span>
            <span class="s2">&quot;NSBackend&quot;</span><span class="p">,</span>
@@ -197,21 +198,21 @@
            <span class="s2">&quot;publication_rc_settings&quot;</span><span class="p">,</span>
            <span class="s2">&quot;slide_rc_settings&quot;</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">make_verbose</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">fragile</span><span class="p">,</span> <span class="n">_verbose</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">make_verbose</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">fragile</span><span class="p">,</span> <span class="n">_verbose</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__version__</span>
 
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 
 <span class="kn">import</span> <span class="nn">copy</span> <span class="k">as</span> <span class="nn">_copy</span>
 
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">logsumexp</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">logsumexp</span>
 
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">rc</span><span class="p">,</span> <span class="n">rcParams</span>
-<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="k">import</span> <span class="n">MultipleLocator</span><span class="p">,</span> <span class="n">MaxNLocator</span><span class="p">,</span> <span class="n">AutoMinorLocator</span><span class="p">,</span>\
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rc</span><span class="p">,</span> <span class="n">rcParams</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MultipleLocator</span><span class="p">,</span> <span class="n">MaxNLocator</span><span class="p">,</span> <span class="n">AutoMinorLocator</span><span class="p">,</span>\
                                 <span class="n">AutoLocator</span><span class="p">,</span> <span class="n">ScalarFormatter</span><span class="p">,</span> <span class="n">LogLocator</span><span class="p">,</span>\
                                 <span class="n">NullFormatter</span>
 
@@ -223,16 +224,16 @@
     <span class="n">default</span><span class="o">.</span><span class="n">set_powerlimits</span><span class="p">(</span><span class="n">lims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">default</span>
 
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">gridspec</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">cm</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
 <span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="k">as</span> <span class="nn">mpatches</span>
 
-<span class="kn">from</span> <span class="nn">.Likelihood</span> <span class="k">import</span> <span class="n">Likelihood</span>
-<span class="kn">from</span> <span class="nn">.Prior</span> <span class="k">import</span> <span class="n">Prior</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Pulse</span>
-<span class="kn">from</span> <span class="nn">.tools.phase_interpolator</span> <span class="k">import</span> <span class="n">interpolate_pulse</span> <span class="k">as</span> <span class="n">interp</span>
-<span class="kn">from</span> <span class="nn">.tools.phase_integrator</span> <span class="k">import</span> <span class="n">phase_integrator</span>
-<span class="kn">from</span> <span class="nn">.tools.energy_interpolator</span> <span class="k">import</span> <span class="n">energy_interpolator</span>
+<span class="kn">from</span> <span class="nn">.Likelihood</span> <span class="kn">import</span> <span class="n">Likelihood</span>
+<span class="kn">from</span> <span class="nn">.Prior</span> <span class="kn">import</span> <span class="n">Prior</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Pulse</span>
+<span class="kn">from</span> <span class="nn">.tools.phase_interpolator</span> <span class="kn">import</span> <span class="n">interpolate_pulse</span> <span class="k">as</span> <span class="n">interp</span>
+<span class="kn">from</span> <span class="nn">.tools.phase_integrator</span> <span class="kn">import</span> <span class="n">phase_integrator</span>
+<span class="kn">from</span> <span class="nn">.tools.energy_interpolator</span> <span class="kn">import</span> <span class="n">energy_interpolator</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">h5py</span>
@@ -246,7 +247,7 @@
     <span class="k">if</span> <span class="n">_verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Cannot import GetDist.&#39;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">getdist</span> <span class="k">import</span> <span class="n">loadMCSamples</span><span class="p">,</span> <span class="n">plots</span>
+    <span class="kn">from</span> <span class="nn">getdist</span> <span class="kn">import</span> <span class="n">loadMCSamples</span><span class="p">,</span> <span class="n">plots</span>
     <span class="c1"># the following disables getdist.chains.print_load_details</span>
     <span class="n">getdist</span><span class="o">.</span><span class="n">chains</span><span class="o">.</span><span class="n">print_load_details</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">_verbose</span><span class="p">:</span>
@@ -260,18 +261,18 @@
 <span class="k">else</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">_verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Imported nestcheck version: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">nestcheck</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">nestcheck.data_processing</span> <span class="k">import</span> <span class="p">(</span><span class="n">process_multinest_run</span><span class="p">,</span>
+    <span class="kn">from</span> <span class="nn">nestcheck.data_processing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">process_multinest_run</span><span class="p">,</span>
                                            <span class="n">process_polychord_run</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">nestcheck.ns_run_utils</span> <span class="k">import</span> <span class="n">combine_ns_runs</span><span class="p">,</span> <span class="n">get_logw</span><span class="p">,</span> <span class="n">get_w_rel</span>
-    <span class="kn">from</span> <span class="nn">nestcheck.write_polychord_output</span> <span class="k">import</span> <span class="n">write_run_output</span>
-    <span class="kn">from</span> <span class="nn">nestcheck.plots</span> <span class="k">import</span> <span class="p">(</span><span class="n">bs_param_dists</span><span class="p">,</span>
+    <span class="kn">from</span> <span class="nn">nestcheck.ns_run_utils</span> <span class="kn">import</span> <span class="n">combine_ns_runs</span><span class="p">,</span> <span class="n">get_logw</span><span class="p">,</span> <span class="n">get_w_rel</span>
+    <span class="kn">from</span> <span class="nn">nestcheck.write_polychord_output</span> <span class="kn">import</span> <span class="n">write_run_output</span>
+    <span class="kn">from</span> <span class="nn">nestcheck.plots</span> <span class="kn">import</span> <span class="p">(</span><span class="n">bs_param_dists</span><span class="p">,</span>
                                  <span class="n">param_logx_diagram</span><span class="p">,</span>
                                  <span class="n">weighted_1d_gaussian_kde</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">nestcheck.error_analysis</span> <span class="k">import</span> <span class="n">run_ci_bootstrap</span>
-    <span class="kn">from</span> <span class="nn">nestcheck.estimators</span> <span class="k">import</span> <span class="n">param_cred</span><span class="p">,</span> <span class="n">logz</span>
+    <span class="kn">from</span> <span class="nn">nestcheck.error_analysis</span> <span class="kn">import</span> <span class="n">run_ci_bootstrap</span>
+    <span class="kn">from</span> <span class="nn">nestcheck.estimators</span> <span class="kn">import</span> <span class="n">param_cred</span><span class="p">,</span> <span class="n">logz</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">nestcheck.plots</span> <span class="k">import</span> <span class="n">getdist_kde</span>
+        <span class="kn">from</span> <span class="nn">nestcheck.plots</span> <span class="kn">import</span> <span class="n">getdist_kde</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">_verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Using native nestcheck KDE instead of GetDist KDE.&#39;</span><span class="p">)</span>
@@ -283,7 +284,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Cannot import fgivenx.&#39;</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">emcee.backends</span> <span class="k">import</span> <span class="n">HDFBackend</span>
+    <span class="kn">from</span> <span class="nn">emcee.backends</span> <span class="kn">import</span> <span class="n">HDFBackend</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">_verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Cannot import emcee.&#39;</span><span class="p">)</span>
@@ -350,7 +351,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">implementation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truths</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">ID</span>
@@ -567,7 +568,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span> <span class="n">kde_settings</span><span class="p">,</span> <span class="n">use_nestcheck</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span> <span class="n">kde_settings</span><span class="p">,</span> <span class="n">use_nestcheck</span><span class="p">,</span>
                  <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">filerootpath</span> <span class="o">=</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
         <span class="n">_filerootpath</span> <span class="o">=</span> <span class="n">filerootpath</span>
@@ -621,7 +622,7 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filerootpath</span> <span class="o">+</span> <span class="s1">&#39;.stats&#39;</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_filerootpath</span> <span class="o">+</span> <span class="s1">&#39;.stats&#39;</span><span class="p">):</span>
                         <span class="k">try</span><span class="p">:</span>
-                            <span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">copyfile</span> <span class="k">as</span> <span class="n">_copyfile</span>
+                            <span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copyfile</span> <span class="k">as</span> <span class="n">_copyfile</span>
                         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
                             <span class="k">pass</span>
                         <span class="k">else</span><span class="p">:</span>
@@ -667,7 +668,7 @@
 <span class="k">class</span> <span class="nc">Params</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Information about parameters shared by runs for plotting. &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="n">names</span>
 
     <span class="nd">@property</span>
@@ -693,7 +694,7 @@
 <div class="viewcode-block" id="Runs"><a class="viewcode-back" href="../../postprocessing.html#xpsi.PostProcessing.Runs">[docs]</a><span class="k">class</span> <span class="nc">Runs</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Container for nested sampling run objects. &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runs</span><span class="p">):</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="nb">iter</span><span class="p">(</span><span class="n">runs</span><span class="p">)</span>
@@ -804,7 +805,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subset</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get a :class:`Run` instance using the associated ID. &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runs</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ID</span> <span class="o">==</span> <span class="n">run</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
@@ -913,7 +914,7 @@
 <span class="sd">                       matching the IDs of the runs.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runs</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">likelihood</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runs</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">likelihood</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">runs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">runs</span> <span class="o">=</span> <span class="n">runs</span>
@@ -2342,7 +2343,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">base_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span>
                  <span class="n">read_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">archive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
@@ -2356,10 +2357,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_only</span> <span class="o">=</span> <span class="n">read_only</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_archive_if_incompatible</span> <span class="o">=</span> <span class="n">archive</span>
 
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">exc</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Encountered problem whilst caching:&#39;</span><span class="p">)</span>
 
@@ -2396,11 +2397,11 @@
         <span class="sd">&quot;&quot;&quot; Reset the counter for the cache iterator. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_iterator</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Read from the cache. &quot;&quot;&quot;</span>
 
         <span class="n">cached</span> <span class="o">=</span> <span class="p">{}</span>
@@ -2502,7 +2503,7 @@
             <span class="k">yield</span> <span class="s1">&#39;Targeting subdirectory: </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">archive_dir</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+            <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Archiving failed... cache file </span><span class="si">%s</span><span class="s1"> will be &#39;</span>
                    <span class="s1">&#39;overwritten.&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">)</span>
@@ -2554,7 +2555,7 @@
 
     <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Instantiating a pulse plotter for posterior checking&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Pulse plotter instantiated&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pulse</span><span class="p">,</span> <span class="n">num_phases</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_energies</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pulse</span><span class="p">,</span> <span class="n">num_phases</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_energies</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
                  <span class="n">use_fgivenx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
@@ -3622,7 +3623,7 @@
 <span class="sd">    :param int thin: If ``None``, defaults to the minumum of one.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">burn</span><span class="p">,</span> <span class="n">thin</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">burn</span><span class="p">,</span> <span class="n">thin</span><span class="p">,</span>
                  <span class="n">lines</span><span class="p">,</span> <span class="n">contours</span><span class="p">,</span> <span class="n">walker_discard</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">settings</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">truths</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">SampleContainer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span>
@@ -3695,7 +3696,7 @@
         <span class="sd">&quot;&quot;&quot; Set the sample storage backend. &quot;&quot;&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">emcee.backends</span> <span class="k">import</span> <span class="n">HDFBackend</span>
+            <span class="kn">from</span> <span class="nn">emcee.backends</span> <span class="kn">import</span> <span class="n">HDFBackend</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;Check your ``emcee`` installation.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

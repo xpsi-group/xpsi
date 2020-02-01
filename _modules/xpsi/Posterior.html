@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 </ul>
@@ -188,19 +189,19 @@
            <div itemprop="articleBody">
             
   <h1>Source code for xpsi.Posterior</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Posterior&quot;</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
 
-<span class="kn">from</span> <span class="nn">.Likelihood</span> <span class="k">import</span> <span class="n">Likelihood</span>
-<span class="kn">from</span> <span class="nn">.Pulse</span> <span class="k">import</span> <span class="n">LikelihoodError</span>
+<span class="kn">from</span> <span class="nn">.Likelihood</span> <span class="kn">import</span> <span class="n">Likelihood</span>
+<span class="kn">from</span> <span class="nn">.Pulse</span> <span class="kn">import</span> <span class="n">LikelihoodError</span>
 
-<span class="kn">from</span> <span class="nn">.Prior</span> <span class="k">import</span> <span class="n">Prior</span>
-<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
-<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="k">import</span> <span class="n">StrictBoundsError</span>
+<span class="kn">from</span> <span class="nn">.Prior</span> <span class="kn">import</span> <span class="n">Prior</span>
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="kn">import</span> <span class="n">ParameterSubspace</span>
+<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="kn">import</span> <span class="n">StrictBoundsError</span>
 
 <div class="viewcode-block" id="PriorError"><a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.PriorError">[docs]</a><span class="k">class</span> <span class="nc">PriorError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Raised if there is a problem with the value of the log-prior. &quot;&quot;&quot;</span></div>
@@ -216,7 +217,7 @@
 <span class="sd">    :param prior: An instance of :class:`~.Prior.Prior`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">likelihood</span><span class="p">,</span>
                  <span class="n">prior</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -228,6 +229,12 @@
         <span class="c1"># no inverse sampling but best to update before prior check</span>
         <span class="c1"># and then revert if not in prior support</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># we do not need to the likelihood object to call the prior for</span>
+        <span class="c1"># this type of sampling because it is handled in the present class</span>
+        <span class="c1"># instead; for nested sampling we want to call the prior from the</span>
+        <span class="c1"># likelihood object in order to check inclusion in the prior support</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="o">.</span><span class="n">prior</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">Prior</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for prior object.&#39;</span><span class="p">)</span>
@@ -244,7 +251,7 @@
         <span class="sd">&quot;&quot;&quot; Get the prior object. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span>
 
-<div class="viewcode-block" id="Posterior.__call__"><a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.Posterior.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="Posterior.__call__"><a class="viewcode-back" href="../../posterior.html#xpsi.Posterior.Posterior.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Special method to make callable instances to feed to ``emcee``.</span>
 
 <span class="sd">        :returns:</span>

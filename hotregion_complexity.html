@@ -123,6 +123,7 @@
 <li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
 </ul>
@@ -430,7 +431,7 @@ div.rendered_html tbody tr:hover {
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
@@ -518,49 +519,49 @@ Creating parameter:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+<span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
 <span class="c1"># a simple circular, simply-connected spot</span>
 <span class="n">primary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
                             <span class="n">values</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># no fixed/derived variables</span>
-                            <span class="n">symmetry</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                            <span class="n">omit</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                            <span class="n">cede</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                            <span class="n">concentric</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">omit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">cede</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
                             <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                             <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
                             <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                             <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
 
-<span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
-              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">omit_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">omit_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">omit_azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">omit_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">omit_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">omit_azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
 <span class="c1"># overlap of an omission region and</span>
 <span class="c1"># and a radiating super region</span>
 <span class="n">secondary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
                               <span class="n">values</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># no fixed/derived variables</span>
-                              <span class="n">symmetry</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                              <span class="n">omit</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                              <span class="n">cede</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                              <span class="n">concentric</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                              <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">omit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">cede</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                               <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
                               <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                               <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                               <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                               <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                              <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                              <span class="n">is_secondary</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                              <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">is_secondary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                               <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">xpsi</span> <span class="kn">import</span> <span class="n">HotRegions</span>
@@ -687,7 +688,7 @@ Creating parameter:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">elsewhere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Elsewhere</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">elsewhere_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">)))</span>
+<span></span><span class="n">elsewhere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Elsewhere</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">elsewhere_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)))</span>
 </pre></div>
 </div>
 </div>
@@ -741,7 +742,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">def</span> <span class="nf">plot_meshes</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span><span class="bp">True</span><span class="p">),</span>
+<span></span><span class="k">def</span> <span class="nf">plot_meshes</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="kc">True</span><span class="p">),</span>
                 <span class="n">primary_ticks</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
                 <span class="n">secondary_ticks</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot; Plot representations of the cached meshes.</span>
@@ -767,7 +768,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
                              <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                              <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
                              <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
-                             <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                             <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                              <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
@@ -780,7 +781,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
                        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                        <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
                        <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
-                       <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                       <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                        <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
     <span class="n">ax_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
@@ -791,7 +792,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
     <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;cell area (normalised by maximum)&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
     <span class="n">cb</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
 
-    <span class="n">veneer</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
+    <span class="n">veneer</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
     <span class="n">cb</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -801,24 +802,24 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+<span></span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">14.0</span>
 
 <span class="k">def</span> <span class="nf">veneer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Make the plots a little more aesthetically pleasing. &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">AutoLocator</span><span class="p">())</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
 
-    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">AutoLocator</span><span class="p">())</span>
@@ -1054,7 +1055,7 @@ reflection-symmetric properties intact.</p>
 
 <span class="n">star</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
-<span class="n">plot_meshes</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">),</span> <span class="n">secondary_ticks</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">plot_meshes</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="n">secondary_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1185,7 +1186,7 @@ reflection-symmetric properties intact.</p>
                              <span class="n">interpolated</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">interpolated</span><span class="p">),</span>
                              <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="p">,</span>
                              <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                             <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+                             <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 
     <span class="n">profile</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
 
@@ -1193,7 +1194,7 @@ reflection-symmetric properties intact.</p>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Phase&#39;</span><span class="p">)</span>
-    <span class="n">veneer</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+    <span class="n">veneer</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
 
     <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span>
                       <span class="n">cax</span> <span class="o">=</span> <span class="n">ax_cb</span><span class="p">,</span>
@@ -1202,7 +1203,7 @@ reflection-symmetric properties intact.</p>
     <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Signal (normalised by maximum)&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
     <span class="n">cb</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
 
-    <span class="n">veneer</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
+    <span class="n">veneer</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
     <span class="n">cb</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1349,57 +1350,57 @@ reflection-symmetric properties intact.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
-              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">cede_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">cede_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">cede_azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">cede_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+<span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">cede_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">cede_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">cede_azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">cede_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
 
 <span class="c1"># overlap of a radiating superseding member region</span>
 <span class="c1"># and a radiating ceding member region</span>
 <span class="n">primary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
                             <span class="n">values</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># no fixed/derived variables</span>
-                            <span class="n">symmetry</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                            <span class="n">omit</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                            <span class="n">cede</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                            <span class="n">concentric</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">omit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">cede</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
                             <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                             <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
                             <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                             <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
 
 
 <span class="c1"># also an overlap of a radiating superseding member</span>
 <span class="c1"># region and a radiating ceding member region</span>
-<span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span>
-              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">cede_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">cede_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">cede_azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-              <span class="n">cede_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">cede_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">cede_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">cede_azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">cede_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
 <span class="n">secondary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
                               <span class="n">values</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># no fixed/derived variables</span>
-                              <span class="n">symmetry</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                              <span class="n">omit</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                              <span class="n">cede</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                              <span class="n">concentric</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                              <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">omit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">cede</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                               <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
                               <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                               <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                               <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                               <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                              <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                              <span class="n">is_secondary</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                              <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">is_secondary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                               <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">xpsi</span> <span class="kn">import</span> <span class="n">HotRegions</span>
@@ -1534,7 +1535,7 @@ Creating parameter:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">elsewhere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Elsewhere</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">elsewhere_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">)))</span>
+<span></span><span class="n">elsewhere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Elsewhere</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">elsewhere_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)))</span>
 </pre></div>
 </div>
 </div>
@@ -1587,7 +1588,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">def</span> <span class="nf">plot_meshes</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span><span class="bp">True</span><span class="p">),</span>
+<span></span><span class="k">def</span> <span class="nf">plot_meshes</span><span class="p">(</span><span class="n">lines</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="kc">True</span><span class="p">),</span>
                 <span class="n">primary_ticks</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
                 <span class="n">secondary_ticks</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot; Plot representations of the cached meshes.</span>
@@ -1613,7 +1614,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
                              <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                              <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
                              <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
-                             <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                             <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                              <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
@@ -1626,7 +1627,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
                        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                        <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
                        <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
-                       <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                       <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                        <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
@@ -1639,7 +1640,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
                              <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                              <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
                              <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
-                             <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                             <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                              <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
@@ -1652,7 +1653,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
                        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">z</span><span class="p">),</span>
                        <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
                        <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
-                       <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                       <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                        <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
     <span class="n">ax_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
@@ -1663,7 +1664,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
     <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;cell area (normalised by maximum)&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
     <span class="n">cb</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
 
-    <span class="n">veneer</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
+    <span class="n">veneer</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">ax_cb</span><span class="p">)</span>
     <span class="n">cb</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>

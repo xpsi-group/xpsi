@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 </ul>
@@ -188,15 +189,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for xpsi.Spacetime</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">make_verbose</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">make_verbose</span>
 
-<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="k">import</span> <span class="n">Parameter</span>
-<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
+<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="kn">import</span> <span class="n">ParameterSubspace</span>
 
 <div class="viewcode-block" id="Spacetime"><a class="viewcode-back" href="../../spacetime.html#xpsi.Spacetime.Spacetime">[docs]</a><span class="k">class</span> <span class="nc">Spacetime</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; The ambient Schwarzschild spacetime and Earth coordinates.</span>
@@ -227,7 +228,7 @@
                       <span class="s1">&#39;distance&#39;</span><span class="p">,</span>
                       <span class="s1">&#39;inclination&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 
         <span class="n">f</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span>
                       <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">800.0</span><span class="p">),</span>

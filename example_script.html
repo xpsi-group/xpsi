@@ -127,6 +127,7 @@
 <li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
 </ul>
@@ -256,12 +257,12 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Rank reporting: </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">_rank</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Rank reporting: </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">_rank</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">CustomData</span> <span class="kn">import</span> <span class="n">CustomData</span>
 <span class="kn">from</span> <span class="nn">CustomInstrument</span> <span class="kn">import</span> <span class="n">CustomInstrument</span>
@@ -297,9 +298,9 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
                     <span class="n">energies_per_interval</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
                     <span class="n">fast_rel_energies_per_interval</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
                     <span class="n">default_energy_spacing</span> <span class="o">=</span> <span class="s1">&#39;logspace&#39;</span><span class="p">,</span>
-                    <span class="n">adaptive_energies</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
-                    <span class="n">adapt_exponent</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
-                    <span class="n">store</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+                    <span class="n">adaptive_energies</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="n">adapt_exponent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">store</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                     <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
                     <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
                     <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
@@ -314,51 +315,51 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
 
 <span class="n">primary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
                             <span class="n">values</span><span class="o">=</span><span class="p">{},</span>
-                            <span class="n">symmetry</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                            <span class="n">omit</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                            <span class="n">cede</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                            <span class="n">concentric</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">omit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">cede</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
                             <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                             <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
-                            <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">num_leaves</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
                             <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">is_secondary</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">is_secondary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
 
 <span class="c1"># we transform to these geometric parameters, so see CustomPrior instead</span>
 <span class="c1"># for inverse sampling setup</span>
-<span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="c1"># see CustomPrior</span>
-                <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="c1"># see CustomPrior</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># see CustomPrior</span>
+                <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># see CustomPrior</span>
                 <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
                 <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">),</span>
                 <span class="n">omit_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
-                <span class="n">omit_radius</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="c1"># see CustomPrior</span>
-                <span class="n">omit_azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span> <span class="c1"># see CustomPrior</span>
+                <span class="n">omit_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="c1"># see CustomPrior</span>
+                <span class="n">omit_azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="c1"># see CustomPrior</span>
 
 <span class="c1"># overlap of an omission region and</span>
 <span class="c1"># and a radiating super region</span>
 <span class="n">secondary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
                             <span class="n">values</span><span class="o">=</span><span class="p">{},</span>
-                            <span class="n">symmetry</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                            <span class="n">omit</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                            <span class="n">cede</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                            <span class="n">concentric</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                            <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">omit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">cede</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
                             <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                             <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
                             <span class="n">num_leaves</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
                             <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">do_fast</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                            <span class="n">is_secondary</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                            <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">is_secondary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                             <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">xpsi</span> <span class="kn">import</span> <span class="n">HotRegions</span>
 
 <span class="n">hot</span> <span class="o">=</span> <span class="n">HotRegions</span><span class="p">((</span><span class="n">primary</span><span class="p">,</span> <span class="n">secondary</span><span class="p">))</span>
 
-<span class="n">photosphere</span> <span class="o">=</span> <span class="n">CustomPhotosphere</span><span class="p">(</span><span class="n">hot</span> <span class="o">=</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+<span class="n">photosphere</span> <span class="o">=</span> <span class="n">CustomPhotosphere</span><span class="p">(</span><span class="n">hot</span> <span class="o">=</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                 <span class="n">values</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">mode_frequency</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]))</span>
 
 <span class="n">photosphere</span><span class="o">.</span><span class="n">hot_atmosphere</span> <span class="o">=</span> <span class="s1">&#39;model_data/nsx_H_v171019.out&#39;</span>
@@ -366,7 +367,7 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
 <span class="n">star</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Star</span><span class="p">(</span><span class="n">spacetime</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photospheres</span> <span class="o">=</span> <span class="n">photosphere</span><span class="p">)</span>
 
 <span class="n">likelihood</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Likelihood</span><span class="p">(</span><span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="p">,</span> <span class="n">pulses</span> <span class="o">=</span> <span class="n">pulse</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                             <span class="n">externally_updated</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+                             <span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 
 <span class="n">prior</span> <span class="o">=</span> <span class="n">CustomPrior</span><span class="p">()</span>
 
@@ -375,19 +376,19 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
 <span class="n">wrapped_params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span>
 <span class="n">wrapped_params</span><span class="p">[</span><span class="n">likelihood</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;s__phase_shift&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
 
-<span class="n">runtime_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;resume&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
-                  <span class="s1">&#39;importance_nested_sampling&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
-                  <span class="s1">&#39;multimodal&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
-                  <span class="s1">&#39;n_clustering_params&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+<span class="n">runtime_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;resume&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                  <span class="s1">&#39;importance_nested_sampling&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                  <span class="s1">&#39;multimodal&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                  <span class="s1">&#39;n_clustering_params&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="s1">&#39;outputfiles_basename&#39;</span><span class="p">:</span> <span class="s1">&#39;./run1_nlive1000_eff0.3_noCONST_noMM_noIS_tol-1&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;n_iter_before_update&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
                   <span class="s1">&#39;n_live_points&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
                   <span class="s1">&#39;sampling_efficiency&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span>
-                  <span class="s1">&#39;const_efficiency_mode&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                  <span class="s1">&#39;const_efficiency_mode&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                   <span class="s1">&#39;wrapped_params&#39;</span><span class="p">:</span> <span class="n">wrapped_params</span><span class="p">,</span>
                   <span class="s1">&#39;evidence_tolerance&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
                   <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-                  <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+                  <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
 <span class="c1"># see CustomPrior docstring for parameter names</span>
 <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.140337033600940120E+01</span><span class="p">,</span>
@@ -411,7 +412,7 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
         <span class="mf">0.874856631973894849E+00</span><span class="p">]</span>
 
 <span class="c1"># let&#39;s require that checks pass before starting to sample</span>
-<span class="n">check_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">hypercube_points</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
+<span class="n">check_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">hypercube_points</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">physical_points</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span>
                     <span class="n">loglikelihood_call_vals</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">36316.35439439</span><span class="p">],</span>
                     <span class="n">rtol_loglike</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">)</span>
@@ -430,7 +431,7 @@ applicable.</p>
 <h2>Photosphere<a class="headerlink" href="#photosphere" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; CustomPhotosphere.py &quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
@@ -440,7 +441,7 @@ applicable.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@xpsi.Photosphere.hot_atmosphere.setter</span>
+    <span class="nd">@xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="o">.</span><span class="n">hot_atmosphere</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">hot_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="n">NSX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
         <span class="n">logT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span>
@@ -481,7 +482,7 @@ applicable.</p>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
@@ -558,7 +559,7 @@ applicable.</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Data file could not be loaded.&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Data file could not be loaded.&#39;</span><span class="p">)</span>
             <span class="k">raise</span>
 
         <span class="n">first</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">last</span> <span class="o">=</span> <span class="mi">275</span>
@@ -575,7 +576,7 @@ applicable.</p>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
@@ -631,7 +632,7 @@ applicable.</p>
                  <span class="n">bounds</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span>
                  <span class="n">ARF</span><span class="p">,</span> <span class="n">RMF</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span>
                  <span class="n">max_input</span><span class="p">,</span> <span class="n">min_input</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">channel_edges</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">channel_edges</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Constructor which converts files into :class:`numpy.ndarray`s.</span>
 
 <span class="sd">        :param str ARF: Path to ARF which is compatible with</span>
@@ -679,24 +680,24 @@ applicable.</p>
 
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span>
                           <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">),</span>
-                          <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+                          <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                           <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span>
                           <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\alpha$&#39;</span><span class="p">,</span>
-                          <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+                          <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="n">beta</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span>
                           <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span>
-                          <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+                          <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                           <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;beta&#39;</span><span class="p">,</span>
                           <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\beta$&#39;</span><span class="p">,</span>
-                          <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+                          <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="n">gamma</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span>
                           <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">),</span>
-                          <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+                          <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                           <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;gamma&#39;</span><span class="p">,</span>
                           <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\gamma$&#39;</span><span class="p">,</span>
-                          <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+                          <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">[</span><span class="mi">25</span><span class="p">:</span><span class="mi">301</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
                    <span class="n">RSP</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
@@ -709,7 +710,7 @@ applicable.</p>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">Akima1DInterpolator</span>
@@ -736,10 +737,10 @@ applicable.</p>
 
         <span class="n">N_H</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;column_density&#39;</span><span class="p">,</span>
                         <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">),</span>
-                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column_density&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column_density&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                         <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;Units of 10^20 cm^-2.&#39;</span><span class="p">,</span>
                         <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$N_{\rm H}$&#39;</span><span class="p">,</span>
-                        <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column_density&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;column_density&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">CustomInterstellar</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">N_H</span><span class="p">)</span>
 
@@ -759,7 +760,7 @@ applicable.</p>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span> <span class="o">=</span> <span class="n">Akima1DInterpolator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span>
                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="o">.</span><span class="n">extrapolate</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="o">.</span><span class="n">extrapolate</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 
@@ -791,7 +792,7 @@ applicable.</p>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
@@ -819,7 +820,7 @@ applicable.</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_precomp</span> <span class="o">=</span> <span class="n">precomputation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;No data... can synthesise data but cannot evaluate a &#39;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No data... can synthesise data but cannot evaluate a &#39;</span>
                   <span class="s1">&#39;likelihood function.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_intervals</span> <span class="o">=</span> <span class="n">workspace_intervals</span>
@@ -854,7 +855,7 @@ applicable.</p>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">truncnorm</span>
 
@@ -904,13 +905,13 @@ applicable.</p>
     <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">b_xi</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 
     <span class="n">interpolator</span> <span class="o">=</span> <span class="n">Akima1DInterpolator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vector_super_radius_mass</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">vals</span><span class="p">)</span>
-    <span class="n">interpolator</span><span class="o">.</span><span class="n">extrapolate</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">interpolator</span><span class="o">.</span><span class="n">extrapolate</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Nothing to be done. &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Evaluate distribution at ``p``.</span>
 
 <span class="sd">        :param list p: Model parameter values.</span>
@@ -999,7 +1000,7 @@ applicable.</p>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">psi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_xi</span><span class="o">/</span><span class="n">psi</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">inverse_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">inverse_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hypercube</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Draw sample uniformly from the distribution via inverse sampling.</span>
 
 <span class="sd">        :param hypercube: A pseudorandom point in an n-dimensional hypercube.</span>
@@ -1009,7 +1010,7 @@ applicable.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">to_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">vector</span>
 
-        <span class="k">if</span> <span class="n">hypercube</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hypercube</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">hypercube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
         <span class="n">_</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">CustomPrior</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">hypercube</span><span class="p">)</span>

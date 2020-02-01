@@ -118,6 +118,7 @@
 <li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
 </ul>
@@ -280,10 +281,17 @@ dictionary.</li>
 <li><strong>symmetry</strong> (<em>bool</em>) – Is the radiation field axisymmetric (w.r.t the stellar rotation
 axis) within superseding (and ceding) member regions? This determines
 which <code class="docutils literal notranslate"><span class="pre">CellMesh</span></code> integrator to deploy based on this safety check.</li>
-<li><strong>sqrt_num_cells</strong> – Number of cells in both colatitude and azimuth which form a
+<li><strong>sqrt_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth which form a
 regular mesh on a curved 2-surface (a spacelike leaf of the
-spacetime foliation). This is the square-root of the approximate
-number of cells whose centres should lie within a hot region.</li>
+spacetime foliation).</li>
+<li><strong>sqrt_num_cells</strong> – Number of cells in both colatitude and azimuth which form a regular
+mesh over a subset of the surface spanning a hot region. This is the
+square-root of the approximate number of cells whose centres should
+lie within a hot region. The total number of cells is approximately
+the square of this argument value. The mesh suffers from squeezing in
+the polar regions, leading to a high degree of non-congruence in cell
+shape for meshes that extend from a polar region to the equatorial
+region.</li>
 <li><strong>min_sqrt_num_cells</strong> – Sets the minimum number of cells per <em>subregion</em>, discretised to
 the same degree in colatitude and azimuth. This setting has an
 effect only when the hot region has two temperature components, in
@@ -296,9 +304,8 @@ distributed in angle subtended between ray tangent
 4-vector and radial outward unit vector w.r.t a local
 orthonormal tetrad.</li>
 <li><strong>num_leaves</strong> (<em>int</em>) – Number of leaves mesh motion is discretised into.</li>
-<li><strong>num_phases</strong> (<em>int</em>) – Number of phases in a discrete representation of
-the specific flux pulses on the interval
-<span class="math notranslate nohighlight">\([0,1]\)</span>.</li>
+<li><strong>num_phases</strong> (<em>int</em>) – Number of phases in a discrete representation of the specific flux
+pulses on the interval <span class="math notranslate nohighlight">\([0,1]\)</span>.</li>
 <li><strong>phases</strong> – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phases
 for a discrete representation of the specific flux
 pulses on the interval <span class="math notranslate nohighlight">\([0,1]\)</span>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>

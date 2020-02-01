@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 </ul>
@@ -188,17 +189,35 @@
            <div itemprop="articleBody">
             
   <h1>Source code for xpsi.Photosphere</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
 
-<span class="kn">from</span> <span class="nn">.Spacetime</span> <span class="k">import</span> <span class="n">Spacetime</span>
-<span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="k">import</span> <span class="n">HotRegion</span>
-<span class="kn">from</span> <span class="nn">.Elsewhere</span> <span class="k">import</span> <span class="n">Elsewhere</span>
+<span class="kn">from</span> <span class="nn">.Spacetime</span> <span class="kn">import</span> <span class="n">Spacetime</span>
+<span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="kn">import</span> <span class="n">HotRegion</span>
+<span class="kn">from</span> <span class="nn">.Elsewhere</span> <span class="kn">import</span> <span class="n">Elsewhere</span>
+<span class="kn">from</span> <span class="nn">.Everywhere</span> <span class="kn">import</span> <span class="n">Everywhere</span>
 
-<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="k">import</span> <span class="n">Parameter</span>
-<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="k">import</span> <span class="n">ParameterSubspace</span>
+<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="kn">import</span> <span class="n">ParameterSubspace</span>
+
+<span class="kn">from</span> <span class="nn">.pixelmesh.integrator</span> <span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrate</span>
+<span class="kn">from</span> <span class="nn">.pixelmesh.energy_integrator</span> <span class="kn">import</span> <span class="n">energy_integrator</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">_mpl</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">matplotlib</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rcParams</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MultipleLocator</span><span class="p">,</span> <span class="n">AutoLocator</span><span class="p">,</span> <span class="n">AutoMinorLocator</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">animation</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.image</span> <span class="k">as</span> <span class="nn">mgimg</span>
 
 <div class="viewcode-block" id="Photosphere"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere">[docs]</a><span class="k">class</span> <span class="nc">Photosphere</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A photosphere embedded in an ambient Schwarzschild spacetime.</span>
@@ -212,6 +231,21 @@
 
 <span class="sd">    :param obj elsewhere:</span>
 <span class="sd">        An instance of :class:`~.Elsewhere.Elsewhere` (or a derived class).</span>
+
+<span class="sd">    :param obj everywhere:</span>
+<span class="sd">        An instance of :class:`~.Everywhere.Everywhere` (or a derived class).</span>
+<span class="sd">        Note that if you use construct the surface radiation field in this</span>
+<span class="sd">        way, you should use the :attr:`~.Photosphere.Photosphere.hot_atmosphere`</span>
+<span class="sd">        property to pass a buffer of numerical data to the integrator</span>
+<span class="sd">        routines. You then need to ensure that the extension modules</span>
+<span class="sd">        ``xpsi/surface_radiation_field/hot_radiation_field.pyx`` and</span>
+<span class="sd">        ``xpsi/surface_radiation_field/elsewhere_radiation_field.pyx`` match.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        You cannot specify the surface radiation field *everywhere* if you</span>
+<span class="sd">        use hot regions (the latter usage may also include specification of</span>
+<span class="sd">        the radiation field *elsewhere*).</span>
 
 <span class="sd">    :param dict bounds:</span>
 <span class="sd">        Bounds are supplied for instantiation of a frequency parameter.</span>
@@ -246,35 +280,46 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">required_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">hot</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">everywhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">bounds</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">values</span> <span class="o">=</span> <span class="p">{},</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-        <span class="k">if</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elsewhere</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for an elsewhere object.&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="n">elsewhere</span>
+        <span class="k">if</span> <span class="n">everywhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hot</span> <span class="ow">or</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot use hot region nor elsewhere &#39;</span>
+                                 <span class="s1">&#39;functionality if constructing the &#39;</span>
+                                 <span class="s1">&#39;radiation field everywhere.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">everywhere</span><span class="p">,</span> <span class="n">Everywhere</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for everywhere object.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span> <span class="o">=</span> <span class="n">everywhere</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">hot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The photosphere must radiate.&#39;</span><span class="p">)</span>
-
-                                          <span class="c1"># including derived classes</span>
-        <span class="k">if</span> <span class="n">hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid object for the hot &#39;</span>
-                                        <span class="s1">&#39;region(s).&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elsewhere</span><span class="p">,</span> <span class="n">Elsewhere</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for an elsewhere object.&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="n">elsewhere</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid object for the hot region(s).&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">hot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The photosphere must radiate.&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="o">=</span> <span class="n">hot</span>
+                                              <span class="c1"># including derived classes</span>
+            <span class="k">if</span> <span class="n">hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">hot</span><span class="p">,</span> <span class="s1">&#39;objects&#39;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">HotRegion</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid object for the hot &#39;</span>
+                                            <span class="s1">&#39;region(s).&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid object for the hot region(s).&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="o">=</span> <span class="n">hot</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span> <span class="o">=</span> <span class="p">()</span>
 
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        Coordinate frequency of the mode of radiative asymmetry in the</span>
@@ -288,7 +333,8 @@
                                    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode_frequency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">Photosphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mode_frequency</span><span class="p">,</span>
-                                          <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                                          <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="p">,</span> <span class="n">everywhere</span><span class="p">,</span>
+                                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hot_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -379,6 +425,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">elsewhere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the instance of :class:`~.Everywhere.Everywhere`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">spacetime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return instance of :class:`~.Spacetime.Spacetime`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span>
@@ -398,20 +449,25 @@
 <span class="sd">        for use in flux integrators called by distant observers.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="p">,</span>
+                                   <span class="n">threads</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="p">,</span>
+                                    <span class="n">fast_total_counts</span><span class="p">,</span>
+                                    <span class="n">threads</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
                                 <span class="bp">self</span><span class="p">,</span>
                                 <span class="n">fast_total_counts</span><span class="p">,</span>
-                                <span class="n">threads</span><span class="p">,</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
-                            <span class="bp">self</span><span class="p">,</span>
-                            <span class="n">fast_total_counts</span><span class="p">,</span>
-                            <span class="n">threads</span><span class="p">)</span></div>
+                                <span class="n">threads</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Photosphere.integrate"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Integrate over the photospheric radiation field.</span>
@@ -423,50 +479,65 @@
 <span class="sd">            Number of ``OpenMP`` threads to spawn for pulse integration.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span> <span class="c1"># resolve energy container type</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-                    <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
-                                                   <span class="n">_energies</span><span class="p">,</span>
-                                                   <span class="n">threads</span><span class="p">,</span>
-                                                   <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
-                                              <span class="n">energies</span><span class="p">,</span>
-                                              <span class="n">threads</span><span class="p">,</span>
-                                              <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">,</span>
-                                              <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">,)</span>
-
-            <span class="c1"># add time-invariant component to first time-dependent component</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># temp var</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                           <span class="n">energies</span><span class="p">,</span>
+                                           <span class="n">threads</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span> <span class="o">=</span> <span class="n">t</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="p">((</span><span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span>
+                                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">)),),)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span></div>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="p">((</span><span class="n">t</span><span class="p">,),)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span> <span class="c1"># resolve energy container type</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                        <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                                       <span class="n">_energies</span><span class="p">,</span>
+                                                       <span class="n">threads</span><span class="p">,</span>
+                                                       <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
+                                                  <span class="n">energies</span><span class="p">,</span>
+                                                  <span class="n">threads</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere_atmosphere</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">,)</span>
+
+                <span class="c1"># add time-invariant component to first time-dependent component</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the stored pulse.</span>
 
-<span class="sd">        :return: *ndarray[m,n]*, where :math:`m` is</span>
-<span class="sd">                 the number of energies, and :math:`n` is the number of phases.</span>
-<span class="sd">                 Units are photon/s/keV; the distance is a fast parameter so</span>
-<span class="sd">                 the areal units are not yet factored in.</span>
+<span class="sd">        :returns:</span>
+<span class="sd">            *ndarray[m,n]*, where :math:`m` is the number of energies, and</span>
+<span class="sd">            :math:`n` is the number of phases. Units are photon/s/keV; the</span>
+<span class="sd">            distance is a fast parameter so the areal units are not yet</span>
+<span class="sd">            factored in.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">time_invariant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the stored time-invariant signal.</span>
-
+        <span class="sd">&quot;&quot;&quot; Get the cached time-invariant signal.</span>
 
 <span class="sd">        :returns:</span>
 <span class="sd">            *ndarray[n]* containing the time-invariant signal at</span>
@@ -474,9 +545,649 @@
 <span class="sd">            fast parameter so the areal units are not yet factored in.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span>
+
+<div class="viewcode-block" id="Photosphere._global_variables"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere._global_variables">[docs]</a>    <span class="k">def</span> <span class="nf">_global_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a vector of global  surface radiation field variables.</span>
+
+<span class="sd">        :returns: An *ndarray[n]* of scalars required to evaluate variables</span>
+<span class="sd">                  that control the radiation field w.r.t local comoving frames</span>
+<span class="sd">                  across the stellar surface.</span>
+
+<span class="sd">        The following code block is how one would pass the properties of a</span>
+<span class="sd">        single-temperature circular ``HotRegion`` to the extension modules. If</span>
+<span class="sd">        you have more than one ``HotRegion`` object merged into the subspace</span>
+<span class="sd">        associated with the ``Photosphere`` object, they may each be prefixed,</span>
+<span class="sd">        meaning that the set of parameter names below would need to be prefixed</span>
+<span class="sd">        at the least, and unless you only want to image one ``HotRegion``, the</span>
+<span class="sd">        parameters of the ``HotRegions`` object are required.</span>
+
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            return _np.array([self[&#39;super_colatitude&#39;],</span>
+<span class="sd">                              self[&#39;phase_shift&#39;] * _2pi,</span>
+<span class="sd">                              self[&#39;super_radius&#39;],</span>
+<span class="sd">                              self[&#39;super_temperature&#39;]])</span>
+
+<span class="sd">        The phase shift controls the initial rotational phase of the</span>
+<span class="sd">        ``HotRegion`` when imaging commences.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Subclass and provide an implementation.&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the precomputed image information. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
+
+    <span class="nd">@images</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Store an *ndarray[i,j,k]* of images. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;All image information must be contained &#39;</span>
+                                    <span class="s1">&#39;in ndarrays.&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;An iterable of objects containing image &#39;</span>
+                            <span class="s1">&#39;information must be supplied.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;There must be six ndarray objects specifing &#39;</span>
+                             <span class="s1">&#39;image information.&#39;</span><span class="p">)</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Image information element </span><span class="si">%i</span><span class="s1"> must have </span><span class="si">%i</span><span class="s1"> dimensions.&#39;</span>
+
+        <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">images</span>
+
+<div class="viewcode-block" id="Photosphere.image"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.image">[docs]</a>    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+              <span class="n">reimage</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">energies</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">sqrt_num_rays</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+              <span class="n">epsabs_ray</span> <span class="o">=</span> <span class="mf">1.0e-12</span><span class="p">,</span>
+              <span class="n">epsrel_ray</span> <span class="o">=</span> <span class="mf">1.0e-12</span><span class="p">,</span>
+              <span class="n">max_steps</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
+              <span class="n">init_step</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+              <span class="n">image_plane_radial_increment_power</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+              <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="n">plot_sky_maps</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="p">{},</span>
+              <span class="n">animate_sky_maps</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">animate_kwargs</span> <span class="o">=</span> <span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot; Image the star as a function of phase and energy.</span>
+
+<span class="sd">        :param bool reimage:</span>
+<span class="sd">            Image the star. Ignored if there is no precomputed image information</span>
+<span class="sd">            to plot.</span>
+
+<span class="sd">        :param ndarray[n] energies:</span>
+<span class="sd">            Energies in keV to evaluate incident specific intensities at.</span>
+
+<span class="sd">        :param ndarray[m] phases:</span>
+<span class="sd">            Phases in radians at which to evaluate incident specific</span>
+<span class="sd">            intensities at.</span>
+
+<span class="sd">        :param int sqrt_num_rays:</span>
+<span class="sd">            Square-root of the number of rays. This is the level of</span>
+<span class="sd">            discretisation in both a radial coordinate and a polar coordinate</span>
+<span class="sd">            on an elliptical image plane.</span>
+
+<span class="sd">        :param float epsabs_ray:</span>
+<span class="sd">            Absolute error tolerance per ray to adhere to during numerical</span>
+<span class="sd">            integration.</span>
+
+<span class="sd">        :param float epsrel_ray:</span>
+<span class="sd">            Relative error tolerance per ray to adhere to during numerical</span>
+<span class="sd">            integration.</span>
+
+<span class="sd">        :param int max_steps:</span>
+<span class="sd">            Maximum number of steps to permit per ray before forced termination</span>
+<span class="sd">            of integration.</span>
+
+<span class="sd">        :param float init_step:</span>
+<span class="sd">            The initial *suggested* step size at the image plane for the</span>
+<span class="sd">            affine parameter for each ray.</span>
+
+<span class="sd">        :param float image_plane_radial_increment_power:</span>
+<span class="sd">            This parameter controls the behaviour of the radial discretisation.</span>
+<span class="sd">            Higher values towards unity result in linear spacing of rays with</span>
+<span class="sd">            the radial coordinate. Lower values towards zero squeeze the rays</span>
+<span class="sd">            towards the visible stellar limb, which is necessary for resolving</span>
+<span class="sd">            images of extended radiating elements. Values above unity are not</span>
+<span class="sd">            recommended, and would squeeze rays towards the image-plane origin,</span>
+<span class="sd">            compromising resolution at the stellar limb.</span>
+
+<span class="sd">        :param int threads:</span>
+<span class="sd">            Number of OpenMP threads to spawn for parallel blocks of code.</span>
+<span class="sd">            Parallel blocks include ray integration to generate a global ray</span>
+<span class="sd">            map from image plane to surface; and image calculation at a</span>
+<span class="sd">            sequence of rotational phases..</span>
+
+<span class="sd">        :param bool plot_sky_maps:</span>
+<span class="sd">            Plot (specific) intenity sky maps at a sequence of phases, or</span>
+<span class="sd">            by averaging over phase. Maps can be made at one more energies</span>
+<span class="sd">            or energy intervals. The images will be written to disk and</span>
+<span class="sd">            can be used as frames in an animated sequence.</span>
+
+<span class="sd">        :param dict sky_map_kwargs:</span>
+<span class="sd">            Dictionary of keyword arguments passed to</span>
+<span class="sd">            :meth:`~Photosphere._plot_sky_maps`. Refer to the associated</span>
+<span class="sd">            method docstring for available options.</span>
+
+<span class="sd">        :param bool animate_sky_maps:</span>
+<span class="sd">            Compile images from disk into an animated sequence.</span>
+
+<span class="sd">        :param dict animate_kwargs:</span>
+<span class="sd">            Dictionary of keyword arguments passed to</span>
+<span class="sd">            :meth:`~Photosphere._animate`. Refer to the associated</span>
+<span class="sd">            method docstring for available options.</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span> <span class="c1"># geometry</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">images</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">reimage</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: star will not be reimaged... assuming images &#39;</span>
+                      <span class="s1">&#39;exist on disk.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reimage</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Imaging phases must be form an ndarray.&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Imaging energies must be form an ndarray.&#39;</span><span class="p">)</span>
+
+            <span class="n">images</span> <span class="o">=</span> <span class="n">_integrate</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                <span class="n">ref</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
+                                <span class="n">ref</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
+                                <span class="n">ref</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
+                                <span class="n">ref</span><span class="o">.</span><span class="n">Omega</span><span class="p">,</span>
+                                <span class="n">ref</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
+                                <span class="n">ref</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
+                                <span class="mf">0.0</span><span class="p">,</span> <span class="c1"># dimensionless spin</span>
+                                <span class="mf">0.0</span><span class="p">,</span> <span class="c1"># mass quadrupole</span>
+                                <span class="n">ref</span><span class="o">.</span><span class="n">d</span><span class="p">,</span>
+                                <span class="n">ref</span><span class="o">.</span><span class="n">i</span><span class="p">,</span>
+                                <span class="n">sqrt_num_rays</span><span class="p">,</span>
+                                <span class="n">epsabs_ray</span><span class="p">,</span>
+                                <span class="n">epsrel_ray</span><span class="p">,</span>
+                                <span class="n">max_steps</span><span class="p">,</span>
+                                <span class="n">init_step</span><span class="p">,</span>
+                                <span class="n">image_plane_radial_increment_power</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_global_variables</span><span class="p">(),</span>
+                                <span class="n">energies</span><span class="p">,</span>
+                                <span class="n">phases</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;A numerical error arose during imaging &#39;</span>
+                                <span class="s1">&#39;computation... terminating simulation.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># tuple elements:</span>
+                <span class="c1">#   energy-phase resolved pulse (2D array)</span>
+                <span class="c1">#   x coordinate on image plane (1D array)</span>
+                <span class="c1">#   y coordinate on image plane (1D array)</span>
+                <span class="c1">#   colatitude mapped to point (x,y) on image plane (1D array)</span>
+                <span class="c1">#   azimuth mapped to point (x,y) on image plane (1D array)</span>
+                <span class="c1">#   energy-phase resolved specific intensity sky maps (3D array)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+                <span class="c1"># transpose so pulse phase increments along columns</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">if</span> <span class="n">plot_sky_maps</span> <span class="ow">or</span> <span class="n">animate_sky_maps</span><span class="p">:</span>
+            <span class="n">root_dir</span> <span class="o">=</span> <span class="n">sky_map_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;root_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;./images&#39;</span><span class="p">)</span>
+            <span class="n">file_root</span> <span class="o">=</span> <span class="n">sky_map_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;file_root&#39;</span><span class="p">,</span> <span class="s1">&#39;skymap&#39;</span><span class="p">)</span>
+            <span class="n">file_root</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">file_root</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">plot_sky_maps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">root_dir</span><span class="p">):</span>
+                <span class="n">_os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root_dir</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_root</span> <span class="o">+</span> <span class="s1">&#39;_0.png&#39;</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Warning: at least one image file exists &#39;</span>
+                      <span class="s1">&#39;in ``</span><span class="si">%s</span><span class="s1">``.&#39;</span> <span class="o">%</span> <span class="n">root_dir</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Attempting to move image files to a subdirectory &#39;</span>
+                      <span class="s1">&#39;of ``</span><span class="si">%s</span><span class="s1">``.&#39;</span> <span class="o">%</span> <span class="n">root_dir</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span> <span class="c1"># to archive the existing image files</span>
+                    <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+                    <span class="n">obj</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                    <span class="n">temp</span> <span class="o">=</span> <span class="s1">&#39;__datetime__</span><span class="si">%i</span><span class="s1">.</span><span class="si">%i</span><span class="s1">.</span><span class="si">%i</span><span class="s1">__</span><span class="si">%i</span><span class="s1">.</span><span class="si">%i</span><span class="s1">.</span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                                                               <span class="n">obj</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                                                               <span class="n">obj</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                                                               <span class="n">obj</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                                                               <span class="n">obj</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
+                                                               <span class="n">obj</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+                    <span class="n">temp</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;archived_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">temp</span><span class="p">)</span>
+                    <span class="n">_os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+
+                    <span class="n">image_files</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_dir</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">image_files</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="s1">&#39;.png&#39;</span> <span class="ow">in</span> <span class="n">image</span><span class="p">:</span>
+                            <span class="n">_os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">image</span><span class="p">),</span>
+                                       <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">image</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Aborting: image files would be &#39;</span>
+                                    <span class="s1">&#39;overwritten. </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>  <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Image files archived in subdirectory ``</span><span class="si">%s</span><span class="s1">``.&#39;</span> <span class="o">%</span> <span class="n">temp</span><span class="p">)</span>
+
+            <span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_sky_maps</span><span class="p">(</span><span class="n">file_root</span><span class="p">,</span>
+                                               <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">,</span>
+                                               <span class="n">_redraw</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                               <span class="o">**</span><span class="n">sky_map_kwargs</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">animate_sky_maps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">reimage</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Star was reimaged but sky maps were not &#39;</span>
+                                 <span class="s1">&#39;plotted... aborting animation.&#39;</span><span class="p">)</span>
+
+            <span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_sky_maps</span><span class="p">(</span><span class="n">file_root</span><span class="p">,</span>
+                                               <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">,</span>
+                                               <span class="n">_redraw</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                               <span class="n">threads</span> <span class="o">=</span> <span class="n">threads</span><span class="p">,</span>
+                                               <span class="o">**</span><span class="n">sky_map_kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">animate_sky_maps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_root</span> <span class="o">+</span> <span class="s1">&#39;_0.png&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;No images located for animation.&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">reimage</span><span class="p">:</span>
+                <span class="n">num_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">num_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;You need to declare the image phases &#39;</span>
+                                    <span class="s1">&#39;in order to include all images from disk.&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_animate</span><span class="p">(</span><span class="n">file_root</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span>
+                          <span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span><span class="p">,</span> <span class="o">**</span><span class="n">animate_kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Photosphere._plot_sky_maps"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere._plot_sky_maps">[docs]</a>    <span class="k">def</span> <span class="nf">_plot_sky_maps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                       <span class="n">_file_root</span><span class="p">,</span>
+                       <span class="n">_energies</span><span class="p">,</span>
+                       <span class="n">_redraw</span><span class="p">,</span>
+                       <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                       <span class="n">panel_layout</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">panel_indices</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">energy_bounds</span> <span class="o">=</span> <span class="p">[],</span>
+                       <span class="n">num_levels</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                       <span class="n">normalise_each_panel</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                       <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span>
+                       <span class="n">usetex</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="n">fontsize_scale</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+                       <span class="n">tick_spacing</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span>
+                       <span class="n">tick_length_scaling</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+                       <span class="n">dpi_scale</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+                       <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Helper method for specific intensity sky map visualization.</span>
+
+<span class="sd">        Uses Delaunay triangulation to create an irregular sky mesh and</span>
+<span class="sd">        calculate (specific) intensity contours at a sequence of phases.</span>
+
+<span class="sd">        :param str _file_root:</span>
+<span class="sd">            Relative or absolute path to parent directory for images,</span>
+<span class="sd">            extended with the root name for the image files. E.g., the</span>
+<span class="sd">            default is ``./images/skymap``. You do not need to change this</span>
+<span class="sd">            unless you wish to, and is otherwise reserved for internal use.</span>
+
+<span class="sd">        :param ndarray[n] _energies:</span>
+<span class="sd">            The energies at which the star was imaged. This is handled</span>
+<span class="sd">            internally, so do *not* pass a keyword argument.</span>
+
+<span class="sd">        :param bool _redraw:</span>
+<span class="sd">            Redraw the sky maps? This is handled internally, so do *not* pass</span>
+<span class="sd">            a keyword argument.</span>
+
+<span class="sd">        :param tuple[int,int] panel_layout:</span>
+<span class="sd">            Two elements: the number of rows and columns of panels. If ``None``</span>
+<span class="sd">            a layout is automatically determined based on the number of</span>
+<span class="sd">            images to be plotted.</span>
+
+<span class="sd">        :param iterable panel_indices:</span>
+<span class="sd">            These ordered integers will be used to select intensity information</span>
+<span class="sd">            by indexing the energy dimension of a 3D intensity array. If</span>
+<span class="sd">            specific intensites are plotted, these integers should index</span>
+<span class="sd">            a subset of energies at which the star was imaged. If intensities</span>
+<span class="sd">            are plotted, these integers should index a subset of the energy</span>
+<span class="sd">            intervals over which specific intensities are integrated. See</span>
+<span class="sd">            the ``energy_bounds`` keyword argument.</span>
+
+<span class="sd">        :param iterable energy_bounds:</span>
+<span class="sd">            A set of two-element containers. Each container has an ordered pair</span>
+<span class="sd">            of energies which delimit an integration domain. Specific intensity</span>
+<span class="sd">            is integrated along each sky direction, at each phase, between</span>
+<span class="sd">            these energy bounds. The bounds must be between the minimum and</span>
+<span class="sd">            maximum energies at which the star was imaged. If ``None``,</span>
+<span class="sd">            specific intensity sky maps will be plotted (the default).</span>
+
+<span class="sd">        :param int num_levels:</span>
+<span class="sd">            Number of contour levels in (specific) intensity, distributed</span>
+<span class="sd">            between minimum finite, and maximum values per panel, or over all</span>
+<span class="sd">            panels. See ``normalise_each_panel`` keyword argument.</span>
+
+<span class="sd">        :param bool normalise_each_panel:</span>
+<span class="sd">            Normalise the contour grey scale to each panel uniquely, or</span>
+<span class="sd">            globally over all panels? The former yields relative intensity</span>
+<span class="sd">            as function of phase and sky direction for an energy or energy</span>
+<span class="sd">            interval, whilst the latter offers more spectral information but</span>
+<span class="sd">            emission in some panels may not be discernable.</span>
+
+<span class="sd">        :param tuple(int,int) figsize:</span>
+<span class="sd">            The figure size (width, height) in *inches*. If the dimensions are</span>
+<span class="sd">            inconsistent with the aspect ratio suggested by the ``panel_layout``</span>
+<span class="sd">            settings, the height of the figure will be automatically rescaled</span>
+<span class="sd">            to achieve congruence, meaning each panel is approximately square.</span>
+
+<span class="sd">        :param bool usetex:</span>
+<span class="sd">            Use TeX backend for figure text.</span>
+
+<span class="sd">        :param float fontsize_scale:</span>
+<span class="sd">            Use this argument to scale the font size of figure text relative</span>
+<span class="sd">            to the default font size that is automatically determined based</span>
+<span class="sd">            on the approximate panel size, which is in turn based on the</span>
+<span class="sd">            figure size and the panel layout.</span>
+
+<span class="sd">        :param tuple[float,float] tick_spacing:</span>
+<span class="sd">            A two-element container. The first element is the minor tick</span>
+<span class="sd">            spacing, and the second is the major tick spacing, for both</span>
+<span class="sd">            the :math:`x` and :math:`y` directions on the image plane. The</span>
+<span class="sd">            units are gravitational radii (:math:`GM/c^2`).</span>
+
+<span class="sd">        :param float tick_length_scaling:</span>
+<span class="sd">            Use this argument to scale the axis tick lengths relative to the</span>
+<span class="sd">            default lengths that are automatically determined based on the</span>
+<span class="sd">            panel size.</span>
+
+<span class="sd">        :param float dpi_scale:</span>
+<span class="sd">            Use this argument to scale the dots per inch of the figure,</span>
+<span class="sd">            relative to the default that is automatically determined based</span>
+<span class="sd">            on the panel size.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_root</span> <span class="o">=</span> <span class="n">_file_root</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="n">_energies</span>
+        <span class="n">redraw</span> <span class="o">=</span> <span class="n">_redraw</span>
+
+        <span class="k">if</span> <span class="n">panel_layout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_m</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">_m</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">))))</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">):</span>
+                <span class="n">panel_layout</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">panel_layout</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># try to improve the aspect ratio so that each panel is</span>
+        <span class="c1"># approximately square</span>
+        <span class="n">aspect_ratio</span> <span class="o">=</span> <span class="n">panel_layout</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">panel_layout</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">aspect_ratio</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">figsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">aspect_ratio</span><span class="p">)</span><span class="o">/</span><span class="n">aspect_ratio</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">:</span>
+               <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">aspect_ratio</span><span class="p">))</span>
+
+        <span class="c1"># calculate an appropriate dpi to resolve each panel adequately</span>
+        <span class="n">dpi</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">panel_layout</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">150.0</span> <span class="o">*</span> <span class="n">dpi_scale</span>
+
+        <span class="k">if</span> <span class="n">redraw</span><span class="p">:</span>
+            <span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">usetex</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">iter</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Panel indices object must be iterable.&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">panel_layout</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;There are too few panels for the requested &#39;</span>
+                                 <span class="s1">&#39;number of intensity sky maps.&#39;</span><span class="p">)</span>
+
+            <span class="c1"># some scaling for appropriate fontsize</span>
+            <span class="n">panel_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">figsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">panel_layout</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                             <span class="n">figsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">panel_layout</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">fontsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">panel_size</span><span class="o">/</span><span class="mf">5.0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">14.0</span> <span class="o">*</span> <span class="n">fontsize_scale</span>
+            <span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fontsize</span><span class="p">)</span>
+
+            <span class="n">tick_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">panel_size</span><span class="o">/</span><span class="mf">5.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">tick_length_scaling</span><span class="p">)</span>
+
+            <span class="c1"># get coordinates of irregular set of points for triangulation</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Imaging energies must be form an ndarray.&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">energy_bounds</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">energy_bounds</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Energy bounds in a tuple must be &#39;</span>
+                                         <span class="s1">&#39;ordered.&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">bound</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">bound</span> <span class="o">&lt;=</span> <span class="n">energies</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Extrapolation would be required.&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Fewer panels than energy intervals.&#39;</span><span class="p">)</span>
+
+                <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">integrated</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                        <span class="nb">len</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">),</span>
+                                        <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+                <span class="n">intensities</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                         <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span> <span class="c1"># phases</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span> <span class="c1"># sky directions</span>
+                        <span class="n">intensities</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">,:,</span><span class="n">j</span><span class="p">]</span>
+
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">)):</span>
+                        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">energy_bounds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                        <span class="n">_integrated</span> <span class="o">=</span> <span class="n">energy_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                                        <span class="n">intensities</span><span class="p">,</span>
+                                                        <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">energies</span><span class="p">),</span>
+                                                        <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">a</span><span class="p">),</span>
+                                                        <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+
+                        <span class="n">integrated</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">_integrated</span><span class="p">[:]</span>
+
+                <span class="n">images</span> <span class="o">=</span> <span class="n">integrated</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Fewer panels than energies.&#39;</span><span class="p">)</span>
+
+                <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">normalise_each_panel</span><span class="p">:</span> <span class="c1"># normalise intensity for each individual panel</span>
+                <span class="n">levels</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span> <span class="c1"># at each energy</span>
+                    <span class="c1"># find extreme intensities over discrete set of image phases</span>
+                    <span class="c1"># and sky directions</span>
+                    <span class="n">MIN</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">images</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:][</span><span class="n">images</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">])</span>
+                    <span class="n">MAX</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">images</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:])</span>
+                    <span class="n">levels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">MIN</span><span class="p">,</span>
+                                                                      <span class="n">MAX</span><span class="p">,</span>
+                                                                      <span class="n">num_levels</span><span class="p">))))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">MIN</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">images</span><span class="p">[:,:,:][</span><span class="n">images</span><span class="p">[:,:,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">])</span>
+                <span class="n">MAX</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">images</span><span class="p">[:,:,:])</span>
+                <span class="n">levels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">MIN</span><span class="p">,</span>
+                                                             <span class="n">MAX</span><span class="p">,</span>
+                                                             <span class="n">num_levels</span><span class="p">)))</span>
+
+
+            <span class="c1"># because of default tick formatting and a minus sign,</span>
+            <span class="c1"># the left and bottom margins need to be different</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="mf">0.150</span> <span class="o">*</span> <span class="p">(</span><span class="n">fontsize</span><span class="o">/</span><span class="mf">28.0</span><span class="p">)</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="mf">0.125</span> <span class="o">*</span> <span class="p">(</span><span class="n">fontsize</span><span class="o">/</span><span class="mf">28.0</span><span class="p">)</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="mf">0.975</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">bottom</span> <span class="o">+</span> <span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="n">figsize</span><span class="p">)</span>
+
+                <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="n">panel_layout</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                       <span class="n">panel_layout</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                       <span class="n">left</span><span class="o">=</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">,</span>
+                                       <span class="n">bottom</span><span class="o">=</span><span class="n">bottom</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">top</span><span class="p">,</span>
+                                       <span class="n">wspace</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">):</span>
+                    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+                    <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">panel_layout</span><span class="p">)</span> <span class="o">-</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">panel_layout</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$x$ [$M$]&#39;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">%</span> <span class="n">panel_layout</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$y$ [$M$]&#39;</span><span class="p">)</span>
+
+                    <span class="n">_veneer</span><span class="p">(</span><span class="n">tick_spacing</span><span class="p">,</span> <span class="n">tick_spacing</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span>
+                            <span class="n">length</span> <span class="o">=</span> <span class="n">tick_length</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+                    <span class="n">lvls</span> <span class="o">=</span> <span class="n">levels</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="n">levels</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span>
+                                   <span class="n">Y</span><span class="p">,</span>
+                                   <span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">idx</span><span class="p">,:],</span>
+                                   <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">,</span>
+                                   <span class="n">levels</span> <span class="o">=</span> <span class="n">lvls</span><span class="p">)</span>
+
+                <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_root</span> <span class="o">+</span> <span class="s1">&#39;_</span><span class="si">%i</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span></div>
+
+<div class="viewcode-block" id="Photosphere._animate"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere._animate">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_animate</span><span class="p">(</span><span class="n">_file_root</span><span class="p">,</span> <span class="n">_num_frames</span><span class="p">,</span> <span class="n">_figsize</span><span class="p">,</span> <span class="n">_dpi</span><span class="p">,</span>
+                 <span class="n">cycles</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">repeat</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">repeat_delay</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                 <span class="n">ffmpeg_path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Helper method to animate the intensity sky maps.</span>
+
+<span class="sd">        :param str _file_root:</span>
+<span class="sd">            Reserved for internal use.</span>
+
+<span class="sd">        :param int _num_frames:</span>
+<span class="sd">            Reserved for internal use.</span>
+
+<span class="sd">        :param int _figsize:</span>
+<span class="sd">            Reserved for internal use.</span>
+
+<span class="sd">        :param int _dpi:</span>
+<span class="sd">            Reserved for internal use.</span>
+
+<span class="sd">        :param int cycles:</span>
+<span class="sd">            Number of explicit cycles to generate frames for. The frames from</span>
+<span class="sd">            the principal cycle are reused, so the images are periodic in</span>
+<span class="sd">            their phase evolution. There is no delay between cycles in this</span>
+<span class="sd">            type of repitition.</span>
+
+<span class="sd">        :param bool repeat:</span>
+<span class="sd">            Inform *ffmpeg* to enter a loop when video play back commences.</span>
+
+<span class="sd">        :param repeat_delay:</span>
+<span class="sd">            Delay between repeats in milliseconds.</span>
+
+<span class="sd">        :param str ffmpeg_path:</span>
+<span class="sd">            Absolute path to *ffmpeg* executable. If ``None``, defaults</span>
+<span class="sd">            to matplotlib rcParams settings, but no guarantee that the package</span>
+<span class="sd">            will be found even if installed on system.</span>
+
+<span class="sd">        :param int fps:</span>
+<span class="sd">            Frames per second. If ``None``, then one cycle (assuming images</span>
+<span class="sd">            have been precomputed for a complete cycle), consisting of</span>
+<span class="sd">            so many frames, will exhibit a period of one second.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_root</span> <span class="o">=</span> <span class="n">_file_root</span>
+        <span class="n">num_frames</span> <span class="o">=</span> <span class="n">_num_frames</span>
+        <span class="n">figsize</span> <span class="o">=</span> <span class="n">_figsize</span>
+        <span class="n">dpi</span> <span class="o">=</span> <span class="n">_dpi</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="n">figsize</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                            <span class="n">wspace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_frames</span><span class="p">):</span> <span class="c1"># load phase-ordered set of images</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">file_root</span> <span class="o">+</span> <span class="s1">&#39;_</span><span class="si">%i</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="n">i</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">mgimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">imgplot</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+            <span class="n">imgplot</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">imgplot</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">imgplot</span><span class="p">])</span>
+
+        <span class="n">cycles</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cycles</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cycles</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">cycles</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">cycles</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cycles</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">):</span>
+                    <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+        <span class="n">ani</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">ArtistAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span>
+                                        <span class="n">repeat</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">,</span>
+                                        <span class="n">repeat_delay</span> <span class="o">=</span> <span class="n">repeat_delay</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ffmpeg_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: no path specified for ffmpeg executable. &#39;</span>
+                  <span class="s1">&#39;Resorting to rcParams default.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;animation.ffmpeg_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ffmpeg_path</span>
+
+        <span class="k">if</span> <span class="n">fps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fps</span> <span class="o">=</span> <span class="n">num_frames</span> <span class="c1"># all frames span one second</span>
+
+        <span class="c1"># secret keyword argument; not clear whether should be exposed to user</span>
+        <span class="n">bitrate</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bitrate&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">file_root</span> <span class="o">+</span> <span class="s1">&#39;_animated.mp4&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Writing to disk: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">ani</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">writer</span> <span class="o">=</span> <span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span>
+                 <span class="n">dpi</span> <span class="o">=</span> <span class="n">dpi</span><span class="p">,</span> <span class="n">fps</span> <span class="o">=</span> <span class="n">fps</span><span class="p">,</span> <span class="n">bitrate</span> <span class="o">=</span> <span class="n">bitrate</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span></div></div>
 
 <span class="n">Photosphere</span><span class="o">.</span><span class="n">_update_doc</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">_veneer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Make the plots a little more aesthetically pleasing. &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">AutoLocator</span><span class="p">())</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">AutoLocator</span><span class="p">())</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
+
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 </pre></div>
 
            </div>

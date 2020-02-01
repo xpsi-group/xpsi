@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../twohotregions.html">TwoHotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregions.html">HotRegions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
 </ul>
@@ -188,14 +189,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for xpsi.TwoHotRegions</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
 
-<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="k">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="kn">import</span> <span class="n">Parameter</span>
 
-<span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="k">import</span> <span class="n">HotRegion</span><span class="p">,</span> <span class="n">PulseError</span>
+<span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="kn">import</span> <span class="n">HotRegion</span><span class="p">,</span> <span class="n">PulseError</span>
 
 <div class="viewcode-block" id="TwoHotRegions"><a class="viewcode-back" href="../../twohotregions.html#xpsi.TwoHotRegions.TwoHotRegions">[docs]</a><span class="k">class</span> <span class="nc">TwoHotRegions</span><span class="p">(</span><span class="n">HotRegion</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Two photospheric hot regions, related via antipodal reflection symmetry.</span>
@@ -222,7 +223,7 @@
 <span class="sd">        Keyword arguments passed to :class:`.HotRegion.HotRegion` class.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># force primary because secondary phase handled in subclass methods</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;is_secondary&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TwoHotRegions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">is_secondary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
