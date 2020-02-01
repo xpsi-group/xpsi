@@ -1984,359 +1984,6 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 ll = -26713.61367769; time = 1.115
 </pre></div></div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">primary</span><span class="p">[</span><span class="s1">&#39;super_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.35</span>
-<span class="n">secondary</span><span class="p">[</span><span class="s1">&#39;super_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">likelihood</span><span class="p">[</span><span class="s1">&#39;inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.5</span>
-<span class="n">spacetime</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">600.0</span>
-<span class="n">likelihood</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.2</span>
-<span class="n">likelihood</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">12.0</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">photosphere</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
-                  <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">2.0</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">16</span><span class="p">),</span>
-                  <span class="n">sqrt_num_rays</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
-                  <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">,:])</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
-</pre></div>
-</div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[&lt;matplotlib.lines.Line2D at 0x7f7e57a65410&gt;]
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_117_1.png" src="_images/model_construction_117_1.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">MIN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span><span class="mi">0</span><span class="p">,:][</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">])</span>
-<span class="n">MAX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span><span class="mi">0</span><span class="p">,:])</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
-
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">tricontour</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                   <span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                   <span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                   <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.1</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span>
-                   <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-                   <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;solid&#39;</span><span class="p">,</span>
-                   <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">tricontour</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                   <span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                   <span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
-                   <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">20</span><span class="p">)[</span><span class="mi">1</span><span class="p">:],</span>
-                   <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-                   <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;solid&#39;</span><span class="p">,</span>
-                   <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                       <span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                       <span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,:],</span>
-                       <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">plasma</span><span class="p">,</span>
-                       <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">MIN</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">50</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_0.png" src="_images/model_construction_118_0.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_1.png" src="_images/model_construction_118_1.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_2.png" src="_images/model_construction_118_2.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_3.png" src="_images/model_construction_118_3.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_4.png" src="_images/model_construction_118_4.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_5.png" src="_images/model_construction_118_5.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_6.png" src="_images/model_construction_118_6.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_7.png" src="_images/model_construction_118_7.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_8.png" src="_images/model_construction_118_8.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_9.png" src="_images/model_construction_118_9.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_10.png" src="_images/model_construction_118_10.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_11.png" src="_images/model_construction_118_11.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_12.png" src="_images/model_construction_118_12.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_13.png" src="_images/model_construction_118_13.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_14.png" src="_images/model_construction_118_14.png" />
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_118_15.png" src="_images/model_construction_118_15.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">MIN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span><span class="mi">1</span><span class="p">,:][</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">])</span>
-<span class="n">MAX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span><span class="mi">1</span><span class="p">,:])</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
-
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-
-<span class="c1">#     ax.tricontour(photosphere.images[1],</span>
-<span class="c1">#                    photosphere.images[2],</span>
-<span class="c1">#                    photosphere.images[3],</span>
-<span class="c1">#                    levels=np.linspace(0.1,math.pi - 0.1,20),</span>
-<span class="c1">#                    colors=&#39;black&#39;,</span>
-<span class="c1">#                    linestyles=&#39;solid&#39;,</span>
-<span class="c1">#                    linewidths=0.5)</span>
-
-<span class="c1">#     ax.tricontour(photosphere.images[1],</span>
-<span class="c1">#                    photosphere.images[2],</span>
-<span class="c1">#                    photosphere.images[4],</span>
-<span class="c1">#                    levels=np.linspace(-math.pi,math.pi,20)[1:],</span>
-<span class="c1">#                    colors=&#39;black&#39;,</span>
-<span class="c1">#                    linestyles=&#39;solid&#39;,</span>
-<span class="c1">#                    linewidths=0.5)</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">tricontourf</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                       <span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                       <span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">,:],</span>
-                       <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">gray_r</span><span class="p">,</span>
-                       <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">MIN</span><span class="p">,</span><span class="n">MAX</span><span class="p">,</span><span class="mi">50</span><span class="p">))))</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_0.png" src="_images/model_construction_119_0.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_1.png" src="_images/model_construction_119_1.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_2.png" src="_images/model_construction_119_2.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_3.png" src="_images/model_construction_119_3.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_4.png" src="_images/model_construction_119_4.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_5.png" src="_images/model_construction_119_5.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_6.png" src="_images/model_construction_119_6.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_7.png" src="_images/model_construction_119_7.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_8.png" src="_images/model_construction_119_8.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_9.png" src="_images/model_construction_119_9.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_10.png" src="_images/model_construction_119_10.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_11.png" src="_images/model_construction_119_11.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_12.png" src="_images/model_construction_119_12.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_13.png" src="_images/model_construction_119_13.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_14.png" src="_images/model_construction_119_14.png" />
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/model_construction_119_15.png" src="_images/model_construction_119_15.png" />
-</div>
-</div>
 <p>If the secondary temperature was free, we would extend the vector <code class="docutils literal notranslate"><span class="pre">p</span></code> by one element, passing the injected value of <code class="docutils literal notranslate"><span class="pre">6.0</span></code>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
@@ -2403,7 +2050,7 @@ from the joint prior distribution. Our <code class="docutils literal notranslate
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_126_0.png" src="_images/model_construction_126_0.png" />
+<img alt="_images/model_construction_121_0.png" src="_images/model_construction_121_0.png" />
 </div>
 </div>
 <p>The pulse profiles with markers are the signals incident on the telescope, before operating on them with the response model. The markers, linearly spaced in phase, denote the phase resolution.</p>
@@ -2429,7 +2076,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_129_0.png" src="_images/model_construction_129_0.png" />
+<img alt="_images/model_construction_124_0.png" src="_images/model_construction_124_0.png" />
 </div>
 </div>
 <p>Notice the solid pulses without markers are unchanged from the plot a few cells above, and can be used to guide the eye to the effect of a change in Earth inclination.</p>
@@ -2487,7 +2134,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_132_0.png" src="_images/model_construction_132_0.png" />
+<img alt="_images/model_construction_127_0.png" src="_images/model_construction_127_0.png" />
 </div>
 </div>
 <p>Note that the lowest colatitude row is at zero on the y-axis.</p>
@@ -2581,7 +2228,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_138_0.png" src="_images/model_construction_138_0.png" />
+<img alt="_images/model_construction_133_0.png" src="_images/model_construction_133_0.png" />
 </div>
 </div>
 <p>The count rate signal in each channel:</p>
@@ -2603,7 +2250,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_140_0.png" src="_images/model_construction_140_0.png" />
+<img alt="_images/model_construction_135_0.png" src="_images/model_construction_135_0.png" />
 </div>
 </div>
 <p>Now we increase the phase resolution, and plot a single rotational pulse:</p>
@@ -2657,7 +2304,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_145_0.png" src="_images/model_construction_145_0.png" />
+<img alt="_images/model_construction_140_0.png" src="_images/model_construction_140_0.png" />
 </div>
 </div>
 <p>Let’s iterate over a monotonically increasing set of values of the hot-region angular radius. Note that we use the keyword <code class="docutils literal notranslate"><span class="pre">threads</span></code> to directly instruct the low-level routines how many OpenMP threads to spawn to accelerate the computation. Usually the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object instructs the low-level routines how many threads to spawn, based on it’s <code class="docutils literal notranslate"><span class="pre">thread</span></code> property:</p>
@@ -2812,7 +2459,7 @@ the solid curves without markers.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_157_0.png" src="_images/model_construction_157_0.png" />
+<img alt="_images/model_construction_152_0.png" src="_images/model_construction_152_0.png" />
 </div>
 </div>
 </div>
@@ -3160,7 +2807,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_180_0.png" src="_images/model_construction_180_0.png" />
+<img alt="_images/model_construction_175_0.png" src="_images/model_construction_175_0.png" />
 </div>
 </div>
 <p>Note that the prior support is defined with a constraint that the polar radius <span class="math notranslate nohighlight">\(R_{\rm p}(R_{\rm eq}, M, \Omega)\geq 1.76r_{s}(M)\)</span>, which is why there is a region devoid of samples between the prior support and the dashed line <span class="math notranslate nohighlight">\(R_{\rm eq} = 1.76r_s(M)\)</span>.</p>
@@ -3184,7 +2831,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_183_0.png" src="_images/model_construction_183_0.png" />
+<img alt="_images/model_construction_178_0.png" src="_images/model_construction_178_0.png" />
 </div>
 </div>
 <p>Note that the samples, marginalised over other region geometry parameters, are sparser when both hot regions approach the poles because we exclude overlapping configurations from the prior support. This is because the hot regions are by convention defined as disjoint, and cannot merge. If one wanted a more complex hot region, one would not invoke multiple hot regions that are permitted to overlap, but one would instead handle the extra complexity within the <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> class or a subclass.</p>
@@ -3206,7 +2853,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_186_0.png" src="_images/model_construction_186_0.png" />
+<img alt="_images/model_construction_181_0.png" src="_images/model_construction_181_0.png" />
 </div>
 </div>
 <p>Note that the prior density is greater for hot regions that subtend smaller solid angles at the centre of the star, which also derives from the non-overlapping criterion for prior support.</p>
@@ -3228,7 +2875,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_189_0.png" src="_images/model_construction_189_0.png" />
+<img alt="_images/model_construction_184_0.png" src="_images/model_construction_184_0.png" />
 </div>
 </div>
 <p>Note that again because the hot regions cannot overlap, rarefaction occurs in the vicinity of lines of minimal phase separation. Note that the boundaries are all periodic, so this pattern tesselates. Because we implemented a transformation in our <code class="docutils literal notranslate"><span class="pre">CustomPrior</span></code> subclass, we can actually draw the samples and transform them, which is useful in post-processing contexts. We defined the intervals <code class="docutils literal notranslate"><span class="pre">[-0.25,</span> <span class="pre">0.75]</span></code> for the inverse sampling so that the posterior mode(s) will not be near a boundary.
@@ -3271,7 +2918,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_195_0.png" src="_images/model_construction_195_0.png" />
+<img alt="_images/model_construction_190_0.png" src="_images/model_construction_190_0.png" />
 </div>
 </div>
 <p>We can see the rarefaction occurs for <span class="math notranslate nohighlight">\(\Delta\phi\sim0.0=1.0\)</span>.</p>
@@ -3420,7 +3067,7 @@ Sampling complete.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_206_0.png" src="_images/model_construction_206_0.png" />
+<img alt="_images/model_construction_201_0.png" src="_images/model_construction_201_0.png" />
 </div>
 </div>
 <p>The chains rendered in the documentation were run on a desktop machine in about a day of wall-time. It is visually discernable that the ensemble distribution has not yet evolved to a stationary state: a rigourous application of ensemble MCMC would cover convergence criteria, auto-correlation, and examination of sensitivity to initial conditions and the transition kernel. In fact, based on the analysis with nested sampling on path <code class="docutils literal notranslate"><span class="pre">xpsi/examples/default_background</span></code>, we know that the posterior
@@ -3974,7 +3621,7 @@ Background normalisation: 1.89127972e-05
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_245_0.png" src="_images/model_construction_245_0.png" />
+<img alt="_images/model_construction_240_0.png" src="_images/model_construction_240_0.png" />
 </div>
 </div>
 <p>Check we have generated the same count numbers, given the same seed and resolution settings:</p>
