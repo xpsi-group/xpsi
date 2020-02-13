@@ -108,6 +108,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
@@ -384,7 +385,7 @@ environment variables need to be exported in your <code class="docutils literal 
 in your <code class="docutils literal notranslate"><span class="pre">.bash.rc</span></code> script which can be sourced by your <code class="docutils literal notranslate"><span class="pre">.bash_profile</span></code>
 script (the default default behaviour).</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">/sara/sw/python-2.7.9/</span></code> Python distribution does not
-seem to have <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/index.html#module-numpy" title="(in NumPy v1.17)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> linked against the Intel MKL library. Instead it
+seem to have <a class="reference external" href="https://numpy.org/doc/1.18/reference/index.html#module-numpy" title="(in NumPy v1.18)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> linked against the Intel MKL library. Instead it
 uses the open-source, multithreaded OpenBLAS library which still offers an
 optimised interface to BLAS and LAPACK. However for our purposes on distributed
 memory architectures, we  wish to export the following environment variables
@@ -402,10 +403,10 @@ multithreading regions are used which do not take instructions from the
 above.
 However, the <code class="docutils literal notranslate"><span class="pre">MKL_NUM_THREADS</span></code> environment variable should either not be
 exported (in which case the <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> variable is used), or increased
-so that <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/index.html#module-numpy" title="(in NumPy v1.17)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> can multithread outside of the local multithreading
+so that <a class="reference external" href="https://numpy.org/doc/1.18/reference/index.html#module-numpy" title="(in NumPy v1.18)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> can multithread outside of the local multithreading
 regions in the X-PSI extension modules.</p>
 <p>Note that OpenBLAS may not be compiled against the OpenMP library but instead
-use Pthreads. If <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/index.html#module-numpy" title="(in NumPy v1.17)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> <em>is</em> linked against MKL, we have covered all
+use Pthreads. If <a class="reference external" href="https://numpy.org/doc/1.18/reference/index.html#module-numpy" title="(in NumPy v1.18)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> <em>is</em> linked against MKL, we have covered all
 possibilities because MKL whilst uses OpenMP threading but the
 <code class="docutils literal notranslate"><span class="pre">MKL_NUM_THREADS</span></code> environment variable takes precedence if set and thus we
 ensure it is set to one.</p>

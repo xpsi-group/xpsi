@@ -99,6 +99,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
@@ -331,7 +332,7 @@ the container access self[&lt;name&gt;].</p>
 <dt id="xpsi.Instrument.Instrument.energy_edges">
 <code class="descname">energy_edges</code><a class="headerlink" href="#xpsi.Instrument.Instrument.energy_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the energy edges of the instrument.</p>
-<p>A <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy
+<p>A <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy
 intervals which map to output channels defined in the
 data space.</p>
 </dd></dl>
@@ -346,7 +347,7 @@ output channels.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The attribute <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be assigned, and it must be
-a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> for use with <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.17)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> (even
+a <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> for use with <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.18)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> (even
 if the matrix is sparse to some degree).</p>
 </div>
 </dd></dl>

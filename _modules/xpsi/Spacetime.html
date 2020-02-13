@@ -97,6 +97,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
@@ -238,7 +239,7 @@
                       <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="n">M</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span>
-                      <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>
+                      <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>
                       <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                       <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;Gravitational mass [solar masses]&#39;</span><span class="p">,</span>
                       <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$M$&#39;</span><span class="p">,</span>
@@ -252,7 +253,7 @@
                       <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="n">D</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;distance&#39;</span><span class="p">,</span>
-                      <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">),</span>
+                      <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">),</span>
                       <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;distance&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                       <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;Earth distance [kpc]&#39;</span><span class="p">,</span>
                       <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$D$&#39;</span><span class="p">,</span>
@@ -288,7 +289,6 @@
     <span class="k">def</span> <span class="nf">r_g</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the Schwarzschild gravitational radius in SI. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_G</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">/</span> <span class="n">_csq</span>
-
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">r_s</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -338,7 +338,10 @@
 <span class="sd">        See Morsink et al. (2007), and AlGendy &amp; Morsink (2014).</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_g</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zeta</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_g</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">epsilon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -347,7 +350,52 @@
 <span class="sd">        See Morsink et al. (2007), and AlGendy &amp; Morsink (2014).</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Omega</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">**</span><span class="mf">3.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">_G</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Omega</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">**</span><span class="mf">3.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">_G</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the spin parameter, first order in spin.</span>
+
+<span class="sd">        See AlGendy &amp; Morsink (2014).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">zeta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span>
+
+            <span class="n">I_dimless</span> <span class="o">=</span> <span class="n">_m</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">zeta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.136</span> <span class="o">-</span> <span class="mf">2.53</span> <span class="o">*</span> <span class="n">zeta</span> <span class="o">+</span> <span class="mf">5.6</span> <span class="o">*</span> <span class="n">zeta</span> <span class="o">*</span> <span class="n">zeta</span><span class="p">)</span>
+
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Omega</span> <span class="o">*</span> <span class="n">I_dimless</span> <span class="o">/</span> <span class="n">_c</span>
+
+            <span class="k">return</span> <span class="n">a</span>
+
+    <span class="nd">@a</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the spin parameter. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the dimensionless mass quadrupole, second order in spin.</span>
+
+<span class="sd">        See AlGendy &amp; Morsink (2014).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+             <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">*</span> <span class="mf">0.11</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zeta</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="p">)</span>
+             <span class="n">temp</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_g</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_g</span><span class="p">)</span>
+             <span class="k">return</span> <span class="n">temp</span> <span class="o">+</span> <span class="mf">0.4554</span> <span class="o">*</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span> <span class="o">/</span> <span class="mf">3.0</span>
+
+    <span class="nd">@q</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the mass quadrupole moment. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q</span> <span class="o">=</span> <span class="n">q</span></div>
 
 <span class="n">Spacetime</span><span class="o">.</span><span class="n">_update_doc</span><span class="p">()</span>
 </pre></div>

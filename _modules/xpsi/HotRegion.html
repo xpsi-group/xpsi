@@ -97,6 +97,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
@@ -1208,12 +1209,9 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">cede_pulse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
-                                          <span class="n">st</span><span class="o">.</span><span class="n">M</span><span class="p">,</span>
                                           <span class="n">st</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>
                                           <span class="n">st</span><span class="o">.</span><span class="n">Omega</span><span class="p">,</span>
                                           <span class="n">st</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
-                                          <span class="n">st</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>
-                                          <span class="n">st</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span>
                                           <span class="n">st</span><span class="o">.</span><span class="n">i</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_cede_cellArea</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_cede_r</span><span class="p">,</span>

@@ -99,6 +99,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
@@ -330,42 +331,27 @@ so many frames, will exhibit a period of one second.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="xpsi.Photosphere.Photosphere._global_variables">
-<code class="descname">_global_variables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere._global_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere._global_variables" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a vector of global  surface radiation field variables.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An <em>ndarray[n]</em> of scalars required to evaluate variables
-that control the radiation field w.r.t local comoving frames
-across the stellar surface.</td>
-</tr>
-</tbody>
-</table>
-<p>The following code block is how one would pass the properties of a
-single-temperature circular <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> to the extension modules. If
-you have more than one <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> object merged into the subspace
-associated with the <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code> object, they may each be prefixed,
-meaning that the set of parameter names below would need to be prefixed
-at the least, and unless you only want to image one <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code>, the
-parameters of the <code class="docutils literal notranslate"><span class="pre">HotRegions</span></code> object are required.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;super_colatitude&#39;</span><span class="p">],</span>
-                  <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">_2pi</span><span class="p">,</span>
-                  <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;super_radius&#39;</span><span class="p">],</span>
-                  <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;super_temperature&#39;</span><span class="p">]])</span>
-</pre></div>
-</div>
-<p>The phase shift controls the initial rotational phase of the
-<code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> when imaging commences.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="xpsi.Photosphere.Photosphere._plot_sky_maps">
-<code class="descname">_plot_sky_maps</code><span class="sig-paren">(</span><em>_file_root</em>, <em>_energies</em>, <em>_redraw</em>, <em>threads=1</em>, <em>panel_layout=None</em>, <em>panel_indices=None</em>, <em>energy_bounds=[]</em>, <em>num_levels=100</em>, <em>normalise_each_panel=True</em>, <em>figsize=(10</em>, <em>10)</em>, <em>usetex=False</em>, <em>fontsize_scale=1.0</em>, <em>tick_spacing=(1</em>, <em>4)</em>, <em>tick_length_scaling=1.0</em>, <em>dpi_scale=1.0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere._plot_sky_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere._plot_sky_maps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_plot_sky_maps</code><span class="sig-paren">(</span><em>_file_root</em>, <em>_phases</em>, <em>_energies</em>, <em>_redraw</em>, <em>threads=1</em>, <em>panel_layout=None</em>, <em>panel_indices=None</em>, <em>phase_average=False</em>, <em>energy_bounds=[]</em>, <em>num_levels=100</em>, <em>normalise_each_panel=True</em>, <em>invert=False</em>, <em>colormap=None</em>, <em>figsize=(10</em>, <em>10)</em>, <em>usetex=False</em>, <em>fontsize_scale=1.0</em>, <em>tick_spacing=(0.2</em>, <em>1.0)</em>, <em>tick_length_scaling=1.0</em>, <em>dpi_scale=1.0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere._plot_sky_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere._plot_sky_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper method for specific intensity sky map visualization.</p>
 <p>Uses Delaunay triangulation to create an irregular sky mesh and
-calculate (specific) intensity contours at a sequence of phases.</p>
+calculate photon (specific) intensity contours at a sequence of phases.</p>
+<p>Each figure generated contains a sequence of panels arranged in
+one or two spatial dimensions. Each panel is an intensity sky map,
+either at a particular energy or integrated over a finite energy
+interval. Panels cannot mix specific and integrated intensities. Only
+a some sequence of energy (intervals), in any order, can be identified
+as labelling panels in one or two spatial dimensions. Time (rotational
+phase), whilst it could be defined to label a sequence of panels, is
+only identified as a labelling a sequence of <em>figures</em>.</p>
+<p>Similarly, sequence of energies could be identified as a variable
+labelling a sequence of figures, but is not. Moreover, energy and time
+could label panels in to spatial dimensions, but such mixing is not
+permitted. Finally, variables controlling the source-receiver system
+could be identified as labels of panels and/or figures, but this
+is also not supported. More complicated rendering patterns may be
+supported in future versions, but for now can be achieved via
+custom extensions building off of the current functionality.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -374,7 +360,14 @@ calculate (specific) intensity contours at a sequence of phases.</p>
 <li><strong>_file_root</strong> (<em>str</em>) – Relative or absolute path to parent directory for images,
 extended with the root name for the image files. E.g., the
 default is <code class="docutils literal notranslate"><span class="pre">./images/skymap</span></code>. You do not need to change this
-unless you wish to, and is otherwise reserved for internal use.</li>
+unless you wish to, and is otherwise reserved for internal use.
+You may supply a custom file path via keywords <code class="docutils literal notranslate"><span class="pre">root_dir</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_root</span></code> upon calling <a class="reference internal" href="#xpsi.Photosphere.Photosphere.image" title="xpsi.Photosphere.Photosphere.image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image()</span></code></a>, which are
+concatenated appropriately.</li>
+<li><strong>_phases</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – The phases at which the star was imaged. This is handled
+internally, so do <em>not</em> pass a keyword argument. If phase averaging,
+the minimum and maximum phases must be zero and <span class="math notranslate nohighlight">\(2\pi\)</span>
+radians (i.e., zero and one cycles).</li>
 <li><strong>_energies</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – The energies at which the star was imaged. This is handled
 internally, so do <em>not</em> pass a keyword argument.</li>
 <li><strong>_redraw</strong> (<em>bool</em>) – Redraw the sky maps? This is handled internally, so do <em>not</em> pass
@@ -389,6 +382,9 @@ a subset of energies at which the star was imaged. If intensities
 are plotted, these integers should index a subset of the energy
 intervals over which specific intensities are integrated. See
 the <code class="docutils literal notranslate"><span class="pre">energy_bounds</span></code> keyword argument.</li>
+<li><strong>phase_average</strong> (<em>bool</em>) – Average each sky map over one revolution (cycle) in phase?
+Note that the resulting image is incompatible with the currently
+supported animation mode.</li>
 <li><strong>energy_bounds</strong> (<em>iterable</em>) – A set of two-element containers. Each container has an ordered pair
 of energies which delimit an integration domain. Specific intensity
 is integrated along each sky direction, at each phase, between
@@ -403,6 +399,13 @@ globally over all panels? The former yields relative intensity
 as function of phase and sky direction for an energy or energy
 interval, whilst the latter offers more spectral information but
 emission in some panels may not be discernable.</li>
+<li><strong>invert</strong> (<em>bool</em>) – Invert the greyscale to show bright pixels as dark on a white
+plot background. If a colormap is manually supplied, this just
+controls the plot background colour. Inversion is recommended
+for printed format, whilst a black background is more intuitive
+when in digital format.</li>
+<li><strong>colormap</strong> (<em>obj</em>) – A matplotlib colormap object. Choose something appropriate and
+<em>accessible</em> for a non-negative scalar field (sky intensities).</li>
 <li><strong>figsize</strong> (<em>tuple</em><em>(</em><em>int</em><em>,</em><em>int</em><em>)</em>) – The figure size (width, height) in <em>inches</em>. If the dimensions are
 inconsistent with the aspect ratio suggested by the <code class="docutils literal notranslate"><span class="pre">panel_layout</span></code>
 settings, the height of the figure will be automatically rescaled
@@ -432,7 +435,7 @@ on the panel size.</li>
 <dl class="attribute">
 <dt id="xpsi.Photosphere.Photosphere.elsewhere">
 <code class="descname">elsewhere</code><a class="headerlink" href="#xpsi.Photosphere.Photosphere.elsewhere" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the instance of <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere" title="xpsi.Everywhere.Everywhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Everywhere</span></code></a>.</p>
+<dd><p>Get the instance of <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere" title="xpsi.Elsewhere.Elsewhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elsewhere</span></code></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -443,9 +446,9 @@ on the panel size.</li>
 overwrite the setter. The underscore attribute set by the setter
 must be an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
 <span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+<a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
 elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+<a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
 multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
 first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
 arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
@@ -476,6 +479,43 @@ for use in flux integrators called by distant observers.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="xpsi.Photosphere.Photosphere.everywhere">
+<code class="descname">everywhere</code><a class="headerlink" href="#xpsi.Photosphere.Photosphere.everywhere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere" title="xpsi.Everywhere.Everywhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Everywhere</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Photosphere.Photosphere.global_variables">
+<code class="descname">global_variables</code><a class="headerlink" href="#xpsi.Photosphere.Photosphere.global_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a vector of global surface radiation field variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An <em>ndarray[n]</em> of scalars required to evaluate variables
+that control the radiation field w.r.t local comoving frames
+across the stellar surface.</td>
+</tr>
+</tbody>
+</table>
+<p>The following code block is how one would pass the properties of a
+single-temperature circular <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> to the extension modules. If
+you have more than one <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> object merged into the subspace
+associated with the <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code> object, they may each be prefixed,
+meaning that the set of parameter names below would need to be prefixed
+at the least, and unless you only want to image one <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code>, the
+parameters of the <code class="docutils literal notranslate"><span class="pre">HotRegions</span></code> object are required.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;super_colatitude&#39;</span><span class="p">],</span>
+                  <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">_2pi</span><span class="p">,</span>
+                  <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;super_radius&#39;</span><span class="p">],</span>
+                  <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;super_temperature&#39;</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>The phase shift controls the initial rotational phase of the
+<code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> when imaging commences.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="xpsi.Photosphere.Photosphere.hot">
 <code class="descname">hot</code><a class="headerlink" href="#xpsi.Photosphere.Photosphere.hot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the instance of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a>.</p>
@@ -489,9 +529,9 @@ for use in flux integrators called by distant observers.</p>
 overwrite the setter. The underscore attribute set by the setter
 must be an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
 <span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+<a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
 elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+<a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
 multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
 first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
 arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
@@ -514,7 +554,7 @@ the same memory upon each call without I/O.</p>
 
 <dl class="method">
 <dt id="xpsi.Photosphere.Photosphere.image">
-<code class="descname">image</code><span class="sig-paren">(</span><em>reimage=False</em>, <em>energies=None</em>, <em>phases=None</em>, <em>sqrt_num_rays=100</em>, <em>epsabs_ray=1e-12</em>, <em>epsrel_ray=1e-12</em>, <em>max_steps=10000</em>, <em>init_step=0.1</em>, <em>image_plane_radial_increment_power=0.5</em>, <em>threads=1</em>, <em>plot_sky_maps=False</em>, <em>sky_map_kwargs={}</em>, <em>animate_sky_maps=False</em>, <em>animate_kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.image" title="Permalink to this definition">¶</a></dt>
+<code class="descname">image</code><span class="sig-paren">(</span><em>reimage=False</em>, <em>energies=None</em>, <em>phases=None</em>, <em>sqrt_num_rays=100</em>, <em>epsabs_ray=1e-12</em>, <em>epsrel_ray=1e-12</em>, <em>max_steps=100000</em>, <em>init_step=0.1</em>, <em>image_plane_radial_increment_power=0.5</em>, <em>threads=1</em>, <em>cache_intensities=False</em>, <em>plot_sky_maps=False</em>, <em>sky_map_kwargs={}</em>, <em>animate_sky_maps=False</em>, <em>animate_kwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Image the star as a function of phase and energy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -529,6 +569,42 @@ intensities at.</li>
 <li><strong>sqrt_num_rays</strong> (<em>int</em>) – Square-root of the number of rays. This is the level of
 discretisation in both a radial coordinate and a polar coordinate
 on an elliptical image plane.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>When the spacetime is static or extremely close to being static in
+a numerical context, at the resolutions we are interested in, we
+need to mitigate problems with rays that graze the pole
+infinitesimally close to the polar axis. In the vicinity of the
+polar coordinate singularity the ODE system is stiff and the
+solution is unstable. The most straightforward way to mitigate this
+is to perform a fallback forward Euler step for a ray that passes
+exactly through the pole, and use that ray as an approximation for
+the grazing ray that started very nearby on the image plane.
+Internally, if a ray intersects the image plane at
+<span class="math notranslate nohighlight">\(x\)</span>-coordinate that is numerically very close to, but not
+exactly, zero (which would mean alignment to the rotational axis),
+it is approximated by a ray that intersects <span class="math notranslate nohighlight">\(x=0\)</span>.
+Image-plane interpolation of quantities (such as intensity) for
+the purpose of visualisation will then smooth out any such
+artefacts.</p>
+<p class="last">Moreover, as an additional measure against
+artefacts in the sky maps in the vicinity of the rotational pole,
+rays are distributed accordingingly. For example, if we request
+<span class="math notranslate nohighlight">\(n=400\)</span> rays per dimension, a maximal spacing of the rays
+from the rotational axis is achieved by rotating the <em>spokes</em>
+of rays (by up to <span class="math notranslate nohighlight">\(\pm\pi/n\)</span>) so that no spoke is
+aligned (or anti-aligned) with the <span class="math notranslate nohighlight">\(y\)</span>-direction.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>epsabs_ray</strong> (<em>float</em>) – Absolute error tolerance per ray to adhere to during numerical
 integration.</li>
 <li><strong>epsrel_ray</strong> (<em>float</em>) – Relative error tolerance per ray to adhere to during numerical
@@ -537,7 +613,7 @@ integration.</li>
 of integration.</li>
 <li><strong>init_step</strong> (<em>float</em>) – The initial <em>suggested</em> step size at the image plane for the
 affine parameter for each ray.</li>
-<li><strong>image_plane_radial_increment_power</strong> (<em>float</em>) – This parameter controls the behaviour of the radial discretisation.
+<li><strong>image_plane_radial_increment_power</strong> (<em>float</em>) – Controls the behaviour of the radial discretisation.
 Higher values towards unity result in linear spacing of rays with
 the radial coordinate. Lower values towards zero squeeze the rays
 towards the visible stellar limb, which is necessary for resolving
@@ -548,6 +624,10 @@ compromising resolution at the stellar limb.</li>
 Parallel blocks include ray integration to generate a global ray
 map from image plane to surface; and image calculation at a
 sequence of rotational phases..</li>
+<li><strong>cache_intensities</strong> (<em>bool</em>) – Cache the photon specific intensity sky maps in memory, as a
+function of phase and energy? Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code> because this
+dominates memory consumption. You need to activate this option
+if you want to plot the sky maps (see below).</li>
 <li><strong>plot_sky_maps</strong> (<em>bool</em>) – Plot (specific) intenity sky maps at a sequence of phases, or
 by averaging over phase. Maps can be made at one more energies
 or energy intervals. The images will be written to disk and
@@ -581,7 +661,7 @@ method docstring for available options.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV.</li>
+<li><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV.</li>
 <li><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn for pulse integration.</li>
 </ul>
 </td>

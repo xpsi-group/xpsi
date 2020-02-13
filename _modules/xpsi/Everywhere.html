@@ -97,6 +97,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
@@ -284,7 +285,7 @@
             <span class="n">T</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span>
                           <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">),</span> <span class="c1"># very cold --&gt; very hot</span>
                           <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                          <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;log10 of the effective temperature&#39;</span><span class="p">,</span>
+                          <span class="n">doc</span> <span class="o">=</span> <span class="s1">&#39;log10(effective temperature [K] everywhere)&#39;</span><span class="p">,</span>
                           <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\log_</span><span class="si">{10}</span><span class="s1">(T\;[\rm</span><span class="si">{K}</span><span class="s1">])$&#39;</span><span class="p">,</span>
                           <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span> <span class="c1"># let the custom subclass handle definitions; ignore bounds</span>
@@ -292,8 +293,18 @@
 
         <span class="nb">super</span><span class="p">(</span><span class="n">Everywhere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">custom</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_invariant</span> <span class="o">=</span> <span class="n">time_invariant</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">time_invariant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the declared state of time-invariance. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span>
+
+    <span class="nd">@time_invariant</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">time_invariant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invariant</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Declare whether the signal is time-invariant. &quot;&quot;&quot;</span>
         <span class="c1"># find the required integrator</span>
-        <span class="k">if</span> <span class="n">time_invariant</span><span class="p">:</span> <span class="c1"># can we safely assume azimuthal invariance?</span>
+        <span class="k">if</span> <span class="n">invariant</span><span class="p">:</span> <span class="c1"># can we safely assume azimuthal invariance?</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_time_invariant</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="kn">from</span> <span class="nn">.cellmesh.integrator_for_time_invariance</span> <span class="kn">import</span> <span class="n">integrate_radField</span> <span class="k">as</span> <span class="n">_integrator</span>
         <span class="k">else</span><span class="p">:</span> <span class="c1"># more general purpose</span>
@@ -482,7 +493,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_cellParamVecs</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_effGrav</span></div>
 
 <div class="viewcode-block" id="Everywhere.embed"><a class="viewcode-back" href="../../everywhere.html#xpsi.Everywhere.Everywhere.embed">[docs]</a>    <span class="k">def</span> <span class="nf">embed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">threads</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Embed the photosphere elsewhere. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Embed the photosphere everywhere. &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_construct_cellMesh</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compute_rays</span><span class="p">(</span><span class="n">spacetime</span><span class="p">,</span> <span class="n">photosphere</span><span class="p">,</span> <span class="n">threads</span><span class="p">)</span>
@@ -544,7 +555,7 @@
                                    <span class="bp">self</span><span class="o">.</span><span class="n">_leaves</span><span class="p">,</span>
                                    <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">,</span>
                                    <span class="n">atmosphere</span><span class="p">,</span>
-                                   <span class="kc">None</span><span class="p">)</span> <span class="c1"># no atmosphere elsewhere, use hot extension</span>
+                                   <span class="kc">None</span><span class="p">)</span> <span class="c1"># no other atmosphere needed</span>
         <span class="k">if</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">IntegrationError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical error during integration.&#39;</span><span class="p">)</span>
 
