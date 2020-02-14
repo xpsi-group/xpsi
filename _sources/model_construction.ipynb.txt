@@ -1978,7 +1978,7 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "ll = -26713.61367769; time = 1.115\n"
+      "ll = -26713.61367769; time = 1.131\n"
      ]
     }
    ],

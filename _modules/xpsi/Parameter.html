@@ -324,7 +324,7 @@
         <span class="k">return</span> <span class="mi">0</span> <span class="c1"># calculate something and return</span></div></div>
 
 <div class="viewcode-block" id="Parameter"><a class="viewcode-back" href="../../parameter.html#xpsi.Parameter.Parameter">[docs]</a><span class="k">class</span> <span class="nc">Parameter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Parameter.</span>
+    <span class="sd">&quot;&quot;&quot; A parameter.</span>
 
 <span class="sd">    :param str name:</span>
 <span class="sd">        A unique parameter name for identification in attribute lookup.</span>
@@ -349,6 +349,7 @@
 <div class="viewcode-block" id="Parameter.__init__"><a class="viewcode-back" href="../../parameter.html#xpsi.Parameter.Parameter.__init__">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Creating parameter:&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">strict_bounds</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span>
                  <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">permit_prepend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; See the class docstring. &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">strict_bounds</span> <span class="o">=</span> <span class="n">strict_bounds</span>

@@ -378,6 +378,14 @@
         <span class="sd">&quot;&quot;&quot; Set the spin parameter. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
 
+    <span class="nd">@a</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Delete the spin parameter. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span> <span class="c1"># silently do nothing</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the dimensionless mass quadrupole, second order in spin.</span>
@@ -395,7 +403,15 @@
     <span class="nd">@q</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set the mass quadrupole moment. &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_q</span> <span class="o">=</span> <span class="n">q</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q</span> <span class="o">=</span> <span class="n">q</span>
+
+    <span class="nd">@q</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Delete the mass quadrupole moment. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span> <span class="c1"># silently do nothing</span></div>
 
 <span class="n">Spacetime</span><span class="o">.</span><span class="n">_update_doc</span><span class="p">()</span>
 </pre></div>
