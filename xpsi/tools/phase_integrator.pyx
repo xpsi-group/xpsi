@@ -86,9 +86,3 @@ def phase_integrator(double T_exp,
     gsl_interp_accel_free(acc)
 
     return np.asarray(PULSE, dtype = np.double, order = 'C')
-
-
-
-
-
-

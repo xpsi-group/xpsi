@@ -162,6 +162,15 @@ class Likelihood(ParameterSubspace):
         self._prior = obj
         self._prior.parameters = self # a reference to the parameter container
 
+    @prior.deleter
+    def prior(self):
+        """ Delete the reference to the prior. """
+
+        try:
+            del self._prior
+        except AttributeError:
+            pass # nothing to be done
+
     @property
     def llzero(self):
         """ Get the minimum log-likelihood setting passed to MultiNest. """
@@ -511,7 +520,7 @@ class Likelihood(ParameterSubspace):
 
         :param list p: Parameter vector.
 
-        :param optional[bool] reinitialise: Call self.reinitialise()?
+        :param optional[bool] reinitialise: Call ``self.reinitialise()``?
 
         :param optional[bool] force:
             Force complete reevaluation even if some parameters are unchanged.

@@ -37,7 +37,8 @@ class Derive(object):
         of this present class (or more precisely instances of subclasses) with
         the required references. As an example, consider the following:
 
-    .. code-block: python
+    .. highlight:: python
+    .. code-block:: python
 
         bounds = dict(super_colatitude = (None, None),
                       super_radius = (None, None),
@@ -131,7 +132,7 @@ class Derive(object):
         return 0 # calculate something and return
 
 class Parameter(object):
-    """ Parameter.
+    """ A parameter.
 
     :param str name:
         A unique parameter name for identification in attribute lookup.
@@ -156,6 +157,7 @@ class Parameter(object):
     @make_verbose('Creating parameter:','\n')
     def __init__(self, name, strict_bounds, bounds=(None,None),
                  doc=None, symbol=r'', value=None, permit_prepend=True):
+        """ See the class docstring. """
 
         self.name = name
         self.strict_bounds = strict_bounds

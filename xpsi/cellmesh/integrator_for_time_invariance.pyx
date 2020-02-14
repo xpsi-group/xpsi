@@ -71,6 +71,7 @@ def integrate_radField(size_t numThreads,
                          double[::1] maxDeflection,
                          double[::1] cos_gammaArray,
                          double[::1] energies,
+                         atmosphere,
                          *args):
 
     #----------------------------------------------------------------------->>>
@@ -104,9 +105,9 @@ def integrate_radField(size_t numThreads,
         double _GEOM, _Z, _ABB # TP
         double superlum # TP
         double cos_gamma_sq, sin_gamma_sq
-        double cos_theta_ij, sin_theta_ij
+        double cos_theta_i, sin_theta_i
         double sqrt_cos_gamma_sq
-        double theta_ij_over_pi
+        double theta_i_over_pi
         double beta_sq
         double Lorentz
 
@@ -142,22 +143,22 @@ def integrate_radField(size_t numThreads,
     cdef double[::1] intensity
     cdef void *data = NULL
     cdef size_t num_args
-    if args:
-        num_args = len(args)
+    if atmosphere:
+        num_args = len(atmosphere)
         preload = <elsewhereRadField_PRELOAD*> malloc(sizeof(elsewhereRadField_PRELOAD))
         preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
         preload.S = <size_t*> malloc(sizeof(size_t) * (num_args - 2))
         for i in range(num_args - 1):
-            cast = args[i]
+            cast = atmosphere[i]
             preload.params[i] = &cast[0]
             if i < num_args - 2:
-                cast = args[i+1]
+                cast = atmosphere[i+1]
                 preload.S[i] = cast.shape[0]
                 if i < num_args - 3:
                     for j in range(i+2, num_args - 1):
-                        cast = args[j]
+                        cast = atmosphere[j]
                         preload.S[i] *= cast.shape[0]
-        intensity = args[i+1]
+        intensity = atmosphere[i+1]
         preload.I = &intensity[0]
         data = init_elsewhereRadField(N_T, preload)
     else:
@@ -202,15 +203,15 @@ def integrate_radField(size_t numThreads,
             alpha_ptr = &(cos_alphaMatrix[i,0])
             gsl_interp_init(interp_alpha[T], defl_ptr, alpha_ptr, N_R)
 
-        cos_theta_ij = cos(theta[i,0])
-        sin_theta_ij = sin(theta[i,0])
-        theta_ij_over_pi = theta[i,0] / _pi
-        beta = radius * omega * sin_theta_ij / (c * Grav_z)
+        cos_theta_i = cos(theta[i,0])
+        sin_theta_i = sin(theta[i,0])
+        theta_i_over_pi = theta[i,0] / _pi
+        beta = radius * omega * sin_theta_i / (c * Grav_z)
         beta_sq = beta * beta
         Lorentz = sqrt(1.0 - beta_sq)
 
         for j in range(sqrt_numPix):
-            cos_psi = cos_i * cos_theta_ij + sin_i * sin_theta_ij * cos(phi[i,j])
+            cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(phi[i,j])
             psi = acos(cos_psi)
             sin_psi = sin(psi)
 
@@ -227,8 +228,8 @@ def integrate_radField(size_t numThreads,
                 mu = cos_alpha * cos_gamma
 
                 if sin_psi != 0.0:
-                    cos_delta = (cos_i - cos_theta_ij * cos_psi) / (sin_theta_ij * sin_psi)
-                    if theta_ij_over_pi < 0.5:
+                    cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
+                    if theta_i_over_pi < 0.5:
                         mu = mu + sin_alpha * sin_gamma_sq * cos_delta
                     else:
                         mu = mu - sin_alpha * sin_gamma_sq * cos_delta
@@ -247,16 +248,16 @@ def integrate_radField(size_t numThreads,
 
                     _Z = eta * Grav_z
                     _ABB = mu * eta
-                    _GEOM = mu * deriv * Grav_z * eta * eta * eta / superlum
+                    _GEOM = mu * deriv * Grav_z * eta * eta * eta #/ superlum
 
                     for e in range(N_E):
                         E_prime = energies[e] / _Z
 
                         I_E = eval_elsewhereRadField(T,
-                                               E_prime,
-                                               _ABB,
-                                               &(srcCellParams[i,j,0]),
-                                               data)
+                                                     E_prime,
+                                                     _ABB,
+                                                     &(srcCellParams[i,j,0]),
+                                                     data)
 
                         privateFlux[T,e] += I_E * _GEOM
 
@@ -279,7 +280,7 @@ def integrate_radField(size_t numThreads,
     free(interp_alpha)
     free(accel_alpha)
 
-    if args:
+    if atmosphere:
         free(preload.params)
         free(preload.S)
         free(preload)

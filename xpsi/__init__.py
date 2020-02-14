@@ -117,6 +117,7 @@ if not __XPSI_SETUP__:
     from .TwoHotRegions import TwoHotRegions
     from .HotRegions import HotRegions
     from .Elsewhere import Elsewhere
+    from .Everywhere import Everywhere
 
     from .Background import Background
     from .Interstellar import Interstellar

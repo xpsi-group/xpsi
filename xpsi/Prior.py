@@ -36,7 +36,7 @@ class Prior(object):
     def __init__(self, parameters):
         """
         You might want to overwrite this initialiser to do some custom
-        setup for priors whose handling is moreinvolved.
+        setup for priors whose handling is more involved.
 
         If you overwrite this initialiser, you do not need to take parameters
         as an argument if you prefer not to. When the instance is passed to

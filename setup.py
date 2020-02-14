@@ -127,6 +127,7 @@ if __name__ == '__main__':
                 'xpsi.tools.channel_integrator',
                 'xpsi.tools.energy_interpolator',
                 'xpsi.tools.energy_adaptor',
+                'xpsi.tools.energy_integrator',
                 'xpsi.tools.phase_integrator',
                 'xpsi.tools.phase_interpolator',
                 'xpsi.tools.synthesise',
@@ -136,7 +137,17 @@ if __name__ == '__main__':
                 'xpsi.surface_radiation_field.elsewhere_radiation_field',
                 'xpsi.cellmesh.integrator',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance',
-                'xpsi.cellmesh.integrator_for_time_invariance']
+                'xpsi.cellmesh.integrator_for_time_invariance',
+                'xpsi.pixelmesh.METRIC_qK',
+                'xpsi.pixelmesh.RODES_qK',
+                'xpsi.pixelmesh.BOUNDARY_CONDITIONS',
+                'xpsi.pixelmesh.surfaceBisection',
+                'xpsi.pixelmesh.coordinateTransformation',
+                'xpsi.pixelmesh.RK_IP2S_tracer',
+                'xpsi.pixelmesh.get_IP_radius',
+                'xpsi.pixelmesh.globalRayMap',
+                'xpsi.surface_radiation_field.local_variables',
+                'xpsi.pixelmesh.integrator']
 
     extensions = []
 

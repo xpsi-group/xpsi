@@ -18,6 +18,7 @@
 
    model_construction
    hotregion_complexity
+   global_surface_emission
    example_script
    example_job
    extensions
@@ -39,6 +40,7 @@
    twohotregions
    hotregions
    elsewhere
+   everywhere
    interstellar
    background
 

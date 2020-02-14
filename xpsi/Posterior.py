@@ -39,6 +39,12 @@ class Posterior(object):
         # and then revert if not in prior support
         self._likelihood.externally_updated = True
 
+        # we do not need to the likelihood object to call the prior for
+        # this type of sampling because it is handled in the present class
+        # instead; for nested sampling we want to call the prior from the
+        # likelihood object in order to check inclusion in the prior support
+        del self._likelihood.prior
+
         if not isinstance(prior, Prior):
             raise TypeError('Invalid type for prior object.')
 

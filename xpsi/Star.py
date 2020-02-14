@@ -62,8 +62,11 @@ class Star(ParameterSubspace):
         return self._photospheres
 
     def activate_fast_mode(self, activate):
-        for photosphere in self._photospheres:
-            photosphere.hot.fast_mode = activate
+        try:
+            for photosphere in self._photospheres:
+                photosphere.hot.fast_mode = activate
+        except AttributeError:
+            pass # no hot regions to worry about
 
     def update(self, fast_counts=None, threads=1):
         """ Update the star.

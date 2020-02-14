@@ -79,8 +79,17 @@ class HotRegion(ParameterSubspace):
     :param sqrt_num_cells:
         Number of cells in both colatitude and azimuth which form a
         regular mesh on a curved 2-surface (a spacelike leaf of the
-        spacetime foliation). This is the square-root of the approximate
-        number of cells whose centres should lie within a hot region.
+        spacetime foliation).
+
+    :param int sqrt_num_cells:
+        Number of cells in both colatitude and azimuth which form a regular
+        mesh over a subset of the surface spanning a hot region. This is the
+        square-root of the approximate number of cells whose centres should
+        lie within a hot region. The total number of cells is approximately
+        the square of this argument value. The mesh suffers from squeezing in
+        the polar regions, leading to a high degree of non-congruence in cell
+        shape for meshes that extend from a polar region to the equatorial
+        region.
 
     :param min_sqrt_num_cells:
         Sets the minimum number of cells per *subregion*, discretised to
@@ -93,21 +102,24 @@ class HotRegion(ParameterSubspace):
         the same degree in colatitude and azimuth. This setting has an
         effect even when there is only one temperature component.
 
-    :param num_rays: Number of rays to trace (integrate) at each colatitude,
-                     distributed in angle subtended between ray tangent
-                     4-vector and radial outward unit vector w.r.t a local
-                     orthonormal tetrad.
+    :param num_rays:
+        Number of rays to trace (integrate) at each colatitude,
+        distributed in angle subtended between ray tangent
+        4-vector and radial outward unit vector w.r.t a local
+        orthonormal tetrad.
 
-    :param int num_leaves: Number of leaves mesh motion is discretised into.
+    :param int num_leaves:
+        Number of leaves mesh motion is discretised into.
 
-    :param int num_phases: Number of phases in a discrete representation of
-                           the specific flux pulses on the interval
-                           :math:`[0,1]`.
+    :param int num_phases:
+        Number of phases in a discrete representation of the specific flux
+        pulses on the interval :math:`[0,1]`.
 
-    :param phases: If not ``None``, a :class:`numpy.ndarray` of phases
-                   for a discrete representation of the specific flux
-                   pulses on the interval :math:`[0,1]`. If ``None``
-                   (default), the :obj:`num_phases` argument is utilised.
+    :param phases:
+        If not ``None``, a :class:`numpy.ndarray` of phases
+        for a discrete representation of the specific flux
+        pulses on the interval :math:`[0,1]`. If ``None``
+        (default), the :obj:`num_phases` argument is utilised.
 
     :param bool do_fast:
         Activate fast precomputation to guide cell distribution between
@@ -598,8 +610,8 @@ class HotRegion(ParameterSubspace):
         """ Print numerical settings. """
         print('Base number of cell parallels: ', self.sqrt_num_cells)
         print('Number of rays per parallel: ', self.num_rays)
-        print('Number of photospheric leaves: ', self.leaves.shape[0])
-        print('Number of interpolation phases: ', self.phases.shape[0])
+        print('Number of photospheric leaves: ', len(self.leaves))
+        print('Number of interpolation phases: ', len(self.phases))
 
     def __construct_cellMesh(self, st, fast_total_counts, threads):
         """ Call a low-level routine to construct a mesh representation.
@@ -975,12 +987,9 @@ class HotRegion(ParameterSubspace):
             super_energies = cede_energies = energies
 
         super_pulse = self._integrator(threads,
-                                       st.M,
                                        st.R,
                                        st.Omega,
                                        st.r_s,
-                                       st.zeta,
-                                       st.epsilon,
                                        st.i,
                                        self._super_cellArea,
                                        self._super_r,
@@ -1008,12 +1017,9 @@ class HotRegion(ParameterSubspace):
 
         try:
             cede_pulse = self._integrator(threads,
-                                          st.M,
                                           st.R,
                                           st.Omega,
                                           st.r_s,
-                                          st.zeta,
-                                          st.epsilon,
                                           st.i,
                                           self._cede_cellArea,
                                           self._cede_r,

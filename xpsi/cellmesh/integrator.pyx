@@ -79,12 +79,9 @@ cdef void INVIS(size_t k,
 # >>>
 #----------------------------------------------------------------------->>>
 def integrate_radField(size_t numThreads,
-                         double M,
                          double R,
                          double omega,
                          double r_s,
-                         double zeta,
-                         double epsilon,
                          double inclination,
                          double[:,::1] cellArea,
                          double[::1] radialCoords_of_parallels,
@@ -103,7 +100,7 @@ def integrate_radField(size_t numThreads,
                          double[::1] energies,
                          double[::1] leaves,
                          double[::1] phases,
-                         spot_atmosphere,
+                         hot_atmosphere,
                          elsewhere_atmosphere):
 
     #----------------------------------------------------------------------->>>
@@ -221,8 +218,8 @@ def integrate_radField(size_t numThreads,
     cdef void *data = NULL
     cdef void *ext_data = NULL
     cdef size_t num_args
-    if spot_atmosphere:
-        args = spot_atmosphere
+    if hot_atmosphere:
+        args = hot_atmosphere
         num_args = len(args)
         src_preload = <hotRadField_PRELOAD*> malloc(sizeof(hotRadField_PRELOAD))
         src_preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
@@ -331,6 +328,9 @@ def integrate_radField(size_t numThreads,
                 break
             j = j + 1
 
+        #if j == cellArea.shape[1]:
+        #    printf('%i', <int>i)
+
         InvisFlag[T] = 2
         InvisPhase[twoT] = 0
         InvisPhase[twoT + 1] = 0
@@ -395,7 +395,7 @@ def integrate_radField(size_t numThreads,
                         break
                     else:
                         _PHASE[T][k] = leaves[k] + gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, cos_psi, accel_lag[T])
-
+                        #printf("\nphase, cos_psi, i, k, leaf: %.8e, %.8e, %i, %i, %.8e", _PHASE[T][k], cos_psi, <int>i, <int>k, leaves[k])
 
                     # Check whether cell was visible at previous rotation step
                     if InvisFlag[T] == 1 or (k != 0 and InvisFlag[T] == 2):
@@ -415,6 +415,7 @@ def integrate_radField(size_t numThreads,
                     InvisFlag[T] = 0
 
                 else:
+                    #printf("\ncos_psi, i, k, leaf: %.8e, %i, %i, %.8e", cos_psi, <int>i, <int>k, leaves[k])
                     INVIS(k,
                           N_L,
                           InvisFlag + T,
@@ -425,6 +426,7 @@ def integrate_radField(size_t numThreads,
                           _Z[T],
                           _ABB[T])
             else:
+                #printf("\ncos_psi, i, k, leaf: %.8e, %i, %i, %.8e", cos_psi, <int>i, <int>k, leaves[k])
                 INVIS(k,
                       N_L,
                       InvisFlag + T,
@@ -471,13 +473,11 @@ def integrate_radField(size_t numThreads,
                             if __PHASE_plusShift > _PHASE[T][N_L - 1]:
                                 while __PHASE_plusShift > _PHASE[T][N_L - 1]:
                                     __PHASE_plusShift = __PHASE_plusShift - _2pi
-                                __GEOM = gsl_interp_eval(interp_GEOM[T], phase_ptr, GEOM_ptr, __PHASE_plusShift, accel_GEOM[T])
                             elif __PHASE_plusShift < _PHASE[T][0]:
                                 while __PHASE_plusShift < _PHASE[T][0]:
                                     __PHASE_plusShift = __PHASE_plusShift + _2pi
-                                __GEOM = gsl_interp_eval(interp_GEOM[T], phase_ptr, GEOM_ptr, __PHASE_plusShift, accel_GEOM[T])
-                            else:
-                                __GEOM = gsl_interp_eval(interp_GEOM[T], phase_ptr, GEOM_ptr, __PHASE_plusShift, accel_GEOM[T])
+
+                            __GEOM = gsl_interp_eval(interp_GEOM[T], phase_ptr, GEOM_ptr, __PHASE_plusShift, accel_GEOM[T])
 
                             if __GEOM > 0.0:
                                 __Z = gsl_interp_eval(interp_Z[T], phase_ptr, Z_ptr, __PHASE_plusShift, accel_Z[T])
@@ -556,7 +556,7 @@ def integrate_radField(size_t numThreads,
     free(InvisStep)
     free(InvisPhase)
 
-    if spot_atmosphere:
+    if hot_atmosphere:
         free(src_preload.params)
         free(src_preload.S)
         free(src_preload)
@@ -576,5 +576,6 @@ def integrate_radField(size_t numThreads,
             free(terminate)
             return (ERROR, None)
 
+    #printf("\nIntegration completed.")
     return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'))
 

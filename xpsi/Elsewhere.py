@@ -30,8 +30,10 @@ class Elsewhere(ParameterSubspace):
 
     :param int sqrt_num_cells:
         Number of cells in both colatitude and azimuth which form a regular
-        mesh on a closed curved 2-surface (which is a compact subset of a
-        spacelike leaf of the spacetime foliation).
+        mesh on the surface. The total number of cells is the square of this
+        argument value. The mesh suffers from squeezing in the polar regions,
+        leading to a high degree of non-congruence in cell shape over the
+        surface.
 
     :param iterable custom:
         Iterable over :class:`~.Parameter.Parameter` instances. If you
@@ -238,7 +240,7 @@ class Elsewhere(ParameterSubspace):
                            self._maxDeflection,
                            self._cos_gamma,
                            energies,
-                           *atmosphere)
+                           atmosphere)
         if out[0] == 1:
             raise IntegrationError('Fatal numerical error during elsewhere integration.')
 

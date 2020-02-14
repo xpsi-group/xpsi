@@ -91,12 +91,9 @@ cdef void INVIS(size_t k,
 # >>>
 #----------------------------------------------------------------------->>>
 def integrate_radField(size_t numThreads,
-                         double M,
                          double R,
                          double omega,
                          double r_s,
-                         double zeta,
-                         double epsilon,
                          double inclination,
                          double[:,::1] cellArea,
                          double[::1] radialCoords_of_parallels,
@@ -115,7 +112,7 @@ def integrate_radField(size_t numThreads,
                          double[::1] energies,
                          double[::1] leaves,
                          double[::1] phases,
-                         spot_atmosphere,
+                         hot_atmosphere,
                          elsewhere_atmosphere):
 
     #----------------------------------------------------------------------->>>
@@ -222,8 +219,8 @@ def integrate_radField(size_t numThreads,
     cdef void *data = NULL
     cdef void *ext_data = NULL
     cdef size_t num_args
-    if spot_atmosphere:
-        args = spot_atmosphere
+    if hot_atmosphere:
+        args = hot_atmosphere
         num_args = len(args)
         src_preload = <hotRadField_PRELOAD*> malloc(sizeof(hotRadField_PRELOAD))
         src_preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
@@ -354,7 +351,7 @@ def integrate_radField(size_t numThreads,
             psi = acos(cos_psi)
             sin_psi = sin(psi)
 
-            if psi < maxDeflection[i]:
+            if psi <= maxDeflection[i]:
                 if (cos_psi < interp_alpha[T].xmin or cos_psi > interp_alpha[T].xmax):
                     #printf("cos_psi: %.16e\n", cos_psi)
                     #printf("min: %.16e\n", interp_alpha[T].xmin)
@@ -560,7 +557,7 @@ def integrate_radField(size_t numThreads,
 
     free(BLOCK)
 
-    if spot_atmosphere:
+    if hot_atmosphere:
         free(src_preload.params)
         free(src_preload.S)
         free(src_preload)

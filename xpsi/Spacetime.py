@@ -47,7 +47,7 @@ class Spacetime(ParameterSubspace):
                       value = values.get('frequency', None))
 
         M = Parameter('mass',
-                      strict_bounds = (0.8, 3.0),
+                      strict_bounds = (0.001, 3.0),
                       bounds = bounds.get('mass', None),
                       doc = 'Gravitational mass [solar masses]',
                       symbol = r'$M$',
@@ -61,7 +61,7 @@ class Spacetime(ParameterSubspace):
                       value = values.get('radius', None))
 
         D = Parameter('distance',
-                      strict_bounds = (0.0, 50.0),
+                      strict_bounds = (0.01, 50.0),
                       bounds = bounds.get('distance', None),
                       doc = 'Earth distance [kpc]',
                       symbol = r'$D$',
@@ -97,7 +97,6 @@ class Spacetime(ParameterSubspace):
     def r_g(self):
         """ Get the Schwarzschild gravitational radius in SI. """
         return _G * self.M / _csq
-
 
     @property
     def r_s(self):
@@ -147,7 +146,10 @@ class Spacetime(ParameterSubspace):
         See Morsink et al. (2007), and AlGendy & Morsink (2014).
 
         """
-        return self.r_g / self.R
+        try:
+            return self._zeta
+        except AttributeError:
+            return self.r_g / self.R
 
     @property
     def epsilon(self):
@@ -156,6 +158,67 @@ class Spacetime(ParameterSubspace):
         See Morsink et al. (2007), and AlGendy & Morsink (2014).
 
         """
-        return self.Omega**2.0 * self.R**3.0 / (_G * self.M)
+        try:
+            return self._epsilon
+        except AttributeError:
+            return self.Omega**2.0 * self.R**3.0 / (_G * self.M)
+
+    @property
+    def a(self):
+        """ Get the spin parameter, first order in spin.
+
+        See AlGendy & Morsink (2014).
+
+        """
+        try:
+            return self._a
+        except AttributeError:
+            zeta = self.zeta
+
+            I_dimless = _m.sqrt(zeta) * (1.136 - 2.53 * zeta + 5.6 * zeta * zeta)
+
+            a = self.R * self.R * self.Omega * I_dimless / _c
+
+            return a
+
+    @a.setter
+    def a(self, a):
+        """ Set the spin parameter. """
+        self._a = a
+
+    @a.deleter
+    def a(self):
+        """ Delete the spin parameter. """
+        try:
+            del self._a
+        except AttributeError:
+            pass # silently do nothing
+
+    @property
+    def q(self):
+        """ Get the dimensionless mass quadrupole, second order in spin.
+
+        See AlGendy & Morsink (2014).
+
+        """
+        try:
+            return self._q
+        except AttributeError:
+             temp = self.epsilon * 0.11 / (self.zeta * self.zeta)
+             temp -= self.a * self.a / (self.r_g * self.r_g)
+             return temp + 0.4554 * 4.0 * self.epsilon * self.zeta / 3.0
+
+    @q.setter
+    def q(self, q):
+        """ Set the mass quadrupole moment. """
+        self._q = q
+
+    @q.deleter
+    def q(self):
+        """ Delete the mass quadrupole moment. """
+        try:
+            del self._q
+        except AttributeError:
+            pass # silently do nothing
 
 Spacetime._update_doc()

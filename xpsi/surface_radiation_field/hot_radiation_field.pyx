@@ -40,7 +40,7 @@ cdef int free_hotRadField(size_t numThreads, void *const data) nogil:
     # only the user can know this at compile time.
     # Just use free(<void*> data) iff no memory was dynamically
     # allocated in the function:
-    #   init_local_hotRadField()
+    #   init__hotRadField()
     # because data is expected to be NULL in this case
 
     #printf("\nNo data to be freed.")
