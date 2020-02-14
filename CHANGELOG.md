@@ -18,6 +18,49 @@ and this project adheres to
 ### Removed
 
 
+## [v0.4.0] - 2020-02-14
+
+### Summary
+
+* Mainly new features.
+
+* Backwards compatible (apart from possible corner cases).
+
+### Fixed
+
+* Removed a spurious geometric factor in the integrator that discretises the
+    surface with a static mesh. This integrator was called by the `Elsewhere`
+    class. The error when this factor is included is O(1%) at 600 Hz for soft
+    emission from the entire stellar disk, and then scales with spin and energy
+    beyond this. To reproduce the bug, find the commented out `/ superlum` in
+    file `xpsi/cellmesh/integrator_for_time_invariance.pyx` (line 251) and
+    uncomment it. Then reinstall the package. When this factor is included, the
+    mesh itself is moving in the context of the images subtended by its
+    constituent elements on our sky. We want the mesh to be static so that this
+    integrator can be used for faster calculation of time-invariant signals.
+
+* Bug in which the prior density factor is incorporated twice if a `Likelihood`
+    instance held a reference to a `Prior` object and these are merged into
+    a `Posterior` object which is fed to the ensemble sampler. If the prior
+    density was *flat*, this bug will have had no effect on posterior
+    distributions.
+
+### Added
+
+* New features are the simulation of signals from more general surface
+    radiation fields that globally span the stellar surface. This can be
+    done with several types of integrator.
+
+* The new image-plane discretisation integrator supports imaging of a star,
+    and Python functionality has been added to automate plotting and animation
+    of intensity sky maps.
+
+* A new tutorial to the documentation to demonstrate these new features and
+    an internal cross-check of distinct integration algorithms.
+
+* A visual introduction to the documentation pages with some animated sky maps.
+
+
 ## [v0.3.6] - 2020-01-24
 
 ### Fixed
