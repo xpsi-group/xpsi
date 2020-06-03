@@ -17,6 +17,17 @@ and this project adheres to
 
 ### Removed
 
+## [v0.4.1] - 2020-06-03
+
+### Fixed
+
+* Patch to fix names in to match definitions in header file:
+  `xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx` to match
+  `xpsi/surface_radiation_field/elsewhere_radiation_field.pxd`.
+ 
+### Attribution
+
+* Sebastien Guillot.
 
 ## [v0.4.0] - 2020-02-14
 
