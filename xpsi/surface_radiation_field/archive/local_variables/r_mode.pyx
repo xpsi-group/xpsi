@@ -21,7 +21,6 @@ cdef int HIT_or_MISS(double theta,
                      const storage *const buf) nogil:
     # use this function to determine whether an arbitrary input ray transports
     # a FINITE quantity of radiation
-    #
     # NB: HYPERSLICE is a phase parameter with units of radians that the
     # time evolution of the photosphere as it undergoes bulk rotation
 
@@ -74,7 +73,27 @@ cdef int eval_local_variables(double theta,
 
     cdef double *local_vars = (<double**> buf.local_variables)[THREAD]
 
-    local_vars[0] = global_variables[0]
+    # r-mode implementation below contributed by F.R.N. Chambers (2020)
+    cdef:
+        double temperature = global_variables[0]
+        double phase = global_variables[1] + HYPERSLICE
+        double amplitude = global_variables[2]
+        double q = global_variables[3]
+        double f, L, mu_sq, alpha, beta, N
+
+    L = -(1.0 + q) / (3.0 * q)
+
+    alpha = q * (L + 1.0)
+
+    beta = q * L
+
+    N = -1.0 * beta / (2.0 * alpha) * exp(1.0 + beta / (2.0 * alpha))
+
+    mu_sq = pow(cos(theta), 2.0)
+
+    f = N * (1.0 - alpha * mu_sq) * exp(-0.5 * beta * mu_sq)
+
+    local_vars[0] = temperature + log((1.0 + amplitude * f * cos(phi - phase))) / log(10.0)
 
     local_vars[1] = effectiveGravity(cos(theta),
                                      GEOM.R_eq,

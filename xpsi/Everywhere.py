@@ -114,10 +114,10 @@ class Everywhere(ParameterSubspace):
         # find the required integrator
         if invariant: # can we safely assume azimuthal invariance?
             self._time_invariant = True
-            from .cellmesh.integrator_for_time_invariance import integrate_radField as _integrator
+            from .cellmesh.integrator_for_time_invariance import integrate as _integrator
         else: # more general purpose
             self._time_invariant = False
-            from .cellmesh.integrator import integrate_radField as _integrator
+            from .cellmesh.integrator import integrate as _integrator
         self._integrator = _integrator
 
     @property

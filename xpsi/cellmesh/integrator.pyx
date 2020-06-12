@@ -2,6 +2,9 @@
 #cython: boundscheck=False
 #cython: nonecheck=False
 #cython: wraparound=False
+#cython: embedsignature=True
+
+""" Integrate over the image of a star on a distant observer's sky. """
 
 from __future__ import division
 import numpy as np
@@ -30,17 +33,19 @@ cdef int ERROR = 1
 cdef int VERBOSE = 1
 cdef int QUIET = 0
 
-from xpsi.surface_radiation_field.hot_radiation_field cimport (init_hotRadField,
-                                                       eval_hotRadField,
-                                                       eval_hotRadField_norm,
-                                                       free_hotRadField,
-                                                       hotRadField_PRELOAD)
+from xpsi.surface_radiation_field.preload cimport (_preloaded,
+                                                   init_preload,
+                                                   free_preload)
 
-from xpsi.surface_radiation_field.elsewhere_radiation_field cimport (init_elsewhereRadField,
-                                                        free_elsewhereRadField,
-                                                        eval_elsewhereRadField,
-                                                        eval_elsewhereRadField_norm,
-                                                        elsewhereRadField_PRELOAD)
+from xpsi.surface_radiation_field.hot cimport (init_hot,
+                                               eval_hot,
+                                               eval_hot_norm,
+                                               free_hot)
+
+from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
+                                                     free_elsewhere,
+                                                     eval_elsewhere,
+                                                     eval_elsewhere_norm)
 
 cdef void INVIS(size_t k,
                 size_t N_L,
@@ -74,34 +79,30 @@ cdef void INVIS(size_t k,
             for m in range(InvisPhase[0], k + 1):
                 _PHASE[m] = _PHASE[m - 1] + InvisStep[0]
 
-#----------------------------------------------------------------------->>>
-# >>> Integrate over the celestial sphere of distant observer.
-# >>>
-#----------------------------------------------------------------------->>>
-def integrate_radField(size_t numThreads,
-                         double R,
-                         double omega,
-                         double r_s,
-                         double inclination,
-                         double[:,::1] cellArea,
-                         double[::1] radialCoords_of_parallels,
-                         double[::1] r_s_over_r,
-                         double[:,::1] theta,
-                         double[:,::1] phi,
-                         double[:,:,::1] srcCellParams,
-                         int[:,::1] CELL_RADIATES,
-                         correction_srcCellParams,
-                         int numRays,
-                         double[:,::1] deflection,
-                         double[:,::1] cos_alphaMatrix,
-                         double[:,::1] lag,
-                         double[::1] maxDeflection,
-                         double[::1] cos_gammaArray,
-                         double[::1] energies,
-                         double[::1] leaves,
-                         double[::1] phases,
-                         hot_atmosphere,
-                         elsewhere_atmosphere):
+def integrate(size_t numThreads,
+              double R,
+              double omega,
+              double r_s,
+              double inclination,
+              double[:,::1] cellArea,
+              double[::1] radialCoords_of_parallels,
+              double[::1] r_s_over_r,
+              double[:,::1] theta,
+              double[:,::1] phi,
+              double[:,:,::1] srcCellParams,
+              int[:,::1] CELL_RADIATES,
+              correction_srcCellParams,
+              int numRays,
+              double[:,::1] deflection,
+              double[:,::1] cos_alphaMatrix,
+              double[:,::1] lag,
+              double[::1] maxDeflection,
+              double[::1] cos_gammaArray,
+              double[::1] energies,
+              double[::1] leaves,
+              double[::1] phases,
+              hot_atmosphere,
+              elsewhere_atmosphere):
 
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
@@ -210,35 +211,17 @@ def integrate_radField(size_t numThreads,
         for j in range(deflection.shape[1]):
             cos_deflection[i,j] = cos(deflection[i,j])
 
-    # Initialise the source radiation field
-    cdef hotRadField_PRELOAD *src_preload = NULL
-    cdef elsewhereRadField_PRELOAD *ext_preload = NULL
-    cdef double[::1] cast
-    cdef double[::1] intensity
-    cdef void *data = NULL
+    # initialise the source radiation field
+    cdef _preloaded *hot_preloaded = NULL
+    cdef _preloaded *ext_preloaded = NULL
+    cdef void *hot_data = NULL
     cdef void *ext_data = NULL
-    cdef size_t num_args
+
     if hot_atmosphere:
-        args = hot_atmosphere
-        num_args = len(args)
-        src_preload = <hotRadField_PRELOAD*> malloc(sizeof(hotRadField_PRELOAD))
-        src_preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
-        src_preload.S = <size_t*> malloc(sizeof(size_t) * (num_args - 2))
-        for i in range(num_args - 1):
-            cast = args[i]
-            src_preload.params[i] = &cast[0]
-            if i < num_args - 2:
-                cast = args[i+1]
-                src_preload.S[i] = cast.shape[0]
-                if i < num_args - 3:
-                    for j in range(i+2, num_args - 1):
-                        cast = args[j]
-                        src_preload.S[i] *= cast.shape[0]
-        intensity = args[i+1]
-        src_preload.I = &intensity[0]
-        data = init_hotRadField(N_T, src_preload)
+        hot_preloaded = init_preload(hot_atmosphere)
+        hot_data = init_hot(N_T, hot_preloaded)
     else:
-        data = init_hotRadField(N_T, NULL)
+        hot_data = init_hot(N_T, NULL)
 
     cdef double[:,:,::1] correction
     cdef int perform_correction
@@ -251,26 +234,10 @@ def integrate_radField(size_t numThreads,
 
     if perform_correction == 1:
         if elsewhere_atmosphere:
-            args = elsewhere_atmosphere
-            num_args = len(args)
-            ext_preload = <elsewhereRadField_PRELOAD*> malloc(sizeof(elsewhereRadField_PRELOAD))
-            ext_preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
-            ext_preload.S = <size_t*> malloc(sizeof(size_t) * (num_args - 2))
-            for i in range(num_args - 1):
-                cast = args[i]
-                ext_preload.params[i] = &cast[0]
-                if i < num_args - 2:
-                    cast = args[i+1]
-                    ext_preload.S[i] = cast.shape[0]
-                    if i < num_args - 3:
-                        for j in range(i+2, num_args - 1):
-                            cast = args[j]
-                            ext_preload.S[i] *= cast.shape[0]
-            intensity = args[i+1]
-            ext_preload.I = &intensity[0]
-            ext_data = init_elsewhereRadField(N_T, ext_preload)
+            ext_preloaded = init_preload(elsewhere_atmosphere)
+            ext_data = init_elsewhere(N_T, ext_preloaded)
         else:
-            ext_data = init_elsewhereRadField(N_T, NULL)
+            ext_data = init_elsewhere(N_T, NULL)
 
     #----------------------------------------------------------------------->>>
     # >>> Integrate.
@@ -485,22 +452,22 @@ def integrate_radField(size_t numThreads,
 
                                 for p in range(N_E):
                                     E_prime = energies[p] / __Z
-                                    I_E = eval_hotRadField(T,
-                                                           E_prime,
-                                                           __ABB,
-                                                           &(srcCellParams[i,j,0]),
-                                                           data)
+                                    I_E = eval_hot(T,
+                                                   E_prime,
+                                                   __ABB,
+                                                   &(srcCellParams[i,j,0]),
+                                                   hot_data)
 
-                                    I_E = I_E * eval_hotRadField_norm()
+                                    I_E = I_E * eval_hot_norm()
 
                                     if perform_correction == 1:
-                                        correction_I_E = eval_elsewhereRadField(T,
+                                        correction_I_E = eval_elsewhere(T,
                                                                E_prime,
                                                                __ABB,
                                                                &(correction[i,j,0]),
                                                                ext_data)
 
-                                        correction_I_E = correction_I_E * eval_elsewhereRadField_norm()
+                                        correction_I_E = correction_I_E * eval_elsewhere_norm()
 
                                     privateFlux[T,k,p] += cellArea[i,j] * (I_E - correction_I_E) * __GEOM
                             if terminate[T] == 1:
@@ -557,19 +524,15 @@ def integrate_radField(size_t numThreads,
     free(InvisPhase)
 
     if hot_atmosphere:
-        free(src_preload.params)
-        free(src_preload.S)
-        free(src_preload)
+        free_preload(hot_preloaded)
 
-    free_hotRadField(N_T, data)
+    free_hot(N_T, hot_data)
 
     if perform_correction == 1:
         if elsewhere_atmosphere:
-            free(ext_preload.params)
-            free(ext_preload.S)
-            free(ext_preload)
+            free_preload(ext_preloaded)
 
-        free_elsewhereRadField(N_T, ext_data)
+        free_elsewhere(N_T, ext_data)
 
     for T in range(N_T):
         if terminate[T] == 1:
@@ -578,4 +541,3 @@ def integrate_radField(size_t numThreads,
 
     #printf("\nIntegration completed.")
     return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'))
-

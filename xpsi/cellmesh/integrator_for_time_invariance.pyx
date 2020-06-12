@@ -2,6 +2,9 @@
 #cython: boundscheck=False
 #cython: nonecheck=False
 #cython: wraparound=False
+#cython: embedsignature=True
+
+""" Integrate over the image of a star on a distant observer's sky. """
 
 from __future__ import division, print_function
 import numpy as np
@@ -43,36 +46,38 @@ cdef double Planck_dist_const = 5.040366110812353e22
 cdef int SUCCESS = 0
 cdef int ERROR = 1
 
-from xpsi.surface_radiation_field.elsewhere_radiation_field cimport (init_elsewhereRadField,
-                                                                eval_elsewhereRadField,
-                                                                eval_elsewhereRadField_norm,
-                                                                free_elsewhereRadField,
-                                                                elsewhereRadField_PRELOAD)
+from xpsi.surface_radiation_field.preload cimport (_preloaded,
+                                                   init_preload,
+                                                   free_preload)
 
+from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
+                                                     free_elsewhere,
+                                                     eval_elsewhere,
+                                                     eval_elsewhere_norm)
 #----------------------------------------------------------------------->>>
 # >>> Integrate over the celestial sphere of distant observer.
 # >>> 
 #----------------------------------------------------------------------->>>
-def integrate_radField(size_t numThreads,
-                         double R,
-                         double omega,
-                         double r_s,
-                         double inclination,
-                         size_t sqrt_numPix,
-                         double cellArea,
-                         double[::1] radialCoords_of_parallels,
-                         double[::1] r_s_over_r,
-                         double[:,::1] theta,
-                         double[:,::1] phi,
-                         double[:,:,::1] srcCellParams,
-                         int numRays,
-                         double[:,::1] deflection,
-                         double[:,::1] cos_alphaMatrix,
-                         double[::1] maxDeflection,
-                         double[::1] cos_gammaArray,
-                         double[::1] energies,
-                         atmosphere,
-                         *args):
+def integrate(size_t numThreads,
+              double R,
+              double omega,
+              double r_s,
+              double inclination,
+              size_t sqrt_numPix,
+              double cellArea,
+              double[::1] radialCoords_of_parallels,
+              double[::1] r_s_over_r,
+              double[:,::1] theta,
+              double[:,::1] phi,
+              double[:,:,::1] srcCellParams,
+              int numRays,
+              double[:,::1] deflection,
+              double[:,::1] cos_alphaMatrix,
+              double[::1] maxDeflection,
+              double[::1] cos_gammaArray,
+              double[::1] energies,
+              atmosphere,
+              *args):
 
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
@@ -138,31 +143,14 @@ def integrate_radField(size_t numThreads,
             cos_deflection[i,j] = cos(deflection[i,j])
 
     # Initialise the source radiation field
-    cdef elsewhereRadField_PRELOAD *preload = NULL
-    cdef double[::1] cast
-    cdef double[::1] intensity
+    cdef _preloaded *preloaded = NULL
     cdef void *data = NULL
-    cdef size_t num_args
+
     if atmosphere:
-        num_args = len(atmosphere)
-        preload = <elsewhereRadField_PRELOAD*> malloc(sizeof(elsewhereRadField_PRELOAD))
-        preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
-        preload.S = <size_t*> malloc(sizeof(size_t) * (num_args - 2))
-        for i in range(num_args - 1):
-            cast = atmosphere[i]
-            preload.params[i] = &cast[0]
-            if i < num_args - 2:
-                cast = atmosphere[i+1]
-                preload.S[i] = cast.shape[0]
-                if i < num_args - 3:
-                    for j in range(i+2, num_args - 1):
-                        cast = atmosphere[j]
-                        preload.S[i] *= cast.shape[0]
-        intensity = atmosphere[i+1]
-        preload.I = &intensity[0]
-        data = init_elsewhereRadField(N_T, preload)
+        preloaded = init_preload(atmosphere)
+        data = init_elsewhere(N_T, preloaded)
     else:
-        data = init_elsewhereRadField(N_T, NULL)
+        data = init_elsewhere(N_T, NULL)
 
     #----------------------------------------------------------------------->>>
     # >>> Integrate.
@@ -253,11 +241,11 @@ def integrate_radField(size_t numThreads,
                     for e in range(N_E):
                         E_prime = energies[e] / _Z
 
-                        I_E = eval_elsewhereRadField(T,
-                                                     E_prime,
-                                                     _ABB,
-                                                     &(srcCellParams[i,j,0]),
-                                                     data)
+                        I_E = eval_elsewhere(T,
+                                             E_prime,
+                                             _ABB,
+                                             &(srcCellParams[i,j,0]),
+                                             data)
 
                         privateFlux[T,e] += I_E * _GEOM
 
@@ -275,17 +263,15 @@ def integrate_radField(size_t numThreads,
             flux[e] += privateFlux[T,e]
 
     for e in range(N_E):
-        flux[e] *= cellArea * eval_elsewhereRadField_norm() / (energies[e] * keV)
+        flux[e] *= cellArea * eval_elsewhere_norm() / (energies[e] * keV)
 
     free(interp_alpha)
     free(accel_alpha)
 
     if atmosphere:
-        free(preload.params)
-        free(preload.S)
-        free(preload)
+        free_preload(preloaded)
 
-    free_elsewhereRadField(N_T, data)
+    free_elsewhere(N_T, data)
 
     for T in range(N_T):
         if terminate[T] == 1:

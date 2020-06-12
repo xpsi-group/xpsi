@@ -235,9 +235,9 @@ class HotRegion(ParameterSubspace):
 
         # find the required integrator
         if symmetry: # can we safely assume azimuthal invariance?
-            from .cellmesh.integrator_for_azimuthal_invariance import integrate_radField as _integrator
+            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
         else: # more general purpose
-            from .cellmesh.integrator import integrate_radField as _integrator
+            from .cellmesh.integrator import integrate as _integrator
         self._integrator = _integrator
 
         # first the parameters that are fundemental to this class

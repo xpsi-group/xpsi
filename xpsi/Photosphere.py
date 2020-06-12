@@ -966,15 +966,15 @@ class Photosphere(ParameterSubspace):
                     # and sky directions
                     MIN = _np.min(images[:,j,:][images[:,j,:] > 0.0])
                     MAX = _np.max(images[:,j,:])
-                    levels.append(_np.array([0.0] + list(_np.linspace(MIN,
-                                                                      MAX,
-                                                                      num_levels))))
+                    levels.append(_np.array(list(_np.linspace(MIN,
+                                                              MAX,
+                                                              num_levels))))
             else:
                 MIN = _np.min(images[:,:,:][images[:,:,:] > 0.0])
                 MAX = _np.max(images[:,:,:])
-                levels = _np.array([0.0] + list(_np.linspace(MIN,
-                                                             MAX,
-                                                             num_levels)))
+                levels = _np.array(list(_np.linspace(MIN,
+                                                     MAX,
+                                                     num_levels)))
 
 
             # because of default tick formatting and a minus sign,
