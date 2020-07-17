@@ -13,7 +13,7 @@ from .global_imports import *
 from . import global_imports
 
 from .Star import Star
-from .Pulse import Pulse, LikelihoodError
+from .Signal import Signal, LikelihoodError, construct_energy_array
 from .Background import Background
 from .Prior import Prior
 from .ParameterSubspace import ParameterSubspace
@@ -25,14 +25,29 @@ class Likelihood(ParameterSubspace):
     """ A container for all objects related to likelihood evaluation.
 
     A collective for objects pertaining to a statistical analysis of
-    X-ray pulses. These objects include X-ray data (sub)sets, the model
+    X-ray signals. These objects include X-ray data (sub)sets, the model
     instruments used to acquire these data sets, and the model star and
     model backgrounds.
 
     :param obj star:
         An instance of :class:`~.Star.Star`. This instance is the model star.
 
-    :param list pulses: A list of :class:`~.Pulse.Pulse` instances.
+    :param list signals:
+        Either:
+
+            * a single :class:`~.Signal.Signal` instance
+            * a list of :class:`~.Signal.Signal` instances
+            * a list of lists of :class:`~.Signal.Signal` instances
+
+    :param float num_energies:
+        Number of energies to compute specific photon flux signals at for
+        likelihood evaluation. These energies will be distributed linearly
+        in logarithmic space within the union of waveband coverages
+        achieved by some set of instruments. Gaps in waveband coverage will
+        be skipped.
+
+    :param float fast_rel_num_energies:
+        Fraction of the normal number of energies to use in *fast* mode.
 
     :param int threads:
         The number of ``OpenMP`` threads to spawn for integration. The default
@@ -58,40 +73,45 @@ class Likelihood(ParameterSubspace):
         when inverse sampling the prior for nested sampling.
 
     """
-    def __init__(self, star, pulses,
+    def __init__(self, star, signals,
+                 num_energies = 128,
+                 fast_rel_num_energies = 0.25,
                  threads = 1, llzero = -1.0e90,
                  externally_updated = False):
 
-        # only one star object for this version
-        if not isinstance(star, Star):
-            raise TypeError('Invalid type for a Star object.')
-        else:
-            self._star = star
-
-        if isinstance(pulses, Pulse):
-            self._pulses = [pulses]
-        else:
-            for pulse in pulses:
-                if not isinstance(pulse, Pulse):
-                    raise TypeError('Invalid type for a pulse object.')
-            self._pulses = pulses
+        self.star = star
+        self.signals = signals
 
         self._do_fast = False
 
-        for photosphere, pulse in zip(star.photospheres, self._pulses):
+        self._num_energies = num_energies
+        self._fast_rel_num_energies = fast_rel_num_energies
+
+        for photosphere, signals in zip(star.photospheres, self._signals):
             try:
-                assert photosphere.prefix == pulse.prefix, \
-                    'Photosphere and pulse subspaces must have matching \
-                     identification prefixes by convention, and also be \
-                     have matching orders.'
+                for signal in signals:
+                    assert photosphere.prefix == signal.photosphere, \
+                        'Each signal subspace must have a photosphere \
+                         attribute that matches the identification prefix \
+                         of a photosphere object, by convention, and the order \
+                         of the list of signal-object lists must match the \
+                         order of the list of photosphere objects.'
             except AttributeError:
-                pass # no prefixes
+                pass # quietly assume one photosphere object
 
-            pulse.phases = photosphere.hot.phases_in_cycles
+            energies = construct_energy_array(num_energies,
+                                              list(signals)) # make a copy
+            num = int( fast_rel_num_energies * num_energies )
+            fast_energies = construct_energy_array(num, list(signals))
 
-            if photosphere.hot.do_fast:
-                pulse.fast_phases = photosphere.hot.fast_phases_in_cycles
-                self._do_fast = True
+            for signal in signals:
+                signal.energies = energies
+                signal.phases = photosphere.hot.phases_in_cycles
+
+                if photosphere.hot.do_fast:
+                    signal.fast_energies = fast_energies
+                    signal.fast_phases = photosphere.hot.fast_phases_in_cycles
+                    self._do_fast = True
 
         self.threads = threads
 
@@ -100,7 +120,7 @@ class Likelihood(ParameterSubspace):
         self.externally_updated = externally_updated
 
         # merge subspaces
-        super(Likelihood, self).__init__(self._star, self._pulses)
+        super(Likelihood, self).__init__(self._star, *self._signals)
 
     @property
     def threads(self):
@@ -125,10 +145,43 @@ class Likelihood(ParameterSubspace):
         """ Get the instance of :class:`~.Star.Star`. """
         return self._star
 
+    @star.setter
+    def star(self, obj):
+        # only one star object for this version
+        if not isinstance(obj, Star):
+            raise TypeError('Invalid type for a Star object.')
+        else:
+            self._star = obj
+
     @property
-    def pulses(self):
-        """ Get the list of :class:`~.Pulse.Pulse` instances. """
-        return self._pulses
+    def signals(self):
+        """ Get the list of :class:`~.Signal.Signal` instances. """
+        if len(self._signals) == 1:
+            if len(self._signals[0]) == 1:
+                return self._signals[0][0]
+        return self._signals
+
+    @signals.setter
+    def signals(self, obj):
+        # infer how user supplied the signal objects
+        if isinstance(obj, Signal):
+            self._signals = [[obj,],]
+        elif isinstance(obj, list):
+            if all(isinstance(o, list) for o in obj):
+                for l in obj:
+                    if not all(isinstance(o, Signal) for o in l):
+                        raise TypeError('Invalid type for a signal object.')
+            elif all(isinstance(o, Signal) for o in obj):
+                self._signals = [obj,]
+            else:
+                raise TypeError('Invalid type for a signal object.')
+
+    @property
+    def signal(self):
+        """ Get the sole signal instance or throw exception. """
+        if len(self._signals) > 1 or len(self._signals[0]) > 1:
+            raise ValueError('There is more than one signal instance.')
+        return self._signals[0][0]
 
     @property
     def prior(self):
@@ -231,8 +284,8 @@ class Likelihood(ParameterSubspace):
                 if fast_mode or not self._do_fast:
                     fast_total_counts = None
                 else:
-                    fast_total_counts = tuple(pulse.fast_total_counts for\
-                                                        pulse in self._pulses)
+                    fast_total_counts = tuple(signal.fast_total_counts for\
+                                                        signal in self._signals)
 
                 self._star.update(fast_total_counts, self.threads)
             except xpsiError as e:
@@ -245,17 +298,12 @@ class Likelihood(ParameterSubspace):
 
                 return self.random_near_llzero
 
-            for photosphere, pulse in zip(self._star.photospheres, self._pulses):
+            for photosphere, signals in zip(self._star.photospheres, self._signals):
                 try:
-                    try:
-                        if fast_mode:
-                            energies = pulse.fast_energies
-                        elif self._do_fast:
-                            energies = pulse.energies
-                        else:
-                            energies = pulse.default_energies
-                    except AttributeError:
-                        energies = pulse.logspace_energies
+                    if fast_mode:
+                        energies = signals[0].fast_energies
+                    else:
+                        energies = signals[0].energies
 
                     photosphere.integrate(energies, self.threads)
                 except xpsiError as e:
@@ -275,62 +323,73 @@ class Likelihood(ParameterSubspace):
 
             star_updated = True
 
-        # fold the pulse through the instrument response
-        for pulse, photosphere in zip(self._pulses, self._star.photospheres):
-            if star_updated or pulse.needs_update:
-                pulse.fold(tuple(
-                                 tuple(self._divide(component,
+        # register the signals by operating with the instrument response
+        for signals, photosphere in zip(self._signals, self._star.photospheres):
+            for signal in signals:
+                if star_updated or signal.needs_update:
+                    signal.register(tuple(
+                                     tuple(self._divide(component,
                                                     self._star.spacetime.d_sq)
-                                       for component in hot_region)
-                                 for hot_region in photosphere.pulse),
-                           fast_mode=fast_mode, threads=self.threads)
-                refolded = True
-            else:
-                refolded = False
-
-            if not fast_mode and refolded:
-                if synthesise:
-                    hot = photosphere.hot
-                    pulse.synthesise([h['phase_shift'] for h in hot.objects],
-                                     threads=self._threads,
-                                     **kwargs)
+                                           for component in hot_region)
+                                     for hot_region in photosphere.signal),
+                               fast_mode=fast_mode, threads=self.threads)
+                    reregistered = True
                 else:
-                    try:
+                    reregistered = False
+
+                if not fast_mode and reregistered:
+                    if synthesise:
                         hot = photosphere.hot
-                        pulse([h['phase_shift'] for h in hot.objects],
-                              threads=self._threads, llzero=self._llzero)
-                    except LikelihoodError:
                         try:
-                            prefix = ' prefix ' + photosphere.prefix
+                            kws = kwargs.pop(signal.prefix)
                         except AttributeError:
-                            prefix = ''
-                        print('Warning: LikelihoodError raised for '
-                              'pulse%s.' % prefix)
-                        print('Parameter vector: ', super(Likelihood,self).__call__())
-                        return self.random_near_llzero
+                            kws = {}
+
+                        shifts = [h['phase_shift'] for h in hot.objects]
+                        signal.shifts = _np.array(shifts)
+                        signal.synthesise(threads=self._threads, **kws)
+                    else:
+                        try:
+                            hot = photosphere.hot
+                            shifts = [h['phase_shift'] for h in hot.objects]
+                            signal.shifts = _np.array(shifts)
+                            signal(threads=self._threads, llzero=self._llzero)
+                        except LikelihoodError:
+                            try:
+                                prefix = ' prefix ' + signal.prefix
+                            except AttributeError:
+                                prefix = ''
+                            print('Warning: LikelihoodError raised for '
+                                  'signal%s.' % prefix)
+                            print('Parameter vector: ', super(Likelihood,self).__call__())
+                            return self.random_near_llzero
 
         return star_updated
 
     def reinitialise(self):
         """ Reinitialise the likelihood object.
 
-        Useful if some resolution settings in child
-        objects were changed (namely, the number of pulse phases) that
-        need to be communicated to other child objects.
+        Useful if some resolution settings in child objects were changed
+        (namely, the number of signal phases) that need to be communicated
+        to other child objects.
 
         """
 
         self.__init__(self._star,
-                      self._pulses,
+                      self._signals,
+                      self._num_energies,
+                      self._fast_rel_num_energies,
                       self._threads,
                       self._llzero)
 
     def __call__(self, p = None, reinitialise = False, force = False):
         """ Evaluate the logarithm of the joint likelihood over all pulsations.
 
-        :param list p: Parameter vector.
+        :param list p:
+            Parameter vector if parameters not updated externally.
 
-        :param optional[bool] reinitialise: Call self.reinitialise()?
+        :param optional[bool] reinitialise:
+            Call ``self.reinitialise()``?
 
         :param optional[bool] force:
             Force complete reevaluation even if some parameters are unchanged.
@@ -379,9 +438,13 @@ class Likelihood(ParameterSubspace):
                     super(Likelihood, self).__call__(self.cached) # restore
                     return x
 
+            # memoization: update parameter value caches
+            super(Likelihood, self).__call__(self.vector)
+
         loglikelihood = 0.0
-        for pulse in self._pulses:
-            loglikelihood += pulse.loglikelihood
+        for signals in self._signals:
+            for signal in signals:
+                loglikelihood += signal.loglikelihood
 
         try:
             return loglikelihood + logprior
@@ -420,12 +483,16 @@ class Likelihood(ParameterSubspace):
         try:
             from _np import allclose
         except ImportError:
-            yield 'Cannot import ``allclose`` function from NumPy...'
-            yield 'Using fallback implementation...'
+            yield 'Cannot import ``allclose`` function from NumPy.'
+            yield 'Using fallback implementation'
 
+            @make_verbose('Checking closeness of likelihood arrays:',
+                          'Closeness evaluated')
             def allclose(a, b, rtol, atol, equal_nan=None):
                 """ Fallback based on NumPy v1.17. """
-                return ~((_np.abs(a - b) > atol + rtol*_np.abs(b)).any())
+                for _a, _b in zip(a, b):
+                    yield '%.8e | %.8e .....' % (a, b)
+                yield ~((_np.abs(a - b) > atol + rtol*_np.abs(b)).any())
                 #raise NotImplementedError('Implement a fallback.')
 
         lls = []
@@ -526,7 +593,7 @@ class Likelihood(ParameterSubspace):
             Force complete reevaluation even if some parameters are unchanged.
 
         :param dict kwargs:
-            Keyword arguments propagated to custom pulse synthesis methods.
+            Keyword arguments propagated to custom signal synthesis methods.
             Examples of such arguments include exposure times or
             required total count numbers (see example notebooks0.
 

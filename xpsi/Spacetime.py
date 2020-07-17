@@ -61,7 +61,7 @@ class Spacetime(ParameterSubspace):
                       value = values.get('radius', None))
 
         D = Parameter('distance',
-                      strict_bounds = (0.01, 50.0),
+                      strict_bounds = (0.01, 30.0), # inside Milky Way
                       bounds = bounds.get('distance', None),
                       doc = 'Earth distance [kpc]',
                       symbol = r'$D$',
@@ -80,11 +80,22 @@ class Spacetime(ParameterSubspace):
     @make_verbose('Configuring default bounds with fixed spin',
                   'Spacetime configured')
     def fixed_spin(cls, frequency):
+        """
+        :param float frequency:
+            The fixed coordinate spin frequency in Hz.
+
+        .. note::
+
+            The degeneracy due to equatorially-reflection symmetric physics
+            is eliminated here by declaring prior support for Earth inclination
+            from northern rotation pole to equatorial plane.
+
+        """
 
         bounds = dict(mass = (1.0, 3.0),
                       radius = (gravradius(1.0), 16.0),
                       distance = (0.05, 2.0),
-                      inclination = (0.0, _pi))
+                      inclination = (0.0, _pi/2.0))
 
         return cls(bounds, dict(frequency = frequency))
 
@@ -141,7 +152,9 @@ class Spacetime(ParameterSubspace):
 
     @property
     def zeta(self):
-        """ Get the derived parameter ``zeta`` for universality relation.
+        """ Get the derived parameter ``zeta`` for universal relations.
+
+        A dimensionless function of stellar properties.
 
         See Morsink et al. (2007), and AlGendy & Morsink (2014).
 
@@ -153,7 +166,9 @@ class Spacetime(ParameterSubspace):
 
     @property
     def epsilon(self):
-        """ Get the derived parameter ``epsilon`` for universality relation.
+        """ Get the derived parameter ``epsilon`` for universal relations.
+
+        A dimensionless function of stellar properties.
 
         See Morsink et al. (2007), and AlGendy & Morsink (2014).
 

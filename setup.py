@@ -118,13 +118,12 @@ if __name__ == '__main__':
                          extra_compile_args = extra_compile_args,
                          extra_link_args = extra_link_args)
 
-    modnames = ['xpsi.tools.effective_gravity_universal',
+    modnames = ['xpsi.surface_radiation_field.effective_gravity_universal',
                 'xpsi.cellmesh.mesh_tools',
                 'xpsi.cellmesh.mesh',
                 'xpsi.cellmesh.polar_mesh',
                 'xpsi.cellmesh.global_mesh',
                 'xpsi.cellmesh.rays',
-                'xpsi.tools.channel_integrator',
                 'xpsi.tools.energy_interpolator',
                 'xpsi.tools.energy_adaptor',
                 'xpsi.tools.energy_integrator',
@@ -132,7 +131,7 @@ if __name__ == '__main__':
                 'xpsi.tools.phase_interpolator',
                 'xpsi.tools.synthesise',
                 'xpsi.likelihoods.default_background_marginalisation',
-                'xpsi.likelihoods.Poisson_loglike',
+                'xpsi.likelihoods._poisson_likelihood_given_background',
                 'xpsi.surface_radiation_field.__init__',
                 'xpsi.surface_radiation_field.preload',
                 'xpsi.surface_radiation_field.hot',
@@ -158,7 +157,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.4.0',
+        version = '0.5.0.dev3',
         author = 'Thomas Edward Riley',
         author_email = 'T.E.Riley@uva.nl; t.riley.phd@gmail.com',
         url = 'https://github.com/ThomasEdwardRiley/xpsi',
@@ -167,6 +166,7 @@ if __name__ == '__main__':
                          neutron star X-ray Pulse Simulation and Inference.""",
         long_description = open('README.rst').read(),
         packages = ['xpsi',
+                    'xpsi/PostProcessing',
                     'xpsi/cellmesh',
                     'xpsi/tools',
                     'xpsi/surface_radiation_field',
@@ -189,4 +189,3 @@ if __name__ == '__main__':
 
 else:
     pass
-

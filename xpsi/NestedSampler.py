@@ -20,50 +20,47 @@ else:
 class NestedSampler(object):
     """ Extended MultiNest wrapper.
 
+    :param int ndims: Number of parameters.
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param kwargs: A dictionary of MultiNest runtime settings, to be
+                   handled via the PyMultiNest wrapper.
+
     """
     def __init__(self,
                  ndims,
                  likelihood,
                  prior):
-        """
-        :param int ndims: Number of parameters.
-
-        :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
-
-        :param prior: An instance of :class:`~.Prior.Prior`.
-
-        :param kwargs: A dictionary of MultiNest runtime settings, to be
-                       handled via the PyMultiNest wrapper.
-
-        """
 
         try:
             self._ndims = int(ndims)
         except TypeError:
             raise TypeError('Dimensionality must be an integer.')
 
-        try:
-            assert isinstance(likelihood, Likelihood)
-        except AttributeError:
+        if not isinstance(likelihood, Likelihood):
             raise TypeError('Invalid type for likelihood object.')
         else:
             self._likelihood = likelihood
 
-        try:
-            assert isinstance(prior, Prior)
-        except AttributeError:
+        if not isinstance(prior, Prior):
             raise TypeError('Invalid type for prior object.')
         else:
             self._prior = prior
 
     @make_verbose('Commencing integration', 'Integration completed')
     def __call__(self, **kwargs):
-        """ Integrate. """
+        """ Integrate.
 
-        try:
-            kwargs['sampling_efficiency'] /= self._prior.unit_hypercube_frac
-        except KeyError:
-            kwargs['sampling_efficiency'] = 1.0/self._prior.unit_hypercube_frac
+        :param kwargs:
+            Keyword arguments passed to :func:`pymultinest.solve`.
+
+        """
+
+        kwargs.set_default('sampling_efficiency', 0.8)
+        kwargs['sampling_efficiency'] /= self._prior.unit_hypercube_frac
 
         yield 'Sampling efficiency set to: %.4f.'%kwargs['sampling_efficiency']
 

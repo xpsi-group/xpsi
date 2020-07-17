@@ -8,7 +8,7 @@ program from the command line on a desktop via:
 
 .. code-block:: bash
 
-    mpiexec -n 4 python main.py
+    mpiexec -n 4 python [-m mpi4py] main.py
 
 where ``main.py`` is of course the script name, and where for a machine with
 four physical cores, we spawn as many MPI processes.
@@ -17,9 +17,22 @@ four physical cores, we spawn as many MPI processes.
           (see, e.g., :ref:`surfsystems`) to avoid hybrid parallelisation by
           libraries linked to NumPy and GSL, for instance.
 
-The script below is an example like that found on the `Modelling`
+The optional ``-m`` argument is to run the module :mod:`mpi4py` as main, which
+enables elegant termination of all MPI processes if one process encounters
+an unhandled exception, for instance; without out this flag, MPI processes
+may hang if an unhandled exception is raised in a subset of processes. An
+example of this is an exception thrown from a :class:`~.Prior` subclass during
+set-up for sampling: only the root (rank zero) process encounters the
+exception, whilst all other wait for it and will hang indefinitely. If one
+is not monitoring the output during the start of the program to check that
+sensible things are happening, this can be missed, which is especially
+problematic on a HPC system on which one is budgeted time and thus there is a
+serious risk of resource wastage from the perspective of all users of the
+system.
+
+The script below is an example like that found on the `Modeling`
 page, but without being interleaved with verbose explanations. The model
-implemented here is more involved than shown on the `Modelling`
+implemented here is more involved than shown on the `Modeling`
 page, and than those defined for the example parameter
 estimation problems that can be found in the ``xpsi/examples`` directory of
 the repository.
@@ -27,7 +40,7 @@ the repository.
 .. note::
 
     The script and modules below are being updated to use
-    the current API (``v0.3.2``).
+    the current API (``v0.5.0``).
 
 Main
 ^^^^
@@ -43,20 +56,19 @@ Main
 
     import xpsi
 
-    print('Rank reporting: %d' % xpsi._rank)
+    from xpsi.global_imports import gravradius
 
     from CustomData import CustomData
     from CustomInstrument import CustomInstrument
     from CustomInterstellar import CustomInterstellar
-    from CustomPulse import CustomPulse
+    from CustomSignal import CustomSignal
+    from CustomSpacetime import CustomSpacetime
     from CustomPrior import CustomPrior
     from CustomPhotosphere import CustomPhotosphere
 
-    from xpsi.global_imports import _c, _G, _M_s, _dpr, gravradius
+    data = CustomData.from_SWG('data/NICER_J0030_PaulRay_fixed_evt_25to299__preprocessed.txt',
+                               1936864.0)
 
-    data = CustomData.from_SWG('data/NICER_J0030_PaulRay_fixed_evt_25to299__preprocessed.txt', 1936864.0)
-
-    # bounds on instrument model parameters
     bounds = dict(alpha = (0.5,1.5),
                   beta = (0.0,1.0),
                   gamma = (0.5,1.5))
@@ -65,7 +77,7 @@ Main
                                       values = {},
                                       ARF = 'model_data/ni_xrcall_onaxis_v1.02_arf.txt',
                                       RMF = 'model_data/nicer_upd_d49_matrix.txt',
-                                      ratio = 'model_data/crab_ratio_SA80_d49.txt', 
+                                      ratio = 'model_data/crab_ratio_SA80_d49.txt',
                                       max_input=700,
                                       min_input=0,
                                       channel_edges = 'model_data/nicer_upd_energy_bounds.txt')
@@ -73,25 +85,25 @@ Main
     interstellar = CustomInterstellar.from_SWG('model_data/interstellar_phot_frac.txt',
                                            bounds = dict(column_density = (0.0,5.0)))
 
-    pulse = CustomPulse(data = data,
-                        instrument = NICER,
-                        interstellar = interstellar,
-                        energies_per_interval = 0.25,
-                        fast_rel_energies_per_interval = 0.5,
-                        default_energy_spacing = 'logspace',
-                        adaptive_energies = False,
-                        adapt_exponent = None,
-                        store = False,
-                        workspace_intervals = 1000,
-                        epsrel = 1.0e-8,
-                        epsilon = 1.0e-3,
-                        sigmas = 10.0)
+    signal = CustomSignal(data = data,
+                          instrument = NICER,
+                          interstellar = interstellar,
+                          cache = True,
+                          workspace_intervals = 1000,
+                          epsrel = 1.0e-8,
+                          epsilon = 1.0e-3,
+                          sigmas = 10.0)
 
-    spacetime = xpsi.Spacetime.fixed_spin(1.0/(4.87e-3))
+    bounds = dict(mass = (1.0, 3.0),
+                  radius = (3.0*gravradius(1.0), 16.0),
+                  distance = (0.05, 2.0),
+                  inclination = (0.001, math.pi/2.0))
+
+    spacetime = xpsi.Spacetime(bounds, dict(frequency = 1.0/(4.87e-3)))
 
     bounds = dict(super_colatitude = (0.001, math.pi - 0.001),
                   super_radius = (0.001, math.pi/2.0 - 0.001),
-                  phase_shift = (0.0, 0.2), # defined relative to 0.35 cycles
+                  phase_shift = (None, None),
                   super_temperature = (5.1, 6.8))
 
     primary = xpsi.HotRegion(bounds=bounds,
@@ -147,12 +159,39 @@ Main
 
     star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
 
-    likelihood = xpsi.Likelihood(star = star, pulses = pulse, threads=1,
+    likelihood = xpsi.Likelihood(star = star, signals = signal,
+                                 num_energies = 128,
+                                 threads = 1,
                                  externally_updated = True)
 
     prior = CustomPrior()
 
     likelihood.prior = prior
+
+    p = [1.4033703360094012,
+         13.378462458584202,
+         0.32897884439908337,
+         1.004349731136371,
+         0.4542555093514883,
+         2.1937752730930784,
+         0.07916088420116879,
+         6.106556223820221,
+         0.4768294130316574,
+         2.7162985247930496,
+         0.32234225478780626,
+         6.1173049179880445,
+         2.7463301464251777,
+         0.2844169651751102,
+         -0.048326090505605386,
+         1.0335682718716097,
+         0.02227107198360202,
+         0.8748566319738948,
+         0.4604998629950954]
+
+    # source code changes since model was applied, so let's be a
+    # bit lenient when checking the likelihood function
+    likelihood.check(None, [-36316.354394388654], 1.0e-4,
+                     physical_points=[p])
 
     wrapped_params = [0] * len(likelihood)
     wrapped_params[likelihood.index('s__phase_shift')] = 1
@@ -170,33 +209,6 @@ Main
                       'evidence_tolerance': 0.1,
                       'max_iter': -1,
                       'verbose': True}
-
-    # see CustomPrior docstring for parameter names
-    p = [0.140337033600940120E+01,
-            0.133784624585842025E+02,
-            0.328978844399083370E+00,
-            0.100434973113637094E+01,
-            0.454255509351488285E+00,
-            0.219377527309307840E+01,
-            0.791608842011687908E-01,
-            0.610655622382022134E+01,
-            0.476829413031657379E+00,
-            0.271629852479304956E+01,
-            0.322342254787806259E+00,
-            0.274633014642517770E+01,
-            0.284416965175110226E+00,
-            -0.483260905056053860E-01,
-            0.611730491798804454E+01,
-            0.460499862995095377E+00,
-            0.103356827187160971E+01,
-            0.222710719836020192E-01,
-            0.874856631973894849E+00]
-
-    # let's require that checks pass before starting to sample
-    check_kwargs = dict(hypercube_points = None,
-                        physical_points = p,
-                        loglikelihood_call_vals = [-36316.35439439],
-                        rtol_loglike = 1.0e-8)
 
     xpsi.Sample.nested(likelihood, prior, check_kwargs, **runtime_params)
 
@@ -221,9 +233,7 @@ Photosphere
     import xpsi
 
     class CustomPhotosphere(xpsi.Photosphere):
-        """ A photosphere extension to preload the numerical atmosphere NSX.
-
-        """
+        """ A photosphere extension to preload the numerical atmosphere NSX. """
 
         @xpsi.Photosphere.hot_atmosphere.setter
         def hot_atmosphere(self, path):
@@ -273,9 +283,8 @@ Data
     import xpsi
 
     class CustomData(xpsi.Data):
-        """ Custom data container.
+        """ Custom data container. """
 
-        """
         def __init__(self, first, last, counts, phases, exposure_time):
             """
             :param counts: A :class:`numpy.ndarray` of count numbers. The rows of
@@ -495,32 +504,25 @@ Interstellar
 
     """ CustomInterstellar.py """
 
-    from __future__ import division
+    from __future__ import print_function, division
 
     import numpy as np
     import math
 
+    import xpsi
+    from xpsi import Parameter
+
     from scipy.interpolate import Akima1DInterpolator
 
-    import xpsi
-
     class CustomInterstellar(xpsi.Interstellar):
-        """ Apply interstellar absorption. """
+        """ Apply interstellar attenuation. """
 
-        def __init__(self, absorption, bounds, values = {}):
+        def __init__(self, energies, attenuation, bounds, values = {}):
 
-            self._supplied = absorption[0:351,:]
+            assert len(energies) == len(attenuation), 'Array length mismatch.'
 
-            self._energies = np.zeros(700, dtype=np.double)
-            self._absorption = np.zeros(700, dtype=np.double)
-
-            for i in range(self._supplied.shape[0]-1):
-                att_diff = self._supplied[i+1, 1] - self._supplied[i, 1]
-                E_diff = self._supplied[i+1, 0] - self._supplied[i, 0]
-                self._absorption[2*i] = self._supplied[i,1] + 0.25*att_diff
-                self._absorption[2*i+1] = self._supplied[i,1] + 0.75*att_diff
-                self._energies[2*i] = self._supplied[i,0] + 0.25*E_diff
-                self._energies[2*i+1] = self._supplied[i,0] + 0.75*E_diff
+            self._lkp_energies = energies # for lookup
+            self._lkp_attenuation = attenuation # for lookup
 
             N_H = Parameter('column_density',
                             strict_bounds = (0.0,10.0),
@@ -531,52 +533,43 @@ Interstellar
 
             super(CustomInterstellar, self).__init__(N_H)
 
-        @property
-        def absorption(self):
-            return self._absorption
-
-        def __call__(self, energies, pulse):
-
-            for i in range(pulse.shape[1]):
-                pulse[:,i] *= self._absorption**(self['column_density']/0.4)
-
-        def _interpolate(self, E):
-            """ Helper. """
-            try:
-                self._interpolator
-            except AttributeError:
-                self._interpolator = Akima1DInterpolator(self._supplied[:,0],
-                                                         self._supplied[:,1])
-                self._interpolator.extrapolate = True
-
-            return self._interpolator(E)
-
-        def interp_and_absorb(self, E, signal):
-            """ Interpolate the absorption coefficients and apply.
+        def attenuation(self, energies):
+            """ Interpolate the attenuation coefficients.
 
             Useful for post-processing.
 
             """
+            return self._interpolate(energies)**(self['column_density']/0.4)
 
-            for i in range(signal.shape[1]):
-                signal[:,i] *= self._interpolate(E)**(self['column_density']/0.4)
+        def _interpolate(self, energies):
+            """ Helper. """
+            try:
+                self._interpolator
+            except AttributeError:
+                self._interpolator = Akima1DInterpolator(self._lkp_energies,
+                                                         self._lkp_attenuation)
+                self._interpolator.extrapolate = True
+
+            return self._interpolator(energies)
 
         @classmethod
         def from_SWG(cls, path, **kwargs):
-            """ Load absorption file from the NICER SWG. """
+            """ Load attenuation file from the NICER SWG. """
 
             temp = np.loadtxt(path, dtype=np.double)
 
-            absorption = temp[:,::2]
+            energies = temp[0:351,0]
 
-            return cls(absorption, **kwargs)
+            attenuation = temp[0:351,2]
 
-Pulse
-^^^^^
+            return cls(energies, attenuation, **kwargs)
+
+Signal
+^^^^^^
 
 .. code-block:: python
 
-    """ CustomPulse.py """
+    """ CustomSignal.py """
 
     from __future__ import print_function, division
 
@@ -585,14 +578,13 @@ Pulse
 
     import xpsi
 
-    from xpsi.likelihoods.default_background_marginalisation import eval_loglike_phaseIntervals_maximise as eval_loglike_maximise
+    from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
     from xpsi.likelihoods.default_background_marginalisation import precomputation
-    from xpsi.global_imports import _kpc
 
-    class CustomPulse(xpsi.Pulse):
+    class CustomSignal(xpsi.Signal):
         """ A custom calculation of the logarithm of the likelihood.
 
-        We extend the :class:`xpsi.Pulse.Pulse` class to make it callable.
+        We extend the :class:`xpsi.Signal.Signal` class to make it callable.
 
         We overwrite the body of the __call__ method. The docstring for the
         abstract method is copied.
@@ -600,10 +592,10 @@ Pulse
         """
 
         def __init__(self, workspace_intervals = 1000, epsabs = 0, epsrel = 1.0e-8,
-                     epsilon = 1.0e-3, sigmas = 10.0, **kwargs):
+                     epsilon = 1.0e-3, sigmas = 10.0, support = None, *args, **kwargs):
             """ Perform precomputation. """
 
-            super(CustomPulse, self).__init__(**kwargs)
+            super(CustomSignal, self).__init__(*args, **kwargs)
 
             try:
                 self._precomp = precomputation(self._data.counts.astype(np.int32))
@@ -617,23 +609,38 @@ Pulse
                 self._epsilon = epsilon
                 self._sigmas = sigmas
 
+                if support is not None:
+                    self._support = support
+                else:
+                    self._support = -1.0 * np.ones((self._data.counts.shape[0],2))
+                    self._support[:,0] = 0.0
+
+        @property
+        def support(self):
+            return self._support
+
+        @support.setter
+        def support(self, obj):
+            self._support = obj
+
         def __call__(self, phase_shifts, *args, **kwargs):
-            self.shift = np.array(phase_shifts)
+            self.shifts = np.array(phase_shifts)
 
             self.loglikelihood, self.expected_counts, self.background_signal = \
-                    eval_loglike_maximise(self._data.exposure_time,
-                                          self._data.phases,
-                                          self._data.counts,
-                                          self._pulse,
-                                          self._phases,
-                                          self._shift,
-                                          self._precomp,
-                                          self._workspace_intervals,
-                                          self._epsabs,
-                                          self._epsrel,
-                                          self._epsilon,
-                                          self._sigmas,
-                                          kwargs.get('llzero'))
+                    eval_marginal_likelihood(self._data.exposure_time,
+                                              self._data.phases,
+                                              self._data.counts,
+                                              self._signals,
+                                              self._phases,
+                                              self._shifts,
+                                              self._precomp,
+                                              self._support,
+                                              self._workspace_intervals,
+                                              self._epsabs,
+                                              self._epsrel,
+                                              self._epsilon,
+                                              self._sigmas,
+                                              kwargs.get('llzero'))
 
 Prior
 ^^^^^
@@ -661,6 +668,8 @@ Prior
 
         Source: PSR J0030+0451
         Model variant: ST+PST
+            Two single-temperature hot regions with unshared parameters
+            and different complexity levels.
 
         Parameter vector: (print the likelihood object)
 
@@ -686,6 +695,14 @@ Prior
 
         """
 
+        __derived_names__ = ['compactness',
+                             's__annulus_width',
+                             's__transformed_phase',
+                             's__f',
+                             's__xi',
+                             's__super_offset_fraction',
+                             's__super_offset_azi']
+
         a_f = 0.0
         b_f = 2.0
         a_xi = 0.001
@@ -693,12 +710,11 @@ Prior
 
         vals = np.linspace(0.0, b_xi, 1000)
 
-        interpolator = Akima1DInterpolator(self._vector_super_radius_mass(vals), vals)
-        interpolator.extrapolate = True
-
         def __init__(self):
-            """ Nothing to be done. """
-            pass
+            """ Construct mapping from unit interval. """
+
+            self.interpolator = Akima1DInterpolator(self._vector_super_radius_mass(self.vals), self.vals)
+            self.interpolator.extrapolate = True
 
         def __call__(self, p = None):
             """ Evaluate distribution at ``p``.
@@ -719,15 +735,15 @@ Prior
             ref = self.parameters.star.spacetime # shortcut
 
             # polar radius at photon sphere for ~static star (static ambient spacetime)
-            #if R_p < 1.5 / ref.R_r_s:
-            #    return -np.inf
+            R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
+            if R_p < 1.5 / ref.R_r_s:
+                return -np.inf
 
             # limit polar radius to try to exclude deflections >= \pi radians
             # due to oblateness this does not quite eliminate all configurations
             # with deflections >= \pi radians
-            R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
-            if R_p < 1.76 / ref.R_r_s:
-                return -np.inf
+            #if R_p < 1.76 / ref.R_r_s:
+            #    return -np.inf
 
             mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
 
@@ -753,12 +769,10 @@ Prior
 
             return 0.0
 
-        @staticmethod
-        def _I(x):
+        def _I(self, x):
             return x * np.log(self.b_xi/self.a_xi)
 
-        @staticmethod
-        def _II(x):
+        def _II(self, x):
             return 2.0*(x - self.a_xi) - x*np.log(x/self.b_xi)
 
         def _scalar_super_radius_mass(self, x):
@@ -780,8 +794,7 @@ Prior
 
             return masses
 
-        @staticmethod
-        def _inverse_sample_cede_radius(x, psi):
+        def _inverse_sample_cede_radius(self, x, psi):
             if psi < self.a_xi:
                 return self.a_xi*np.exp(x * np.log(self.b_xi/self.a_xi))
             elif psi >= self.a_xi and x <= 1.0/(1.0 + np.log(self.b_xi/psi)):
@@ -869,8 +882,7 @@ Prior
 
             return self.parameters.vector # only free parameter values returned
 
-        @staticmethod
-        def transform(p):
+        def transform(self, p):
             """ A transformation for post-processing.
 
             Note that if you want to use dictionary-like access to values,
@@ -885,30 +897,40 @@ Prior
 
             """
 
-            if not isinstance(p, list):
-                p = list(p)
+            p = list(p) # copy
 
-            p += [gravradius(p[0]) / p[1]]
+            # used ordered names and values
+            ref = dict(zip(self.parameters.names, p))
 
-            p += [p[10] - p[12]]
+            # compactness ratio M/R_eq
+            p += [gravradius(ref['mass']) / ref['radius']]
 
-            if p[8] > 0.0:
-                p += [p[8] - 1.0]
+            p += [ref['s__super_radius'] - ref['s__omit_radius']]
+
+            if ref['s__phase_shift'] > 0.0:
+                p += [ref['s__phase_shift'] - 1.0]
             else:
-                p += [p[8]]
+                p += [ref['s__phase_shift']]
 
-            temp = eval_cedeCentreCoords(-1.0*p[11], p[9], -1.0*p[13])
+            temp = eval_cedeCentreCoords(-1.0*ref['s__omit_colatitude'],
+                                         ref['s__super_colatitude'],
+                                         -1.0*ref['s__omit_azimuth'])
 
             azi = temp[1]
 
             if azi < 0.0:
                 azi += 2.0*math.pi
 
-            p += [p[12]/p[10] if p[12] <= p[10] else 2.0 - p[10]/p[12]] # f
+            p += [ref['s__omit_radius']/ref['s__super_radius'] \
+                  if ref['s__omit_radius'] <= ref['s__super_radius'] \
+                  else 2.0 - ref['s__super_radius']/ref['s__omit_radius']] # f
 
-            p += [p[10] if p[12] <= p[10] else p[12]] # xi
+            p += [ref['s__super_radius'] if ref['s__omit_radius'] \
+                  <= ref['s__super_radius'] else ref['s__omit_radius']] # xi
 
-            p += [temp[0]/(p[10] + p[12]) if p[12] <= p[10] else (temp[0] - p[12] + p[10])/(2.0*p[10])] # kappa
+            p += [temp[0]/(ref['s__super_radius'] + ref['s__omit_radius']) \
+                  if ref['s__omit_radius'] <= ref['s__super_radius'] \
+                  else (temp[0] - ref['s__omit_radius'] + ref['s__super_radius'])/(2.0*ref['s__super_radius'])] # kappa
 
             p += [azi/math.pi]
 

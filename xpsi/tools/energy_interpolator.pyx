@@ -2,6 +2,7 @@
 #cython: boundscheck=False
 #cython: nonecheck=False
 #cython: wraparound=False
+#cython: embedsignature=True
 
 import numpy as np
 from cython.parallel cimport *
@@ -18,17 +19,36 @@ from GSL cimport (gsl_interp,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
                    gsl_interp_accel_free,
-                   gsl_interp_accel_reset,
-                   gsl_isnan,
-                   gsl_isinf,
-                   GSL_SUCCESS)
+                   gsl_interp_accel_reset)
 
 ctypedef gsl_interp_accel accel
 
 def energy_interpolator(size_t N_Ts,
-                        double[:,::1] FLUX,
+                        double[:,::1] signal,
                         double[::1] energies,
                         double[::1] new_energies):
+    """ Interpolate a signal in energy.
+
+    :param size_t N_Ts:
+        Number of OpenMP threads to spawn.
+
+    :param double[:,::1] signal:
+        A C-contiguous :class:`numpy.ndarray` of an energy-resolved (specific
+        _signal) signal. Energy increases with row number.
+
+    :param double[::1] energies:
+        A :class:`numpy.ndarray` of the logarithms (base 10) of the energies at
+        which the :obj:`signal` is resolved.
+
+    :param double[::1] new_energies:
+        A :class:`numpy.ndarray` of the logarithm (base 10) of the energies at
+        which to interpolate.
+
+    :returns:
+        A 2D :class:`numpy.ndarray` of the signal interpolated at the new set
+        of energies. Energy increases with row number.
+
+    """
 
     cdef:
         signed int ii
@@ -36,61 +56,61 @@ def energy_interpolator(size_t N_Ts,
         size_t i, j, T
         double *cpy
 
-        double **flux = <double**> malloc(sizeof(double*) * N_Ts)
+        double **_signal = <double**> malloc(sizeof(double*) * N_Ts)
         gsl_interp **interp = <gsl_interp**> malloc(sizeof(gsl_interp*) * N_Ts)
         accel **acc = <accel**> malloc(N_Ts * sizeof(accel*))
 
-        double[:,::1] interp_flux = np.zeros((FLUX.shape[1],
-                                              new_energies.shape[0]),
-                                              dtype = np.double)
+        double[:,::1] interp_signal = np.zeros((signal.shape[1],
+                                               new_energies.shape[0]),
+                                               dtype = np.double)
 
     for T in range(N_Ts):
         acc[T] = gsl_interp_accel_alloc()
         interp[T] = gsl_interp_alloc(gsl_interp_steffen, energies.shape[0])
-        flux[T] = <double*> malloc(sizeof(double) * energies.shape[0])
+        _signal[T] = <double*> malloc(sizeof(double) * energies.shape[0])
 
-    for ii in prange(<signed int>FLUX.shape[1],
+    for ii in prange(<signed int>signal.shape[1],
                      nogil = True,
                      schedule = 'static',
                      num_threads = N_Ts,
                      chunksize = 1):
         i = <size_t> ii
         T = threadid()
-        cpy = flux[T]
+        cpy = _signal[T]
 
         mode = 1
         for j in range(energies.shape[0]):
-            if FLUX[j,i] <= 0.0:
+            if signal[j,i] <= 0.0:
                 mode = 0
 
         for j in range(energies.shape[0]):
             if mode == 1:
-                cpy[j] = log10(FLUX[j,i])
+                cpy[j] = log10(signal[j,i])
             else:
-                cpy[j] = FLUX[j,i]
+                cpy[j] = signal[j,i]
 
         gsl_interp_accel_reset(acc[T])
         gsl_interp_init(interp[T], &(energies[0]), cpy, energies.shape[0])
 
         for j in range(new_energies.shape[0]):
-            interp_flux[i,j] = gsl_interp_eval(interp[T],
+            interp_signal[i,j] = gsl_interp_eval(interp[T],
                                                &(energies[0]),
                                                cpy,
                                                new_energies[j],
                                                acc[T])
 
             if mode == 1:
-                interp_flux[i,j] = pow(10.0, interp_flux[i,j])
+                interp_signal[i,j] = pow(10.0, interp_signal[i,j])
             else:
-                interp_flux[i,j] = interp_flux[i,j]
+                interp_signal[i,j] = interp_signal[i,j]
 
     for T in range(N_Ts):
         gsl_interp_accel_free(acc[T])
         gsl_interp_free(interp[T])
-        free(flux[T])
+        free(_signal[T])
 
-    free(flux)
+    free(_signal)
     free(interp)
     free(acc)
 
-    return np.asarray(interp_flux.T, dtype = np.double, order = 'C')
+    return np.asarray(interp_signal.T, dtype = np.double, order = 'C')

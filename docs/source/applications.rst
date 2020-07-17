@@ -8,10 +8,10 @@ performance benchmarking and planning of resource consumption.
 
 .. _R19:
 
-*Riley et al. 2019*
-~~~~~~~~~~~~~~~~~~~
+`Riley et al. 2019 (ApJL, 887, L21) <https://arxiv.org/abs/1912.05702>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*Riley et al. 2019* (hereafter R19) used ``v0.1`` of X-PSI to model *NICER*
+Riley et al. (2019; hereafter R19) used ``v0.1`` of X-PSI to model *NICER*
 observations of the rotation-powered millisecond X-ray pulsar J0030+0451.
 
 **Resource consumption**

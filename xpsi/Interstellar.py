@@ -9,25 +9,53 @@ from abc import abstractmethod
 from .ParameterSubspace import ParameterSubspace
 
 class Interstellar(ParameterSubspace):
-    """ Base class for model interstellar X-ray processes (e.g., absorption)."""
+    """ Base class for model interstellar X-ray processes (e.g., attenuation)."""
 
     @abstractmethod
-    def __call__(self, energies, pulse):
-        """ Subclass to write a specialised specific flux modifier.
+    def attenuation(self, energies):
+        """ Return the attenuation factor at a set of energies.
 
-        :param energies:
-            A :class:`numpy.ndarray` of energies in keV at which
-            the specific fluxes in :obj:`pulse` are calculated.
+        The attenuation model can depend on fixed or free variables in the
+        subspace, and generally requires loading model data from disk.
 
-        :param pulse:
-            A :class:`numpy.ndarray` of specific fluxes, with energy
-            increasing along rows and phase increasing along columns.
+        :param ndarray[m] energies:
+            An array of energies in keV at which attenuation factors are
+            requested.
+
+        :returns: An array of attenuation factors, one at each input energy.
+
+        """
+        #raise NotImplementedError('Implement the attenuation method.')
+
+    def __call__(self, energies, signal):
+        """ Attenuate a (specific) photon flux signal *in-place*.
+
+        :param ndarray[m] energies:
+            An array of energies in keV at which attenuation factors need to
+            be applied to the corresponding elements of the signal array.
+
+        :param ndarray[m[,n]] energies:
+            A signal array to be attenuated, where the second dimension
+            (columns) is optional and generally represents time (phase). The
+            number of rows must be equal to the number of energies.
 
         :returns: ``None``.
 
-        .. note:: It is expected that the operations performed on a column of
-                  specific fluxes need to be applied identically to all other
-                  columns. The referenced object :obj:`pulse` needs to be
-                  directly modified, and *not* copied.
+        .. note::
+
+            It is expected that the operations performed on a column of
+            specific fluxes need to be applied identically to all other
+            columns. The referenced object :obj:`signal` needs to be
+            directly modified *in-place*, and *not* copied.
 
         """
+        if not isinstance(signal, _np.ndarray):
+            raise TypeError('Signal must be a numpy.ndarray.')
+
+        if signal.ndim == 1:
+            signal[:] *= self.attenuation(energies)
+        elif signal.ndim == 2:
+            for i in range(signal.shape[1]):
+                signal[:,i] *= self.attenuation(energies)
+        else:
+            raise ValueError('Invalid number of signal array dimensions.')

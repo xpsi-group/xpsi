@@ -7,7 +7,7 @@ from libc.math cimport sin, cos, acos, log
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
-from xpsi.tools.effective_gravity_universal cimport effectiveGravity
+from .effective_gravity_universal cimport effectiveGravity
 
 cdef int SUCCESS = 0
 cdef int ERROR = 1
@@ -110,7 +110,8 @@ cdef int eval_local_variables(double theta,
                             + sin_THETA * sin_theta * sin(phi) * sin(PHI))
 
     if psi <= angRad:
-        local_vars[0] = global_variables[3] - 0.5*psi*psi/(angRad*angRad*log(10.0))
+        # uncomment next line for temperature decay towards boundary
+        local_vars[0] = global_variables[3] #- 0.5*psi*psi/(angRad*angRad*log(10.0))
     else:
         THETA = global_variables[4]
         PHI = global_variables[5] + HYPERSLICE
@@ -123,7 +124,8 @@ cdef int eval_local_variables(double theta,
                             + sin_THETA * sin_theta * sin(phi) * sin(PHI))
 
         if psi <= angRad:
-            local_vars[0] = global_variables[7] - 0.5*psi*psi/(angRad*angRad*log(10.0))
+            # uncomment next line for temperature decay towards boundary
+            local_vars[0] = global_variables[7] #- 0.5*psi*psi/(angRad*angRad*log(10.0))
 
     local_vars[1] = effectiveGravity(cos(theta),
                                      GEOM.R_eq,

@@ -2,6 +2,7 @@
 #cython: boundscheck=False
 #cython: nonecheck=False
 #cython: wraparound=False
+#cython: embedsignature=True
 
 import numpy as np
 from cython.parallel cimport *
@@ -18,63 +19,83 @@ from GSL cimport (gsl_interp,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
                    gsl_interp_accel_free,
-                   gsl_interp_accel_reset,
-                   gsl_isnan,
-                   gsl_isinf,
-                   GSL_SUCCESS)
+                   gsl_interp_accel_reset)
 
 ctypedef gsl_interp_accel accel
 
 def energy_integrator(size_t N_Ts,
-                       double[:,::1] integrand,
+                       double[:,::1] signal,
                        double[::1] energies,
-                       double a,
-                       double b):
+                       double[::1] energy_edges):
+    """ Integrate a signal over energy intervals.
+
+    :param size_t N_Ts:
+        Number of OpenMP threads to spawn.
+
+    :param double[:,::1] signal:
+        A C-contiguous :class:`numpy.ndarray` of an energy-resolved (specific
+        flux) signal. Energy increases with row number.
+
+    :param double[::1] energies:
+        A :class:`numpy.ndarray` of the logarithms (base 10) of the energies.
+
+    :param double[::1] energy_edges:
+        A :class:`numpy.ndarray` of the logarithm (base 10) of the energy
+        interval edges.
+
+    :returns:
+        A 2D :class:`numpy.ndarray` of the signal integrated over energy
+        intervals. Energy interval number increases with row number.
+
+    """
 
     cdef:
         signed int ii
         size_t i, j, T
         double *cpy
 
-        double **flux = <double**> malloc(sizeof(double*) * N_Ts)
+        double **_signal = <double**> malloc(sizeof(double*) * N_Ts)
         gsl_interp **interp = <gsl_interp**> malloc(sizeof(gsl_interp*) * N_Ts)
         accel **acc = <accel**> malloc(N_Ts * sizeof(accel*))
 
-        double[::1] integrated = np.zeros(integrand.shape[0], dtype = np.double)
+        double[:,::1] binned_signal = np.zeros((signal.shape[1],
+                                               energy_edges.shape[0] - 1),
+                                               dtype = np.double)
 
     for T in range(N_Ts):
         acc[T] = gsl_interp_accel_alloc()
         interp[T] = gsl_interp_alloc(gsl_interp_steffen, energies.shape[0])
-        flux[T] = <double*> malloc(sizeof(double) * energies.shape[0])
+        _signal[T] = <double*> malloc(sizeof(double) * energies.shape[0])
 
-    for ii in prange(<signed int>integrand.shape[0],
+    for ii in prange(<signed int>signal.shape[1],
                      nogil = True,
                      schedule = 'static',
                      num_threads = N_Ts,
                      chunksize = 1):
         i = <size_t> ii
         T = threadid()
-        cpy = flux[T]
+        cpy = _signal[T]
 
         for j in range(energies.shape[0]):
-            cpy[j] = pow(10.0, energies[j]) * integrand[i,j] * log(10.0)
+            cpy[j] =  pow(10.0, energies[j]) * signal[j,i] * log(10.0)
 
         gsl_interp_accel_reset(acc[T])
         gsl_interp_init(interp[T], &(energies[0]), cpy, energies.shape[0])
 
-        integrated[i] = gsl_interp_eval_integ(interp[T],
-                                              &(energies[0]),
-                                              cpy,
-                                              a,
-                                              b,
-                                              acc[T])
+        for j in range(energy_edges.shape[0] - 1):
+            binned_signal[i,j] = gsl_interp_eval_integ(interp[T],
+                                                       &(energies[0]),
+                                                       cpy,
+                                                       energy_edges[j],
+                                                       energy_edges[j + 1],
+                                                       acc[T])
     for T in range(N_Ts):
         gsl_interp_accel_free(acc[T])
         gsl_interp_free(interp[T])
-        free(flux[T])
+        free(_signal[T])
 
-    free(flux)
+    free(_signal)
     free(interp)
     free(acc)
 
-    return np.asarray(integrated, dtype = np.double, order = 'C')
+    return np.asarray(binned_signal.T, dtype = np.double, order = 'C')

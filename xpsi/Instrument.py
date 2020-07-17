@@ -23,24 +23,21 @@ class Instrument(ParameterSubspace):
     using the ``@classmethod`` decorator.
 
     :param ndarray[p,q] matrix:
-        A :math:`p \\times q` matrix which is the
-        product of a redistribution matrix and effective area
-        vector. The input energy intervals must increase along
-        the columns of :attr:`matrix`, and the output channels
-        must increase along the rows of :attr:`matrix`. The
-        *units* of the elements must be that of an *effective*
-        area (:math:`cm^2`). Generally there will be some available
-        calibration product, and deviations from this nominal response
-        model will be parametrised. So here load some nominal
-        response matrix.
+        A :math:`p \\times q` matrix which is the product of a redistribution
+        matrix and effective area vector. The input energy intervals must
+        increase along the columns of :attr:`matrix`, and the output channels
+        must increase along the rows of :attr:`matrix`. The *units* of the
+        elements must be that of an *effective* area (:math:`cm^2`). Generally
+        there will be some available calibration product, and deviations from
+        this nominal response model will be parametrised. So here load some
+        nominal response matrix.
 
     :param ndarray[q+1] energy_edges:
-        Energy edges of the instrument energy intervals which
-        must be congruent to the first dimension of the
-        :attr:`matrix`: the number of edges must
-        be :math:`q + 1`. The edges must be monotonically
-        increasing. These edges will correspond to the nominal response
-        matrix and any deviation from this matrix (see above).
+        Energy edges of the instrument energy intervals which must be congruent
+        to the first dimension of the :attr:`matrix`: the number of edges must
+        be :math:`q + 1`. The edges must be monotonically increasing. These
+        edges will correspond to the nominal response matrix and any deviation
+        from this matrix (see above).
 
     .. note:: The dimensions of the response matrix need not be equal, but
               it is required that the number of input intervals be greater
@@ -91,8 +88,8 @@ class Instrument(ParameterSubspace):
             assert (matrix >= 0.0).all()
         except AssertionError:
             raise ResponseError('Input matrix must be a two-dimensional '
-                                'ndarray awith elements '
-                                'that are zero or positive.')
+                                'ndarray awith elements that are zero '
+                                'or positive.')
         else:
             try:
                 for i in range(matrix.shape[0]):
@@ -108,35 +105,35 @@ class Instrument(ParameterSubspace):
     def construct_matrix(self):
         """ Construct the response matrix if it is parametrised.
 
-        If customising, just do stuff to calculate a matrix, and return
-        it. You can access parameters (free, fixed, and derived) via
-        the container access self[<name>].
+        If customising, to operations to calculate a matrix, and return it.
+        You can access parameters (free, fixed, and derived) via the container
+        access self[<name>].
 
         """
         return self.matrix
 
     def __call__(self, signal, irange, orange):
-        """ Fold an incident signal.
+        """ Register an incident signal.
 
         :param ndarray[m,n] signal:
             An :math:`m \\times n` matrix, where input energy interval
-            increments along rows, and phase increases along columns.
-            The number of rows, :math:`m`, must equal the number of columns of
+            increments along rows, and phase increases along columns. The
+            number of rows, :math:`m`, must equal the number of columns of
             :attr:`matrix`: :math:`m=q`.
 
         :param array-like irange:
-            Indexable object with two elements respectively denoting
-            the indices of the first and last *input* intervals. The
-            response matrix :attr:`matrix` must be indexable with
-            these numbers, i.e., they must satisfy :math:`i < q`.
+            Indexable object with two elements respectively denoting the
+            indices of the first and last *input* intervals. The response
+            matrix :attr:`matrix` must be indexable with these numbers, i.e.,
+            they must satisfy :math:`i < q`.
 
         :param array-like orange:
-            Indexable object with two elements respectively denoting
-            the indices of the first and last *output* channels. The
-            response matrix :attr:`matrix` must be indexable with
-            these numbers, i.e., they must satisfy :math:`i < p`.
+            Indexable object with two elements respectively denoting the
+            indices of the first and last *output* channels. The response
+            matrix :attr:`matrix` must be indexable with these numbers, i.e.,
+            they must satisfy :math:`i < p`.
 
-        :return: *ndarray[p,n]* containing the folded signal.
+        :return: *ndarray[p,n]* containing the registered signal.
 
         .. note::
 
@@ -153,7 +150,7 @@ class Instrument(ParameterSubspace):
 
     @property
     def cached_signal(self):
-        """ Get the cached folded signal. """
+        """ Get the cached registered signal. """
         return self._cached_signal
 
     @property

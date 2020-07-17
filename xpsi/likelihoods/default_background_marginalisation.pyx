@@ -2,11 +2,13 @@
 #cython: boundscheck=False
 #cython: nonecheck=False
 #cython: wraparound=False
+#cython: embedsignature=True
 
 from __future__ import print_function
 
 import numpy as np
-from libc.math cimport exp, pow, log, sqrt, fabs
+from libc.stdlib cimport malloc, free
+from libc.math cimport exp, pow, log, sqrt, fabs, floor
 
 from GSL cimport (gsl_interp,
                    gsl_interp_alloc,
@@ -19,8 +21,6 @@ from GSL cimport (gsl_interp,
                    gsl_interp_accel_alloc,
                    gsl_interp_accel_free,
                    gsl_interp_accel_reset,
-                   gsl_isnan,
-                   gsl_isinf,
                    gsl_function,
                    gsl_integration_cquad_workspace,
                    gsl_integration_cquad_workspace_alloc,
@@ -34,9 +34,19 @@ cdef extern from "gsl/gsl_sf_gamma.h":
     double gsl_sf_lnfact(const unsigned int n)
 
 def precomputation(int[:,::1] data):
-    """ Compute negative of sum of log-factorials, channel-by-channel.
+    """ Compute negative of sum of log-factorials of data count numbers.
 
-    Also precompute maximum data counts in each channel.
+    Use this function to perform precomputation before repeatedly calling
+    :func:`~.eval_marginal_likelihood`.
+
+    :param int[:,::1] data:
+        Phase-channel resolved count numbers (integers). Phase increases with
+        column number.
+
+    :returns:
+        A 1D :class:`numpy.ndarray` information, one element per channel. Each
+        element is the negative of the sum (over phase intervals) of
+        log-factorials of data count numbers.
 
     """
 
@@ -102,23 +112,105 @@ cdef double delta(double B, void *params) nogil:
 def eval_marginal_likelihood(double exposure_time,
                              double[::1] phases,
                              double[:,::1] counts,
-                             pulses,
-                             double[::1] pulse_phases,
+                             components,
+                             component_phases,
                              phase_shifts,
                              double[::1] neg_sum_ln_data_factorial,
+                             double[:,::1] support,
                              size_t workspace_intervals,
                              double epsabs,
                              double epsrel,
                              double epsilon,
                              double sigmas,
                              double llzero):
-
     """ Evaluate the Poisson likelihood.
 
     The count rate is integrated over phase intervals.
 
-    A Newton iteration procedure is implemented to approximate the ML point
-    given a fiducial background count rate in each channel.
+    A Newton iteration procedure is implemented channel-by-channel to
+    approximate the conditional-ML background count-rate variable given
+    a fiducial estimate. Marginalisation over each background variable (in each
+    channel) is then executed numerically between bounds centred on the ML
+    background estimate. The bounds are based on a Gaussian expansion of the
+    conditional likelihood function, and are :obj:`sigmas` standard deviations
+    above and below the ML estimate. The marginalisation is with respect to a
+    flat bounded or unbounded prior density function of each background
+    variable.
+
+    :param double exposure_time:
+        Exposure time in seconds by which to scale the expected count rate
+        in each phase interval.
+
+    :param double[::1] phases:
+        A :class:`numpy.ndarray` of phase interval edges in cycles.
+
+    :param tuple components:
+        Component signals, each a C-contiguous :class:`numpy.ndarray` of
+        signal count rates where phase increases with column number.
+
+    :param tuple component_phases:
+        For each component, a C-contiguous :class:`numpy.ndarray` of phases
+        in cycles at which the model :obj:`signal` is evaluated on
+        the interval ``[0,1]``.
+
+    :param array-like phase_shifts:
+        Phase shifts in cycles, such as on the interval ``[-0.5,0.5]``, for
+        the component signals.
+
+    :param double[::1] neg_sum_ln_data_factorial:
+        The precomputed output of :func:`~.precomputation` given the data count
+        numbers.
+
+    :param double[:,::1] support:
+        The prior support of the background *count-rate* variables. The first
+        column contains lower-bounds as a function of channel number. Lower-
+        bounds must be greater than or equal to zero. The second column contains
+        the upper-bounds as a function of channel number. Upper-bounds for a
+        proper prior must be greater than zero and greater than the
+        corresponding lower-bound but finite. If the upper-bound is less than
+        zero the prior is semi-unbounded and thus improper. Must be a
+        C-contiguous :class:`numpy.ndarray`.
+
+    :param size_t workspace_intervals:
+        The size of the workspace to allocate for marginalisation via numerical
+        quadrature using the GSL ``cquad`` integration routine.
+
+    :param double epsabs:
+        The absolute tolerance for marginalisation via numerical quadrature
+        using the GSL ``cquad`` integration routine.
+
+    :param double epsrel:
+        The relative tolerance for marginalisation via numerical quadrature
+        using the GSL ``cquad`` integration routine.
+
+    :param double epsilon:
+        The fraction of the standard deviation of the approximating Gaussian
+        function to tolerate when a new step of the quadratic maximisation
+        scheme is proposed. This fraction should be some adequately small
+        number. The standard deviation is recalculated with each iteration
+        as the position (in each background variable) evolves.
+
+    :param double sigmas:
+        The number of approximating Gaussian standard deviations to expand
+        the integration domain about the point estimated to maximise the
+        conditional likelihood function in each channel. This number should
+        probably be at least five but no more than ten.
+
+    :param double llzero:
+        The log-likelihood that a MultiNest process treats as zero and thus
+        ignores points with smaller log-likelihood. This number will be *very*
+        negative. This is useful because if the likelihood is predicted, in
+        advance of full executation of this function, to be incredibly small,
+        computation can be avoided, returning a number slightly above this
+        zero-threshold.
+
+    :returns:
+        A tuple ``(double, 2D ndarray, 1D ndarray)``. The first element is
+        the logarithm of the marginal likelihood. The second element is the
+        expected count numbers in joint phase-channel intervals from the star
+        (the target source). The last element is the vector of background
+        count numbers that are estimated to maximise the conditional
+        likelihood function, one per channel.
 
     """
 
@@ -127,14 +219,9 @@ def eval_marginal_likelihood(double exposure_time,
         double LOGLIKE = 0.0, av_STAR, av_DATA
         double pa, pb, c
 
-        gsl_interp *interp = gsl_interp_alloc(gsl_interp_steffen, pulse_phases.shape[0])
-        accel *acc = gsl_interp_accel_alloc()
-
-        gsl_integration_cquad_workspace *w = gsl_integration_cquad_workspace_alloc(workspace_intervals)
-
-        double[:,::1] STAR = np.zeros((pulses[0].shape[0], phases.shape[0] - 1),
+        double[:,::1] STAR = np.zeros((components[0].shape[0], phases.shape[0] - 1),
                                       dtype = np.double)
-        double[::1] MCL_BACKGROUND = np.zeros(pulses[0].shape[0], dtype = np.double)
+        double[::1] MCL_BACKGROUND = np.zeros(components[0].shape[0], dtype = np.double)
 
         double n = <double>(phases.shape[0] - 1)
         double SCALE = exposure_time / n
@@ -150,47 +237,70 @@ def eval_marginal_likelihood(double exposure_time,
 
     f.function = &marginal_integrand
 
-    cdef double *phases_ptr
-    cdef double *pulse_ptr
+    cdef double *phases_ptr = NULL
+    cdef double *pulse_ptr = NULL
 
-    cdef double dB, B_min, min_counts, limit
+    cdef double B, B_for_integrand, dB, B_min, min_counts, limit
     cdef int counter
-    cdef size_t num_pulses = len(pulses)
+
+    cdef size_t num_components = len(components)
     cdef double[:,::1] pulse
+    cdef double[::1] pulse_phase_set
     cdef double phase_shift
 
+
+    cdef gsl_interp **interp = <gsl_interp**> malloc(num_components * sizeof(gsl_interp*))
+    cdef accel **acc =  <accel**> malloc(num_components * sizeof(accel*))
+    cdef gsl_integration_cquad_workspace *w = gsl_integration_cquad_workspace_alloc(workspace_intervals)
+
+    for p in range(num_components):
+        pulse_phase_set = component_phases[p]
+        interp[p] = gsl_interp_alloc(gsl_interp_steffen, pulse_phase_set.shape[0])
+        acc[p] = gsl_interp_accel_alloc()
+        gsl_interp_accel_reset(acc[p])
+
+    cdef gsl_interp *inter_ptr = NULL
+    cdef accel *acc_ptr = NULL
+
     for i in range(STAR.shape[0]):
-        for p in range(num_pulses):
-            pulse = pulses[p]
+        for p in range(num_components):
+            pulse = components[p]
+            pulse_phase_set = component_phases[p]
             phase_shift = phase_shifts[p]
 
-            gsl_interp_accel_reset(acc)
-            phases_ptr = &(pulse_phases[0])
+            interp_ptr = interp[p]
+            acc_ptr = acc[p]
+            phases_ptr = &(pulse_phase_set[0])
             pulse_ptr = &(pulse[i,0])
-            gsl_interp_init(interp, phases_ptr, pulse_ptr, pulse_phases.shape[0])
+
+            gsl_interp_init(interp_ptr, phases_ptr, pulse_ptr,
+                            pulse_phase_set.shape[0])
 
             for j in range(phases.shape[0] - 1):
                 pa = phases[j] + phase_shift
                 pb = phases[j+1] + phase_shift
 
-                if pa > 1.0:
-                    pa -= 1.0
-                elif pa < 0.0:
-                    pa += 1.0
-
-                if pb > 1.0:
-                    pb -= 1.0
-                elif pb < 0.0:
-                    pb += 1.0
+                pa -= floor(pa)
+                pb -= floor(pb)
 
                 if pa < pb:
-                    STAR[i,j] += gsl_interp_eval_integ(interp, phases_ptr,
-                                                      pulse_ptr, pa, pb, acc)
+                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                                                       phases_ptr,
+                                                       pulse_ptr,
+                                                       pa, pb,
+                                                       acc_ptr)
                 else:
-                    STAR[i,j] += gsl_interp_eval_integ(interp, phases_ptr,
-                                                      pulse_ptr, pa, 1.0, acc)
-                    STAR[i,j] += gsl_interp_eval_integ(interp, phases_ptr,
-                                                       pulse_ptr,  0.0, pb, acc)
+                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                                                       phases_ptr,
+                                                       pulse_ptr,
+                                                       pa, 1.0,
+                                                       acc_ptr)
+
+                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                                                       phases_ptr,
+                                                       pulse_ptr,
+                                                       0.0, pb,
+                                                       acc_ptr)
 
         av_DATA = 0.0; av_STAR = 0.0
 
@@ -265,13 +375,30 @@ def eval_marginal_likelihood(double exposure_time,
 
         upper = B + sigmas * std_est
 
-        a.interval = upper - lower
+        #a.interval = upper - lower
+
+        B_for_integrand = B
+
+        if lower < support[i,0]:
+            lower = support[i,0]
+            if upper < support[i,0] and support[i,1] > 0.0:
+                upper = support[i,1]
+                B_for_integrand = support[i,0]
+            elif upper < support[i,0]:
+                upper = support[i,0] + sigmas * std_est
+                B_for_integrand = support[i,0]
+
+        if upper > support[i,1] and support[i,1] > 0.0:
+            upper = support[i,1]
+            if lower > support[i,1]:
+                lower = support[i,0]
+                B_for_integrand = support[i,1]
 
         f.params = &a
 
         a.A = 0.0
         for j in range(a.n):
-            c = a.SCALE * (a.star[j] + B)
+            c = a.SCALE * (a.star[j] + B_for_integrand)
             a.A += a.data[j] * log(c) - c
 
         gsl_integration_cquad(&f, lower, upper,
@@ -283,13 +410,22 @@ def eval_marginal_likelihood(double exposure_time,
         else:
             LOGLIKE += llzero
 
+        MCL_BACKGROUND[i] = B * exposure_time
+
+        if B < support[i,0]:
+            B = support[i,0]
+        elif B > support[i,1] and support[i,1] > 0.0:
+            B = support[i,1]
+
         for j in range(a.n):
             STAR[i,j] = a.SCALE * (a.star[j] + B)
 
-        MCL_BACKGROUND[i] = B * exposure_time
+    for p in range(num_components):
+        gsl_interp_accel_free(acc[p])
+        gsl_interp_free(interp[p])
 
-    gsl_interp_accel_free(acc)
-    gsl_interp_free(interp)
+    free(acc)
+    free(interp)
 
     gsl_integration_cquad_workspace_free(w)
 

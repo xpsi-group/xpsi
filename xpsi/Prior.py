@@ -33,6 +33,8 @@ class Prior(object):
     """
     __metaclass__ = ABCMeta
 
+    __derived_names__ = None
+
     def __init__(self, parameters):
         """
         You might want to overwrite this initialiser to do some custom
@@ -147,6 +149,26 @@ class Prior(object):
         p = list(p)
 
         raise NotImplementedError('Define a transformation.')
+
+        return p
+
+    @property
+    def derived_names(self):
+        if self.__derived_names__ is None:
+            try:
+                self.transform(self.inverse_sample())
+            except NotImplementedError:
+                pass
+            else:
+                raise AttributeError('A transformation has been implemented '
+                                     'in class %s, but no names have been '
+                                     'declared for the derived parameters.'
+                                     % type(self).__name__)
+
+        return self.__derived_names__
+
+    def index(self, name):
+        return len(self) + self.derived_names.index(name)
 
     @make_verbose('Drawing samples from the joint prior','Samples drawn')
     def draw(self, ndraws, transform=False):

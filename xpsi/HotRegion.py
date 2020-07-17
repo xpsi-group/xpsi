@@ -264,9 +264,15 @@ class HotRegion(ParameterSubspace):
         doc = """
         The phase of the hot region, a periodic parameter [cycles].
         """
+        phase_bounds = bounds.get('phase_shift', None)
+        if not phase_bounds or None in phase_bounds:
+            raise ValueError('Phase-shift bounds must be specified.')
+        if _np.array([not _np.isfinite(b) for b in phase_bounds]).any():
+            raise ValueError('Phase-shift bounds must be finite.')
+
         phase_shift = Parameter('phase_shift',
-                                strict_bounds = (-0.5, 0.5),
-                                bounds = bounds.get('phase_shift', None),
+                                strict_bounds = (-_np.infty, _np.infty),
+                                bounds = phase_bounds,
                                 doc = doc,
                                 symbol = r'$\phi$',
                                 value = values.get('phase_shift', None))
@@ -285,104 +291,125 @@ class HotRegion(ParameterSubspace):
 
         bindme = BindMe() # to parameter instances
 
+        # to deactivate printing of parameter information if that parameter
+        # is initialised but deactivated
+        no_verb = {}
+
         if not self.cede: # means just super region, possibly with omission
             bounds['cede_radius'] = None
             values['cede_radius'] = 0.0
+            no_verb['cede_radius'] = True
 
             bounds['cede_colatitude'] = None
             values['cede_colatitude'] = bindme
+            no_verb['cede_colatitude'] = True
 
             bounds['cede_azimuth'] = None
             values['cede_azimuth'] = 0.0
+            no_verb['cede_azimuth'] = True
 
             if not self.omit: # else take free settings from input
                 bounds['omit_radius'] = None
                 values['omit_radius'] = 0.0
+                no_verb['omit_radius'] = True
 
             if self.concentric or not self.omit:
                 bounds['omit_colatitude'] = None
                 values['omit_colatitude'] = bindme
+                no_verb['omit_colatitude'] = True
 
                 bounds['omit_azimuth'] = None
                 values['omit_azimuth'] = 0.0
+                no_verb['omit_azimuth'] = True
         else: # means super + cede regions, no omission
             if self.concentric:
                 bounds['cede_colatitude'] = None
                 values['cede_colatitude'] = bindme
+                no_verb['cede_colatitude'] = True
 
                 bounds['cede_azimuth'] = None
                 values['cede_azimuth'] = 0.0
+                no_verb['cede_azimuth'] = True
 
             bounds['omit_radius'] = None
             values['omit_radius'] = 0.0
+            no_verb['omit_radius'] = True
 
             bounds['omit_colatitude'] = None
             values['omit_colatitude'] = bindme
+            no_verb['omit_colatitude'] = True
 
             bounds['omit_azimuth'] = None
             values['omit_azimuth'] = 0.0
+            no_verb['omit_azimuth'] = True
 
         doc = """
         The colatitude of the centre of the omission region [radians].
         """
         omit_colat = Parameter('omit_colatitude',
-                               strict_bounds = (0.0, _pi),
-                               bounds = bounds.get('omit_colatitude', None),
-                               doc = doc,
-                               symbol = r'$\upsilon$',
-                               value = values.get('omit_colatitude', None))
+                   strict_bounds = (0.0, _pi),
+                   bounds = bounds.get('omit_colatitude', None),
+                   doc = doc,
+                   symbol = r'$\upsilon$',
+                   value = values.get('omit_colatitude', None),
+                   deactivate_verbosity = no_verb.get('omit_colatitude', False))
 
         doc = """
         The angular radius of the (circular) omission region [radians].
         """
         omit_radius = Parameter('omit_radius',
-                                strict_bounds = (0.0, _pi/2.0),
-                                bounds = bounds.get('omit_radius', None),
-                                doc = doc,
-                                symbol = r'$\Delta$',
-                                value = values.get('omit_radius', None))
+                       strict_bounds = (0.0, _pi/2.0),
+                       bounds = bounds.get('omit_radius', None),
+                       doc = doc,
+                       symbol = r'$\Delta$',
+                       value = values.get('omit_radius', None),
+                       deactivate_verbosity = no_verb.get('omit_radius', False))
 
         doc = """
         The azimuth of the centre of the omission region relative to the
         centre of the superseding region [radians].
         """
         omit_azi = Parameter('omit_azimuth',
-                             strict_bounds = (-_pi, _pi),
-                             bounds = bounds.get('omit_azimuth', None),
-                             doc = doc,
-                             symbol = r'$\Phi$',
-                             value = values.get('omit_azimuth', None))
+                      strict_bounds = (-_pi, _pi),
+                      bounds = bounds.get('omit_azimuth', None),
+                      doc = doc,
+                      symbol = r'$\Phi$',
+                      value = values.get('omit_azimuth', None),
+                      deactivate_verbosity = no_verb.get('omit_azimuth', False))
 
         doc = """
         The colatitude of the centre of the ceding region [radians].
         """
         cede_colat = Parameter('cede_colatitude',
-                               strict_bounds = (0.0, _pi),
-                               bounds = bounds.get('cede_colatitude', None),
-                               doc = doc,
-                               symbol = r'$\Theta$',
-                               value = values.get('cede_colatitude', None))
+                   strict_bounds = (0.0, _pi),
+                   bounds = bounds.get('cede_colatitude', None),
+                   doc = doc,
+                   symbol = r'$\Theta$',
+                   value = values.get('cede_colatitude', None),
+                   deactivate_verbosity = no_verb.get('cede_colatitude', False))
 
         doc = """
         The angular radius of the (circular) ceding region [radians].
         """
         cede_radius = Parameter('cede_radius',
-                                strict_bounds = (0.0, _pi/2.0),
-                                bounds = bounds.get('cede_radius', None),
-                                doc = doc,
-                                symbol = r'$\zeta$',
-                                value = values.get('cede_radius', None))
+                       strict_bounds = (0.0, _pi/2.0),
+                       bounds = bounds.get('cede_radius', None),
+                       doc = doc,
+                       symbol = r'$\zeta$',
+                       value = values.get('cede_radius', None),
+                       deactivate_verbosity = no_verb.get('cede_radius', False))
 
         doc = """
         The azimuth of the centre of the ceding region relative to the
         centre of the superseding region [radians].
         """
         cede_azi = Parameter('cede_azimuth',
-                             strict_bounds = (-_pi, _pi),
-                             bounds = bounds.get('cede_azimuth', None),
-                             doc = doc,
-                             symbol = r'$\Phi$',
-                             value = values.get('cede_azimuth', None))
+                      strict_bounds = (-_pi, _pi),
+                      bounds = bounds.get('cede_azimuth', None),
+                      doc = doc,
+                      symbol = r'$\Phi$',
+                      value = values.get('cede_azimuth', None),
+                      deactivate_verbosity = no_verb.get('cede_azimuth', False))
 
         if not custom: # setup default temperature parameters
             doc = """

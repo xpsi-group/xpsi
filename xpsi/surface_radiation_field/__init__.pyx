@@ -4,9 +4,68 @@
 #cython: wraparound=False
 #cython: embedsignature=True
 
-""" Extensions to compute specific photon intensity in a local comoving frame.
+""" Extensions to compute specific intensities in a local comoving frame.
 
-Use the Python-exposed functions to test the C implementations.
+Overview
+--------
+
+We require the surface radiation field model to be implemented in C extensions
+to Python if signal computation is to be sufficiently fast. Signal computation
+includes:
+
+    * integrating over the image of a star on a distant observer's sky,
+      yielding a phase-energy resolved signal for likelihood function
+      evaluation;
+    * resolving the image of star on a distant observer's sky as a function of
+      phase and energy for visualisation purposes, and for more general
+      simulation purposes.
+
+The first type of signal computation is enabled by surface discretization,
+whilst the latter is enabled via image-plane discretization. For surface
+discretization there are two extension modules for users and developers to
+work with: ``hot.pyx`` and ``elsewhere.pyx``. These extension modules contain
+functions whose bodies enable evaluation of specific intensities with respect
+to local comoving frames at the stellar surface. These functions have simple
+default code (isotropic blackbody radiation field) but must generally be
+customized for more advanced physics models. The ``hot.pyx`` module defines
+the radiation field inside surface hot regions represented by
+:class:`~xpsi.HotRegion.HotRegion` instances; however, the same module is used
+by an instance of the :class:`~xpsi.Everywhere.Everywhere` class. The
+``Elsewhere.pyx`` extension module defines the radiation field *exterior* to
+the :class:`~xpsi.HotRegion.HotRegion` instances on the surface.
+
+For image-plane discretization, the ``hot.pyx`` extension defines the local
+surface radiation field properties with respect to a comoving frame. However,
+to compute the variables required by this module to evaluate specific intensity,
+another extension module is required with transforms a set of *global*
+variables into local variables given spacetime coordinates of an event
+belonging to a null geodesic connecting the surface to a radiation-detecting
+distant instrument. Users and developers must customize the function bodies
+in ``local_variables.pyx`` in order to implement more advanced physics models.
+
+For all of these modules, numerical data can be read from disk to define the
+functions for specific intensity evaluation given local variables, and for
+transformation of global variables to local variables. A common usage pattern
+is to statistically model data assuming some numerical physics model for the
+radiation emergent from an atmosphere. Statistical modeling requires many
+likelihood function evaluations, and therefore to avoid unnecessarily reading
+numerical data from disk every time the likelihood function is called, users
+can preload the numerical atmosphere data in an encapsulation Python process
+and point to the data structures in memory when computing signals; developers
+can develop extension modules to work with preloaded numerical atmosphere data.
+When preloading an atmosphere, the number of grid points in each dimension
+is dynamically inferred, but the existing source code for multi-dimensional
+interpolation is hard-coded for four dimensions. With development, this can be
+made more sophisticated.
+
+Developers can contribute extension modules to the
+``surface_radiation_field/archive``. Extensions from this archive must replace
+the contents of the ``hot.pyx``, ``elsewhere.pyx``, and ``local_variables.pyx``
+modules, adhering to the function prototypes defined in the associated
+header files and using existing examples in the archive for guidance.
+
+Use the Python-exposed functions below to test the C implementations of
+surface radiation field models.
 
 """
 
@@ -19,25 +78,27 @@ from ..global_imports import _keV
 
 cdef double keV = _keV
 
-from xpsi.surface_radiation_field.preload cimport (_preloaded,
-                                                   init_preload,
-                                                   free_preload)
+from .preload cimport (_preloaded,
+                       init_preload,
+                       free_preload)
 
-from xpsi.surface_radiation_field.hot cimport (init_hot,
-                                               eval_hot,
-                                               eval_hot_norm,
-                                               free_hot)
+from .hot cimport (init_hot,
+                   eval_hot,
+                   eval_hot_norm,
+                   free_hot)
 
-from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
-                                                     free_elsewhere,
-                                                     eval_elsewhere,
-                                                     eval_elsewhere_norm)
+from .elsewhere cimport (init_elsewhere,
+                         free_elsewhere,
+                         eval_elsewhere,
+                         eval_elsewhere_norm)
 
-from xpsi.surface_radiation_field.local_variables cimport (storage,
-                                                           HIT_or_MISS,
-                                                           init_local_variables,
-                                                           free_local_variables,
-                                                           eval_local_variables)
+from .local_variables cimport (storage,
+                               HIT_or_MISS,
+                               init_local_variables,
+                               free_local_variables,
+                               eval_local_variables)
+
+from .effective_gravity_universal cimport effectiveGravity
 
 from xpsi.pixelmesh.geometricConfiguration cimport _GEOM
 
@@ -59,7 +120,9 @@ def intensity(double[::1] energies,
               atmosphere = None,
               extension = 'hot',
               size_t numTHREADS = 1):
-    """ Evaluate the intensity using an extension module.
+    """ Evaluate the photon specific intensity using an extension module.
+
+    The intensities are computed directly from local variable values.
 
     :param double[::1] energies:
         A 1D :class:`numpy.ndarray` of energies in keV to evaluate photon
@@ -111,6 +174,10 @@ def intensity(double[::1] energies,
 
     :param int numTHREADS:
         Number of OpenMP threads to launch.
+
+    :returns:
+        A 1D :class:`numpy.ndarray` of the photon specific intensities in
+        units of photons/s/keV/cm^2.
 
     """
     cdef fptr_init init_ptr = NULL
@@ -183,7 +250,10 @@ def intensity_from_globals(double[::1] energies,
                            double epsilon,
                            atmosphere = None,
                            size_t numTHREADS = 1):
-    """ Evaluate the intensity using extension modules.
+    """ Evaluate the photon specific intensity using extension modules.
+
+    The local variables are computed from global variables and spacetime
+    coordinates of events at the surface.
 
     :param double[::1] energies:
         A 1D :class:`numpy.ndarray` of energies in keV to evaluate photon
@@ -265,6 +335,10 @@ def intensity_from_globals(double[::1] energies,
     :param int numTHREADS:
         Number of OpenMP threads to launch.
 
+    :returns:
+        A 1D :class:`numpy.ndarray` of the photon specific intensities in
+        units of photons/s/keV/cm^2.
+
     """
     cdef _GEOM GEOM
 
@@ -339,3 +413,51 @@ def intensity_from_globals(double[::1] energies,
     free_ptr(numTHREADS, data)
 
     return np.asarray(intensities, dtype = np.double, order = 'C')
+
+
+def effective_gravity(double[::1] cos_colatitude,
+                      double[::1] R_eq,
+                      double[::1] zeta,
+                      double[::1] epsilon):
+    """ Approximate local effective gravity using a universal relation.
+
+    See Morsink et al. (2007), AlGendy & Morsink (2014), and Bogdanov et al.
+    (2019, ApJL, 887, L26).
+
+    :param double[::1] cos_colatitude:
+        A 1D :class:`numpy.ndarray` of colatitudes, with respect to *a*
+        rotational pole, at which to evaluate the local effective gravity.
+        on the surface. Specifically, the angle is the cosine of the
+        colatitude of the ray direction to the local surface normal, in the
+        local comoving frame.
+
+    :param double[::1] R_eq:
+        A 1D :class:`numpy.ndarray` of surface coordinate equatorial radii in
+        metres.
+
+    :param double[::1] zeta:
+        A 1D :class:`numpy.ndarray` of a dimensionless function of stellar
+        properties. See :attr:`~xpsi.Spacetime.Spacetime.zeta`.
+
+    :param double[::1] epsilon:
+        A 1D :class:`numpy.ndarray` of a dimensionless function of stellar
+        properties. See :attr:`~xpsi.Spacetime.Spacetime.epsilon`.
+
+    :returns:
+        A 1D :class:`numpy.ndarray` of the logarithms (base 10) of the
+        effective gravities in units of cm/s^2.
+
+    """
+
+    cdef double[::1] gravity = np.zeros(cos_colatitude.shape[0],
+                                        dtype=np.double)
+
+    cdef size_t i
+
+    for i in range(gravity.shape[0]):
+        gravity[i] = effectiveGravity(cos_colatitude[i],
+                                      R_eq[i],
+                                      zeta[i],
+                                      epsilon[i])
+
+    return np.asarray(gravity, dtype = np.double, order = 'C')

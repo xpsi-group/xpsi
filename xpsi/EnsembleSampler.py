@@ -29,6 +29,35 @@ class EnsembleSampler(_EnsembleSampler):
 
     .. _emcee: http://emcee.readthedocs.io/en/latest/
 
+    :param callable posterior:
+        The posterior function for MPI pickling.
+
+    :param int ndims:
+        Number of model parameters.
+
+    :param bool resume:
+        Resume a sampling run from file?
+
+    :param int nwalkers:
+        Number of ensemble walkers.
+
+    :param nsteps:
+        Number of iterations to perform.
+
+    :param pool:
+        Instance of :class:`schwimmbad.MPIPool`.
+
+    :param str root_dir:
+        Path to a directory containing a ``samples.h5`` to resume from;
+        also the directory to be written to.
+
+    :param list walker_dist_moments:
+        Optional set of tuples of means and standard deviations.
+        One per parameter.
+
+    :param obj _posterior:
+        Reserved for internal usage when invoking MPI.
+
     """
     def __init__(self,
                  ndims,
@@ -38,38 +67,21 @@ class EnsembleSampler(_EnsembleSampler):
                  nwalkers,
                  nsteps,
                  root_dir,
+                 _posterior=None,
                  walker_dist_moments = None,
                  **kwargs):
-        """
-        :param callable posterior: The posterior function for MPI pickling.
 
-        :param int ndims: Number of model parameters.
+        if _posterior is None:
+            _posterior = posterior
 
-        :param bool resume: Resume a sampling run from file?
-
-        :param int nwalkers: Number of ensemble walkers.
-
-        :param nsteps: Number of iterations to perform.
-
-        :param pool: Instance of :class:`schwimmbad.MPIPool`.
-
-        :param str root_dir: Path to a directory containing a ``samples.h5`` to
-                             resume from; also the directory to be written to.
-
-        :param list walker_dist_moments: Optional set of tuples of means and
-                                         standard deviations. One per parameter.
-
-        """
-        if not isinstance(posterior, Posterior):
-            raise TypeError('Invalid type for posterior object.')
-        else:
-            if not callable(posterior):
-                raise RuntimeError('Posterior object is not callable.')
+        if not callable(posterior):
+            raise RuntimeError('Posterior object is not callable.')
 
         self._posterior = posterior
 
+        self._likelihood = _posterior.likelihood
         # get the prior object in case needed for initialisation
-        self._prior = self.posterior.prior
+        self._prior = _posterior.prior
 
         try:
             self._root_dir = str(root_dir)
@@ -170,7 +182,7 @@ class EnsembleSampler(_EnsembleSampler):
             """ Check inclusion in prior support. """
 
             try:
-                ParameterSubspace.__call__(self._posterior.likelihood, p)
+                ParameterSubspace.__call__(self._likelihood, p)
             except StrictBoundsError:
                 return False
 
@@ -186,7 +198,7 @@ class EnsembleSampler(_EnsembleSampler):
 
         p0 = _np.empty((self._nwalkers, self._ndims), dtype = _np.double)
 
-        q = self._posterior.likelihood.vector # make our own cache here
+        q = self._likelihood.vector # make our own cache here
 
         for i in range(self._nwalkers):
 
@@ -202,9 +214,9 @@ class EnsembleSampler(_EnsembleSampler):
                 if not included:
                     raise PriorError('Failed to initialise walkers.')
 
-                ParameterSubspace.__call__(self._posterior.likelihood, q)
+                ParameterSubspace.__call__(self._likelihood, q)
             except PriorError:
-                ParameterSubspace.__call__(self._posterior.likelihood, q)
+                ParameterSubspace.__call__(self._likelihood, q)
                 raise
 
             p0[i,:] = p

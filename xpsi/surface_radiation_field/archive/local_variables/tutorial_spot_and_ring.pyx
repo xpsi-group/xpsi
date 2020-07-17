@@ -7,7 +7,7 @@ from libc.math cimport sin, cos, acos, log, M_PI, pow, exp
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
-from xpsi.tools.effective_gravity_universal cimport effectiveGravity
+from .effective_gravity_universal cimport effectiveGravity
 
 cdef int SUCCESS = 0
 cdef int ERROR = 1

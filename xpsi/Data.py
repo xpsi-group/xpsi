@@ -5,45 +5,56 @@ __all__ = ["Data"]
 from .global_imports import *
 from . import global_imports
 
-from abc import ABCMeta, abstractmethod
-
 class Data(object):
-    """ A photon data container.
+    """ A container for event data.
 
-    The instrument associated with this data in an instance of
-    :class:`~.Pulse.Pulse` must transform incident pulses into a
-    structure congruent to that of the data. The attributes and methods of this
-    class and any derived classes must therefore store information required
-    for this operation.
+    The working assumption is that the sampling distribution of this event data
+    can be written in terms of a set of channel-by-channel *count*\ -rate
+    signals. The instrument associated with this data in an instance of
+    :class:`~.Signal.Signal` must transform incident signals into a structure
+    congruent to that of the event data. The attributes and methods of this
+    class and any derived classes must therefore store information required for
+    this operation.
 
-    We reserve the initialiser to assign attributes which are required for the
-    treating the incident specific flux pulses using the model instrument.
-    The body of the initialiser must not be changed to ensure inter-module
-    compatibility, but can be extended if appropriate using a call to
+    The initialiser to assign attributes which are required for the treating
+    the incident specific flux signals using the model instrument. The body of
+    the initialiser may be changed, but to ensure inter-module compatibility,
+    the :meth:`channel_range` property must expose the same information. The
+    initialiser can also be extended if appropriate using a call to
     ``super().__init__``. Specialist constructors can be defined in a subclass
-    using the ``@classmethod`` decorator.
+    using the ``@classmethod`` decorator, for instance to load event data from
+    disk into a compatible data structure in memory.
 
-    The working assumption is that the sampling distribution of the data can be
-    written in terms of a set of channel-by-channel *count*\ -rate pulses.
+    .. note:: You can subclass in order to tailor the handling of the event
+              data, for instance to implement a likelihood functions for
+              unbinned event data.
 
-    .. note:: You need to subclass in order to tailor the handling of the
-              photon event data.
+    :param int first:
+        The first instrument channel containing events.
 
-    :param int first: The first instrument *output* channel which photons
-                      of this data are associated with.
+    :param int last:
+        The last instrument channel containing events
 
-    :param int last: The last instrument *output* channel which photons
-                     of this data are associated with.
+    .. note:: For treatment of the incident signal, it is assumed that
+              that events span a contiguous subset of channels,
+              between and including the :obj:`first` and :obj:`last` channels.
 
-    .. note:: For treatment of the incident pulse, it is assumed that
-              that photons space a contiguous subset of output channels,
-              between the :obj:`first` and :obj:`last` channel.
+    :param float exposure_time:
+        The exposure time, in seconds, to acquire this set of event data.
+
+    :param ndarray[n,m] counts:
+        A :class:`~numpy.ndarray` of count numbers. The rows of
+        the array must map to a contiguous subset of instrument channels,
+        with the zeroth row corresponding to the :attr:`first` channel,
+        and the last row corresponding to the channel :attr:`last` channel.
+        The columns must map to the phase intervals given by :obj:`phases`.
+
+    :param ndarray[m+1] phases:
+        A :class:`~numpy.ndarray` of phase interval edges, where events are
+        binned into these same intervals in each instrument channel.
 
     """
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def __init__(self, first, last):
+    def __init__(self, first, last, exposure_time, counts, phases):
         try:
             self._first = int(first)
             self._last = int(last)
@@ -54,14 +65,38 @@ class Data(object):
             raise ValueError('The first channel number must be lower than the '
                              'the last channel number.')
 
+        self._exposure_time = exposure_time
+
+        if not isinstance(counts, _np.ndarray):
+            raise TypeError('Counts object is not a ``numpy.ndarray``.')
+        else:
+            self._counts = counts
+
+        if self._counts.shape[0] != self._last - self._first + 1:
+            raise ValueError('The number of rows must be compatible '
+                             'with the first and last channel numbers.')
+
+        if not isinstance(phases, _np.ndarray):
+            raise TypeError('Phases object is not a ``numpy.ndarray``.')
+        else:
+            self._phases = phases
+
+    @property
+    def exposure_time(self):
+        """ Get the total exposure time in seconds. """
+        return self._exposure_time
+
+    @property
+    def counts(self):
+        """ Get the photon count data. """
+        return self._counts
+
+    @property
+    def phases(self):
+        """ Get the phases. """
+        return self._phases
+
     @property
     def channel_range(self):
-        """ Get a 2-tuple containing the bounding output channels. """
-        return (self._first, self._last)
-
-
-
-
-
-
-
+        """ Get a 2-tuple containing the bounding channels. """
+        return (self._first, self._last + 1) # plus one for array indexing
