@@ -110,6 +110,10 @@ class SpectrumPlot(SignalPlot):
         Keyword arguments for plotting the ground truth signal lines (top and
         bottom panels).
 
+    :param comp_truth_line_kwargs:
+        Keyword arguments for plotting the component ground truth signal lines
+        (top and bottom panels).
+
     """
     __figtype__ = 'signalplot_spectrum'
 
@@ -151,7 +155,15 @@ class SpectrumPlot(SignalPlot):
         try:
             self._logspace_y
         except AttributeError:
+            _shadow = True
+        else:
+            if not self._logspace_y: _shadow = True
+
+        if _shadow: # shadow class attribute
             kwargs.setdefault('logspace_y', True)
+            if not kwargs.get('logspace_y'):
+                yield ('Spectrum plots may have conditional-probability '
+                       'contour artefacts if logspace_y is not True.')
 
         super(SpectrumPlot, self).__init__(**kwargs)
 
@@ -283,6 +295,8 @@ class SpectrumPlot(SignalPlot):
             self._background_line_kwargs = background_line_kwargs
 
         plt.close()
+
+        yield
 
     @property
     def instruction_set(self):
