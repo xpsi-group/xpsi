@@ -35,10 +35,9 @@ class Photosphere(ParameterSubspace):
     """ A photosphere embedded in an ambient Schwarzschild spacetime.
 
     :param obj hot:
-        An instance of :class:`~.HotRegion.HotRegion` (or a
-        derived class). This objects represents the hot
-        regions of the surface that in most use-cases will be
-        assumed to contain radiating material that is hotter
+        An instance of :class:`~.HotRegion.HotRegion` (or a derived class).
+        This objects represents the hot regions of the surface that in most
+        use-cases will be assumed to contain radiating material that is hotter
         than that *elsewhere*.
 
     :param obj elsewhere:
@@ -105,20 +104,18 @@ class Photosphere(ParameterSubspace):
                                  'radiation field everywhere.')
             if not isinstance(everywhere, Everywhere):
                 raise TypeError('Invalid type for everywhere object.')
-            self._everywhere = everywhere
+        elif hot is None and elsewhere is None:
+            pass # can call image-plane extensions
         else:
-            self._everywhere = None
-
             if elsewhere is not None:
                 if not isinstance(elsewhere, Elsewhere):
                     raise TypeError('Invalid type for an elsewhere object.')
-                else:
-                    self._elsewhere = elsewhere
-            else:
-                self._elsewhere = None
-                if hot is None:
-                    raise ValueError('The photosphere must radiate.')
 
+                if hot is None:
+                    raise ValueError('Hot region object(s) must be used in '
+                                     'conjuction with an elsewhere object.')
+
+            self._elsewhere_atmosphere = ()
                                               # including derived classes
             if hot is not None and hot is not isinstance(hot, HotRegion):
                 if hasattr(hot, 'objects'):
@@ -129,11 +126,10 @@ class Photosphere(ParameterSubspace):
                 else:
                     raise TypeError('Invalid object for the hot region(s).')
 
-            self._hot = hot
-
-            self._elsewhere_atmosphere = ()
-
+        self._hot = hot
         self._hot_atmosphere = ()
+        self._elsewhere = elsewhere
+        self._everywhere = everywhere
 
         if bounds is None: bounds = {}
         if values is None: values = {}
