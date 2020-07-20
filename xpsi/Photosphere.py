@@ -688,6 +688,7 @@ class Photosphere(ParameterSubspace):
                        invert = False,
                        annotate_energies=False,
                        energy_annotation_format='[%.1f keV]',
+                       annotate_location=(0.05,0.05),
                        colormap = None,
                        figsize = (10,10),
                        usetex = False,
@@ -1020,7 +1021,7 @@ class Photosphere(ParameterSubspace):
 
                     # add energy
                     if annotate_energies:
-                        ax.text(0.05,0.05,
+                        ax.text(annotate_location[0], annotate_location[1],
                            s=energy_annotation_format % energies[idx],
                            fontdict={'color': 'black' if invert else 'white'},
                            transform=ax.transAxes)
