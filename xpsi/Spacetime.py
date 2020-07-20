@@ -35,7 +35,7 @@ class Spacetime(ParameterSubspace):
                       'mass',
                       'radius',
                       'distance',
-                      'inclination']
+                      'cos_inclination']
 
     def __init__(self, bounds, values):
 
@@ -67,14 +67,14 @@ class Spacetime(ParameterSubspace):
                       symbol = r'$D$',
                       value = values.get('distance', None))
 
-        i = Parameter('inclination',
-                      strict_bounds = (0.0, _pi),
-                      bounds = bounds.get('inclination', None),
-                      doc = 'Earth inclination to rotation axis [radians]',
-                      symbol = r'$i$',
-                      value = values.get('inclination', None))
+        cosi = Parameter('cos_inclination',
+                         strict_bounds = (-1.0, 1.0),
+                         bounds = bounds.get('cos_inclination', None),
+                         doc = 'Cosine of Earth inclination to rotation axis',
+                         symbol = r'$\cos(i)$',
+                         value = values.get('cos_inclination', None))
 
-        super(Spacetime, self).__init__(f, M, R, D, i)
+        super(Spacetime, self).__init__(f, M, R, D, cosi)
 
     @classmethod
     @make_verbose('Configuring default bounds with fixed spin',
@@ -95,7 +95,7 @@ class Spacetime(ParameterSubspace):
         bounds = dict(mass = (1.0, 3.0),
                       radius = (gravradius(1.0), 16.0),
                       distance = (0.05, 2.0),
-                      inclination = (0.0, _pi/2.0))
+                      cos_inclination = (0.0, 1.0))
 
         return cls(bounds, dict(frequency = frequency))
 
@@ -127,7 +127,7 @@ class Spacetime(ParameterSubspace):
 
     @property
     def f(self):
-        """ Read the coordinate rotation frequency. """
+        """ Get the coordinate rotation frequency. """
         return self['frequency']
 
     @property
@@ -137,8 +137,8 @@ class Spacetime(ParameterSubspace):
 
     @property
     def i(self):
-        """ Read the inclination of the Earth to the rotational axis. """
-        return self['inclination']
+        """ Get the inclination of the Earth to the rotational axis. """
+        return _m.acos(self['cos_inclination'])
 
     @property
     def d(self):
