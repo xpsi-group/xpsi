@@ -153,11 +153,9 @@ class SpectrumPlot(SignalPlot):
                  **kwargs):
 
         try:
-            self._logspace_y
+            _shadow = not self._logspace_y
         except AttributeError:
             _shadow = True
-        else:
-            if not self._logspace_y: _shadow = True
 
         if _shadow: # shadow class attribute
             kwargs.setdefault('logspace_y', True)
