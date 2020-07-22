@@ -35,16 +35,17 @@ defined by
 
 where :math:`\mathcal{M}` is the global (hierarchical) model.
 
-A fundamental assumption upon which X-PSI is based is that a model with
-sufficient complexity to describe data can be constructed from a restricted
-set of abstract objects that form a modelling language. Crucially, those
-objects must have software implementations that are sufficiently fast for
-parameter estimation to be tractable on a high-performance computing system,
-but are also simple for a modeller to piece together into a bespoke model.
-These objects often have properties which are discrete representations of
-continuous mathematical structures, and these continuous structures are imbued
-with physical meaning in order to attempt to describe
-observable reality in terms of deterministic and stochastic processes.
+A fundamental assumption upon which X-PSI is based (at least until posterior
+checking suggests otherwise) is that a model with sufficient complexity to
+describe data can be constructed from a restricted set of abstract objects that
+form a modelling language. Crucially, those objects must have software
+implementations that are sufficiently fast for parameter estimation to be
+tractable on a high-performance computing system, but are also simple for a
+modeller to piece together into a bespoke model. These objects often have
+properties which are discrete representations of continuous mathematical
+structures, and these continuous structures are imbued with physical meaning
+in order to attempt to describe observable reality in terms of deterministic
+and stochastic processes.
 
 In X-PSI, we adopt general relativistic gravity to construct a spacetime
 manifold associated with a model neutron star. The exterior
@@ -147,14 +148,8 @@ gravitational mass monopole moment, whilst neglecting all other rotational
 :math:`\ell>0` metric deformations at :math:`\mathcal{O}(\Omega)`
 (see Hartle, 1967; Hartle & Thorne, 1968).
 
-An image-plane integrator may also be integrated for visualisation contexts,
-and for internal cross-checking of signal integration.
-
-
 .. rubric:: Footnotes
 
 .. [#] For a model star in a binary, the spacetime is non-stationary (and thus
        dynamic), but the time evolution is considered unimportant for systems
        containing X-ray sources.
-
-

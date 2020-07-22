@@ -104,6 +104,8 @@ field.
 State of development
 ********************
 
+The first major version of X-PSI will be released in the coming months.
+
 The initial development of X-PSI was checkpointed with the completion of
 :ref:`R19`, and tagged as ``v0.1``. X-PSI remains, however, in the
 `initial development stage <https://semver.org/>`_. Backwards incompatible
@@ -122,11 +124,9 @@ install X-PSI from source, and to install dependencies, see the
     branch of the repo, but that version is not explicitly documented.
 
 The *Modelling*,  *Hot region complexity*, and *Global surface emission*
-tutorials in these documentation pages however, use ``v0.4`` of X-PSI (which
-was imported for notebook executed before the minor version bump was applied
-to the package). The required files (i.e., data files and NICER v1.01
-instrument files) may be obtained from a different repository due to file size
-considerations:
+tutorials in these documentation pages however, use ``v0.5`` of X-PSI.
+The required files (i.e., data files and NICER v1.01 instrument files) may be
+obtained from a different repository due to file size considerations:
 
 .. code-block:: bash
 

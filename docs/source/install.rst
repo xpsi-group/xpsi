@@ -275,7 +275,7 @@ Now you need the Python interface to MultiNest:
 
     git clone https://github.com/JohannesBuchner/PyMultiNest.git <path/to/clone>/pymultinest
     cd <path/to/clone>/pymultinest
-    python setup.py install --user
+    python setup.py install [--user]
 
 The package will be installed in your Conda environment (if activated).
 
@@ -303,6 +303,9 @@ To build and install from the X-PSI clone root, you require an
 .. code-block:: bash
 
     CC=<path/to/compiler/executable> python setup.py install [--user]
+
+The ``--user`` flag is optional and specifies where the package is installed;
+if you want to install the package in a virtual environment, omit this flag.
 
 For ``icc``, you may need to prepend this command with
 ``LDSHARED="icc -shared"``. This ensures that both the compiler and linker
