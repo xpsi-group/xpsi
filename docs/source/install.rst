@@ -54,7 +54,6 @@ an environment manually via
      conda create -n xpsi python=2.7
 
 and then install the core dependencies `NumPy`_ and `Cython`_, and also `GSL`_
-if you do not have it elsewhere on your system.
 
 Conda environment duplication
 -----------------------------
@@ -156,19 +155,21 @@ ensemble-MCMC is optional.
 
 .. rubric:: Footnotes
 
-.. [#] The GetDist_ software used in :ref:`R19` and with which X-PSI ``v0.1``
-       interfaces may be cloned as follows:
+.. [#] The version of GetDist_ currently compatible with X-PSI (and used in 
+       :ref:`R19`) is v0.3.1. It may be cloned as follows:
 
        .. code-block:: bash
 
-            git clone [--single-branch] -b customisation https://github.com/ThomasEdwardRiley/getdist.git
+          git clone [--single-branch] -b customisation \
+          https://github.com/ThomasEdwardRiley/getdist.git
 
-.. [#] The nestcheck_ software used in :ref:`R19` and with which X-PSI ``v0.1``
-       interfaces may be cloned as follows:
+.. [#] The version of nestcheck_ currently compatible with X-PSI (and used in 
+       :ref:`R19`) is v0.2.0. It may be cloned as follows:
 
        .. code-block:: bash
 
-            git clone [--single-branch] -b feature/getdist_kde https://github.com/ThomasEdwardRiley/nestcheck.git
+          git clone [--single-branch] -b feature/getdist_kde \
+          https://github.com/ThomasEdwardRiley/nestcheck.git
 
 __ source_
 
@@ -301,7 +302,7 @@ To build and install from the X-PSI clone root, you require an
 
 .. code-block:: bash
 
-    CC=<path/to/compiler/executable> python setup.py install --user
+    CC=<path/to/compiler/executable> python setup.py install [--user]
 
 For ``icc``, you may need to prepend this command with
 ``LDSHARED="icc -shared"``. This ensures that both the compiler and linker
@@ -313,6 +314,34 @@ environment variable, the X-PSI ``setup.py`` script will automatically use the
 C flags for compilation of the X-PSI extensions. Because the library location
 will not change for runtime, we state the runtime linking instructions at
 compilation in the ``setup.py`` script.
+
+.. note::
+
+   To install X-PSI on Mac OS, you can use ``llvm clang`` rather than ``gcc``.
+   First install ``homebrew`` and use that to install ``llvm``:  
+
+   .. code-block:: bash
+      
+      /usr/bin/ruby -e 
+      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+      brew install llvm
+
+   Modify your ``.profile`` file as follows:
+
+   .. code-block:: bash
+
+      export PATH=/usr/local/opt/llvm/bin:$PATH
+      export LDFLAGS=“-L/usr/local/opt/llvm/lib"
+      export CPPFLAGS=“-I/usr/local/opt/llvm/include”
+      export KMP_DUPLICATE_LIB_OK=TRUE
+
+   Install X-PSI using 
+
+   .. code-block:: bash
+
+      CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user]
+
 
 If you ever need to reinstall, first clean to recompile the C files:
 
@@ -343,14 +372,15 @@ If you wish to compile the documentation you require `Sphinx`_:
 
 The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
 notebooks for the tutorials in this documentation. The ``.html`` files can
-naturally be opened in a browser. You need the relevant extensions and a
-theme such as the Sphinx `Read the Docs theme`__. Customisation can be made
-in the ``xpsi/docs/source/conf.py`` script.
+naturally be opened in a browser. You need the relevant extensions (such as 
+``nbsphinx``, which you will be prompted to install) and atheme such as the 
+Sphinx `Read the Docs theme`__. Customisation can be made in the 
+``xpsi/docs/source/conf.py`` script.
 
 __ https://sphinx-rtd-theme.readthedocs.io/en/latest/
 
 Note that if you require links to the source code in the HTML files, you need
-to ensure Sphinx imports the ``xpsi`` package from the *source* directory
+to ensure Sphinx imports the ``xpsi`` package from the source directory
 instead of from the ``~/.local/lib`` directory of the user. To enforce this,
 insert the path to the source directory into ``sys.path`` in the ``conf.py``
 script. Then make sure the extension modules are inside the source directory
@@ -360,3 +390,30 @@ script. Then make sure the extension modules are inside the source directory
 
    To build the documentation, all modules need to be imported, and the
    dependencies that are not resolved will print warning messages.
+
+Installing on Windows
+-------------------------------
+
+X-PSI has been successfully installed and run on Windows using the following
+procedure.  
+
+.. _Ubuntu: https://www.windowscentral.com/install-windows-subsystem-linux-windows-10
+
+.. _Python 2.7: https://help.dreamhost.com/hc/en-us/articles/115000218612-Installing-a-custom-version-of-Python
+
+.. _virtual Python environment: https://help.dreamhost.com/hc/en-us/articles/215489338-Installing-and-using-virtualenv-with-Python-2
+
+* Clone the X-PSI repository to a directory on your Windows computer (see above).
+* Download `Ubuntu`_ for Windows.
+* Install `Python 2.7`_.
+* Create a `virtual Python environment`_ in an Ubuntu shell.
+* Install supporting packages ``pip install matplotlib numpy scipy 
+  pymultinest cython`` followed by ``sudo apt-get install libgsl-dev``.
+* Ensure you are in the X-PSI directory and install X-PSI 
+  ``CC=gcc python setup.py install``.
+* Install any missing packages e.g. ``pip install h5py``.
+* Install Jupyter notebook using ``pip install notebook``.
+* Start the kernel with the command ``Jupyter notebook` and import X-PSI 
+  (see tutorials).
+
+

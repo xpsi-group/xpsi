@@ -8,11 +8,14 @@ performance benchmarking and planning of resource consumption.
 
 .. _R19:
 
-`Riley et al. 2019 (ApJL, 887, L21) <https://arxiv.org/abs/1912.05702>`_
+`Riley et al. 2019 (ApJL, 887, L21) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Riley et al. (2019; hereafter R19) used ``v0.1`` of X-PSI to model *NICER*
-observations of the rotation-powered millisecond X-ray pulsar J0030+0451.
+`Riley et al. (2019; hereafter R19) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_ 
+used ``v0.1`` of X-PSI to model *NICER* observations of the rotation-powered 
+millisecond X-ray pulsar J0030+0451. See also the associated `Zenodo 
+repository <https://zenodo.org/record/3707821#.XxXBZB1S-S4>`_.
+
 
 **Resource consumption**
 
@@ -40,7 +43,7 @@ receiving likelihood function evaluation requests.
 
 *Interpolation settings*
 
-+ Steffen slines (GSL) were used everywhere apart from for the atmosphere
++ Steffen splines (GSL) were used everywhere apart from for the atmosphere
 + for the atmosphere cubic polynomial interpolants were used in four dimensions
 
 
