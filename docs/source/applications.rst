@@ -8,14 +8,24 @@ performance benchmarking and planning of resource consumption.
 
 .. _R19:
 
-`Riley et al. 2019 (ApJL, 887, L21) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`Riley et al. 2019 (ApJL, 887, L21)`__
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`Riley et al. (2019; hereafter R19) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_ 
-used ``v0.1`` of X-PSI to model *NICER* observations of the rotation-powered 
-millisecond X-ray pulsar J0030+0451. See also the associated `Zenodo 
-repository <https://zenodo.org/record/3707821#.XxXBZB1S-S4>`_.
+.. _ADS: https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract
 
+__ ADS_
+
+`Riley et al. (2019; hereafter R19)`__ used ``v0.1`` of X-PSI to model
+*NICER* observations of the rotation-powered millisecond X-ray pulsar
+J0030+0451.
+
+__ ADS_
+
+See also the associated `Zenodo repository`__.
+
+.. _Zenodo: https://zenodo.org/record/3707821#.XxXBZB1S-S4
+
+__ Zenodo_
 
 **Resource consumption**
 

@@ -155,16 +155,16 @@ ensemble-MCMC is optional.
 
 .. rubric:: Footnotes
 
-.. [#] The version of GetDist_ currently compatible with X-PSI (and used in 
-       :ref:`R19`) is v0.3.1. It may be cloned as follows:
+.. [#] The version of GetDist_ currently compatible with X-PSI, and used in
+       :ref:`R19`, is v0.3.1. It may be cloned as follows:
 
        .. code-block:: bash
 
           git clone [--single-branch] -b customisation \
           https://github.com/ThomasEdwardRiley/getdist.git
 
-.. [#] The version of nestcheck_ currently compatible with X-PSI (and used in 
-       :ref:`R19`) is v0.2.0. It may be cloned as follows:
+.. [#] The version of nestcheck_ currently compatible with X-PSI, and used in
+       :ref:`R19`, is v0.2.0. It may be cloned as follows:
 
        .. code-block:: bash
 
@@ -318,10 +318,10 @@ compilation in the ``setup.py`` script.
 .. note::
 
    To install X-PSI on Mac OS, you can use ``llvm clang`` rather than ``gcc``.
-   First install ``homebrew`` and use that to install ``llvm``:  
+   First install ``homebrew`` and use that to install ``llvm``:
 
    .. code-block:: bash
-      
+
       /usr/bin/ruby -e 
       "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
@@ -332,11 +332,11 @@ compilation in the ``setup.py`` script.
    .. code-block:: bash
 
       export PATH=/usr/local/opt/llvm/bin:$PATH
-      export LDFLAGS=“-L/usr/local/opt/llvm/lib"
-      export CPPFLAGS=“-I/usr/local/opt/llvm/include”
+      export LDFLAGS="-L/usr/local/opt/llvm/lib"
+      export CPPFLAGS="-I/usr/local/opt/llvm/include"
       export KMP_DUPLICATE_LIB_OK=TRUE
 
-   Install X-PSI using 
+   Install X-PSI using
 
    .. code-block:: bash
 
@@ -414,6 +414,4 @@ procedure.
 * Install any missing packages e.g. ``pip install h5py``.
 * Install Jupyter notebook using ``pip install notebook``.
 * Start the kernel with the command ``Jupyter notebook` and import X-PSI 
-  (see tutorials).
-
-
+  (see tutorials)``.
