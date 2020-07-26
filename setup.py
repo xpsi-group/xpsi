@@ -162,7 +162,7 @@ if __name__ == '__main__':
         author_email = 'T.E.Riley@uva.nl; t.riley.phd@gmail.com',
         url = 'https://github.com/ThomasEdwardRiley/xpsi',
         license = 'MIT',
-        description = """X-PSI: A prototype open-source package for
+        description = """X-PSI: An open-source package for
                          neutron star X-ray Pulse Simulation and Inference.""",
         long_description = open('README.rst').read(),
         packages = ['xpsi',
