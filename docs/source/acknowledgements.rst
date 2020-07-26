@@ -8,8 +8,8 @@ to the development of X-PSI. If you wish to have your name removed, please
 notify the X-PSI :ref:`team`. Please also prompt us to update this page if you
 have engaged with this project: your time is a resource we wish to acknowledge.
 Specific patch or feature acknowledgements are often reported in the project
-CHANGELOG. Affiliations and contact details are only listed for team members
-to ease maintainability.
+:ref:`history` (CHANGELOG). Affiliations and contact details are only listed
+for team members to ease maintainability.
 
 .. _team:
 
