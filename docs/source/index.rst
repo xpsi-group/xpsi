@@ -14,6 +14,14 @@
 
 .. toctree::
    :maxdepth: 1
+   :caption: Development
+
+   code_of_conduct
+   contributing
+   acknowledgements
+
+.. toctree::
+   :maxdepth: 1
    :caption: Tutorials
 
    model_construction
@@ -64,11 +72,3 @@
    posterior
    sample
    postprocessing
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Development
-
-   code_of_conduct
-   contributing
-   acknowledgements
