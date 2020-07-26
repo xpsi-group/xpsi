@@ -416,5 +416,5 @@ procedure.
   ``CC=gcc python setup.py install``.
 * Install any missing packages e.g. ``pip install h5py``.
 * Install Jupyter notebook using ``pip install notebook``.
-* Start the kernel with the command ``Jupyter notebook` and import X-PSI 
+* Start the kernel with the command ``Jupyter notebook and import X-PSI 
   (see tutorials)``.

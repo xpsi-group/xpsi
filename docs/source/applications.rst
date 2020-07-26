@@ -6,6 +6,9 @@ Applications
 X-PSI was applied in the following contexts. These may be useful for rough
 performance benchmarking and planning of resource consumption.
 
+If you used X-PSI for a project and have time to summarise it here, please
+contact the X-PSI team.
+
 .. _R19:
 
 `Riley et al. 2019 (ApJL, 887, L21)`__

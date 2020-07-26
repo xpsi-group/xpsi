@@ -64,3 +64,11 @@
    posterior
    sample
    postprocessing
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Development
+
+   code_of_conduct
+   contributing
+   acknowledgements
