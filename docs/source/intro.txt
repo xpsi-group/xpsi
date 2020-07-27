@@ -101,6 +101,41 @@ field.
        an `example <https://youtu.be/by3_6rWE7po>`_.
 
 
+Citation
+********
+
+If X-PSI proves to be a useful tool for your work, please cite as the project
+as a software acknowledgement, e.g.:
+
+.. code-block:: latex
+
+    X-PSI (\url{https://github.com/ThomasEdwardRiley/xpsi})
+
+A JOSS paper is being drafted, and the technical notes in the repository on
+path ``/manuals`` will be updated and made available on the arXiv in the future.
+The first version of a subset of these technical notes appeared in a PhD thesis.
+You are of course free to cite if you wish to cite a published work:
+
+.. code-block:: latex
+
+   @phdthesis{riley19,
+       author = {{Riley}, Thomas E.},
+       title = "{Neutron star parameter estimation from a NICER perspective}",
+       school = {University of Amsterdam},
+       year = 2019,
+       address = {https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a}
+       month = 12
+   }
+
+In the interest of openness, these notes were submitted to a journal. However,
+a subset of revisions suggested by the referee are not something we are willing
+to spend time on at present; we are instead working on these documentation pages
+hosted on GitHub (as required by the referee) and developing the package further
+whilst applying it in research applications. It may be that submisssion of these
+technical notes to a journal was premature, and it may never be worth the time
+investment over posting to (and updating as appropriate) the arXiv.
+
+
 State of development
 ********************
 

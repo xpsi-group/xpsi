@@ -157,9 +157,9 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.5.0.dev3',
+        version = '0.5.0.dev4',
         author = 'Thomas Edward Riley',
-        author_email = 'T.E.Riley@uva.nl; t.riley.phd@gmail.com',
+        author_email = 't.e.riley@uva.nl; t.riley.phd@gmail.com',
         url = 'https://github.com/ThomasEdwardRiley/xpsi',
         license = 'MIT',
         description = """X-PSI: An open-source package for
@@ -174,8 +174,7 @@ if __name__ == '__main__':
                     'xpsi/pixelmesh'],
         install_requires = ['numpy'],
         setup_requires = ['cython'],
-        package_data = {'': ['README.rst', 'CHANGELOG.rst', 'TODO.rst',
-                             'LICENSE', 'CITATION']},
+        package_data = {'': ['README.rst', 'LICENSE']},
         include_package_data = True,
         ext_modules = extensions,
         cmdclass = cmdclass,

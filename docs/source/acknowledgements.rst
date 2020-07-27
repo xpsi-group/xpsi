@@ -16,7 +16,10 @@ for team members to ease maintainability.
 Team
 ~~~~
 
-The X-PSI team may be contacted at xpsi-team[at]gmail.com.
+You can interact with us in the public domain on GitHub.
+The X-PSI team may be contacted privately at xpsi-team[at]googlegroups.com. You
+can also request to join our Slack workspace and the private development
+repository on BitBucket.
 
 **Project maintainers**
 
