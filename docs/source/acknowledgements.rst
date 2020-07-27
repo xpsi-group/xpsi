@@ -16,10 +16,7 @@ for team members to ease maintainability.
 Team
 ~~~~
 
-You can interact with us in the public domain on GitHub.
-The X-PSI team may be contacted privately at xpsi-team[at]googlegroups.com. You
-can also request to join our Slack workspace and the private development
-repository on BitBucket.
+The X-PSI team may be contacted privately at xpsi-team[at]googlegroups.com.
 
 **Project maintainers**
 
@@ -89,6 +86,17 @@ direction of this project or led to some specific improvements.
   and about model space definitions)
 * Will M. Farr (for ideas to accelerate likelihood function evaluation; WIP)
 * Sam Geen (expanding support to include Windows OS)
+
+
+Literature
+~~~~~~~~~~
+
+This project is built upon the work of many researchers in many fields. For
+citations to (astro)physics and (astro)statistics literature, please see the
+technical documents pointed to in the :ref:`citation` section. Moreover, we
+point to the bibliograpy of :ref:`R19` as the first published application of
+the X-PSI package, and to the `ApJL Focus Issue <https://iopscience.iop.org/journal/2041-8205/page/Focus_on_NICER_Constraints_on_the_Dense_Matter_Equation_of_State>`_
+of which this article is a member.
 
 
 .. _funding:

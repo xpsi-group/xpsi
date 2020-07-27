@@ -101,20 +101,23 @@ field.
        an `example <https://youtu.be/by3_6rWE7po>`_.
 
 
+.. _citation:
+
 Citation
 ********
 
-If X-PSI proves to be a useful tool for your work, please cite as the project
+If X-PSI proves to be a useful tool for your work, please cite the project
 as a software acknowledgement, e.g.:
 
 .. code-block:: latex
 
     X-PSI (\url{https://github.com/ThomasEdwardRiley/xpsi})
 
-A JOSS paper is being drafted, and the technical notes in the repository on
-path ``/manuals`` will be updated and made available on the arXiv in the future.
-The first version of a subset of these technical notes appeared in a PhD thesis.
-You are of course free to cite if you wish to cite a published work:
+A JOSS paper is being drafted for the first major release,
+The technical notes in the repository on path ``/manuals`` will be updated
+and made available on the arXiv in the future. The first version of a subset
+of these technical notes appeared in a PhD thesi which you are of course free to
+cite if you wish to cite a published work in the meantime:
 
 .. code-block:: latex
 
@@ -123,7 +126,7 @@ You are of course free to cite if you wish to cite a published work:
        title = "{Neutron star parameter estimation from a NICER perspective}",
        school = {University of Amsterdam},
        year = 2019,
-       address = {https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a}
+       address = {https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a},
        month = 12
    }
 
