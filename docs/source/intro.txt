@@ -113,11 +113,11 @@ as a software acknowledgement, e.g.:
 
     X-PSI (\url{https://github.com/ThomasEdwardRiley/xpsi})
 
-A JOSS paper is being drafted for the first major release,
-The technical notes in the repository on path ``/manuals`` will be updated
-and made available on the arXiv in the future. The first version of a subset
-of these technical notes appeared in a PhD thesi which you are of course free to
-cite if you wish to cite a published work in the meantime:
+A JOSS paper is being drafted for the first major release.
+The technical notes in the repository on path ``/docs/technical`` will be
+updated and made available on the arXiv in the future. The first version of a
+subset of these technical notes appeared in a PhD thesis which you could cite
+if you wish to cite a published work in the meantime:
 
 .. code-block:: latex
 
@@ -134,9 +134,9 @@ In the interest of openness, these notes were submitted to a journal. However,
 a subset of revisions suggested by the referee are not something we are willing
 to spend time on at present; we are instead working on these documentation pages
 hosted on GitHub (as required by the referee) and developing the package further
-whilst applying it in research applications. It may be that submisssion of these
-technical notes to a journal was premature, and it may never be worth the time
-investment over posting to (and updating as appropriate) the arXiv.
+whilst applying it in research applications. Submisssion of these technical
+notes to a journal was arguably premature; on the other hand, it may never be
+worth the time investment over posting to the arXiv and updating as appropriate.
 
 
 State of development
@@ -161,10 +161,10 @@ install X-PSI from source, and to install dependencies, see the
     The pages often reference ``v0.1`` that is tagged on the ``master``
     branch of the repo, but that version is not explicitly documented.
 
-The *Modelling*,  *Hot region complexity*, and *Global surface emission*
-tutorials in these documentation pages however, use ``v0.5`` of X-PSI.
-The required files (i.e., data files and NICER v1.01 instrument files) may be
-obtained from a different repository due to file size considerations:
+The tutorials and examples in these documentation pages however, use
+``v0.5`` of X-PSI. The required files (i.e., data files and NICER v1.01
+instrument files) may be obtained from a different repository due to file size
+considerations:
 
 .. code-block:: bash
 

@@ -414,7 +414,8 @@ procedure.
   pymultinest cython`` followed by ``sudo apt-get install libgsl-dev``.
 * Ensure you are in the X-PSI directory and install X-PSI 
   ``CC=gcc python setup.py install``.
-* Install any missing packages e.g. ``pip install h5py``.
+* Install any missing packages that you need, e.g., ``pip install h5py`` for
+  post-processing functionality.
 * Install Jupyter notebook using ``pip install notebook``.
 * Start the kernel with the command ``Jupyter notebook and import X-PSI 
   (see tutorials)``.

@@ -16,7 +16,7 @@ for team members to ease maintainability.
 Team
 ~~~~
 
-The X-PSI team may be contacted privately at xpsi-team[at]googlegroups.com.
+The X-PSI team may be contacted privately at *xpsi-team[at]googlegroups.com*.
 
 **Project maintainers**
 
@@ -36,7 +36,7 @@ People who are experienced with the X-PSI package.
 
 **Visionaries**
 
-The grant-holding architects of future X-PSI science.
+The grant-holding architects of past, present, and future X-PSI science.
 
 * Anna L. Watts (A.L.Watts[at]uva.nl), University of Amsterdam
 
