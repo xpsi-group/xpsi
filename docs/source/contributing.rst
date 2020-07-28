@@ -128,7 +128,8 @@ workflow.
     git push -u fork
 
 * Now you can submit a pull request, using the GitHub GUI, from
-  ``fork/patch/fix_something`` to ``xpsi/master``.
+  ``fork/patch/fix_something`` to ``xpsi/master``. Please reference any open
+  issues that are solved or are relevant to the proposed changed.
 
 * You can update the pull-request topic branch by pushing additional commits
   from ``patch/fix_something`` to ``fork/patch/fix_something``, which will
@@ -187,13 +188,42 @@ either on GitHub via issues and pull-requests, or on a private platform
 **BitBucket repository**
 
 Most feature development by the X-PSI team is conducted on private platforms
-including a private development repository.
+including a private development repository ``xpsi_dev``.
 
+A useful online description of a model on which this structure is based is
+`available <https://nvie.com/posts/a-successful-git-branching-model/>`_.
+The X-PSI team works with respect to a private centralised repository and
+pushes releases to a public GitHub repository. These online documentation pages
+are only pushed to GitHub to be built and hosted. Commits directly on GitHub
+via pull requests (e.g., patches) are fetched and merged with the on-going
+development work.
 
-. [#]_
+Otherwise, the workflow with respect to the BitBucket repository is very similar
+to the GitHub workflow, with development work being commited to branches which
+are then merged into the ``xpsi_dev/dev`` branch directly (for those with
+write permissions) or by pull request. In this context ``xpsi_dev/dev`` takes
+the role of the ``xpsi/master`` branch on GitHub described above. When the
+``xpsi_dev`` branch is considered feature-complete for a release, it will be
+merged into ``xpsi_dev/master`` directly, or via a release branch.
+Then ``xpsi_dev/master`` will be published to ``xpsi/master`` via a fast-foward
+merge or otherwise after a local merge of ``xpsi/master`` and
+``xpsi_dev/master`` which is subsequently pushed to both ``xpsi`` and
+``xpsi_dev``. The definitive release commit will be tagged and the tags pushed
+to both repositories.
 
-.. rubric:: Footnotes
+X-PSI community members with access to ``xpsi_dev``, be it either with write
+or read permissions (to some subset of branches) will add ``xpsi_dev`` as a
+remote to their local repository. Checking one's remotes should yield output
+such as:
 
-.. [#] .
+.. code-block:: bash
 
+    (xpsi) [15:24:19][xpsi]$ git remote -v
+    DEV     https://ThomasEdwardRiley@bitbucket.org/ThomasEdwardRiley/xpsi_dev.git (fetch)
+    DEV     https://ThomasEdwardRiley@bitbucket.org/ThomasEdwardRiley/xpsi_dev.git (push)
+    origin  https://github.com/ThomasEdwardRiley/xpsi.git (fetch)
+    origin  https://github.com/ThomasEdwardRiley/xpsi.git (push)
 
+If you have forked repositories (your own forks or those of other community
+members for collaborative purposes) these would also be remotes of the local
+repository and would be listed here.
