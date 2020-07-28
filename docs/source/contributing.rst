@@ -48,7 +48,8 @@ Slack workspace.
 Git workflow
 ~~~~~~~~~~~~
 
-**GitHub repository**
+GitHub repository
+^^^^^^^^^^^^^^^^^
 
 X-PSI is an open-source software project and we aspire that all X-PSI versions
 required for reproducibility of publications have release tags on GitHub.
@@ -185,7 +186,8 @@ either on GitHub via issues and pull-requests, or on a private platform
 (see below).
 
 
-**BitBucket repository**
+BitBucket repository
+^^^^^^^^^^^^^^^^^^^^
 
 Most feature development by the X-PSI team is conducted on private platforms
 including a private development repository ``xpsi_dev``.
