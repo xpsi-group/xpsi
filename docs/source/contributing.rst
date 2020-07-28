@@ -67,7 +67,7 @@ workflow.
 * You will be on the ``master`` branch by default; this branch by default tracks
   the official (or central) ``origin/master`` branch, and moreover, ``master``
   is merely to act as an image of ``origin/master``, meaning that official
-  upstream updates can be applied to ``master`` via fast-foward merge.
+  upstream commits can be applied to ``master`` via fast-foward merge.
 
 * Checkout a local branch for your work, which we'll assume is some patch, but
   could be a feature or otherwise:
@@ -99,8 +99,9 @@ workflow.
 
 * Note that if you have already pushed ``patch/fix_something`` to a remote
   repository you own (such as a fork of ``xpsi``; see below), and especially
-  if this is accessible by others, you should only consider merging ``master``
-  into ``patch/fix_something`` so the branch history is not rewritten.
+  if this is accessible by others (e.g., via  submitted pull request), you
+  should only consider merging ``master`` into ``patch/fix_something`` so the
+  branch history is not rewritten.
 
 * After integrating upstream changes, you might decide to continue to working
   on your branch or you could work on another branch for a different patch
@@ -129,22 +130,50 @@ workflow.
 * Now you can submit a pull request, using the GitHub GUI, from
   ``fork/patch/fix_something`` to ``xpsi/master``.
 
+* You can update the pull-request topic branch by pushing additional commits
+  from ``patch/fix_something`` to ``fork/patch/fix_something``, which will
+  update the pull request automatically:
+
+.. code-block:: bash
+
+    git push
+
 * The pull request will then be reviewed and discussed, and will either be
-  accepted or acceptance will be pending, because we request additional commits.
-  Your pull request may be declined in some instances because the work
-  reproduces development work that has already been performed but not published;
-  your pull request may also be ultimately declined if it contains changes
-  or implementations that we do not support and which cannot for some reason
-  be separated from changes we do support. Your intellectual contribution to
-  the project will be gratefull acknowledged in the :ref:`acknowledgements`
-  and/or in the project :ref:`history` if this interaction leads to some
-  form of merged development/implementation by another community member even
-  if your pull request is ultimately declined.
+  merged or merge will be pending, because we request additional commits on
+  the pull-request topic branch. Your pull request may be declined in some
+  instances because the work reproduces development work that has already been
+  performed but not published; your pull request may also be ultimately
+  declined if it contains changes or implementations that we do not support and
+  which cannot for some reason be separated from changes we do support. Your
+  intellectual contribution to the project will be gratefull acknowledged in
+  the :ref:`acknowledgements` and/or in the project :ref:`history` if this
+  interaction leads to some form of merged development/implementation by
+  another community member even if your pull request is ultimately declined.
 
 * If you co-authored a pull request with one or more collaborators, you can
-  acknowledge them using the GitHub pull-request GUI.
+  acknowledge them using the GitHub pull-request GUI as you would for a single
+  commit. When a pull request is accepted, it is typically going to be via a
+  merge-squash unless the history is clean or work will continue to be
+  commited on the topic branch after the merge (where applicable). In this
+  case it is the responsiblity of the X-PSI team member executing the merge
+  to replicate the list of co-authors from the original pull request in the
+  squash message.
 
-* If
+* When a pull request is merged, conflicts will either need to be resolved
+  locally by you as suggested above, ending in a pull request update, or by an
+  X-PSI team member locally and then merged with or without a pull request.
+
+* If you are ready to start development on a distinct patch or feature that is
+  not conditional on your open pull requests being merged, then you can apply
+  the workflow above by checking out a new local development branch off of
+  an up-to-date ``master``. If your work *is* conditional on your open pull
+  requests, you are free to do so by commiting to the relevant topic branch
+  or with some other branching scheme, but there is a risk that more work will
+  be needed if the open pull request is not merged into the central repository
+  or only a subset of proposed changes are merged or conflict resolution does
+  not favour all of the changes you proposed. Of course, such work may remain
+  useful in your own applications even if it is never all merged into the
+  central repository.
 
 * The above workflow also applies to remote branches other than ``master`` that
   might exist in the ``xpsi`` repository that you wish to contribute to, but
