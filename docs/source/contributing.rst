@@ -192,8 +192,6 @@ BitBucket repository
 Most feature development by the X-PSI team is conducted on private platforms
 including a private development repository ``xpsi_dev``.
 
-A useful online description of a model on which this structure is based is
-`available <https://nvie.com/posts/a-successful-git-branching-model/>`_.
 The X-PSI team works with respect to a private centralised repository and
 pushes releases to a public GitHub repository. These online documentation pages
 are only built and pushed to GitHub to be  hosted, usually by a designated X-PSI
@@ -237,3 +235,6 @@ community member's fork will track those remote branches, and branches that you
 create and commit to locally will be pushed usually to your own fork for a pull
 request, unless you have write permissions to push directly to another
 repository.
+
+A useful online description of a model on which this development structure is
+based is `available <https://nvie.com/posts/a-successful-git-branching-model/>`_.
