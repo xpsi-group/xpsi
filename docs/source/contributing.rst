@@ -194,7 +194,8 @@ A useful online description of a model on which this structure is based is
 `available <https://nvie.com/posts/a-successful-git-branching-model/>`_.
 The X-PSI team works with respect to a private centralised repository and
 pushes releases to a public GitHub repository. These online documentation pages
-are only pushed to GitHub to be built and hosted. Commits directly on GitHub
+are only built and pushed to GitHub to be  hosted, usually by a designated X-PSI
+team member responsible for this process. Commits directly on GitHub
 via pull requests (e.g., patches) are fetched and merged with the on-going
 development work.
 
@@ -226,4 +227,11 @@ such as:
 
 If you have forked repositories (your own forks or those of other community
 members for collaborative purposes) these would also be remotes of the local
-repository and would be listed here.
+repository and would be listed here. A local ``master`` branch would track
+either ``xpsi_dev/master`` or ``xpsi/master``. A local ``dev`` branch would
+track ``xpsi_dev/dev``. All other branches checkouted out from some upstream
+source, be it an ``xpsi_dev`` or ``xpsi`` branch, or a branch from another
+community member's fork will track those remote branches, and branches that you
+create and commit to locally will be pushed usually to your own fork for a pull
+request, unless you have write permissions to push directly to another
+repository.
