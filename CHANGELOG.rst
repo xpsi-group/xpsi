@@ -12,6 +12,9 @@ and this project adheres to
 [Unreleased]
 ~~~~~~~~~~~~
 
+Summary
+^^^^^^^
+
 Fixed
 ^^^^^
 
@@ -27,6 +30,8 @@ Deprecated
 Removed
 ^^^^^^^
 
+Attribution
+^^^^^^^^^^^
 
 [v0.4.0] - 2020-02-14
 ~~~~~~~~~~~~~~~~~~~~~
