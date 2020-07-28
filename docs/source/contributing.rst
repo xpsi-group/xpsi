@@ -88,7 +88,7 @@ workflow.
 
 .. code-block:: bash
 
-    git pull origin master:master
+    git fetch origin master:master
 
 * If the branches have diverged, you can either rebase ``patch/fix_something``
   on ``master`` or merge ``master`` into ``patch/fix_something``, in either

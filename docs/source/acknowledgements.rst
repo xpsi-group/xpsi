@@ -34,7 +34,7 @@ People who are experienced with the X-PSI package.
 
 * Devarshi Choudhury (d.choudhury[at]uva.nl), University of Amsterdam
 
-**Visionaries**
+**Science Case developers**
 
 The grant-holding architects of past, present, and future X-PSI science.
 
