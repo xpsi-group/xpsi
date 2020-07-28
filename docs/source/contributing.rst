@@ -15,7 +15,7 @@ BitBucket. We communicate internally in our Slack workspace.
 
 To contribute to this project you can do so whilst being recognised as either
 a community member or a team member. If you contribute to feature development
-publicly on GitHub, you will be invited to be recognised as a team member in
+publicly on GitHub, you may be invited to be recognised as a team member in
 the :ref:`acknowledgements`, and to join the mailing group and our Slack
 workspace.
 
