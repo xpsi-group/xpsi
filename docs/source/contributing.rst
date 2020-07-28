@@ -55,9 +55,100 @@ required for reproducibility of publications have release tags on GitHub.
 
 End-users and community contributors can interact with the project freely on
 GitHub. If you wish to contribute code, either in the form of a patch, a tweak,
-or a feature, but are uncertain about the workflow, we now provide guidelines.
+or a feature, but are uncertain about the workflow, we now provide an advisory
+workflow.
 
+* Clone the ``xpsi`` repository to your local computer:
 
+.. code-block:: bash
+
+    git clone https://github.com/ThomasEdwardRiley/xpsi.git <path/to/xpsi>
+
+* You will be on the ``master`` branch by default; this branch by default tracks
+  the official (or central) ``origin/master`` branch, and moreover, ``master``
+  is merely to act as an image of ``origin/master``, meaning that official
+  upstream updates can be applied to ``master`` via fast-foward merge.
+
+* Checkout a local branch for your work, which we'll assume is some patch, but
+  could be a feature or otherwise:
+
+.. code-block:: bash
+
+    git checkout -b patch/fix_something
+
+* Commit your work to ``patch/fix_something``:
+
+.. code-block:: bash
+
+    git commit -m 'patch something'
+
+* Check to see if any there are any new upstream commits, which would mean
+  that ``patch/fix_something`` and ``origin/master`` have diverged:
+
+.. code-block:: bash
+
+    git pull origin master:master
+
+* If the branches have diverged, you can either rebase ``patch/fix_something``
+  on ``master`` or merge ``master`` into ``patch/fix_something``, in either
+  case resolving any conflicts:
+
+.. code-block:: bash
+
+    git rebase master <or> git merge master
+
+* Note that if you have already pushed ``patch/fix_something`` to a remote
+  repository you own (such as a fork of ``xpsi``; see below), and especially
+  if this is accessible by others, you should only consider merging ``master``
+  into ``patch/fix_something`` so the branch history is not rewritten.
+
+* After integrating upstream changes, you might decide to continue to working
+  on your branch or you could work on another branch for a different patch
+  or feature, repeating the process of integrating upstream changes as
+  appropriate, and as a requirement, to prepare for a pull request.
+
+* Once you are ready to contribute your work to the ``xpsi`` repository,
+  meaning that you have integrated any upsteam changes from ``xpsi``, you need
+  a fork of the ``xpsi`` repository on the same hosting platform (GitHub). You
+  can create a fork using the GitHub GUI.
+
+* With the address of your ``fork`` you can add it as a remote to you local
+  repository:
+
+.. code-block:: bash
+
+    git remote add fork https://github.com/<username>/xpsi.git
+
+* Now push ``patch/fix_something`` to ``fork``, creating a remote branch
+  ``fork/patch/fix_something`` that ``patch/fix_something`` tracks:
+
+.. code-block:: bash
+
+    git push -u fork
+
+* Now you can submit a pull request, using the GitHub GUI, from
+  ``fork/patch/fix_something`` to ``xpsi/master``.
+
+* The pull request will then be reviewed and discussed, and will either be
+  accepted or acceptance will be pending, because we request additional commits.
+  Your pull request may be declined in some instances because the work
+  reproduces development work that has already been performed but not published;
+  your pull request may also be ultimately declined if it contains changes
+  or implementations that we do not support and which cannot for some reason
+  be separated from changes we do support. Your intellectual contribution to
+  the project will be gratefull acknowledged in the :ref:`acknowledgements`
+  and/or in the project :ref:`history` if this interaction leads to some
+  form of merged development/implementation by another community member even
+  if your pull request is ultimately declined.
+
+* If you co-authored a pull request with one or more collaborators, you can
+  acknowledge them using the GitHub pull-request GUI.
+
+* If
+
+* The above workflow also applies to remote branches other than ``master`` that
+  might exist in the ``xpsi`` repository that you wish to contribute to, but
+  this will be a less common pattern.
 
 If you want to contribute a feature, you are welcome to communicate with us
 either on GitHub via issues and pull-requests, or on a private platform

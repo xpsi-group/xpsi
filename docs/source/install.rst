@@ -16,7 +16,7 @@ Clone X-PSI:
 
 .. code-block:: bash
 
-    git clone https://github.com/ThomasEdwardRiley/xpsi.git <path/to/xpsi>
+    git clone https://github.com/ThomasEdwardRiley/xpsi.git </path/to/xpsi>
 
 Basic Conda environment
 -----------------------
