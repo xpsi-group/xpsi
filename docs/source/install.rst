@@ -370,16 +370,24 @@ If you wish to compile the documentation you require `Sphinx`_:
 
 .. code-block:: bash
 
-    cd xpsi/docs; make html
+    cd xpsi/docs; [make clean;] make html
+
+To rebuild the documentation after a change to source code docstrings:
+
+.. code-block:: bash
+
+    [CC=<compiler>] python setup.py install [--user]; cd docs; make clean; make html; cd ..
+
+You need the relevant extensions (such as ``nbsphinx``, which you will be
+prompted to install) and atheme such as the Sphinx `Read the Docs theme`__.
+Customisation can be made in the ``xpsi/docs/source/conf.py`` script.
+
+__ https://sphinx-rtd-theme.readthedocs.io/en/latest/
 
 The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
 notebooks for the tutorials in this documentation. The ``.html`` files can
-naturally be opened in a browser. You need the relevant extensions (such as 
-``nbsphinx``, which you will be prompted to install) and atheme such as the 
-Sphinx `Read the Docs theme`__. Customisation can be made in the 
-``xpsi/docs/source/conf.py`` script.
-
-__ https://sphinx-rtd-theme.readthedocs.io/en/latest/
+naturally be opened in a browser, handily via a Jupyter session (this is
+particularly useful if the edits are to tutorial notebooks).
 
 Note that if you require links to the source code in the HTML files, you need
 to ensure Sphinx imports the ``xpsi`` package from the source directory
