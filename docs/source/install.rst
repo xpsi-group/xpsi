@@ -53,7 +53,8 @@ an environment manually via
 
      conda create -n xpsi python=2.7
 
-and then install the core dependencies `NumPy`_ and `Cython`_, and also `GSL`_
+and then install the core dependencies listed in `basic_environment.yml`,
+such as `NumPy`_ and `Cython`_, and also `GSL`_.
 
 Conda environment duplication
 -----------------------------
@@ -66,10 +67,8 @@ problems, but can only be expected to be compatible with the same platform.
 The development environment:
 
     * Ubuntu 14.04
-    * Installed globally via ``apt``:
-        * GCC 4.8.4
-        * Open MPI 1.6.5 ("ancient")
-        * BLAS, LAPACK, ATLAS
+    * Installed globally via ``apt``: GCC 4.8.4; Open MPI 1.6.5 ("ancient");
+      BLAS; LAPACK; ATLAS.
     * `Miniconda2 <https://docs.conda.io/en/latest/miniconda.html>`_
       (Python 2.7; 64-bit)
     * Conda environment exported to ``xpsi/environment.yml``
@@ -325,7 +324,7 @@ compilation in the ``setup.py`` script.
 
    .. code-block:: bash
 
-      /usr/bin/ruby -e 
+      /usr/bin/ruby -e
       "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
       brew install llvm
@@ -395,10 +394,11 @@ script. Then make sure the extension modules are inside the source directory
    dependencies that are not resolved will print warning messages.
 
 Installing on Windows
--------------------------------
+---------------------
 
-X-PSI has been successfully installed and run on Windows using the following
-procedure.  
+X-PSI has been successfully installed and run on Windows, at least for the
+purpose of likelihood functionality, using the following user-contributed
+procedure.
 
 .. _Ubuntu: https://www.windowscentral.com/install-windows-subsystem-linux-windows-10
 
@@ -410,12 +410,11 @@ procedure.
 * Download `Ubuntu`_ for Windows.
 * Install `Python 2.7`_.
 * Create a `virtual Python environment`_ in an Ubuntu shell.
-* Install supporting packages ``pip install matplotlib numpy scipy 
-  pymultinest cython`` followed by ``sudo apt-get install libgsl-dev``.
-* Ensure you are in the X-PSI directory and install X-PSI 
+* Install supporting packages ``pip install matplotlib numpy cython scipy``
+  followed by ``sudo apt-get install libgsl-dev``.
+* Ensure you are in the X-PSI directory and install X-PSI
   ``CC=gcc python setup.py install``.
 * Install any missing packages that you need, e.g., ``pip install h5py`` for
-  post-processing functionality.
+  post-processing functionality if you have posterior sample sets available.
 * Install Jupyter notebook using ``pip install notebook``.
-* Start the kernel with the command ``Jupyter notebook and import X-PSI 
-  (see tutorials)``.
+* Start the kernel with the command ``Jupyter notebook``.
