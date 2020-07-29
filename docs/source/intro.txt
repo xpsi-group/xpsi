@@ -137,8 +137,29 @@ GitHub (as recommended by the referee), and on further package development
 whilst applying it in research contexts (mainly for the NICER collaboration).
 Submisssion of these technical notes to a journal was arguably premature; on
 the other hand, it may never be worth the time investment over posting to the
-arXiv and updating the preprint as appropriate given the project is inherently
-fluid.
+arXiv and updating the preprint as appropriate given that the project is
+inherently fluid.
+
+Lastly, if you wish to point to the first published application of
+the X-PSI package, then please cite :ref:`R19`:
+
+.. code-block:: latex
+
+    @article{riley19,
+        author = {{Riley}, T.~E. and {Watts}, A.~L. and {Bogdanov}, S. and {Ray}, P.~S. and {Ludlam}, R.~M. and {Guillot}, S. and {Arzoumanian}, Z. and {Baker}, C.~L. and {Bilous}, A.~V. and {Chakrabarty}, D. and {Gendreau}, K.~C. and {Harding}, A.~K. and {Ho}, W.~C.~G. and {Lattimer}, J.~M. and {Morsink}, S.~M. and {Strohmayer}, T.~E.},
+        title = "{A NICER View of PSR J0030+0451: Millisecond Pulsar Parameter Estimation}",
+        doi = {10.3847/2041-8213/ab481c},
+        journal = {\apjl},
+        month = dec,
+        year = 2019,
+        volume = 887,
+        pages = {L21}
+    }
+
+This article contains a wealth of relevant information, including a number
+of schematic diagrams that might be of use. There is also an
+`ApJL Focus Issue <https://iopscience.iop.org/journal/2041-8205/page/Focus_on_NICER_Constraints_on_the_Dense_Matter_Equation_of_State>`_
+of which this article is a member.
 
 
 State of development
