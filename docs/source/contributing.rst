@@ -194,30 +194,31 @@ BitBucket repository
 ^^^^^^^^^^^^^^^^^^^^
 
 Most feature development by the X-PSI team is conducted on private platforms
-including a private development repository ``xpsi_dev``.
+including a private development repository .
 
-The X-PSI team works with respect to a private centralised repository and
-pushes releases to a public GitHub repository. These online documentation pages
-are only built and pushed to GitHub to be  hosted, usually by a designated X-PSI
-team member responsible for this process. Commits directly on GitHub
-via pull requests (e.g., patches) are fetched and merged with the on-going
-development work.
+The X-PSI team works with respect to a private centralised repository
+``xpsi_dev`` and pushes releases to a public GitHub repository. These veryy
+online documentation pages are only built and pushed to GitHub to be hosted,
+usually by a designated X-PSI team member responsible for this process.
+Commits directly on GitHub via pull requests (e.g., patches) are fetched and
+merged with the on-going development work.
 
 Otherwise, the workflow with respect to the BitBucket repository is very similar
-to the GitHub workflow, with development work being commited to branches which
+to the GitHub workflow. Development work is commited to branches which
 are then merged into the ``xpsi_dev/dev`` branch directly (for those with
 write permissions) or by pull request. In this context ``xpsi_dev/dev`` takes
-the role of the ``xpsi/master`` branch on GitHub described above. When the
-``xpsi_dev`` branch is considered feature-complete for a release, it will be
-merged into ``xpsi_dev/master`` directly, or via a release branch.
-Then ``xpsi_dev/master`` will be published to ``xpsi/master`` via a fast-foward
-merge or otherwise after a local merge of ``xpsi/master`` and
-``xpsi_dev/master`` which is subsequently pushed to both ``xpsi`` and
-``xpsi_dev``. The definitive release commit will be tagged and the tags pushed
-to both repositories.
+the role of the ``xpsi/master`` branch on GitHub described above.
+
+When the ``xpsi_dev`` branch is considered feature-complete for a release, it
+will be merged into ``xpsi_dev/master`` directly, or via a release branch.
+Then, ``xpsi_dev/master`` will be published to ``xpsi/master`` via a fast-foward
+merge. Alternatively, a local merge of ``xpsi/master`` and
+``xpsi_dev/master`` might be needed, which is subsequently pushed to both
+``xpsi`` and ``xpsi_dev``. The definitive release commit will be tagged and the
+tags pushed to both repositories.
 
 X-PSI community members with access to ``xpsi_dev``, be it either with write
-or read permissions (to some subset of branches) will add ``xpsi_dev`` as a
+or read permissions (to some subset of branches), will add ``xpsi_dev`` as a
 remote to their local repository. Checking one's remotes should yield output
 such as:
 
@@ -233,9 +234,9 @@ If you have forked repositories (your own forks or those of other community
 members for collaborative purposes) these would also be remotes of the local
 repository and would be listed here. A local ``master`` branch would track
 either ``xpsi_dev/master`` or ``xpsi/master``. A local ``dev`` branch would
-track ``xpsi_dev/dev``. All other branches checkouted out from some upstream
+track ``xpsi_dev/dev``. All other branches checked out from some upstream
 source, be it an ``xpsi_dev`` or ``xpsi`` branch, or a branch from another
-community member's fork will track those remote branches, and branches that you
+community member's fork, will track those remote branches. Branches that you
 create and commit to locally will be pushed usually to your own fork for a pull
 request, unless you have write permissions to push directly to another
 repository.
