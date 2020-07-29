@@ -131,12 +131,14 @@ if you wish to cite a published work in the meantime:
    }
 
 In the interest of openness, these notes were submitted to a journal. However,
-a subset of revisions suggested by the referee are not something we are willing
-to spend time on at present; we are instead working on these documentation pages
-hosted on GitHub (as required by the referee) and developing the package further
-whilst applying it in research applications. Submisssion of these technical
-notes to a journal was arguably premature; on the other hand, it may never be
-worth the time investment over posting to the arXiv and updating as appropriate.
+a subset of revisions suggested by the referee are not something we have had
+time to work on; we have been working on these documentation pages hosted on
+GitHub (as recommended by the referee), and on further package development
+whilst applying it in research contexts (mainly for the NICER collaboration).
+Submisssion of these technical notes to a journal was arguably premature; on
+the other hand, it may never be worth the time investment over posting to the
+arXiv and updating the preprint as appropriate given the project is inherently
+fluid.
 
 
 State of development
