@@ -33,6 +33,59 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
+
+[v0.5.0] - 2020-08-01
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* The major change is an update and refactoring of the post-processing module
+  to work again with past API change. (The module was not being kept up to date
+  with previous releases listed below because it wasn't to our knowledge
+  being used by anyone yet, and thus we focussed on other features.) The module
+  has been refactored to be more modular, flexible, and extensible. For
+  instance, posterior signal-plot classes can be added by the user and
+  complex plotting routines can thus be developed, as demonstrated in the
+  concrete classes such as :class:`xpsi.PostProcessing.PulsePlot`.
+
+
+Fixed
+^^^^^
+
+Added
+^^^^^
+
+Changed
+^^^^^^^
+
+* Change (Earth) inclination parameter :math:`i` to :math:`\cos(i)` so that the
+  default prior density function is isotropic.
+
+Deprecated
+^^^^^^^^^^
+
+Removed
+^^^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+
+[v0.4.1] - 2020-02-14
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Function signatures to match header declarations in atmosphere extensions.
+  With thanks to Sebastien Guillot.
+
+Attribution
+^^^^^^^^^^^
+
+
+
 [v0.4.0] - 2020-02-14
 ~~~~~~~~~~~~~~~~~~~~~
 

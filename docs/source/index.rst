@@ -19,6 +19,7 @@
    code_of_conduct
    contributing
    history
+   todo
    acknowledgements
 
 .. toctree::
