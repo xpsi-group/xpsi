@@ -61,6 +61,13 @@ Changed
 
 * Change (Earth) inclination parameter :math:`i` to :math:`\cos(i)` so that the
   default prior density function is isotropic.
+* For numerical atmospheres of same number of grid dimensions, improve
+  extension ``surface_radiation_field/archive/{hot,elsewhere}/numerical.pyx``
+  module to infer grid size for memory allocation and interpolation searches
+  (implemented automatic inference of grid size, but hard-coded
+  four-dimensional cubic polynomial interpolation persistent). Different
+  those atmospheres can be loaded simply via a Python subclass without
+  the relevant extension module being recompiled.
 
 Deprecated
 ^^^^^^^^^^

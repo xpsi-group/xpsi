@@ -21,8 +21,13 @@ Tentative
 
 * Implement a simpler switch between atmosphere model extensions (e.g.,
   blackbody to numerical lookup table), rather than user having to remember to
-  modify the relevant ``.pyx`` source file.
-
+  modify the relevant ``.pyx`` source file (e.g., by replacing function bodies
+  and custom structs with code from the ``surface_radiation_field/archive``)
+  and then recompile. Perhaps look into C function pointers passed to Cython for
+  runtime specification of shared object.
+* Extension to interpolate in arbitrary number of dimensions (currently hard-
+  coded four-dimensional cubic polynomial interpolation for, meaning two
+  variables in addition to energy and zenith angle).
 
 
 
