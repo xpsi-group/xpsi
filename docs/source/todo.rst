@@ -12,12 +12,24 @@ listed feature should be included in.
 Priority
 ^^^^^^^^
 
-* Port to a Python 2/3 compatible state.
-* Unit testing. At present we are relying on the tutorial
-  notebooks and examples to flag problems. *Target: minor release v1.x*.
+The alphabetic version tags below such as v1.a and v1.b give a loose indication
+of priorty within a major release cycle, and are not generaly unique. That is,
+v1.a might ultimately not contain a feature next to which it is listed, and/or
+it might be identical to v1.b.
 
-Tentative
-^^^^^^^^^
+* Port to a Python 2/3 compatible state. *Target: minor release v1.a or major \
+  release v2.0*.
+* Compute secondary images, and more generally images up to some optional order
+  using surface discretisation. *Target: minor release v1.b*.
+* Unit testing. At present we are relying on the tutorial
+  notebooks and examples as test beds to flag problems.
+  *Target: minor release v1.c*.
+* Post-processing option to compute highest-density credible intervals
+  (appropriate for multi-modal marginal posterior). *Target: minor release v1.d*.
+* 
+
+Prospective
+^^^^^^^^^^^
 
 * Implement a simpler switch between atmosphere model extensions (e.g.,
   blackbody to numerical lookup table), rather than user having to remember to
@@ -28,7 +40,49 @@ Tentative
 * Extension to interpolate in arbitrary number of dimensions (currently hard-
   coded four-dimensional cubic polynomial interpolation for, meaning two
   variables in addition to energy and zenith angle).
+* Add a plot class to render the posterior instrument effective area curves,
+  optionally as a set of curves or as conditional posterior bands.
+* Signal plotting tools not associated with post-processing. E.g., simple
+  functions to plot single signals (instead of many signals, each associated
+  with a posterior sample) cached when the likelihood function is evaluated,
+  as demonstrated in the various tutorial notebooks (thus some such functions
+  already prototyped). Which module(s) to add these to?
+* Support for sensitivity analysis via importance sampling when post-processing
+  posterior samples.
 
+
+* Support for specifying which subset of energies is used for calculating
+  signals from which surface components.
+* Develop additional extensions for the archive that transform global variables
+  and spacetime coordinates into local variables to evaluate the local specific
+  intensity emergent from the photosphere along a ray. These archived
+  extensions need to implement two overlapping circular regions constituting a
+  contiguous surface hot region, leading to morphologies such as
+  single-temperature rings and crescents, and two-temperature hot regions that
+  are implemented for signal integration via surface discretisation and thus
+  for likelihood evaluations. It is very useful to visualise the self-lensed
+  images of the star (and the star-receiver configuration) resolved in sky
+  direction (i.e., specific intensity, and intensity sky maps, phase resolved
+  and phase averaged). The existing extensions can handle two
+  single-temperature circular spots, and other complexities, but do not
+  precisely implement the aforementioned hot region models. It might be
+  possible to develop one complex extension that is all-encompassing in this
+  respect, but it would require a user to learn how to deactivate certain
+  complexities in order to match the models implemented for surface
+  discretisation.
+* Develop animated photon incident flux pulse-profile and phase-averaged photon
+  incident specific flux spectrum plots, optionally with hot region components
+  shown independently, to optionally display alongside sky maps.
+* Develop helper functions to wrap the atmosphere checking tools and generate
+  standard plot types so a user does not need to handle matplotlib objects as
+  much. The relevant tutorial notebook shows how it can be done for some simple
+  plots. It is also to be determined what types of plots are of most interest
+  and useful, or are considered standard.
+* Handle joint modeling of X-ray and Far-UV data with multiple instruments. The
+  Far-UV instrument operation and likelihood function form needs to be worked
+  out and implemented, but phase-averaged signals, the notion of ``Elsewhere``,
+  and different atmospheres (e.g., ionized hot regions + partially-ionized
+  elsewhere) currently supported.
 
 
 

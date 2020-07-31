@@ -49,12 +49,20 @@ Summary
   complex plotting routines can thus be developed, as demonstrated in the
   concrete classes such as :class:`xpsi.PostProcessing.PulsePlot`.
 
-
 Fixed
 ^^^^^
 
 Added
 ^^^^^
+
+* Module to call atmosphere extensions directly (without the calls being
+  embedded in integration algorithms), for checking implementation of complicated
+  atmospheres such as those requiring interpolation with respect to a numerical
+  lookup table.
+* Support for the extension module for calculating the local surface radiation
+  field variables to read in numerical model data. An example extension module
+  designed to execute nearest-neighbour lookup amonst an general unstructured
+  array of points of the openness of magnetic field lines has been developed.
 
 Changed
 ^^^^^^^
