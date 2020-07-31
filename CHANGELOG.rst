@@ -55,6 +55,9 @@ Fixed
 Added
 ^^^^^
 
+* Support for multiple instruments operating on the same incident signal due to
+  assumed effective time-invariance of the signal generated during one
+  rotational cycle of the surface radiation field..
 * Module to call atmosphere extensions directly (without the calls being
   embedded in integration algorithms), for checking implementation of complicated
   atmospheres such as those requiring interpolation with respect to a numerical
@@ -63,6 +66,8 @@ Added
   field variables to read in numerical model data. An example extension module
   designed to execute nearest-neighbour lookup amonst an general unstructured
   array of points of the openness of magnetic field lines has been developed.
+* Add simple energy annotation option to photon specific intensity sky-map
+  panels.
 
 Changed
 ^^^^^^^
@@ -76,6 +81,12 @@ Changed
   four-dimensional cubic polynomial interpolation persistent). Different
   those atmospheres can be loaded simply via a Python subclass without
   the relevant extension module being recompiled.
+* Photosphere class sometimes does no surface discretisation, so allow no hot
+  regions, elsewhere, or everywhere objects; then image-plane discretisation
+  can be accessed without dummy object creation.
+* Tweak SpectrumPlot settings to print a warning statement that spectrum plot
+  works best with logarithmic spacing, and the user has to shadow class
+  attribute with ``logspace_y=False``.
 
 Deprecated
 ^^^^^^^^^^

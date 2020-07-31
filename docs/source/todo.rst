@@ -49,10 +49,13 @@ Prospective
   already prototyped). Which module(s) to add these to?
 * Support for sensitivity analysis via importance sampling when post-processing
   posterior samples.
-
-
 * Support for specifying which subset of energies is used for calculating
   signals from which surface components.
+* Module containing a class for arbitrary likelihood factor that might be a
+  function of parameters defined in X-PSI, such as the mass and distance. It
+  would plug into an instance of the existing likelihood class. Currently,
+  support for this is provided by the `Prior` class, so it is to be decided
+  if a distinct class for arbitrary likelihood factors is of any further use.
 * Develop additional extensions for the archive that transform global variables
   and spacetime coordinates into local variables to evaluate the local specific
   intensity emergent from the photosphere along a ray. These archived
@@ -83,6 +86,10 @@ Prospective
   out and implemented, but phase-averaged signals, the notion of ``Elsewhere``,
   and different atmospheres (e.g., ionized hot regions + partially-ionized
   elsewhere) currently supported.
+* Add customisable method somewhere to transform raw sample file vectors to
+  parameter values compatible with current API, in case of backwards
+  incompatible changes, to avoid user having to figure out how to do this
+  safely.
 
 
 
