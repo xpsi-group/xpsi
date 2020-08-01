@@ -17,16 +17,15 @@ of priorty within a major release cycle, and are not generaly unique. That is,
 v1.a might ultimately not contain a feature next to which it is listed, and/or
 it might be identical to v1.b.
 
-* Port to a Python 2/3 compatible state. *Target: minor release v1.a or major \
-  release v2.0*.
 * Compute secondary images, and more generally images up to some optional order
-  using surface discretisation. *Target: minor release v1.b*.
+  using surface discretisation. *Target: minor release v1.a*.
+* Port to a Python 2/3 compatible state. *Target: minor release v1.a or major \
+  release v1.b*.
 * Unit testing. At present we are relying on the tutorial
   notebooks and examples as test beds to flag problems.
   *Target: minor release v1.c*.
 * Post-processing option to compute highest-density credible intervals
   (appropriate for multi-modal marginal posterior). *Target: minor release v1.d*.
-* 
 
 Prospective
 ^^^^^^^^^^^
@@ -41,7 +40,8 @@ Prospective
   coded four-dimensional cubic polynomial interpolation for, meaning two
   variables in addition to energy and zenith angle).
 * Add a plot class to render the posterior instrument effective area curves,
-  optionally as a set of curves or as conditional posterior bands.
+  optionally as a set of curves or as conditional posterior bands; relevant
+  only for parameterised instrument models.
 * Signal plotting tools not associated with post-processing. E.g., simple
   functions to plot single signals (instead of many signals, each associated
   with a posterior sample) cached when the likelihood function is evaluated,
@@ -90,6 +90,6 @@ Prospective
   parameter values compatible with current API, in case of backwards
   incompatible changes, to avoid user having to figure out how to do this
   safely.
-
-
-
+* Check to see where the extension tools can be called from other extensions
+  (e.g., likelihood extensions calling phase integrator tool) where appropriate
+  instead of having similar operations coded twice, for maintainability.

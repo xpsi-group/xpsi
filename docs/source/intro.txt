@@ -130,16 +130,6 @@ if you wish to cite a published work in the meantime:
        month = 12
    }
 
-In the interest of openness, these notes were submitted to a journal. However,
-a subset of revisions suggested by the referee are not something we have had
-time to work on; we have been working on these documentation pages hosted on
-GitHub (as recommended by the referee), and on further package development
-whilst applying it in research contexts (mainly for the NICER collaboration).
-Submisssion of these technical notes to a journal was arguably premature; on
-the other hand, it may never be worth the time investment over posting to the
-arXiv and updating the preprint as appropriate given that the project is
-inherently fluid.
-
 Lastly, if you wish to point to the first published application of
 the X-PSI package, then please cite :ref:`R19`:
 
@@ -166,14 +156,16 @@ State of development
 ********************
 
 The targeted release for the first major version of X-PSI is September 2020.
+:ref:`TODO` development plans and the project :ref:`history` provide a
+breakdown of the state of the project.
 
 The initial development of X-PSI was checkpointed with the completion of
 :ref:`R19`, and tagged as ``v0.1``. X-PSI remains, however, in the
 `initial development stage <https://semver.org/>`_. Backwards incompatible
 changes will be committed without incrementing the major version.
 The package should not be considered stable, and as such has not been
-packaged for automatic installation via a package manager (namely Conda). To
-install X-PSI from source, and to install dependencies, see the
+packaged for automatic installation via a package manager (namely Conda nor
+PyPI). To install X-PSI from source, and to install dependencies, see the
 :ref:`install` page.
 
 .. note::
