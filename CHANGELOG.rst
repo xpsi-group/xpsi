@@ -98,18 +98,16 @@ Attribution
 ^^^^^^^^^^^
 
 
-[v0.4.1] - 2020-02-14
+[v0.4.1] - 2020-06-03
 ~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
 ^^^^^
 
-* Function signatures to match header declarations in atmosphere extensions.
+* Function signatures to match header declarations in atmosphere extensions:
+  `xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx` to match
+  `xpsi/surface_radiation_field/elsewhere_radiation_field.pxd`.
   With thanks to Sebastien Guillot.
-
-Attribution
-^^^^^^^^^^^
-
 
 
 [v0.4.0] - 2020-02-14
