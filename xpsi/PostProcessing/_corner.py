@@ -72,8 +72,26 @@ class CornerPlotter(PostProcessor):
             corresponding to the key. Defaults to ``None``, meaning attempt to
             use as many runs as possible subject to plotting restrictions.
 
+        .. note::
+
+            The order of IDs is used to control the layering of posteriors.
+            If there are multiple underlying posteriors (i.e., multiple
+            dictionary keys), only one (combined) run per posterior is
+            rendered, and the first posterior is rendered on the topmost layer.
+            If there is only one underlying posterior (i.e., one dictionary
+            keys), then the combined-sample posterior, if available, is plotted
+            on the topmost layer, whilst the runs on that posterior are
+            rendered on layers underneath in the order specified in the list.
+            In either case, estimators are calculated and reported for the
+            (combined) run on the topmost layer.
+
         :param bool combine:
             Additionally combine the runs into a single run for overplotting?
+            The overriding setting if there is more than one underlying
+            posterior to be plotted, is to attempt to combine runs on each
+            posterior if multiple such runs are available, in order to
+            reduce information density. If there is a single underlying
+            posterior, the user-specified value is respected.
 
         :param bool combine_all:
             Combine all runs in each :class:`Runs` instance or only those

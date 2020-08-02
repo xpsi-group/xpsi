@@ -108,6 +108,8 @@ Added
 * State the units of variables such as energy and specific intensity in the
   surface radiation field extension module. These requirements may be found in
   function body comments.
+* Explain in :class:`xpsi.PostProcessing.CornerPlotter` docstring the order in
+  which posteriors are plotted given the input order.
 
 Changed
 ^^^^^^^
