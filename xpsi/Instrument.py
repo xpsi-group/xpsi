@@ -15,7 +15,7 @@ class EdgesError(xpsiError):
     """ Raised if there is a problem with the input energy edges. """
 
 class Instrument(ParameterSubspace):
-    """ Base class for astronomical X-ray instruments such as NICER.
+    """ Base class for astronomical X-ray instruments on-board space telescopes.
 
     The body of the initialiser must not be changed to ensure inter-module
     compatibility, but can be extended if appropriate using a call to
@@ -33,17 +33,18 @@ class Instrument(ParameterSubspace):
         nominal response matrix.
 
     :param ndarray[q+1] energy_edges:
-        Energy edges of the instrument energy intervals which must be congruent
-        to the first dimension of the :attr:`matrix`: the number of edges must
-        be :math:`q + 1`. The edges must be monotonically increasing. These
-        edges will correspond to the nominal response matrix and any deviation
-        from this matrix (see above).
+        Energy edges in keV of the instrument energy intervals which must be
+        congruent to the first dimension of the :attr:`matrix`: the number of
+        edges must be :math:`q + 1`. The edges must be monotonically increasing.
+        These edges will correspond to the nominal response matrix and any
+        deviation from this matrix (see above).
 
     .. note:: The dimensions of the response matrix need not be equal, but
               it is required that the number of input intervals be greater
               than or equal to the number of output channels -- i.e.,
               :math:`p \leq q`. If :math:`p < q` then it is implied that
-              subsets of adjacent output channels are actually grouped together.
+              subsets of adjacent output channels are effectively grouped
+              together.
 
     :param tuple args:
         Container of parameter instances.
@@ -63,7 +64,12 @@ class Instrument(ParameterSubspace):
 
     @property
     def matrix(self):
-        """ Get the response matrix.
+        """ Get the reference response matrix.
+
+        In common usage patterns there will be some fiducial or nominal
+        response matrix that either defines fixed instrument operation or
+        is a basis for parametrised deviations. This matrix is usually a
+        calibration product distributed by an instrument calibration team.
 
         A matrix of dimension :math:`p \\times q`. Here :math:`p` must be the
         number of input energy intervals, and :math:`q \geq p` the number of
@@ -105,9 +111,16 @@ class Instrument(ParameterSubspace):
     def construct_matrix(self):
         """ Construct the response matrix if it is parametrised.
 
-        If customising, to operations to calculate a matrix, and return it.
+        If customising, do operations to calculate a matrix, and return it.
         You can access parameters (free, fixed, and derived) via the container
         access self[<name>].
+
+        If the instrument operation is fixed, you might not need to subclass,
+        because the default behaviour is to return the nominal response you
+        loaded. If for some reason the matrix you loaded is to be modified in
+        some fixed manner, possibly as a function of some custom fixed
+        parameters that you defined, you would also have to subclass and
+        provide the correct implementation of this method.
 
         """
         return self.matrix
@@ -125,13 +138,13 @@ class Instrument(ParameterSubspace):
             Indexable object with two elements respectively denoting the
             indices of the first and last *input* intervals. The response
             matrix :attr:`matrix` must be indexable with these numbers, i.e.,
-            they must satisfy :math:`i < q`.
+            they must satisfy :math:`indx < q`.
 
         :param array-like orange:
             Indexable object with two elements respectively denoting the
             indices of the first and last *output* channels. The response
             matrix :attr:`matrix` must be indexable with these numbers, i.e.,
-            they must satisfy :math:`i < p`.
+            they must satisfy :math:`indx < p`.
 
         :return: *ndarray[p,n]* containing the registered signal.
 
@@ -155,18 +168,17 @@ class Instrument(ParameterSubspace):
 
     @property
     def energy_edges(self):
-        """ Get the energy edges of the instrument.
+        """ Get the energy edges of the instrument, in keV.
 
-        A :class:`numpy.ndarray` of edges of the input energy
-        intervals which map to output channels defined in the
-        data space.
+        A :class:`numpy.ndarray` of edges of the input energy intervals which
+        map to output channels defined in the data space.
 
         """
         return self._energy_edges
 
     @energy_edges.setter
     def energy_edges(self, energy_edges):
-        """ Set the energy edges. """
+        """ Set the energy edges in keV. """
 
         try:
             assert isinstance(energy_edges, _np.ndarray)

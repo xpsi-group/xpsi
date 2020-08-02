@@ -173,6 +173,12 @@ cdef double eval_hot(size_t THREAD,
                      double mu,
                      const double *const VEC,
                      void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
     # This function must cast the void pointer appropriately for use.
     cdef DATA *D = <DATA*> data
 

@@ -52,6 +52,11 @@ cdef double eval_elsewhere(size_t THREAD,
                            double mu,
                            const double *const VEC,
                            void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
 
     cdef double temp = k_B_over_keV * pow(10.0, VEC[0])
 

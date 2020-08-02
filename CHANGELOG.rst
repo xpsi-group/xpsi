@@ -53,7 +53,9 @@ Summary
   in the post-processing tutorial notebook and embedded in the class docstrings
   for reference.
 * Development of online documentation pages, including project organisation
-  pages and a Code of Conduct (please read).
+  pages and a Code of Conduct (please read), and development of docstrings.
+  Note that some snippets of documentation look forward to v1.0 (e.g., release
+  of technical notes in the repo itself).
 
 Fixed
 ^^^^^
@@ -79,9 +81,9 @@ Fixed
   :class:`xpsi.PostProcessing.CornerPlotter`.
 * Checked for unintended mutable defaults package-wide, and fixed as
   appropriate.
-* Fix bugs in ``CustomPrior`` class (these example modules were not run at the
-  time of translation between past API versions, so only found bugs when making
-  post-processing tutorial for this release).
+* Fix bugs in ``CustomPrior`` class (:ref:`example_script`; these example
+  modules were not run at the time of translation between past API versions, so
+  only found bugs when making post-processing tutorial for this release).
 
 Added
 ^^^^^
@@ -101,6 +103,8 @@ Added
   array of points of the openness of magnetic field lines has been developed.
 * Add simple energy annotation option to photon specific intensity sky-map
   panels.
+* State the energy units (keV) that the :class:`xpsi.Instrument` must comply
+  with when energy interval bounds are specified.
 
 Changed
 ^^^^^^^
