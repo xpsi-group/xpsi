@@ -105,6 +105,9 @@ Added
   panels.
 * State the energy units (keV) that the :class:`xpsi.Instrument` must comply
   with when energy interval bounds are specified.
+* State the units of variables such as energy and specific intensity in the
+  surface radiation field extension module. These requirements may be found in
+  function body comments.
 
 Changed
 ^^^^^^^

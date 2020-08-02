@@ -344,6 +344,7 @@ cdef double eval_hot_norm() nogil:
     # and angle.
     # Writing the normalisation here reduces the number of operations required
     # during integration.
+    # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
     return erg / 4.135667662e-18
 
