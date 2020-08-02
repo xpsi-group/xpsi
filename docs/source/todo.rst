@@ -18,14 +18,14 @@ v1.a might ultimately not contain a feature next to which it is listed, and/or
 it might be identical to v1.b.
 
 * Compute secondary images, and more generally images up to some optional order
-  using surface discretisation. *Target: minor release v1.a*.
+  using surface discretisation. *Target: minor release v0.a*.
 * Port to a Python 2/3 compatible state. *Target: minor release v1.a or major \
-  release v1.b*.
+  release v2.0*.
 * Unit testing. At present we are relying on the tutorial
   notebooks and examples as test beds to flag problems.
-  *Target: minor release v1.c*.
+  *Target: minor release v1.b*.
 * Post-processing option to compute highest-density credible intervals
-  (appropriate for multi-modal marginal posterior). *Target: minor release v1.d*.
+  (appropriate for multi-modal marginal posterior). *Target: minor release v1.c*.
 
 Prospective
 ^^^^^^^^^^^

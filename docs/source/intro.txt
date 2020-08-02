@@ -9,13 +9,13 @@ X-PSI
 
 X-PSI is designed to simulate rotationally-modified (pulsed) surface X-ray
 emission from neutron stars, taking into account relativistic effects on
-the emitted radiation.  This can then be used to perform Bayesian statistical
-inference on real or simulated astronomical data sets.  Model parameters of
+the emitted radiation. This can then be used to perform Bayesian statistical
+inference on real or simulated astronomical data sets. Model parameters of
 interest may include neutron star mass and radius (useful to constrain the
 properties of ultradense nuclear matter) or the system geometry and properties
-of the hot emitting regions.  To achieve this, X-PSI couples code for
-likelihood function evaluation (simulation) with existing open-source software
-for posterior sampling (inference)
+of the hot emitting surface-regions. To achieve this, X-PSI couples code for
+likelihood functionality (simulation) with existing open-source software for
+posterior sampling (inference).
 
 
 Concept
@@ -84,7 +84,7 @@ field.
 
 .. rubric:: Footnotes
 
-.. [#] See, e.g. `Chambers & Watts 2020 <https://ui.adsabs.harvard.edu/abs/2020MNRAS.491.6032C/abstract>`_.
+.. [#] See, e.g., `Chambers & Watts 2020 <https://ui.adsabs.harvard.edu/abs/2020MNRAS.491.6032C/abstract>`_.
 
 .. [#] See `James et al. 2015 <https://ui.adsabs.harvard.edu/abs/2015CQGra..32f5001J/abstract>`_.
 

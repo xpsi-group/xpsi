@@ -41,23 +41,56 @@ Summary
 ^^^^^^^
 
 * The major change is an update and refactoring of the post-processing module
-  to work again with past API change. (The module was not being kept up to date
+  to work again with past API changes. (The module was not being kept up to date
   with previous releases listed below because it wasn't to our knowledge
   being used by anyone yet, and thus we focussed on other features.) The module
   has been refactored to be more modular, flexible, and extensible. For
   instance, posterior signal-plot classes can be added by the user and
   complex plotting routines can thus be developed, as demonstrated in the
-  concrete classes such as :class:`xpsi.PostProcessing.PulsePlot`.
+  concrete classes such as :class:`xpsi.PostProcessing.PulsePlot`. The plot
+  classes have been used to reproduce (with improved functionality and
+  performance) the relevant signal plots from :ref:`R19`, as demonstrated
+  in the post-processing tutorial notebook and embedded in the class docstrings
+  for reference.
+* Development of online documentation pages, including project organisation
+  pages and a Code of Conduct (please read).
 
 Fixed
 ^^^^^
 
+* The :class:`xpsi.Data` docstring explanation of the channel limits has been
+  improved for clarity.
+* Update extension module for background marginalisation to take distinct phase
+  sets associated with hot regions.
+* The constructor :meth:`xpsi.Spacetime.fixed_spin` inclination upper bound
+  is :math:`\pi/2` radians to eliminate degeneracy due to equatorial-reflection
+  symmetry in the default prior on source-receiver geometric configuration.
+* Tweak caching (memoization) so that cache and current vectors are equal at
+  the end of likelihood evaluation routine.
+* Generally clean up naming and docstrings for extension modules. Add return
+  types.
+* Bug was fixed for transforming posterior sample sets and prior samples when
+  parameter orders different in sample files and a prior object due to API
+  updates. Whether this solution is to be long-term is to be decided; more
+  generally need to figure out how to elegantly handle derived parameters that
+  are not needed for likelihood evaluation (those derived parameters are
+  instances of :class:`xpsi.Parameter`) but are of interest for post-processing.
+* Handle ``param_plot_lims=None`` correctly in
+  :class:`xpsi.PostProcessing.CornerPlotter`.
+* Checked for unintended mutable defaults package-wide, and fixed as
+  appropriate.
+* Fix bugs in ``CustomPrior`` class (these example modules were not run at the
+  time of translation between past API versions, so only found bugs when making
+  post-processing tutorial for this release).
+
 Added
 ^^^^^
 
+* The :class:`xpsi.Data` has added default behaviour so that in some common
+  usage patterns, it does not need to be subclassed.
 * Support for multiple instruments operating on the same incident signal due to
   assumed effective time-invariance of the signal generated during one
-  rotational cycle of the surface radiation field..
+  rotational cycle of the surface radiation field.
 * Module to call atmosphere extensions directly (without the calls being
   embedded in integration algorithms), for checking implementation of complicated
   atmospheres such as those requiring interpolation with respect to a numerical
@@ -74,7 +107,10 @@ Changed
 
 * Change (Earth) inclination parameter :math:`i` to :math:`\cos(i)` so that the
   default prior density function is isotropic.
-* For numerical atmospheres of same number of grid dimensions, improve
+* The :class:`xpsi.Data` definition of the ``last`` channel has changed to be
+  the index of the last channel instead of the index of the last channel plus
+  one; this means that the value exposed via a property is ``last+1``.
+* For numerical atmospheres of same number of grid dimensions, improved
   extension ``surface_radiation_field/archive/{hot,elsewhere}/numerical.pyx``
   module to infer grid size for memory allocation and interpolation searches
   (implemented automatic inference of grid size, but hard-coded
@@ -87,15 +123,23 @@ Changed
 * Tweak SpectrumPlot settings to print a warning statement that spectrum plot
   works best with logarithmic spacing, and the user has to shadow class
   attribute with ``logspace_y=False``.
-
-Deprecated
-^^^^^^^^^^
-
-Removed
-^^^^^^^
+* Do not print hot region parameter properties upon creation if fixed at
+  boundary value so that the region is fully described by fewer parameters.
+* Merged energy integration extension modules into one.
+* Made phase shift parameters (strictly) unbounded; remember however that for a
+  sensible prior, bound the phase shifts on a unit interval, and thus it is
+  required that phase bounds are specified and finite.
+* In extensions, modified phase shifting so that a shift permitted by unbounded
+  phase parameter does not require many iterations to decrement or increment to
+  unit interval (achieved simply with floor operation).
 
 Attribution
 ^^^^^^^^^^^
+
+* With thanks to Sebastien Guillot (testing and feedback),
+  Devarshi Choudhury (testing and feedback),
+  Sam Geen & Bob de Witte (Windows installation advice),
+  and Anna L. Watts (documentation patches and feedback).
 
 
 [v0.4.1] - 2020-06-03
@@ -105,8 +149,8 @@ Fixed
 ^^^^^
 
 * Function signatures to match header declarations in atmosphere extensions:
-  `xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx` to match
-  `xpsi/surface_radiation_field/elsewhere_radiation_field.pxd`.
+  ``xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx`` to match
+  ``xpsi/surface_radiation_field/elsewhere_radiation_field.pxd``.
   With thanks to Sebastien Guillot.
 
 
@@ -199,9 +243,9 @@ Changed
 Deprecated
 ^^^^^^^^^^
 
-* the ``is_secondary`` argument of the ``HotRegion`` class. Use ``is_antiphased`` instead
+* The ``is_secondary`` argument of the ``HotRegion`` class. Use ``is_antiphased`` instead
   to ensure future compatibility.
-* the ``store`` argument of the ``Pulse`` class. Use ``cache`` instead to ensure future
+* The ``store`` argument of the ``Pulse`` class. Use ``cache`` instead to ensure future
   compatibility.
 
 
@@ -211,7 +255,7 @@ Deprecated
 Summary
 ^^^^^^^
 
-* A few hotfixes and backwards compatible improvements.
+* A few patches including backwards compatible improvements.
 * Various docstring/comment/doc edits.
 * Update docs example model to use v0.3.4 API.
 
@@ -227,7 +271,8 @@ Changed
 ^^^^^^^
 
 * Add input argument checks to ``Likelihood.check`` method.
-* Add default ``hypercube=None`` to ``Prior.inverse_sample_and_transform method.``
+* Add default ``hypercube=None`` to ``Prior.inverse_sample_and_transform``
+  method.
 * If derived parameters found in subspace, assume an update is needed because
   cache mechanism not in place. (WIP.)
 

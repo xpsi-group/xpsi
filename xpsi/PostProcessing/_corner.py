@@ -371,13 +371,15 @@ class CornerPlotter(PostProcessor):
             Dictionary of viewing ranges for plotting. Keys must be parameter
             names.
 
-        :param bool crosshairs: Display parameter truth crosshairs?
+        :param bool crosshairs:
+            Display parameter truth crosshairs?
 
-        :param bool filled: Specify whether the contours are to be filled.
+        :param bool filled:
+            Specify whether the contours are to be filled.
 
-        :param str legend_loc: Specify the legend location. Defaults to
-                               ``upper right`` because the plot is a lower-
-                               triangle array.
+        :param str legend_loc:
+            Specify the legend location. Defaults to ``upper right`` because the
+            plot is a lower-triangle array.
 
         :param tuple legend_corner_coords:
             Modifies meaning of ``legend_loc`` to be the coordinates of the
@@ -441,8 +443,8 @@ class CornerPlotter(PostProcessor):
 
         .. note::
 
-            Using `subplot_size` keyword argument (specify in inches) invokes
-            automated label fontsizes and tick sizes. If `width_inch` is
+            Using ``subplot_size`` keyword argument (specify in inches) invokes
+            automated label fontsizes and tick sizes. If ``width_inch`` is
             used instead, this automation does not occur.
 
         """
