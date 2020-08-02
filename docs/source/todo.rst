@@ -30,6 +30,8 @@ it might be identical to v1.b.
 Prospective
 ^^^^^^^^^^^
 
+Unordered.
+
 * Implement a simpler switch between atmosphere model extensions (e.g.,
   blackbody to numerical lookup table), rather than user having to remember to
   modify the relevant ``.pyx`` source file (e.g., by replacing function bodies
@@ -93,3 +95,5 @@ Prospective
 * Check to see where the extension tools can be called from other extensions
   (e.g., likelihood extensions calling phase integrator tool) where appropriate
   instead of having similar operations coded twice, for maintainability.
+* Decide whether to allow user to define their photon energy and effective area
+  units (requires a minor tweak and explanation in docstrings/comments).
