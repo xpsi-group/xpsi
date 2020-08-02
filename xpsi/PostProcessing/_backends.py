@@ -24,7 +24,8 @@ class NSBackend(Run):
 
     """
 
-    def __init__(self, root, base_dir, use_nestcheck, transform=None, **kwargs):
+    def __init__(self, root, base_dir, use_nestcheck, transform=None,
+                 overwrite_transformed=False, **kwargs):
         filerootpath =_os.path.join(base_dir, root)
         _filerootpath = filerootpath
 
@@ -34,7 +35,8 @@ class NSBackend(Run):
             temp = transform(samples[0,2:])
             ntransform = len(temp) - ndims
 
-            if not _os.path.isfile(filerootpath+'_transformed.txt'):
+            _exists = _os.path.isfile(filerootpath+'_transformed.txt')
+            if not _exists or overwrite_transformed:
                 transformed = _np.zeros((samples.shape[0],
                                          samples.shape[1] + ntransform))
                 transformed[:,:2] = samples[:,:2]
@@ -62,7 +64,8 @@ class NSBackend(Run):
         if self.use_nestcheck: # nestcheck backend
             if transform is not None:
                 for ext in ['dead-birth.txt', 'phys_live-birth.txt']:
-                    if not _os.path.isfile(filerootpath + ext):
+                    _exists = _os.path.isfile(filerootpath + ext)
+                    if not _exists or overwrite_transformed:
                         samples = _np.loadtxt(_filerootpath + ext)
                         transformed = _np.zeros((samples.shape[0],
                                                  samples.shape[1] + ntransform))
@@ -73,6 +76,8 @@ class NSBackend(Run):
 
                         _np.savetxt(filerootpath + ext, transformed)
 
+                # .stats file with same root needed, but do not need to modify
+                # the .stats file contents
                 if not _os.path.isfile(filerootpath + '.stats'):
                     if _os.path.isfile(_filerootpath + '.stats'):
                         try:

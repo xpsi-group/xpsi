@@ -136,7 +136,7 @@ class Runs(Metadata):
 
     def set_subset(self, IDs=None, combine=False, combine_all=False,
                    force_combine=False, only_combined=False,
-                   only_principal=False):
+                   only_principal=False, overwrite=False):
         """ Set a current list of :class:`~.Run` instances."""
 
         if IDs is None:
@@ -155,7 +155,7 @@ class Runs(Metadata):
         self._only_combined = only_combined
         self._only_principal = only_principal
 
-    def _combine(self, combine_all):
+    def _combine(self, combine_all, overwrite):
         """ Helper method. """
 
         IDs = self.get_attr('ID',
@@ -175,7 +175,8 @@ class Runs(Metadata):
         # write combined run to the same directory
         base_dir = run.nestcheck_backend['output']['base_dir']
         file_root = self.ID + '_combined_IDs_%s_' % str_IDs
-        if not _os.path.isfile(_os.path.join(base_dir, file_root+'.txt')):
+        _exists = _os.path.isfile(_os.path.join(base_dir, file_root+'.txt'))
+        if not _exists or overwrite:
             run = combine_ns_runs(self.get_attr('nestcheck_backend',
                                     current = False if combine_all else True,
                                     nestcheck_compatible=True))

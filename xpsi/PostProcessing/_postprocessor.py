@@ -98,7 +98,8 @@ class PostProcessor(object):
                   'Run set curated')
     def set_subset(self, IDs=None,
                    combine=False, combine_all=False,
-                   force_combine=True, only_combined=False):
+                   force_combine=True, only_combined=False,
+                   overwrite=False):
         """ Set a current list of :class:`~.Runs` instances.
 
         Helper function to get and notify which runs will be plotted.
@@ -109,6 +110,30 @@ class PostProcessor(object):
             key matches a :class:`~.Runs` instance ID, it is assumed that
             all associated :class:`~.Run` instances are to be selected as the
             current subset for plotting applications.
+
+        :param bool combine:
+            Additionally combine the runs into a single run for overplotting?
+            The overriding setting if there is more than one underlying
+            posterior to be plotted, is to attempt to combine runs on each
+            posterior if multiple such runs are available, in order to
+            reduce information density. If there is a single underlying
+            posterior, the user-specified value is respected.
+
+        :param bool combine_all:
+            Combine all runs in each :class:`Runs` instance or only those
+            for which IDs are provided? Ignored if ``combine`` is ``False``.
+
+        :param bool force_combine:
+            Force recombination of elligible run sets, even if a
+            combined run is already cached?
+
+        :param bool only_combined:
+            Only plot the combined run? Only heeded if a single posterior
+            is selected for plotting, and in that case is ignored if
+            ``combine`` is ``False``.
+
+        :param bool overwrite:
+            Overwrite combined-sample files on disk with the same filename?
 
         """
 
@@ -134,7 +159,8 @@ class PostProcessor(object):
                                      combine_all = combine_all,
                                      force_combine = True,
                                      only_combined = True,
-                                     only_principal = True)
+                                     only_principal = True,
+                                     overwrite = overwrite)
         else:
             posterior = self._subset[0]
             ids = IDs.get(posterior.ID, None)
@@ -161,7 +187,8 @@ class PostProcessor(object):
                                  combine_all = combine_all,
                                  force_combine = force_combine,
                                  only_combined = only_combined,
-                                 only_principal = False)
+                                 only_principal = False,
+                                 overwrite = overwrite)
 
     @property
     def subset(self):

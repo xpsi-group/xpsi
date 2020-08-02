@@ -68,6 +68,3 @@ class Run(Metadata):
             raise TypeError('Invalid contour argument specification. '
                             'See the docstring.')
         self._contours = obj
-
-
-

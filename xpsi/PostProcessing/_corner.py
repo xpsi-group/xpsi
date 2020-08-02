@@ -106,6 +106,9 @@ class CornerPlotter(PostProcessor):
             is selected for plotting, and in that case is ignored if
             ``combine`` is ``False``.
 
+        :param bool overwrite_combined:
+            Overwrite combined-sample files on disk with the same filename?
+
         :param bool bootstrap:
             Use :mod:`nestcheck` and :mod:`fgivenx` to bootstrap the runs for
             posterior density error estimation?
@@ -143,7 +146,8 @@ class CornerPlotter(PostProcessor):
 
         """
         self.set_subset(IDs, combine, combine_all,
-                        force_combine, only_combined)
+                        force_combine, only_combined,
+                        overwrite_combined)
         self.set_params(params)
 
         if bootstrap_density and not separate_plots:
