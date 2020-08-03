@@ -86,7 +86,7 @@ Fixed
   only found bugs when making post-processing tutorial for this release).
 * Added a channels property to :class:`xpsi.Instrument` as required by the
   post-processing module (namely, :class:`xpsi.PostProcessing.Residual` plot
-  and the other signal plot classes).)
+  and the other signal plot classes).
 * The formatting of annotated credible intervals in
   :class:`xpsi.PostProcessing.CornerPlotter` such that the quantile differences
   are formatted to two significant figures above the on-diagonal panels, and

@@ -34,7 +34,6 @@ class NestedBackend(Run):
     :param callable transform:
         A function to transform the parameter vector to another space.
 
-
     """
 
     def __init__(self, root, base_dir, use_nestcheck, transform=None,
@@ -45,7 +44,7 @@ class NestedBackend(Run):
         if transform is not None:
             samples = _np.loadtxt(filerootpath+'.txt')
             ndims = samples.shape[1] - 2
-            temp = transform(samples[0,2:])
+            temp = transform(samples[0,2:], old_API=True)
             ntransform = len(temp) - ndims
 
             _exists = _os.path.isfile(filerootpath+'_transformed.txt')
@@ -54,7 +53,7 @@ class NestedBackend(Run):
                                          samples.shape[1] + ntransform))
                 transformed[:,:2] = samples[:,:2]
                 for i in range(samples.shape[0]):
-                    transformed[i,2:] = transform(samples[i,2:])
+                    transformed[i,2:] = transform(samples[i,2:], old_API=True)
                 _np.savetxt(filerootpath+'_transformed.txt', transformed)
 
             filerootpath += '_transformed'
@@ -85,7 +84,8 @@ class NestedBackend(Run):
                         transformed[:,ndims+ntransform:] = samples[:,ndims:]
                         for i in range(samples.shape[0]):
                             transformed[i,:ndims+ntransform] =\
-                                                transform(samples[i,:ndims])
+                                                transform(samples[i,:ndims],
+                                                          old_API=True)
 
                         _np.savetxt(filerootpath + ext, transformed)
 

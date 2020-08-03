@@ -137,8 +137,33 @@ class Prior(object):
         return p
 
     @staticmethod
-    def transform(p):
+    def transform(p, **kwargs):
         """ A transformation for post-processing.
+
+        A subclass can implement this attribute as an instance method: it
+        does not need to be a static method.
+
+        :param list p:
+            Parameter vector.
+        :kwargs:
+            A key sometimes passed is ``old_API``, which flags whether a
+            transformation needs to account for a parameter vector written to
+            file by an older software version, which might be different in
+            due to  monotone transformations of parameters defined in the
+            current software version.
+
+        .. note::
+
+            As an example, the :ref:`R19` samples are in inclination :math:`i`
+            instead of :math:`\cos(i)` which is the current inclination
+            parameter in the API. Therefore the transformation needed depends
+            on the source of the parameter vector.  If the vector is from the
+            original sample files, and one aims to plot the posterior
+            distribution of :math:`\cos(i)`, then it needs to be a derived
+            parameter. However, when drawing samples from the prior in the
+            current API, one can simply copy the :math:`\cos(i)` parameter
+            value when appending to the parameter list, instead of taking the
+            cosine.
 
         :returns: Transformed vector ``p`` where ``len(p) > len(self)``.
         :rtype: *list*

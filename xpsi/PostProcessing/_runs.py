@@ -116,9 +116,9 @@ class Runs(Metadata):
                 _overwrite = False
             else:
                 names = kwargs.get('names')
-                def _transform(q):
+                def _transform(q, **kwargs):
                     p = [q[names.index(name)] for name in likelihood.names]
-                    p = transform(p)
+                    p = transform(p, **kwargs)
                     return _np.concatenate((q, p[len(likelihood):]))
                 _overwrite = kwargs.pop('overwrite_transformed', False)
         else:
