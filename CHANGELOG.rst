@@ -84,6 +84,13 @@ Fixed
 * Fix bugs in ``CustomPrior`` class (:ref:`example_script`; these example
   modules were not run at the time of translation between past API versions, so
   only found bugs when making post-processing tutorial for this release).
+* Added a channels property to :class:`xpsi.Instrument` as required by the
+  post-processing module (namely, :class:`xpsi.PostProcessing.Residual` plot
+  and the other signal plot classes).)
+* The formatting of annotated credible intervals in
+  :class:`xpsi.PostProcessing.CornerPlotter` such that the quantile differences
+  are formatted to two significant figures above the on-diagonal panels, and
+  the median is formatted at the same level of precision.
 
 Added
 ^^^^^
