@@ -39,6 +39,13 @@ class Instrument(ParameterSubspace):
         These edges will correspond to the nominal response matrix and any
         deviation from this matrix (see above).
 
+    :param ndarray[p] channels:
+        Instrument channel numbers which must be equal in number to the first
+        dimension of the :attr:`matrix`: the number of channels must be
+        :math:`p`. The channel numbers must be monotonically increasing.
+        These channels will correspond to the nominal response matrix and any
+        deviation from this matrix (see above).
+
     .. note:: The dimensions of the response matrix need not be equal, but
               it is required that the number of input intervals be greater
               than or equal to the number of output channels -- i.e.,
@@ -55,10 +62,11 @@ class Instrument(ParameterSubspace):
         find its way to the base class.
 
     """
-    def __init__(self, matrix, energy_edges, *args, **kwargs):
+    def __init__(self, matrix, energy_edges, channels, *args, **kwargs):
 
         self.matrix = matrix
         self.energy_edges = energy_edges
+        self.channels = channels
 
         super(Instrument, self).__init__(*args, **kwargs)
 
@@ -180,9 +188,7 @@ class Instrument(ParameterSubspace):
     def energy_edges(self, energy_edges):
         """ Set the energy edges in keV. """
 
-        try:
-            assert isinstance(energy_edges, _np.ndarray)
-        except AssertionError:
+        if not isinstance(energy_edges, _np.ndarray):
             try:
                 self._energy_edges = _np.array(energy_edges)
             except TypeError:
@@ -198,3 +204,28 @@ class Instrument(ParameterSubspace):
         except AssertionError:
             raise EdgesError('Energy edges must be in a one-dimensional '
                              'array, and must be postive.')
+
+    @property
+    def channels(self):
+        return self._channels
+
+    @channels.setter
+    def channels(self, array):
+        if not isinstance(array, _np.ndarray):
+            try:
+                self._channels = _np.array(array)
+            except TypeError:
+                raise ChannelError('Channel numbers must be in a '
+                                   'one-dimensional array, and must all be '
+                                   'positive integers including zero.')
+        else:
+            self._channels = array
+
+        try:
+            assert self._channels.ndim == 1
+            assert (self._channels >= 0).all()
+            assert self._channels.shape[0] == self._matrix.shape[0]
+        except AssertionError:
+            raise ChannelError('Channel numbers must be in a '
+                               'one-dimensional array, and must all be '
+                               'positive integers including zero.')
