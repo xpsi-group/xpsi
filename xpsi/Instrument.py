@@ -14,6 +14,9 @@ class ResponseError(xpsiError):
 class EdgesError(xpsiError):
     """ Raised if there is a problem with the input energy edges. """
 
+class ChannelError(xpsiError):
+    """ Raised if there is a problem with the input channel numbers. """
+
 class Instrument(ParameterSubspace):
     """ Base class for astronomical X-ray instruments on-board space telescopes.
 
