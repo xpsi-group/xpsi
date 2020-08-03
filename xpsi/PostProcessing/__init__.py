@@ -83,6 +83,11 @@ else:
             return 0
         frac_part = abs(x) - int_part
         precision = 1 if frac_part == 0.0 else -int(math.log10(frac_part)) + 1
+        if precision >= 5:
+            if magitude + 5 >= max_digits:
+                return max_digits - magnitude
+            else:
+                return 5
 
         return precision
 

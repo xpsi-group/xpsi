@@ -836,7 +836,7 @@ class CornerPlotter(PostProcessor):
                        cred[1] - cred[0],
                        cred[2] - cred[1])
 
-            _p = max(_precision(_qs[1]), _precision(_qs[2]))
+            _p = max(_precision(_qs[0]), _precision(_qs[1]), _precision(_qs[2]))
             _f = '%.' + str(_p + additional) + 'f'
 
             if name: name += ' '
