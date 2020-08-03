@@ -4,6 +4,8 @@ from scipy.special import logsumexp
 
 from ._global_imports import *
 
+from . import _precision
+
 from getdist.plots import getSubplotPlotter
 from getdist.mcsamples import MCSamples
 
@@ -26,7 +28,7 @@ else:
         else:
             _warning('Using native nestcheck KDE instead of GetDist KDE.')
 
-from ._backends import NSBackend
+from ._backends import NestedBackend
 from ._postprocessor import PostProcessor
 
 class CornerPlotter(PostProcessor):
@@ -43,6 +45,7 @@ class CornerPlotter(PostProcessor):
              combine_all=False,
              only_combined=False,
              force_combine=True,
+             overwrite_combined=False,
              bootstrap_estimators=True,
              bootstrap_density=False,
              separate_plots=False,
@@ -472,7 +475,7 @@ class CornerPlotter(PostProcessor):
         """
         try:
             for run in self.subset_to_plot:
-                if not isinstance(run, NSBackend):
+                if not isinstance(run, NestedBackend):
                     raise TypeError('Nested sampling backends are required.')
         except AttributeError:
             print('Nested sampling runs are required.')
@@ -822,24 +825,30 @@ class CornerPlotter(PostProcessor):
 
         quantiles = [0.159, 0.5, 0.841] if sixtyeight else ([0.05,0.5,0.95] if ninety else [0.025, 0.5, 0.975])
 
-        def format_CI(name, cred, summary):
+        def format_CI(name, cred, summary, additional=2, sscript=False):
             if len(cred.shape) > 1:
-                msg = ('%s CI_{%i\%%} = %.4f/-%.4f/+%.4f'
-                        % (name,
-                           summary,
-                           cred[1,1],
-                           cred[1,1] - cred[0,1],
-                           cred[2,1] - cred[1,1]))
+                _qs = (cred[1,1],
+                       cred[1,1] - cred[0,1],
+                       cred[2,1] - cred[1,1])
+
             else:
-                msg = ('%s CI_{%i\%%} = %.4f/-%.4f/+%.4f'
-                        % (name,
-                           summary,
-                           cred[1],
-                           cred[1] - cred[0],
-                           cred[2] - cred[1]))
+                _qs = (cred[1],
+                       cred[1] - cred[0],
+                       cred[2] - cred[1])
 
+            _p = max(_precision(_qs[1]), _precision(_qs[2]))
+            _f = '%.' + str(_p + additional) + 'f'
 
-            return msg
+            if name: name += ' '
+
+            stats = ('%s' % name) + ('CI$_{%i\%%} = ' % summary)
+
+            if sscript:
+                stats += (('%s_{-%s}^{+%s}$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
+            else:
+                stats += (('%s/-%s/+%s$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
+
+            return stats
 
         if bootstrap:
             for i, ax in enumerate(diag):
@@ -881,11 +890,12 @@ class CornerPlotter(PostProcessor):
                            zorder=zorder)
 
                 if annotate:
-                    stats = r'CI$_{%d\%%}=%.2f_{-%.2f}^{+%.2f}$' \
-                                % (68 if sixtyeight else (90 if ninety else 95),
-                                   cred[1,1],
-                                   cred[1,1] - cred[0,1],
-                                   cred[2,1] - cred[1,1])
+                    stats = format_CI('', # parameter name not needed on plot
+                                      cred,
+                                      68 if sixtyeight else (90 if ninety else 95),
+                                      additional=1,
+                                      sscript=True)
+
                     title = ax.get_title()
                     if title:
                         title = stats.center(30) + '\n' + title.center(30)
@@ -951,12 +961,11 @@ class CornerPlotter(PostProcessor):
                            zorder=zorder)
 
                 if annotate:
-                    stats = r'CI$_{%d\%%}=%.2f_{-%.2f}^{+%.2f}$' \
-                                                % (68 if sixtyeight else 95,
-                                                   cred[1],
-                                                   cred[1] - cred[0],
-                                                   cred[2] - cred[1])
-
+                    stats = format_CI('', # parameter name not needed on plot
+                                      cred,
+                                      68 if sixtyeight else (90 if ninety else 95),
+                                      additional=1,
+                                      sscript=True)
 
                     title = ax.get_title()
                     if title:

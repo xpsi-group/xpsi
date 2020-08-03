@@ -82,3 +82,23 @@ def set_random_seed(value):
         _global_imports.random_seed = value
     except AttributeError:
         _warning('Could not set random seed for post-processing.')
+
+def _precision(x):
+        """ A solution adapted from Stack Overflow.
+
+        Reference: questions/3018758/determine-precision-and-scale-of-particular-number-in-python
+
+        """
+        import math
+
+        max_digits = 14
+        int_part = int(abs(x))
+        magnitude = 1 if int_part == 0 else int(math.log10(int_part)) + 1
+        if magnitude >= max_digits:
+            return 0
+        frac_part = abs(x) - int_part
+        precision = -int(math.log10(frac_part)) + 1
+
+        return precision
+
+

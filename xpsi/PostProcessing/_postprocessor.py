@@ -2,7 +2,7 @@ from __future__ import division, print_function
 
 from ._global_imports import *
 
-from ._backends import NSBackend
+from ._backends import NestedBackend
 from ._runs import Runs
 from ._run import Run # for Sphinx docstring cross-references
 
@@ -306,7 +306,7 @@ class PostProcessor(object):
         """ Return only runs to plot that are compatible with nestcheck. """
         try:
             for run in self.subset_to_plot:
-                if not isinstance(run, NSBackend):
+                if not isinstance(run, NestedBackend):
                     raise TypeError('Nested sampling backends are required.')
         except AttributeError:
             print('Nested sampling runs are required.')

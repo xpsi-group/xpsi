@@ -12,7 +12,7 @@ except ImportError:
 
 from ._metadata import Metadata
 from ._run import Run
-from ._backends import NSBackend
+from ._backends import NestedBackend
 
 class ParameterError(xpsiError):
     """ Thrown if inconsistent parameter names are specified for plotting. """
@@ -101,8 +101,8 @@ class Runs(Metadata):
                   likelihood=None, **kwargs):
         """ Construct a :class:`~.Runs` instance by loading distinct runs.
 
-        The kwargs will be shared by nested sampling runs, whilst the
-        arguments must be lists that will be zipped to instantiate a set of
+        The kwargs will be shared by nested sampling runs. The
+        args must be lists that will be zipped to instantiate a set of
         run backends.
 
         """
@@ -113,24 +113,28 @@ class Runs(Metadata):
                 transform = likelihood.prior.transform
             except AttributeError: # quietly assume no transformation desired
                 _transform = None
+                _overwrite = False
             else:
                 names = kwargs.get('names')
                 def _transform(q):
                     p = [q[names.index(name)] for name in likelihood.names]
                     p = transform(p)
                     return _np.concatenate((q, p[len(likelihood):]))
+                _overwrite = kwargs.pop('overwrite_transformed', False)
         else:
             _transform = None
+            _overwrite = False
 
         runs = []
         for root, run_ID, base_dir, check in zip(roots, run_IDs,
                                                  base_dirs,
                                                  use_nestcheck):
-            runs.append(NSBackend(root, base_dir,
-                                  ID=run_ID,
-                                  use_nestcheck=check,
-                                  transform=_transform,
-                                  **kwargs))
+            runs.append(NestedBackend(root, base_dir,
+                                      ID=run_ID,
+                                      use_nestcheck=check,
+                                      transform=_transform,
+                                      overwrite_transformed=_overwrite,
+                                      **kwargs))
 
         return cls(runs, likelihood, ID, **kwargs)
 
@@ -145,10 +149,10 @@ class Runs(Metadata):
             self._subset = [self[ID] for ID in IDs]
 
         if combine and force_combine: # create new run object
-            self._combine(combine_all)
+            self._combine(combine_all, overwrite)
         elif combine:
             if getattr(self, '_combined', None) is None:
-                self._combine(combine_all)
+                self._combine(combine_all, overwrite)
         else:
             self._combined = None
 
@@ -199,10 +203,10 @@ class Runs(Metadata):
                   'labels': self.labels,
                   'truths': self.truths}
 
-        self._combined = NSBackend(file_root,
-                                   base_dir = base_dir,
-                                   use_nestcheck = True,
-                                   **kwargs)
+        self._combined = NestedBackend(file_root,
+                                       base_dir = base_dir,
+                                       use_nestcheck = True,
+                                       **kwargs)
 
         self._combined.parent_ID = self.ID
 
