@@ -88,9 +88,11 @@ Fixed
   post-processing module (namely, :class:`xpsi.PostProcessing.Residual` plot
   and the other signal plot classes).
 * The formatting of annotated credible intervals in
-  :class:`xpsi.PostProcessing.CornerPlotter` such that the quantile differences
-  are formatted to two significant figures above the on-diagonal panels, and
-  the median is formatted at the same level of precision.
+  :class:`xpsi.PostProcessing.CornerPlotter` has been improved by inferring the
+  largest number of decimal places needed for two non-zero decimal digits, and
+  then formatting the median and quantile differences to this shared decimal
+  precision above the on-diagonal panels. If the numbers cannot be well-
+  represented by this scheme, the user could try a unit transformation.
 
 Added
 ^^^^^
