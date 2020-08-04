@@ -58,7 +58,6 @@ Main
 
     from xpsi.global_imports import gravradius
 
-    from CustomData import CustomData
     from CustomInstrument import CustomInstrument
     from CustomInterstellar import CustomInterstellar
     from CustomSignal import CustomSignal
@@ -66,8 +65,12 @@ Main
     from CustomPrior import CustomPrior
     from CustomPhotosphere import CustomPhotosphere
 
-    data = CustomData.from_SWG('data/NICER_J0030_PaulRay_fixed_evt_25to299__preprocessed.txt',
-                               1936864.0)
+    obs_settings = dict(counts=np.loadtxt('data/NICER_J0030_PaulRay_fixed_evt_25to299__preprocessed.txt', dtype=np.double),
+                    first=0, last=274,
+                    exposure_time=1936864.0,
+                    phases=np.linspace(0.0, 1.0, 33))
+
+    data = xpsi.Data(**obs_settings)
 
     bounds = dict(alpha = (0.5,1.5),
                   beta = (0.0,1.0),
@@ -97,7 +100,7 @@ Main
     bounds = dict(mass = (1.0, 3.0),
                   radius = (3.0*gravradius(1.0), 16.0),
                   distance = (0.05, 2.0),
-                  inclination = (0.001, math.pi/2.0))
+                  cos_inclination = (0.0, math.cos(0.001)))
 
     spacetime = xpsi.Spacetime(bounds, dict(frequency = 1.0/(4.87e-3)))
 
@@ -171,7 +174,7 @@ Main
     p = [1.4033703360094012,
          13.378462458584202,
          0.32897884439908337,
-         1.004349731136371,
+         math.cos(1.004349731136371),
          0.4542555093514883,
          2.1937752730930784,
          0.07916088420116879,
@@ -268,100 +271,6 @@ Photosphere
 
             self._hot_atmosphere = (logT, logg, mu, logE, buf)
 
-Data
-^^^^
-
-.. code-block:: python
-
-    """ CustomData.py """
-
-    from __future__ import print_function
-
-    import numpy as np
-    import math
-
-    import xpsi
-
-    class CustomData(xpsi.Data):
-        """ Custom data container. """
-
-        def __init__(self, first, last, counts, phases, exposure_time):
-            """
-            :param counts: A :class:`numpy.ndarray` of count numbers. The rows of
-                           the array must map to a contiguous subset of instrument
-                           output channels, with the zeroth row corresponding to
-                           the :attr:`first` channel, and the last row
-                           corresponding to the channel :attr:`last` minus one.
-                           The columns must map to the phases given by
-                           :obj:`phases`.
-
-            :param phases: A :class:`numpy.ndarray` of phase *edges* of intervals
-                           in which the *synthetic* photons arrive.
-
-            :param exposure_time: The total exposure time in seconds.
-
-            """
-            # Execute parent initialisation code
-            super(CustomData, self).__init__(first, last)
-
-            try:
-                assert isinstance(counts, np.ndarray)
-            except AssertionError:
-                raise TypeError('Counts object is not a ``numpy.ndarray``.')
-            else:
-                self._counts = counts
-
-            try:
-                assert self._counts.shape[0] == self._last - self._first
-            except AssertionError:
-                raise AssertionError('The number of rows must be compatible '
-                                     'with the first and last output channel '
-                                     'numbers.')
-
-            try:
-                assert isinstance(phases, np.ndarray)
-            except AssertionError:
-                raise TypeError('Phases object is not a ``numpy.ndarray``.')
-            else:
-                self._phases = phases
-
-            self._exposure_time = exposure_time
-
-        @property
-        def exposure_time(self):
-            """ Get the total exposure time in seconds. """
-            return self._exposure_time
-
-        @property
-        def counts(self):
-            """ Get the photon count data. """
-            return self._counts
-
-        @property
-        def phases(self):
-            """ Get the phases. """
-            return self._phases
-
-        @classmethod
-        def from_SWG(cls, path, *args):
-            """ Constructor which loads photon data from a .txt file.
-
-            :param str path: Path to .txt file which is converted into a
-                             two-dimensional :class:`numpy.ndarray`.
-
-            """
-            try:
-                data = np.loadtxt(path, dtype=np.double)
-            except (OSError, IOError, TypeError, ValueError):
-                print('Data file could not be loaded.')
-                raise
-
-            first = 0; last = 275
-
-            phases = np.linspace(0.0, 1.0, 33)
-
-            return cls(first, last, data, phases, *args)
-
 Instrument
 ^^^^^^^^^^
 
@@ -383,21 +292,16 @@ Instrument
         Currently tailored to the NICER light-curve SWG model specification.
 
         """
-        def __init__(self, ratio, channels, channel_edges, *args):
+        def __init__(self, ratio, channel_edges, *args):
             """ Set channel edges attribute. """
             super(CustomInstrument, self).__init__(*args)
 
             self._ratio = ratio
-            self._channels = channels
             self._channel_edges = channel_edges
 
             self._modified = self.matrix.copy()
             for i in range(self._modified.shape[0]):
                 self._modified[i,:] *= self._ratio[i]
-
-        @property
-        def channels(self):
-            return self._channels
 
         @property
         def channel_edges(self):
@@ -494,8 +398,8 @@ Instrument
                               symbol = r'$\gamma$',
                               value = values.get('gamma', None))
 
-            return cls(ratios, channels, channel_edges[25:301, -2],
-                       RSP, edges, alpha, beta, gamma)
+            return cls(ratios, channel_edges[25:301, -2],
+                       RSP, edges, channels, alpha, beta, gamma)
 
 Interstellar
 ^^^^^^^^^^^^
@@ -676,7 +580,7 @@ Prior
         * p[0] = (rotationally deformed) gravitational mass (solar masses)
         * p[1] = coordinate equatorial radius (km)
         * p[2] = distance (kpc)
-        * p[3] = inclination of Earth to rotational axis (radians)
+        * p[3] = cos(inclination of Earth to rotational axis)
         * p[4] = primary cap phase shift (cycles); (alias for initial azimuth, periodic)
         * p[5] = primary centre colatitude (radians)
         * p[6] = primary angular radius (radians)
@@ -882,7 +786,7 @@ Prior
 
             return self.parameters.vector # only free parameter values returned
 
-        def transform(self, p):
+        def transform(self, p, old_API = False):
             """ A transformation for post-processing.
 
             Note that if you want to use dictionary-like access to values,
@@ -898,6 +802,10 @@ Prior
             """
 
             p = list(p) # copy
+
+            if old_API:
+                idx = self.parameters.index('cos_inclination')
+                p[idx] = math.cos(p[idx])
 
             # used ordered names and values
             ref = dict(zip(self.parameters.names, p))
