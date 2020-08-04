@@ -3,7 +3,7 @@ from __future__ import division, print_function
 from ._global_imports import *
 
 from ._backends import NestedBackend
-from ._runs import Runs
+from ._runs import Runs, ParameterError
 from ._run import Run # for Sphinx docstring cross-references
 
 class Params(object):

@@ -100,9 +100,8 @@ class Runs(Metadata):
                   likelihood=None, **kwargs):
         """ Construct a :class:`~.Runs` instance by loading distinct runs.
 
-        The kwargs will be shared by nested sampling runs. The
-        args must be lists that will be zipped to instantiate a set of
-        run backends.
+        The kwargs will be shared by nested sampling runs. The args must be
+        lists that will be zipped to instantiate a set of run backends.
 
         """
         # if there is a transform method available, try to wrap it
@@ -118,7 +117,8 @@ class Runs(Metadata):
                 def _transform(q, **kwargs):
                     p = [q[names.index(name)] for name in likelihood.names]
                     p = transform(p, **kwargs)
-                    return _np.concatenate((q, p[len(likelihood):]))
+                    _q = [p[likelihood.names.index(name)] for name in names[:len(likelihood)]]
+                    return _np.concatenate((_q, p[len(likelihood):]))
                 _overwrite = kwargs.pop('overwrite_transformed', False)
         else:
             _transform = None

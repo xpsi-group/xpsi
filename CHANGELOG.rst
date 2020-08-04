@@ -125,11 +125,16 @@ Added
   which posteriors are plotted given the input order.
 * Post-processing switches to overwrite transformed-sample files and
   combined-run files on disk.
-* Workaround (hack) to handle case where due to API changes, the relationship
+* Workaround to handle the case where due to API changes, the relationship
   between sample parameter vectors on disk and the parameter vector in the
   current API are related not just by reordering, but transformations. This
   is demonstrated in the post-processing tutorial instead of transforming the
-  original sample files on disk in place.
+  original sample files on disk in place, the transformed files written to disk
+  contain both the transformed vector (same number of elements) to match the
+  parameters defined under the current API (the order of the vector can be
+  different between the :class:`xpsi.ParameterSubspace` underlying with a
+  :class:`xpsi.Likelihood` instance and the files on disk containing the
+  transformed samples), and the additional derived parameters.
 
 Changed
 ^^^^^^^

@@ -251,7 +251,6 @@ class SignalPlotter(PostProcessor):
                 for i in _range(thetas.shape[0], desc='Signal caching loop'):
                     likelihood([thetas[i,run.get_index(n)] for n in names])
                     cache.cache(signal.caching_targets)
-
         elif cache and h5py is None:
             raise ImportError('You need to install h5py to use caching.')
 
