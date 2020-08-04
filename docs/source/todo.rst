@@ -19,6 +19,9 @@ it might be identical to v1.b.
 
 * Compute secondary images, and more generally images up to some optional order
   using surface discretisation. *Target: minor release v0.a*.
+* Make a dedicated directory for the tutorial notebooks in the documentation
+  pages, link to them on GitHub, and state what is necessary to run those
+  notebooks completely. *Target: major release v1.0*.
 * Port to a Python 2/3 compatible state. *Target: minor release v1.a or major \
   release v2.0*.
 * Unit testing. At present we are relying on the tutorial
@@ -32,9 +35,6 @@ Prospective
 
 Unordered.
 
-* Make a dedicated directoty for the tutorial notebooks in the documentation
-  pages, link to them on GitHub, and state what is necessary to run those
-  notebooks completely.
 * Implement a simpler switch between atmosphere model extensions (e.g.,
   blackbody to numerical lookup table), rather than user having to remember to
   modify the relevant ``.pyx`` source file (e.g., by replacing function bodies
