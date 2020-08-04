@@ -25,19 +25,27 @@ class Data(object):
     using the ``@classmethod`` decorator, for instance to load event data from
     disk into a compatible data structure in memory.
 
-    .. note:: You can subclass in order to tailor the handling of the event
-              data, for instance to implement a likelihood functions for
-              unbinned event data.
+    .. note::
+
+        You can subclass in order to tailor the handling of the event data, for
+        instance to implement a likelihood functions for unbinned event data.
 
     :param int first:
-        The first instrument channel containing events.
+        The first (loaded) instrument channel containing events (see note below).
 
     :param int last:
-        The last instrument channel containing events
+        The last (loaded) instrument channel containing events (see note below).
 
-    .. note:: For treatment of the incident signal, it is assumed that
-              that events span a contiguous subset of channels,
-              between and including the :obj:`first` and :obj:`last` channels.
+    .. note::
+
+        For treatment of the incident signal, it is assumed that that events
+        span a contiguous subset of channels, between and including the
+        :obj:`first` and :obj:`last` channels. Moreover, the :obj:`first` and
+        :obj:`last+1` channels are used to index the instrument response matrix.
+        Therefore, if you load only a submatrix of the full instrument response
+        matrix, these indices must be appropriate for the loaded submatrix, and
+        must not be the true channel numbers (this information is instead
+        loaded in the :class:`xpsi.Instrument` channels).
 
     :param float exposure_time:
         The exposure time, in seconds, to acquire this set of event data.
