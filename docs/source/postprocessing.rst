@@ -45,7 +45,7 @@ Base classes for development
 
     xpsi.PostProcessing._signalplot.SignalPlot
     xpsi.PostProcessing._postprocessor.PostProcessor
-    xpsi.PostProcessing._backends.NSBackend
+    xpsi.PostProcessing._backends.NestedBackend
     xpsi.PostProcessing._run.Run
     xpsi.PostProcessing._metadata.Metadata
 
