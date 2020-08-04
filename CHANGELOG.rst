@@ -119,6 +119,13 @@ Added
   function body comments.
 * Explain in :class:`xpsi.PostProcessing.CornerPlotter` docstring the order in
   which posteriors are plotted given the input order.
+* Post-processing switches to overwrite transformed-sample files and
+  combined-run files on disk.
+* Workaround (hack) to handle case where due to API changes, the relationship
+  between sample parameter vectors on disk and the parameter vector in the
+  current API are related not just by reordering, but transformations. This
+  is demonstrated in the post-processing tutorial instead of transforming the
+  original sample files on disk in place.
 
 Changed
 ^^^^^^^
