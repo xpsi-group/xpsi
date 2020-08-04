@@ -149,21 +149,21 @@ class Prior(object):
             A key sometimes passed is ``old_API``, which flags whether a
             transformation needs to account for a parameter vector written to
             file by an older software version, which might be different in
-            due to  monotone transformations of parameters defined in the
-            current software version.
+            due to transformations of parameters defined in the current
+            software version.
 
         .. note::
 
             As an example, the :ref:`R19` samples are in inclination :math:`i`
             instead of :math:`\cos(i)` which is the current inclination
             parameter in the API. Therefore the transformation needed depends
-            on the source of the parameter vector.  If the vector is from the
-            original sample files, and one aims to plot the posterior
-            distribution of :math:`\cos(i)`, then it needs to be a derived
-            parameter. However, when drawing samples from the prior in the
-            current API, one can simply copy the :math:`\cos(i)` parameter
-            value when appending to the parameter list, instead of taking the
-            cosine.
+            on the source of the parameter vector. If the vector is from the
+            original sample files, then it needs to be transformed to have
+            the same parameter definitions as the current API. However, when
+            drawing samples from the prior in the current API, no such
+            transformation needs to be performed because these are the
+            definitions we need to match. Refer to the dummy example code
+            in the method body.
 
         :returns: Transformed vector ``p`` where ``len(p) > len(self)``.
         :rtype: *list*
@@ -172,6 +172,15 @@ class Prior(object):
         # it is suggested that you copy like this when you overwrite
         # to make a mutable container that can be appended to and returned
         p = list(p)
+
+        # example transformation of parameters to match API definitions if
+        # this method is bound
+        if kwargs.get(old_API, False):
+            idx = self.parameters.index('cos_inclination')
+            p[idx] = math.cos(p[idx])
+
+        # used ordered names and values if this method is bound
+        ref = dict(zip(self.parameters.names, p))
 
         raise NotImplementedError('Define a transformation.')
 
