@@ -61,7 +61,11 @@ Fixed
 ^^^^^
 
 * The :class:`xpsi.Data` docstring explanation of the channel limits has been
-  improved for clarity.
+  improved for clarity: these bounds correspond to the *loaded* instrument
+  response (sub)matrix and are used to index it.
+* Conversely, the :class:`xpsi.Instrument` channel numbers correspond to the
+  true channel numbers of the instrument and are used for plotting, not
+  response (sub)matrix indexing. This has been clarified in the docstring.
 * Update extension module for background marginalisation to take distinct phase
   sets associated with hot regions.
 * The constructor :meth:`xpsi.Spacetime.fixed_spin` inclination upper bound
@@ -133,8 +137,8 @@ Changed
 * Change (Earth) inclination parameter :math:`i` to :math:`\cos(i)` so that the
   default prior density function is isotropic.
 * The :class:`xpsi.Data` definition of the ``last`` channel has changed to be
-  the index of the last channel instead of the index of the last channel plus
-  one; this means that the value exposed via a property is ``last+1``.
+  the index of the last channel, instead of being the index of the last channel
+  plus one; this means that the value exposed via a property is ``last+1``.
 * For numerical atmospheres of same number of grid dimensions, improved
   extension ``surface_radiation_field/archive/{hot,elsewhere}/numerical.pyx``
   module to infer grid size for memory allocation and interpolation searches

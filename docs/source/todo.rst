@@ -32,6 +32,9 @@ Prospective
 
 Unordered.
 
+* Make a dedicated directoty for the tutorial notebooks in the documentation
+  pages, link to them on GitHub, and state what is necessary to run those
+  notebooks completely.
 * Implement a simpler switch between atmosphere model extensions (e.g.,
   blackbody to numerical lookup table), rather than user having to remember to
   modify the relevant ``.pyx`` source file (e.g., by replacing function bodies
