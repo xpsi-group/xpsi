@@ -162,6 +162,19 @@ Changed
   phase parameter does not require many iterations to decrement or increment to
   unit interval (achieved simply with floor operation).
 
+Removed
+^^^^^^^
+
+* The ensemble MCMC sample backend for post-processing because we do not expect
+  it to be useful in the immediate future, but requires some non-trivial
+  development work to meld properly with the current post-processing module
+  which is focussed on nested sampling. This functionality will be reintroduced
+  in a future release (refer to :ref:`todo`). The ensemble sampler can still be
+  run, however, and the native backend for accessing sample information on disk
+  is demonstrated in a tutorial notebook. However, the runs cannot be processed
+  for posterior integrals and visualisation using the same tools as available
+  for nested sampling runs.
+
 Attribution
 ^^^^^^^^^^^
 

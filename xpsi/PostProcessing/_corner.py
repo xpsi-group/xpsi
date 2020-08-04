@@ -1135,4 +1135,3 @@ class CornerPlotter(PostProcessor):
                                   simulate_weights=simulate_weights,
                                   flip_skew=flip_skew)[0] for q in quantiles]
         return _quantiles
-

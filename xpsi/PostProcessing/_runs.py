@@ -20,12 +20,11 @@ class ParameterError(xpsiError):
 class Runs(Metadata):
     """ Container for nested sampling runs on a shared posterior.
 
-    :param likelihood: The instance of :class:`~.Likelihood` used for
-                       sampling, or a clone of that instance. Defaults to
-                       ``None``. If multiple likelihood functions are
-                       associated with the runs due to discreteness in the
-                       model space, one can pass a dictionary with keys
-                       matching the IDs of the runs.
+    :param likelihood:
+        The instance of :class:`~.Likelihood` used for sampling, or a clone of
+        that instance. Defaults to ``None``. If multiple likelihood functions
+        are associated with the runs due to discreteness in the model space,
+        one can pass a dictionary with keys matching the IDs of the runs.
 
     """
 
@@ -264,5 +263,3 @@ class Runs(Metadata):
         else:
             return [getattr(run, attribute) for run in \
                                      (self._subset if current else self._runs)]
-
-

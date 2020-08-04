@@ -29,6 +29,10 @@ it might be identical to v1.b.
   *Target: minor release v1.b*.
 * Post-processing option to compute highest-density credible intervals
   (appropriate for multi-modal marginal posterior). *Target: minor release v1.c*.
+* Reintroduce support for post-processing of ensemble MCMC samples (the outdated
+  backend was removed for ``v0.5`` release pending the necessary development to
+  enable post-processing with the current API; that backend only ever worked
+  pre-``v0.1`` but was not removed because of the intent to update it).
 
 Prospective
 ^^^^^^^^^^^
