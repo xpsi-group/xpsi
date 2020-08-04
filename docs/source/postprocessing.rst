@@ -55,7 +55,7 @@ Base classes for development
 .. autoclass:: xpsi.PostProcessing._postprocessor.PostProcessor
     :members:
 
-.. autoclass:: xpsi.PostProcessing._backends.NSBackend
+.. autoclass:: xpsi.PostProcessing._backends.NestedBackend
     :members:
     :show-inheritance:
 
