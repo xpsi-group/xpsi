@@ -45,16 +45,24 @@ class Instrument(ParameterSubspace):
     :param ndarray[p] channels:
         Instrument channel numbers which must be equal in number to the first
         dimension of the :attr:`matrix`: the number of channels must be
-        :math:`p`. The channel numbers must be monotonically increasing.
-        These channels will correspond to the nominal response matrix and any
-        deviation from this matrix (see above).
+        :math:`p`. The channel numbers must increment by one. These channels
+        will correspond to the nominal response matrix and any deviation from
+        this matrix (see above).
 
-    .. note:: The dimensions of the response matrix need not be equal, but
-              it is required that the number of input intervals be greater
-              than or equal to the number of output channels -- i.e.,
-              :math:`p \leq q`. If :math:`p < q` then it is implied that
-              subsets of adjacent output channels are effectively grouped
-              together.
+    .. note::
+
+        That these channel labels are not used to index arrays, and advisable
+        therefore are the actual instrument channels so that plots using these
+        labels are clear. The :attr:`xpsi.Data.channel_range` property returns
+        channel numbers that index the loaded instrument response (ub)matrix.
+
+    .. note::
+
+        The dimensions of the response matrix need not be equal, but it is
+        required that the number of input intervals be greater than or equal to
+        the number of output channels -- i.e., :math:`p \leq q`. If :math:`p <
+        q` then it is implied that subsets of adjacent output channels are
+        effectively grouped together.
 
     :param tuple args:
         Container of parameter instances.
@@ -204,6 +212,7 @@ class Instrument(ParameterSubspace):
             assert self._energy_edges.ndim == 1
             assert (self._energy_edges >= 0.0).all()
             assert self._energy_edges.shape[0] == self._matrix.shape[1] + 1
+            assert not (self._energy_edges[1:] <= self._energy_edges[:-1]).any()
         except AssertionError:
             raise EdgesError('Energy edges must be in a one-dimensional '
                              'array, and must be postive.')
@@ -228,6 +237,7 @@ class Instrument(ParameterSubspace):
             assert self._channels.ndim == 1
             assert (self._channels >= 0).all()
             assert self._channels.shape[0] == self._matrix.shape[0]
+            assert not (self._channels[1:] - self._channels[:-1] != 1).any()
         except AssertionError:
             raise ChannelError('Channel numbers must be in a '
                                'one-dimensional array, and must all be '
