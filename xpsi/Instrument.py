@@ -51,10 +51,11 @@ class Instrument(ParameterSubspace):
 
     .. note::
 
-        That these channel labels are not used to index arrays, and advisable
-        therefore are the actual instrument channels so that plots using these
-        labels are clear. The :attr:`xpsi.Data.channel_range` property returns
-        channel numbers that index the loaded instrument response (ub)matrix.
+        That these channel labels are not used to index the loaded instrument
+        (sub)matrix, and it is therefore advisable that these numbers arae the
+        actual instrument channel numbers so that plots using these labels are
+        clear. The :attr:`xpsi.Data.channel_range` property returns channel
+        numbers that index the loaded instrument response (sub)matrix.
 
     .. note::
 

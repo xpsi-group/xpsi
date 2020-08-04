@@ -45,7 +45,7 @@ class Data(object):
         Therefore, if you load only a submatrix of the full instrument response
         matrix, these indices must be appropriate for the loaded submatrix, and
         must not be the true channel numbers (this information is instead
-        loaded in the :class:`xpsi.Instrument` channels).
+        loaded in the :class:`xpsi.Instrument`).
 
     :param float exposure_time:
         The exposure time, in seconds, to acquire this set of event data.
