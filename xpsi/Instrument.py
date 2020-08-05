@@ -5,7 +5,6 @@ __all__ = ["Instrument"]
 from .global_imports import *
 from . import global_imports
 
-from abc import abstractmethod
 from .ParameterSubspace import ParameterSubspace
 
 class ResponseError(xpsiError):
