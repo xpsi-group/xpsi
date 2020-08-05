@@ -202,6 +202,12 @@ in four dimensions.
                          double mu,
                          const double *const VEC,
                          void *const data) nogil:
+        # Arguments:
+        # E = photon energy in keV
+        # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+        # VEC = variables such as temperature, effective gravity, ...
+        # data = numerical model data required for intensity evaluation
+
         # This function must cast the void pointer appropriately for use.
         cdef DATA *D = <DATA*> data
 
@@ -360,12 +366,12 @@ in four dimensions.
 
         return I * pow(10.0, 3.0 * vec[0])
 
-
     cdef double eval_hot_norm() nogil:
         # Source radiation field normalisation which is independent of the
         # parameters of the parametrised model -- i.e. cell properties, energy,
         # and angle.
         # Writing the normalisation here reduces the number of operations required
         # during integration.
+        # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
         return erg / 4.135667662e-18
