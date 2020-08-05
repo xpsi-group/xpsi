@@ -174,12 +174,16 @@ advisory workflow.
   the workflow above by branching (again) off of an up-to-date ``master``.
   If your work *is* conditional on your open pull requests, you are free to
   continue your development by commiting to the relevant topic branch (or
-  according to some other branching scheme. However, there is a risk that more
+  according to some other branching scheme). However, there is a risk that more
   work will be needed if the open pull request is not merged into the central
-  repository; oor if only a subset of proposed changes are merged; or conflict
+  repository; or if only a subset of proposed changes are merged; or conflict
   resolution does not favour all of the changes you proposed. Of course, such
   work may nevertheless remain useful in your own applications even if it is
-  never all merged into the central repository.
+  never all merged into the central repository. If the pull request is merged
+  after your continuation, and the plan is submit a future pull request, you
+  will have to merge in the ``xpsi/master`` branch before opening another
+  pull request so that the merge conflicts that were already resolved are not
+  raised again.
 
 * The above workflow also applies to remote branches other than ``master`` that
   might exist in the ``xpsi`` repository that you wish to contribute to, but

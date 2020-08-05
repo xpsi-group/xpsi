@@ -6,7 +6,7 @@ Instrument
 ==========
 
 Instances of :class:`~.Instrument.Instrument` are objects representing a model
-instruments.
+instrument.
 
 .. autoclass:: xpsi.Instrument.Instrument
     :members: matrix, energy_edges, cached_signal, construct_matrix
