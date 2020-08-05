@@ -33,6 +33,8 @@ it might be identical to v1.b.
   backend was removed for ``v0.5`` release pending the necessary development to
   enable post-processing with the current API; that backend only ever worked
   pre-``v0.1`` but was not removed because of the intent to update it).
+* Update HPC usage guide, specifically for the SURFsara systems. *Target: \
+  release v1.0*.
 
 Prospective
 ^^^^^^^^^^^
