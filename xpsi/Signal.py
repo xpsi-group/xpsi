@@ -90,6 +90,12 @@ class Signal(ParameterSubspace):
         else:
             self._instrument = instrument
 
+        a, b = data.index_range
+        if (data.channels != instrument.channels[a:b]).any():
+            raise ValueError('Channel array declared for event data does not '
+                             'match channel array declared for the loaded '
+                             'instrument response (sub)matrix.')
+
         self._identify_waveband()
 
         if background is not None:

@@ -34,7 +34,7 @@ Attribution
 ^^^^^^^^^^^
 
 
-[v0.5.0] - 2020-08-01
+[v0.5.0] - 2020-08-05
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -60,12 +60,12 @@ Summary
 Fixed
 ^^^^^
 
-* The :class:`xpsi.Data` docstring explanation of the channel limits has been
-  improved for clarity: these bounds correspond to the *loaded* instrument
-  response (sub)matrix and are used to index it.
-* Conversely, the :class:`xpsi.Instrument` channel numbers correspond to the
-  true channel numbers of the instrument and are used for plotting, not
-  response (sub)matrix indexing. This has been clarified in the docstring.
+* The :class:`xpsi.Data` docstring explanations have been improved for clarity,
+  mainly regarding the instrument channel definitions. The explanation is of how
+  the information contained in a :class:`xpsi.Data` instance pertains to the
+  *loaded* instrument response (sub)matrix.
+* The :class:`xpsi.Instrument` docstrings have also been improved for clarity,
+  explaining the relationship to :class:`xpsi.Data` in more detail.
 * Update extension module for background marginalisation to take distinct phase
   sets associated with hot regions.
 * The constructor :meth:`xpsi.Spacetime.fixed_spin` inclination upper bound
@@ -88,9 +88,6 @@ Fixed
 * Fix bugs in ``CustomPrior`` class (:ref:`example_script`; these example
   modules were not run at the time of translation between past API versions, so
   only found bugs when making post-processing tutorial for this release).
-* Added a channels property to :class:`xpsi.Instrument` as required by the
-  post-processing module (namely, :class:`xpsi.PostProcessing.Residual` plot
-  and the other signal plot classes).
 * The formatting of annotated credible intervals in
   :class:`xpsi.PostProcessing.CornerPlotter` has been improved by inferring the
   largest number of decimal places needed for two non-zero decimal digits, and
@@ -101,15 +98,25 @@ Fixed
 Added
 ^^^^^
 
-* The :class:`xpsi.Data` has added default behaviour so that in some common
+* The :class:`xpsi.Data` is now concrete in implementation, such that in common
   usage patterns, it does not need to be subclassed.
+* A constructor to :class:`xpsi.Data` to load a phase-folded event list and
+  phase-bin the events in a subset of selected channels.
+* A :meth:`xpsi.Data.channels` property that holds the instrument channels
+  to be checked by a :class:`xpsi.Signal` instance against those declared for
+  the loaded instrument response (sub)matrix.
+* A :meth:`xpsi.Instrument.channels` property that holds the instrument
+  channels to be checked by a :class:`xpsi.Signal` instance against those
+  declared for the event data matrix. This property as also required by the
+  post-processing module (namely, :class:`xpsi.PostProcessing.Residual` plot
+  and the other signal plot classes).
 * Support for multiple instruments operating on the same incident signal due to
   assumed effective time-invariance of the signal generated during one
   rotational cycle of the surface radiation field.
 * Module to call atmosphere extensions directly (without the calls being
-  embedded in integration algorithms), for checking implementation of complicated
-  atmospheres such as those requiring interpolation with respect to a numerical
-  lookup table.
+  embedded in integration algorithms), for checking implementation of
+  complicated atmospheres such as those requiring interpolation with respect to
+  a numerical lookup table.
 * Support for the extension module for calculating the local surface radiation
   field variables to read in numerical model data. An example extension module
   designed to execute nearest-neighbour lookup amonst an general unstructured
@@ -142,8 +149,9 @@ Changed
 * Change (Earth) inclination parameter :math:`i` to :math:`\cos(i)` so that the
   default prior density function is isotropic.
 * The :class:`xpsi.Data` definition of the ``last`` channel has changed to be
-  the index of the last channel, instead of being the index of the last channel
-  plus one; this means that the value exposed via a property is ``last+1``.
+  the index of the last row in the loaded instrument response (sub)matrix,
+  instead of being the index of the last row plus one; this means that the
+  value exposed via a property is ``last+1``.
 * For numerical atmospheres of same number of grid dimensions, improved
   extension ``surface_radiation_field/archive/{hot,elsewhere}/numerical.pyx``
   module to infer grid size for memory allocation and interpolation searches
@@ -166,6 +174,14 @@ Changed
 * In extensions, modified phase shifting so that a shift permitted by unbounded
   phase parameter does not require many iterations to decrement or increment to
   unit interval (achieved simply with floor operation).
+
+Deprecated
+^^^^^^^^^^
+
+* The :meth:`xpsi.Data.channel_range` property has been renamed to
+  :meth:`xpsi.Data.index_range` so as to avoid confusion between these numbers
+  and the true instrument channels. *The old property will be removed for
+  release v1.0*.
 
 Removed
 ^^^^^^^

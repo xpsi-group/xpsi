@@ -250,7 +250,7 @@ class Instrument(ParameterSubspace):
 
 
         if not (self._channels[1:] - self._channels[:-1] != 1).any():
-            yield 'Warning: Channel numbers do not uniformly increment by one.'
-                  '\n         Please check for correctness.'
+            yield ('Warning: Channel numbers do not uniformly increment by one.'
+                   '\n         Please check for correctness.')
 
         yield
