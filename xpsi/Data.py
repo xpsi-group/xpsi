@@ -4,6 +4,7 @@ __all__ = ["Data"]
 
 from .global_imports import *
 from . import global_imports
+from . import make_verbose
 
 class Data(object):
     """ A container for event data.
@@ -34,6 +35,16 @@ class Data(object):
         A :class:`~numpy.ndarray` of count numbers. The columns must map to
         the phase intervals given by :obj:`phases`. The rows of the array map
         to some subset of instrument channels.
+
+    :param ndarray[n] channels:
+        Instrument channel numbers which must be equal in number to the first
+        dimension of the :attr:`matrix`: the number of channels must be
+        :math:`p`. These channels will correspond to the nominal response
+        matrix and any deviation from this matrix (see above). In common usage
+        patterns, the channel numbers will increase monotonically with row
+        number, and usually increment by one (but this is not necessary). It is
+        advisable that these numbers are the actual instrument channel numbers
+        so that plots using these labels are clear.
 
     :param ndarray[m+1] phases:
         A :class:`~numpy.ndarray` of phase interval edges, where events are
@@ -73,7 +84,20 @@ class Data(object):
         The exposure time, in seconds, to acquire this set of event data.
 
     """
-    def __init__(self, counts, phases, first, last, exposure_time):
+    def __init__(self, counts, channels, phases, first, last, exposure_time):
+
+        if not isinstance(counts, _np.ndarray):
+            raise TypeError('Counts object is not a ``numpy.ndarray``.')
+        else:
+            self._counts = counts
+
+        self.channels = channels
+
+        if not isinstance(phases, _np.ndarray):
+            raise TypeError('Phases object is not a ``numpy.ndarray``.')
+        else:
+            self._phases = phases
+
         try:
             self._first = int(first)
             self._last = int(last)
@@ -84,21 +108,11 @@ class Data(object):
             raise ValueError('The first channel number must be lower than the '
                              'the last channel number.')
 
-        self._exposure_time = exposure_time
-
-        if not isinstance(counts, _np.ndarray):
-            raise TypeError('Counts object is not a ``numpy.ndarray``.')
-        else:
-            self._counts = counts
-
         if self._counts.shape[0] != self._last - self._first + 1:
             raise ValueError('The number of rows must be compatible '
                              'with the first and last channel numbers.')
 
-        if not isinstance(phases, _np.ndarray):
-            raise TypeError('Phases object is not a ``numpy.ndarray``.')
-        else:
-            self._phases = phases
+        self._exposure_time = exposure_time
 
     @property
     def exposure_time(self):
@@ -117,7 +131,7 @@ class Data(object):
 
     @property
     def index_range(self):
-        """ Get a 2-tuple containing the bounding channels. """
+        """ Get a 2-tuple of the bounding response-matrix row indices. """
         return (self._first, self._last + 1) # plus one for array indexing
 
     @property
@@ -125,11 +139,45 @@ class Data(object):
         """ Deprecated property name. To be removed for v1.0. """
         return self.index_range
 
+    @property
+    def channels(self):
+        return self._channels
+
+    @make_verbose('Setting channels for event data',
+                  'Channels set')
+    @channels.setter
+    def channels(self, array):
+        if not isinstance(array, _np.ndarray):
+            try:
+                self._channels = _np.array(array)
+            except TypeError:
+                raise ChannelError('Channel numbers must be in a '
+                                   'one-dimensional array, and must all be '
+                                   'positive integers including zero.')
+        else:
+            self._channels = array
+
+        try:
+            assert self._channels.ndim == 1
+            assert (self._channels >= 0).all()
+            assert self._channels.shape[0] == self._counts.shape[0]
+        except AssertionError:
+            raise ChannelError('Channel numbers must be in a '
+                               'one-dimensional array, and must all be '
+                               'positive integers including zero.')
+
+        if not (self._channels[1:] - self._channels[:-1] != 1).any():
+            yield 'Warning: Channel numbers do not uniformly increment by one.'
+                  '\n         Please check for correctness.'
+
+        yield
+
     @make_verbose('Loading event list and phase binning',
                   'Events loaded and binned')
     @classmethod
     def phase_bin__event_list(cls, path, channels, phases,
                               phase_shift=0.0,
+                              phase_column=1,
                               skiprows=1, *args, **kwargs):
         """ Load a phase-folded event list and bin the events in phase.
 
@@ -145,27 +193,44 @@ class Data(object):
             handling the instrument response matrix and count number matrix to
             match in row-to-channel definitions.
 
-        """
+        :param list phases:
+            An ordered sequence of phase-interval edges on the unit interval.
+            The first and last elements will almost always be zero and unity
+            respectively.
 
+        :param float phase_shift:
+            A phase-shift in cycles to be applied when binning the events in
+            phase.
+
+        :param int phase_column:
+            The column in the loaded file containing event phases. Either zero
+            or one.
+
+        :param int skiprows:
+            The number of top rows to skip when loading the events from file.
+            The top row of couple of rows will typically be reserved for
+            column headers.
+
+        """
         events = _np.loadtxt(path, skiprows=skiprows)
 
         channels = list(channels)
+        channel_col = int(not phase_column)
 
-        yield 'Total number of events: %i' % events.shape[0]
+        yield 'Total number of events: %i.' % events.shape[0]
 
         data = _np.zeros((len(channels), len(phases)-1), dtype=_np.int)
 
-        yield 'Number of events constituting data set: %i' % _np.sum(data)
-
         for i in range(events.shape[0]):
-            if events[i,1] in channels:
-                _temp = events[i,0] + phase_shift
+            if events[i,channel_col] in channels:
+                _temp = events[i,phase_column] + phase_shift
                 _temp -= _np.floor(_temp)
 
                 for j in range(phases.shape[0]-1):
                     if phases[j] <= _temp <= phases[j+1]:
-                        data[channels.index(int(events[i,1]),j] += 1
+                        data[channels.index(int(events[i,channel_col])),j] += 1
                         break
 
-        cls(data, phases, *args, **kwargs)
+        yield 'Number of events constituting data set: %i.' % _np.sum(data)
 
+        yield cls(data, channels, _np.array(phases), *args, **kwargs)

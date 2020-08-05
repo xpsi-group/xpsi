@@ -5,6 +5,8 @@ __all__ = ["Instrument"]
 from .global_imports import *
 from . import global_imports
 
+from . import make_verbose
+
 from .ParameterSubspace import ParameterSubspace
 
 class ResponseError(xpsiError):
@@ -44,17 +46,19 @@ class Instrument(ParameterSubspace):
     :param ndarray[p] channels:
         Instrument channel numbers which must be equal in number to the first
         dimension of the :attr:`matrix`: the number of channels must be
-        :math:`p`. The channel numbers must increment by one. These channels
-        will correspond to the nominal response matrix and any deviation from
-        this matrix (see above).
+        :math:`p`. These channels will correspond to the nominal response
+        matrix and any deviation from this matrix (see above). In common usage
+        patterns, the channel numbers will increase monotonically with row
+        number, and usually increment by one (but this is not necessary).
 
     .. note::
 
         That these channel labels are not used to index the loaded instrument
-        (sub)matrix, and it is therefore advisable that these numbers arae the
+        (sub)matrix, and it is therefore advisable that these numbers are the
         actual instrument channel numbers so that plots using these labels are
-        clear. The :attr:`xpsi.Data.channel_range` property returns channel
-        numbers that index the loaded instrument response (sub)matrix.
+        clear. The :attr:`xpsi.Data.index_range` property returns bounding row
+        numbers that index the loaded instrument response (sub)matrix in order
+        to operate on an incident signal flux.
 
     .. note::
 
@@ -221,6 +225,8 @@ class Instrument(ParameterSubspace):
     def channels(self):
         return self._channels
 
+    @make_verbose('Setting channels for loaded instrument response (sub)matrix',
+                  'Channels set')
     @channels.setter
     def channels(self, array):
         if not isinstance(array, _np.ndarray):
@@ -237,8 +243,14 @@ class Instrument(ParameterSubspace):
             assert self._channels.ndim == 1
             assert (self._channels >= 0).all()
             assert self._channels.shape[0] == self._matrix.shape[0]
-            assert not (self._channels[1:] - self._channels[:-1] != 1).any()
         except AssertionError:
             raise ChannelError('Channel numbers must be in a '
                                'one-dimensional array, and must all be '
                                'positive integers including zero.')
+
+
+        if not (self._channels[1:] - self._channels[:-1] != 1).any():
+            yield 'Warning: Channel numbers do not uniformly increment by one.'
+                  '\n         Please check for correctness.'
+
+        yield
