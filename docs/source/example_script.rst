@@ -67,9 +67,10 @@ Main
 
     path = 'data/NICER_J0030_PaulRay_fixed_evt_25to299__preprocessed.txt'
     obs_settings = dict(counts=np.loadtxt(path, dtype=np.double),
+                        channels=np.arange(25, 300),
+                        phases=np.linspace(0.0, 1.0, 33),
                         first=0, last=274,
-                        exposure_time=1936864.0,
-                        phases=np.linspace(0.0, 1.0, 33))
+                        exposure_time=1936864.0)
 
     data = xpsi.Data(**obs_settings)
 

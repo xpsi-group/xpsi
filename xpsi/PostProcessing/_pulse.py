@@ -523,15 +523,15 @@ class PulsePlot(SignalPlot):
 
         # 2D
         registered = self._ax_registered.pcolormesh(self._phases,
-                                      ref.instrument.channels,
+                                      ref.data.channels,
                                       total,
                                       cmap = cm.get_cmap(self._registered_cmap),
                                       linewidth = 0,
                                       rasterized = self._rasterized)
 
         registered.set_edgecolor('face')
-        self._ax_registered.set_ylim([ref.instrument.channels[0],
-                                      ref.instrument.channels[-1]])
+        self._ax_registered.set_ylim([ref.data.channels[0],
+                                      ref.data.channels[-1]])
         self._ax_registered.set_yscale('log')
 
         self._registered_cb = plt.colorbar(registered,

@@ -762,8 +762,8 @@ class SpectrumPlot(SignalPlot):
                                           **self._background_line_kwargs)
 
         ax = self._ax_registered_1d
-        ax.set_xlim([ref.instrument.channels[0],
-                     ref.instrument.channels[-1]])
+        ax.set_xlim([ref.data.channels[0],
+                     ref.data.channels[-1]])
         locmaj = LogLocator(base=10.0, numticks=100)
         ax.yaxis.set_major_locator(locmaj)
 
@@ -788,7 +788,7 @@ class SpectrumPlot(SignalPlot):
             for i in range(total.shape[1]):
                 total[:,i] += self.expected_background
 
-        registered = self._ax_registered.pcolormesh(ref.instrument.channels,
+        registered = self._ax_registered.pcolormesh(ref.data.channels,
                                     self._phases,
                                     total.T, # channel number as x-axis
                                     cmap = cm.get_cmap(self._registered_cmap),
@@ -796,8 +796,8 @@ class SpectrumPlot(SignalPlot):
                                     rasterized = self._rasterized)
 
         registered.set_edgecolor('face')
-        self._ax_registered.set_xlim([ref.instrument.channels[0],
-                                      ref.instrument.channels[-1]])
+        self._ax_registered.set_xlim([ref.data.channels[0],
+                                      ref.data.channels[-1]])
 
         self._registered_cb = plt.colorbar(registered,
                                            cax=self._ax_registered_cb,
@@ -815,7 +815,7 @@ class SpectrumPlot(SignalPlot):
         elif 'ls' in kwargs:
             kwargs['linestyle'] = kwargs.pop('ls')
 
-        ax.step(self._signal.instrument.channels,
+        ax.step(self._signal.data.channels,
                 spectrum,
                 where='mid',
                 **kwargs)
@@ -836,7 +836,7 @@ class SpectrumPlot(SignalPlot):
                   'Credible intervals added')
     def _add_registered_contours(self, callback, thetas):
         """ Add contours to 1D count-rate spectrum axes objects. """
-        self._add_contours(callback, thetas, self._signal.instrument.channels,
+        self._add_contours(callback, thetas, self._signal.data.channels,
                            self._ax_registered_1d,
                            self._ax_registered_1d_cb,
                            **self._registered_contour_kwargs)

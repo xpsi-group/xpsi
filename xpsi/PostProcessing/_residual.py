@@ -148,7 +148,7 @@ class ResidualPlot(SignalPlot):
             self._set_vminmax()
 
         data = self._ax_data.pcolormesh(self._signal.data.phases,
-                                        self._signal.instrument.channels,
+                                        self._signal.data.channels,
                                         self._signal.data.counts/2.0,
                                         cmap = cm.get_cmap(self._data_cmap),
                                         vmin = self._vmin,
@@ -158,7 +158,7 @@ class ResidualPlot(SignalPlot):
         data.set_edgecolor('face')
 
         data = self._ax_data.pcolormesh(self._signal.data.phases + 1.0,
-                                        self._signal.instrument.channels,
+                                        self._signal.data.channels,
                                         self._signal.data.counts/2.0,
                                         cmap = cm.get_cmap(self._data_cmap),
                                         vmin = self._vmin,
@@ -167,8 +167,8 @@ class ResidualPlot(SignalPlot):
                                         rasterized = self._rasterized)
         data.set_edgecolor('face')
 
-        self._ax_data.set_ylim([self._signal.instrument.channels[0],
-                                self._signal.instrument.channels[-1]])
+        self._ax_data.set_ylim([self._signal.data.channels[0],
+                                self._signal.data.channels[-1]])
         self._ax_data.set_yscale('log')
 
         self._data_cb = plt.colorbar(data, cax=self._ax_data_cb,
@@ -187,7 +187,7 @@ class ResidualPlot(SignalPlot):
             self._set_vminmax()
 
         model = self._ax_model.pcolormesh(self._signal.data.phases,
-                                          self._signal.instrument.channels,
+                                          self._signal.data.channels,
                                           self.expected_counts/2.0,
                                           cmap = cm.get_cmap(self._model_cmap),
                                           vmin = self._vmin,
@@ -197,7 +197,7 @@ class ResidualPlot(SignalPlot):
         model.set_edgecolor('face')
 
         model = self._ax_model.pcolormesh(self._signal.data.phases + 1.0,
-                                          self._signal.instrument.channels,
+                                          self._signal.data.channels,
                                           self.expected_counts/2.0,
                                           cmap = cm.get_cmap(self._model_cmap),
                                           vmin = self._vmin,
@@ -206,8 +206,8 @@ class ResidualPlot(SignalPlot):
                                           rasterized = self._rasterized)
         model.set_edgecolor('face')
 
-        self._ax_model.set_ylim([self._signal.instrument.channels[0],
-                                 self._signal.instrument.channels[-1]])
+        self._ax_model.set_ylim([self._signal.data.channels[0],
+                                 self._signal.data.channels[-1]])
         self._ax_model.set_yscale('log')
 
         self._model_cb = plt.colorbar(model, cax=self._ax_model_cb,
@@ -227,7 +227,7 @@ class ResidualPlot(SignalPlot):
         vmax =  _np.max( _np.abs( self._residuals ) )
 
         resid = self._ax_resid.pcolormesh(self._signal.data.phases,
-                                      self._signal.instrument.channels,
+                                      self._signal.data.channels,
                                       self._residuals,
                                       cmap = cm.get_cmap(self._residual_cmap),
                                       vmin = -vmax,
@@ -237,7 +237,7 @@ class ResidualPlot(SignalPlot):
         resid.set_edgecolor('face')
 
         resid = self._ax_resid.pcolormesh(self._signal.data.phases + 1.0,
-                                      self._signal.instrument.channels,
+                                      self._signal.data.channels,
                                       _np.abs(self._residuals),
                                       cmap = cm.get_cmap(self._residual_cmap),
                                       vmin = -vmax,
@@ -248,8 +248,8 @@ class ResidualPlot(SignalPlot):
 
         self._ax_resid.axvline(1.0, lw=self._tick_width, color='k')
 
-        self._ax_resid.set_ylim([self._signal.instrument.channels[0],
-                                 self._signal.instrument.channels[-1]])
+        self._ax_resid.set_ylim([self._signal.data.channels[0],
+                                 self._signal.data.channels[-1]])
         self._ax_resid.set_yscale('log')
 
         self._resid_cb = plt.colorbar(resid, cax = self._ax_resid_cb,

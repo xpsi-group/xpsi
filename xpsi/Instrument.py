@@ -44,8 +44,8 @@ class Instrument(ParameterSubspace):
         deviation from this matrix (see above).
 
     :param ndarray[p] channels:
-        Instrument channel numbers which must be equal in number to the first
-        dimension of the :attr:`matrix`: the number of channels must be
+        Instrument channel numbers which must be equal in number to the number
+        of rows of the :attr:`matrix`. The number of channels must therefore be
         :math:`p`. These channels will correspond to the nominal response
         matrix and any deviation from this matrix (see above). In common usage
         patterns, the channel numbers will increase monotonically with row
@@ -53,12 +53,12 @@ class Instrument(ParameterSubspace):
 
     .. note::
 
-        That these channel labels are not used to index the loaded instrument
-        (sub)matrix, and it is therefore advisable that these numbers are the
-        actual instrument channel numbers so that plots using these labels are
-        clear. The :attr:`xpsi.Data.index_range` property returns bounding row
-        numbers that index the loaded instrument response (sub)matrix in order
-        to operate on an incident signal flux.
+        That these channel numbers are not used to index the loaded instrument
+        (sub)matrix. The :attr:`xpsi.Data.index_range` property returns
+        bounding row numbers that index the loaded instrument response
+        (sub)matrix in order to operate on an incident signal flux. The
+        channel array contained in :attr:`xpsi.Data.channels` must be a
+        contiguous (ordered) subset of the channel array loaded here.
 
     .. note::
 

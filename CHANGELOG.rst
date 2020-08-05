@@ -104,12 +104,12 @@ Added
   phase-bin the events in a subset of selected channels.
 * A :meth:`xpsi.Data.channels` property that holds the instrument channels
   to be checked by a :class:`xpsi.Signal` instance against those declared for
-  the loaded instrument response (sub)matrix.
+  the loaded instrument response (sub)matrix. This property as also required by
+  the post-processing module (namely, :class:`xpsi.PostProcessing.Residual`
+  plot and the other signal plot classes).
 * A :meth:`xpsi.Instrument.channels` property that holds the instrument
   channels to be checked by a :class:`xpsi.Signal` instance against those
-  declared for the event data matrix. This property as also required by the
-  post-processing module (namely, :class:`xpsi.PostProcessing.Residual` plot
-  and the other signal plot classes).
+  declared for the event data matrix.
 * Support for multiple instruments operating on the same incident signal due to
   assumed effective time-invariance of the signal generated during one
   rotational cycle of the surface radiation field.
