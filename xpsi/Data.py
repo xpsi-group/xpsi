@@ -166,14 +166,16 @@ class Data(object):
         else:
             self._channels = array
 
-        try:
-            assert self._channels.ndim == 1
-            assert (self._channels >= 0).all()
-            assert self._channels.shape[0] == self._counts.shape[0]
-        except AssertionError:
+        if self._channels.ndim != 1 or (self._channels < 0).any():
             raise ChannelError('Channel numbers must be in a '
                                'one-dimensional array, and must all be '
                                'positive integers including zero.')
+
+        try:
+            if self._channels.shape[0] != self._counts.shape[0]:
+                raise ChannelError('Number of channels does')
+        except AttributeError:
+            pass # if synthesising there will not be any counts loaded here
 
         if (self._channels[1:] - self._channels[:-1] != 1).any():
             yield ('Warning: Channel numbers do not uniformly increment by one.'
