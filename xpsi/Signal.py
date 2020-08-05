@@ -6,7 +6,7 @@ from .global_imports import *
 from . import global_imports
 
 from .Data import Data
-from .Instrument import Instrument
+from .Instrument import Instrument, ChannelError
 from .Background import Background
 from .Interstellar import Interstellar
 
@@ -92,9 +92,9 @@ class Signal(ParameterSubspace):
 
         a, b = data.index_range
         if (data.channels != instrument.channels[a:b]).any():
-            raise ValueError('Channel array declared for event data does not '
-                             'match channel array declared for the loaded '
-                             'instrument response (sub)matrix.')
+            raise ChannelError('Channel array declared for event data does not '
+                               'match channel array declared for the loaded '
+                               'instrument response (sub)matrix.')
 
         self._identify_waveband()
 

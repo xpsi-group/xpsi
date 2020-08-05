@@ -6,6 +6,8 @@ from .global_imports import *
 from . import global_imports
 from . import make_verbose
 
+from .Instrument import ChannelError
+
 class Data(object):
     """ A container for event data.
 
