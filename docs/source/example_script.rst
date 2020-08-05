@@ -724,6 +724,12 @@ Prior
 
             ref = self.parameters # redefine shortcut
 
+            # draw from flat prior in inclination
+            idx = ref.index('cos_inclination')
+            a, b = ref.get_param('cos_inclination').bounds
+            a = math.acos(a); b = math.acos(b)
+            ref['cos_inclination'] = math.cos(b + (a - b) * hypercube[idx])
+
             idx = ref.index('distance')
             ref['distance'] = truncnorm.ppf(hypercube[idx],
                                             -10.0, 10.0,
