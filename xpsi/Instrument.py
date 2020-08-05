@@ -136,7 +136,7 @@ class Instrument(ParameterSubspace):
 
         If customising, do operations to calculate a matrix, and return it.
         You can access parameters (free, fixed, and derived) via the container
-        access self[<name>].
+        access ``self[<name>]``.
 
         If the instrument operation is fixed, you might not need to subclass,
         because the default behaviour is to return the nominal response you
@@ -223,11 +223,16 @@ class Instrument(ParameterSubspace):
 
     @property
     def channels(self):
+        """ Get the array of channels corresponding to rows of the matrix.
+
+        The matrix being the loaded instrument response (sub)matrix.
+
+        """
         return self._channels
 
+    @channels.setter
     @make_verbose('Setting channels for loaded instrument response (sub)matrix',
                   'Channels set')
-    @channels.setter
     def channels(self, array):
         if not isinstance(array, _np.ndarray):
             try:
@@ -249,7 +254,7 @@ class Instrument(ParameterSubspace):
                                'positive integers including zero.')
 
 
-        if not (self._channels[1:] - self._channels[:-1] != 1).any():
+        if (self._channels[1:] - self._channels[:-1] != 1).any():
             yield ('Warning: Channel numbers do not uniformly increment by one.'
                    '\n         Please check for correctness.')
 

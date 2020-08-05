@@ -19,14 +19,20 @@ class Data(object):
     class and any derived classes must therefore store information required for
     this operation.
 
-    The initialiser to assign attributes which are required for the treating
-    the incident specific flux signals using the model instrument. The body of
-    the initialiser may be changed, but to ensure inter-module compatibility,
-    the :meth:`index_range` property must expose the same information. The
-    initialiser can also be extended if appropriate using a call to
-    ``super().__init__``. Specialist constructors can be defined in a subclass
-    using the ``@classmethod`` decorator, for instance to load event data from
-    disk into a compatible data structure in memory.
+    The initialiser assigns observation settings to attributes which are
+    required for the treating the incident specific flux signals using the
+    model instrument. The body of the initialiser may be changed, but to ensure
+    inter-module compatibility, only the phase handling should really be
+    modified, for instance if you want to implement an unbinned likelihood
+    function with respect to phase; the phase bins defined in this concrete
+    implementation are only used by a custom implementation of the
+    likelihood function (i.e., by a subclass of :class:`xpsi.Signal`), and
+    not by the other concrete classes used to construct the likelihood
+    callable. The initialiser can also be extended if appropriate using a call
+    to ``super().__init__``. Specialist constructors can be defined in a
+    subclass using the ``@classmethod`` decorator, for instance to load event
+    data from disk into a compatible data structure in memory; an example of
+    this may be found below.
 
     .. note::
 
@@ -143,11 +149,12 @@ class Data(object):
 
     @property
     def channels(self):
+        """ Get the array of channels that the event data spans. """
         return self._channels
 
+    @channels.setter
     @make_verbose('Setting channels for event data',
                   'Channels set')
-    @channels.setter
     def channels(self, array):
         if not isinstance(array, _np.ndarray):
             try:
@@ -168,15 +175,15 @@ class Data(object):
                                'one-dimensional array, and must all be '
                                'positive integers including zero.')
 
-        if not (self._channels[1:] - self._channels[:-1] != 1).any():
+        if (self._channels[1:] - self._channels[:-1] != 1).any():
             yield ('Warning: Channel numbers do not uniformly increment by one.'
                    '\n         Please check for correctness.')
 
         yield
 
+    @classmethod
     @make_verbose('Loading event list and phase binning',
                   'Events loaded and binned')
-    @classmethod
     def phase_bin__event_list(cls, path, channels, phases,
                               phase_shift=0.0,
                               phase_column=1,
