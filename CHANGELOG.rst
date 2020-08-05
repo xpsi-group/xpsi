@@ -94,6 +94,10 @@ Fixed
   then formatting the median and quantile differences to this shared decimal
   precision above the on-diagonal panels. If the numbers cannot be well-
   represented by this scheme, the user could try a unit transformation.
+* Tried to tweak automated margins for intensity sky map multi-panel plots,
+  so as not to sometimes partially cut an axis label.
+* Bug that prevented animation of sky map frames written to disk because the
+  frames were not cached in memory by reimaging.
 
 Added
 ^^^^^
@@ -148,6 +152,13 @@ Changed
 
 * Change (Earth) inclination parameter :math:`i` to :math:`\cos(i)` so that the
   default prior density function is isotropic.
+* The object formerly named ``xpsi.Pulse`` has had its name changed to
+  :class:`xpsi.Signal`, and across the package, names that were ``pulse`` are
+  apart from potential corner cases or documentation instances of the word,
+  are now ``signal``, because when support joint likelihood functions over
+  multiple instruments, some data sets are phase averaged. Moreover, *signal*
+  is arguably clearer in meaning than *pulse*, once it has been established
+  that the signals the package focusses are *pulsed*.
 * The :class:`xpsi.Data` definition of the ``last`` channel has changed to be
   the index of the last row in the loaded instrument response (sub)matrix,
   instead of being the index of the last row plus one; this means that the
