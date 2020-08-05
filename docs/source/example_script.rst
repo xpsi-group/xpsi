@@ -61,7 +61,6 @@ Main
     from CustomInstrument import CustomInstrument
     from CustomInterstellar import CustomInterstellar
     from CustomSignal import CustomSignal
-    from CustomSpacetime import CustomSpacetime
     from CustomPrior import CustomPrior
     from CustomPhotosphere import CustomPhotosphere
 
