@@ -19,7 +19,7 @@ class Data(object):
     The initialiser to assign attributes which are required for the treating
     the incident specific flux signals using the model instrument. The body of
     the initialiser may be changed, but to ensure inter-module compatibility,
-    the :meth:`channel_range` property must expose the same information. The
+    the :meth:`index_range` property must expose the same information. The
     initialiser can also be extended if appropriate using a call to
     ``super().__init__``. Specialist constructors can be defined in a subclass
     using the ``@classmethod`` decorator, for instance to load event data from
@@ -30,39 +30,50 @@ class Data(object):
         You can subclass in order to tailor the handling of the event data, for
         instance to implement a likelihood functions for unbinned event data.
 
-    :param int first:
-        The first (loaded) instrument channel containing events (see note below).
-
-    :param int last:
-        The last (loaded) instrument channel containing events (see note below).
-
-    .. note::
-
-        For treatment of the incident signal, it is assumed that that events
-        span a contiguous subset of channels, between and including the
-        :obj:`first` and :obj:`last` channels. Moreover, the :obj:`first` and
-        :obj:`last+1` channels are used to index the instrument response matrix.
-        Therefore, if you load only a submatrix of the full instrument response
-        matrix, these indices must be appropriate for the loaded submatrix, and
-        must not be the true channel numbers (this information is instead
-        loaded in the :class:`xpsi.Instrument`).
-
-    :param float exposure_time:
-        The exposure time, in seconds, to acquire this set of event data.
-
     :param ndarray[n,m] counts:
-        A :class:`~numpy.ndarray` of count numbers. The rows of
-        the array must map to a contiguous subset of instrument channels,
-        with the zeroth row corresponding to the :attr:`first` channel,
-        and the last row corresponding to the channel :attr:`last` channel.
-        The columns must map to the phase intervals given by :obj:`phases`.
+        A :class:`~numpy.ndarray` of count numbers. The columns must map to
+        the phase intervals given by :obj:`phases`. The rows of the array map
+        to some subset of instrument channels.
 
     :param ndarray[m+1] phases:
         A :class:`~numpy.ndarray` of phase interval edges, where events are
         binned into these same intervals in each instrument channel.
 
+    :param int first:
+        The index of the first row of the loaded response matrix containing
+        events (see note below).
+
+    :param int last:
+        The index of the last row of the loaded response matrix containing
+        events (see note below).
+
+    .. note::
+
+        The :obj:`counts` matrix rows  *must* span a contiguous subset of the
+        rows of the loaded response matrix, but in general can span an
+        arbitrary subset and order of instrument channels. Note that the
+        :obj:`first` and :obj:`last+1` numbers are used to index the loaded
+        instrument response matrix.  Therefore, if you load only a submatrix of
+        the full instrument response matrix, these indices must be appropriate
+        for the loaded submatrix, and must not be the true channel numbers
+        (this information is instead loaded in the :class:`xpsi.Instrument`).
+        Of course, in all sensible usage patterns the order of the instrument
+        channels, when mapped to matrix rows, will be such that channel number
+        increases with matrix row number monotonically because, then the
+        nominal event energy increases monotonically with row number, which is
+        important for visualisation of data and model (because spatial order
+        matches energy order and correlations in space can be discerned easily).
+        However, there could in principle be channel cuts that mean an increment
+        of more than one channel between matrix adjacent rows, and the
+        response matrix needs to be manipulated before or during a custom
+        loading phase such that its rows match the channel numbers assigned to
+        the :obj:`counts` matrix rows.
+
+    :param float exposure_time:
+        The exposure time, in seconds, to acquire this set of event data.
+
     """
-    def __init__(self, first, last, exposure_time, counts, phases):
+    def __init__(self, counts, phases, first, last, exposure_time):
         try:
             self._first = int(first)
             self._last = int(last)
@@ -105,6 +116,56 @@ class Data(object):
         return self._phases
 
     @property
-    def channel_range(self):
+    def index_range(self):
         """ Get a 2-tuple containing the bounding channels. """
         return (self._first, self._last + 1) # plus one for array indexing
+
+    @property
+    def channel_range(self):
+        """ Deprecated property name. To be removed for v1.0. """
+        return self.index_range
+
+    @make_verbose('Loading event list and phase binning',
+                  'Events loaded and binned')
+    @classmethod
+    def phase_bin__event_list(cls, path, channels, phases,
+                              phase_shift=0.0,
+                              skiprows=1, *args, **kwargs):
+        """ Load a phase-folded event list and bin the events in phase.
+
+        :param str path:
+            Path to event list file containing two columns, where the first
+            column contains phases on the unit interval, and the second
+            column contains the channel number.
+
+        :param list channels:
+            An (ordered) subset of instrument channels. It is advisable that
+            these channels are a contiguous subset of instrument channels, but
+            this not a strict requirement if you are comfortable with the
+            handling the instrument response matrix and count number matrix to
+            match in row-to-channel definitions.
+
+        """
+
+        events = _np.loadtxt(path, skiprows=skiprows)
+
+        channels = list(channels)
+
+        yield 'Total number of events: %i' % events.shape[0]
+
+        data = _np.zeros((len(channels), len(phases)-1), dtype=_np.int)
+
+        yield 'Number of events constituting data set: %i' % _np.sum(data)
+
+        for i in range(events.shape[0]):
+            if events[i,1] in channels:
+                _temp = events[i,0] + phase_shift
+                _temp -= _np.floor(_temp)
+
+                for j in range(phases.shape[0]-1):
+                    if phases[j] <= _temp <= phases[j+1]:
+                        data[channels.index(int(events[i,1]),j] += 1
+                        break
+
+        cls(data, phases, *args, **kwargs)
+
