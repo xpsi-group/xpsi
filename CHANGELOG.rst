@@ -109,18 +109,18 @@ Added
 * A :meth:`xpsi.Data.channels` property that holds the instrument channels
   to be checked by a :class:`xpsi.Signal` instance against those declared for
   the loaded instrument response (sub)matrix. This property as also required by
-  the post-processing module (namely, :class:`xpsi.PostProcessing.Residual`
-  plot and the other signal plot classes).
+  the post-processing module (namely, :class:`xpsi.PostProcessing.ResidualPlot`
+  and the other :class:`xpsi._signalplot.SignalPlot` subclasses).
 * A :meth:`xpsi.Instrument.channels` property that holds the instrument
   channels to be checked by a :class:`xpsi.Signal` instance against those
   declared for the event data matrix.
 * Support for multiple instruments operating on the same incident signal due to
   assumed effective time-invariance of the signal generated during one
   rotational cycle of the surface radiation field.
-* Module to call atmosphere extensions directly (without the calls being
-  embedded in integration algorithms), for checking implementation of
-  complicated atmospheres such as those requiring interpolation with respect to
-  a numerical lookup table.
+* Module :mod:`xpsi.surface_radiation_field` to call atmosphere extensions
+  directly (without the calls being embedded in integration algorithms), for
+  checking implementation of complicated atmospheres such as those requiring
+  interpolation with respect to a numerical lookup table.
 * Support for the extension module for calculating the local surface radiation
   field variables to read in numerical model data. An example extension module
   designed to execute nearest-neighbour lookup amonst an general unstructured
@@ -146,6 +146,8 @@ Added
   different between the :class:`xpsi.ParameterSubspace` underlying with a
   :class:`xpsi.Likelihood` instance and the files on disk containing the
   transformed samples), and the additional derived parameters.
+* Attempt to free up memory when :meth:`xpsi.Photosphere.images` is no longer
+  needed, but memory-intensive operations need to be performed.
 
 Changed
 ^^^^^^^
@@ -158,7 +160,10 @@ Changed
   are now ``signal``, because when support joint likelihood functions over
   multiple instruments, some data sets are phase averaged. Moreover, *signal*
   is arguably clearer in meaning than *pulse*, once it has been established
-  that the signals the package focusses are *pulsed*.
+  that the signals the package focuses on are *pulsed* but depending on
+  the instrument, the data we confront the model with has some degree of phase
+  (timing) resolution that might be insufficient for phase-resolved
+  observations.
 * The :class:`xpsi.Data` definition of the ``last`` channel has changed to be
   the index of the last row in the loaded instrument response (sub)matrix,
   instead of being the index of the last row plus one; this means that the
@@ -170,14 +175,15 @@ Changed
   four-dimensional cubic polynomial interpolation persistent). Different
   those atmospheres can be loaded simply via a Python subclass without
   the relevant extension module being recompiled.
-* Photosphere class sometimes does no surface discretisation, so allow no hot
-  regions, elsewhere, or everywhere objects; then image-plane discretisation
-  can be accessed without dummy object creation.
-* Tweak SpectrumPlot settings to print a warning statement that spectrum plot
-  works best with logarithmic spacing, and the user has to shadow class
-  attribute with ``logspace_y=False``.
-* Do not print hot region parameter properties upon creation if fixed at
-  boundary value so that the region is fully described by fewer parameters.
+* The :class:`xpsi.Photosphere` class sometimes does no surface discretisation,
+  so allow no hot regions, elsewhere, or everywhere objects; then image-plane
+  discretisation can be accessed without dummy object creation.
+* Tweak :class:`xpsi.SpectrumPlot` settings to print a warning statement that
+  spectrum plot works best with logarithmic spacing, and the user has to shadow
+  class attribute with ``logspace_y=False``.
+* Do not print :class:`xpsi.HotRegion` instance parameter properties upon
+  creation if fixed at boundary value so that the region is fully described by
+  fewer parameters.
 * Merged energy integration extension modules into one.
 * Made phase shift parameters (strictly) unbounded; remember however that for a
   sensible prior, bound the phase shifts on a unit interval, and thus it is
