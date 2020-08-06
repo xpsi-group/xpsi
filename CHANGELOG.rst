@@ -148,6 +148,7 @@ Added
   transformed samples), and the additional derived parameters.
 * Attempt to free up memory when :meth:`xpsi.Photosphere.images` is no longer
   needed, but memory-intensive operations need to be performed.
+* Attempt to free memory properly after animating a sky-map phase sequence.
 
 Changed
 ^^^^^^^
