@@ -25,7 +25,7 @@ the X-ray regime.
 
 The likelihood function has domain :math:`\mathbb{R}^{n}`, defined at each point
 :math:`\boldsymbol{\theta}` (optionally with finite local prior probability
-density) to a parametrised sampling distribution on the space of the data
+density) by a parametrised sampling distribution on the space of the data
 evaluated at the *fixed* dataset :math:`\mathcal{D}`. The likelihood is
 defined by
 
@@ -35,26 +35,29 @@ defined by
 
 where :math:`\mathcal{M}` is the global (hierarchical) model.
 
-A fundamental assumption upon which X-PSI is based is that a model with
-sufficient complexity to describe data can be constructed from a restricted
-set of abstract objects that form a modelling language. Crucially, those
-objects must have software implementations that are sufficiently fast for
-parameter estimation to be tractable on a high-performance computing system,
-but are also simple for a modeller to piece together into a bespoke model.
-These objects often have properties which are discrete representations of
-continuous mathematical structures, and these continuous structures are imbued
-with physical meaning in order to attempt to describe
-observable reality in terms of deterministic and stochastic processes.
+A fundamental assumption upon which X-PSI is based (at least until posterior
+checking suggests otherwise) is that a model with sufficient complexity to
+describe data can be constructed from a restricted set of abstract objects that
+form a modelling language. Crucially, those objects must have software
+implementations that are sufficiently fast for parameter estimation to be
+tractable on a high-performance computing system, but are also simple for a
+modeller to piece together into a bespoke model. These objects often have
+properties which are discrete representations of continuous mathematical
+structures, and these continuous structures are imbued with physical meaning
+in order to attempt to describe observable reality in terms of deterministic
+and stochastic processes.
 
 In X-PSI, we adopt general relativistic gravity to construct a spacetime
 manifold associated with a model neutron star. The exterior
 spacetime of the star is stationary (and thus time-independent) during the
 acquisition of all data :math:`\mathcal{D}`.\ [#]_ Further, the exterior
 spacetime is assumed to be non-rotating for the purpose of constructing models
-that are expected to be more tractable given some resource allowance than models
-that account for rotation in the exterior metric. Spherical symmetry is
-arguably a logical baseline assumption to condition on at the outset of
-modelling some new data set.
+that are expected to be more tractable given some resource allowance than 
+models that account for rotation in the exterior metric (this is reasonable 
+for stars rotating at up to a few hundred Hz, see the discussion in 
+`Bogdanov et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..26B/abstract>`_). 
+Spherical symmetry is arguably a logical baseline assumption to condition on 
+at the outset of modelling some new data set.  
 
 We first need to consider our X-ray photon data set :math:`\mathcal{D}`: in
 general let it be constituted by some union of data subsets
@@ -83,7 +86,7 @@ span an arbitrarily long time interval, but over that time interval the surface
 radiation field is assumed to be stable, with any quasi-periodicity in the
 signal incident on a telescope manifesting due to relative motion the star
 and the telescope, and/or due to a small evolution in the coordinate rotation
-frequency a mode of asymmetry in the surface radiation field.
+frequency of a mode of asymmetry in the surface radiation field.
 Each subset :math:`\mathcal{D}_{i}` is acquired with some model instrument with
 a response matrix (a photon energy redistribution matrix combined with an
 energy-dependent effective area vector) which is used to
@@ -135,22 +138,18 @@ multithreaded computation on shared memory nodes of distributed architectures.
 Future extension of scope
 -------------------------
 
-In future development, support for direct *interior* parameter estimation may
-be added. This involves solving the field equations for stable stationary
-spacetime solutions and embedding the rotationally deformed stellar surface
+In future development, support for direct *interior* (Equation of State) 
+parameter estimation may be added (see `Riley et al. 2018 
+<https://ui.adsabs.harvard.edu/abs/2018MNRAS.478.1093R/abstract>`_).  
+This involves solving the field equations for stable stationary spacetime 
+solutions and embedding the rotationally deformed stellar surface
 into an ambient Schwarzschild spacetime with the rotationally deformed
 gravitational mass monopole moment, whilst neglecting all other rotational
 :math:`\ell>0` metric deformations at :math:`\mathcal{O}(\Omega)`
 (see Hartle, 1967; Hartle & Thorne, 1968).
-
-An image-plane integrator may also be integrated for visualisation contexts,
-and for internal cross-checking of signal integration.
-
 
 .. rubric:: Footnotes
 
 .. [#] For a model star in a binary, the spacetime is non-stationary (and thus
        dynamic), but the time evolution is considered unimportant for systems
        containing X-ray sources.
-
-

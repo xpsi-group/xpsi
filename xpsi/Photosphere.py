@@ -35,10 +35,9 @@ class Photosphere(ParameterSubspace):
     """ A photosphere embedded in an ambient Schwarzschild spacetime.
 
     :param obj hot:
-        An instance of :class:`~.HotRegion.HotRegion` (or a
-        derived class). This objects represents the hot
-        regions of the surface that in most use-cases will be
-        assumed to contain radiating material that is hotter
+        An instance of :class:`~.HotRegion.HotRegion` (or a derived class).
+        This objects represents the hot regions of the surface that in most
+        use-cases will be assumed to contain radiating material that is hotter
         than that *elsewhere*.
 
     :param obj elsewhere:
@@ -95,7 +94,7 @@ class Photosphere(ParameterSubspace):
     def __init__(self,
                  hot = None, elsewhere = None,
                  everywhere = None,
-                 bounds = {}, values = {},
+                 bounds = None, values = None,
                  **kwargs):
 
         if everywhere is not None:
@@ -105,20 +104,18 @@ class Photosphere(ParameterSubspace):
                                  'radiation field everywhere.')
             if not isinstance(everywhere, Everywhere):
                 raise TypeError('Invalid type for everywhere object.')
-            self._everywhere = everywhere
+        elif hot is None and elsewhere is None:
+            pass # can call image-plane extensions
         else:
-            self._everywhere = None
-
             if elsewhere is not None:
                 if not isinstance(elsewhere, Elsewhere):
                     raise TypeError('Invalid type for an elsewhere object.')
-                else:
-                    self._elsewhere = elsewhere
-            else:
-                self._elsewhere = None
-                if hot is None:
-                    raise ValueError('The photosphere must radiate.')
 
+                if hot is None:
+                    raise ValueError('Hot region object(s) must be used in '
+                                     'conjuction with an elsewhere object.')
+
+            self._elsewhere_atmosphere = ()
                                               # including derived classes
             if hot is not None and hot is not isinstance(hot, HotRegion):
                 if hasattr(hot, 'objects'):
@@ -129,11 +126,13 @@ class Photosphere(ParameterSubspace):
                 else:
                     raise TypeError('Invalid object for the hot region(s).')
 
-            self._hot = hot
-
-            self._elsewhere_atmosphere = ()
-
+        self._hot = hot
         self._hot_atmosphere = ()
+        self._elsewhere = elsewhere
+        self._everywhere = everywhere
+
+        if bounds is None: bounds = {}
+        if values is None: values = {}
 
         doc = """
         Coordinate frequency of the mode of radiative asymmetry in the
@@ -290,76 +289,54 @@ class Photosphere(ParameterSubspace):
             A one-dimensional :class:`numpy.ndarray` of energies in keV.
 
         :param int threads:
-            Number of ``OpenMP`` threads to spawn for pulse integration.
+            Number of ``OpenMP`` threads to spawn for signal integration.
 
         """
         if self._everywhere is not None:
-            # temp var
-            t = self._everywhere.integrate(self._spacetime,
-                                           energies,
-                                           threads,
-                                           self._hot_atmosphere)
-            if t.ndim == 1:
-                self._time_invariant = t
-                self._pulse = ((_np.zeros((len(t),
-                                    len(self._everywhere.phases_in_cycles))),),)
-                for i in range(self._pulse[0][0].shape[1]):
-                    self._pulse[0][0][:,i] += self._time_invariant
+            spectrum = self._everywhere.integrate(self._spacetime,
+                                                   energies,
+                                                   threads,
+                                                   self._hot_atmosphere)
+            if spectrum.ndim == 1:
+                self._signal = ((spectrum.reshape(-1,1),),)
             else:
-                self._pulse = ((t,),)
+                self._signal = ((spectrum,),)
         else:
             if self._elsewhere is not None:
-                if isinstance(energies, tuple): # resolve energy container type
-                    if not isinstance(energies[0], tuple):
-                        _energies = energies[0]
-                    else:
-                        _energies = energies[0][0]
-                else:
-                    _energies = energies
-                self._time_invariant = self._elsewhere.integrate(self._spacetime,
-                                                       _energies,
-                                                       threads,
-                                                       *self._elsewhere_atmosphere)
+                spectrum = self._elsewhere.integrate(self._spacetime,
+                                                     energies,
+                                                     threads,
+                                                     *self._elsewhere_atmosphere)
 
             if self._hot is not None:
-                self._pulse = self._hot.integrate(self._spacetime,
-                                                  energies,
-                                                  threads,
-                                                  self._hot_atmosphere,
-                                                  self._elsewhere_atmosphere)
+                self._signal = self._hot.integrate(self._spacetime,
+                                                   energies,
+                                                   threads,
+                                                   self._hot_atmosphere,
+                                                   self._elsewhere_atmosphere)
 
-                if not isinstance(self._pulse[0], tuple):
-                    self._pulse = (self._pulse,)
+                if not isinstance(self._signal[0], tuple):
+                    self._signal = (self._signal,)
 
                 # add time-invariant component to first time-dependent component
                 if self._elsewhere is not None:
-                    for i in range(self._pulse[0][0].shape[1]):
-                        self._pulse[0][0][:,i] += self._time_invariant
+                    for i in range(self._signal[0][0].shape[1]):
+                        self._signal[0][0][:,i] += spectrum
 
     @property
-    def pulse(self):
-        """ Get the stored pulse.
+    def signal(self):
+        """ Get the stored signal.
 
         :returns:
-            *ndarray[m,n]*, where :math:`m` is the number of energies, and
+            A tuple of tuples of *ndarray[m,n]*.
+            Here :math:`m` is the number of energies, and
             :math:`n` is the number of phases. Units are photon/s/keV; the
             distance is a fast parameter so the areal units are not yet
-            factored in.
+            factored in. If the signal is a spectrum because the signal is
+            time-invariant, then :math:`n=1`.
 
         """
-        return self._pulse
-
-    @property
-    def time_invariant(self):
-        """ Get the cached time-invariant signal.
-
-        :returns:
-            *ndarray[n]* containing the time-invariant signal at
-            :math:`n` energies. Units are photon/s/keV. The distance is a
-            fast parameter so the areal units are not yet factored in.
-
-        """
-        return self._time_invariant
+        return self._signal
 
     @property
     def global_variables(self):
@@ -434,6 +411,10 @@ class Photosphere(ParameterSubspace):
 
         self._images = images
 
+    @images.deleter
+    def images(self):
+        del self._images
+
     def image(self,
               reimage = False,
               energies = None,
@@ -447,9 +428,10 @@ class Photosphere(ParameterSubspace):
               threads = 1,
               cache_intensities = False,
               plot_sky_maps = False,
-              sky_map_kwargs = {},
+              sky_map_kwargs = None,
               animate_sky_maps = False,
-              animate_kwargs = {}):
+              free_memory = True,
+              animate_kwargs = None):
         """ Image the star as a function of phase and energy.
 
         :param bool reimage:
@@ -524,7 +506,7 @@ class Photosphere(ParameterSubspace):
             Number of OpenMP threads to spawn for parallel blocks of code.
             Parallel blocks include ray integration to generate a global ray
             map from image plane to surface; and image calculation at a
-            sequence of rotational phases..
+            sequence of rotational phases.
 
         :param bool cache_intensities:
             Cache the photon specific intensity sky maps in memory, as a
@@ -546,10 +528,27 @@ class Photosphere(ParameterSubspace):
         :param bool animate_sky_maps:
             Compile images from disk into an animated sequence.
 
+        :param bool free_memory:
+            Try to free the imaging information before animating a sequence of
+            sky maps written to disk, to try to avoid high memory usage. For
+            safety the default is to free the memory, so deactivate this at your
+            own risk. If there are other non-weak references created to the
+            underlying objects, the memory may fail to be freed. In the
+            methods below, the aim is that the native garbage collection cleans
+            up the references because they only exist in the method local scope
+            (no closures or globals).
+
+        .. note::
+
+            Memory used for plotting the sky maps and loading the images from
+            disk to animate a phase sequence might not be straightforwardly
+            freed despite efforts to do so, because of non-weak references
+            covertly held by the matplotlib module.
+
         :param dict animate_kwargs:
             Dictionary of keyword arguments passed to
-            :meth:`~Photosphere._animate`. Refer to the associated
-            method docstring for available options.
+            :meth:`~Photosphere._animate`. Refer to the associated method
+            docstring for available options.
 
         """
         ref = self._spacetime # geometry shortcut saves characters
@@ -567,6 +566,11 @@ class Photosphere(ParameterSubspace):
 
             if not isinstance(energies, _np.ndarray):
                 raise TypeError('Imaging energies must be form an ndarray.')
+
+            try:
+                del self.images # try to free up memory
+            except AttributeError:
+                pass
 
             images = _integrate(threads,
                                 ref.r_s,
@@ -596,7 +600,7 @@ class Photosphere(ParameterSubspace):
                                 'computation... terminating simulation.')
             else:
                 # tuple elements:
-                #   energy-phase resolved pulse (2D array)
+                #   energy-phase resolved signal (2D array)
                 #   x coordinate on image plane (1D array)
                 #   y coordinate on image plane (1D array)
                 #   colatitude mapped to point (x,y) on image plane (1D array)
@@ -608,13 +612,18 @@ class Photosphere(ParameterSubspace):
                 # the last element is None if you do not cache intensities
                 self.images = list(images[1:])
 
-                # transpose so pulse phase increments along columns
+                # transpose so signal phase increments along columns
                 self.images[0] = self.images[0].T
 
-        if plot_sky_maps or animate_sky_maps:
+        if sky_map_kwargs is None: sky_map_kwargs = {}
+        if animate_kwargs is None: animate_kwargs = {}
+
+        if plot_sky_maps:
             if self.images[-1] is None:
                 raise ValueError('You need to cache intensity sky maps if you '
                                  'want to plot them.')
+
+        if plot_sky_maps or animate_sky_maps:
             root_dir = sky_map_kwargs.pop('root_dir', './images')
             file_root = sky_map_kwargs.pop('file_root', 'skymap')
             file_root = _os.path.join(root_dir, file_root)
@@ -660,19 +669,24 @@ class Photosphere(ParameterSubspace):
                                                _energies = energies,
                                                _redraw = True,
                                                **sky_map_kwargs)
-
         elif animate_sky_maps:
             if reimage:
                 raise ValueError('Star was reimaged but sky maps were not '
                                  'plotted... aborting animation.')
 
             figsize, dpi = self._plot_sky_maps(file_root,
+                                               _phases = phases,
                                                _energies = energies,
                                                _redraw = False,
-                                               threads = threads,
                                                **sky_map_kwargs)
 
         if animate_sky_maps:
+            if free_memory:
+                try:
+                    del self.images # try to free up memory
+                except AttributeError:
+                    pass
+
             if not _os.path.isfile(file_root + '_0.png'):
                 raise IOError('No images located for animation.')
 
@@ -697,10 +711,13 @@ class Photosphere(ParameterSubspace):
                        panel_layout = None,
                        panel_indices = None,
                        phase_average = False,
-                       energy_bounds = [],
+                       energy_bounds = None,
                        num_levels = 100,
                        normalise_each_panel = True,
                        invert = False,
+                       annotate_energies=False,
+                       energy_annotation_format='[%.1f keV]',
+                       annotate_location=(0.05,0.05),
                        colormap = None,
                        figsize = (10,10),
                        usetex = False,
@@ -731,7 +748,6 @@ class Photosphere(ParameterSubspace):
         is also not supported. More complicated rendering patterns may be
         supported in future versions, but for now can be achieved via
         custom extensions building off of the current functionality.
-
 
         :param str _file_root:
             Relative or absolute path to parent directory for images,
@@ -907,22 +923,20 @@ class Photosphere(ParameterSubspace):
                                         len(energy_bounds),
                                         images.shape[2]), dtype = _np.double)
 
-                intensities = _np.zeros((images.shape[2],
-                                         images.shape[1]), dtype = _np.double)
+                intensities = _np.zeros((images.shape[1],
+                                         images.shape[2]), dtype = _np.double)
 
                 for i in range(images.shape[0]): # phases
-                    for j in range(images.shape[2]): # sky directions
-                        intensities[j,:] = images[i,:,j]
+                    intensities[...] = images[i,...] # sky directions
 
                     for k in range(len(energy_bounds)):
-                        a, b = energy_bounds[k]
+                        bounds = _np.log10( _np.array(energy_bounds[k]) )
                         _integrated = energy_integrator(threads,
                                                         intensities,
                                                         _np.log10(energies),
-                                                        _np.log10(a),
-                                                        _np.log10(b))
+                                                        bounds)
 
-                        integrated[i,k,:] = _integrated[:]
+                        integrated[i,k,:] = _integrated[0,:]
 
                 images = integrated
 
@@ -966,21 +980,20 @@ class Photosphere(ParameterSubspace):
                     # and sky directions
                     MIN = _np.min(images[:,j,:][images[:,j,:] > 0.0])
                     MAX = _np.max(images[:,j,:])
-                    levels.append(_np.array([0.0] + list(_np.linspace(MIN,
-                                                                      MAX,
-                                                                      num_levels))))
+                    levels.append(_np.array(list(_np.linspace(MIN,
+                                                              MAX,
+                                                              num_levels))))
             else:
                 MIN = _np.min(images[:,:,:][images[:,:,:] > 0.0])
                 MAX = _np.max(images[:,:,:])
-                levels = _np.array([0.0] + list(_np.linspace(MIN,
-                                                             MAX,
-                                                             num_levels)))
-
+                levels = _np.array(list(_np.linspace(MIN,
+                                                     MAX,
+                                                     num_levels)))
 
             # because of default tick formatting and a minus sign,
             # the left and bottom margins need to be different
-            left = 0.160 * (fontsize/28.0)
-            bottom = 0.125 * (fontsize/28.0)
+            left = 0.08 * (fontsize/14.0)
+            bottom = 0.08 * (fontsize/14.0)
             right = 0.975
             top = bottom + (right - left)
 
@@ -989,7 +1002,6 @@ class Photosphere(ParameterSubspace):
             cmap = colormap or (cm.gray_r if invert else cm.gray)
 
             fig = Figure(figsize = figsize) #plt.figure(figsize = figsize)
-            canvas = FigureCanvas(fig)
 
             gs = gridspec.GridSpec(panel_layout[0],
                                    panel_layout[1],
@@ -1034,6 +1046,13 @@ class Photosphere(ParameterSubspace):
                     y_view = ax.yaxis.get_view_interval()
                     ax.yaxis.set_view_interval(y_view[1] - diff * 1.025,
                                                y_view[1] + diff * 0.025)
+
+                    # add energy
+                    if annotate_energies:
+                        ax.text(annotate_location[0], annotate_location[1],
+                           s=energy_annotation_format % energies[idx],
+                           fontdict={'color': 'black' if invert else 'white'},
+                           transform=ax.transAxes)
 
                 fig.savefig(file_root + '_%i.png' % i, dpi=dpi)
 
@@ -1104,8 +1123,6 @@ class Photosphere(ParameterSubspace):
             filename = file_root + '_%i.png' % i
             img = mgimg.imread(filename)
             imgplot = ax.imshow(img, aspect='auto')
-            imgplot.axes.get_xaxis().set_visible(False)
-            imgplot.axes.get_yaxis().set_visible(False)
             images.append([imgplot])
 
         cycles = int(cycles)
@@ -1138,6 +1155,7 @@ class Photosphere(ParameterSubspace):
         ani.save(filename, writer = 'ffmpeg',
                  dpi = dpi, fps = fps, bitrate = bitrate)
 
+        fig.clf() # this or ax.cla() needed to free memory
         plt.close(fig)
 
 Photosphere._update_doc()

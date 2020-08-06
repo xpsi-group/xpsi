@@ -2,6 +2,9 @@
 #cython: boundscheck=False
 #cython: nonecheck=False
 #cython: wraparound=False
+#cython: embedsignature=True
+
+""" Image a star on a distant observer's sky. """
 
 from __future__ import division, print_function
 import numpy as np
@@ -18,13 +21,17 @@ from xpsi.pixelmesh.globalRayMap cimport (RAY_MAP,
 
 from xpsi.pixelmesh.coordinateTransformation cimport BOYERLINDQUIST_2_SPHERICAL
 
-from xpsi.surface_radiation_field.hot_radiation_field cimport (init_hotRadField,
-                                                       eval_hotRadField,
-                                                       eval_hotRadField_norm,
-                                                       free_hotRadField,
-                                                       hotRadField_PRELOAD)
+from xpsi.surface_radiation_field.preload cimport (_preloaded,
+                                                   init_preload,
+                                                   free_preload)
 
-from xpsi.surface_radiation_field.local_variables cimport (HIT_or_MISS,
+from xpsi.surface_radiation_field.hot cimport (init_hot,
+                                               eval_hot,
+                                               eval_hot_norm,
+                                               free_hot)
+
+from xpsi.surface_radiation_field.local_variables cimport (storage,
+                                                           HIT_or_MISS,
                                                            init_local_variables,
                                                            free_local_variables,
                                                            eval_local_variables)
@@ -180,34 +187,14 @@ def integrate(size_t numThreads,
     #----------------------------------------------------------------------->>>
 
     # Initialise the source radiation field
-    cdef void *local_variables = init_local_variables(N_T)
-    cdef hotRadField_PRELOAD *src_preload = NULL
-    cdef double[::1] cast
-    cdef double[::1] intensity
+    cdef storage *local_vars_buf = init_local_variables(N_T)
+    cdef _preloaded *preloaded = NULL
     cdef void *data = NULL
-    cdef void *ext_data = NULL
-    cdef size_t num_args
     if atmosphere:
-        args = atmosphere
-        num_args = len(args)
-        src_preload = <hotRadField_PRELOAD*> malloc(sizeof(hotRadField_PRELOAD))
-        src_preload.params = <double**> malloc(sizeof(double*) * (num_args - 1))
-        src_preload.S = <size_t*> malloc(sizeof(size_t) * (num_args - 2))
-        for i in range(num_args - 1):
-            cast = args[i]
-            src_preload.params[i] = &cast[0]
-            if i < num_args - 2:
-                cast = args[i+1]
-                src_preload.S[i] = cast.shape[0]
-                if i < num_args - 3:
-                    for j in range(i+2, num_args - 1):
-                        cast = args[j]
-                        src_preload.S[i] *= cast.shape[0]
-        intensity = args[i+1]
-        src_preload.I = &intensity[0]
-        data = init_hotRadField(N_T, src_preload)
+        preloaded = init_preload(atmosphere)
+        data = init_hot(N_T, preloaded)
     else:
-        data = init_hotRadField(N_T, NULL)
+        data = init_hot(N_T, NULL)
 
     cdef double[:,::1] integrated_flux = np.zeros((N_P, N_E), dtype = np.double)
 
@@ -231,7 +218,8 @@ def integrate(size_t numThreads,
             if HIT_or_MISS(MAP.ORIGIN[3],
                            MAP.ORIGIN[1],
                            phases[k] - MAP.ORIGIN[0],
-                           &(radiation_field_global_variables[0])) == 1:
+                           &(radiation_field_global_variables[0]),
+                           local_vars_buf) == 1:
                 NUM_HITS = 1
                 NUM_MISSES = 0
                 ORIGIN_HIT = 1
@@ -252,7 +240,8 @@ def integrate(size_t numThreads,
                     if HIT_or_MISS(MAP.THETA[INDEX],
                                    MAP.PHI[INDEX],
                                    phases[k] - MAP.LAG[INDEX],
-                                   &(radiation_field_global_variables[0])) == 1:
+                                   &(radiation_field_global_variables[0]),
+                                   local_vars_buf) == 1:
 
                         NUM_HITS = NUM_HITS + 1
                         HIT[THREAD_INDEX + INDEX] = 1
@@ -291,14 +280,14 @@ def integrate(size_t numThreads,
                                                  phases[k] - MAP.LAG[INDEX],
                                                  &GEOM,
                                                  &(radiation_field_global_variables[0]),
-                                                 T,
-                                                 local_variables)
+                                                 local_vars_buf,
+                                                 T)
 
-                            I_E = eval_hotRadField(T,
-                                                   E_prime,
-                                                   MAP.ABB[INDEX],
-                                                   (<double**>local_variables)[T],
-                                                   data)
+                            I_E = eval_hot(T,
+                                           E_prime,
+                                           MAP.ABB[INDEX],
+                                           local_vars_buf.local_variables[T],
+                                           data)
 
                             I_E = I_E * pow(MAP.Z[INDEX], -3.0)
 
@@ -315,14 +304,14 @@ def integrate(size_t numThreads,
                                          phases[k] - MAP.ORIGIN[0],
                                          &GEOM,
                                          &(radiation_field_global_variables[0]),
-                                         T,
-                                         local_variables)
+                                         local_vars_buf,
+                                         T)
 
-                    I_E = eval_hotRadField(T,
-                                           E_prime,
-                                           MAP.ORIGIN[5],
-                                           (<double**>local_variables)[T],
-                                           data)
+                    I_E = eval_hot(T,
+                                   E_prime,
+                                   MAP.ORIGIN[5],
+                                   local_vars_buf.local_variables[T],
+                                   data)
 
                     I_E = I_E * pow(MAP.ORIGIN[4], -3.0)
 
@@ -334,7 +323,7 @@ def integrate(size_t numThreads,
                         IMAGE[k, p, 0] = I_E / energies[p]
 
                 integrated_flux[k,p] *= MAP.SEMI_MINOR * MAP.SEMI_MAJOR
-                integrated_flux[k,p] *= eval_hotRadField_norm() / (distance * distance * energies[p] * keV)
+                integrated_flux[k,p] *= eval_hot_norm() / (distance * distance * energies[p] * keV)
         else:
             for p in range(N_E):
                 integrated_flux[k,p] = 0.0
@@ -358,8 +347,11 @@ def integrate(size_t numThreads,
     free(RAYS)
     free_RAY_MAP(MAP)
 
-    free_hotRadField(N_T, data)
-    free_local_variables(N_T, local_variables)
+    if atmosphere:
+        free_preload(preloaded)
+
+    free_hot(N_T, data)
+    free_local_variables(N_T, local_vars_buf)
 
     if cache_intensities == 1:
         _IMAGE = np.asarray(IMAGE, dtype = np.double, order = 'C')
@@ -376,4 +368,3 @@ def integrate(size_t numThreads,
             np.asarray(Z, dtype = np.double, order = 'C'),
             np.asarray(cos_zenith, dtype = np.double, order = 'C'),
             _IMAGE)
-

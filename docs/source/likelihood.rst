@@ -11,5 +11,5 @@ processes for evaluation of a likelihood function.
 .. autoclass:: xpsi.Likelihood.Likelihood
     :members: __call__, __str__, threads,
               synthesise, check, llzero, random_near_llzero, less_than_llzero,
-              star, prior, pulses, prior
+              star, prior, signals, prior
     :show-inheritance:

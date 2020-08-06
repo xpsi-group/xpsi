@@ -156,7 +156,8 @@ class Parameter(object):
 
     @make_verbose('Creating parameter:','\n')
     def __init__(self, name, strict_bounds, bounds=(None,None),
-                 doc=None, symbol=r'', value=None, permit_prepend=True):
+                 doc=None, symbol=r'', value=None, permit_prepend=True,
+                 deactivate_verbosity=False):
         """ See the class docstring. """
 
         self.name = name
@@ -214,6 +215,7 @@ class Parameter(object):
 
         if doc is not None:
             yield '    > %s' % self.doc # get set version
+
         yield None # initialiser must return NoneType
 
     @property

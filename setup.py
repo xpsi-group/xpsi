@@ -1,6 +1,6 @@
 """
 To compile to C code, and then compile the C code and link libraries:
-    --> CC=</path/to/compiler/executable> python setup.py install [--user]
+    --> CC=<path/to/compiler/executable> python setup.py install [--user]
 
 If compiling and linking with gcc, which is on $PATH:
     --> CC=gcc python setup.py install [--user]
@@ -118,13 +118,12 @@ if __name__ == '__main__':
                          extra_compile_args = extra_compile_args,
                          extra_link_args = extra_link_args)
 
-    modnames = ['xpsi.tools.effective_gravity_universal',
+    modnames = ['xpsi.surface_radiation_field.effective_gravity_universal',
                 'xpsi.cellmesh.mesh_tools',
                 'xpsi.cellmesh.mesh',
                 'xpsi.cellmesh.polar_mesh',
                 'xpsi.cellmesh.global_mesh',
                 'xpsi.cellmesh.rays',
-                'xpsi.tools.channel_integrator',
                 'xpsi.tools.energy_interpolator',
                 'xpsi.tools.energy_adaptor',
                 'xpsi.tools.energy_integrator',
@@ -132,9 +131,11 @@ if __name__ == '__main__':
                 'xpsi.tools.phase_interpolator',
                 'xpsi.tools.synthesise',
                 'xpsi.likelihoods.default_background_marginalisation',
-                'xpsi.likelihoods.Poisson_loglike',
-                'xpsi.surface_radiation_field.hot_radiation_field',
-                'xpsi.surface_radiation_field.elsewhere_radiation_field',
+                'xpsi.likelihoods._poisson_likelihood_given_background',
+                'xpsi.surface_radiation_field.__init__',
+                'xpsi.surface_radiation_field.preload',
+                'xpsi.surface_radiation_field.hot',
+                'xpsi.surface_radiation_field.elsewhere',
                 'xpsi.cellmesh.integrator',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance',
                 'xpsi.cellmesh.integrator_for_time_invariance',
@@ -156,15 +157,16 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.4.1',
+        version = '0.5.0',
         author = 'Thomas Edward Riley',
-        author_email = 'T.E.Riley@uva.nl; t.riley.phd@gmail.com',
+        author_email = 't.e.riley@uva.nl; t.riley.phd@gmail.com',
         url = 'https://github.com/ThomasEdwardRiley/xpsi',
         license = 'MIT',
-        description = """X-PSI: A prototype open-source package for
+        description = """X-PSI: An open-source package for
                          neutron star X-ray Pulse Simulation and Inference.""",
         long_description = open('README.rst').read(),
         packages = ['xpsi',
+                    'xpsi/PostProcessing',
                     'xpsi/cellmesh',
                     'xpsi/tools',
                     'xpsi/surface_radiation_field',
@@ -172,8 +174,7 @@ if __name__ == '__main__':
                     'xpsi/pixelmesh'],
         install_requires = ['numpy'],
         setup_requires = ['cython'],
-        package_data = {'': ['README.rst', 'CHANGELOG.rst', 'TODO.rst',
-                             'LICENSE', 'CITATION']},
+        package_data = {'': ['README.rst', 'LICENSE']},
         include_package_data = True,
         ext_modules = extensions,
         cmdclass = cmdclass,
@@ -187,4 +188,3 @@ if __name__ == '__main__':
 
 else:
     pass
-

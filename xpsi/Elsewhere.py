@@ -5,7 +5,7 @@ from . import global_imports
 
 from .cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed_cellMesh
 from .cellmesh.rays import compute_rays as _compute_rays
-from .cellmesh.integrator_for_time_invariance import integrate_radField as _integrator
+from .cellmesh.integrator_for_time_invariance import integrate as _integrator
 
 from .Parameter import Parameter
 from .ParameterSubspace import ParameterSubspace
@@ -222,6 +222,14 @@ class Elsewhere(ParameterSubspace):
                             permitted to spawn.
 
         """
+        if isinstance(energies, tuple): # resolve energy container type
+            if not isinstance(energies[0], tuple):
+                _energies = energies[0]
+            else:
+                _energies = energies[0][0]
+        else:
+            _energies = energies
+
         out = _integrator(threads,
                            st.R,
                            st.Omega,
@@ -239,7 +247,7 @@ class Elsewhere(ParameterSubspace):
                            self._cos_alpha,
                            self._maxDeflection,
                            self._cos_gamma,
-                           energies,
+                           _energies,
                            atmosphere)
         if out[0] == 1:
             raise IntegrationError('Fatal numerical error during elsewhere integration.')

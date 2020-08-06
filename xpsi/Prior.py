@@ -33,6 +33,8 @@ class Prior(object):
     """
     __metaclass__ = ABCMeta
 
+    __derived_names__ = None
+
     def __init__(self, parameters):
         """
         You might want to overwrite this initialiser to do some custom
@@ -135,8 +137,33 @@ class Prior(object):
         return p
 
     @staticmethod
-    def transform(p):
+    def transform(p, **kwargs):
         """ A transformation for post-processing.
+
+        A subclass can implement this attribute as an instance method: it
+        does not need to be a static method.
+
+        :param list p:
+            Parameter vector.
+        :kwargs:
+            A key sometimes passed is ``old_API``, which flags whether a
+            transformation needs to account for a parameter vector written to
+            file by an older software version, which might be different in
+            due to transformations of parameters defined in the current
+            software version.
+
+        .. note::
+
+            As an example, the :ref:`R19` samples are in inclination :math:`i`
+            instead of :math:`\cos(i)` which is the current inclination
+            parameter in the API. Therefore the transformation needed depends
+            on the source of the parameter vector. If the vector is from the
+            original sample files, then it needs to be transformed to have
+            the same parameter definitions as the current API. However, when
+            drawing samples from the prior in the current API, no such
+            transformation needs to be performed because these are the
+            definitions we need to match. Refer to the dummy example code
+            in the method body.
 
         :returns: Transformed vector ``p`` where ``len(p) > len(self)``.
         :rtype: *list*
@@ -146,7 +173,36 @@ class Prior(object):
         # to make a mutable container that can be appended to and returned
         p = list(p)
 
+        # example transformation of parameters to match API definitions if
+        # this method is bound
+        if kwargs.get(old_API, False):
+            idx = self.parameters.index('cos_inclination')
+            p[idx] = math.cos(p[idx])
+
+        # used ordered names and values if this method is bound
+        ref = dict(zip(self.parameters.names, p))
+
         raise NotImplementedError('Define a transformation.')
+
+        return p
+
+    @property
+    def derived_names(self):
+        if self.__derived_names__ is None:
+            try:
+                self.transform(self.inverse_sample())
+            except NotImplementedError:
+                pass
+            else:
+                raise AttributeError('A transformation has been implemented '
+                                     'in class %s, but no names have been '
+                                     'declared for the derived parameters.'
+                                     % type(self).__name__)
+
+        return self.__derived_names__
+
+    def index(self, name):
+        return len(self) + self.derived_names.index(name)
 
     @make_verbose('Drawing samples from the joint prior','Samples drawn')
     def draw(self, ndraws, transform=False):

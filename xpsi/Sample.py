@@ -17,24 +17,27 @@ def func(p):
 def ensemble(likelihood, prior, MPI = True, **kwargs):
     """ Initialise `emcee <http://dfm.io/emcee/current/>`_ and sample.
 
-    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+    :param likelihood:
+        An instance of :class:`~.Likelihood.Likelihood`.
 
-    :param prior: An instance of :class:`~.Prior.Prior`.
+    :param prior:
+        An instance of :class:`~.Prior.Prior`.
 
-    :param bool MPI: Parallelise with MPI? If calling script not lauched with
-                     an MPI directive, sampling will not commence because there
-                     is only one process. Default is ``True`` since only in
-                     testing is it justifiable to use a single process.
+    :param bool MPI:
+        Parallelise with MPI? If calling script not lauched with an MPI
+        directive, sampling will not commence because there is only one
+        process. Default is ``True`` since only in testing is it justifiable to
+        use a single process.
 
+    :param kwargs:
+        Passed to initialisers of appropriate classes:
 
-    :param kwargs: Passed to initialisers of appropriate classes.
-
-       * boolean to resume, under keyword :obj:`resume`;
-       * number of steps, under keyword :obj:`nsteps`;
-       * number of walkers, under keyword :obj:`nwalkers`;
-       * moments of initial walker multivariate Gaussian distribution, under
-         keyword :obj:`walker_dist_moments` (can be ``None``);
-       * root directory for output, under keyword :obj:`root_dir`;
+            * boolean to resume, under keyword :obj:`resume`;
+            * number of steps, under keyword :obj:`nsteps`;
+            * number of walkers, under keyword :obj:`nwalkers`;
+            * moments of initial walker multivariate Gaussian distribution,
+              under keyword :obj:`walker_dist_moments` (can be ``None``);
+            * root directory for output, under keyword :obj:`root_dir`.
 
     The above objects are used to instantiate :class:`~.Posterior.Posterior`.
 
@@ -68,6 +71,7 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
             sampler = EnsembleSampler(ndims = len(likelihood),
                                       posterior = func,
                                       pool = pool,
+                                      _posterior = posterior,
                                       **kwargs)
 
             # Commence emcee sampling process

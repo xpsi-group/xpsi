@@ -7,6 +7,7 @@ __all__ = ["_np",
            "_m",
            "_sys",
            "_os",
+           "_six",
            "_contig",
            "_pi",
            "_2pi",
@@ -32,8 +33,7 @@ __all__ = ["_np",
            "_log",
            "_time",
            "gravradius",
-           "xpsiError",
-           "_six"]
+           "xpsiError"]
 
 import os as _os
 import sys as _sys

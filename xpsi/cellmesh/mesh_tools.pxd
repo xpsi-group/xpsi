@@ -19,7 +19,7 @@ from GSL cimport (gsl_function,
 
 ctypedef gsl_integration_cquad_workspace gsl_cq_work
 
-from xpsi.tools.effective_gravity_universal cimport effectiveGravity
+from xpsi.surface_radiation_field.effective_gravity_universal cimport effectiveGravity
 
 cdef double eval_psi(double theta, double phi, double THETA) nogil
 cdef double eval_phi(double theta, double THETA, double psi) nogil

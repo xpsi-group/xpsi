@@ -6,7 +6,7 @@ from .global_imports import *
 from . import global_imports
 
 from .Likelihood import Likelihood
-from .Pulse import LikelihoodError
+from .Signal import LikelihoodError
 
 from .Prior import Prior
 from .ParameterSubspace import ParameterSubspace
@@ -21,9 +21,11 @@ class Posterior(object):
     A callable instance is required by `emcee <http://dfm.io/emcee/current/>`_
     (but is not required for nested sampling).
 
-    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+    :param likelihood:
+        An instance of :class:`~.Likelihood.Likelihood`.
 
-    :param prior: An instance of :class:`~.Prior.Prior`.
+    :param prior:
+        An instance of :class:`~.Prior.Prior`.
 
     """
     def __init__(self,

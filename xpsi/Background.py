@@ -36,19 +36,19 @@ class Background(ParameterSubspace):
         # self.background = ...
 
     @property
-    def background(self):
-        """ Return the incident background [photons/s/channel/area].
+    def incident_background(self):
+        """ Return the incident background specifc photon flux.
 
         Note that the area units need to be consistent with the units
         the effective area is expressed in within the response matrix of
         the instrument object.
 
         """
-        return self._background
+        return self._incident_background
 
-    @background.setter
-    def background(self, obj):
-        """ Check and set the background. """
+    @incident_background.setter
+    def incident_background(self, obj):
+        """ Check and set the incident background. """
         try:
             assert isinstance(obj, _np.ndarray)
             assert obj.ndim == 2
@@ -58,4 +58,23 @@ class Background(ParameterSubspace):
                                   'two-dimensional ndarray with '
                                   'elements which are zero or positive.')
         else:
-            self._background = obj
+            self._incident_background = obj
+
+    @property
+    def registered_background(self):
+        """ Return the registered background count rate signal. """
+        return self._registered_background
+
+    @registered_background.setter
+    def registered_background(self, obj):
+        """ Check and set the registered background. """
+        try:
+            assert isinstance(obj, _np.ndarray)
+            assert obj.ndim == 2
+            assert (obj >= 0.0).all()
+        except AssertionError:
+            raise BackgroundError('Stored background needs to be a '
+                                  'two-dimensional ndarray with '
+                                  'elements which are zero or positive.')
+        else:
+            self._registered_background = obj

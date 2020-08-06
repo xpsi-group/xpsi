@@ -57,6 +57,7 @@ class ParameterSubspace(object):
                         if isinstance(o, Parameter):
                             self._handle(o)
                         elif isinstance(o, ParameterSubspace):
+                            self._handle_prefix(o)
                             for param in o:
                                 self._handle(param)
 
@@ -97,7 +98,8 @@ class ParameterSubspace(object):
             except AttributeError:
                 subspace.prefix = self.prefix
             else:
-                subspace.prefix = self.prefix + '__' + subspace.prefix
+                if self.prefix not in subspace.prefix:
+                    subspace.prefix = self.prefix + '__' + subspace.prefix
 
     @property
     def params(self):
@@ -108,15 +110,20 @@ class ParameterSubspace(object):
         """ Get a reference to a parameter object by name. """
 
         if isinstance(name, _six.string_types):
+            for param in self._params:
+                if name == param.name:
+                    return param
+
             try:
                 if self.prefix + '__' not in name:
                     name = self.prefix + '__' + name
             except AttributeError:
                 pass
+            else:
+                for param in self._params:
+                    if name == param.name:
+                        return param
 
-            for param in self._params:
-                if name == param.name:
-                    return param
             raise KeyError('No parameter in subspace with matching name.')
 
     def index(self, name):
@@ -124,6 +131,15 @@ class ParameterSubspace(object):
         for i, param in enumerate(self):
             if name == param.name:
                 return i
+
+            try:
+                self.prefix
+            except AttributeError:
+                continue # with iteration
+            else:
+                if self.prefix + '__' not in name: # safety guard for prefix
+                    if self.prefix + '__' + name == param.name:
+                        return i
 
     def __len__(self):
         """ Get the number of free parameters in the subspace. """
@@ -167,12 +183,6 @@ class ParameterSubspace(object):
         """ Pass a string or an integer (latter only for free parameters). """
 
         if isinstance(key, _six.string_types):
-            try:
-                if self.prefix + '__' not in key:
-                    key = self.prefix + '__' + key
-            except AttributeError:
-                pass
-
             return self.get_param(key).evaluate(self) # "caller" is subspace
 
         elif isinstance(key, int):
@@ -271,8 +281,8 @@ class ParameterSubspace(object):
 
         .. note::
 
-            Note that this also deletes the current parameter values, in
-            addition to the cached previous values..
+            That this also deletes the current parameter values, in
+            addition to the cached previous values.
 
         """
         for param in self:

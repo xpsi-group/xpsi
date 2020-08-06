@@ -4,9 +4,9 @@
 #cython: wraparound=False
 
 from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs
-from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf, fopen, fclose, fread, FILE
 from GSL cimport gsl_isnan, gsl_isinf
+from libc.stdlib cimport malloc, free
 
 from xpsi.global_imports import _keV, _k_B
 
@@ -20,23 +20,20 @@ cdef double k_B_over_keV = k_B / keV
 cdef int VERBOSE = 0
 
 ctypedef struct ACCELERATE:
-    size_t **BN
+    size_t **BN                # base node for interpolation
     double **node_vals
     double **SPACE
     double **DIFF
     double **INTENSITY_CACHE
     double **VEC_CACHE
 
-# Modify this struct if useful for the user-defined source radiation field
+# Modify this struct if useful for the user-defined source radiation field.
 # Note that the members of DATA will be shared by all threads and are
 # statically allocated, whereas the members of ACCELERATE will point to
 # dynamically allocated memory, not shared by threads.
 
 ctypedef struct DATA:
-    size_t ndims
-    size_t N[4]
-    size_t BLOCKS[3]
-    const hotRadField_PRELOAD *p
+    const _preloaded *p
     ACCELERATE acc
 
 #----------------------------------------------------------------------->>>
@@ -46,25 +43,18 @@ ctypedef struct DATA:
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_hotRadField(size_t numThreads, const hotRadField_PRELOAD *const preload) nogil:
-    # This function must match the free management routine free_hotRadField()
+cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded) nogil:
+    # This function must match the free management routine free_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
     # Return NULL if dynamic memory is not required for the model
 
     cdef DATA *D = <DATA*> malloc(sizeof(DATA))
-    D.p = preload
+    D.p = preloaded
 
-    D.ndims = 4
-
-    D.N[0] = 35
-    D.N[1] = 11
-    D.N[2] = 67
-    D.N[3] = 166
-
-    D.BLOCKS[0] = 64
-    D.BLOCKS[1] = 16
-    D.BLOCKS[2] = 4
+    D.p.BLOCKS[0] = 64
+    D.p.BLOCKS[1] = 16
+    D.p.BLOCKS[2] = 4
 
     cdef size_t T, i, j, k, l
 
@@ -76,13 +66,13 @@ cdef void* init_hotRadField(size_t numThreads, const hotRadField_PRELOAD *const 
     D.acc.VEC_CACHE = <double**> malloc(numThreads * sizeof(double*))
 
     for T in range(numThreads):
-        D.acc.BN[T] = <size_t*> malloc(D.ndims * sizeof(size_t))
-        D.acc.node_vals[T] = <double*> malloc(2 * D.ndims * sizeof(double))
-        D.acc.SPACE[T] = <double*> malloc(4 * D.ndims * sizeof(double))
-        D.acc.DIFF[T] = <double*> malloc(4 * D.ndims * sizeof(double))
+        D.acc.BN[T] = <size_t*> malloc(D.p.ndims * sizeof(size_t))
+        D.acc.node_vals[T] = <double*> malloc(2 * D.p.ndims * sizeof(double))
+        D.acc.SPACE[T] = <double*> malloc(4 * D.p.ndims * sizeof(double))
+        D.acc.DIFF[T] = <double*> malloc(4 * D.p.ndims * sizeof(double))
         D.acc.INTENSITY_CACHE[T] = <double*> malloc(256 * sizeof(double))
-        D.acc.VEC_CACHE[T] = <double*> malloc(D.ndims * sizeof(double))
-        for i in range(D.ndims):
+        D.acc.VEC_CACHE[T] = <double*> malloc(D.p.ndims * sizeof(double))
+        for i in range(D.p.ndims):
             D.acc.BN[T][i] = 0
             D.acc.VEC_CACHE[T][i] = D.p.params[i][1]
             D.acc.node_vals[T][2*i] = D.p.params[i][1]
@@ -133,21 +123,21 @@ cdef void* init_hotRadField(size_t numThreads, const hotRadField_PRELOAD *const 
                         address += (D.acc.BN[T][1] + j) * D.p.S[1]
                         address += (D.acc.BN[T][2] + k) * D.p.S[2]
                         address += D.acc.BN[T][3] + l
-                        D.acc.INTENSITY_CACHE[T][i * D.BLOCKS[0] + j * D.BLOCKS[1] + k * D.BLOCKS[2] + l] = address[0]
+                        D.acc.INTENSITY_CACHE[T][i * D.p.BLOCKS[0] + j * D.p.BLOCKS[1] + k * D.p.BLOCKS[2] + l] = address[0]
 
     # Cast for generalised usage in integration routines
     return <void*> D
 
 
-cdef int free_hotRadField(size_t numThreads, void *const data) nogil:
-    # This function must match the initialisation routine init_hotRadField()
+cdef int free_hot(size_t numThreads, void *const data) nogil:
+    # This function must match the initialisation routine init_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
     # The void pointer must be appropriately cast before memory is freed --
     # only the user can know this at compile time.
     # Just use free(<void*> data) iff no memory was dynamically
     # allocated in the function:
-    #   init_hotRadField()
+    #   init_hot()
     # because data is expected to be NULL in this case
 
     cdef DATA *D = <DATA*> data
@@ -178,11 +168,17 @@ cdef int free_hotRadField(size_t numThreads, void *const data) nogil:
 # >>> Improve acceleration properties... i.e. do not recompute numerical
 # ... weights or re-read intensities if not necessary.
 #----------------------------------------------------------------------->>>
-cdef double eval_hotRadField(size_t THREAD,
-                             double E,
-                             double mu,
-                             const double *const VEC,
-                             void *const data) nogil:
+cdef double eval_hot(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
     # This function must cast the void pointer appropriately for use.
     cdef DATA *D = <DATA*> data
 
@@ -205,7 +201,7 @@ cdef double eval_hotRadField(size_t THREAD,
     vec[2] = mu
     vec[3] = log10(E / E_eff)
 
-    while i < D.ndims:
+    while i < D.p.ndims:
         # if parallel == 31:
         #     printf("\nDimension: %d", <int>i)
         update_baseNode[i] = 0
@@ -232,17 +228,17 @@ cdef double eval_hotRadField(size_t THREAD,
             # if parallel == 31:
             #     printf("\nEnd Block 1: %d", <int>i)
 
-        elif vec[i] > node_vals[2*i + 1] and BN[i] != D.N[i] - 4:
+        elif vec[i] > node_vals[2*i + 1] and BN[i] != D.p.N[i] - 4:
             # if parallel == 31:
             #     printf("\nExecute block 2: %d", <int>i)
             update_baseNode[i] = 1
             while vec[i] > D.p.params[i][BN[i] + 2]:
-                if BN[i] < D.N[i] - 4:
+                if BN[i] < D.p.N[i] - 4:
                     BN[i] += 1
-                elif vec[i] >= D.p.params[i][D.N[i] - 1]:
-                    vec[i] = D.p.params[i][D.N[i] - 1]
+                elif vec[i] >= D.p.params[i][D.p.N[i] - 1]:
+                    vec[i] = D.p.params[i][D.p.N[i] - 1]
                     break
-                elif BN[i] == D.N[i] - 4:
+                elif BN[i] == D.p.N[i] - 4:
                     break
 
             node_vals[2*i] = D.p.params[i][BN[i] + 1]
@@ -311,11 +307,11 @@ cdef double eval_hotRadField(size_t THREAD,
     cdef double *address = NULL
     # Combinatorics over nodes of hypercube; weight cgs intensities
     for i in range(4):
-        II = i * D.BLOCKS[0]
+        II = i * D.p.BLOCKS[0]
         for j in range(4):
-            JJ = j * D.BLOCKS[1]
+            JJ = j * D.p.BLOCKS[1]
             for k in range(4):
-                KK = k * D.BLOCKS[2]
+                KK = k * D.p.BLOCKS[2]
                 for l in range(4):
                     address = D.p.I + (BN[0] + i) * D.p.S[0]
                     address += (BN[1] + j) * D.p.S[1]
@@ -342,12 +338,13 @@ cdef double eval_hotRadField(size_t THREAD,
     return I * pow(10.0, 3.0 * vec[0])
 
 
-cdef double eval_hotRadField_norm() nogil:
+cdef double eval_hot_norm() nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.
     # Writing the normalisation here reduces the number of operations required
     # during integration.
+    # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
     return erg / 4.135667662e-18
 

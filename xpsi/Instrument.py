@@ -1,11 +1,12 @@
 from __future__ import division, print_function
 
-__all__ = ["Instrument", "ResponseError", "EdgesError"]
+__all__ = ["Instrument"]
 
 from .global_imports import *
 from . import global_imports
 
-from abc import abstractmethod
+from . import make_verbose
+
 from .ParameterSubspace import ParameterSubspace
 
 class ResponseError(xpsiError):
@@ -14,8 +15,11 @@ class ResponseError(xpsiError):
 class EdgesError(xpsiError):
     """ Raised if there is a problem with the input energy edges. """
 
+class ChannelError(xpsiError):
+    """ Raised if there is a problem with the input channel numbers. """
+
 class Instrument(ParameterSubspace):
-    """ Base class for astronomical X-ray instruments such as NICER.
+    """ Base class for astronomical X-ray instruments on-board space telescopes.
 
     The body of the initialiser must not be changed to ensure inter-module
     compatibility, but can be extended if appropriate using a call to
@@ -23,30 +27,46 @@ class Instrument(ParameterSubspace):
     using the ``@classmethod`` decorator.
 
     :param ndarray[p,q] matrix:
-        A :math:`p \\times q` matrix which is the
-        product of a redistribution matrix and effective area
-        vector. The input energy intervals must increase along
-        the columns of :attr:`matrix`, and the output channels
-        must increase along the rows of :attr:`matrix`. The
-        *units* of the elements must be that of an *effective*
-        area (:math:`cm^2`). Generally there will be some available
-        calibration product, and deviations from this nominal response
-        model will be parametrised. So here load some nominal
-        response matrix.
+        A :math:`p \\times q` matrix which is the product of a redistribution
+        matrix and effective area vector. The input energy intervals must
+        increase along the columns of :attr:`matrix`, and the output channels
+        must increase along the rows of :attr:`matrix`. The *units* of the
+        elements must be that of an *effective* area (:math:`cm^2`). Generally
+        there will be some available calibration product, and deviations from
+        this nominal response model will be parametrised. So here load some
+        nominal response matrix.
 
     :param ndarray[q+1] energy_edges:
-        Energy edges of the instrument energy intervals which
-        must be congruent to the first dimension of the
-        :attr:`matrix`: the number of edges must
-        be :math:`q + 1`. The edges must be monotonically
-        increasing. These edges will correspond to the nominal response
-        matrix and any deviation from this matrix (see above).
+        Energy edges in keV of the instrument energy intervals which must be
+        congruent to the first dimension of the :attr:`matrix`: the number of
+        edges must be :math:`q + 1`. The edges must be monotonically increasing.
+        These edges will correspond to the nominal response matrix and any
+        deviation from this matrix (see above).
 
-    .. note:: The dimensions of the response matrix need not be equal, but
-              it is required that the number of input intervals be greater
-              than or equal to the number of output channels -- i.e.,
-              :math:`p \leq q`. If :math:`p < q` then it is implied that
-              subsets of adjacent output channels are actually grouped together.
+    :param ndarray[p] channels:
+        Instrument channel numbers which must be equal in number to the number
+        of rows of the :attr:`matrix`. The number of channels must therefore be
+        :math:`p`. These channels will correspond to the nominal response
+        matrix and any deviation from this matrix (see above). In common usage
+        patterns, the channel numbers will increase monotonically with row
+        number, and usually increment by one (but this is not necessary).
+
+    .. note::
+
+        That these channel numbers are not used to index the loaded instrument
+        (sub)matrix. The :attr:`xpsi.Data.index_range` property returns
+        bounding row numbers that index the loaded instrument response
+        (sub)matrix in order to operate on an incident signal flux. The
+        channel array contained in :attr:`xpsi.Data.channels` must be a
+        contiguous (ordered) subset of the channel array loaded here.
+
+    .. note::
+
+        The dimensions of the response matrix need not be equal, but it is
+        required that the number of input intervals be greater than or equal to
+        the number of output channels -- i.e., :math:`p \leq q`. If :math:`p <
+        q` then it is implied that subsets of adjacent output channels are
+        effectively grouped together.
 
     :param tuple args:
         Container of parameter instances.
@@ -57,16 +77,22 @@ class Instrument(ParameterSubspace):
         find its way to the base class.
 
     """
-    def __init__(self, matrix, energy_edges, *args, **kwargs):
+    def __init__(self, matrix, energy_edges, channels, *args, **kwargs):
 
         self.matrix = matrix
         self.energy_edges = energy_edges
+        self.channels = channels
 
         super(Instrument, self).__init__(*args, **kwargs)
 
     @property
     def matrix(self):
-        """ Get the response matrix.
+        """ Get the reference response matrix.
+
+        In common usage patterns there will be some fiducial or nominal
+        response matrix that either defines fixed instrument operation or
+        is a basis for parametrised deviations. This matrix is usually a
+        calibration product distributed by an instrument calibration team.
 
         A matrix of dimension :math:`p \\times q`. Here :math:`p` must be the
         number of input energy intervals, and :math:`q \geq p` the number of
@@ -91,8 +117,8 @@ class Instrument(ParameterSubspace):
             assert (matrix >= 0.0).all()
         except AssertionError:
             raise ResponseError('Input matrix must be a two-dimensional '
-                                'ndarray awith elements '
-                                'that are zero or positive.')
+                                'ndarray awith elements that are zero '
+                                'or positive.')
         else:
             try:
                 for i in range(matrix.shape[0]):
@@ -108,35 +134,42 @@ class Instrument(ParameterSubspace):
     def construct_matrix(self):
         """ Construct the response matrix if it is parametrised.
 
-        If customising, just do stuff to calculate a matrix, and return
-        it. You can access parameters (free, fixed, and derived) via
-        the container access self[<name>].
+        If customising, do operations to calculate a matrix, and return it.
+        You can access parameters (free, fixed, and derived) via the container
+        access ``self[<name>]``.
+
+        If the instrument operation is fixed, you might not need to subclass,
+        because the default behaviour is to return the nominal response you
+        loaded. If for some reason the matrix you loaded is to be modified in
+        some fixed manner, possibly as a function of some custom fixed
+        parameters that you defined, you would also have to subclass and
+        provide the correct implementation of this method.
 
         """
         return self.matrix
 
     def __call__(self, signal, irange, orange):
-        """ Fold an incident signal.
+        """ Register an incident signal.
 
         :param ndarray[m,n] signal:
             An :math:`m \\times n` matrix, where input energy interval
-            increments along rows, and phase increases along columns.
-            The number of rows, :math:`m`, must equal the number of columns of
+            increments along rows, and phase increases along columns. The
+            number of rows, :math:`m`, must equal the number of columns of
             :attr:`matrix`: :math:`m=q`.
 
         :param array-like irange:
-            Indexable object with two elements respectively denoting
-            the indices of the first and last *input* intervals. The
-            response matrix :attr:`matrix` must be indexable with
-            these numbers, i.e., they must satisfy :math:`i < q`.
+            Indexable object with two elements respectively denoting the
+            indices of the first and last *input* intervals. The response
+            matrix :attr:`matrix` must be indexable with these numbers, i.e.,
+            they must satisfy :math:`indx < q`.
 
         :param array-like orange:
-            Indexable object with two elements respectively denoting
-            the indices of the first and last *output* channels. The
-            response matrix :attr:`matrix` must be indexable with
-            these numbers, i.e., they must satisfy :math:`i < p`.
+            Indexable object with two elements respectively denoting the
+            indices of the first and last *output* channels. The response
+            matrix :attr:`matrix` must be indexable with these numbers, i.e.,
+            they must satisfy :math:`indx < p`.
 
-        :return: *ndarray[p,n]* containing the folded signal.
+        :return: *ndarray[p,n]* containing the registered signal.
 
         .. note::
 
@@ -153,27 +186,24 @@ class Instrument(ParameterSubspace):
 
     @property
     def cached_signal(self):
-        """ Get the cached folded signal. """
+        """ Get the cached registered signal. """
         return self._cached_signal
 
     @property
     def energy_edges(self):
-        """ Get the energy edges of the instrument.
+        """ Get the energy edges of the instrument, in keV.
 
-        A :class:`numpy.ndarray` of edges of the input energy
-        intervals which map to output channels defined in the
-        data space.
+        A :class:`numpy.ndarray` of edges of the input energy intervals which
+        map to output channels defined in the data space.
 
         """
         return self._energy_edges
 
     @energy_edges.setter
     def energy_edges(self, energy_edges):
-        """ Set the energy edges. """
+        """ Set the energy edges in keV. """
 
-        try:
-            assert isinstance(energy_edges, _np.ndarray)
-        except AssertionError:
+        if not isinstance(energy_edges, _np.ndarray):
             try:
                 self._energy_edges = _np.array(energy_edges)
             except TypeError:
@@ -186,6 +216,46 @@ class Instrument(ParameterSubspace):
             assert self._energy_edges.ndim == 1
             assert (self._energy_edges >= 0.0).all()
             assert self._energy_edges.shape[0] == self._matrix.shape[1] + 1
+            assert not (self._energy_edges[1:] <= self._energy_edges[:-1]).any()
         except AssertionError:
             raise EdgesError('Energy edges must be in a one-dimensional '
                              'array, and must be postive.')
+
+    @property
+    def channels(self):
+        """ Get the array of channels corresponding to rows of the matrix.
+
+        The matrix being the loaded instrument response (sub)matrix.
+
+        """
+        return self._channels
+
+    @channels.setter
+    @make_verbose('Setting channels for loaded instrument response (sub)matrix',
+                  'Channels set')
+    def channels(self, array):
+        if not isinstance(array, _np.ndarray):
+            try:
+                self._channels = _np.array(array)
+            except TypeError:
+                raise ChannelError('Channel numbers must be in a '
+                                   'one-dimensional array, and must all be '
+                                   'positive integers including zero.')
+        else:
+            self._channels = array
+
+        try:
+            assert self._channels.ndim == 1
+            assert (self._channels >= 0).all()
+            assert self._channels.shape[0] == self._matrix.shape[0]
+        except AssertionError:
+            raise ChannelError('Channel numbers must be in a '
+                               'one-dimensional array, and must all be '
+                               'positive integers including zero.')
+
+
+        if (self._channels[1:] - self._channels[:-1] != 1).any():
+            yield ('Warning: Channel numbers do not uniformly increment by one.'
+                   '\n         Please check for correctness.')
+
+        yield

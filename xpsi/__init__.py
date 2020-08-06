@@ -1,7 +1,10 @@
-""" X-PSI: A prototype open-source package for neutron star
-    X-ray Pulse Simulation and Inference. """
+""" X-PSI: X-ray Pulsation Simulation and Inference
+
+A prototype open-source package for neutron star astrostatistics.
+
+"""
 from __future__ import print_function
-__version__ = "0.4.1"
+__version__ = "0.5.0"
 __author__ = "Thomas E. Riley"
 
 try:
@@ -29,35 +32,36 @@ if not __XPSI_SETUP__:
 
     import six as _six
     from inspect import isgeneratorfunction as _isgeneratorfunction
-    from functools import wraps
+    import wrapt
 
     def make_verbose(enter_msg='', exit_msg=''):
-        def decorator(func):
-            @wraps(func)
-            def wrapper(*args, **kwargs):
-                if _verbose:
-                    if enter_msg and isinstance(enter_msg, _six.string_types):
-                        msg = enter_msg
-                        print(msg + ('...' if enter_msg[-1] != ':' else ''))
-                if _isgeneratorfunction(func):
-                    for msg in func(*args, **kwargs):
-                        if _verbose:
-                            if msg and isinstance(msg, _six.string_types):
-                                print(msg + ('...' if msg[-1] != '.' else ''))
-                        _ = msg # catch last yield if generator
-                else:
-                    _ = func(*args, **kwargs)
-                if _verbose:
-                    if exit_msg and isinstance(exit_msg, _six.string_types):
-                        if exit_msg == '\n':
-                            print(exit_msg)
-                        else:
-                            print(exit_msg + ('.' if exit_msg[-1] != '.' else ''))
-                return _
-            return wrapper
+        """ Decorator factory for a decorator that controls verbosity. """
+        @wrapt.decorator
+        def decorator(func, instance, args, kwargs):
+            deactivate_verbosity = kwargs.pop('deactivate_verbosity', False)
+            if _verbose and not deactivate_verbosity:
+                if enter_msg and isinstance(enter_msg, _six.string_types):
+                    msg = enter_msg
+                    print(msg + ('...' if enter_msg[-1] != ':' else ''))
+            if _isgeneratorfunction(func):
+                for msg in func(*args, **kwargs):
+                    if _verbose and not deactivate_verbosity:
+                        if msg and isinstance(msg, _six.string_types):
+                            print(msg + ('...' if msg[-1] != '.' else ''))
+                    final = msg # catch last yield if generator
+            else:
+                final = func(*args, **kwargs)
+            if _verbose and not deactivate_verbosity:
+                if exit_msg and isinstance(exit_msg, _six.string_types):
+                    if exit_msg == '\n':
+                        print(exit_msg)
+                    else:
+                        print(exit_msg + ('.' if exit_msg[-1] != '.' else ''))
+            return final
         return decorator
 
     class verbose(object):
+        """ Context manager for verbosity. """
         def __init__(self, condition, enter_msg, exit_msg):
             self.condition = condition
             self.enter_msg = enter_msg
@@ -73,8 +77,13 @@ if not __XPSI_SETUP__:
                 print(self.exit_msg + '.')
 
     class fragile(object):
+        """ A solution straight from Stack Overflow.
+
+        Reference: questions/11195140/break-or-exit-out-of-with-statement
+
+        """
         class Break(Exception):
-            """Break out of the with statement"""
+            """ Break out of the with statement. """
 
         def __init__(self, value):
             self.value = value
@@ -100,6 +109,10 @@ if not __XPSI_SETUP__:
         print("|" + rtds.center(len(name)+2) + "|")
         print("\\=============================================/\n")
 
+    def _warning(msg):
+        if _verbose:
+            print('Warning: ' + msg + ('.' if msg[-1] != '.' else ''))
+
     import global_imports
 
     from .Parameter import Parameter, Derive
@@ -108,7 +121,7 @@ if not __XPSI_SETUP__:
     from .Likelihood import Likelihood
     from .Data import Data
     from .Instrument import Instrument
-    from .Pulse import Pulse
+    from .Signal import Signal
 
     from .Star import Star
     from .Spacetime import Spacetime
@@ -128,3 +141,4 @@ if not __XPSI_SETUP__:
     if global_imports._size == 1:
         from .PostProcessing import *
 
+    __XPSI_SETUP__ = True
