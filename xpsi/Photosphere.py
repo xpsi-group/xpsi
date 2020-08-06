@@ -411,6 +411,10 @@ class Photosphere(ParameterSubspace):
 
         self._images = images
 
+    @images.deleter
+    def images(self):
+        del self._images
+
     def image(self,
               reimage = False,
               energies = None,
@@ -426,6 +430,7 @@ class Photosphere(ParameterSubspace):
               plot_sky_maps = False,
               sky_map_kwargs = None,
               animate_sky_maps = False,
+              free_memory = True,
               animate_kwargs = None):
         """ Image the star as a function of phase and energy.
 
@@ -523,10 +528,27 @@ class Photosphere(ParameterSubspace):
         :param bool animate_sky_maps:
             Compile images from disk into an animated sequence.
 
+        :param bool free_memory:
+            Try to free the imaging information before animating a sequence of
+            sky maps written to disk, to try to avoid high memory usage. For
+            safety the default is to free the memory, so deactivate this at your
+            own risk. If there are other non-weak references created to the
+            underlying objects, the memory may fail to be freed. In the
+            methods below, the aim is that the native garbage collection cleans
+            up the references because they only exist in the method local scope
+            (no closures or globals).
+
+        .. note::
+
+            Memory used for plotting the sky maps and loading the images from
+            disk to animate a phase sequence might not be straightforwardly
+            freed despite efforts to do so, because of non-weak references
+            covertly held by the matplotlib module.
+
         :param dict animate_kwargs:
             Dictionary of keyword arguments passed to
-            :meth:`~Photosphere._animate`. Refer to the associated
-            method docstring for available options.
+            :meth:`~Photosphere._animate`. Refer to the associated method
+            docstring for available options.
 
         """
         ref = self._spacetime # geometry shortcut saves characters
@@ -544,6 +566,11 @@ class Photosphere(ParameterSubspace):
 
             if not isinstance(energies, _np.ndarray):
                 raise TypeError('Imaging energies must be form an ndarray.')
+
+            try:
+                del self.images # try to free up memory
+            except AttributeError:
+                pass
 
             images = _integrate(threads,
                                 ref.r_s,
@@ -654,6 +681,12 @@ class Photosphere(ParameterSubspace):
                                                **sky_map_kwargs)
 
         if animate_sky_maps:
+            if free_memory:
+                try:
+                    del self.images # try to free up memory
+                except AttributeError:
+                    pass
+
             if not _os.path.isfile(file_root + '_0.png'):
                 raise IOError('No images located for animation.')
 
@@ -678,7 +711,7 @@ class Photosphere(ParameterSubspace):
                        panel_layout = None,
                        panel_indices = None,
                        phase_average = False,
-                       energy_bounds = [],
+                       energy_bounds = None,
                        num_levels = 100,
                        normalise_each_panel = True,
                        invert = False,
