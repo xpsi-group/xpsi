@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>PostProcessing &mdash; xpsi 0.4.0 documentation</title>
+  <title>PostProcessing &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -94,21 +94,32 @@
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -122,12 +133,24 @@
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
 <li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">PostProcessing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PostProcessing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#users">Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#customization">Customization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#base-classes-for-development">Base classes for development</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -216,193 +239,103 @@
     text-align: unset;
 }
 </style>
-<span class="target" id="module-xpsi.PostProcessing"></span><div class="section" id="postprocessing">
+<div class="section" id="postprocessing">
 <span id="id1"></span><h1>PostProcessing<a class="headerlink" href="#postprocessing" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-xpsi.PostProcessing"></span><p>Module for various (posterior) sample post-processing operations.</p>
+<div class="section" id="users">
+<h2>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h2>
+<p>The typical usage pattern is to use the following classes:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> to load a set of nested sampling
+runs on one underlying posterior distribution;</p>
+</li>
+<li><p class="first"><a class="reference internal" href="#xpsi.PostProcessing.CornerPlotter" title="xpsi.PostProcessing.CornerPlotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CornerPlotter</span></code></a> to plot 1D and 2D
+marginal posterior density distributions (from a set of
+<a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances) in lower-triangular
+form, and to compute various posterior estimators;</p>
+</li>
+<li><p class="first"><a class="reference internal" href="#xpsi.PostProcessing.SignalPlotter" title="xpsi.PostProcessing.SignalPlotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlotter</span></code></a> to plot thematic
+X-ray signals (or, generally, derived quantities) in posterior-
+expected form or conditional-posterior form, together with ground
+truths (i.e., injected) and in component form when there are two
+or more disjoint surface hot regions;</p>
+</li>
+<li><p class="first">to use the <a class="reference internal" href="#xpsi.PostProcessing.SignalPlotter" title="xpsi.PostProcessing.SignalPlotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlotter</span></code></a> class, a
+user must supply a set of plot class instances for each posterior
+distribution to be processed, where these native classes are</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot" title="xpsi.PostProcessing.ResidualPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidualPlot</span></code></a></li>
+<li><a class="reference internal" href="#xpsi.PostProcessing.PulsePlot" title="xpsi.PostProcessing.PulsePlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">PulsePlot</span></code></a></li>
+<li><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot" title="xpsi.PostProcessing.SpectrumPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectrumPlot</span></code></a></li>
+</ul>
+</div></blockquote>
+<p>and can be configured both on a class and instance level.</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="customization">
+<h2>Customization<a class="headerlink" href="#customization" title="Permalink to this headline">¶</a></h2>
+<p>The aforementioned native classes can of course be subclassed if the
+aim is to wrap, modify, or add functionality too.</p>
+<p>In order to make entirely new plot type, we need to subclass the abstract
+base class <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a>, using the
+native subclasses for guidance.</p>
+<p>If new plot types are developed, please contribute to the source code via
+a pull request. Isolate the new functionality in a proposed submodule,
+adding your authorship information, and supply examples of usage in a Jupyter
+notebook (either a new tutorial or by extending an existing tutorial as
+appropriate). The subclass can then be imported from the submodule namespace
+as shown below for the native classes. Then add the submodule to the Sphinx
+doc pages. If you can include an example image in the subclass docstring,
+please do, as it will be rendered directly in the class documentation.
+Finally, if you can point to a journal article that implements the plot type,
+please do.</p>
+</div>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.Run</span></code></a>(filepath,&nbsp;ID,&nbsp;names,&nbsp;…)</td>
-<td>Base class for a sample object, containing basic information.</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.Runs</span></code></a>(runs,&nbsp;likelihood,&nbsp;…)</td>
+<td>Container for nested sampling runs on a shared posterior.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xpsi.PostProcessing.NSBackend" title="xpsi.PostProcessing.NSBackend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.NSBackend</span></code></a>(root,&nbsp;…[,&nbsp;…])</td>
-<td>Container for nested samples generated by a single run, and backends for analysis of the run.</td>
+<tr class="row-even"><td><a class="reference internal" href="#xpsi.PostProcessing.CornerPlotter" title="xpsi.PostProcessing.CornerPlotter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.CornerPlotter</span></code></a>(posteriors)</td>
+<td>Plot marginal posterior densities and estimators.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.Runs</span></code></a>(runs)</td>
-<td>Container for nested sampling run objects.</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing.SignalPlotter" title="xpsi.PostProcessing.SignalPlotter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.SignalPlotter</span></code></a>(posteriors)</td>
+<td>Plot conditional posterior distributions of thematic X-ray signals.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#xpsi.PostProcessing.PostProcessor" title="xpsi.PostProcessing.PostProcessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.PostProcessor</span></code></a>([runs,&nbsp;…])</td>
-<td>Post-process samples for inference and posterior checking.</td>
+<tr class="row-even"><td><a class="reference internal" href="#xpsi.PostProcessing.ResidualPlot" title="xpsi.PostProcessing.ResidualPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.ResidualPlot</span></code></a>([…])</td>
+<td>Plot the count data, the posterior-expected count signal, and residuals.</td>
 </tr>
-</tbody>
-</table>
-<dl class="class">
-<dt id="xpsi.PostProcessing.Run">
-<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">Run</code><span class="sig-paren">(</span><em>filepath</em>, <em>ID</em>, <em>names</em>, <em>bounds</em>, <em>labels=None</em>, <em>implementation=None</em>, <em>truths=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for a sample object, containing basic information.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ID</strong> (<em>str</em>) – For identification of the set of the samples if multiple
-sets are jointly plotted.</li>
-<li><strong>filepath</strong> (<em>str</em>) – Path to samples file.</li>
-<li><strong>names</strong> (<em>list</em>) – An ordered list of <code class="docutils literal notranslate"><span class="pre">str</span></code> parameter names. The
-ordering must match the parameter vector ordering
-defined in sample backend objects.</li>
-<li><strong>bounds</strong> (<em>dict</em>) – A dictionary of one-dimensional <em>hard</em> parameter
-bounds. See <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>;
-the keys must match the <a class="reference internal" href="#xpsi.PostProcessing.Run.names" title="xpsi.PostProcessing.Run.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a> list. For
-the purpose of density estimation plots these
-bounds can be viewing bounds.</li>
-<li><strong>labels</strong> (<em>list</em>) – An ordered list of (LaTeX compatible) <code class="docutils literal notranslate"><span class="pre">str</span></code>
-literal parameter labels.</li>
-<li><strong>implementation</strong> (<em>str</em>) – Sampling software applied to generate the
-samples. Known options are
-<code class="docutils literal notranslate"><span class="pre">['multinest',</span> <span class="pre">'polychord',</span> <span class="pre">'emcee']</span></code>.</li>
-<li><strong>truths</strong> (<em>dict</em>) – Optional dictionary of parameter truths, if <em>known</em>;
-if <em>unknown</em> leave as <code class="docutils literal notranslate"><span class="pre">None</span></code>. The keys
-must be names which match those in
-<a class="reference internal" href="#xpsi.PostProcessing.Run.names" title="xpsi.PostProcessing.Run.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a>.</li>
-</ul>
-</td>
+<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing.PulsePlot" title="xpsi.PostProcessing.PulsePlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.PulsePlot</span></code></a>([num_phases,&nbsp;…])</td>
+<td>Plot posterior-averaged channel-summed count-rate pulse profiles.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xpsi.PostProcessing.SpectrumPlot" title="xpsi.PostProcessing.SpectrumPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing.SpectrumPlot</span></code></a>([…])</td>
+<td>Plot posterior-averaged channel count-rate spectra.</td>
 </tr>
 </tbody>
 </table>
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.ID">
-<code class="descname">ID</code><a class="headerlink" href="#xpsi.PostProcessing.Run.ID" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the identification <code class="docutils literal notranslate"><span class="pre">str</span></code> of the sample set.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.bounds">
-<code class="descname">bounds</code><a class="headerlink" href="#xpsi.PostProcessing.Run.bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the parameter bounds.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.contours">
-<code class="descname">contours</code><a class="headerlink" href="#xpsi.PostProcessing.Run.contours" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the dictionary of contour arguments for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contours</strong> (<em>dict</em>) – <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>-compatible dictionary of parameters
-specifying the properties of the contours
-representing credible regions of the
-two-dimensional marginal distributions of
-parameters.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.implementation">
-<code class="descname">implementation</code><a class="headerlink" href="#xpsi.PostProcessing.Run.implementation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sampling software applied to generate the samples of the run.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.labels">
-<code class="descname">labels</code><a class="headerlink" href="#xpsi.PostProcessing.Run.labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the parameter labels.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.lines">
-<code class="descname">lines</code><a class="headerlink" href="#xpsi.PostProcessing.Run.lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the dictionary of line arguments for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lines</strong> (<em>dict</em>) – <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>-compatible dictionary of parameters
-specifying the properties of the smooth lines
-representing one-dimensional marginal distributions
-of parameters.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.names">
-<code class="descname">names</code><a class="headerlink" href="#xpsi.PostProcessing.Run.names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the parameter names.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.samples">
-<code class="descname">samples</code><a class="headerlink" href="#xpsi.PostProcessing.Run.samples" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a copy of the samples array.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.truth_vector">
-<code class="descname">truth_vector</code><a class="headerlink" href="#xpsi.PostProcessing.Run.truth_vector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the parameter truths as a list.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.Run.truths">
-<code class="descname">truths</code><a class="headerlink" href="#xpsi.PostProcessing.Run.truths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the parameter truths as a dictionary.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="xpsi.PostProcessing.NSBackend">
-<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">NSBackend</code><span class="sig-paren">(</span><em>root</em>, <em>base_dir</em>, <em>kde_settings</em>, <em>use_nestcheck</em>, <em>transform=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#NSBackend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.NSBackend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing.Run</span></code></a></p>
-<p>Container for nested samples generated by a single run, and backends
-for analysis of the run.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kde_settings</strong> (<em>dict</em>) – Settings for instantiation of <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>.</td>
-</tr>
-</tbody>
-</table>
-<p>The other keyword arguments are generic properties passed to the parent
-class, such as the identification (ID) string of the run.</p>
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.NSBackend.getdist_backend">
-<code class="descname">getdist_backend</code><a class="headerlink" href="#xpsi.PostProcessing.NSBackend.getdist_backend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a> instance.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.NSBackend.kde_settings">
-<code class="descname">kde_settings</code><a class="headerlink" href="#xpsi.PostProcessing.NSBackend.kde_settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the input <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> KDE settings dictionary.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.NSBackend.margeStats">
-<code class="descname">margeStats</code><a class="headerlink" href="#xpsi.PostProcessing.NSBackend.margeStats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the marginal statistics using <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="xpsi.PostProcessing.NSBackend.nestcheck_backend">
-<code class="descname">nestcheck_backend</code><a class="headerlink" href="#xpsi.PostProcessing.NSBackend.nestcheck_backend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> backend for the nested samples.</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="class">
 <dt id="xpsi.PostProcessing.Runs">
-<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">Runs</code><span class="sig-paren">(</span><em>runs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Container for nested sampling run objects.</p>
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">Runs</code><span class="sig-paren">(</span><em>runs</em>, <em>likelihood</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_runs.html#Runs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata" title="xpsi.PostProcessing._metadata.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing._metadata.Metadata</span></code></a></p>
+<p>Container for nested sampling runs on a shared posterior.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>likelihood</strong> – The instance of <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> used for sampling, or a clone of
+that instance. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. If multiple likelihood functions
+are associated with the runs due to discreteness in the model space,
+one can pass a dictionary with keys matching the IDs of the runs.</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="xpsi.PostProcessing.Runs.combined">
 <code class="descname">combined</code><a class="headerlink" href="#xpsi.PostProcessing.Runs.combined" title="Permalink to this definition">¶</a></dt>
@@ -412,99 +345,129 @@ backend.</p>
 
 <dl class="method">
 <dt id="xpsi.PostProcessing.Runs.get_attr">
-<code class="descname">get_attr</code><span class="sig-paren">(</span><em>attribute</em>, <em>current=True</em>, <em>nestcheck_compatible=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs.get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.get_attr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of attributes of the <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances stored as
+<code class="descname">get_attr</code><span class="sig-paren">(</span><em>attribute</em>, <em>current=True</em>, <em>nestcheck_compatible=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_runs.html#Runs.get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.get_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of attributes of the <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances stored as
 the current subset.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Runs.likelihood">
+<code class="descname">likelihood</code><a class="headerlink" href="#xpsi.PostProcessing.Runs.likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the likelihood instance.</p>
+</dd></dl>
+
 <dl class="classmethod">
-<dt id="xpsi.PostProcessing.Runs.load_all">
-<em class="property">classmethod </em><code class="descname">load_all</code><span class="sig-paren">(</span><em>roots</em>, <em>IDs</em>, <em>use_nestcheck</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs.load_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.load_all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instance by loading distinct runs with
-equivalent arguments.</p>
+<dt id="xpsi.PostProcessing.Runs.load_runs">
+<em class="property">classmethod </em><code class="descname">load_runs</code><span class="sig-paren">(</span><em>ID</em>, <em>run_IDs</em>, <em>roots</em>, <em>base_dirs</em>, <em>use_nestcheck</em>, <em>likelihood=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_runs.html#Runs.load_runs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.load_runs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance by loading distinct runs.</p>
+<p>The kwargs will be shared by nested sampling runs. The args must be
+lists that will be zipped to instantiate a set of run backends.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xpsi.PostProcessing.Runs.params">
-<code class="descname">params</code><a class="headerlink" href="#xpsi.PostProcessing.Runs.params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the current parameter information.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="xpsi.PostProcessing.Runs.set_params">
-<code class="descname">set_params</code><span class="sig-paren">(</span><em>names</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.set_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set current parameters for plotting which are shared.</p>
+<dt id="xpsi.PostProcessing.Runs.runs">
+<code class="descname">runs</code><a class="headerlink" href="#xpsi.PostProcessing.Runs.runs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of the list of runs.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="xpsi.PostProcessing.Runs.set_subset">
-<code class="descname">set_subset</code><span class="sig-paren">(</span><em>IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>force_combine=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#Runs.set_subset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.set_subset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set a current list of <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances.</p>
+<code class="descname">set_subset</code><span class="sig-paren">(</span><em>IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>force_combine=False</em>, <em>only_combined=False</em>, <em>only_principal=False</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_runs.html#Runs.set_subset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.Runs.set_subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a current list of <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.PostProcessing.Runs.subset">
 <code class="descname">subset</code><a class="headerlink" href="#xpsi.PostProcessing.Runs.subset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the current subset of runs and parameters for plotting.</p>
+<dd><p>Get the current subset of runs for plotting.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.Runs.subset_to_plot">
+<code class="descname">subset_to_plot</code><a class="headerlink" href="#xpsi.PostProcessing.Runs.subset_to_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current subset of runs (+ combined) for plotting.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="xpsi.PostProcessing.PostProcessor">
-<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">PostProcessor</code><span class="sig-paren">(</span><em>runs=None</em>, <em>likelihood=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post-process samples for inference and posterior checking.</p>
-<p>Calculate inferences, usually in the form of approximate integrals over
-the posterior distribution. Also visualise posterior information and
-derived quantities.</p>
-<p>Perform posterior predictive checking.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>runs</strong> – An instance of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> or an instance of <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a>.</li>
-<li><strong>likelihood</strong> – The instance of <a class="reference internal" href="likelihood.html#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> used for
-sampling, or a clone of that instance. Defaults to
-<code class="docutils literal notranslate"><span class="pre">None</span></code>. If multiple likelihood functions are
-associated with the runs due to discreteness in the
-model space, one can pass a dictionary with keys
-matching the IDs of the runs.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="xpsi.PostProcessing.CornerPlotter">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">CornerPlotter</code><span class="sig-paren">(</span><em>posteriors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_corner.html#CornerPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.CornerPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._postprocessor.PostProcessor" title="xpsi.PostProcessing._postprocessor.PostProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing._postprocessor.PostProcessor</span></code></a></p>
+<p>Plot marginal posterior densities and estimators.</p>
 <dl class="method">
-<dt id="xpsi.PostProcessing.PostProcessor.plot_posteriorDensity">
-<code class="descname">plot_posteriorDensity</code><span class="sig-paren">(</span><em>self</em>, <em>params</em>, <em>run_IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>only_combined=False</em>, <em>bootstrap_estimators=True</em>, <em>bootstrap_density=False</em>, <em>separate_plots=False</em>, <em>write=False</em>, <em>root_filename=''</em>, <em>directory='./'</em>, <em>ext='.pdf'</em>, <em>dpi=300</em>, <em>maxdots=2000</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor.plot_posteriorDensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.plot_posteriorDensity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate posterior density plots with <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> for
-nested sampling runs.</p>
+<dt id="xpsi.PostProcessing.CornerPlotter.KL_divergence">
+<code class="descname">KL_divergence</code><span class="sig-paren">(</span><em>base='bits', bootstrap=False, quantiles=[0.025, 0.5, 0.975], n_simulate=200, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_corner.html#CornerPlotter.KL_divergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.CornerPlotter.KL_divergence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kullback-Leibler divergence integral jointly for all parameters.</p>
+<p>E.g., if you want the interval about the median containing divergence
+of 90% of realisations, declare <code class="docutils literal notranslate"><span class="pre">quantiles=[0.05,0.5,0.95]</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.CornerPlotter.evidence_error">
+<code class="descname">evidence_error</code><span class="sig-paren">(</span><em>quantiles=[0.025, 0.5, 0.975], n_simulate=200, simulate_weights=True, flip_skew=True, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_corner.html#CornerPlotter.evidence_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.CornerPlotter.evidence_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate evidence error for nestcheck-compatible runs.</p>
+<p>E.g., if you want the interval about the median containing the evidence
+of 90% of realisations, declare <code class="docutils literal notranslate"><span class="pre">quantiles=[0.05,0.5,0.95]</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.CornerPlotter.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>params</em>, <em>IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>only_combined=False</em>, <em>force_combine=True</em>, <em>overwrite_combined=False</em>, <em>bootstrap_estimators=True</em>, <em>bootstrap_density=False</em>, <em>separate_plots=False</em>, <em>write=False</em>, <em>root_filename=''</em>, <em>directory='./'</em>, <em>ext='.pdf'</em>, <em>dpi=300</em>, <em>maxdots=2000</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_corner.html#CornerPlotter.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.CornerPlotter.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate posterior density plots.</p>
+<p>Invokes <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> for nested sampling runs.</p>
 <p>Up to five runs can be plotted natively via <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code>; beyond
-such a number the plots are generally display too much information and
+such a number the plots generally display too much information and
 clarity is lost.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>params</strong> (<em>list</em>) – List of parameter strings for plotting. Must match
-identifier strings which are attributes of <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a>
-instances, and those parameters must occupy the same
-indices across the <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances (a limitation,
-but the <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> package assumes a set of realisations
-of the same nested sampling process).</li>
-<li><strong>run_IDs</strong> (<em>list</em>) – An iterable containing string identifiers of instances
-of <a class="reference internal" href="#xpsi.PostProcessing.Run" title="xpsi.PostProcessing.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances. These identifiers must
-match objects collected in the <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance
-stored as an attribute of an instance of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">PostProcessing</span></code> class. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>,
-meaning attempt to use all runs in the attribute
-instance of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a>.</li>
-<li><strong>combine</strong> (<em>bool</em>) – Additionally combine the runs into a single run for overplotting?</li>
-<li><strong>combine_all</strong> (<em>bool</em>) – Combine all runs in the <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance or only those
+<li><strong>params</strong> (<em>list</em>) – List of parameter strings for plotting. Must be shared by all
+posteriors selected with the <code class="docutils literal notranslate"><span class="pre">IDs</span></code> argument.</li>
+<li><strong>IDs</strong> (<em>OrderedDict</em>) – Keys must be string identifiers of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances.
+Each dictionary element must be a list of string identifiers,
+each matching objects collected in <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance
+corresponding to the key. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, meaning attempt to
+use as many runs as possible subject to plotting restrictions.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The order of IDs is used to control the layering of posteriors.
+If there are multiple underlying posteriors (i.e., multiple
+dictionary keys), only one (combined) run per posterior is
+rendered, and the first posterior is rendered on the topmost layer.
+If there is only one underlying posterior (i.e., one dictionary
+keys), then the combined-sample posterior, if available, is plotted
+on the topmost layer, whilst the runs on that posterior are
+rendered on layers underneath in the order specified in the list.
+In either case, estimators are calculated and reported for the
+(combined) run on the topmost layer.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>combine</strong> (<em>bool</em>) – Additionally combine the runs into a single run for overplotting?
+The overriding setting if there is more than one underlying
+posterior to be plotted, is to attempt to combine runs on each
+posterior if multiple such runs are available, in order to
+reduce information density. If there is a single underlying
+posterior, the user-specified value is respected.</li>
+<li><strong>combine_all</strong> (<em>bool</em>) – Combine all runs in each <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance or only those
 for which IDs are provided? Ignored if <code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
-<li><strong>only_combine</strong> (<em>bool</em>) – Only plot the combined run? Ignored if <code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>force_combine</strong> (<em>bool</em>) – Force recombination of elligible run sets, even if a
+combined run is already cached?</li>
+<li><strong>only_combined</strong> (<em>bool</em>) – Only plot the combined run? Only heeded if a single posterior
+is selected for plotting, and in that case is ignored if
+<code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>overwrite_combined</strong> (<em>bool</em>) – Overwrite combined-sample files on disk with the same filename?</li>
 <li><strong>bootstrap</strong> (<em>bool</em>) – Use <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> and <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> to bootstrap the runs for
 posterior density error estimation?</li>
 <li><strong>separate_plots</strong> (<em>bool</em>) – Generate a lower-triangle plot with <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>, and a separate
@@ -523,7 +486,7 @@ e.g., a model and/or data set identifier.</li>
 properties (width and alpha) for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> contours and density
 distributions. If <code class="docutils literal notranslate"><span class="pre">bootstrap</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">separate_plots</span></code> then
 the density distribution linewidth is set to zero if not
-explicitly specified with kward <code class="docutils literal notranslate"><span class="pre">lw_1d</span></code>.</li>
+explicitly specified with kwarg <code class="docutils literal notranslate"><span class="pre">lw_1d</span></code>.</li>
 </ul>
 </td>
 </tr>
@@ -531,90 +494,368 @@ explicitly specified with kward <code class="docutils literal notranslate"><span
 </table>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing.SignalPlotter">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">SignalPlotter</code><span class="sig-paren">(</span><em>posteriors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplotter.html#SignalPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.SignalPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._postprocessor.PostProcessor" title="xpsi.PostProcessing._postprocessor.PostProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing._postprocessor.PostProcessor</span></code></a></p>
+<p>Plot conditional posterior distributions of thematic X-ray signals.</p>
+<p>Methods to plot the data and model for posterior checking.</p>
+<p>Plots are generated for each posterior selected using the associated
+likelihood object.</p>
+<p>For a given model, there may be multiple <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a>
+instances per likelihood object. If this is the case, you need to
+reduce the model down to only the objects needed for functioning of
+the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> object to be handled. To do this, simply
+remove supply to your likelihood object the references to this minimal
+set of objects. This minimises computation time and ensures explicit
+declaration of the signals to be plotted.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a model has multiple instruments, then the energy set for signal
+integration is calculated based on waveband coverage union.
+If instruments are omitted from the likelihood object in order
+to execute posterior signal plotting, the number of energies
+that span the waveband of the remaining instrument waveband should
+be set to match the number in the full model (with all instruments)
+if the likelihood factor for the remaining instrument is to be
+exactly the same.</p>
+</div>
 <dl class="method">
-<dt id="xpsi.PostProcessing.PostProcessor.plot_pulse_and_spectrum">
-<code class="descname">plot_pulse_and_spectrum</code><span class="sig-paren">(</span><em>self</em>, <em>params</em>, <em>run_IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>only_combined=False</em>, <em>bootstrap_estimators=True</em>, <em>bootstrap_density=False</em>, <em>separate_plots=False</em>, <em>write=False</em>, <em>root_filename=''</em>, <em>directory='./'</em>, <em>ext='.pdf'</em>, <em>dpi=300</em>, <em>maxdots=2000</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor.plot_pulse_and_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.plot_pulse_and_spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot data and model for posterior checking.</p>
-<p>If a combined run is available, only this run is used. Otherwise
-a plot is generated for each run using the corresponding likelihood
-object. There may in principle be multiple <a class="reference internal" href="pulse.html#xpsi.Pulse.Pulse" title="xpsi.Pulse.Pulse"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pulse</span></code></a>
-instances per likelihood object, but only the first instance is used.</p>
-<p>Compute and plot posterior-averaged channel-summed count-rate pulse.
-The figure contains four panels which share phase as an x-axis:</p>
-<blockquote>
-<div><ul class="simple">
-<li>the first (topmost) panel displays the data in joint channel-phase
-intervals</li>
-<li>the second panel displays the posterior mean expectation in joint
-channel-phase intervals</li>
-<li>the third panel displays the standardised residuals in joint
-channel-phase intervals</li>
-<li>the last (bottommost) panel displays the channel-summed pulse as
-a function of phase for a subset of samples, optionally using
-<a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>; the injected pulse is plotted by default if the
-injection (truth) vector is known.</li>
-</ul>
-</div></blockquote>
+<dt id="xpsi.PostProcessing.SignalPlotter.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>plots</em>, <em>IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>only_combined=False</em>, <em>force_combine=True</em>, <em>nsamples=200</em>, <em>cache=True</em>, <em>force_cache=False</em>, <em>cache_dir='./'</em>, <em>read_only=False</em>, <em>archive=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplotter.html#SignalPlotter.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.SignalPlotter.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and plot signals <em>a posteriori</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>plots</strong> (<em>dict</em>) – Dictionary of lists of plot objects, where each dictionary key
+must match a posterior ID.</li>
+<li><strong>IDs</strong> (<em>OrderedDict</em>) – Keys must be string identifiers of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances.
+Each dictionary element must be a list of string identifiers,
+each matching objects collected in <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance
+corresponding to the key. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, meaning attempt to
+use as many runs as possible subject to plotting restrictions.</li>
 <li><strong>cache</strong> (<em>bool</em>) – Cache intermediary model objects to accelerate post-processing?</li>
+<li><strong>force_cache</strong> (<em>bool</em>) – Force caching irrespective of checks of existing cache files.
+Useful if some part of the model is tweaked and the cache file with
+the same name and sample set is not manually moved from the
+designated directory..</li>
 <li><strong>nsamples</strong> (<em>int</em>) – Number of samples to use. Equally-weighted samples are generated,
 thus introducing a additional Monte Carlo noise which is ignored.</li>
 <li><strong>num_phases</strong> (<em>int</em>) – Number of phases to interpolate at on the interval [0,2] cycles.</li>
-<li><strong>use_fgivenx</strong> (<em>bool</em>) – Use <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> to plot iso-probability credible interval
-contours in target-source count rate as a function of phase.</li>
-<li><strong>random_seed</strong> (<em>int</em>) – Seed <a class="reference external" href="https://numpy.org/doc/1.18/reference/random/index.html#module-numpy.random" title="(in NumPy v1.18)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy.random</span></code></a> for determinism.</li>
-<li><strong>kwargs</strong> – <p>Keyword arguments for the following:</p>
-<blockquote>
-<div><ul>
-<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">_SignalPlot.add_expected_source()</span></code></li>
-</ul>
-</div></blockquote>
-</li>
+<li><strong>filename</strong> (<em>str</em>) – Filename of cache.</li>
+<li><strong>cache_dir</strong> (<em>str</em>) – Directory to write cache to.</li>
+<li><strong>read_only</strong> (<em>bool</em>) – Do not write to cache file?</li>
+<li><strong>archive</strong> (<em>bool</em>) – If not read-only, then archive an existing cache file found at the
+same path?</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>Use tqdm for progress bar.</li>
-<li>Bootstrap and weight simulation via nestcheck for additional
-variation?</li>
-<li>Return plot objects for the user handling?</li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="xpsi.PostProcessing.PostProcessor.KL_divergence">
-<code class="descname">KL_divergence</code><span class="sig-paren">(</span><em>base='bits'</em>, <em>bootstrap=False</em>, <em>ID=None</em>, <em>n_simulate=200</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor.KL_divergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.KL_divergence" title="Permalink to this definition">¶</a></dt>
-<dd><p>Kullback-Leibler divergence integral jointly for all parameters.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xpsi.PostProcessing.PostProcessor.likelihood">
-<code class="descname">likelihood</code><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.likelihood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the likelihood instance.</p>
+<dt id="xpsi.PostProcessing.SignalPlotter.plots">
+<code class="descname">plots</code><a class="headerlink" href="#xpsi.PostProcessing.SignalPlotter.plots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the dictionary of plot objects last processed.</p>
 </dd></dl>
 
-<dl class="classmethod">
-<dt id="xpsi.PostProcessing.PostProcessor.load_runs">
-<em class="property">classmethod </em><code class="descname">load_runs</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing.html#PostProcessor.load_runs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.load_runs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance and then <a class="reference internal" href="#xpsi.PostProcessing.PostProcessor" title="xpsi.PostProcessing.PostProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">PostProcessor</span></code></a>
-instance.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing.ResidualPlot">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">ResidualPlot</code><span class="sig-paren">(</span><em>data_cmap='inferno'</em>, <em>model_cmap='inferno'</em>, <em>residual_cmap='PuOr'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_residual.html#ResidualPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing._signalplot.SignalPlot</span></code></a></p>
+<p>Plot the count data, the posterior-expected count signal, and residuals.</p>
+<p>The figure contains three panels which share phase as an x-axis:</p>
+<blockquote>
+<div><ul class="simple">
+<li>the top panel displays the data count numbers in joint channel-phase
+intervals, identically split over two rotational phase cycles;</li>
+<li>the center panel displays the posterior-expected count signal
+over joint channel-phase intervals;</li>
+<li>the bottom panel displays the standardised residuals between the
+data and posterior-expected count signal over joint channel-phase
+intervals.</li>
+</ul>
+</div></blockquote>
+<p>The following example is (improved) from <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a>:</p>
+<img alt="_images/_residualplot.png" src="_images/_residualplot.png" />
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>*args</strong> – Passed directly to <a class="reference internal" href="#xpsi.PostProcessing.Runs.load_all" title="xpsi.PostProcessing.Runs.load_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Runs.load_all()</span></code></a>.</li>
-<li><strong>**kwargs</strong> – Passed directly to <a class="reference internal" href="#xpsi.PostProcessing.Runs.load_all" title="xpsi.PostProcessing.Runs.load_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Runs.load_all()</span></code></a>. Also a <code class="docutils literal notranslate"><span class="pre">'likelihood'</span></code>
-argument can be handled for <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</li>
+<li><strong>data_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the data count numbers
+over joint channel-phase intervals.</li>
+<li><strong>model_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the posterior-expected
+count numbers over joint channel-phase intervals.</li>
+<li><strong>residual_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the residuals between
+the data and posterior-expected count numbers over joint
+channel-phase intervals. A diverging colormap is recommended.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xpsi.PostProcessing.ResidualPlot.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>thetas</em>, <em>wrapper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_residual.html#ResidualPlot.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loop over posterior samples.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.ResidualPlot.expected_counts">
+<code class="descname">expected_counts</code><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.expected_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the estimated posterior expectation of the count numbers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.ResidualPlot.finalize">
+<code class="descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_residual.html#ResidualPlot.finalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute instructions to finish plotting.</p>
+<p>Before this method is called, the likelihood object will be updated
+so that the true (injected) signals are cached. In the body of the
+subclass implementation of this method, one can plot the injected
+signals by accessing the attributes of the signal instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.ResidualPlot.model_sum">
+<code class="descname">model_sum</code><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.model_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current posterior sum of the count numbers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.ResidualPlot.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_residual.html#ResidualPlot.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.ResidualPlot.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update posterior expected model given the updated signal.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You cannot make an iterator from an instance of this class.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing.PulsePlot">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">PulsePlot</code><span class="sig-paren">(</span><em>num_phases=1000</em>, <em>incident_cmap='inferno'</em>, <em>registered_cmap='inferno'</em>, <em>show_components=False</em>, <em>expectation_line_kwargs=None</em>, <em>comp_expectation_line_kwargs=None</em>, <em>sample_line_kwargs=None</em>, <em>use_fgivenx=False</em>, <em>incident_contour_kwargs=None</em>, <em>registered_contour_kwargs=None</em>, <em>plot_truth=False</em>, <em>truth_line_kwargs=None</em>, <em>comp_truth_line_kwargs=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_pulse.html#PulsePlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing._signalplot.SignalPlot</span></code></a></p>
+<p>Plot posterior-averaged channel-summed count-rate pulse profiles.</p>
+<p>The figure contains four panels which share phase as an x-axis:</p>
+<blockquote>
+<div><ul class="simple">
+<li>the first (topmost) panel displays the posterior expectation of
+the specific photon flux signal from the source, jointly resolved in
+energy and phase;</li>
+<li>the second panel displays the energy-integrated photon specific flux
+signal as function of phase for a subset of samples, optionally using
+<a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>;</li>
+<li>the third panel displays the posterior expectation of the count-rate
+signal as a function of channel and phase;</li>
+<li>the last (bottommost) panel displays the channel-summed pulse as
+a function of phase for a subset of samples, optionally using
+<a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>.</li>
+</ul>
+</div></blockquote>
+<p>The second and last panels aim to render the conditional posterior
+distribution of the associated signal as a function phase, ideally with
+contours to map out the conditional posterior mass. These panels have space
+to optionally display other elements such as: the posterior-expected total
+signal; the posterior-expected component signals; and the true total and
+component signals if the ground truth (the injected signal correpsonding
+to some model parameter vector) is known.</p>
+<p>The following example is from <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a>:</p>
+<img alt="_images/_pulseplot.png" src="_images/_pulseplot.png" />
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_phases</strong> (<em>int</em>) – The number of phases to interpolate the pulse-profile signals at.</li>
+<li><strong>incident_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the posterior-expected
+incident signal as a function of energy and phase (top panel).</li>
+<li><strong>registered_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the posterior-expected
+registered signal as a function of channel and phase (third panel).</li>
+<li><strong>show_components</strong> (<em>bool</em>) – If the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance has multiple components,
+display the posterior expectations of those components as a
+function of phase (second and last panels).</li>
+<li><strong>expectation_line_kwargs</strong> (<em>dict</em>) – Keyword arguments for plotting the posterior-expected signal lines (in
+the second and last panels).</li>
+<li><strong>use_fgivenx</strong> (<em>bool</em>) – Use <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> to plot conditional posterior contours in the
+second and last panels?</li>
+<li><strong>incident_contour_kwargs</strong> (<em>dict</em>) – Keyword arguments for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> incident signal contours (second
+panel) that will take precedence over the corresponding class
+attributes. (See the <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a> class if you choose
+not to modify these attributes on this present subclass.)</li>
+<li><strong>registered_contour_kwargs</strong> (<em>dict</em>) – Keyword arguments for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> registered signal contours (last
+panel) that will take precedence over the corresponding class
+attributes. (See the <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a> class if you choose
+not to modify these attributes on this present subclass.)</li>
+<li><strong>plot_truth</strong> – Plot the ground truth (injected) signal, if known and available, in
+the second and last panels.</li>
+<li><strong>truth_line_kwargs</strong> – Keyword arguments for plotting the ground truth signal lines (second
+and last panels).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xpsi.PostProcessing.PulsePlot.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>thetas</em>, <em>wrapper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_pulse.html#PulsePlot.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loop over posterior samples.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.PulsePlot.expected_incident">
+<code class="descname">expected_incident</code><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot.expected_incident" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the expectations of the component incident signals.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.PulsePlot.expected_registered">
+<code class="descname">expected_registered</code><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot.expected_registered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the expectations of the component registered signals.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.PulsePlot.finalize">
+<code class="descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_pulse.html#PulsePlot.finalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute final instructions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.PulsePlot.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_pulse.html#PulsePlot.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.PulsePlot.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update posterior expected signals given the updated signal object.</p>
+<p>Plots signals if <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> is not used, otherwise returns
+callback information for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You cannot make an iterator from an instance of this class.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing.SpectrumPlot">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing.</code><code class="descname">SpectrumPlot</code><span class="sig-paren">(</span><em>rel_num_energies=10.0</em>, <em>num_phases=1000</em>, <em>registered_cmap='inferno'</em>, <em>show_components=False</em>, <em>show_attenuated=True</em>, <em>expectation_line_kwargs=None</em>, <em>comp_expectation_line_kwargs=None</em>, <em>add_background=False</em>, <em>background_line_kwargs=None</em>, <em>sample_line_kwargs=None</em>, <em>use_fgivenx=False</em>, <em>incident_contour_kwargs=None</em>, <em>registered_contour_kwargs=None</em>, <em>plot_truth=False</em>, <em>truth_line_kwargs=None</em>, <em>comp_truth_line_kwargs=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_spectrum.html#SpectrumPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing._signalplot.SignalPlot</span></code></a></p>
+<p>Plot posterior-averaged channel count-rate spectra.</p>
+<p>The figure contains three panels which share phase as an x-axis:</p>
+<blockquote>
+<div><ul class="simple">
+<li>the top panel displays the specific photon flux signal
+from the source, resolved as a function of energy, optionally showing
+both unattenuated and attenuated incident spectra and optionally
+using <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>;</li>
+<li>the center panel displays the posterior expectation of the count-rate
+signal as a function of channel and phase, optionally including an
+expected background signal;</li>
+<li>the bottom panel displays the phase-integrated (averaged) count-rate
+spectum as a function of channel number, optionally including an
+expected background signal and optionally using <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>.</li>
+</ul>
+</div></blockquote>
+<p>The top and bottom panels aim to render the conditional posterior
+distribution of the associated signal as a function an energy (proxy)
+variable, ideally with contours to map out the conditional posterior mass.
+These panels have space to optionally display other elements such as:
+the posterior-expected total signal; the posterior-expected component
+signals; the true total and component signals if the ground truth (the
+injected signal correpsonding to some model parameter vector) is known;
+attenuated incident spectra; and the summation of posterior-expected
+total (component-summed) source count-rate signals with posterior-expected
+background count-rate signals.</p>
+<p>The following example is (improved) from <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a>:</p>
+<img alt="_images/_spectrumplot.png" src="_images/_spectrumplot.png" />
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rel_num_energies</strong> (<em>float</em>) – The number of energies desired for interpolation as a fraction of the
+number of energies implemented for the original incident signal
+integration. The energy set will be appropriately spaced and bounded.</li>
+<li><strong>num_phases</strong> (<em>int</em>) – The number of phases to interpolate the pulse-profile signals at for
+the center panel.</li>
+<li><strong>registered_cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for the posterior-expected
+registered signal as a function of channel and phase (center panel).</li>
+<li><strong>show_components</strong> (<em>bool</em>) – If the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance has multiple components (hot
+region signals), display the posterior expectations of those components
+as a function of energy (top panel) and channel (bottom panel).</li>
+<li><strong>show_attenuated</strong> (<em>bool</em>) – If the source signal is attenuated by the interstellar absorption
+processes, display the posterior-expected attenuated incident specific
+photon flux spectra? This switch also instructs <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>, if
+enabled, to generate conditional posterior contours for the attenuated
+spectrum instead of the unattenuated spectrum (top panel). If
+<a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> is not invoked, this switch instructs the plotting
+of sample-by-sample attenuated total (component-summed) spectra to
+delineate the distribution of conditional posterior mass (top panel).</li>
+<li><strong>expectation_line_kwargs</strong> (<em>dict</em>) – Keyword arguments for plotting the posterior-expected signal lines (in
+the top and bottom panels).</li>
+<li><strong>add_background</strong> (<em>bool</em>) – Add an posterior-expected background count-rate signal to the total
+(component-summed) expected source count-rate signals in the center
+and bottom panels?</li>
+<li><strong>background_line_kwargs</strong> (<em>dict</em>) – Keyword arguments for plotting the posterior-expected spectrum in the
+bottom panel that includes the background signal.</li>
+<li><strong>use_fgivenx</strong> (<em>bool</em>) – Use <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> to plot conditional posterior contours in the
+top and bottom panels?</li>
+<li><strong>incident_contour_kwargs</strong> (<em>dict</em>) – Keyword arguments for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> incident signal contours (top
+panel) that will take precedence over the corresponding class
+attributes. (See the <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a> class if you choose
+not to modify these attributes on this present subclass.)</li>
+<li><strong>registered_contour_kwargs</strong> (<em>dict</em>) – Keyword arguments for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> registered signal contours (bottom
+panel) that will take precedence over the corresponding class
+attributes. (See the <a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a> class if you choose
+not to modify these attributes on this present subclass.)</li>
+<li><strong>plot_truth</strong> – Plot the ground truth (injected) signal, if known and available, in
+the top and bottom panels.</li>
+<li><strong>truth_line_kwargs</strong> – Keyword arguments for plotting the ground truth signal lines (top and
+bottom panels).</li>
+<li><strong>comp_truth_line_kwargs</strong> – Keyword arguments for plotting the component ground truth signal lines
+(top and bottom panels).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xpsi.PostProcessing.SpectrumPlot.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>thetas</em>, <em>wrapper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_spectrum.html#SpectrumPlot.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute behaviours requiring a loop over samples.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>thetas</strong> (<em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em>) – Equally-weighted set of posterior samples.</li>
+<li><strong>wrapper</strong> (<em>callable</em>) – Wrapper function that interleaves iterative calls <cite>next(self)</cite>
+with code to update the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance from a
+cache stored on disk. The wrapper returns a callback function,
+If such a cache is unavailable, the likelihood function is
+evaluated on-the-fly when the callback is called passing a sample
+(parameter vector). In this case, signals to be plotted are
+temporarily cached in the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance.
+The signature of the wrapper function is:
+<cite>wrapper(self, delete_me=None, index=None)</cite>,
+where <cite>self</cite> is this a subclass of
+<a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a>, <cite>delete_me</cite> is an optional
+attribute name or a list of attribute name in <cite>self.__dict__</cite> to be
+deleted before iterating over samples, and <cite>index</cite> is an optional
+integer to index a tuple returned from <cite>next(self)</cite>.
+The signature of the callback function, if you need to call it
+directly (instead of an external library such as fgivenx calling
+it):
+<cite>callback(None, theta)</cite>,
+where each sample/parameter vector is a row in <cite>thetas</cite>.</li>
 </ul>
 </td>
 </tr>
@@ -623,13 +864,498 @@ argument can be handled for <code class="docutils literal notranslate"><span cla
 </dd></dl>
 
 <dl class="attribute">
-<dt id="xpsi.PostProcessing.PostProcessor.runs">
-<code class="descname">runs</code><a class="headerlink" href="#xpsi.PostProcessing.PostProcessor.runs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the nested sampling runs.</p>
+<dt id="xpsi.PostProcessing.SpectrumPlot.expected_attenuated_incident">
+<code class="descname">expected_attenuated_incident</code><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.expected_attenuated_incident" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the expectations of the incident (component) spectra.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.SpectrumPlot.expected_background">
+<code class="descname">expected_background</code><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.expected_background" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the expectation of the background count-rate spectrum.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.SpectrumPlot.expected_incident">
+<code class="descname">expected_incident</code><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.expected_incident" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the expectations of the incident (component) spectra.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing.SpectrumPlot.expected_registered">
+<code class="descname">expected_registered</code><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.expected_registered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the expectations of the registered count-rate spectra.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.SpectrumPlot.finalize">
+<code class="descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_spectrum.html#SpectrumPlot.finalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute final instructions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing.SpectrumPlot.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_spectrum.html#SpectrumPlot.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing.SpectrumPlot.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update posterior expected signals given the updated signal.</p>
+<p>Plots signals if <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> is not used, otherwise returns
+callback information for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You cannot make an iterator from an instance of this class.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
 
+<div class="section" id="base-classes-for-development">
+<h2>Base classes for development<a class="headerlink" href="#base-classes-for-development" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._signalplot.SignalPlot</span></code></a>([…])</td>
+<td>Base class for a signal plot.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xpsi.PostProcessing._postprocessor.PostProcessor" title="xpsi.PostProcessing._postprocessor.PostProcessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._postprocessor.PostProcessor</span></code></a>(…)</td>
+<td>Post-process samples for inference and posterior checking.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing._backends.NestedBackend" title="xpsi.PostProcessing._backends.NestedBackend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._backends.NestedBackend</span></code></a>(…)</td>
+<td>Container for nested samples generated by a single run, and backends for analysis of the run.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._run.Run</span></code></a>(filepath,&nbsp;**kwargs)</td>
+<td>Base class for a sample container.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata" title="xpsi.PostProcessing._metadata.Metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpsi.PostProcessing._metadata.Metadata</span></code></a>(ID,&nbsp;names)</td>
+<td>Base class to record basic information about sampling runs.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="xpsi.PostProcessing._signalplot.SignalPlot">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing._signalplot.</code><code class="descname">SignalPlot</code><span class="sig-paren">(</span><em>fig_dir='./'</em>, <em>root_filename=''</em>, <em>cmap='RdPu_r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for a signal plot.</p>
+<p>Interact with a single <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance to plot
+signals.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fig_dir</strong> (<em>str</em>) – Directory to write to.</li>
+<li><strong>root_filename</strong> (<em>str</em>) – Prepended to filename automatically generated figure filename.</li>
+<li><strong>cmap</strong> (<em>str</em>) – Colormap name from <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> to use for <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a>
+contours. It is advisable to choose a colormap that is darker
+at lower values (in tails of conditional posterior distribution) and
+lighter at higher values (at higher densities in conditional posterior
+distribution).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="classmethod">
+<dt id="xpsi.PostProcessing._signalplot.SignalPlot.declare_settings">
+<em class="property">classmethod </em><code class="descname">declare_settings</code><span class="sig-paren">(</span><em>panelsize=(8</em>, <em>4)</em>, <em>fscale=1.0</em>, <em>rasterized=True</em>, <em>tick_lengths=(8</em>, <em>4)</em>, <em>tick_width=1.0</em>, <em>logspace_y=False</em>, <em>tqdm_kwargs={'disable': False}</em>, <em>scale_ymin=0.9</em>, <em>scale_ymax=1.1</em>, <em>ny=500</em>, <em>lines_on=False</em>, <em>add_label=True</em>, <em>write=True</em>, <em>extension='.pdf'</em>, <em>dpi=300</em>, <em>write_kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot.declare_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.declare_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure subclass with attributes, <em>before instantiation</em>.</p>
+<p>These attributes can in principle be safely changed during the runtime.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>panelsize</strong> (<em>tuple</em>) – The approximate size, <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code>, in inches <em>per panel</em>.</li>
+<li><strong>fscale</strong> (<em>float</em>) – Scale factor for the fontsize applied to the default.</li>
+<li><strong>rasterized</strong> (<em>bool</em>) – Beware that if <code class="docutils literal notranslate"><span class="pre">False</span></code>, white polygon edges may appear in figures.</li>
+<li><strong>int</strong><strong>) </strong><strong>tick_lengths</strong> (<em>tuple</em><em>(</em><em>int</em><em>,</em>) – The major and minor tick lengths for all axis objects.</li>
+<li><strong>tick_width</strong> (<em>int</em>) – The width of every tick.</li>
+<li><strong>logspace_y</strong> (<em>bool</em>) – Should the <a class="reference external" href="https://fgivenx.readthedocs.io/en/latest/fgivenx.html#module-fgivenx" title="(in fgivenx v2.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fgivenx</span></code></a> y-values (for which the posterior mass
+is integrated over points at lower densities than the density at y)
+be logarithimcally or linearly spaced? Appropriate for logarithmic
+y-axes of signal panels.</li>
+<li><strong>tqdm_kwargs</strong> (<em>dict</em>) – Progress bar keyword arguments.</li>
+<li><strong>scale_ymin</strong> (<em>float</em>) – The minimum y-value to use, as a fraction of the minimum sample
+value.</li>
+<li><strong>scale_ymax</strong> (<em>float</em>) – The maximum y-value to use, as a fraction of the minimum sample
+value.</li>
+<li><strong>ny</strong> (<em>int</em>) – Number of y-values to compute the posterior mass for.</li>
+<li><strong>lines_on</strong> (<em>bool</em>) – Render contour lines?</li>
+<li><strong>add_label</strong> (<em>bool</em>) – Add contour colorbar label.</li>
+<li><strong>write</strong> (<em>bool</em>) – Write figure to disk?</li>
+<li><strong>extension</strong> (<em>str</em>) – File extension for writing.</li>
+<li><strong>dpi</strong> (<em>int</em>) – Figure write resolution.</li>
+<li><strong>write_kwargs</strong> (<em>dict</em>) – Additional writing keyword arguments.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing._signalplot.SignalPlot.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>thetas</em>, <em>wrapper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute behaviours requiring a loop over samples.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>thetas</strong> (<em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em>) – Equally-weighted set of posterior samples.</li>
+<li><strong>wrapper</strong> (<em>callable</em>) – Wrapper function that interleaves iterative calls <cite>next(self)</cite>
+with code to update the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance from a
+cache stored on disk. The wrapper returns a callback function,
+If such a cache is unavailable, the likelihood function is
+evaluated on-the-fly when the callback is called passing a sample
+(parameter vector). In this case, signals to be plotted are
+temporarily cached in the <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance.
+The signature of the wrapper function is:
+<cite>wrapper(self, delete_me=None, index=None)</cite>,
+where <cite>self</cite> is this a subclass of
+<a class="reference internal" href="#xpsi.PostProcessing._signalplot.SignalPlot" title="xpsi.PostProcessing._signalplot.SignalPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalPlot</span></code></a>, <cite>delete_me</cite> is an optional
+attribute name or a list of attribute name in <cite>self.__dict__</cite> to be
+deleted before iterating over samples, and <cite>index</cite> is an optional
+integer to index a tuple returned from <cite>next(self)</cite>.
+The signature of the callback function, if you need to call it
+directly (instead of an external library such as fgivenx calling
+it):
+<cite>callback(None, theta)</cite>,
+where each sample/parameter vector is a row in <cite>thetas</cite>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._signalplot.SignalPlot.fig">
+<code class="descname">fig</code><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.fig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the figure object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing._signalplot.SignalPlot.finalize">
+<code class="descname">finalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot.finalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute instructions to finish plotting.</p>
+<p>Before this method is called, the likelihood object will be updated
+so that the true (injected) signals are cached. In the body of the
+subclass implementation of this method, one can plot the injected
+signals by accessing the attributes of the signal instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing._signalplot.SignalPlot.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute next iteration.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing._signalplot.SignalPlot.savefig">
+<code class="descname">savefig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_signalplot.html#SignalPlot.savefig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._signalplot.SignalPlot.savefig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write figure to file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing._postprocessor.PostProcessor">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing._postprocessor.</code><code class="descname">PostProcessor</code><span class="sig-paren">(</span><em>posteriors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_postprocessor.html#PostProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post-process samples for inference and posterior checking.</p>
+<p>Base class that functions as a container for nested sampling run objects
+representing some set of posterior distributions that share some subset of
+parameters of interest that are to be plotted. The parameters can be
+shared in the sense that their relationship is the identity relation, or
+multiple physical objects in a population context each have an instance
+of a parameter type. An example of the former is the mass of a star, for
+which there are two or more distinct posterior distributions, due, e.g.:</p>
+<blockquote>
+<div><ul class="simple">
+<li>to sequential inference conditional on independent data sets, where
+each posterior is an updated of the previous in the sequence;</li>
+<li>inference conditional on independent data sets, where the different
+analyses invoked same [different] prior models and one simply wants
+to overlay the posteriors e.g., to gauge the synergy of different
+experiments [and argue the priors are weakly informative/
+diffuse in the context of the likelihood functions];</li>
+<li>to analysis of a single data set but the effective existence of
+discrete hyperparameter resulting in posteriors conditional on
+the discrete label over population-level prior distributions that
+has not been marginalized over (i.e., the problem of choosing an
+appropriate the hierarchical prior model);</li>
+<li>to competing models, where models can differ in the likelihood
+function, prior density, or both.</li>
+</ul>
+</div></blockquote>
+<p>An example of the latter is two more (neutron) stars, each with a mass;
+these masses collectively encode interesting population-level information.</p>
+<p>Subclasses will calculate inferences, usually in the form of approximate
+integrals over the posterior distribution. They will also provide tools
+for visualisation of posterior information and derived quantities, which
+is useful for basic posterior predictive checking.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>posteriors</strong> (<em>iterable</em>) – An iterable of instances of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xpsi.PostProcessing._postprocessor.PostProcessor.get_attr">
+<code class="descname">get_attr</code><span class="sig-paren">(</span><em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_postprocessor.html#PostProcessor.get_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.get_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of attributes of the <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances stored as
+the current subset.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._postprocessor.PostProcessor.params">
+<code class="descname">params</code><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current parameter information.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._postprocessor.PostProcessor.posteriors">
+<code class="descname">posteriors</code><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.posteriors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the posteriors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing._postprocessor.PostProcessor.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>names</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_postprocessor.html#PostProcessor.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set current parameters for plotting, which must be shared.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.PostProcessing._postprocessor.PostProcessor.set_subset">
+<code class="descname">set_subset</code><span class="sig-paren">(</span><em>IDs=None</em>, <em>combine=False</em>, <em>combine_all=False</em>, <em>force_combine=True</em>, <em>only_combined=False</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_postprocessor.html#PostProcessor.set_subset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.set_subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a current list of <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instances.</p>
+<p>Helper function to get and notify which runs will be plotted.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>IDs</strong> (<em>OrderedDict</em>) – A dictionary of lists, where keys match <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance
+IDs, and list elements match <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instance IDs. If no
+key matches a <a class="reference internal" href="#xpsi.PostProcessing.Runs" title="xpsi.PostProcessing.Runs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code></a> instance ID, it is assumed that
+all associated <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">Run</span></code></a> instances are to be selected as the
+current subset for plotting applications.</li>
+<li><strong>combine</strong> (<em>bool</em>) – Additionally combine the runs into a single run for overplotting?
+The overriding setting if there is more than one underlying
+posterior to be plotted, is to attempt to combine runs on each
+posterior if multiple such runs are available, in order to
+reduce information density. If there is a single underlying
+posterior, the user-specified value is respected.</li>
+<li><strong>combine_all</strong> (<em>bool</em>) – Combine all runs in each <code class="xref py py-class docutils literal notranslate"><span class="pre">Runs</span></code> instance or only those
+for which IDs are provided? Ignored if <code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>force_combine</strong> (<em>bool</em>) – Force recombination of elligible run sets, even if a
+combined run is already cached?</li>
+<li><strong>only_combined</strong> (<em>bool</em>) – Only plot the combined run? Only heeded if a single posterior
+is selected for plotting, and in that case is ignored if
+<code class="docutils literal notranslate"><span class="pre">combine</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>overwrite</strong> (<em>bool</em>) – Overwrite combined-sample files on disk with the same filename?</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._postprocessor.PostProcessor.subset">
+<code class="descname">subset</code><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current subset of posteriors for plotting.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._postprocessor.PostProcessor.subset_to_plot">
+<code class="descname">subset_to_plot</code><a class="headerlink" href="#xpsi.PostProcessing._postprocessor.PostProcessor.subset_to_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current subset of runs for plotting.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing._backends.NestedBackend">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing._backends.</code><code class="descname">NestedBackend</code><span class="sig-paren">(</span><em>root</em>, <em>base_dir</em>, <em>use_nestcheck</em>, <em>transform=None</em>, <em>overwrite_transformed=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_backends.html#NestedBackend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._backends.NestedBackend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._run.Run" title="xpsi.PostProcessing._run.Run"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing._run.Run</span></code></a></p>
+<p>Container for nested samples generated by a single run, and backends
+for analysis of the run.</p>
+<p>The other keyword arguments are generic properties passed to the parent
+class, such as the identification (ID) string of the run.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>root</strong> (<em>str</em>) – The root filename of the sample file collection.</li>
+<li><strong>base_dir</strong> (<em>str</em>) – The directly containing the sample file collection.</li>
+<li><strong>use_nestcheck</strong> (<em>bool</em>) – Invoke <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> for nested sampling error analysis?</li>
+<li><strong>transform</strong> (<em>callable</em>) – A function to transform the parameter vector to another space.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._backends.NestedBackend.getdist_backend">
+<code class="descname">getdist_backend</code><a class="headerlink" href="#xpsi.PostProcessing._backends.NestedBackend.getdist_backend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._backends.NestedBackend.margeStats">
+<code class="descname">margeStats</code><a class="headerlink" href="#xpsi.PostProcessing._backends.NestedBackend.margeStats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the marginal statistics using <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._backends.NestedBackend.nestcheck_backend">
+<code class="descname">nestcheck_backend</code><a class="headerlink" href="#xpsi.PostProcessing._backends.NestedBackend.nestcheck_backend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <code class="xref py py-mod docutils literal notranslate"><span class="pre">nestcheck</span></code> backend for the nested samples.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing._run.Run">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing._run.</code><code class="descname">Run</code><span class="sig-paren">(</span><em>filepath</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_run.html#Run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._run.Run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata" title="xpsi.PostProcessing._metadata.Metadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing._metadata.Metadata</span></code></a></p>
+<p>Base class for a sample container.</p>
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._run.Run.contours">
+<code class="descname">contours</code><a class="headerlink" href="#xpsi.PostProcessing._run.Run.contours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the dictionary of contour arguments for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contours</strong> (<em>dict</em>) – <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>-compatible dictionary of parameters specifying the
+properties of the contours representing credible regions of the
+two-dimensional marginal distributions of parameters.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._run.Run.lines">
+<code class="descname">lines</code><a class="headerlink" href="#xpsi.PostProcessing._run.Run.lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the dictionary of line arguments for <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lines</strong> (<em>dict</em>) – <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code>-compatible dictionary of parameters
+specifying the properties of the smooth lines
+representing one-dimensional marginal distributions
+of parameters.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._run.Run.samples">
+<code class="descname">samples</code><a class="headerlink" href="#xpsi.PostProcessing._run.Run.samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of the samples array.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xpsi.PostProcessing._metadata.Metadata">
+<em class="property">class </em><code class="descclassname">xpsi.PostProcessing._metadata.</code><code class="descname">Metadata</code><span class="sig-paren">(</span><em>ID</em>, <em>names</em>, <em>bounds=None</em>, <em>labels=None</em>, <em>implementation=None</em>, <em>kde_settings=None</em>, <em>truths=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/PostProcessing/_metadata.html#Metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class to record basic information about sampling runs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ID</strong> (<em>str</em>) – For identification of the object.</li>
+<li><strong>names</strong> (<em>list</em>) – An ordered list of <code class="docutils literal notranslate"><span class="pre">str</span></code> parameter names. The ordering must match
+the parameter vector ordering defined in sample backend objects.</li>
+<li><strong>bounds</strong> (<em>dict</em>) – A dictionary of one-dimensional <em>hard</em> parameter bounds. See
+<a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>; the keys must match the
+<a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata.names" title="xpsi.PostProcessing._metadata.Metadata.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a> list. For the purpose of density estimation plots these
+bounds can be viewing bounds.</li>
+<li><strong>labels</strong> (<em>list</em>) – An ordered list of (LaTeX compatible) <code class="docutils literal notranslate"><span class="pre">str</span></code> literal parameter labels.</li>
+<li><strong>implementation</strong> (<em>str</em>) – Sampling software applied to generate the samples. Known options are
+<code class="docutils literal notranslate"><span class="pre">['multinest',</span> <span class="pre">'polychord',</span> <span class="pre">'emcee']</span></code>.</li>
+<li><strong>kde_settings</strong> (<em>dict</em>) – Settings for instantiation of <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>.</li>
+<li><strong>truths</strong> (<em>dict</em>) – Optional dictionary of parameter truths, if <em>known</em>; if <em>unknown</em>
+leave as <code class="docutils literal notranslate"><span class="pre">None</span></code>. The keys must be names which match those in
+<a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata.names" title="xpsi.PostProcessing._metadata.Metadata.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.ID">
+<code class="descname">ID</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the identification <code class="docutils literal notranslate"><span class="pre">str</span></code> of the sample set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.bounds">
+<code class="descname">bounds</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter bounds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.implementation">
+<code class="descname">implementation</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.implementation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sampling software applied to generate the samples of the run.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.kde_settings">
+<code class="descname">kde_settings</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.kde_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the input <code class="xref py py-mod docutils literal notranslate"><span class="pre">getdist</span></code> KDE settings dictionary.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.labels">
+<code class="descname">labels</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter labels.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.names">
+<code class="descname">names</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter names.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.parent_ID">
+<code class="descname">parent_ID</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.parent_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ID of the parent container with which a run is associated.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.prepend_ID">
+<code class="descname">prepend_ID</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.prepend_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepend the run ID with the parent ID.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.truth_vector">
+<code class="descname">truth_vector</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.truth_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter truths as a list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.PostProcessing._metadata.Metadata.truths">
+<code class="descname">truths</code><a class="headerlink" href="#xpsi.PostProcessing._metadata.Metadata.truths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameter truths as a dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -650,7 +1376,7 @@ argument can be handled for <code class="docutils literal notranslate"><span cla
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

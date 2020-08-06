@@ -1,0 +1,1028 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Surface radiation field tools &mdash; xpsi 0.5.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modeling (without statistics)" href="model_construction_streamlined.html" />
+    <link rel="prev" title="Global surface emission" href="global_surface_emission.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Surface radiation field tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Calculate-the-specific-intensity-directly-from-local-variables">Calculate the specific intensity directly from local variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Isotropic-blackbody">Isotropic blackbody</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Numerical-atmosphere">Numerical atmosphere</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Calculate-the-specific-intensity-indirectly-via-global-variables">Calculate the specific intensity indirectly via global variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Surface radiation field tools</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/surface_radiation_field_checking_tools_tutorial.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Surface-radiation-field-tools">
+<h1>Surface radiation field tools<a class="headerlink" href="#Surface-radiation-field-tools" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial we demonstrate usage of several tools for checking the implementation of a surface radiation field extension module.</p>
+<p>The unexecuted notebook for this tutorial may be found in a GitHub repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
+
+<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.5/
+</pre></div>
+</div>
+<p>To run this tutorial, you fully you’ll need to change the atmosphere extensions as instructed below. Moreover, you’ll need numerical atmosphere data. The data used for this tutorial is not the intellectual property of the X-PSI team so we do not distribute it. The author of the atmosphere model data is listed where relevant below.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">xpsi</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 0.5.0               |
+|---------------------------------------------|
+|  https://thomasedwardriley.github.io/xpsi/  |
+\=============================================/
+
+Imported GetDist version: 0.3.1
+Imported nestcheck version: 0.2.0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Calculate-the-specific-intensity-directly-from-local-variables">
+<h2>Calculate the specific intensity directly from local variables<a class="headerlink" href="#Calculate-the-specific-intensity-directly-from-local-variables" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># keV (local comoving frame)</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+<span class="c1"># cos(angle to local surface normal in comoving frame)</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+<span class="c1"># log10(eff. temperature [K]) and log10(local eff. gravity [cm/s^2])</span>
+<span class="n">local_vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">6.11</span><span class="p">,</span> <span class="mf">13.8</span><span class="p">]]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>xpsi.surface_radiation_field<span class="o">?</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>xpsi.surface_radiation_field.intensity<span class="o">?</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Isotropic-blackbody">
+<h3>Isotropic blackbody<a class="headerlink" href="#Isotropic-blackbody" title="Permalink to this headline">¶</a></h3>
+<p>For the following cell, compile <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/hot/blackbody.pyx</span></code> radiation field as the <code class="docutils literal notranslate"><span class="pre">hot.pyx</span></code> extension (or leave the default X-PSI extension as is if you haven’t changed it before):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+
+<span class="n">BB_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span> <span class="c1"># NB: isotropic blackbody</span>
+                                              <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;elsewhere&#39;</span><span class="p">,</span> <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">BB_I</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+
+<span class="c1"># write it to disk so accessible upon IPython kernel restart (see below)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s1">&#39;./blackbody_spectrum_cache.txt&#39;</span><span class="p">,</span> <span class="n">BB_I</span><span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Photon specific intensity&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Energy [keV]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/surface_radiation_field_checking_tools_tutorial_14_0.png" src="_images/surface_radiation_field_checking_tools_tutorial_14_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Numerical-atmosphere">
+<h3>Numerical atmosphere<a class="headerlink" href="#Numerical-atmosphere" title="Permalink to this headline">¶</a></h3>
+<p>Let’s check out a numerical atmosphere (this code you typically find in a custom photosphere class). The numerical atmospheres loaded here were generated by the NSX atmosphere code (<a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2001MNRAS.327.1081H/abstract">Ho, W.C.G &amp; Lai, D. 2001</a>; <a class="reference external" href="https://ui.adsabs.harvard.edu/link_gateway/2009Natur.462...71H/doi:10.1038/nature08525">Ho, W.C.G &amp; Heinke, C.O. 2009</a>), courtesy of W.C.G. Ho for NICER modeling efforts. One of these atmospheres (fully-ionized
+hydrogen; Ho &amp; Lai 2001) was used in <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al. (2019)</span></a>; also see Bogdanov et al. (2020). If you want to model data conditional on one of the NSX atmosphere mode, and in particular this numerical data, we advise you get in touch with Wynn Ho (Haverford) for access.</p>
+<p>Next compile the <code class="docutils literal notranslate"><span class="pre">archive/hot/numerical.pyx</span></code> radiation field as the <code class="docutils literal notranslate"><span class="pre">hot.pyx</span></code> extension, and compile the <code class="docutils literal notranslate"><span class="pre">archive/elsewhere/numerical.pyx</span></code> radiation field as the <code class="docutils literal notranslate"><span class="pre">elsewhere.pyx</span></code> extension. The numerical extensions infer the size of the parameter grid, but are hard-coded for four-dimensional cubic polynomial interpolation. To do this, change the contents of the target extension files, and reinstall X-PSI, and then restart your IPython kernel, <strong>and run all cells above, apart from [7]</strong>.
+Then continue cell execution below.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">preload</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="n">NSX</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+    <span class="n">logT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">logg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># use underscore to bypass errors with the other mu array</span>
+    <span class="n">logE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="n">reorder_buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]):</span>
+               <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                    <span class="n">logT</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">NSX</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+                    <span class="n">logg</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">NSX</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+                    <span class="n">logE</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">NSX</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">_mu</span><span class="p">[</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">NSX</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">reorder_buf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">10.0</span><span class="o">**</span><span class="p">(</span><span class="n">NSX</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+    <span class="n">bufdex</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+               <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reorder_buf</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]):</span>
+                    <span class="n">buf</span><span class="p">[</span><span class="n">bufdex</span><span class="p">]</span> <span class="o">=</span> <span class="n">reorder_buf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">];</span> <span class="n">bufdex</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">atmosphere</span> <span class="o">=</span> <span class="p">(</span><span class="n">logT</span><span class="p">,</span> <span class="n">logg</span><span class="p">,</span> <span class="n">_mu</span><span class="p">,</span> <span class="n">logE</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">atmosphere</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">H_fully</span> <span class="o">=</span> <span class="n">preload</span><span class="p">(</span><span class="s1">&#39;/home/thomas/Documents/NICER_analyses/H-atmosphere_Spectra (fully ionized)/NSX_H-atmosphere_Spectra/nsx_H_v171019.out&#39;</span><span class="p">,</span>
+                    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">166</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">He_fully</span> <span class="o">=</span> <span class="n">preload</span><span class="p">(</span><span class="s1">&#39;/home/thomas/Documents/NICER_analyses/He-atmosphere_Spectra (fully ionized)/NSX_He-atmosphere_Spectra/nsx_He_v170925.out&#39;</span><span class="p">,</span>
+                      <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">166</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+
+<span class="n">BB_I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;./blackbody_spectrum_cache.txt&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">BB_I</span><span class="p">,</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">hot_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span>
+                                               <span class="n">atmosphere</span><span class="o">=</span><span class="n">H_fully</span><span class="p">,</span>
+                                               <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+                                               <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">hot_I</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+
+<span class="n">elsewhere_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span>
+                                                     <span class="n">atmosphere</span><span class="o">=</span><span class="n">H_fully</span><span class="p">,</span>
+                                                     <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;elsewhere&#39;</span><span class="p">,</span>
+                                                     <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">elsewhere_I</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">He_fully_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span>
+                                                     <span class="n">atmosphere</span><span class="o">=</span><span class="n">He_fully</span><span class="p">,</span>
+                                                     <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+                                                     <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">He_fully_I</span><span class="p">,</span> <span class="s1">&#39;k-.&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mf">9.0e25</span><span class="p">,</span><span class="mf">4.0e29</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Photon specific intensity&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Energy [keV]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/surface_radiation_field_checking_tools_tutorial_21_0.png" src="_images/surface_radiation_field_checking_tools_tutorial_21_0.png" />
+</div>
+</div>
+<p>This behaviour is typical for an isotropic blackbody radiation field with temperature <span class="math notranslate nohighlight">\(T\)</span> in comparison to a radiation field emergent from a (non-magnetic, fully-ionized) geometrically-thin H/He atmosphere with effective temperature <span class="math notranslate nohighlight">\(T\)</span>.</p>
+<p>Let’s plot the angular dependence:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># keV (local comoving frame)</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+
+<span class="c1"># cos(angle to local surface normal in comoving frame)</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+
+<span class="c1"># Hydrogen</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;polar&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_theta_direction</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_thetamin</span><span class="p">(</span><span class="o">-</span><span class="mf">90.0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_thetamax</span><span class="p">(</span><span class="mf">90.0</span><span class="p">)</span>
+
+<span class="c1"># log10(eff. temperature [K]) and log10(local eff. gravity [cm/s^2])</span>
+<span class="n">local_vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">13.8</span><span class="p">]]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">H_fully_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span>
+                                                   <span class="n">atmosphere</span><span class="o">=</span><span class="n">H_fully</span><span class="p">,</span>
+                                                   <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+                                                   <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">H_fully_I</span><span class="p">)),</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">H_fully_I</span><span class="p">)),</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># log10(eff. temperature [K]) and log10(local eff. gravity [cm/s^2])</span>
+<span class="n">local_vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">13.8</span><span class="p">]]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">H_fully_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span>
+                                                   <span class="n">atmosphere</span><span class="o">=</span><span class="n">H_fully</span><span class="p">,</span>
+                                                   <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+                                                   <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">H_fully_I</span><span class="p">)),</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">H_fully_I</span><span class="p">)),</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># log10(eff. temperature [K]) and log10(local eff. gravity [cm/s^2])</span>
+<span class="n">local_vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">6.5</span><span class="p">,</span> <span class="mf">13.8</span><span class="p">]]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">H_fully_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span>
+                                                   <span class="n">atmosphere</span><span class="o">=</span><span class="n">H_fully</span><span class="p">,</span>
+                                                   <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+                                                   <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">H_fully_I</span><span class="p">)),</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">H_fully_I</span><span class="p">)),</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_rmax</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_rmin</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_theta_zero_location</span><span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_rticks</span><span class="p">([</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;log10$(I_E/I_E(\mu=1))$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_coords</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;H (fully-ionized)&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=-</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># Helium</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;polar&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_theta_direction</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_thetamin</span><span class="p">(</span><span class="o">-</span><span class="mf">90.0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_thetamax</span><span class="p">(</span><span class="mf">90.0</span><span class="p">)</span>
+
+<span class="c1"># log10(eff. temperature [K]) and log10(local eff. gravity [cm/s^2])</span>
+<span class="n">local_vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">13.8</span><span class="p">]]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">He_fully_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span>
+                                                     <span class="n">atmosphere</span><span class="o">=</span><span class="n">He_fully</span><span class="p">,</span>
+                                                     <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+                                                     <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">He_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">He_fully_I</span><span class="p">)),</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">He_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">He_fully_I</span><span class="p">)),</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># log10(eff. temperature [K]) and log10(local eff. gravity [cm/s^2])</span>
+<span class="n">local_vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">13.8</span><span class="p">]]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">He_fully_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span>
+                                                     <span class="n">atmosphere</span><span class="o">=</span><span class="n">He_fully</span><span class="p">,</span>
+                                                     <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+                                                     <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">He_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">He_fully_I</span><span class="p">)),</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">He_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">He_fully_I</span><span class="p">)),</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># log10(eff. temperature [K]) and log10(local eff. gravity [cm/s^2])</span>
+<span class="n">local_vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">6.5</span><span class="p">,</span> <span class="mf">13.8</span><span class="p">]]</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">He_fully_I</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">local_vars</span><span class="p">,</span>
+                                                     <span class="n">atmosphere</span><span class="o">=</span><span class="n">He_fully</span><span class="p">,</span>
+                                                     <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span>
+                                                     <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">He_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">He_fully_I</span><span class="p">)),</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">mu</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">He_fully_I</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">He_fully_I</span><span class="p">)),</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_rmax</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_rmin</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_theta_zero_location</span><span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_rticks</span><span class="p">([</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;log10$(I_E/I_E(\mu=1))$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_coords</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;He (fully-ionized)&#39;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=-</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/surface_radiation_field_checking_tools_tutorial_24_0.png" src="_images/surface_radiation_field_checking_tools_tutorial_24_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Calculate-the-specific-intensity-indirectly-via-global-variables">
+<h2>Calculate the specific intensity indirectly via global variables<a class="headerlink" href="#Calculate-the-specific-intensity-indirectly-via-global-variables" title="Permalink to this headline">¶</a></h2>
+<p>We can also calculate intensities by specifying spacetime coordinates at the surface and values for some set of global variables that control the radiation field.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>xpsi.surface_radiation_field.intensity_from_globals<span class="o">?</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># unimportant here; just use strict bounds</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">mass</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">distance</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">cos_inclination</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+<span class="n">spacetime</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">frequency</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">4.87e-3</span><span class="p">)))</span> <span class="c1"># J0030 spin</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 2.053e+02.
+    &gt; Spin frequency [Hz].
+
+
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e-03, 3.000e+00].
+    &gt; Gravitational mass [solar masses].
+
+
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [1.000e+00, 2.000e+01].
+    &gt; Coordinate equatorial radius [km].
+
+
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [1.000e-02, 3.000e+01].
+    &gt; Earth distance [kpc].
+
+
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [-1.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># keV (local comoving frame)</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+<span class="c1"># cos(angle to local surface normal in comoving frame)</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">colatitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="c1"># radians</span>
+<span class="n">azimuth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">global_vars</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">6.11</span><span class="p">])</span>  <span class="c1"># just temperature (globally invariant local variable)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">spacetime</span><span class="o">.</span><span class="n">params</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>[Spin frequency [Hz] = 2.053e+02,
+ Gravitational mass [solar masses],
+ Coordinate equatorial radius [km],
+ Earth distance [kpc],
+ Cosine of Earth inclination to rotation axis]
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">spacetime</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">12.0</span>
+<span class="n">spacetime</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.4</span>
+<span class="c1"># we do not need the observer coordinates (typically handled</span>
+<span class="c1"># by xpsi.Spacetime instances) to compute effective gravity so</span>
+<span class="c1"># no need to set values</span>
+
+<span class="c1"># the first 5 arguments are 1D arrays that specific a point sequence in the</span>
+<span class="c1"># joint space of surface spacetime coordinates, energy, and angle</span>
+<span class="c1"># if you have a set of such points that does not conform readily</span>
+<span class="c1"># to a 1D array, write a custom wrapper to handle the structure</span>
+<span class="c1"># in your point set</span>
+<span class="n">I_E</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">surface_radiation_field</span><span class="o">.</span><span class="n">intensity_from_globals</span><span class="p">(</span><span class="n">E</span><span class="p">,</span>
+                                                          <span class="n">mu</span><span class="p">,</span>
+                                                          <span class="n">colatitude</span><span class="p">,</span>
+                                                          <span class="n">azimuth</span><span class="p">,</span>
+                                                          <span class="n">phase</span><span class="p">,</span>
+                                                          <span class="n">global_vars</span><span class="p">,</span>       <span class="c1"># -&gt; eff. temp.</span>
+                                                          <span class="n">spacetime</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>       <span class="c1"># -&gt; eff. grav.</span>
+                                                          <span class="n">spacetime</span><span class="o">.</span><span class="n">zeta</span><span class="p">,</span>    <span class="c1"># -&gt; eff. grav.</span>
+                                                          <span class="n">spacetime</span><span class="o">.</span><span class="n">epsilon</span><span class="p">,</span> <span class="c1"># -&gt; eff. grav.</span>
+                                                          <span class="n">atmosphere</span><span class="o">=</span><span class="n">H_fully</span><span class="p">,</span>
+                                                          <span class="n">numTHREADS</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Note that only the <code class="docutils literal notranslate"><span class="pre">hot.pyx</span></code> extension is invoked here.</p>
+<p>Let’s plot the spectrum and also the spectrum generated by declaring the effective gravity directly above:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">hot_I</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">I_E</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Photon specific intensity&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Energy [keV]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/surface_radiation_field_checking_tools_tutorial_35_0.png" src="_images/surface_radiation_field_checking_tools_tutorial_35_0.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="model_construction_streamlined.html" class="btn btn-neutral float-right" title="Modeling (without statistics)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="global_surface_emission.html" class="btn btn-neutral float-left" title="Global surface emission" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020 Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

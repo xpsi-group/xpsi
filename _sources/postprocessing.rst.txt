@@ -1,34 +1,67 @@
-.. module:: xpsi.PostProcessing
-
 .. _PostProcessing:
 
 PostProcessing
 ==============
 
+.. automodule:: xpsi.PostProcessing
+
 .. autosummary::
 
-    xpsi.PostProcessing.Run
-    xpsi.PostProcessing.NSBackend
     xpsi.PostProcessing.Runs
-    xpsi.PostProcessing.PostProcessor
-
-.. autoclass:: xpsi.PostProcessing.Run
-    :members:
-    :special-members: __call__
-
-.. autoclass:: xpsi.PostProcessing.NSBackend
-    :members:
-    :special-members: __call__
-    :show-inheritance:
+    xpsi.PostProcessing.CornerPlotter
+    xpsi.PostProcessing.SignalPlotter
+    xpsi.PostProcessing.ResidualPlot
+    xpsi.PostProcessing.PulsePlot
+    xpsi.PostProcessing.SpectrumPlot
 
 .. autoclass:: xpsi.PostProcessing.Runs
     :members:
-    :special-members: __call__
+    :show-inheritance:
 
-.. autoclass:: xpsi.PostProcessing.PostProcessor
+.. autoclass:: xpsi.PostProcessing.CornerPlotter
     :members:
-    :special-members: __call__
-    :exclude-members: plot_posteriorDensity, plot_pulse_and_spectrum
+    :show-inheritance:
 
-    .. automethod:: plot_posteriorDensity(self, params, run_IDs=None, combine=False, combine_all=False, only_combined=False, bootstrap_estimators=True, bootstrap_density=False, separate_plots=False, write=False, root_filename='', directory='./', ext='.pdf', dpi=300, maxdots=2000,**kwargs)
-    .. automethod:: plot_pulse_and_spectrum(self, params, run_IDs=None, combine=False, combine_all=False, only_combined=False, bootstrap_estimators=True, bootstrap_density=False, separate_plots=False, write=False, root_filename='', directory='./', ext='.pdf', dpi=300, maxdots=2000,**kwargs)
+.. autoclass:: xpsi.PostProcessing.SignalPlotter
+    :members:
+    :show-inheritance:
+
+.. autoclass:: xpsi.PostProcessing.ResidualPlot
+    :members:
+    :show-inheritance:
+
+.. autoclass:: xpsi.PostProcessing.PulsePlot
+    :members:
+    :show-inheritance:
+
+.. autoclass:: xpsi.PostProcessing.SpectrumPlot
+    :members:
+    :show-inheritance:
+
+Base classes for development
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autosummary::
+
+    xpsi.PostProcessing._signalplot.SignalPlot
+    xpsi.PostProcessing._postprocessor.PostProcessor
+    xpsi.PostProcessing._backends.NestedBackend
+    xpsi.PostProcessing._run.Run
+    xpsi.PostProcessing._metadata.Metadata
+
+.. autoclass:: xpsi.PostProcessing._signalplot.SignalPlot
+    :members:
+
+.. autoclass:: xpsi.PostProcessing._postprocessor.PostProcessor
+    :members:
+
+.. autoclass:: xpsi.PostProcessing._backends.NestedBackend
+    :members:
+    :show-inheritance:
+
+.. autoclass:: xpsi.PostProcessing._run.Run
+    :members:
+    :show-inheritance:
+
+.. autoclass:: xpsi.PostProcessing._metadata.Metadata
+    :members:

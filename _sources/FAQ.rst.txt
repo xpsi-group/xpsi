@@ -44,7 +44,7 @@ I/O not a concern for likelihood calculation.
 Nested sampling writes to disk at user-specified cadence
 (so many nested sampling iterations).
 
-Model data such as an four-dimensional atmosphere table can be reasonably
+Model data such as a four-dimensional atmosphere table can be reasonably
 large for I/O.
 We recommend loading, at the outset of the run (or a resumed run),
 such a table into a contiguous chunk of memory
@@ -55,11 +55,7 @@ We provide an example custom Python class that handles this loading (as used
 in :ref:`R19`, hereafter R19).
 
 Disk storage required is indeed small: up to :math:`\mathcal{O}(100)` Mbytes for
-applications thus far (e.g., R19).
-There is a variant of MultiNest nested sampling that is much more memory and
-disk intensive, but we do not use it.
-
-.. rubric:: Why?
-
-Imporance nested sampling (Feroz et al. 2013) is not compatible with the
-alternative options (read: hacks) for prior implementation.
+applications thus far (e.g., R19). There is a variant of MultiNest nested sampling
+that is much more memory and disk intensive, but we do not use it.  This is 
+because importance nested sampling is not compatible with the alternative options 
+(read: hacks) for prior implementation (see `Riley, PhD thesis <https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a>`_).

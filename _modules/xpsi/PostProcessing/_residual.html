@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>xpsi.PostProcessing._residual &mdash; xpsi 0.5.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements.html">Acknowledgements</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiple_instruments.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postprocessing_tutorial.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example_job.html">Example job</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../parameter.html">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../signal.html">Signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../everywhere.html">Everywhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Tools</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>xpsi.PostProcessing._residual</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for xpsi.PostProcessing._residual</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">._global_imports</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">._signalplot</span> <span class="kn">import</span> <span class="n">SignalPlot</span>
+
+<div class="viewcode-block" id="ResidualPlot"><a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.ResidualPlot">[docs]</a><span class="k">class</span> <span class="nc">ResidualPlot</span><span class="p">(</span><span class="n">SignalPlot</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Plot the count data, the posterior-expected count signal, and residuals.</span>
+
+<span class="sd">    The figure contains three panels which share phase as an x-axis:</span>
+
+<span class="sd">        * the top panel displays the data count numbers in joint channel-phase</span>
+<span class="sd">          intervals, identically split over two rotational phase cycles;</span>
+<span class="sd">        * the center panel displays the posterior-expected count signal</span>
+<span class="sd">          over joint channel-phase intervals;</span>
+<span class="sd">        * the bottom panel displays the standardised residuals between the</span>
+<span class="sd">          data and posterior-expected count signal over joint channel-phase</span>
+<span class="sd">          intervals.</span>
+
+<span class="sd">    The following example is (improved) from :ref:`R19`:</span>
+
+<span class="sd">    .. image:: _static/_residualplot.png</span>
+
+<span class="sd">    :param str data_cmap:</span>
+<span class="sd">         Colormap name from :mod:`matplotlib` to use for the data count numbers</span>
+<span class="sd">         over joint channel-phase intervals.</span>
+
+<span class="sd">    :param str model_cmap:</span>
+<span class="sd">         Colormap name from :mod:`matplotlib` to use for the posterior-expected</span>
+<span class="sd">         count numbers over joint channel-phase intervals.</span>
+
+<span class="sd">    :param str residual_cmap:</span>
+<span class="sd">         Colormap name from :mod:`matplotlib` to use for the residuals between</span>
+<span class="sd">         the data and posterior-expected count numbers over joint</span>
+<span class="sd">         channel-phase intervals. A diverging colormap is recommended.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__figtype__</span> <span class="o">=</span> <span class="s1">&#39;signalplot_residuals&#39;</span>
+
+    <span class="c1"># do not change at runtime (see base class comments):</span>
+    <span class="n">__caching_targets__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;expected_counts&#39;</span><span class="p">]</span>
+
+    <span class="n">__rows__</span>          <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">__columns__</span>       <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">__ax_rows__</span>       <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">__ax_columns__</span>    <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">__height_ratios__</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span>
+    <span class="n">__width_ratios__</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># second column for colorbars</span>
+    <span class="n">__wspace__</span>        <span class="o">=</span> <span class="mf">0.025</span>
+    <span class="n">__hspace__</span>        <span class="o">=</span> <span class="mf">0.125</span>
+
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Instantiating a residual plotter for posterior checking&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Residual plotter instantiated&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">data_cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span>
+                 <span class="n">model_cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span>
+                 <span class="n">residual_cmap</span><span class="o">=</span><span class="s1">&#39;PuOr&#39;</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ResidualPlot</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_cmap</span> <span class="o">=</span> <span class="n">data_cmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_cmap</span> <span class="o">=</span> <span class="n">model_cmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_residual_cmap</span> <span class="o">=</span> <span class="n">residual_cmap</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_figure</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_subplot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_data_cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_subplot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_model_cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid_cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$\phi$ [cycles]&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ax_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_model</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">labelbottom</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ax_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;channel&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mf">0.05</span><span class="p">))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">])</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ResidualPlot.execute"><a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.ResidualPlot.execute">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;ResidualPlot object iterating over samples&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;ResidualPlot object finished iterating&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thetas</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Loop over posterior samples. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_samples</span> <span class="o">=</span> <span class="n">thetas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">wrapped</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;model_sum&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_samples</span><span class="p">):</span>
+            <span class="n">wrapped</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">thetas</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span></div>
+
+<div class="viewcode-block" id="ResidualPlot.next"><a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.ResidualPlot.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update posterior expected model given the updated signal.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            You cannot make an iterator from an instance of this class.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">expected_counts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">expected_counts</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">model_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the current posterior sum of the count numbers. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span>
+
+    <span class="nd">@model_sum</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">model_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">expected_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the estimated posterior expectation of the count numbers. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_samples</span>
+
+<div class="viewcode-block" id="ResidualPlot.finalize"><a class="viewcode-back" href="../../../postprocessing.html#xpsi.PostProcessing.ResidualPlot.finalize">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;ResidualPlot object finalizing&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;ResidualPlot object finalized&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_expected_counts</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_residuals</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_vminmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Compute minimum and maximum for data and model colorbars. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span>
+                         <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="o">/</span><span class="mf">2.0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span>
+                         <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="o">/</span><span class="mf">2.0</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_add_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Display data in topmost panel. &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_vminmax</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_data</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span>
+                                        <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_cmap</span><span class="p">),</span>
+                                        <span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span><span class="p">,</span>
+                                        <span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span><span class="p">,</span>
+                                        <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                        <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rasterized</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_data</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span>
+                                        <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_cmap</span><span class="p">),</span>
+                                        <span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span><span class="p">,</span>
+                                        <span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span><span class="p">,</span>
+                                        <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                        <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rasterized</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_data</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_data</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ax_data_cb</span><span class="p">,</span>
+                                     <span class="n">ticks</span><span class="o">=</span><span class="n">_get_default_locator</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+                                     <span class="nb">format</span><span class="o">=</span><span class="n">_get_default_formatter</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;counts&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_expected_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Display posterior expectation of model in second panel. &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_vminmax</span><span class="p">()</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_model</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span>
+                                          <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_cmap</span><span class="p">),</span>
+                                          <span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span><span class="p">,</span>
+                                          <span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span><span class="p">,</span>
+                                          <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                          <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rasterized</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_model</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span>
+                                          <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_cmap</span><span class="p">),</span>
+                                          <span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span><span class="p">,</span>
+                                          <span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span><span class="p">,</span>
+                                          <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                          <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rasterized</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_model</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_model</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ax_model_cb</span><span class="p">,</span>
+                                      <span class="n">ticks</span><span class="o">=</span><span class="n">_get_default_locator</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+                                      <span class="nb">format</span><span class="o">=</span><span class="n">_get_default_formatter</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;counts&#39;</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_residuals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Display the residuals in the third panel. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="o">/=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">)</span>
+
+        <span class="n">vmax</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span> <span class="p">)</span> <span class="p">)</span>
+
+        <span class="n">resid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">,</span>
+                                      <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residual_cmap</span><span class="p">),</span>
+                                      <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="n">vmax</span><span class="p">,</span>
+                                      <span class="n">vmax</span> <span class="o">=</span> <span class="n">vmax</span><span class="p">,</span>
+                                      <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                      <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rasterized</span><span class="p">)</span>
+        <span class="n">resid</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+        <span class="n">resid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
+                                      <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residuals</span><span class="p">),</span>
+                                      <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_residual_cmap</span><span class="p">),</span>
+                                      <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="n">vmax</span><span class="p">,</span>
+                                      <span class="n">vmax</span> <span class="o">=</span> <span class="n">vmax</span><span class="p">,</span>
+                                      <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                      <span class="n">rasterized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rasterized</span><span class="p">)</span>
+        <span class="n">resid</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tick_width</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resid_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">resid</span><span class="p">,</span> <span class="n">cax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax_resid_cb</span><span class="p">,</span>
+                                      <span class="n">ticks</span><span class="o">=</span><span class="n">AutoLocator</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resid_cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resid_cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resid_cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$(c_</span><span class="si">{ik}</span><span class="s1">-d_</span><span class="si">{ik}</span><span class="s1">)/\sqrt{c_</span><span class="si">{ik}</span><span class="s1">}$&#39;</span><span class="p">,</span>
+                                 <span class="n">labelpad</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020 Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

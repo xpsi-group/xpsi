@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Prior &mdash; xpsi 0.4.0 documentation</title>
+  <title>Prior &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Posterior" href="posterior.html" />
-    <link rel="prev" title="Background" href="background.html" /> 
+    <link rel="prev" title="Tools" href="tools.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -95,21 +95,32 @@
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -122,6 +133,13 @@
 <li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul class="current">
@@ -256,7 +274,7 @@ use it, handle it in a custom implementation of this method.</td>
 
 <dl class="method">
 <dt id="xpsi.Prior.Prior.draw">
-<code class="descname">draw</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior.draw" title="Permalink to this definition">¶</a></dt>
+<code class="descname">draw</code><span class="sig-paren">(</span><em>ndraws</em>, <em>transform=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior.draw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw samples uniformly from the prior via inverse sampling.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -274,7 +292,7 @@ use it, handle it in a custom implementation of this method.</td>
 
 <dl class="method">
 <dt id="xpsi.Prior.Prior.estimate_hypercube_frac">
-<code class="descname">estimate_hypercube_frac</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.estimate_hypercube_frac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior.estimate_hypercube_frac" title="Permalink to this definition">¶</a></dt>
+<code class="descname">estimate_hypercube_frac</code><span class="sig-paren">(</span><em>ndraws=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.estimate_hypercube_frac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior.estimate_hypercube_frac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimate using Monte Carlo integration the fractional hypervolume
 within a unit hypercube at which prior density is finite.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -328,8 +346,37 @@ posterior and prior density functions.</p>
 
 <dl class="staticmethod">
 <dt id="xpsi.Prior.Prior.transform">
-<em class="property">static </em><code class="descname">transform</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior.transform" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">transform</code><span class="sig-paren">(</span><em>p</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Prior.html#Prior.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Prior.Prior.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>A transformation for post-processing.</p>
+<p>A subclass can implement this attribute as an instance method: it
+does not need to be a static method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> (<em>list</em>) – Parameter vector.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Kwargs:</th><td class="field-body">A key sometimes passed is <code class="docutils literal notranslate"><span class="pre">old_API</span></code>, which flags whether a
+transformation needs to account for a parameter vector written to
+file by an older software version, which might be different in
+due to transformations of parameters defined in the current
+software version.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As an example, the <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a> samples are in inclination <span class="math notranslate nohighlight">\(i\)</span>
+instead of <span class="math notranslate nohighlight">\(\cos(i)\)</span> which is the current inclination
+parameter in the API. Therefore the transformation needed depends
+on the source of the parameter vector. If the vector is from the
+original sample files, then it needs to be transformed to have
+the same parameter definitions as the current API. However, when
+drawing samples from the prior in the current API, no such
+transformation needs to be performed because these are the
+definitions we need to match. Refer to the dummy example code
+in the method body.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -363,7 +410,7 @@ posterior and prior density functions.</p>
         <a href="posterior.html" class="btn btn-neutral float-right" title="Posterior" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="background.html" class="btn btn-neutral float-left" title="Background" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tools.html" class="btn btn-neutral float-left" title="Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -372,7 +419,7 @@ posterior and prior density functions.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

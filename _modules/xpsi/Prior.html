@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Prior &mdash; xpsi 0.4.0 documentation</title>
+  <title>xpsi.Prior &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -93,21 +93,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../star.html">Star</a></li>
@@ -120,6 +131,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -225,6 +243,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
 
+    <span class="n">__derived_names__</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        You might want to overwrite this initialiser to do some custom</span>
@@ -327,8 +347,33 @@
         <span class="k">return</span> <span class="n">p</span></div>
 
 <div class="viewcode-block" id="Prior.transform"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.transform">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; A transformation for post-processing.</span>
+
+<span class="sd">        A subclass can implement this attribute as an instance method: it</span>
+<span class="sd">        does not need to be a static method.</span>
+
+<span class="sd">        :param list p:</span>
+<span class="sd">            Parameter vector.</span>
+<span class="sd">        :kwargs:</span>
+<span class="sd">            A key sometimes passed is ``old_API``, which flags whether a</span>
+<span class="sd">            transformation needs to account for a parameter vector written to</span>
+<span class="sd">            file by an older software version, which might be different in</span>
+<span class="sd">            due to transformations of parameters defined in the current</span>
+<span class="sd">            software version.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            As an example, the :ref:`R19` samples are in inclination :math:`i`</span>
+<span class="sd">            instead of :math:`\cos(i)` which is the current inclination</span>
+<span class="sd">            parameter in the API. Therefore the transformation needed depends</span>
+<span class="sd">            on the source of the parameter vector. If the vector is from the</span>
+<span class="sd">            original sample files, then it needs to be transformed to have</span>
+<span class="sd">            the same parameter definitions as the current API. However, when</span>
+<span class="sd">            drawing samples from the prior in the current API, no such</span>
+<span class="sd">            transformation needs to be performed because these are the</span>
+<span class="sd">            definitions we need to match. Refer to the dummy example code</span>
+<span class="sd">            in the method body.</span>
 
 <span class="sd">        :returns: Transformed vector ``p`` where ``len(p) &gt; len(self)``.</span>
 <span class="sd">        :rtype: *list*</span>
@@ -338,7 +383,36 @@
         <span class="c1"># to make a mutable container that can be appended to and returned</span>
         <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Define a transformation.&#39;</span><span class="p">)</span></div>
+        <span class="c1"># example transformation of parameters to match API definitions if</span>
+        <span class="c1"># this method is bound</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">old_API</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">)</span>
+            <span class="n">p</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+
+        <span class="c1"># used ordered names and values if this method is bound</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Define a transformation.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">p</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">derived_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__derived_names__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">())</span>
+            <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;A transformation has been implemented &#39;</span>
+                                     <span class="s1">&#39;in class </span><span class="si">%s</span><span class="s1">, but no names have been &#39;</span>
+                                     <span class="s1">&#39;declared for the derived parameters.&#39;</span>
+                                     <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__derived_names__</span>
+
+    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">derived_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Prior.draw"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior.draw">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Drawing samples from the joint prior&#39;</span><span class="p">,</span><span class="s1">&#39;Samples drawn&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndraws</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -460,7 +534,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

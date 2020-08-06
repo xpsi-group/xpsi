@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Interstellar &mdash; xpsi 0.4.0 documentation</title>
+  <title>Interstellar &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -95,21 +95,32 @@
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -122,6 +133,13 @@
 <li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -225,20 +243,21 @@ interstellar processes which modify source intensities.</p>
 <dt id="xpsi.Interstellar.Interstellar">
 <em class="property">class </em><code class="descclassname">xpsi.Interstellar.</code><code class="descname">Interstellar</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Interstellar.html#Interstellar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Interstellar.Interstellar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
-<p>Base class for model interstellar X-ray processes (e.g., absorption).</p>
+<p>Base class for model interstellar X-ray processes (e.g., attenuation).</p>
 <dl class="method">
 <dt id="xpsi.Interstellar.Interstellar.__call__">
-<code class="descname">__call__</code><span class="sig-paren">(</span><em>energies</em>, <em>pulse</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Interstellar.html#Interstellar.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Interstellar.Interstellar.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subclass to write a specialised specific flux modifier.</p>
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>energies</em>, <em>signal</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Interstellar.html#Interstellar.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Interstellar.Interstellar.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attenuate a (specific) photon flux signal <em>in-place</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>energies</strong> – A <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV at which
-the specific fluxes in <code class="xref py py-obj docutils literal notranslate"><span class="pre">pulse</span></code> are calculated.</li>
-<li><strong>pulse</strong> – A <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of specific fluxes, with energy
-increasing along rows and phase increasing along columns.</li>
+<li><strong>energies</strong> (<em>ndarray</em><em>[</em><em>m</em><em>[</em><em>,</em><em>n</em><em>]</em><em>]</em>) – An array of energies in keV at which attenuation factors need to
+be applied to the corresponding elements of the signal array.</li>
+<li><strong>energies</strong> – A signal array to be attenuated, where the second dimension
+(columns) is optional and generally represents time (phase). The
+number of rows must be equal to the number of energies.</li>
 </ul>
 </td>
 </tr>
@@ -251,9 +270,28 @@ increasing along rows and phase increasing along columns.</li>
 <p class="first admonition-title">Note</p>
 <p class="last">It is expected that the operations performed on a column of
 specific fluxes need to be applied identically to all other
-columns. The referenced object <code class="xref py py-obj docutils literal notranslate"><span class="pre">pulse</span></code> needs to be
-directly modified, and <em>not</em> copied.</p>
+columns. The referenced object <code class="xref py py-obj docutils literal notranslate"><span class="pre">signal</span></code> needs to be
+directly modified <em>in-place</em>, and <em>not</em> copied.</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Interstellar.Interstellar.attenuation">
+<code class="descname">attenuation</code><span class="sig-paren">(</span><em>energies</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Interstellar.html#Interstellar.attenuation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Interstellar.Interstellar.attenuation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the attenuation factor at a set of energies.</p>
+<p>The attenuation model can depend on fixed or free variables in the
+subspace, and generally requires loading model data from disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>energies</strong> (<em>ndarray</em><em>[</em><em>m</em><em>]</em>) – An array of energies in keV at which attenuation factors are
+requested.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An array of attenuation factors, one at each input energy.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -280,7 +318,7 @@ directly modified, and <em>not</em> copied.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

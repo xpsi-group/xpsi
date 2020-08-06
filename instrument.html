@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instrument &mdash; xpsi 0.4.0 documentation</title>
+  <title>Instrument &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Data" href="data.html" />
-    <link rel="prev" title="Pulse" href="pulse.html" /> 
+    <link rel="prev" title="Signal" href="signal.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -95,21 +95,32 @@
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -122,6 +133,13 @@
 <li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -220,11 +238,11 @@
 <span class="target" id="module-xpsi.Instrument"></span><div class="section" id="instrument">
 <span id="id1"></span><h1>Instrument<a class="headerlink" href="#instrument" title="Permalink to this headline">¶</a></h1>
 <p>Instances of <a class="reference internal" href="#xpsi.Instrument.Instrument" title="xpsi.Instrument.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> are objects representing a model
-instruments.</p>
+instrument.</p>
 <dl class="class">
 <dt id="xpsi.Instrument.Instrument">
-<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">Instrument</code><span class="sig-paren">(</span><em>matrix</em>, <em>energy_edges</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for astronomical X-ray instruments such as NICER.</p>
+<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">Instrument</code><span class="sig-paren">(</span><em>matrix</em>, <em>energy_edges</em>, <em>channels</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for astronomical X-ray instruments on-board space telescopes.</p>
 <p>The body of the initialiser must not be changed to ensure inter-module
 compatibility, but can be extended if appropriate using a call to
 <code class="docutils literal notranslate"><span class="pre">super().__init__</span></code>. Specialist constructors can be defined in a subclass
@@ -234,22 +252,25 @@ using the <code class="docutils literal notranslate"><span class="pre">&#64;clas
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>matrix</strong> (<em>ndarray</em><em>[</em><em>p</em><em>,</em><em>q</em><em>]</em>) – A <span class="math notranslate nohighlight">\(p \times q\)</span> matrix which is the
-product of a redistribution matrix and effective area
-vector. The input energy intervals must increase along
-the columns of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>, and the output channels
-must increase along the rows of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>. The
-<em>units</em> of the elements must be that of an <em>effective</em>
-area (<span class="math notranslate nohighlight">\(cm^2\)</span>). Generally there will be some available
-calibration product, and deviations from this nominal response
-model will be parametrised. So here load some nominal
-response matrix.</li>
-<li><strong>energy_edges</strong> (<em>ndarray</em><em>[</em><em>q+1</em><em>]</em>) – Energy edges of the instrument energy intervals which
-must be congruent to the first dimension of the
-<a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>: the number of edges must
-be <span class="math notranslate nohighlight">\(q + 1\)</span>. The edges must be monotonically
-increasing. These edges will correspond to the nominal response
-matrix and any deviation from this matrix (see above).</li>
+<li><strong>matrix</strong> (<em>ndarray</em><em>[</em><em>p</em><em>,</em><em>q</em><em>]</em>) – A <span class="math notranslate nohighlight">\(p \times q\)</span> matrix which is the product of a redistribution
+matrix and effective area vector. The input energy intervals must
+increase along the columns of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>, and the output channels
+must increase along the rows of <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>. The <em>units</em> of the
+elements must be that of an <em>effective</em> area (<span class="math notranslate nohighlight">\(cm^2\)</span>). Generally
+there will be some available calibration product, and deviations from
+this nominal response model will be parametrised. So here load some
+nominal response matrix.</li>
+<li><strong>energy_edges</strong> (<em>ndarray</em><em>[</em><em>q+1</em><em>]</em>) – Energy edges in keV of the instrument energy intervals which must be
+congruent to the first dimension of the <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>: the number of
+edges must be <span class="math notranslate nohighlight">\(q + 1\)</span>. The edges must be monotonically increasing.
+These edges will correspond to the nominal response matrix and any
+deviation from this matrix (see above).</li>
+<li><strong>channels</strong> (<em>ndarray</em><em>[</em><em>p</em><em>]</em>) – Instrument channel numbers which must be equal in number to the number
+of rows of the <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>. The number of channels must therefore be
+<span class="math notranslate nohighlight">\(p\)</span>. These channels will correspond to the nominal response
+matrix and any deviation from this matrix (see above). In common usage
+patterns, the channel numbers will increase monotonically with row
+number, and usually increment by one (but this is not necessary).</li>
 </ul>
 </td>
 </tr>
@@ -257,11 +278,20 @@ matrix and any deviation from this matrix (see above).</li>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The dimensions of the response matrix need not be equal, but
-it is required that the number of input intervals be greater
-than or equal to the number of output channels – i.e.,
-<span class="math notranslate nohighlight">\(p \leq q\)</span>. If <span class="math notranslate nohighlight">\(p &lt; q\)</span> then it is implied that
-subsets of adjacent output channels are actually grouped together.</p>
+<p class="last">That these channel numbers are not used to index the loaded instrument
+(sub)matrix. The <code class="xref py py-attr docutils literal notranslate"><span class="pre">xpsi.Data.index_range</span></code> property returns
+bounding row numbers that index the loaded instrument response
+(sub)matrix in order to operate on an incident signal flux. The
+channel array contained in <code class="xref py py-attr docutils literal notranslate"><span class="pre">xpsi.Data.channels</span></code> must be a
+contiguous (ordered) subset of the channel array loaded here.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The dimensions of the response matrix need not be equal, but it is
+required that the number of input intervals be greater than or equal to
+the number of output channels – i.e., <span class="math notranslate nohighlight">\(p \leq q\)</span>. If <span class="math notranslate nohighlight">\(p &lt;
+q\)</span> then it is implied that subsets of adjacent output channels are
+effectively grouped together.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -280,28 +310,28 @@ find its way to the base class.</li>
 <dl class="method">
 <dt id="xpsi.Instrument.Instrument.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>signal</em>, <em>irange</em>, <em>orange</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fold an incident signal.</p>
+<dd><p>Register an incident signal.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>signal</strong> (<em>ndarray</em><em>[</em><em>m</em><em>,</em><em>n</em><em>]</em>) – An <span class="math notranslate nohighlight">\(m \times n\)</span> matrix, where input energy interval
-increments along rows, and phase increases along columns.
-The number of rows, <span class="math notranslate nohighlight">\(m\)</span>, must equal the number of columns of
+increments along rows, and phase increases along columns. The
+number of rows, <span class="math notranslate nohighlight">\(m\)</span>, must equal the number of columns of
 <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>: <span class="math notranslate nohighlight">\(m=q\)</span>.</li>
-<li><strong>irange</strong> (<em>array-like</em>) – Indexable object with two elements respectively denoting
-the indices of the first and last <em>input</em> intervals. The
-response matrix <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be indexable with
-these numbers, i.e., they must satisfy <span class="math notranslate nohighlight">\(i &lt; q\)</span>.</li>
-<li><strong>orange</strong> (<em>array-like</em>) – Indexable object with two elements respectively denoting
-the indices of the first and last <em>output</em> channels. The
-response matrix <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be indexable with
-these numbers, i.e., they must satisfy <span class="math notranslate nohighlight">\(i &lt; p\)</span>.</li>
+<li><strong>irange</strong> (<em>array-like</em>) – Indexable object with two elements respectively denoting the
+indices of the first and last <em>input</em> intervals. The response
+matrix <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be indexable with these numbers, i.e.,
+they must satisfy <span class="math notranslate nohighlight">\(indx &lt; q\)</span>.</li>
+<li><strong>orange</strong> (<em>array-like</em>) – Indexable object with two elements respectively denoting the
+indices of the first and last <em>output</em> channels. The response
+matrix <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be indexable with these numbers, i.e.,
+they must satisfy <span class="math notranslate nohighlight">\(indx &lt; p\)</span>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>ndarray[p,n]</em> containing the folded signal.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>ndarray[p,n]</em> containing the registered signal.</p>
 </td>
 </tr>
 </tbody>
@@ -316,38 +346,54 @@ these numbers, i.e., they must satisfy <span class="math notranslate nohighlight
 <dl class="attribute">
 <dt id="xpsi.Instrument.Instrument.cached_signal">
 <code class="descname">cached_signal</code><a class="headerlink" href="#xpsi.Instrument.Instrument.cached_signal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the cached folded signal.</p>
+<dd><p>Get the cached registered signal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Instrument.Instrument.channels">
+<code class="descname">channels</code><a class="headerlink" href="#xpsi.Instrument.Instrument.channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the array of channels corresponding to rows of the matrix.</p>
+<p>The matrix being the loaded instrument response (sub)matrix.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="xpsi.Instrument.Instrument.construct_matrix">
 <code class="descname">construct_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument.construct_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument.construct_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct the response matrix if it is parametrised.</p>
-<p>If customising, just do stuff to calculate a matrix, and return
-it. You can access parameters (free, fixed, and derived) via
-the container access self[&lt;name&gt;].</p>
+<p>If customising, do operations to calculate a matrix, and return it.
+You can access parameters (free, fixed, and derived) via the container
+access <code class="docutils literal notranslate"><span class="pre">self[&lt;name&gt;]</span></code>.</p>
+<p>If the instrument operation is fixed, you might not need to subclass,
+because the default behaviour is to return the nominal response you
+loaded. If for some reason the matrix you loaded is to be modified in
+some fixed manner, possibly as a function of some custom fixed
+parameters that you defined, you would also have to subclass and
+provide the correct implementation of this method.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.Instrument.Instrument.energy_edges">
 <code class="descname">energy_edges</code><a class="headerlink" href="#xpsi.Instrument.Instrument.energy_edges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the energy edges of the instrument.</p>
-<p>A <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy
-intervals which map to output channels defined in the
-data space.</p>
+<dd><p>Get the energy edges of the instrument, in keV.</p>
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy intervals which
+map to output channels defined in the data space.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.Instrument.Instrument.matrix">
 <code class="descname">matrix</code><a class="headerlink" href="#xpsi.Instrument.Instrument.matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the response matrix.</p>
+<dd><p>Get the reference response matrix.</p>
+<p>In common usage patterns there will be some fiducial or nominal
+response matrix that either defines fixed instrument operation or
+is a basis for parametrised deviations. This matrix is usually a
+calibration product distributed by an instrument calibration team.</p>
 <p>A matrix of dimension <span class="math notranslate nohighlight">\(p \times q\)</span>. Here <span class="math notranslate nohighlight">\(p\)</span> must be the
 number of input energy intervals, and <span class="math notranslate nohighlight">\(q \geq p\)</span> the number of
 output channels.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The attribute <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be assigned, and it must be
-a <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> for use with <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.18)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> (even
+a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> for use with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.19)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> (even
 if the matrix is sparse to some degree).</p>
 </div>
 </dd></dl>
@@ -368,6 +414,13 @@ if the matrix is sparse to some degree).</p>
 <p>Raised if there is a problem with the input energy edges.</p>
 </dd></dl>
 
+<dl class="class">
+<dt id="xpsi.Instrument.ChannelError">
+<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">ChannelError</code><a class="reference internal" href="_modules/xpsi/Instrument.html#ChannelError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.ChannelError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.global_imports.xpsiError</span></code></p>
+<p>Raised if there is a problem with the input channel numbers.</p>
+</dd></dl>
+
 </div>
 
 
@@ -381,7 +434,7 @@ if the matrix is sparse to some degree).</p>
         <a href="data.html" class="btn btn-neutral float-right" title="Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="pulse.html" class="btn btn-neutral float-left" title="Pulse" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="signal.html" class="btn btn-neutral float-left" title="Signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -390,7 +443,7 @@ if the matrix is sparse to some degree).</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

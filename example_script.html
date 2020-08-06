@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example script and modules &mdash; xpsi 0.4.0 documentation</title>
+  <title>Example script and modules &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Example job" href="example_job.html" />
-    <link rel="prev" title="Global surface emission" href="global_surface_emission.html" /> 
+    <link rel="prev" title="Post-processing" href="postprocessing_tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -95,30 +95,40 @@
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Example script and modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#main">Main</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#photosphere">Photosphere</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#instrument">Instrument</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#interstellar">Interstellar</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pulse">Pulse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#signal">Signal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prior">Prior</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -131,6 +141,13 @@
 <li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -228,9 +245,9 @@
 </style>
 <div class="section" id="example-script-and-modules">
 <span id="example-script"></span><h1>Example script and modules<a class="headerlink" href="#example-script-and-modules" title="Permalink to this headline">¶</a></h1>
-<p>The following model script is an example from <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019</span></a>. One would run the
+<p>The following model script is an example from <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a>. One would run the
 program from the command line on a desktop via:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpiexec -n <span class="m">4</span> python main.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpiexec -n <span class="m">4</span> python <span class="o">[</span>-m mpi4py<span class="o">]</span> main.py
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">main.py</span></code> is of course the script name, and where for a machine with
@@ -241,16 +258,28 @@ four physical cores, we spawn as many MPI processes.</p>
 (see, e.g., <a class="reference internal" href="SURFsara_systems.html#surfsystems"><span class="std std-ref">SURFsara systems</span></a>) to avoid hybrid parallelisation by
 libraries linked to NumPy and GSL, for instance.</p>
 </div>
-<p>The script below is an example like that found on the <cite>Modelling</cite>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">-m</span></code> argument is to run the module <code class="xref py py-mod docutils literal notranslate"><span class="pre">mpi4py</span></code> as main, which
+enables elegant termination of all MPI processes if one process encounters
+an unhandled exception, for instance; without out this flag, MPI processes
+may hang if an unhandled exception is raised in a subset of processes. An
+example of this is an exception thrown from a <a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a> subclass during
+set-up for sampling: only the root (rank zero) process encounters the
+exception, whilst all other wait for it and will hang indefinitely. If one
+is not monitoring the output during the start of the program to check that
+sensible things are happening, this can be missed, which is especially
+problematic on a HPC system on which one is budgeted time and thus there is a
+serious risk of resource wastage from the perspective of all users of the
+system.</p>
+<p>The script below is an example like that found on the <cite>Modeling</cite>
 page, but without being interleaved with verbose explanations. The model
-implemented here is more involved than shown on the <cite>Modelling</cite>
+implemented here is more involved than shown on the <cite>Modeling</cite>
 page, and than those defined for the example parameter
 estimation problems that can be found in the <code class="docutils literal notranslate"><span class="pre">xpsi/examples</span></code> directory of
 the repository.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The script and modules below are being updated to use
-the current API (<code class="docutils literal notranslate"><span class="pre">v0.3.2</span></code>).</p>
+the current API (<code class="docutils literal notranslate"><span class="pre">v0.5.0</span></code>).</p>
 </div>
 <div class="section" id="main">
 <h2>Main<a class="headerlink" href="#main" title="Permalink to this headline">¶</a></h2>
@@ -263,20 +292,23 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Rank reporting: </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">_rank</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">gravradius</span>
 
-<span class="kn">from</span> <span class="nn">CustomData</span> <span class="kn">import</span> <span class="n">CustomData</span>
 <span class="kn">from</span> <span class="nn">CustomInstrument</span> <span class="kn">import</span> <span class="n">CustomInstrument</span>
 <span class="kn">from</span> <span class="nn">CustomInterstellar</span> <span class="kn">import</span> <span class="n">CustomInterstellar</span>
-<span class="kn">from</span> <span class="nn">CustomPulse</span> <span class="kn">import</span> <span class="n">CustomPulse</span>
+<span class="kn">from</span> <span class="nn">CustomSignal</span> <span class="kn">import</span> <span class="n">CustomSignal</span>
 <span class="kn">from</span> <span class="nn">CustomPrior</span> <span class="kn">import</span> <span class="n">CustomPrior</span>
 <span class="kn">from</span> <span class="nn">CustomPhotosphere</span> <span class="kn">import</span> <span class="n">CustomPhotosphere</span>
 
-<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;data/NICER_J0030_PaulRay_fixed_evt_25to299__preprocessed.txt&#39;</span>
+<span class="n">obs_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">counts</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">),</span>
+                    <span class="n">channels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">300</span><span class="p">),</span>
+                    <span class="n">phases</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span>
+                    <span class="n">first</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="mi">274</span><span class="p">,</span>
+                    <span class="n">exposure_time</span><span class="o">=</span><span class="mf">1936864.0</span><span class="p">)</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">CustomData</span><span class="o">.</span><span class="n">from_SWG</span><span class="p">(</span><span class="s1">&#39;data/NICER_J0030_PaulRay_fixed_evt_25to299__preprocessed.txt&#39;</span><span class="p">,</span> <span class="mf">1936864.0</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="o">**</span><span class="n">obs_settings</span><span class="p">)</span>
 
-<span class="c1"># bounds on instrument model parameters</span>
 <span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">),</span>
               <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span>
               <span class="n">gamma</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">))</span>
@@ -293,25 +325,25 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
 <span class="n">interstellar</span> <span class="o">=</span> <span class="n">CustomInterstellar</span><span class="o">.</span><span class="n">from_SWG</span><span class="p">(</span><span class="s1">&#39;model_data/interstellar_phot_frac.txt&#39;</span><span class="p">,</span>
                                        <span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">column_density</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">)))</span>
 
-<span class="n">pulse</span> <span class="o">=</span> <span class="n">CustomPulse</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span>
-                    <span class="n">instrument</span> <span class="o">=</span> <span class="n">NICER</span><span class="p">,</span>
-                    <span class="n">interstellar</span> <span class="o">=</span> <span class="n">interstellar</span><span class="p">,</span>
-                    <span class="n">energies_per_interval</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
-                    <span class="n">fast_rel_energies_per_interval</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-                    <span class="n">default_energy_spacing</span> <span class="o">=</span> <span class="s1">&#39;logspace&#39;</span><span class="p">,</span>
-                    <span class="n">adaptive_energies</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                    <span class="n">adapt_exponent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">store</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                    <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
-                    <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
-                    <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
-                    <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span>
+<span class="n">signal</span> <span class="o">=</span> <span class="n">CustomSignal</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span>
+                      <span class="n">instrument</span> <span class="o">=</span> <span class="n">NICER</span><span class="p">,</span>
+                      <span class="n">interstellar</span> <span class="o">=</span> <span class="n">interstellar</span><span class="p">,</span>
+                      <span class="n">cache</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                      <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+                      <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
+                      <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
+                      <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span>
 
-<span class="n">spacetime</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="o">.</span><span class="n">fixed_spin</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">4.87e-3</span><span class="p">))</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">mass</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>
+              <span class="n">radius</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span><span class="o">*</span><span class="n">gravradius</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="mf">16.0</span><span class="p">),</span>
+              <span class="n">distance</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>
+              <span class="n">cos_inclination</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)))</span>
+
+<span class="n">spacetime</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">frequency</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">4.87e-3</span><span class="p">)))</span>
 
 <span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
               <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span> <span class="o">-</span> <span class="mf">0.001</span><span class="p">),</span>
-              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="c1"># defined relative to 0.35 cycles</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
               <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">6.8</span><span class="p">))</span>
 
 <span class="n">primary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
@@ -367,12 +399,39 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
 
 <span class="n">star</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Star</span><span class="p">(</span><span class="n">spacetime</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photospheres</span> <span class="o">=</span> <span class="n">photosphere</span><span class="p">)</span>
 
-<span class="n">likelihood</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Likelihood</span><span class="p">(</span><span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="p">,</span> <span class="n">pulses</span> <span class="o">=</span> <span class="n">pulse</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Likelihood</span><span class="p">(</span><span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="p">,</span> <span class="n">signals</span> <span class="o">=</span> <span class="n">signal</span><span class="p">,</span>
+                             <span class="n">num_energies</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
+                             <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                              <span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 
 <span class="n">prior</span> <span class="o">=</span> <span class="n">CustomPrior</span><span class="p">()</span>
 
 <span class="n">likelihood</span><span class="o">.</span><span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.4033703360094012</span><span class="p">,</span>
+     <span class="mf">13.378462458584202</span><span class="p">,</span>
+     <span class="mf">0.32897884439908337</span><span class="p">,</span>
+     <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">1.004349731136371</span><span class="p">),</span>
+     <span class="mf">0.4542555093514883</span><span class="p">,</span>
+     <span class="mf">2.1937752730930784</span><span class="p">,</span>
+     <span class="mf">0.07916088420116879</span><span class="p">,</span>
+     <span class="mf">6.106556223820221</span><span class="p">,</span>
+     <span class="mf">0.4768294130316574</span><span class="p">,</span>
+     <span class="mf">2.7162985247930496</span><span class="p">,</span>
+     <span class="mf">0.32234225478780626</span><span class="p">,</span>
+     <span class="mf">6.1173049179880445</span><span class="p">,</span>
+     <span class="mf">2.7463301464251777</span><span class="p">,</span>
+     <span class="mf">0.2844169651751102</span><span class="p">,</span>
+     <span class="o">-</span><span class="mf">0.048326090505605386</span><span class="p">,</span>
+     <span class="mf">1.0335682718716097</span><span class="p">,</span>
+     <span class="mf">0.02227107198360202</span><span class="p">,</span>
+     <span class="mf">0.8748566319738948</span><span class="p">,</span>
+     <span class="mf">0.4604998629950954</span><span class="p">]</span>
+
+<span class="c1"># source code changes since model was applied, so let&#39;s be a</span>
+<span class="c1"># bit lenient when checking the likelihood function</span>
+<span class="n">likelihood</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">36316.354394388654</span><span class="p">],</span> <span class="mf">1.0e-4</span><span class="p">,</span>
+                 <span class="n">physical_points</span><span class="o">=</span><span class="p">[</span><span class="n">p</span><span class="p">])</span>
 
 <span class="n">wrapped_params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span>
 <span class="n">wrapped_params</span><span class="p">[</span><span class="n">likelihood</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;s__phase_shift&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
@@ -390,33 +449,6 @@ the current API (<code class="docutils literal notranslate"><span class="pre">v0
                   <span class="s1">&#39;evidence_tolerance&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
                   <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
                   <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
-
-<span class="c1"># see CustomPrior docstring for parameter names</span>
-<span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.140337033600940120E+01</span><span class="p">,</span>
-        <span class="mf">0.133784624585842025E+02</span><span class="p">,</span>
-        <span class="mf">0.328978844399083370E+00</span><span class="p">,</span>
-        <span class="mf">0.100434973113637094E+01</span><span class="p">,</span>
-        <span class="mf">0.454255509351488285E+00</span><span class="p">,</span>
-        <span class="mf">0.219377527309307840E+01</span><span class="p">,</span>
-        <span class="mf">0.791608842011687908E-01</span><span class="p">,</span>
-        <span class="mf">0.610655622382022134E+01</span><span class="p">,</span>
-        <span class="mf">0.476829413031657379E+00</span><span class="p">,</span>
-        <span class="mf">0.271629852479304956E+01</span><span class="p">,</span>
-        <span class="mf">0.322342254787806259E+00</span><span class="p">,</span>
-        <span class="mf">0.274633014642517770E+01</span><span class="p">,</span>
-        <span class="mf">0.284416965175110226E+00</span><span class="p">,</span>
-        <span class="o">-</span><span class="mf">0.483260905056053860E-01</span><span class="p">,</span>
-        <span class="mf">0.611730491798804454E+01</span><span class="p">,</span>
-        <span class="mf">0.460499862995095377E+00</span><span class="p">,</span>
-        <span class="mf">0.103356827187160971E+01</span><span class="p">,</span>
-        <span class="mf">0.222710719836020192E-01</span><span class="p">,</span>
-        <span class="mf">0.874856631973894849E+00</span><span class="p">]</span>
-
-<span class="c1"># let&#39;s require that checks pass before starting to sample</span>
-<span class="n">check_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">hypercube_points</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">physical_points</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span>
-                    <span class="n">loglikelihood_call_vals</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">36316.35439439</span><span class="p">],</span>
-                    <span class="n">rtol_loglike</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">)</span>
 
 <span class="n">xpsi</span><span class="o">.</span><span class="n">Sample</span><span class="o">.</span><span class="n">nested</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">check_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">runtime_params</span><span class="p">)</span>
 </pre></div>
@@ -438,9 +470,7 @@ applicable.</p>
 <span class="kn">import</span> <span class="nn">xpsi</span>
 
 <span class="k">class</span> <span class="nc">CustomPhotosphere</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A photosphere extension to preload the numerical atmosphere NSX.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; A photosphere extension to preload the numerical atmosphere NSX. &quot;&quot;&quot;</span>
 
     <span class="nd">@xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="o">.</span><span class="n">hot_atmosphere</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">hot_atmosphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -477,100 +507,6 @@ applicable.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="data">
-<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; CustomData.py &quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">math</span>
-
-<span class="kn">import</span> <span class="nn">xpsi</span>
-
-<span class="k">class</span> <span class="nc">CustomData</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Custom data container.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param counts: A :class:`numpy.ndarray` of count numbers. The rows of</span>
-<span class="sd">                       the array must map to a contiguous subset of instrument</span>
-<span class="sd">                       output channels, with the zeroth row corresponding to</span>
-<span class="sd">                       the :attr:`first` channel, and the last row</span>
-<span class="sd">                       corresponding to the channel :attr:`last` minus one.</span>
-<span class="sd">                       The columns must map to the phases given by</span>
-<span class="sd">                       :obj:`phases`.</span>
-
-<span class="sd">        :param phases: A :class:`numpy.ndarray` of phase *edges* of intervals</span>
-<span class="sd">                       in which the *synthetic* photons arrive.</span>
-
-<span class="sd">        :param exposure_time: The total exposure time in seconds.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Execute parent initialisation code</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CustomData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Counts object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="o">=</span> <span class="n">counts</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;The number of rows must be compatible &#39;</span>
-                                 <span class="s1">&#39;with the first and last output channel &#39;</span>
-                                 <span class="s1">&#39;numbers.&#39;</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Phases object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">phases</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_exposure_time</span> <span class="o">=</span> <span class="n">exposure_time</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">exposure_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the total exposure time in seconds. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exposure_time</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the photon count data. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">phases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the phases. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_SWG</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Constructor which loads photon data from a .txt file.</span>
-
-<span class="sd">        :param str path: Path to .txt file which is converted into a</span>
-<span class="sd">                         two-dimensional :class:`numpy.ndarray`.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Data file could not be loaded.&#39;</span><span class="p">)</span>
-            <span class="k">raise</span>
-
-        <span class="n">first</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">last</span> <span class="o">=</span> <span class="mi">275</span>
-
-        <span class="n">phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">33</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="instrument">
 <h2>Instrument<a class="headerlink" href="#instrument" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; CustomInstrument.py &quot;&quot;&quot;</span>
@@ -589,21 +525,16 @@ applicable.</p>
 <span class="sd">    Currently tailored to the NICER light-curve SWG model specification.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set channel edges attribute. &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CustomInstrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ratio</span> <span class="o">=</span> <span class="n">ratio</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="n">channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span> <span class="o">=</span> <span class="n">channel_edges</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_modified</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_modified</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ratio</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -700,8 +631,8 @@ applicable.</p>
                           <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\gamma$&#39;</span><span class="p">,</span>
                           <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">[</span><span class="mi">25</span><span class="p">:</span><span class="mi">301</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
-                   <span class="n">RSP</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">[</span><span class="mi">25</span><span class="p">:</span><span class="mi">301</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                   <span class="n">RSP</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -709,32 +640,25 @@ applicable.</p>
 <h2>Interstellar<a class="headerlink" href="#interstellar" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; CustomInterstellar.py &quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
+<span class="kn">import</span> <span class="nn">xpsi</span>
+<span class="kn">from</span> <span class="nn">xpsi</span> <span class="kn">import</span> <span class="n">Parameter</span>
+
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">Akima1DInterpolator</span>
 
-<span class="kn">import</span> <span class="nn">xpsi</span>
-
 <span class="k">class</span> <span class="nc">CustomInterstellar</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Interstellar</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Apply interstellar absorption. &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Apply interstellar attenuation. &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">absorption</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="p">{}):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">attenuation</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="p">{}):</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span> <span class="o">=</span> <span class="n">absorption</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">351</span><span class="p">,:]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">attenuation</span><span class="p">),</span> <span class="s1">&#39;Array length mismatch.&#39;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_absorption</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">att_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">E_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_absorption</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.25</span><span class="o">*</span><span class="n">att_diff</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_absorption</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.75</span><span class="o">*</span><span class="n">att_diff</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_energies</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.25</span><span class="o">*</span><span class="n">E_diff</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_energies</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.75</span><span class="o">*</span><span class="n">E_diff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lkp_energies</span> <span class="o">=</span> <span class="n">energies</span> <span class="c1"># for lookup</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lkp_attenuation</span> <span class="o">=</span> <span class="n">attenuation</span> <span class="c1"># for lookup</span>
 
         <span class="n">N_H</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;column_density&#39;</span><span class="p">,</span>
                         <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">),</span>
@@ -745,51 +669,42 @@ applicable.</p>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">CustomInterstellar</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">N_H</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">absorption</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_absorption</span>
-
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">pulse</span><span class="p">):</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pulse</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="n">pulse</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_absorption</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;column_density&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">0.4</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Helper. &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span> <span class="o">=</span> <span class="n">Akima1DInterpolator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_supplied</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="o">.</span><span class="n">extrapolate</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">interp_and_absorb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Interpolate the absorption coefficients and apply.</span>
+    <span class="k">def</span> <span class="nf">attenuation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Interpolate the attenuation coefficients.</span>
 
 <span class="sd">        Useful for post-processing.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolate</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;column_density&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">0.4</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-            <span class="n">signal</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolate</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;column_density&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Helper. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span> <span class="o">=</span> <span class="n">Akima1DInterpolator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lkp_energies</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_lkp_attenuation</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="o">.</span><span class="n">extrapolate</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolator</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_SWG</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Load absorption file from the NICER SWG. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Load attenuation file from the NICER SWG. &quot;&quot;&quot;</span>
 
         <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
 
-        <span class="n">absorption</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[:,::</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">351</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">absorption</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">attenuation</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">351</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">attenuation</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="pulse">
-<h2>Pulse<a class="headerlink" href="#pulse" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; CustomPulse.py &quot;&quot;&quot;</span>
+<div class="section" id="signal">
+<h2>Signal<a class="headerlink" href="#signal" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; CustomSignal.py &quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 
@@ -798,14 +713,13 @@ applicable.</p>
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
 
-<span class="kn">from</span> <span class="nn">xpsi.likelihoods.default_background_marginalisation</span> <span class="kn">import</span> <span class="n">eval_loglike_phaseIntervals_maximise</span> <span class="k">as</span> <span class="n">eval_loglike_maximise</span>
+<span class="kn">from</span> <span class="nn">xpsi.likelihoods.default_background_marginalisation</span> <span class="kn">import</span> <span class="n">eval_marginal_likelihood</span>
 <span class="kn">from</span> <span class="nn">xpsi.likelihoods.default_background_marginalisation</span> <span class="kn">import</span> <span class="n">precomputation</span>
-<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_kpc</span>
 
-<span class="k">class</span> <span class="nc">CustomPulse</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Pulse</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CustomSignal</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Signal</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A custom calculation of the logarithm of the likelihood.</span>
 
-<span class="sd">    We extend the :class:`xpsi.Pulse.Pulse` class to make it callable.</span>
+<span class="sd">    We extend the :class:`xpsi.Signal.Signal` class to make it callable.</span>
 
 <span class="sd">    We overwrite the body of the __call__ method. The docstring for the</span>
 <span class="sd">    abstract method is copied.</span>
@@ -813,10 +727,10 @@ applicable.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">epsabs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
-                 <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span> <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                 <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span> <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">support</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Perform precomputation. &quot;&quot;&quot;</span>
 
-        <span class="nb">super</span><span class="p">(</span><span class="n">CustomPulse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomSignal</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_precomp</span> <span class="o">=</span> <span class="n">precomputation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
@@ -830,23 +744,38 @@ applicable.</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas</span> <span class="o">=</span> <span class="n">sigmas</span>
 
+            <span class="k">if</span> <span class="n">support</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_support</span> <span class="o">=</span> <span class="n">support</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_support</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">2</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_support</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">support</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_support</span>
+
+    <span class="nd">@support</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">support</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_support</span> <span class="o">=</span> <span class="n">obj</span>
+
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_shifts</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phase_shifts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shifts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phase_shifts</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">loglikelihood</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_signal</span> <span class="o">=</span> \
-                <span class="n">eval_loglike_maximise</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_pulse</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_precomp</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_intervals</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_epsabs</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_epsrel</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas</span><span class="p">,</span>
-                                      <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;llzero&#39;</span><span class="p">))</span>
+                <span class="n">eval_marginal_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_precomp</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_support</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_intervals</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_epsabs</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_epsrel</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas</span><span class="p">,</span>
+                                          <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;llzero&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -873,13 +802,15 @@ applicable.</p>
 
 <span class="sd">    Source: PSR J0030+0451</span>
 <span class="sd">    Model variant: ST+PST</span>
+<span class="sd">        Two single-temperature hot regions with unshared parameters</span>
+<span class="sd">        and different complexity levels.</span>
 
 <span class="sd">    Parameter vector: (print the likelihood object)</span>
 
 <span class="sd">    * p[0] = (rotationally deformed) gravitational mass (solar masses)</span>
 <span class="sd">    * p[1] = coordinate equatorial radius (km)</span>
 <span class="sd">    * p[2] = distance (kpc)</span>
-<span class="sd">    * p[3] = inclination of Earth to rotational axis (radians)</span>
+<span class="sd">    * p[3] = cos(inclination of Earth to rotational axis)</span>
 <span class="sd">    * p[4] = primary cap phase shift (cycles); (alias for initial azimuth, periodic)</span>
 <span class="sd">    * p[5] = primary centre colatitude (radians)</span>
 <span class="sd">    * p[6] = primary angular radius (radians)</span>
@@ -898,6 +829,14 @@ applicable.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">__derived_names__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;compactness&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;s__annulus_width&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;s__transformed_phase&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;s__f&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;s__xi&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;s__super_offset_fraction&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;s__super_offset_azi&#39;</span><span class="p">]</span>
+
     <span class="n">a_f</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">b_f</span> <span class="o">=</span> <span class="mf">2.0</span>
     <span class="n">a_xi</span> <span class="o">=</span> <span class="mf">0.001</span>
@@ -905,12 +844,11 @@ applicable.</p>
 
     <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">b_xi</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 
-    <span class="n">interpolator</span> <span class="o">=</span> <span class="n">Akima1DInterpolator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vector_super_radius_mass</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">vals</span><span class="p">)</span>
-    <span class="n">interpolator</span><span class="o">.</span><span class="n">extrapolate</span> <span class="o">=</span> <span class="kc">True</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Nothing to be done. &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
+        <span class="sd">&quot;&quot;&quot; Construct mapping from unit interval. &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpolator</span> <span class="o">=</span> <span class="n">Akima1DInterpolator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vector_super_radius_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpolator</span><span class="o">.</span><span class="n">extrapolate</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Evaluate distribution at ``p``.</span>
@@ -931,15 +869,15 @@ applicable.</p>
         <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">star</span><span class="o">.</span><span class="n">spacetime</span> <span class="c1"># shortcut</span>
 
         <span class="c1"># polar radius at photon sphere for ~static star (static ambient spacetime)</span>
-        <span class="c1">#if R_p &lt; 1.5 / ref.R_r_s:</span>
-        <span class="c1">#    return -np.inf</span>
+        <span class="n">R_p</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">ref</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.788</span> <span class="o">+</span> <span class="mf">1.030</span> <span class="o">*</span> <span class="n">ref</span><span class="o">.</span><span class="n">zeta</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">R_p</span> <span class="o">&lt;</span> <span class="mf">1.5</span> <span class="o">/</span> <span class="n">ref</span><span class="o">.</span><span class="n">R_r_s</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
 
         <span class="c1"># limit polar radius to try to exclude deflections &gt;= \pi radians</span>
         <span class="c1"># due to oblateness this does not quite eliminate all configurations</span>
         <span class="c1"># with deflections &gt;= \pi radians</span>
-        <span class="n">R_p</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">ref</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.788</span> <span class="o">+</span> <span class="mf">1.030</span> <span class="o">*</span> <span class="n">ref</span><span class="o">.</span><span class="n">zeta</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">R_p</span> <span class="o">&lt;</span> <span class="mf">1.76</span> <span class="o">/</span> <span class="n">ref</span><span class="o">.</span><span class="n">R_r_s</span><span class="p">:</span>
-            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="c1">#if R_p &lt; 1.76 / ref.R_r_s:</span>
+        <span class="c1">#    return -np.inf</span>
 
         <span class="n">mu</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">ref</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.788</span> <span class="o">+</span> <span class="mf">1.030</span> <span class="o">*</span> <span class="n">ref</span><span class="o">.</span><span class="n">zeta</span><span class="p">)))</span>
 
@@ -965,12 +903,10 @@ applicable.</p>
 
         <span class="k">return</span> <span class="mf">0.0</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_I</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_I</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_xi</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">a_xi</span><span class="p">)</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_II</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_II</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="mf">2.0</span><span class="o">*</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_xi</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">b_xi</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_scalar_super_radius_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -992,8 +928,7 @@ applicable.</p>
 
         <span class="k">return</span> <span class="n">masses</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_inverse_sample_cede_radius</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">psi</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_inverse_sample_cede_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">psi</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">psi</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_xi</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_xi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_xi</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">a_xi</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">psi</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_xi</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_xi</span><span class="o">/</span><span class="n">psi</span><span class="p">)):</span>
@@ -1017,6 +952,12 @@ applicable.</p>
         <span class="n">_</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">CustomPrior</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">inverse_sample</span><span class="p">(</span><span class="n">hypercube</span><span class="p">)</span>
 
         <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="c1"># redefine shortcut</span>
+
+        <span class="c1"># draw from flat prior in inclination</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="n">b</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">b</span> <span class="o">+</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">hypercube</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
 
         <span class="n">idx</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;distance&#39;</span><span class="p">)</span>
         <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">truncnorm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">hypercube</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
@@ -1081,8 +1022,7 @@ applicable.</p>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">vector</span> <span class="c1"># only free parameter values returned</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">old_API</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; A transformation for post-processing.</span>
 
 <span class="sd">        Note that if you want to use dictionary-like access to values,</span>
@@ -1097,30 +1037,44 @@ applicable.</p>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c1"># copy</span>
 
-        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">gravradius</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">old_API</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">)</span>
+            <span class="n">p</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
 
-        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">]]</span>
+        <span class="c1"># used ordered names and values</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-            <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">]</span>
+        <span class="c1"># compactness ratio M/R_eq</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">gravradius</span><span class="p">(</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]]</span>
+
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__phase_shift&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__phase_shift&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">8</span><span class="p">]]</span>
+            <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__phase_shift&#39;</span><span class="p">]]</span>
 
-        <span class="n">temp</span> <span class="o">=</span> <span class="n">eval_cedeCentreCoords</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">13</span><span class="p">])</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">eval_cedeCentreCoords</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">*</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_colatitude&#39;</span><span class="p">],</span>
+                                     <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_colatitude&#39;</span><span class="p">],</span>
+                                     <span class="o">-</span><span class="mf">1.0</span><span class="o">*</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_azimuth&#39;</span><span class="p">])</span>
 
         <span class="n">azi</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">azi</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">azi</span> <span class="o">+=</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span>
 
-        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="o">/</span><span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="k">else</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">/</span><span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">]]</span> <span class="c1"># f</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">]</span> \
+              <span class="k">if</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">]</span> \
+              <span class="k">else</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]]</span> <span class="c1"># f</span>
 
-        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="k">else</span> <span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">]]</span> <span class="c1"># xi</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]</span> \
+              <span class="o">&lt;=</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]]</span> <span class="c1"># xi</span>
 
-        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="k">else</span> <span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">p</span><span class="p">[</span><span class="mi">10</span><span class="p">])]</span> <span class="c1"># kappa</span>
+        <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">])</span> \
+              <span class="k">if</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">]</span> \
+              <span class="k">else</span> <span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__omit_radius&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">ref</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">])]</span> <span class="c1"># kappa</span>
 
         <span class="n">p</span> <span class="o">+=</span> <span class="p">[</span><span class="n">azi</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">]</span>
 
@@ -1141,7 +1095,7 @@ applicable.</p>
         <a href="example_job.html" class="btn btn-neutral float-right" title="Example job" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="global_surface_emission.html" class="btn btn-neutral float-left" title="Global surface emission" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="postprocessing_tutorial.html" class="btn btn-neutral float-left" title="Post-processing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1150,7 +1104,7 @@ applicable.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

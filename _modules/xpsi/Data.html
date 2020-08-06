@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Data &mdash; xpsi 0.4.0 documentation</title>
+  <title>xpsi.Data &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -93,21 +93,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../star.html">Star</a></li>
@@ -120,6 +131,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -196,46 +214,109 @@
 
 <span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">make_verbose</span>
 
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">.Instrument</span> <span class="kn">import</span> <span class="n">ChannelError</span>
 
 <div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../data.html#xpsi.Data.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A photon data container.</span>
+    <span class="sd">&quot;&quot;&quot; A container for event data.</span>
 
-<span class="sd">    The instrument associated with this data in an instance of</span>
-<span class="sd">    :class:`~.Pulse.Pulse` must transform incident pulses into a</span>
-<span class="sd">    structure congruent to that of the data. The attributes and methods of this</span>
-<span class="sd">    class and any derived classes must therefore store information required</span>
-<span class="sd">    for this operation.</span>
+<span class="sd">    The working assumption is that the sampling distribution of this event data</span>
+<span class="sd">    can be written in terms of a set of channel-by-channel *count*\ -rate</span>
+<span class="sd">    signals. The instrument associated with this data in an instance of</span>
+<span class="sd">    :class:`~.Signal.Signal` must transform incident signals into a structure</span>
+<span class="sd">    congruent to that of the event data. The attributes and methods of this</span>
+<span class="sd">    class and any derived classes must therefore store information required for</span>
+<span class="sd">    this operation.</span>
 
-<span class="sd">    We reserve the initialiser to assign attributes which are required for the</span>
-<span class="sd">    treating the incident specific flux pulses using the model instrument.</span>
-<span class="sd">    The body of the initialiser must not be changed to ensure inter-module</span>
-<span class="sd">    compatibility, but can be extended if appropriate using a call to</span>
-<span class="sd">    ``super().__init__``. Specialist constructors can be defined in a subclass</span>
-<span class="sd">    using the ``@classmethod`` decorator.</span>
+<span class="sd">    The initialiser assigns observation settings to attributes which are</span>
+<span class="sd">    required for the treating the incident specific flux signals using the</span>
+<span class="sd">    model instrument. The body of the initialiser may be changed, but to ensure</span>
+<span class="sd">    inter-module compatibility, only the phase handling should really be</span>
+<span class="sd">    modified, for instance if you want to implement an unbinned likelihood</span>
+<span class="sd">    function with respect to phase; the phase bins defined in this concrete</span>
+<span class="sd">    implementation are only used by a custom implementation of the</span>
+<span class="sd">    likelihood function (i.e., by a subclass of :class:`xpsi.Signal`), and</span>
+<span class="sd">    not by the other concrete classes used to construct the likelihood</span>
+<span class="sd">    callable. The initialiser can also be extended if appropriate using a call</span>
+<span class="sd">    to ``super().__init__``. Specialist constructors can be defined in a</span>
+<span class="sd">    subclass using the ``@classmethod`` decorator, for instance to load event</span>
+<span class="sd">    data from disk into a compatible data structure in memory; an example of</span>
+<span class="sd">    this may be found below.</span>
 
-<span class="sd">    The working assumption is that the sampling distribution of the data can be</span>
-<span class="sd">    written in terms of a set of channel-by-channel *count*\ -rate pulses.</span>
+<span class="sd">    .. note::</span>
 
-<span class="sd">    .. note:: You need to subclass in order to tailor the handling of the</span>
-<span class="sd">              photon event data.</span>
+<span class="sd">        You can subclass in order to tailor the handling of the event data, for</span>
+<span class="sd">        instance to implement a likelihood functions for unbinned event data.</span>
 
-<span class="sd">    :param int first: The first instrument *output* channel which photons</span>
-<span class="sd">                      of this data are associated with.</span>
+<span class="sd">    :param ndarray[n,m] counts:</span>
+<span class="sd">        A :class:`~numpy.ndarray` of count numbers. The columns must map to</span>
+<span class="sd">        the phase intervals given by :obj:`phases`. The rows of the array map</span>
+<span class="sd">        to some subset of instrument channels.</span>
 
-<span class="sd">    :param int last: The last instrument *output* channel which photons</span>
-<span class="sd">                     of this data are associated with.</span>
+<span class="sd">    :param ndarray[n] channels:</span>
+<span class="sd">        Instrument channel numbers which must be equal in number to the first</span>
+<span class="sd">        dimension of the :attr:`matrix`: the number of channels must be</span>
+<span class="sd">        :math:`p`. These channels will correspond to the nominal response</span>
+<span class="sd">        matrix and any deviation from this matrix (see above). In common usage</span>
+<span class="sd">        patterns, the channel numbers will increase monotonically with row</span>
+<span class="sd">        number, and usually increment by one (but this is not necessary). It is</span>
+<span class="sd">        advisable that these numbers are the actual instrument channel numbers</span>
+<span class="sd">        so that plots generated by the post-processing module using these</span>
+<span class="sd">        labels are clear.</span>
 
-<span class="sd">    .. note:: For treatment of the incident pulse, it is assumed that</span>
-<span class="sd">              that photons space a contiguous subset of output channels,</span>
-<span class="sd">              between the :obj:`first` and :obj:`last` channel.</span>
+<span class="sd">    :param ndarray[m+1] phases:</span>
+<span class="sd">        A :class:`~numpy.ndarray` of phase interval edges, where events are</span>
+<span class="sd">        binned into these same intervals in each instrument channel.</span>
+
+<span class="sd">    :param int first:</span>
+<span class="sd">        The index of the first row of the loaded response matrix containing</span>
+<span class="sd">        events (see note below).</span>
+
+<span class="sd">    :param int last:</span>
+<span class="sd">        The index of the last row of the loaded response matrix containing</span>
+<span class="sd">        events (see note below).</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        The :obj:`counts` matrix rows  *must* span a contiguous subset of the</span>
+<span class="sd">        rows of the loaded response matrix, but in general can span an</span>
+<span class="sd">        arbitrary subset and order of instrument channels. Note that the</span>
+<span class="sd">        :obj:`first` and :obj:`last+1` numbers are used to index the loaded</span>
+<span class="sd">        instrument response matrix.  Therefore, if you load only a submatrix of</span>
+<span class="sd">        the full instrument response matrix, these indices must be appropriate</span>
+<span class="sd">        for the loaded submatrix, and must not be the true channel numbers</span>
+<span class="sd">        (this information is instead loaded in the :class:`xpsi.Instrument`).</span>
+<span class="sd">        Of course, in all sensible usage patterns the order of the instrument</span>
+<span class="sd">        channels, when mapped to matrix rows, will be such that channel number</span>
+<span class="sd">        increases with matrix row number monotonically because, then the</span>
+<span class="sd">        nominal event energy increases monotonically with row number, which is</span>
+<span class="sd">        important for visualisation of data and model (because spatial order</span>
+<span class="sd">        matches energy order and correlations in space can be discerned easily).</span>
+<span class="sd">        However, there could in principle be channel cuts that mean an increment</span>
+<span class="sd">        of more than one channel between matrix adjacent rows, and the</span>
+<span class="sd">        response matrix needs to be manipulated before or during a custom</span>
+<span class="sd">        loading phase such that its rows match the channel numbers assigned to</span>
+<span class="sd">        the :obj:`counts` matrix rows.</span>
+
+<span class="sd">    :param float exposure_time:</span>
+<span class="sd">        The exposure time, in seconds, to acquire this set of event data.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">):</span>
 
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Counts object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="o">=</span> <span class="n">counts</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Phases object is not a ``numpy.ndarray``.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">phases</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_first</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">last</span><span class="p">)</span>
@@ -246,17 +327,135 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The first channel number must be lower than the &#39;</span>
                              <span class="s1">&#39;the last channel number.&#39;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of rows must be compatible &#39;</span>
+                             <span class="s1">&#39;with the first and last channel numbers.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exposure_time</span> <span class="o">=</span> <span class="n">exposure_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exposure_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the total exposure time in seconds. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exposure_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the photon count data. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the phases. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">index_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get a 2-tuple of the bounding response-matrix row indices. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_first</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># plus one for array indexing</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">channel_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get a 2-tuple containing the bounding output channels. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_first</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot; Deprecated property name. To be removed for v1.0. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_range</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the array of channels that the event data spans. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span>
 
+    <span class="nd">@channels</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Setting channels for event data&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Channels set&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Channel numbers must be in a &#39;</span>
+                                   <span class="s1">&#39;one-dimensional array, and must all be &#39;</span>
+                                   <span class="s1">&#39;positive integers including zero.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="n">array</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Channel numbers must be in a &#39;</span>
+                               <span class="s1">&#39;one-dimensional array, and must all be &#39;</span>
+                               <span class="s1">&#39;positive integers including zero.&#39;</span><span class="p">)</span>
 
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Number of channels does&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span> <span class="c1"># if synthesising there will not be any counts loaded here</span>
 
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Warning: Channel numbers do not uniformly increment by one.&#39;</span>
+                   <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">         Please check for correctness.&#39;</span><span class="p">)</span>
 
+        <span class="k">yield</span>
 
+<div class="viewcode-block" id="Data.phase_bin__event_list"><a class="viewcode-back" href="../../data.html#xpsi.Data.Data.phase_bin__event_list">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Loading event list and phase binning&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;Events loaded and binned&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">phase_bin__event_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span>
+                              <span class="n">phase_shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                              <span class="n">phase_column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                              <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Load a phase-folded event list and bin the events in phase.</span>
+
+<span class="sd">        :param str path:</span>
+<span class="sd">            Path to event list file containing two columns, where the first</span>
+<span class="sd">            column contains phases on the unit interval, and the second</span>
+<span class="sd">            column contains the channel number.</span>
+
+<span class="sd">        :param list channels:</span>
+<span class="sd">            An (ordered) subset of instrument channels. It is advisable that</span>
+<span class="sd">            these channels are a contiguous subset of instrument channels, but</span>
+<span class="sd">            this not a strict requirement if you are comfortable with the</span>
+<span class="sd">            handling the instrument response matrix and count number matrix to</span>
+<span class="sd">            match in row-to-channel definitions.</span>
+
+<span class="sd">        :param list phases:</span>
+<span class="sd">            An ordered sequence of phase-interval edges on the unit interval.</span>
+<span class="sd">            The first and last elements will almost always be zero and unity</span>
+<span class="sd">            respectively.</span>
+
+<span class="sd">        :param float phase_shift:</span>
+<span class="sd">            A phase-shift in cycles to be applied when binning the events in</span>
+<span class="sd">            phase.</span>
+
+<span class="sd">        :param int phase_column:</span>
+<span class="sd">            The column in the loaded file containing event phases. Either zero</span>
+<span class="sd">            or one.</span>
+
+<span class="sd">        :param int skiprows:</span>
+<span class="sd">            The number of top rows to skip when loading the events from file.</span>
+<span class="sd">            The top row of couple of rows will typically be reserved for</span>
+<span class="sd">            column headers.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">)</span>
+
+        <span class="n">channels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span>
+        <span class="n">channel_col</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">phase_column</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="s1">&#39;Total number of events: </span><span class="si">%i</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_col</span><span class="p">]</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+                <span class="n">_temp</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">phase_column</span><span class="p">]</span> <span class="o">+</span> <span class="n">phase_shift</span>
+                <span class="n">_temp</span> <span class="o">-=</span> <span class="n">_np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">_temp</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_temp</span> <span class="o">&lt;=</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">channels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_col</span><span class="p">])),</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">break</span>
+
+        <span class="k">yield</span> <span class="s1">&#39;Number of events constituting data set: </span><span class="si">%i</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phases</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -269,7 +468,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

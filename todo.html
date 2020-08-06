@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Future &mdash; xpsi 0.5.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Acknowledgements" href="acknowledgements.html" />
+    <link rel="prev" title="History" href="history.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Future</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#priority">Priority</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prospective">Prospective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general">General</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Future</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/todo.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="future">
+<span id="todo"></span><h1>Future<a class="headerlink" href="#future" title="Permalink to this headline">¶</a></h1>
+<p>Below we make (non-exhaustively) note down ideas for future development.
+Some features may be added in a backwards compatible manner and thus in
+a minor release, whilst others will require inclusion in a major release.
+Where we have a concrete expectation, we note which type of release each
+listed feature should be included in.</p>
+<div class="section" id="priority">
+<h2>Priority<a class="headerlink" href="#priority" title="Permalink to this headline">¶</a></h2>
+<p>The alphabetic version tags below such as <code class="docutils literal notranslate"><span class="pre">v1.a</span></code> and <code class="docutils literal notranslate"><span class="pre">v1.b</span></code> give a loose
+indication of priorty within a major release cycle, and are not generaly
+unique. That is, <code class="docutils literal notranslate"><span class="pre">v1.a</span></code> might ultimately not contain a feature next to which
+it is listed, and/or it might be identical to <code class="docutils literal notranslate"><span class="pre">v1.b</span></code>.</p>
+<ul class="simple">
+<li>Compute secondary images, and more generally images up to some optional order
+using surface discretisation. Target: minor release <code class="docutils literal notranslate"><span class="pre">v0.a</span></code>.</li>
+<li>Make a dedicated directory for the tutorial notebooks in the documentation
+pages, link to them on GitHub, and state what is necessary to run those
+notebooks completely. Target: major release <code class="docutils literal notranslate"><span class="pre">v1.0</span></code>.</li>
+<li>Port to a Python 2/3 compatible state (implicit to which is support for newer
+version of Python dependencies such as <em>matplotlib</em>, <em>GetDist</em> and
+<em>nestcheck</em>). Target: minor release <code class="docutils literal notranslate"><span class="pre">v1.a</span></code> or major release v2.0.</li>
+<li>Unit testing. At present we are relying on the tutorial
+notebooks and examples as test beds to flag problems.
+Target: minor release <code class="docutils literal notranslate"><span class="pre">v1.b</span></code>.</li>
+<li>Post-processing option to compute highest-density credible intervals
+(appropriate for multi-modal marginal posterior). Target: minor
+release <code class="docutils literal notranslate"><span class="pre">v1.c</span></code>.</li>
+<li>Reintegrate support for post-processing of ensemble MCMC samples (the outdated
+backend was removed for <code class="docutils literal notranslate"><span class="pre">v0.5</span></code> release pending the necessary development to
+enable post-processing with the current API; that backend only ever worked
+pre-<code class="docutils literal notranslate"><span class="pre">v0.1</span></code> but was not removed because of the intent to update it).</li>
+<li>Update HPC usage guide, specifically for the SURFsara systems. Target: major
+release <code class="docutils literal notranslate"><span class="pre">v1.0</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="prospective">
+<h2>Prospective<a class="headerlink" href="#prospective" title="Permalink to this headline">¶</a></h2>
+<p>Unordered.</p>
+<ul class="simple">
+<li>Implement a simpler switch between atmosphere model extensions (e.g.,
+blackbody to numerical lookup table), rather than user having to remember to
+modify the relevant <code class="docutils literal notranslate"><span class="pre">.pyx</span></code> source file (e.g., by replacing function bodies
+and custom structs with code from the <code class="docutils literal notranslate"><span class="pre">surface_radiation_field/archive</span></code>)
+and then recompile. Perhaps look into C function pointers passed to Cython for
+runtime specification of shared object.</li>
+<li>Extension to interpolate in arbitrary number of dimensions (currently hard-
+coded four-dimensional cubic polynomial interpolation for, meaning two
+variables in addition to energy and zenith angle).</li>
+<li>Add a plot class to render the posterior instrument effective area curves,
+optionally as a set of curves or as conditional posterior bands; relevant
+only for parameterised instrument models.</li>
+<li>Signal plotting tools not associated with post-processing. E.g., simple
+functions to plot single signals (instead of many signals, each associated
+with a posterior sample) cached when the likelihood function is evaluated,
+as demonstrated in the various tutorial notebooks (thus some such functions
+already prototyped). Which module(s) to add these to?</li>
+<li>Support for sensitivity analysis via importance sampling when post-processing
+posterior samples.</li>
+<li>Support for specifying which subset of energies is used for calculating
+signals from which surface components.</li>
+<li>Module containing a class for arbitrary likelihood factor that might be a
+function of parameters defined in X-PSI, such as the mass and distance. It
+would plug into an instance of the existing likelihood class. Currently,
+support for this is provided by the <cite>Prior</cite> class, so it is to be decided
+if a distinct class for arbitrary likelihood factors is of any further use.</li>
+<li>Develop additional extensions for the archive that transform global variables
+and spacetime coordinates into local variables to evaluate the local specific
+intensity emergent from the photosphere along a ray. These archived
+extensions need to implement two overlapping circular regions constituting a
+contiguous surface hot region, leading to morphologies such as
+single-temperature rings and crescents, and two-temperature hot regions that
+are implemented for signal integration via surface discretisation and thus
+for likelihood evaluations. It is very useful to visualise the self-lensed
+images of the star (and the star-receiver configuration) resolved in sky
+direction (i.e., specific intensity, and intensity sky maps, phase resolved
+and phase averaged). The existing extensions can handle two
+single-temperature circular spots, and other complexities, but do not
+precisely implement the aforementioned hot region models. It might be
+possible to develop one complex extension that is all-encompassing in this
+respect, but it would require a user to learn how to deactivate certain
+complexities in order to match the models implemented for surface
+discretisation.</li>
+<li>Develop animated photon incident flux pulse-profile and phase-averaged photon
+incident specific flux spectrum plots, optionally with hot region components
+shown independently, to optionally display alongside sky maps.</li>
+<li>Develop helper functions to wrap the atmosphere checking tools and generate
+standard plot types so a user does not need to handle matplotlib objects as
+much. The relevant tutorial notebook shows how it can be done for some simple
+plots. It is also to be determined what types of plots are of most interest
+and useful, or are considered standard.</li>
+<li>Handle joint modeling of X-ray and Far-UV data with multiple instruments. The
+Far-UV instrument operation and likelihood function form needs to be worked
+out and implemented, but phase-averaged signals, the notion of
+<a class="reference internal" href="elsewhere.html#module-xpsi.Elsewhere" title="xpsi.Elsewhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Elsewhere</span></code></a>, and different atmospheres (e.g., ionized hot regions
++ partially-ionized elsewhere) currently supported.</li>
+<li>Add customisable method somewhere to transform raw sample file vectors to
+parameter values compatible with current API, in case of backwards
+incompatible changes, to avoid user having to figure out how to do this
+safely.</li>
+<li>Check to see where the extension tools can be called from other extensions
+(e.g., likelihood extensions calling phase integrator tool) where appropriate
+instead of having similar operations coded twice, for maintainability.</li>
+<li>Decide whether to allow user to define their photon energy and effective area
+units (requires a minor tweak and explanation in docstrings/comments).</li>
+<li>Examine if memory is being freed properly by garbage collection after
+plotting a sky map frame and after animating a sky-map phase sequence.</li>
+</ul>
+</div>
+<div class="section" id="general">
+<h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Development of various meshes used for discretisation of the computational
+domain (surface and image plane).</li>
+<li>Support for acceleration via analytic techniques.</li>
+<li>Expand support for samplers, either natively or by refactoring to use a
+framework for general inferene such as
+<a class="reference external" href="https://pypi.org/project/bilby/">Bilby</a>.</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="acknowledgements.html" class="btn btn-neutral float-right" title="Acknowledgements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="history.html" class="btn btn-neutral float-left" title="History" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020 Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

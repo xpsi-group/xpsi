@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Interstellar &mdash; xpsi 0.4.0 documentation</title>
+  <title>xpsi.Interstellar &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -93,21 +93,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../star.html">Star</a></li>
@@ -120,6 +131,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -201,28 +219,56 @@
 <span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="kn">import</span> <span class="n">ParameterSubspace</span>
 
 <div class="viewcode-block" id="Interstellar"><a class="viewcode-back" href="../../interstellar.html#xpsi.Interstellar.Interstellar">[docs]</a><span class="k">class</span> <span class="nc">Interstellar</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Base class for model interstellar X-ray processes (e.g., absorption).&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Base class for model interstellar X-ray processes (e.g., attenuation).&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Interstellar.__call__"><a class="viewcode-back" href="../../interstellar.html#xpsi.Interstellar.Interstellar.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">pulse</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Subclass to write a specialised specific flux modifier.</span>
+<div class="viewcode-block" id="Interstellar.attenuation"><a class="viewcode-back" href="../../interstellar.html#xpsi.Interstellar.Interstellar.attenuation">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">attenuation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the attenuation factor at a set of energies.</span>
 
-<span class="sd">        :param energies:</span>
-<span class="sd">            A :class:`numpy.ndarray` of energies in keV at which</span>
-<span class="sd">            the specific fluxes in :obj:`pulse` are calculated.</span>
+<span class="sd">        The attenuation model can depend on fixed or free variables in the</span>
+<span class="sd">        subspace, and generally requires loading model data from disk.</span>
 
-<span class="sd">        :param pulse:</span>
-<span class="sd">            A :class:`numpy.ndarray` of specific fluxes, with energy</span>
-<span class="sd">            increasing along rows and phase increasing along columns.</span>
+<span class="sd">        :param ndarray[m] energies:</span>
+<span class="sd">            An array of energies in keV at which attenuation factors are</span>
+<span class="sd">            requested.</span>
+
+<span class="sd">        :returns: An array of attenuation factors, one at each input energy.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="c1">#raise NotImplementedError(&#39;Implement the attenuation method.&#39;)</span>
+
+<div class="viewcode-block" id="Interstellar.__call__"><a class="viewcode-back" href="../../interstellar.html#xpsi.Interstellar.Interstellar.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Attenuate a (specific) photon flux signal *in-place*.</span>
+
+<span class="sd">        :param ndarray[m] energies:</span>
+<span class="sd">            An array of energies in keV at which attenuation factors need to</span>
+<span class="sd">            be applied to the corresponding elements of the signal array.</span>
+
+<span class="sd">        :param ndarray[m[,n]] energies:</span>
+<span class="sd">            A signal array to be attenuated, where the second dimension</span>
+<span class="sd">            (columns) is optional and generally represents time (phase). The</span>
+<span class="sd">            number of rows must be equal to the number of energies.</span>
 
 <span class="sd">        :returns: ``None``.</span>
 
-<span class="sd">        .. note:: It is expected that the operations performed on a column of</span>
-<span class="sd">                  specific fluxes need to be applied identically to all other</span>
-<span class="sd">                  columns. The referenced object :obj:`pulse` needs to be</span>
-<span class="sd">                  directly modified, and *not* copied.</span>
+<span class="sd">        .. note::</span>
 
-<span class="sd">        &quot;&quot;&quot;</span></div></div>
+<span class="sd">            It is expected that the operations performed on a column of</span>
+<span class="sd">            specific fluxes need to be applied identically to all other</span>
+<span class="sd">            columns. The referenced object :obj:`signal` needs to be</span>
+<span class="sd">            directly modified *in-place*, and *not* copied.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Signal must be a numpy.ndarray.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">signal</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">signal</span><span class="p">[:]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attenuation</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">signal</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">signal</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attenuation</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid number of signal array dimensions.&#39;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -235,7 +281,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

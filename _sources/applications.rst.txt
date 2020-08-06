@@ -6,13 +6,29 @@ Applications
 X-PSI was applied in the following contexts. These may be useful for rough
 performance benchmarking and planning of resource consumption.
 
+If you used X-PSI for a project and have time to summarise it here, please
+contact the X-PSI team and/or submit pull-request on GitHub.
+
 .. _R19:
 
-*Riley et al. 2019*
-~~~~~~~~~~~~~~~~~~~
+`Riley et al. 2019 (ApJL, 887, L21)`__
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*Riley et al. 2019* (hereafter R19) used ``v0.1`` of X-PSI to model *NICER*
-observations of the rotation-powered millisecond X-ray pulsar J0030+0451.
+.. _ADS: https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract
+
+__ ADS_
+
+`Riley et al. (2019; hereafter R19)`__ used ``v0.1`` of X-PSI to model
+*NICER* observations of the rotation-powered millisecond X-ray pulsar
+J0030+0451.
+
+__ ADS_
+
+See also the associated `Zenodo repository`__.
+
+.. _Zenodo: https://zenodo.org/record/3707821#.XxXBZB1S-S4
+
+__ Zenodo_
 
 **Resource consumption**
 
@@ -40,7 +56,7 @@ receiving likelihood function evaluation requests.
 
 *Interpolation settings*
 
-+ Steffen slines (GSL) were used everywhere apart from for the atmosphere
++ Steffen splines (GSL) were used everywhere apart from for the atmosphere
 + for the atmosphere cubic polynomial interpolants were used in four dimensions
 
 

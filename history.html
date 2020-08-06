@@ -1,0 +1,865 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>History &mdash; xpsi 0.5.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Future" href="todo.html" />
+    <link rel="prev" title="Contributing" href="contributing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unreleased">[Unreleased]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changed">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deprecated">Deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#removed">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#attribution">Attribution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-5-0-2020-08-06">[v0.5.0] - 2020-08-06</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Attribution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-4-1-2020-06-03">[v0.4.1] - 2020-06-03</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-4-0-2020-02-14">[v0.4.0] - 2020-02-14</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Added</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-3-6-2020-01-24">[v0.3.6] - 2020-01-24</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Changed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-3-5-2020-01-22">[v0.3.5] - 2020-01-22</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Attribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Deprecated</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-3-4-2020-01-20">[v0.3.4] - 2020-01-20</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id20">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">Changed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-3-3-2020-01-20">[v0.3.3] - 2020-01-20</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-3-2-2020-01-16">[v0.3.2] - 2020-01-16</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id24">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">Attribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">Changed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-3-1-2019-12-12">[v0.3.1] - 2019-12-12</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id28">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-3-0-2019-12-10">[v0.3.0] - 2019-12-10</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id29">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">Attribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id33">Removed</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>History</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/history.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="history">
+<span id="id1"></span><h1>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h1>
+<p>All notable changes to this project will be documented in this file.</p>
+<p>The format is based on
+<a class="reference external" href="http://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>
+and this project adheres to
+<a class="reference external" href="http://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<div class="section" id="unreleased">
+<h2>[Unreleased]<a class="headerlink" href="#unreleased" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="added">
+<h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="deprecated">
+<h3>Deprecated<a class="headerlink" href="#deprecated" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="removed">
+<h3>Removed<a class="headerlink" href="#removed" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="attribution">
+<h3>Attribution<a class="headerlink" href="#attribution" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="v0-5-0-2020-08-06">
+<h2>[v0.5.0] - 2020-08-06<a class="headerlink" href="#v0-5-0-2020-08-06" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>Summary<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The major change is an update and refactoring of the post-processing module
+to work again with past API changes. (The module was not being kept up to date
+with previous releases listed below because it wasn’t to our knowledge
+being used by anyone yet, and thus we focussed on other features.) The module
+has been refactored to be more modular, flexible, and extensible. For
+instance, posterior signal-plot classes can be added by the user and
+complex plotting routines can thus be developed, as demonstrated in the
+concrete classes such as <a class="reference internal" href="postprocessing.html#xpsi.PostProcessing.PulsePlot" title="xpsi.PostProcessing.PulsePlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing.PulsePlot</span></code></a>. The plot
+classes have been used to reproduce (with improved functionality and
+performance) the relevant signal plots from <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a>, as demonstrated
+in the post-processing tutorial notebook and embedded in the class docstrings
+for reference.</li>
+<li>Development of online documentation pages, including project organisation
+pages and a Code of Conduct (please read), and development of docstrings.
+Note that some snippets of documentation look forward to v1.0 (e.g., release
+of technical notes in the repo itself).</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>Fixed<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <a class="reference internal" href="data.html#module-xpsi.Data" title="xpsi.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Data</span></code></a> docstring explanations have been improved for clarity,
+mainly regarding the instrument channel definitions. The explanation is of how
+the information contained in a <a class="reference internal" href="data.html#module-xpsi.Data" title="xpsi.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Data</span></code></a> instance pertains to the
+<em>loaded</em> instrument response (sub)matrix.</li>
+<li>The <a class="reference internal" href="instrument.html#module-xpsi.Instrument" title="xpsi.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Instrument</span></code></a> docstrings have also been improved for clarity,
+explaining the relationship to <a class="reference internal" href="data.html#module-xpsi.Data" title="xpsi.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Data</span></code></a> in more detail.</li>
+<li>Update extension module for background marginalisation to take distinct phase
+sets associated with hot regions.</li>
+<li>The constructor <code class="xref py py-meth docutils literal notranslate"><span class="pre">xpsi.Spacetime.fixed_spin()</span></code> inclination upper bound
+is <span class="math notranslate nohighlight">\(\pi/2\)</span> radians to eliminate degeneracy due to equatorial-reflection
+symmetry in the default prior on source-receiver geometric configuration.</li>
+<li>Tweak caching (memoization) so that cache and current vectors are equal at
+the end of likelihood evaluation routine.</li>
+<li>Generally clean up naming and docstrings for extension modules. Add return
+types.</li>
+<li>Bug was fixed for transforming posterior sample sets and prior samples when
+parameter orders different in sample files and a prior object due to API
+updates. Whether this solution is to be long-term is to be decided; more
+generally need to figure out how to elegantly handle derived parameters that
+are not needed for likelihood evaluation (those derived parameters are
+instances of <a class="reference internal" href="parameter.html#module-xpsi.Parameter" title="xpsi.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Parameter</span></code></a>) but are of interest for post-processing.</li>
+<li>Handle <code class="docutils literal notranslate"><span class="pre">param_plot_lims=None</span></code> correctly in
+<a class="reference internal" href="postprocessing.html#xpsi.PostProcessing.CornerPlotter" title="xpsi.PostProcessing.CornerPlotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing.CornerPlotter</span></code></a>.</li>
+<li>Checked for unintended mutable defaults package-wide, and fixed as
+appropriate.</li>
+<li>Fix bugs in <code class="docutils literal notranslate"><span class="pre">CustomPrior</span></code> class (<a class="reference internal" href="example_script.html#example-script"><span class="std std-ref">Example script and modules</span></a>; these example
+modules were not run at the time of translation between past API versions, so
+only found bugs when making post-processing tutorial for this release).</li>
+<li>The formatting of annotated credible intervals in
+<a class="reference internal" href="postprocessing.html#xpsi.PostProcessing.CornerPlotter" title="xpsi.PostProcessing.CornerPlotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing.CornerPlotter</span></code></a> has been improved by inferring the
+largest number of decimal places needed for two non-zero decimal digits, and
+then formatting the median and quantile differences to this shared decimal
+precision above the on-diagonal panels. If the numbers cannot be well-
+represented by this scheme, the user could try a unit transformation.</li>
+<li>Tried to tweak automated margins for intensity sky map multi-panel plots,
+so as not to sometimes partially cut an axis label.</li>
+<li>Bug that prevented animation of sky map frames written to disk because the
+frames were not cached in memory by reimaging.</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>Added<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <a class="reference internal" href="data.html#module-xpsi.Data" title="xpsi.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Data</span></code></a> is now concrete in implementation, such that in common
+usage patterns, it does not need to be subclassed.</li>
+<li>A constructor to <a class="reference internal" href="data.html#module-xpsi.Data" title="xpsi.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Data</span></code></a> to load a phase-folded event list and
+phase-bin the events in a subset of selected channels.</li>
+<li>A <code class="xref py py-meth docutils literal notranslate"><span class="pre">xpsi.Data.channels()</span></code> property that holds the instrument channels
+to be checked by a <a class="reference internal" href="signal.html#module-xpsi.Signal" title="xpsi.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Signal</span></code></a> instance against those declared for
+the loaded instrument response (sub)matrix. This property as also required by
+the post-processing module (namely, <a class="reference internal" href="postprocessing.html#xpsi.PostProcessing.ResidualPlot" title="xpsi.PostProcessing.ResidualPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing.ResidualPlot</span></code></a>
+and the other <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi._signalplot.SignalPlot</span></code> subclasses).</li>
+<li>A <code class="xref py py-meth docutils literal notranslate"><span class="pre">xpsi.Instrument.channels()</span></code> property that holds the instrument
+channels to be checked by a <a class="reference internal" href="signal.html#module-xpsi.Signal" title="xpsi.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Signal</span></code></a> instance against those
+declared for the event data matrix.</li>
+<li>Support for multiple instruments operating on the same incident signal due to
+assumed effective time-invariance of the signal generated during one
+rotational cycle of the surface radiation field.</li>
+<li>Module <a class="reference internal" href="surface_radiation_field.html#module-xpsi.surface_radiation_field" title="xpsi.surface_radiation_field"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xpsi.surface_radiation_field</span></code></a> to call atmosphere extensions
+directly (without the calls being embedded in integration algorithms), for
+checking implementation of complicated atmospheres such as those requiring
+interpolation with respect to a numerical lookup table.</li>
+<li>Support for the extension module for calculating the local surface radiation
+field variables to read in numerical model data. An example extension module
+designed to execute nearest-neighbour lookup amonst an general unstructured
+array of points of the openness of magnetic field lines has been developed.</li>
+<li>Add simple energy annotation option to photon specific intensity sky-map
+panels.</li>
+<li>State the energy units (keV) that the <a class="reference internal" href="instrument.html#module-xpsi.Instrument" title="xpsi.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Instrument</span></code></a> must comply
+with when energy interval bounds are specified.</li>
+<li>State the units of variables such as energy and specific intensity in the
+surface radiation field extension module. These requirements may be found in
+function body comments.</li>
+<li>Explain in <a class="reference internal" href="postprocessing.html#xpsi.PostProcessing.CornerPlotter" title="xpsi.PostProcessing.CornerPlotter"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.PostProcessing.CornerPlotter</span></code></a> docstring the order in
+which posteriors are plotted given the input order.</li>
+<li>Post-processing switches to overwrite transformed-sample files and
+combined-run files on disk.</li>
+<li>Workaround to handle the case where due to API changes, the relationship
+between sample parameter vectors on disk and the parameter vector in the
+current API are related not just by reordering, but transformations. This
+is demonstrated in the post-processing tutorial instead of transforming the
+original sample files on disk in place, the transformed files written to disk
+contain both the transformed vector (same number of elements) to match the
+parameters defined under the current API (the order of the vector can be
+different between the <a class="reference internal" href="parameterSubspace.html#module-xpsi.ParameterSubspace" title="xpsi.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace</span></code></a> underlying with a
+<a class="reference internal" href="likelihood.html#module-xpsi.Likelihood" title="xpsi.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Likelihood</span></code></a> instance and the files on disk containing the
+transformed samples), and the additional derived parameters.</li>
+<li>Attempt to free up memory when <code class="xref py py-meth docutils literal notranslate"><span class="pre">xpsi.Photosphere.images()</span></code> is no longer
+needed, but memory-intensive operations need to be performed.</li>
+<li>Attempt to free memory properly after animating a sky-map phase sequence.</li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h3>Changed<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Change (Earth) inclination parameter <span class="math notranslate nohighlight">\(i\)</span> to <span class="math notranslate nohighlight">\(\cos(i)\)</span> so that the
+default prior density function is isotropic.</li>
+<li>The object formerly named <code class="docutils literal notranslate"><span class="pre">xpsi.Pulse</span></code> has had its name changed to
+<a class="reference internal" href="signal.html#module-xpsi.Signal" title="xpsi.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Signal</span></code></a>, and across the package, names that were <code class="docutils literal notranslate"><span class="pre">pulse</span></code> are
+apart from potential corner cases or documentation instances of the word,
+are now <code class="docutils literal notranslate"><span class="pre">signal</span></code>, because when support joint likelihood functions over
+multiple instruments, some data sets are phase averaged. Moreover, <em>signal</em>
+is arguably clearer in meaning than <em>pulse</em>, once it has been established
+that the signals the package focuses on are <em>pulsed</em> but depending on
+the instrument, the data we confront the model with has some degree of phase
+(timing) resolution that might be insufficient for phase-resolved
+observations.</li>
+<li>The <a class="reference internal" href="data.html#module-xpsi.Data" title="xpsi.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Data</span></code></a> definition of the <code class="docutils literal notranslate"><span class="pre">last</span></code> channel has changed to be
+the index of the last row in the loaded instrument response (sub)matrix,
+instead of being the index of the last row plus one; this means that the
+value exposed via a property is <code class="docutils literal notranslate"><span class="pre">last+1</span></code>.</li>
+<li>For numerical atmospheres of same number of grid dimensions, improved
+extension <code class="docutils literal notranslate"><span class="pre">surface_radiation_field/archive/{hot,elsewhere}/numerical.pyx</span></code>
+module to infer grid size for memory allocation and interpolation searches
+(implemented automatic inference of grid size, but hard-coded
+four-dimensional cubic polynomial interpolation persistent). Different
+those atmospheres can be loaded simply via a Python subclass without
+the relevant extension module being recompiled.</li>
+<li>The <a class="reference internal" href="photosphere.html#module-xpsi.Photosphere" title="xpsi.Photosphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.Photosphere</span></code></a> class sometimes does no surface discretisation,
+so allow no hot regions, elsewhere, or everywhere objects; then image-plane
+discretisation can be accessed without dummy object creation.</li>
+<li>Tweak <code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.SpectrumPlot</span></code> settings to print a warning statement that
+spectrum plot works best with logarithmic spacing, and the user has to shadow
+class attribute with <code class="docutils literal notranslate"><span class="pre">logspace_y=False</span></code>.</li>
+<li>Do not print <a class="reference internal" href="hotregion.html#module-xpsi.HotRegion" title="xpsi.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.HotRegion</span></code></a> instance parameter properties upon
+creation if fixed at boundary value so that the region is fully described by
+fewer parameters.</li>
+<li>Merged energy integration extension modules into one.</li>
+<li>Made phase shift parameters (strictly) unbounded; remember however that for a
+sensible prior, bound the phase shifts on a unit interval, and thus it is
+required that phase bounds are specified and finite.</li>
+<li>In extensions, modified phase shifting so that a shift permitted by unbounded
+phase parameter does not require many iterations to decrement or increment to
+unit interval (achieved simply with floor operation).</li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h3>Deprecated<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">xpsi.Data.channel_range()</span></code> property has been renamed to
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">xpsi.Data.index_range()</span></code> so as to avoid confusion between these numbers
+and the true instrument channels. <em>The old property will be removed for
+release v1.0</em>.</li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h3>Removed<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The ensemble MCMC sample backend for post-processing because we do not expect
+it to be useful in the immediate future, but requires some non-trivial
+development work to meld properly with the current post-processing module
+which is focussed on nested sampling. This functionality will be reintroduced
+in a future release (refer to <a class="reference internal" href="todo.html#todo"><span class="std std-ref">Future</span></a>). The ensemble sampler can still be
+run, however, and the native backend for accessing sample information on disk
+is demonstrated in a tutorial notebook. However, the runs cannot be processed
+for posterior integrals and visualisation using the same tools as available
+for nested sampling runs.</li>
+</ul>
+</div>
+<div class="section" id="id8">
+<h3>Attribution<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>With thanks to Sebastien Guillot (testing and feedback),
+Devarshi Choudhury (testing and feedback),
+Sam Geen &amp; Bob de Witte (Windows installation advice),
+and Anna L. Watts (documentation patches and feedback).</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-4-1-2020-06-03">
+<h2>[v0.4.1] - 2020-06-03<a class="headerlink" href="#v0-4-1-2020-06-03" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id9">
+<h3>Fixed<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Function signatures to match header declarations in atmosphere extensions:
+<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx</span></code> to match
+<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/elsewhere_radiation_field.pxd</span></code>.
+With thanks to Sebastien Guillot.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-4-0-2020-02-14">
+<h2>[v0.4.0] - 2020-02-14<a class="headerlink" href="#v0-4-0-2020-02-14" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id10">
+<h3>Summary<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Mainly new features.</li>
+<li>Backwards compatible (apart from possible corner cases).</li>
+</ul>
+</div>
+<div class="section" id="id11">
+<h3>Fixed<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Removed a spurious geometric factor in the integrator that discretises the
+surface with a static mesh. This integrator was called by the <code class="docutils literal notranslate"><span class="pre">Elsewhere</span></code>
+class. The error when this factor is included is O(1%) at 600 Hz for soft
+emission from the entire stellar disk, and then scales with spin and energy
+beyond this. To reproduce the bug, find the commented out <code class="docutils literal notranslate"><span class="pre">/</span> <span class="pre">superlum</span></code> in
+file <code class="docutils literal notranslate"><span class="pre">xpsi/cellmesh/integrator_for_time_invariance.pyx</span></code> (line 251) and
+uncomment it. Then reinstall the package. When this factor is included, the
+mesh itself is moving in the context of the images subtended by its
+constituent elements on our sky. We want the mesh to be static so that this
+integrator can be used for faster calculation of time-invariant signals.</li>
+<li>Bug in which the prior density factor is incorporated twice if a <code class="docutils literal notranslate"><span class="pre">Likelihood</span></code>
+instance held a reference to a <code class="docutils literal notranslate"><span class="pre">Prior</span></code> object and these are merged into
+a <code class="docutils literal notranslate"><span class="pre">Posterior</span></code> object which is fed to the ensemble sampler. If the prior
+density was <em>flat</em>, this bug will have had no effect on posterior
+distributions.</li>
+</ul>
+</div>
+<div class="section" id="id12">
+<h3>Added<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>New features are the simulation of signals from more general surface
+radiation fields that globally span the stellar surface. This can be
+done with several types of integrator.</li>
+<li>The new image-plane discretisation integrator supports imaging of a star,
+and Python functionality has been added to automate plotting and animation
+of intensity sky maps.</li>
+<li>A new tutorial to the documentation to demonstrate these new features and
+an internal cross-check of distinct integration algorithms.</li>
+<li>A visual introduction to the documentation pages with some animated sky maps.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-3-6-2020-01-24">
+<h2>[v0.3.6] - 2020-01-24<a class="headerlink" href="#v0-3-6-2020-01-24" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id13">
+<h3>Fixed<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Some code snippets in documentation examples of prior implementation
+with the latest API minor version (v0.3).</li>
+</ul>
+</div>
+<div class="section" id="id14">
+<h3>Changed<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Modify the <code class="docutils literal notranslate"><span class="pre">HotRegions</span></code> class to function with two <em>or more</em> hot region
+objects.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-3-5-2020-01-22">
+<h2>[v0.3.5] - 2020-01-22<a class="headerlink" href="#v0-3-5-2020-01-22" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id15">
+<h3>Summary<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Docstring edits and backwards compatible changes to several class
+initialisation arguments.</li>
+</ul>
+</div>
+<div class="section" id="id16">
+<h3>Attribution<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Based mostly on discussion with and feedback from Devarshi Choudhury.</li>
+</ul>
+</div>
+<div class="section" id="id17">
+<h3>Fixed<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Some docs formatting problems.</li>
+<li>Some corrections to example scripts/modules updated in v0.3.4 to use
+current API.</li>
+</ul>
+</div>
+<div class="section" id="id18">
+<h3>Changed<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The photospheric mode frequency parameter is not converted to an angular
+frequency until it is used, so the cached value matches the docstring
+description.</li>
+</ul>
+</div>
+<div class="section" id="id19">
+<h3>Deprecated<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">is_secondary</span></code> argument of the <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> class. Use <code class="docutils literal notranslate"><span class="pre">is_antiphased</span></code> instead
+to ensure future compatibility.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">store</span></code> argument of the <code class="docutils literal notranslate"><span class="pre">Pulse</span></code> class. Use <code class="docutils literal notranslate"><span class="pre">cache</span></code> instead to ensure future
+compatibility.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-3-4-2020-01-20">
+<h2>[v0.3.4] - 2020-01-20<a class="headerlink" href="#v0-3-4-2020-01-20" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id20">
+<h3>Summary<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>A few patches including backwards compatible improvements.</li>
+<li>Various docstring/comment/doc edits.</li>
+<li>Update docs example model to use v0.3.4 API.</li>
+</ul>
+</div>
+<div class="section" id="id21">
+<h3>Fixed<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Ensure consistency between input parameter <code class="docutils literal notranslate"><span class="pre">bounds</span></code> and <code class="docutils literal notranslate"><span class="pre">values</span></code> by
+always requiring dictionaries. Fix applies to <code class="docutils literal notranslate"><span class="pre">Elsewhere</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Photosphere</span></code>. Courtesy Sebastien Guillot.</li>
+<li>Gravitational mass doc typo fix.</li>
+</ul>
+</div>
+<div class="section" id="id22">
+<h3>Changed<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Add input argument checks to <code class="docutils literal notranslate"><span class="pre">Likelihood.check</span></code> method.</li>
+<li>Add default <code class="docutils literal notranslate"><span class="pre">hypercube=None</span></code> to <code class="docutils literal notranslate"><span class="pre">Prior.inverse_sample_and_transform</span></code>
+method.</li>
+<li>If derived parameters found in subspace, assume an update is needed because
+cache mechanism not in place. (WIP.)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-3-3-2020-01-20">
+<h2>[v0.3.3] - 2020-01-20<a class="headerlink" href="#v0-3-3-2020-01-20" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id23">
+<h3>Fixed<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>At several places in the <code class="docutils literal notranslate"><span class="pre">Likelihood</span></code> class, calls were place to <code class="docutils literal notranslate"><span class="pre">self</span></code>,
+forgetting that <code class="docutils literal notranslate"><span class="pre">Likelihood</span></code> overwrites <code class="docutils literal notranslate"><span class="pre">ParameterSubspace.__call__</span></code>.
+Now calls are <code class="docutils literal notranslate"><span class="pre">super(Likelihood,</span> <span class="pre">self).__call__()</span></code> to obtain the current
+parameter vector.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-3-2-2020-01-16">
+<h2>[v0.3.2] - 2020-01-16<a class="headerlink" href="#v0-3-2-2020-01-16" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id24">
+<h3>Summary<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Bug fixes. Backwards compatible.</li>
+<li>When initializing the ensemble-MCMC chains using an nd-ball, the inclusion
+in the prior support was checked by passing a vector to <code class="docutils literal notranslate"><span class="pre">Prior.__call__</span></code> but
+that code assumed that the parameter vector had already been assigned and
+can be accessed through the <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code>. As a result either an
+exception would be thrown (if parameter objects have no value set) or the
+support condition would be evaluated for some preset vector that does not
+change has we iterate through chains.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">Likelihood.check</span></code> method now has a fallback implementation given that
+the NumPy <code class="docutils literal notranslate"><span class="pre">allclose</span></code> function in v1.17 does not support Python 2.7.</li>
+</ul>
+</div>
+<div class="section" id="id25">
+<h3>Attribution<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Based on testing by Sebastien Guillot.</li>
+</ul>
+</div>
+<div class="section" id="id26">
+<h3>Fixed<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">EnsembleSampler</span></code> so that it does not rely on the <code class="docutils literal notranslate"><span class="pre">CustomPrior.__call__</span></code>
+implementation to handle a vector argument. Chains should now be in
+prior support from the start and never leave.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">Likelihood.check</span></code> method so that a call to a <code class="docutils literal notranslate"><span class="pre">Likelihood</span></code> instance
+updates the parameters with a vector if the physical points are passed
+for value checking.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">Likelihood.check</span></code> method error error handling and if/else branching
+has been fixed.</li>
+<li>Some typographic errors in docs.</li>
+</ul>
+</div>
+<div class="section" id="id27">
+<h3>Changed<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The way <code class="docutils literal notranslate"><span class="pre">EnsembleSampler</span></code> accesses the prior object.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-3-1-2019-12-12">
+<h2>[v0.3.1] - 2019-12-12<a class="headerlink" href="#v0-3-1-2019-12-12" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id28">
+<h3>Fixed<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Some docstring and Sphinx-related formatting.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-3-0-2019-12-10">
+<h2>[v0.3.0] - 2019-12-10<a class="headerlink" href="#v0-3-0-2019-12-10" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id29">
+<h3>Summary<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Not backwards compatible.</li>
+<li>The main feature is a more sophisticated backend for handling parameters,
+parameter subspaces, and the object hierarchy that forms the modelling
+language. Notably, the parameter objects can be accessed everywhere more
+readily, with dictionary-like functionality that alleviates the problem
+of remembering the imposed order of parameters in a vector. Resultantly,
+there is much more freedom when a user constructs a model and interfaces
+it with sampling software.</li>
+<li>Model parameters can either be <em>free</em>, <em>fixed/frozen</em> at some scalar value,
+or <em>derived</em> deterministically from other model parameters.</li>
+<li>The docs and tutorials have also been updated to reflect these developments.</li>
+</ul>
+</div>
+<div class="section" id="id30">
+<h3>Attribution<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Feedback and ideas for the above development were discussed at an X-PSI
+workshop in Amsterdam, November 25-29 2019:
+Sebastien Guillot, Emma van der Wateren, Devarshi Choudhury, Pushpita Das,
+Anna Bilous, and Anna Watts.</li>
+</ul>
+</div>
+<div class="section" id="id31">
+<h3>Added<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>A new class <code class="docutils literal notranslate"><span class="pre">xpsi.Parameter</span></code> of which every model parameter is an instance.</li>
+</ul>
+</div>
+<div class="section" id="id32">
+<h3>Changed<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace</span></code> class, which has far more sophisticated behaviours
+as a parameter container. The class, upon initialisation with arguments,
+also merges parameters and subspaces into a higher-dimensional (sub)space.
+Most other classes in the modelling language <em>inherit</em> from the
+<code class="docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace</span></code> class.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">xpsi.TwoHotRegions</span></code> class is now dedicated to representing antipodally
+reflection-symmetric configurations only to simplify the choice of which
+class to use between <code class="docutils literal notranslate"><span class="pre">xpsi.HotRegions</span></code> and <code class="docutils literal notranslate"><span class="pre">xpsi.TwoHotRegions</span></code>. However,
+antipodally reflection-symmetric models can also be constructed using
+just <code class="docutils literal notranslate"><span class="pre">xpsi.HotRegions</span></code> because of the new <em>derived</em> parameter support. The
+may be a minor speed difference: <code class="docutils literal notranslate"><span class="pre">xpsi.TwoHotRegions</span></code>
+should be very slightly faster, but it might be imperceptible. Future
+warning: in the future <code class="docutils literal notranslate"><span class="pre">xpsi.TwoHotRegions</span></code> might removed altogther for
+simplication.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">xpsi.Photosphere</span></code> class can be instantiated to encapsulate only a
+reference to an <code class="docutils literal notranslate"><span class="pre">xpsi.Elsewhere</span></code> instance, and no <code class="docutils literal notranslate"><span class="pre">xpsi.HotRegion</span></code> instances.
+An <code class="docutils literal notranslate"><span class="pre">xpsi.Elsewhere</span></code> instance can by definition only generate a
+phase-invariant signal. However, further development is needed to handle
+this phase-invariant signal efficiently for likelihood functionality,
+given that operations with respect to phase are not required. Instead
+likelihood functions would be defined only with respect to energy.</li>
+</ul>
+</div>
+<div class="section" id="id33">
+<h3>Removed<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">xpsi.ParameterSpace</span></code> module. The global model parameter space is also
+simply an intance of the <code class="docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace</span></code> class.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="todo.html" class="btn btn-neutral float-right" title="Future" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="contributing.html" class="btn btn-neutral float-left" title="Contributing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020 Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

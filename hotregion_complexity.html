@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Hot region complexity &mdash; xpsi 0.4.0 documentation</title>
+  <title>Hot region complexity &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Global surface emission" href="global_surface_emission.html" />
-    <link rel="prev" title="Modelling" href="model_construction.html" /> 
+    <link rel="prev" title="Instrument synergy" href="multiple_instruments.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -95,9 +95,18 @@
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Hot region complexity</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Single-temperature-hot-regions">Single-temperature hot regions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Pulse-integration">Pulse integration</a></li>
@@ -105,16 +114,18 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -127,6 +138,13 @@
 <li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -422,6 +440,13 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="Hot-region-complexity">
 <h1>Hot region complexity<a class="headerlink" href="#Hot-region-complexity" title="Permalink to this headline">¶</a></h1>
+<p>The unexecuted notebook for this tutorial may be found in a GitHub repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
+
+<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.5/
+</pre></div>
+</div>
+<p>You can use the default atmosphere extension modules (<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/hot/blackbody.pyx</span></code> and <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/elsewhere/blackbody.pyx</span></code>) or customise as you desire. To run this tutorial, you should therefore be able to simply use the default extensions that are automatically compiled when X-PSI is installed.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -456,7 +481,7 @@ div.rendered_html tbody tr:hover {
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.3.6               |
+|                Version: 0.5.0               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -474,7 +499,7 @@ Imported nestcheck version: 0.2.0
 <span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">distance</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>                     <span class="c1"># (Earth) distance</span>
                 <span class="n">mass</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>                       <span class="c1"># mass</span>
                 <span class="n">radius</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">gravradius</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="mf">16.0</span><span class="p">),</span>  <span class="c1"># equatorial radius</span>
-                <span class="n">inclination</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">))</span>      <span class="c1"># (Earth) inclination to rotation axis</span>
+                <span class="n">cos_inclination</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>      <span class="c1"># (Earth) inclination to rotation axis</span>
 
 <span class="n">spacetime</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="mf">300.0</span><span class="p">))</span>
 </pre></div>
@@ -506,8 +531,8 @@ Creating parameter:
 
 
 Creating parameter:
-    &gt; Named &#34;inclination&#34; with bounds [1.000e-03, 1.571e+00].
-    &gt; Earth inclination to rotation axis [radians].
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
 
 
 </pre></div></div>
@@ -522,7 +547,7 @@ Creating parameter:
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
               <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
               <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
 <span class="c1"># a simple circular, simply-connected spot</span>
@@ -542,7 +567,7 @@ Creating parameter:
 
 <span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span>
               <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
               <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
               <span class="n">omit_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
               <span class="n">omit_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
@@ -587,40 +612,8 @@ Creating parameter:
 
 
 Creating parameter:
-    &gt; Named &#34;phase_shift&#34; with bounds [-5.000e-01, 5.000e-01].
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e+00].
     &gt; The phase of the hot region, a periodic parameter [cycles].
-
-
-Creating parameter:
-    &gt; Named &#34;omit_colatitude&#34; that is derived from ulterior variables.
-    &gt; The colatitude of the centre of the omission region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;omit_radius&#34; with fixed value 0.000e+00.
-    &gt; The angular radius of the (circular) omission region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;omit_azimuth&#34; with fixed value 0.000e+00.
-    &gt; The azimuth of the centre of the omission region relative to the
-centre of the superseding region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;cede_colatitude&#34; that is derived from ulterior variables.
-    &gt; The colatitude of the centre of the ceding region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;cede_radius&#34; with fixed value 0.000e+00.
-    &gt; The angular radius of the (circular) ceding region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;cede_azimuth&#34; with fixed value 0.000e+00.
-    &gt; The azimuth of the centre of the ceding region relative to the
-centre of the superseding region [radians].
 
 
 Creating parameter:
@@ -639,7 +632,7 @@ Creating parameter:
 
 
 Creating parameter:
-    &gt; Named &#34;phase_shift&#34; with bounds [-5.000e-01, 5.000e-01].
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e+00].
     &gt; The phase of the hot region, a periodic parameter [cycles].
 
 
@@ -656,22 +649,6 @@ Creating parameter:
 Creating parameter:
     &gt; Named &#34;omit_azimuth&#34; with bounds [-3.142e+00, 3.142e+00].
     &gt; The azimuth of the centre of the omission region relative to the
-centre of the superseding region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;cede_colatitude&#34; that is derived from ulterior variables.
-    &gt; The colatitude of the centre of the ceding region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;cede_radius&#34; with fixed value 0.000e+00.
-    &gt; The angular radius of the (circular) ceding region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;cede_azimuth&#34; with fixed value 0.000e+00.
-    &gt; The azimuth of the centre of the ceding region relative to the
 centre of the superseding region [radians].
 
 
@@ -847,7 +824,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
     <span class="c1"># coordinate equatorial radius</span>
     <span class="n">star</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">13.18</span>
     <span class="c1"># (Earth) inclination to rotation axis</span>
-    <span class="n">star</span><span class="p">[</span><span class="s1">&#39;inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">star</span><span class="p">[</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
     <span class="c1"># primary hot region (spot) centre colatitude</span>
     <span class="n">star</span><span class="p">[</span><span class="s1">&#39;p__super_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.19</span>
     <span class="c1"># primary spot angular radius</span>
@@ -890,7 +867,7 @@ representing the proper area covered by the hot region within a given element. T
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_18_0.png" src="_images/hotregion_complexity_18_0.png" />
+<img alt="_images/hotregion_complexity_21_0.png" src="_images/hotregion_complexity_21_0.png" />
 </div>
 </div>
 <p>We have a ring for secondary hot region. The hole would be automatically filled with the radiation field <em>elsewhere</em>, which might, e.g., be much cooler.</p>
@@ -913,7 +890,7 @@ representing the proper area covered by the hot region within a given element. T
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_20_0.png" src="_images/hotregion_complexity_20_0.png" />
+<img alt="_images/hotregion_complexity_23_0.png" src="_images/hotregion_complexity_23_0.png" />
 </div>
 </div>
 <p>We have a crescent that is symmetric about the equator. A way to think about this configuration is to consider the omission region as a a superseding member that supersedes a ceding member with the <em>elsewhere</em> radiation field.</p>
@@ -939,7 +916,7 @@ representing the proper area covered by the hot region within a given element. T
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_23_0.png" src="_images/hotregion_complexity_23_0.png" />
+<img alt="_images/hotregion_complexity_26_0.png" src="_images/hotregion_complexity_26_0.png" />
 </div>
 </div>
 <p>We can now see all cells with finite hot region coverage, and the symmetry is perhaps clearer.</p>
@@ -965,7 +942,7 @@ representing the proper area covered by the hot region within a given element. T
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_25_0.png" src="_images/hotregion_complexity_25_0.png" />
+<img alt="_images/hotregion_complexity_28_0.png" src="_images/hotregion_complexity_28_0.png" />
 </div>
 </div>
 <p>Note that a fundamental property of the topmost mesh has now changed: the boundary in azimuth is periodic because the spot encompasses a pole (the southern rotational pole), whilst the lower boundary in colatitude is actually a coordinate singularity. The boundary in azimuth for the bottommost mesh is <em>not</em> periodic. The omission region is close enough to being a topological hole that we cannot distinguish whether or not it is from the mesh, and we would need to calulate the sum of the angular
@@ -998,7 +975,7 @@ radius of the hole with the angular separation between the centres.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_27_0.png" src="_images/hotregion_complexity_27_0.png" />
+<img alt="_images/hotregion_complexity_30_0.png" src="_images/hotregion_complexity_30_0.png" />
 </div>
 </div>
 <p>Note that although the primary spot was reflected about the equator, and now encompasses the northern rotation pole, the mesh does not look as though it has been reflected. Under the hood, the mesh for the primary spot encompassing the southern rotational pole is constructed as reflection about the equator, and then the mesh of colatitudes, which is not plotted but has the same shape as the mesh of proper areas (plotted), is transformed via <span class="math notranslate nohighlight">\(\theta\mapsto\pi-\theta\)</span>, leaving other
@@ -1032,7 +1009,7 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_30_0.png" src="_images/hotregion_complexity_30_0.png" />
+<img alt="_images/hotregion_complexity_33_0.png" src="_images/hotregion_complexity_33_0.png" />
 </div>
 </div>
 <p>The primary spot centre is now almost coincident with a pole, with the angular separation between pole and centre much smaller than the angular radius of the spot. Meanwhile, the omission member of the secondary hot region is a hole, but does not encompass a pole, whilst the outer boundary of the resulting ring <em>does</em>.</p>
@@ -1064,7 +1041,7 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_33_0.png" src="_images/hotregion_complexity_33_0.png" />
+<img alt="_images/hotregion_complexity_36_0.png" src="_images/hotregion_complexity_36_0.png" />
 </div>
 </div>
 <p>There are other parametrisations that are useful to consider that might be more natural for prior implementation. The helper function below is an example.</p>
@@ -1138,7 +1115,7 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_37_0.png" src="_images/hotregion_complexity_37_0.png" />
+<img alt="_images/hotregion_complexity_40_0.png" src="_images/hotregion_complexity_40_0.png" />
 </div>
 </div>
 </div>
@@ -1175,12 +1152,12 @@ reflection-symmetric properties intact.</p>
 
     <span class="n">new_phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">num_rotations</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
 
-    <span class="n">interpolated</span> <span class="o">=</span> <span class="n">phase_interpolator</span><span class="o">.</span><span class="n">interpolate_pulse</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
-                                                        <span class="n">x</span><span class="p">,</span>
-                                                        <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shift</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">interpolated</span> <span class="o">+=</span> <span class="n">phase_interpolator</span><span class="o">.</span><span class="n">interpolate_pulse</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
-                                                         <span class="n">x</span><span class="p">,</span>
-                                                         <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shift</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">interpolated</span> <span class="o">=</span> <span class="n">phase_interpolator</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
+                                      <span class="n">x</span><span class="p">,</span>
+                                      <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shift</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">interpolated</span> <span class="o">+=</span> <span class="n">phase_interpolator</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
+                                       <span class="n">x</span><span class="p">,</span>
+                                       <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shift</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="n">profile</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
                              <span class="n">y</span><span class="p">,</span>
@@ -1218,7 +1195,7 @@ reflection-symmetric properties intact.</p>
 <span></span><span class="n">star</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.2</span>
 <span class="n">star</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.4</span>
 <span class="n">star</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">12.5</span>
-<span class="n">star</span><span class="p">[</span><span class="s1">&#39;inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">star</span><span class="p">[</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">star</span><span class="p">[</span><span class="s1">&#39;p__super_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">star</span><span class="p">[</span><span class="s1">&#39;p__super_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.075</span>
 <span class="n">star</span><span class="p">[</span><span class="s1">&#39;p__super_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">6.2</span>
@@ -1251,7 +1228,7 @@ reflection-symmetric properties intact.</p>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.025</span><span class="p">]),</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
@@ -1265,14 +1242,14 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_45_0.png" src="_images/hotregion_complexity_45_0.png" />
+<img alt="_images/hotregion_complexity_48_0.png" src="_images/hotregion_complexity_48_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_45_1.png" src="_images/hotregion_complexity_45_1.png" />
+<img alt="_images/hotregion_complexity_48_1.png" src="_images/hotregion_complexity_48_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1286,7 +1263,7 @@ reflection-symmetric properties intact.</p>
 
 <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.025</span><span class="p">]),</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
@@ -1298,7 +1275,7 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_46_0.png" src="_images/hotregion_complexity_46_0.png" />
+<img alt="_images/hotregion_complexity_49_0.png" src="_images/hotregion_complexity_49_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1318,7 +1295,7 @@ reflection-symmetric properties intact.</p>
 
 <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
-<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span> <span class="c1"># zero shift</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
@@ -1332,14 +1309,14 @@ reflection-symmetric properties intact.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_47_0.png" src="_images/hotregion_complexity_47_0.png" />
+<img alt="_images/hotregion_complexity_50_0.png" src="_images/hotregion_complexity_50_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_47_1.png" src="_images/hotregion_complexity_47_1.png" />
+<img alt="_images/hotregion_complexity_50_1.png" src="_images/hotregion_complexity_50_1.png" />
 </div>
 </div>
 </div>
@@ -1353,7 +1330,7 @@ reflection-symmetric properties intact.</p>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span>
               <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
               <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
               <span class="n">cede_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
               <span class="n">cede_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
@@ -1377,12 +1354,11 @@ reflection-symmetric properties intact.</p>
                             <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
 
-
 <span class="c1"># also an overlap of a radiating superseding member</span>
 <span class="c1"># region and a radiating ceding member region</span>
 <span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span>
               <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
               <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
               <span class="n">cede_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
               <span class="n">cede_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
@@ -1426,24 +1402,8 @@ Creating parameter:
 
 
 Creating parameter:
-    &gt; Named &#34;phase_shift&#34; with bounds [-5.000e-01, 5.000e-01].
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e+00].
     &gt; The phase of the hot region, a periodic parameter [cycles].
-
-
-Creating parameter:
-    &gt; Named &#34;omit_colatitude&#34; that is derived from ulterior variables.
-    &gt; The colatitude of the centre of the omission region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;omit_radius&#34; with fixed value 0.000e+00.
-    &gt; The angular radius of the (circular) omission region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;omit_azimuth&#34; with fixed value 0.000e+00.
-    &gt; The azimuth of the centre of the omission region relative to the
-centre of the superseding region [radians].
 
 
 Creating parameter:
@@ -1483,24 +1443,8 @@ Creating parameter:
 
 
 Creating parameter:
-    &gt; Named &#34;phase_shift&#34; with bounds [-5.000e-01, 5.000e-01].
+    &gt; Named &#34;phase_shift&#34; with bounds [0.000e+00, 1.000e+00].
     &gt; The phase of the hot region, a periodic parameter [cycles].
-
-
-Creating parameter:
-    &gt; Named &#34;omit_colatitude&#34; that is derived from ulterior variables.
-    &gt; The colatitude of the centre of the omission region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;omit_radius&#34; with fixed value 0.000e+00.
-    &gt; The angular radius of the (circular) omission region [radians].
-
-
-Creating parameter:
-    &gt; Named &#34;omit_azimuth&#34; with fixed value 0.000e+00.
-    &gt; The azimuth of the centre of the omission region relative to the
-centre of the superseding region [radians].
 
 
 Creating parameter:
@@ -1557,7 +1501,8 @@ Creating parameter:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">photosphere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="p">(</span><span class="n">hot</span> <span class="o">=</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="n">elsewhere</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">mode_frequency</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]))</span>
+<span></span><span class="n">photosphere</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="p">(</span><span class="n">hot</span> <span class="o">=</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="n">elsewhere</span><span class="p">,</span>
+                               <span class="n">values</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">mode_frequency</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
 </div>
@@ -1684,7 +1629,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
     <span class="c1"># coordinate equatorial radius</span>
     <span class="n">star</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">13.18</span>
     <span class="c1"># (Earth) inclination to rotation axis</span>
-    <span class="n">star</span><span class="p">[</span><span class="s1">&#39;inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">star</span><span class="p">[</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
     <span class="c1"># primary super colatitude</span>
     <span class="n">star</span><span class="p">[</span><span class="s1">&#39;p__super_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span>
@@ -1738,7 +1683,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_57_0.png" src="_images/hotregion_complexity_57_0.png" />
+<img alt="_images/hotregion_complexity_60_0.png" src="_images/hotregion_complexity_60_0.png" />
 </div>
 </div>
 <p>The leftmost panels are the meshes associated with the primary hot region, whilst the rightmost panels are the meshes associated with the secondary hot region. The topmost panels are the meshes associated with the superseding members, whilst the bottommost panels are the meshes associated with the ceding members.</p>
@@ -1763,7 +1708,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_60_0.png" src="_images/hotregion_complexity_60_0.png" />
+<img alt="_images/hotregion_complexity_63_0.png" src="_images/hotregion_complexity_63_0.png" />
 </div>
 </div>
 <p>Let’s move them to opposite poles:</p>
@@ -1789,7 +1734,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_62_0.png" src="_images/hotregion_complexity_62_0.png" />
+<img alt="_images/hotregion_complexity_65_0.png" src="_images/hotregion_complexity_65_0.png" />
 </div>
 </div>
 <p>Let’s move them so that they do not encompass the poles and the meshes are inverted:</p>
@@ -1818,7 +1763,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_64_0.png" src="_images/hotregion_complexity_64_0.png" />
+<img alt="_images/hotregion_complexity_67_0.png" src="_images/hotregion_complexity_67_0.png" />
 </div>
 </div>
 <p>Finally, let’s integrate a pulse:</p>
@@ -1842,8 +1787,8 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 
 <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
-<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-               <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
+<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+               <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]),</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
@@ -1855,7 +1800,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_67_0.png" src="_images/hotregion_complexity_67_0.png" />
+<img alt="_images/hotregion_complexity_70_0.png" src="_images/hotregion_complexity_70_0.png" />
 </div>
 </div>
 <p>Let’s have a play with the temperatures, so show that the signal from <em>elsewhere</em> is affected by the now <em>cool</em> localised regions.</p>
@@ -1882,8 +1827,8 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 
 <span class="n">photosphere</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">energies</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
-<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-               <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
+<span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+               <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">]),</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
@@ -1895,14 +1840,14 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_69_0.png" src="_images/hotregion_complexity_69_0.png" />
+<img alt="_images/hotregion_complexity_72_0.png" src="_images/hotregion_complexity_72_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotregion_complexity_69_1.png" src="_images/hotregion_complexity_69_1.png" />
+<img alt="_images/hotregion_complexity_72_1.png" src="_images/hotregion_complexity_72_1.png" />
 </div>
 </div>
 <p>Notice the phase shift relative to the previous pulse plot? The local maxima now are shifted by <span class="math notranslate nohighlight">\(\sim\!0.25\)</span> cycles.</p>
@@ -1920,7 +1865,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
         <a href="global_surface_emission.html" class="btn btn-neutral float-right" title="Global surface emission" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="model_construction.html" class="btn btn-neutral float-left" title="Modelling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="multiple_instruments.html" class="btn btn-neutral float-left" title="Instrument synergy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1929,7 +1874,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

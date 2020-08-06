@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Spacetime &mdash; xpsi 0.4.0 documentation</title>
+  <title>Spacetime &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -95,21 +95,32 @@
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -122,6 +133,13 @@
 <li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -256,7 +274,7 @@ characters than <code class="docutils literal notranslate"><span class="pre">sel
 <li>mass</li>
 <li>radius</li>
 <li>distance</li>
-<li>inclination</li>
+<li>cos_inclination</li>
 </ul>
 </dd>
 </dl>
@@ -299,20 +317,40 @@ characters than <code class="docutils literal notranslate"><span class="pre">sel
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.epsilon">
 <code class="descname">epsilon</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.epsilon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the derived parameter <code class="docutils literal notranslate"><span class="pre">epsilon</span></code> for universality relation.</p>
+<dd><p>Get the derived parameter <code class="docutils literal notranslate"><span class="pre">epsilon</span></code> for universal relations.</p>
+<p>A dimensionless function of stellar properties.</p>
 <p>See Morsink et al. (2007), and AlGendy &amp; Morsink (2014).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.f">
 <code class="descname">f</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.f" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the coordinate rotation frequency.</p>
+<dd><p>Get the coordinate rotation frequency.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="xpsi.Spacetime.Spacetime.fixed_spin">
+<em class="property">classmethod </em><code class="descname">fixed_spin</code><span class="sig-paren">(</span><em>frequency</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Spacetime.html#Spacetime.fixed_spin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Spacetime.Spacetime.fixed_spin" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frequency</strong> (<em>float</em>) – The fixed coordinate spin frequency in Hz.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The degeneracy due to equatorially-reflection symmetric physics
+is eliminated here by declaring prior support for Earth inclination
+from northern rotation pole to equatorial plane.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.i">
 <code class="descname">i</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.i" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the inclination of the Earth to the rotational axis.</p>
+<dd><p>Get the inclination of the Earth to the rotational axis.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -330,7 +368,8 @@ characters than <code class="docutils literal notranslate"><span class="pre">sel
 <dl class="attribute">
 <dt id="xpsi.Spacetime.Spacetime.zeta">
 <code class="descname">zeta</code><a class="headerlink" href="#xpsi.Spacetime.Spacetime.zeta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the derived parameter <code class="docutils literal notranslate"><span class="pre">zeta</span></code> for universality relation.</p>
+<dd><p>Get the derived parameter <code class="docutils literal notranslate"><span class="pre">zeta</span></code> for universal relations.</p>
+<p>A dimensionless function of stellar properties.</p>
 <p>See Morsink et al. (2007), and AlGendy &amp; Morsink (2014).</p>
 </dd></dl>
 
@@ -358,7 +397,7 @@ characters than <code class="docutils literal notranslate"><span class="pre">sel
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

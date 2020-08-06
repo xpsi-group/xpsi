@@ -14,14 +14,27 @@
 
 .. toctree::
    :maxdepth: 1
+   :caption: Development
+
+   code_of_conduct
+   contributing
+   history
+   todo
+   acknowledgements
+
+.. toctree::
+   :maxdepth: 1
    :caption: Tutorials
 
    model_construction
+   multiple_instruments
    hotregion_complexity
    global_surface_emission
+   surface_radiation_field_checking_tools_tutorial
+   model_construction_streamlined
+   postprocessing_tutorial
    example_script
    example_job
-   extensions
 
 .. toctree::
    :maxdepth: 1
@@ -30,7 +43,7 @@
    parameter
    parameterSubspace
    likelihood
-   pulse
+   signal
    instrument
    data
    star
@@ -43,6 +56,15 @@
    everywhere
    interstellar
    background
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Extension modules
+
+   extensions_overview
+   surface_radiation_field
+   likelihood_implementations
+   tools
 
 .. toctree::
    :maxdepth: 1

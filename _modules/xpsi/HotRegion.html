@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.HotRegion &mdash; xpsi 0.4.0 documentation</title>
+  <title>xpsi.HotRegion &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -93,21 +93,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../star.html">Star</a></li>
@@ -120,6 +131,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -427,9 +445,9 @@
 
         <span class="c1"># find the required integrator</span>
         <span class="k">if</span> <span class="n">symmetry</span><span class="p">:</span> <span class="c1"># can we safely assume azimuthal invariance?</span>
-            <span class="kn">from</span> <span class="nn">.cellmesh.integrator_for_azimuthal_invariance</span> <span class="kn">import</span> <span class="n">integrate_radField</span> <span class="k">as</span> <span class="n">_integrator</span>
+            <span class="kn">from</span> <span class="nn">.cellmesh.integrator_for_azimuthal_invariance</span> <span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrator</span>
         <span class="k">else</span><span class="p">:</span> <span class="c1"># more general purpose</span>
-            <span class="kn">from</span> <span class="nn">.cellmesh.integrator</span> <span class="kn">import</span> <span class="n">integrate_radField</span> <span class="k">as</span> <span class="n">_integrator</span>
+            <span class="kn">from</span> <span class="nn">.cellmesh.integrator</span> <span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span> <span class="o">=</span> <span class="n">_integrator</span>
 
         <span class="c1"># first the parameters that are fundemental to this class</span>
@@ -456,9 +474,15 @@
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        The phase of the hot region, a periodic parameter [cycles].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">phase_bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">phase_bounds</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be specified.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be finite.&#39;</span><span class="p">)</span>
+
         <span class="n">phase_shift</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span>
-                                <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
-                                <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">),</span>
+                                <span class="n">bounds</span> <span class="o">=</span> <span class="n">phase_bounds</span><span class="p">,</span>
                                 <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
                                 <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\phi$&#39;</span><span class="p">,</span>
                                 <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
@@ -477,104 +501,125 @@
 
         <span class="n">bindme</span> <span class="o">=</span> <span class="n">BindMe</span><span class="p">()</span> <span class="c1"># to parameter instances</span>
 
+        <span class="c1"># to deactivate printing of parameter information if that parameter</span>
+        <span class="c1"># is initialised but deactivated</span>
+        <span class="n">no_verb</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cede</span><span class="p">:</span> <span class="c1"># means just super region, possibly with omission</span>
             <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;cede_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">values</span><span class="p">[</span><span class="s1">&#39;cede_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;cede_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">values</span><span class="p">[</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bindme</span>
+            <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">values</span><span class="p">[</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">omit</span><span class="p">:</span> <span class="c1"># else take free settings from input</span>
                 <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">values</span><span class="p">[</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">concentric</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">omit</span><span class="p">:</span>
                 <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">values</span><span class="p">[</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bindme</span>
+                <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
                 <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">values</span><span class="p">[</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span> <span class="c1"># means super + cede regions, no omission</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">concentric</span><span class="p">:</span>
                 <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">values</span><span class="p">[</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bindme</span>
+                <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
                 <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">values</span><span class="p">[</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">values</span><span class="p">[</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">values</span><span class="p">[</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bindme</span>
+            <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">values</span><span class="p">[</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">no_verb</span><span class="p">[</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        The colatitude of the centre of the omission region [radians].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
         <span class="n">omit_colat</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">,</span>
-                               <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_pi</span><span class="p">),</span>
-                               <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                               <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
-                               <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\upsilon$&#39;</span><span class="p">,</span>
-                               <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                   <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_pi</span><span class="p">),</span>
+                   <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                   <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                   <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\upsilon$&#39;</span><span class="p">,</span>
+                   <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                   <span class="n">deactivate_verbosity</span> <span class="o">=</span> <span class="n">no_verb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_colatitude&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        The angular radius of the (circular) omission region [radians].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
         <span class="n">omit_radius</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">,</span>
-                                <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span>
-                                <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                                <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
-                                <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Delta$&#39;</span><span class="p">,</span>
-                                <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                       <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span>
+                       <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                       <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                       <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Delta$&#39;</span><span class="p">,</span>
+                       <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                       <span class="n">deactivate_verbosity</span> <span class="o">=</span> <span class="n">no_verb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_radius&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        The azimuth of the centre of the omission region relative to the</span>
 <span class="s2">        centre of the superseding region [radians].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
         <span class="n">omit_azi</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">,</span>
-                             <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_pi</span><span class="p">,</span> <span class="n">_pi</span><span class="p">),</span>
-                             <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                             <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
-                             <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Phi$&#39;</span><span class="p">,</span>
-                             <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                      <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_pi</span><span class="p">,</span> <span class="n">_pi</span><span class="p">),</span>
+                      <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                      <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                      <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Phi$&#39;</span><span class="p">,</span>
+                      <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                      <span class="n">deactivate_verbosity</span> <span class="o">=</span> <span class="n">no_verb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;omit_azimuth&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        The colatitude of the centre of the ceding region [radians].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
         <span class="n">cede_colat</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">,</span>
-                               <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_pi</span><span class="p">),</span>
-                               <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                               <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
-                               <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Theta$&#39;</span><span class="p">,</span>
-                               <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                   <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_pi</span><span class="p">),</span>
+                   <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                   <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                   <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Theta$&#39;</span><span class="p">,</span>
+                   <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                   <span class="n">deactivate_verbosity</span> <span class="o">=</span> <span class="n">no_verb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_colatitude&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        The angular radius of the (circular) ceding region [radians].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
         <span class="n">cede_radius</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;cede_radius&#39;</span><span class="p">,</span>
-                                <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span>
-                                <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_radius&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                                <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
-                                <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\zeta$&#39;</span><span class="p">,</span>
-                                <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_radius&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                       <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">_pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span>
+                       <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_radius&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                       <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                       <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\zeta$&#39;</span><span class="p">,</span>
+                       <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_radius&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                       <span class="n">deactivate_verbosity</span> <span class="o">=</span> <span class="n">no_verb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_radius&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        The azimuth of the centre of the ceding region relative to the</span>
 <span class="s2">        centre of the superseding region [radians].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
         <span class="n">cede_azi</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">,</span>
-                             <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_pi</span><span class="p">,</span> <span class="n">_pi</span><span class="p">),</span>
-                             <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                             <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
-                             <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Phi$&#39;</span><span class="p">,</span>
-                             <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                      <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_pi</span><span class="p">,</span> <span class="n">_pi</span><span class="p">),</span>
+                      <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                      <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                      <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Phi$&#39;</span><span class="p">,</span>
+                      <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                      <span class="n">deactivate_verbosity</span> <span class="o">=</span> <span class="n">no_verb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cede_azimuth&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">custom</span><span class="p">:</span> <span class="c1"># setup default temperature parameters</span>
             <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -1256,7 +1301,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

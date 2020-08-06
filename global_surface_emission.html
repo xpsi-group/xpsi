@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Global surface emission &mdash; xpsi 0.4.0 documentation</title>
+  <title>Global surface emission &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Example script and modules" href="example_script.html" />
+    <link rel="next" title="Surface radiation field tools" href="surface_radiation_field_checking_tools_tutorial.html" />
     <link rel="prev" title="Hot region complexity" href="hotregion_complexity.html" /> 
 </head>
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -95,9 +95,18 @@
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Global surface emission</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Default-(phase-invariant)">Default (phase-invariant)</a></li>
@@ -105,16 +114,18 @@
 <li class="toctree-l2"><a class="reference internal" href="#Rotating-spacetime">Rotating spacetime</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -127,6 +138,13 @@
 <li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -425,6 +443,14 @@ div.rendered_html tbody tr:hover {
 <p>Let’s explore simulation of signals generated by surface radiation fields that globally span the star.</p>
 <p>We will also perform weak internal cross-checking of integrators that are algorithmically distinct in their discretisation of the computational domain. For instance, regular discretisation can be performed: (i) on a spacelike 2-surface embedded in an ambient Schwarzschild spacetime, yielding a <em>moving</em> mesh (between temporal hyperslices of the spacetime foliation) that tracks modes of radiative asymmetry; (ii) on a spacelike 2-surface embedded in an ambient Schwarzschild spacetime, yielding a
 static mesh that does <em>not</em> move (between temporal hyperslices of the spacetime foliation) but plasma and modes of radiative asymmetry to flow through it; and (iii) on a distant image-plane through which radiation flows normally en route to some effectively asymptotic receiver.</p>
+<p>The unexecuted notebook for this tutorial may be found in a GitHub repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
+
+<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.5/
+</pre></div>
+</div>
+<p>You can use the default atmosphere extension module <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/hot/blackbody.pyx</span></code> as described below. To run this tutorial, you should therefore be able to simply use the default <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot.pyx</span></code> extension that is automatically compiled when X-PSI is installed. However, you’ll have to switch the contents of the <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/local_variables.pyx</span></code> extension, as instructed below, in order to change the mapping from global
+variables to local variables.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -461,7 +487,7 @@ static mesh that does <em>not</em> move (between temporal hyperslices of the spa
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.3.6               |
+|                Version: 0.5.0               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -479,7 +505,7 @@ Imported nestcheck version: 0.2.0
 <span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">distance</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>                     <span class="c1"># (Earth) distance</span>
                 <span class="n">mass</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>                       <span class="c1"># mass</span>
                 <span class="n">radius</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">gravradius</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="mf">16.0</span><span class="p">),</span>  <span class="c1"># equatorial radius</span>
-                <span class="n">inclination</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.0</span><span class="p">))</span>      <span class="c1"># (Earth) inclination to rotation axis</span>
+                <span class="n">cos_inclination</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>      <span class="c1"># (Earth) inclination to rotation axis</span>
 
 <span class="n">spacetime</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="mf">600.0</span><span class="p">))</span>
 </pre></div>
@@ -511,8 +537,8 @@ Creating parameter:
 
 
 Creating parameter:
-    &gt; Named &#34;inclination&#34; with bounds [1.000e-03, 1.571e+00].
-    &gt; Earth inclination to rotation axis [radians].
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
 
 
 </pre></div></div>
@@ -604,7 +630,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 mass: Gravitational mass [solar masses].
 radius: Coordinate equatorial radius [km].
 distance: Earth distance [kpc].
-inclination: Earth inclination to rotation axis [radians].
+cos_inclination: Cosine of Earth inclination to rotation axis.
 temperature: log10(effective temperature [K] everywhere).
 </pre></div>
 </div>
@@ -623,7 +649,7 @@ temperature: log10(effective temperature [K] everywhere).
     <span class="c1"># coordinate equatorial radius</span>
     <span class="n">star</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">12.0</span>
     <span class="c1"># (Earth) inclination to rotation axis</span>
-    <span class="n">star</span><span class="p">[</span><span class="s1">&#39;inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">star</span><span class="p">[</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
     <span class="c1"># isotropic blackbody temperature</span>
     <span class="n">star</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.7</span>
 
@@ -662,9 +688,19 @@ temperature: log10(effective temperature [K] everywhere).
 </pre></div>
 </div>
 </div>
+<p>The signal is time-invariant and therefore we need to copy the spectrum to a sequence of matrix columns to get the desired energy-phase signal matrix:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
 <p>We need a helper function to plot the signal, normalised to the maximum specific flux:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -695,9 +731,9 @@ temperature: log10(effective temperature [K] everywhere).
 
     <span class="n">new_phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">num_rotations</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
 
-    <span class="n">interpolated</span> <span class="o">=</span> <span class="n">phase_interpolator</span><span class="o">.</span><span class="n">interpolate_pulse</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
-                                                        <span class="n">x</span><span class="p">,</span>
-                                                        <span class="n">z</span><span class="p">,</span> <span class="n">shift</span><span class="p">)</span>
+    <span class="n">interpolated</span> <span class="o">=</span> <span class="n">phase_interpolator</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
+                                      <span class="n">x</span><span class="p">,</span>
+                                      <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">shift</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
         <span class="n">interpolated</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">interpolated</span><span class="p">)</span>
 
@@ -763,11 +799,11 @@ temperature: log10(effective temperature [K] everywhere).
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span>
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
@@ -779,25 +815,16 @@ temperature: log10(effective temperature [K] everywhere).
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_21_0.png" src="_images/global_surface_emission_21_0.png" />
+<img alt="_images/global_surface_emission_26_0.png" src="_images/global_surface_emission_26_0.png" />
 </div>
 </div>
 <p>If we declare the signal as time-dependent, a different integrator is called:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">everywhere</span><span class="o">.</span><span class="n">time_invariant</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-</div>
-</div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">temp</span> <span class="o">=</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="o">...</span><span class="p">]</span> <span class="c1"># copy</span>
+<span></span><span class="n">everywhere</span><span class="o">.</span><span class="n">time_invariant</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 </div>
 </div>
@@ -815,7 +842,7 @@ temperature: log10(effective temperature [K] everywhere).
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">temp</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span>
+<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">temp</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
@@ -832,7 +859,7 @@ temperature: log10(effective temperature [K] everywhere).
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_26_0.png" src="_images/global_surface_emission_26_0.png" />
+<img alt="_images/global_surface_emission_30_0.png" src="_images/global_surface_emission_30_0.png" />
 </div>
 </div>
 <p>We can also call a third integrator. This integrator is more general purpose, and thus inexorably more expensive to call. First we need to force the spacetime to be static (otherwise univeral relations are invoked based on the stellar spin frequency as set above):</p>
@@ -889,7 +916,7 @@ photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV becau
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_32_0.png" src="_images/global_surface_emission_32_0.png" />
+<img alt="_images/global_surface_emission_36_0.png" src="_images/global_surface_emission_36_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -906,7 +933,7 @@ photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV becau
          <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span>
-         <span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]),</span>
+         <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">temp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]),</span>
          <span class="s1">&#39;k--&#39;</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span>
@@ -922,7 +949,7 @@ photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV becau
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span>
-         <span class="mf">100.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">temp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span>
+         <span class="mf">100.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">temp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span>
          <span class="s1">&#39;k--&#39;</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span>
@@ -945,7 +972,7 @@ photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV becau
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_33_0.png" src="_images/global_surface_emission_33_0.png" />
+<img alt="_images/global_surface_emission_37_0.png" src="_images/global_surface_emission_37_0.png" />
 </div>
 </div>
 <p>The differences can be reduced, within the scope of a given algorthm, by defining higher resolution integration settings. The integration algorithms are so distinct that this consistency validates the tools internally; verification against external packages would nevertheless permit stronger guarantees of robustness. The simple package <a class="reference external" href="https://github.com/ThomasEdwardRiley/rayXpanda">rayXpanda</a> offered a weak validation of the Schwarzschild ray integration routines called by the
@@ -988,7 +1015,7 @@ surface-discretisation signal integrators.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_37_0.png" src="_images/global_surface_emission_37_0.png" />
+<img alt="_images/global_surface_emission_41_0.png" src="_images/global_surface_emission_41_0.png" />
 </div>
 </div>
 <p>Notice that the rays are squeezed towards the stellar limb. The origin of the ray pattern, and the outer boundary are such that the image of the star is efficiently and accurately bounded with minimal ray wastage.</p>
@@ -1075,7 +1102,7 @@ surface-discretisation signal integrators.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_41_0.png" src="_images/global_surface_emission_41_0.png" />
+<img alt="_images/global_surface_emission_45_0.png" src="_images/global_surface_emission_45_0.png" />
 </div>
 </div>
 <p>The contour artefact is seemingly unavoidable due to the wrapping of the azimuthal coordinate; one can put the boundary (beyond which <span class="math notranslate nohighlight">\(\phi\mapsto\phi-2\pi\)</span>) at different azimuths, but in <em>matplotlib</em> the thick dark contour mass remains (here visible at the northern and southern rotation poles).</p>
@@ -1087,12 +1114,15 @@ surface-discretisation signal integrators.</p>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;panel_indices&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="c1"># select energy indexes</span>
                   <span class="s1">&#39;num_levels&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
-                  <span class="s1">&#39;invert&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                  <span class="s1">&#39;colormap&#39;</span><span class="p">:</span> <span class="n">cm</span><span class="o">.</span><span class="n">Greys_r</span><span class="p">,</span>
-                  <span class="s1">&#39;phase_average&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span> <span class="c1"># do not phase average if you want to animate a sequence</span>
+                  <span class="s1">&#39;colormap&#39;</span><span class="p">:</span> <span class="n">cm</span><span class="o">.</span><span class="n">Purples_r</span><span class="p">,</span>
+                  <span class="s1">&#39;phase_average&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                  <span class="s1">&#39;annotate_energies&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                  <span class="s1">&#39;energy_annotation_format&#39;</span><span class="p">:</span> <span class="s1">&#39;[</span><span class="si">%.2f</span><span class="s1"> keV]&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;annotate_location&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.025</span><span class="p">,</span><span class="mf">0.025</span><span class="p">)}</span> <span class="c1"># do not phase average if you want to animate a sequence</span>
 </pre></div>
 </div>
 </div>
+<p>NB: a colormap like <code class="docutils literal notranslate"><span class="pre">cm.Purples_r</span></code> this will make the lowest finite intensity distinct from the black zero-intensity background from the surface and behind the star.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
@@ -1123,7 +1153,7 @@ surface-discretisation signal integrators.</p>
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_47_0.png" src="_images/global_surface_emission_47_0.png" />
+<img alt="_images/global_surface_emission_52_0.png" src="_images/global_surface_emission_52_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -1142,8 +1172,8 @@ surface-discretisation signal integrators.</p>
 <p>Let us, inspired by <a class="reference external" href="https://arxiv.org/abs/1904.11534">Lockhart et al. (2019)</a>, set up a surface radiation field constituted by: (i) a hot spot whose temperature decreases away from a point <span class="math notranslate nohighlight">\(P\)</span> as a function of angular separation; and (ii) a hot ring whose angular centre is the antipode <span class="math notranslate nohighlight">\(Q\)</span> of <span class="math notranslate nohighlight">\(P\)</span> and whose temperature decreases away (as a function of angular separation from <span class="math notranslate nohighlight">\(Q\)</span>) from a locus of points with constant angular separation to point <span class="math notranslate nohighlight">\(Q\)</span>. The
 temperature is everywhere that of the local comoving photosphere, which radiates isotropically as a blackbody.</p>
 <p>You now need to reinstalled the package after replacing the contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/local_variables.pyx</span></code> with the exact contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/tutorial_spot_and_ring.pyx</span></code>. The <code class="docutils literal notranslate"><span class="pre">local_variables.pyx</span></code> extension module must transform some set of <em>global</em> variables into <em>local</em> variables at the spacetime event defined by the intersection of a ray with the stellar surface. A vector of local variables is then passed to the
-<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot_radiation_field.pyx</span></code> module for evaluation of the specific intensity of radiation, w.r.t a local comoving surface frame, that after Lorentz transformation is transported along the ray to the image plane.</p>
-<p><strong>Once you can reinstalled the package, you need to restart the IPython kernel and then execute code cells 1, 2, and 11 above.</strong></p>
+<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot.pyx</span></code> module for evaluation of the specific intensity of radiation, w.r.t a local comoving surface frame, that after Lorentz transformation is transported along the ray to the image plane.</p>
+<p><strong>Once you can reinstalled the package, you need to restart the IPython kernel and then execute code cells [1], [2], and [12] above.</strong></p>
 <p>First we will subclass <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere"><span class="std std-ref">Everywhere</span></a> to provide a custom implementation of the surface radiation field for a surface-discretisation integrator.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -1332,7 +1362,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 
     <span class="n">star</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">12.0</span>
 
-    <span class="n">star</span><span class="p">[</span><span class="s1">&#39;inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">star</span><span class="p">[</span><span class="s1">&#39;cos_inclination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
     <span class="n">star</span><span class="p">[</span><span class="s1">&#39;spot_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">6.2</span>
 
@@ -1378,7 +1408,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
@@ -1390,7 +1420,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_64_0.png" src="_images/global_surface_emission_64_0.png" />
+<img alt="_images/global_surface_emission_69_0.png" src="_images/global_surface_emission_69_0.png" />
 </div>
 </div>
 <p>Let’s render the surface temperature field represented by our regular mesh in colatitude and azimuth:</p>
@@ -1413,7 +1443,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_66_0.png" src="_images/global_surface_emission_66_0.png" />
+<img alt="_images/global_surface_emission_71_0.png" src="_images/global_surface_emission_71_0.png" />
 </div>
 </div>
 <p>Colatitude increases downwards, whilst azimuth increases rightwards. The mesh is constructed such that the <span class="math notranslate nohighlight">\(\phi\mapsto\phi-2\pi\)</span> boundary is the meridian on which the angular centre of the ring lies. We can make a crude plot of the surface temperature field in a more natural way:</p>
@@ -1441,7 +1471,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_68_0.png" src="_images/global_surface_emission_68_0.png" />
+<img alt="_images/global_surface_emission_73_0.png" src="_images/global_surface_emission_73_0.png" />
 </div>
 </div>
 <p>Note that although the star looks lensed, it is merely a projection (mimicking Scwarzschild light bending for an equatorial observer) that allows us to render all <span class="math notranslate nohighlight">\(4\pi\)</span> steradians of the surface. The real lensing is yet to come! First we need to force our exterior spacetime to be that of Schwarzschild:</p>
@@ -1457,7 +1487,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <p>Now call the imaging routine in the same manner as above:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1473,7 +1503,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <p>Let’s examine the phase-energy resolved photon specific flux signal and compare it to the signal computed by via surface discretisation:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1489,15 +1519,15 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_74_0.png" src="_images/global_surface_emission_74_0.png" />
+<img alt="_images/global_surface_emission_79_0.png" src="_images/global_surface_emission_79_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d_sq</span><span class="o">/</span><span class="n">photosphere</span><span class="o">.</span><span class="n">pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span>
+<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d_sq</span><span class="o">/</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
@@ -1514,7 +1544,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_75_0.png" src="_images/global_surface_emission_75_0.png" />
+<img alt="_images/global_surface_emission_80_0.png" src="_images/global_surface_emission_80_0.png" />
 </div>
 </div>
 <p>Now the really fun part: photon specific intensity sky maps. Now that we are not pursuing a high-resolution signal to compare to an integrator that discretises the stellar surface, we reduce the number of energies and rays to avoid memory issues when caching the sky photon specific intensity field in four dimensions. Nevertheless, if you run these cells as is, you might want to grab a beverage of choice while you wait up to ~30 minutes. <strong>Moreover, up to ~20 GB of RAM might be needed by the
@@ -1526,7 +1556,6 @@ animator. You can deactivate the animator if this is problematic, and handle the
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;panel_indices&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
                   <span class="s1">&#39;num_levels&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="c1"># in intensity field rendering</span>
-                  <span class="s1">&#39;invert&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                   <span class="s1">&#39;colormap&#39;</span><span class="p">:</span> <span class="n">cm</span><span class="o">.</span><span class="n">Greys_r</span><span class="p">,</span>
                   <span class="s1">&#39;phase_average&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 
@@ -1551,10 +1580,17 @@ animator. You can deactivate the animator if this is problematic, and handle the
                   <span class="n">threads</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
                   <span class="n">max_steps</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">,</span>
                   <span class="n">epsrel_ray</span> <span class="o">=</span> <span class="mf">1.0e-12</span><span class="p">,</span>
-                  <span class="n">plot_sky_maps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                  <span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="n">sky_map_kwargs</span><span class="p">,</span>
+                  <span class="n">plot_sky_maps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># activate if you want to plot frames</span>
+                  <span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="n">sky_map_kwargs</span><span class="p">,</span> <span class="c1"># activate if you want to animate (BEWARE high memory usage)</span>
                   <span class="n">animate_sky_maps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                  <span class="n">free_memory</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># activate if memory is a concern</span>
                   <span class="n">animate_kwargs</span> <span class="o">=</span> <span class="n">animate_kwargs</span><span class="p">)</span>
+
+<span class="c1"># To reduce animation memory requirements, you can reduce the number of phases.</span>
+<span class="c1"># If phase-averaging only, it is safe to increase the phase resolution</span>
+<span class="c1"># to remove artefacts, but start with a smaller number of phases if you</span>
+<span class="c1"># want to plot phase-resolved sky map frames and animate the sequence</span>
+<span class="c1"># in order to get a handle on the memory requirements.</span>
 </pre></div>
 </div>
 </div>
@@ -1614,7 +1650,7 @@ Writing to disk: ./images/skymap_animated.mp4
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_83_0.png" src="_images/global_surface_emission_83_0.png" />
+<img alt="_images/global_surface_emission_88_0.png" src="_images/global_surface_emission_88_0.png" />
 </div>
 </div>
 <p>Finally, let’s phase-average the intensity sky maps:</p>
@@ -1627,7 +1663,7 @@ Writing to disk: ./images/skymap_animated.mp4
 <span class="c1"># only one set of panels so why not choose higher res.?</span>
 <span class="n">sky_map_kwargs</span><span class="p">[</span><span class="s1">&#39;num_levels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
 
-<span class="n">photosphere</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">reimage</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="n">photosphere</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">reimage</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># because we decided not to free_memory earlier</span>
                   <span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">]),</span>
                   <span class="n">phases</span> <span class="o">=</span> <span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span> <span class="o">*</span> <span class="n">_2pi</span><span class="p">,</span>
                   <span class="n">plot_sky_maps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1658,7 +1694,7 @@ Writing to disk: ./images/skymap_animated.mp4
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_87_0.png" src="_images/global_surface_emission_87_0.png" />
+<img alt="_images/global_surface_emission_92_0.png" src="_images/global_surface_emission_92_0.png" />
 </div>
 </div>
 <p>To understand the phase-averaged intensity field associated with the ring, consider a fix sky direction through which the upper and lower extremities (in colatitude) of the ring pass as the star rotates. The bright surface regions pass over such sky directions for a greater fraction of the one revolution than for sky directions closer in surface colatitude to the centre of the ring.</p>
@@ -1720,7 +1756,6 @@ momentum and mass quadrupole moment. If we delete the custom values of these spa
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;panel_indices&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
                   <span class="s1">&#39;num_levels&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="c1"># in intensity field rendering</span>
-                  <span class="s1">&#39;invert&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                   <span class="s1">&#39;colormap&#39;</span><span class="p">:</span> <span class="n">cm</span><span class="o">.</span><span class="n">Greys_r</span><span class="p">,</span>
                   <span class="s1">&#39;phase_average&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
@@ -1760,7 +1795,7 @@ momentum and mass quadrupole moment. If we delete the custom values of these spa
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_96_0.png" src="_images/global_surface_emission_96_0.png" />
+<img alt="_images/global_surface_emission_101_0.png" src="_images/global_surface_emission_101_0.png" />
 </div>
 </div>
 <p>You should be able to detect the extra lateral asymmetry introduced at lower energies that was not present for a static ambient spacetime.</p>
@@ -1777,7 +1812,7 @@ momentum and mass quadrupole moment. If we delete the custom values of these spa
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="example_script.html" class="btn btn-neutral float-right" title="Example script and modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="surface_radiation_field_checking_tools_tutorial.html" class="btn btn-neutral float-right" title="Surface radiation field tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="hotregion_complexity.html" class="btn btn-neutral float-left" title="Hot region complexity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -1789,7 +1824,7 @@ momentum and mass quadrupole moment. If we delete the custom values of these spa
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>

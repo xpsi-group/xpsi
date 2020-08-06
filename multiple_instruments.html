@@ -1,0 +1,1977 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Instrument synergy &mdash; xpsi 0.5.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Hot region complexity" href="hotregion_complexity.html" />
+    <link rel="prev" title="Modeling" href="model_construction.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xpsi
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Instrument synergy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Likelihood">Likelihood</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Instrument">Instrument</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Signal">Signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Star">Star</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Synthesis">Synthesis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Background">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Data-format">Data format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Custom-method">Custom method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Synthesise">Synthesise</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xpsi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Instrument synergy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/multiple_instruments.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Instrument-synergy">
+<h1>Instrument synergy<a class="headerlink" href="#Instrument-synergy" title="Permalink to this headline">¶</a></h1>
+<p>The purpose of this notebook is to prototype support for multiple instruments operating on the same signal incident at Earth. The instruments may have different wavebands and the data may or may not be phase resolved for each instrument.</p>
+<p>The unexecuted notebook for this tutorial may be found in a GitHub repository <em>together</em> with the necessary files which due to size are not included in the X-PSI respository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
+
+<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.5/
+</pre></div>
+</div>
+<p>You can use the default atmosphere extension module <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/hot/blackbody.pyx</span></code>. To run this tutorial, you should therefore be able to simply use the default extensions that are automatically compiled when X-PSI is installed.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rcParams</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MultipleLocator</span><span class="p">,</span> <span class="n">AutoLocator</span><span class="p">,</span> <span class="n">AutoMinorLocator</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+
+<span class="kn">import</span> <span class="nn">xpsi</span>
+
+<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_2pi</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/=============================================\
+| X-PSI: X-ray Pulse Simulation and Inference |
+|---------------------------------------------|
+|                Version: 0.5.0               |
+|---------------------------------------------|
+|  https://thomasedwardriley.github.io/xpsi/  |
+\=============================================/
+
+Imported GetDist version: 0.3.1
+Imported nestcheck version: 0.2.0
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">Telescope</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">NICER</span> <span class="o">=</span> <span class="n">Telescope</span><span class="p">()</span>
+<span class="n">XMM</span> <span class="o">=</span> <span class="n">Telescope</span><span class="p">()</span> <span class="c1"># fabricated toy that we&#39;ll just pretend is XMM as a placeholder!</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Likelihood">
+<h2>Likelihood<a class="headerlink" href="#Likelihood" title="Permalink to this headline">¶</a></h2>
+<p>Let us load a synthetic data set that we generated in advance, and know the fictitious exposure time for.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">obs_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">counts</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/NICER_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">),</span>
+                    <span class="n">channels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">201</span><span class="p">),</span>
+                    <span class="n">phases</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span>
+                    <span class="n">first</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">last</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span>
+                    <span class="n">exposure_time</span><span class="o">=</span><span class="mf">984307.6661</span><span class="p">)</span>
+
+<span class="n">NICER</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="o">**</span><span class="n">obs_settings</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">obs_settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">counts</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/XMM_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="n">channels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">201</span><span class="p">),</span>
+                    <span class="n">phases</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
+                    <span class="n">first</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">last</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span>
+                    <span class="n">exposure_time</span><span class="o">=</span><span class="mf">1818434.247359</span><span class="p">)</span>
+
+<span class="n">XMM</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="o">**</span><span class="n">obs_settings</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">14.0</span>
+
+<span class="k">def</span> <span class="nf">veneer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Make the plots a little more aesthetically pleasing. &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">AutoLocator</span><span class="p">())</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">AutoLocator</span><span class="p">())</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">AutoMinorLocator</span><span class="p">())</span>
+
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">plot_one_pulse</span><span class="p">(</span><span class="n">pulse</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Counts&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Plot a pulse resolved over a single rotational cycle. &quot;&quot;&quot;</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+
+    <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ax_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                             <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span>
+                             <span class="n">pulse</span><span class="p">,</span>
+                             <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
+                             <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                             <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">profile</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Channel&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Phase&#39;</span><span class="p">)</span>
+
+    <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span>
+                      <span class="n">cax</span> <span class="o">=</span> <span class="n">ax_cb</span><span class="p">)</span>
+
+    <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+    <span class="n">cb</span><span class="o">.</span><span class="n">solids</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+
+    <span class="n">veneer</span><span class="p">((</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span> <span class="o">=</span> <span class="mf">0.025</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now for the data:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot_one_pulse</span><span class="p">(</span><span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_14_0.png" src="_images/multiple_instruments_14_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">XMM</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;steps&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;XMM&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;steps&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;NICER&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Channel&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_15_0.png" src="_images/multiple_instruments_15_0.png" />
+</div>
+</div>
+<div class="section" id="Instrument">
+<h3>Instrument<a class="headerlink" href="#Instrument" title="Permalink to this headline">¶</a></h3>
+<p>We require a model instrument object to transform incident specific flux signals into a form which enters directly in the sampling distribution of the data.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">CustomInstrument</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Instrument</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A model of the NICER telescope response.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomInstrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span> <span class="o">=</span> <span class="n">channel_edges</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the channel edges. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Overwrite base just to show it is possible.</span>
+
+<span class="sd">        We loaded only a submatrix of the total instrument response</span>
+<span class="sd">        matrix into memory, so here we can simplify the method in the</span>
+<span class="sd">        base class.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_matrix</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_folded_signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folded_signal</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_response_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ARF</span><span class="p">,</span> <span class="n">RMF</span><span class="p">,</span> <span class="n">max_input</span><span class="p">,</span> <span class="n">min_input</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">channel_edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">translate_edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor which converts response files into :class:`numpy.ndarray`s.</span>
+<span class="sd">        :param str ARF: Path to ARF which is compatible with</span>
+<span class="sd">                                :func:`numpy.loadtxt`.</span>
+<span class="sd">        :param str RMF: Path to RMF which is compatible with</span>
+<span class="sd">                                :func:`numpy.loadtxt`.</span>
+<span class="sd">        :param str channel_edges: Optional path to edges which is compatible with</span>
+<span class="sd">                                  :func:`numpy.loadtxt`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">min_input</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">min_input</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">min_input</span><span class="p">)</span>
+
+        <span class="n">max_input</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_input</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ARF</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">ARF</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">RMF</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">RMF</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">channel_edges</span><span class="p">:</span>
+                <span class="n">channel_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">3</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;A file could not be loaded.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="k">if</span> <span class="n">scaling</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ARF</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">*=</span> <span class="n">scaling</span>
+
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">RMF</span><span class="p">[</span><span class="n">min_input</span><span class="p">:</span><span class="n">max_input</span><span class="p">,</span><span class="mi">20</span><span class="p">:</span><span class="mi">201</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ARF</span><span class="p">[</span><span class="n">min_input</span><span class="p">:</span><span class="n">max_input</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+        <span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ARF</span><span class="p">[</span><span class="n">min_input</span><span class="p">,</span><span class="mi">1</span><span class="p">];</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">ARF</span><span class="p">[</span><span class="n">min_input</span><span class="p">:</span><span class="n">max_input</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">*=</span> <span class="n">ARF</span><span class="p">[</span><span class="n">min_input</span><span class="p">:</span><span class="n">max_input</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="n">channels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">201</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">translate_edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">edges</span> <span class="o">+=</span> <span class="n">translate_edges</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">202</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Let’s construct an instance.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">NICER</span><span class="o">.</span><span class="n">instrument</span> <span class="o">=</span> <span class="n">CustomInstrument</span><span class="o">.</span><span class="n">from_response_files</span><span class="p">(</span><span class="n">ARF</span> <span class="o">=</span> <span class="s1">&#39;../../examples/model_data/nicer_v1.01_arf.txt&#39;</span><span class="p">,</span>
+                                         <span class="n">RMF</span> <span class="o">=</span> <span class="s1">&#39;../../examples/model_data/nicer_v1.01_rmf_matrix.txt&#39;</span><span class="p">,</span>
+                                         <span class="n">max_input</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+                                         <span class="n">min_input</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                         <span class="n">channel_edges</span> <span class="o">=</span> <span class="s1">&#39;../../examples/model_data/nicer_v1.01_rmf_energymap.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for loaded instrument response (sub)matrix...
+Channels set.
+No parameters supplied... empty subspace created.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">XMM</span><span class="o">.</span><span class="n">instrument</span> <span class="o">=</span> <span class="n">CustomInstrument</span><span class="o">.</span><span class="n">from_response_files</span><span class="p">(</span><span class="n">ARF</span> <span class="o">=</span> <span class="s1">&#39;../../examples/model_data/nicer_v1.01_arf.txt&#39;</span><span class="p">,</span>
+                                       <span class="n">scaling</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                                       <span class="n">RMF</span> <span class="o">=</span> <span class="s1">&#39;../../examples/model_data/nicer_v1.01_rmf_matrix.txt&#39;</span><span class="p">,</span>
+                                       <span class="n">max_input</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+                                       <span class="n">min_input</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                                       <span class="n">channel_edges</span> <span class="o">=</span> <span class="s1">&#39;../../examples/model_data/nicer_v1.01_rmf_energymap.txt&#39;</span><span class="p">,</span>
+                                       <span class="n">translate_edges</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for loaded instrument response (sub)matrix...
+Channels set.
+No parameters supplied... empty subspace created.
+</pre></div></div>
+</div>
+<p>The NICER <code class="docutils literal notranslate"><span class="pre">v1.01</span></code> response matrix:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">NICER</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span>
+              <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+              <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Channel $-\;20$&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Energy interval&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_23_0.png" src="_images/multiple_instruments_23_0.png" />
+</div>
+</div>
+<p>Summed over channel subset <span class="math notranslate nohighlight">\([20,200]\)</span>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">250</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">NICER</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">NICER</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">NICER</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">XMM</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">XMM</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">XMM</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;r-&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Effective area [cm$^{-2}$]&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Energy [keV]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_25_0.png" src="_images/multiple_instruments_25_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Signal">
+<h3>Signal<a class="headerlink" href="#Signal" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">xpsi.likelihoods.default_background_marginalisation</span> <span class="kn">import</span> <span class="n">eval_marginal_likelihood</span>
+<span class="kn">from</span> <span class="nn">xpsi.likelihoods.default_background_marginalisation</span> <span class="kn">import</span> <span class="n">precomputation</span>
+
+<span class="k">class</span> <span class="nc">CustomSignal</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Signal</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A custom calculation of the logarithm of the likelihood.</span>
+<span class="sd">    We extend the :class:`xpsi.Signal.Signal` class to make it callable.</span>
+<span class="sd">    We overwrite the body of the __call__ method. The docstring for the</span>
+<span class="sd">    abstract method is copied.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">epsabs</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
+                 <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span> <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">support</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Perform precomputation. &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomSignal</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_precomp</span> <span class="o">=</span> <span class="n">precomputation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: No data... can synthesise data but cannot evaluate a &#39;</span>
+                  <span class="s1">&#39;likelihood function.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_intervals</span> <span class="o">=</span> <span class="n">workspace_intervals</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epsabs</span> <span class="o">=</span> <span class="n">epsabs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epsrel</span> <span class="o">=</span> <span class="n">epsrel</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas</span> <span class="o">=</span> <span class="n">sigmas</span>
+            <span class="k">if</span> <span class="n">support</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_support</span> <span class="o">=</span> <span class="n">support</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_support</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">2</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_support</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">support</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_support</span>
+
+    <span class="nd">@support</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">support</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_support</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loglikelihood</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_signal</span> <span class="o">=</span> \
+                <span class="n">eval_marginal_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_precomp</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_support</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_intervals</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_epsabs</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_epsrel</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas</span><span class="p">,</span>
+                                          <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;llzero&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>Note that if we need an additional overall phase shift parameter for additional instruments whose recorded data are phase resolved, then it could be passed to the subclass above for the signal associated with a given telescope.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">NICER</span><span class="o">.</span><span class="n">signal</span> <span class="o">=</span> <span class="n">CustomSignal</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                              <span class="n">instrument</span> <span class="o">=</span> <span class="n">NICER</span><span class="o">.</span><span class="n">instrument</span><span class="p">,</span>
+                              <span class="n">background</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">interstellar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+                              <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
+                              <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
+                              <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span> <span class="o">=</span> <span class="n">CustomSignal</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                               <span class="n">instrument</span> <span class="o">=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">instrument</span><span class="p">,</span>
+                               <span class="n">background</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">interstellar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">support</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+                               <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
+                               <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
+                               <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Star">
+<h3>Star<a class="headerlink" href="#Star" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">spacetime</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Spacetime</span><span class="o">.</span><span class="n">fixed_spin</span><span class="p">(</span><span class="mf">300.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configuring default bounds with fixed spin...
+Creating parameter:
+    &gt; Named &#34;frequency&#34; with fixed value 3.000e+02.
+    &gt; Spin frequency [Hz].
+
+
+Creating parameter:
+    &gt; Named &#34;mass&#34; with bounds [1.000e+00, 3.000e+00].
+    &gt; Gravitational mass [solar masses].
+
+
+Creating parameter:
+    &gt; Named &#34;radius&#34; with bounds [1.477e+00, 1.600e+01].
+    &gt; Coordinate equatorial radius [km].
+
+
+Creating parameter:
+    &gt; Named &#34;distance&#34; with bounds [5.000e-02, 2.000e+00].
+    &gt; Earth distance [kpc].
+
+
+Creating parameter:
+    &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
+    &gt; Cosine of Earth inclination to rotation axis.
+
+
+Spacetime configured.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">bounds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">super_colatitude</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">super_radius</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+              <span class="n">phase_shift</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+              <span class="n">super_temperature</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+<span class="c1"># a simple circular, simply-connected spot</span>
+<span class="n">primary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                            <span class="n">values</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># no initial values and no derived/fixed</span>
+                            <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">omit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">cede</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                            <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                            <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+                            <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                            <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                            <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span> <span class="c1"># unique prefix needed because &gt;1 instance</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+
+
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+
+
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [-5.000e-01, 5.000e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+
+
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.000e+00].
+    &gt; log10(superseding region effective temperature [K]).
+
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">derive</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Derive</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        We can pass a reference to the primary here instead</span>
+<span class="sd">        and store it as an attribute if there is risk of</span>
+<span class="sd">        the global variable changing.</span>
+
+<span class="sd">        This callable can for this simple case also be</span>
+<span class="sd">        achieved merely with a function instead of a magic</span>
+<span class="sd">        method associated with a class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boundto</span><span class="p">,</span> <span class="n">caller</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># one way to get the required reference</span>
+        <span class="k">global</span> <span class="n">primary</span> <span class="c1"># unnecessary, but for clarity</span>
+        <span class="k">return</span> <span class="n">primary</span><span class="p">[</span><span class="s1">&#39;super_temperature&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.2</span>
+
+<span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;super_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># declare fixed/derived variable</span>
+
+<span class="n">secondary</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">HotRegion</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="c1"># can otherwise use same bounds</span>
+                              <span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;super_temperature&#39;</span><span class="p">:</span> <span class="n">derive</span><span class="p">()},</span> <span class="c1"># create a callable value</span>
+                              <span class="n">symmetry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">omit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">cede</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">concentric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">sqrt_num_cells</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                              <span class="n">min_sqrt_num_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                              <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                              <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                              <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                              <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">is_antiphased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="c1"># unique prefix needed because &gt;1 instance</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
+    &gt; The colatitude of the centre of the superseding region [radians].
+
+
+Creating parameter:
+    &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
+    &gt; The angular radius of the (circular) superseding region [radians].
+
+
+Creating parameter:
+    &gt; Named &#34;phase_shift&#34; with bounds [-5.000e-01, 5.000e-01].
+    &gt; The phase of the hot region, a periodic parameter [cycles].
+
+
+Creating parameter:
+    &gt; Named &#34;super_temperature&#34; that is derived from ulterior variables.
+    &gt; log10(superseding region effective temperature [K]).
+
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">xpsi</span> <span class="kn">import</span> <span class="n">HotRegions</span>
+
+<span class="n">hot</span> <span class="o">=</span> <span class="n">HotRegions</span><span class="p">((</span><span class="n">primary</span><span class="p">,</span> <span class="n">secondary</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">CustomPhotosphere</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Photosphere</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Implement method for imaging.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_global_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;p__super_colatitude&#39;</span><span class="p">],</span>
+                          <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;p__phase_shift&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">_2pi</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;p__super_radius&#39;</span><span class="p">],</span>
+                          <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;p__super_temperature&#39;</span><span class="p">],</span>
+                          <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;s__super_colatitude&#39;</span><span class="p">],</span>
+                          <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;s__phase_shift&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">_2pi</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;s__super_radius&#39;</span><span class="p">],</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;s__super_temperature&#39;</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">photosphere</span> <span class="o">=</span> <span class="n">CustomPhotosphere</span><span class="p">(</span><span class="n">hot</span> <span class="o">=</span> <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="n">values</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">mode_frequency</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;mode_frequency&#34; with fixed value 3.000e+02.
+    &gt; Coordinate frequency of the mode of radiative asymmetry in the
+photosphere that is assumed to generate the pulsed signal [Hz].
+
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">star</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Star</span><span class="p">(</span><span class="n">spacetime</span> <span class="o">=</span> <span class="n">spacetime</span><span class="p">,</span> <span class="n">photospheres</span> <span class="o">=</span> <span class="n">photosphere</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Likelihood</span><span class="p">(</span><span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="p">,</span> <span class="n">signals</span> <span class="o">=</span> <span class="p">[</span><span class="n">NICER</span><span class="o">.</span><span class="n">signal</span><span class="p">,</span> <span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="p">],</span>
+                             <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The instrument wavebands exhibit a high degree of overlap. The energies at which we compute incident specific flux signals are based on the union of wavebands, distributed logarithmically:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">energies</span><span class="p">,</span> <span class="s1">&#39;kx&#39;</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+<span class="n">veneer</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">20</span><span class="p">),(</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Index&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Energy [keV]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_41_0.png" src="_images/multiple_instruments_41_0.png" />
+</div>
+</div>
+<p>This is a simple, non-adaptive protocol to ensure that signals are not computed at very nearby energies for multiple telescopes, resulting in overhead.</p>
+<p>Let’s call the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object with the true model parameter values that we injected to generate the synthetic data rendered above, omitting background parameters:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.4</span><span class="p">,</span>
+     <span class="mf">12.5</span><span class="p">,</span>
+     <span class="mf">0.2</span><span class="p">,</span>
+     <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">1.25</span><span class="p">),</span>
+     <span class="mf">0.0</span><span class="p">,</span>
+     <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">0.075</span><span class="p">,</span>
+     <span class="mf">6.2</span><span class="p">,</span>
+     <span class="mf">0.025</span><span class="p">,</span>
+     <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">0.2</span><span class="p">]</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">ll</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># force if you want to clear parameter value caches</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ll = </span><span class="si">%.8f</span><span class="s1">; time = </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ll</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ll = -29322.45504882; time = 0.609
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">NICER</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">loglikelihood</span> <span class="c1"># check NICER ll ~ -26713.6136 ?</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>-26713.614013114762
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">loglikelihood</span> <span class="c1"># check XMM ll ~ -2608.8410 ?</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>-2608.8410357102216
+</pre></div>
+</div>
+</div>
+<p>Let’s fabricate some rough prior information as the constrained support of the background parameters for XMM:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">support</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">181</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">support</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">background_signal</span> <span class="o">-</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">background_signal</span><span class="p">)</span>
+<span class="n">support</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">background_signal</span> <span class="o">+</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">background_signal</span><span class="p">)</span>
+<span class="n">support</span> <span class="o">/=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">exposure_time</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">support</span> <span class="o">=</span> <span class="n">support</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ll</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Let’s confirm that the XMM background-marginalised likelihood did indeed change:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">loglikelihood</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>-2610.1212043019414
+</pre></div>
+</div>
+</div>
+<p>The background-marginalised likelihood function has the following form. Subscripts N denote NICER, whilst subscripts X denote XMM.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+p(d_{\rm X}, d_{\rm N}, \{b_{\rm X}\} \,|\, s)
+    \propto
+    &amp;
+    \underbrace{\mathop{\int}_{\{0\}}^{\{\mathcal{U}_{\rm N}\}}
+    p(d_{\rm N} \,|\, s, \{\mathbb{E}[b_{\rm N}]\}, \texttt{NICER})
+    d\{\mathbb{E}[b_{\rm N}]\}}_{\rm exp( \texttt{NICER.signal.loglikelihood} )}\\
+    &amp;
+    \times\underbrace{\mathop{\int}_{\{0\}}^{\{\mathcal{U}_{X}\}}
+    p(d_{\rm X} \,|\, s, \{\mathbb{E}[b_{\rm X}]\}, \texttt{XMM})
+    p(\{\mathbb{E}[b_{\rm X}]\} \,|\, \{b_{\rm X}\})d\{\mathbb{E}[b_{\rm X}]\}}_{\rm exp( \texttt{XMM.signal.loglikelihood} )}.
+\end{aligned}\end{split}\]</div>
+<p>The term <span class="math notranslate nohighlight">\(p(\{\mathbb{E}[b_{\rm X}]\} \,|\, \{b_{\rm X}\})\)</span> truncates the integral over XMM channel-by-channel background count rate variables to an interval <span class="math notranslate nohighlight">\([a,b]\)</span> in each channel, where <span class="math notranslate nohighlight">\(a,b\in\mathbb{R}^{+}\)</span>. This is the joint prior support of the variables <span class="math notranslate nohighlight">\(\{\mathbb{E}[b_{\rm X}]\}\)</span> rendered in the spectral plot below. The form of the prior density <span class="math notranslate nohighlight">\(p(\{\mathbb{E}[b_{\rm X}]\} \,|\, \{b_{\rm X}\})\)</span> is flat on this interval for each channel. This is a
+simplifying approximation to the probability of the background data <span class="math notranslate nohighlight">\(\{b_{\rm X}\}\)</span> given the variables <span class="math notranslate nohighlight">\(\{\mathbb{E}[b_{\rm X}]\}\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">plot_spectrum</span><span class="p">():</span>
+
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+    <span class="n">veneer</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">support</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="n">support</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">XMM</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span>
+                    <span class="n">support</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">XMM</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span>
+                    <span class="n">step</span> <span class="o">=</span> <span class="s1">&#39;pre&#39;</span><span class="p">,</span>
+                    <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;background support&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">background_signal</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;steps&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;MCL background&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;steps&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;MCL counts given support&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">XMM</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;steps&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;XMM data&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Counts&#39;</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Channel&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot_spectrum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_55_0.png" src="_images/multiple_instruments_55_0.png" />
+</div>
+</div>
+<p>The spectrum labelled <em>MCL counts given support</em> means the expected signal from the pulsar, plus the background count vector that maximises the conditional likelihood function given that pulsar signal, subject to the background vector existing in the prior support. The spectrum labelled <em>MCL background</em>, on the other hand, is the background vector that maximises the conditional likelihood function, but <em>not</em> subject to the prior support.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span><span class="p">[</span><span class="s1">&#39;p__super_temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">6.1</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>-391362.7194516132
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">loglikelihood</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>-321096.5505391409
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot_spectrum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_61_0.png" src="_images/multiple_instruments_61_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Synthesis">
+<h2>Synthesis<a class="headerlink" href="#Synthesis" title="Permalink to this headline">¶</a></h2>
+<p>In this notebook thus far we have not generated sythetic data. However, we did condition on synthetic data. Below we outline how that data was generated.</p>
+<div class="section" id="Background">
+<h3>Background<a class="headerlink" href="#Background" title="Permalink to this headline">¶</a></h3>
+<p>The background radiation field incident on the model instrument for the purpose of generating synthetic data was a time-invariant powerlaw spectrum, and was transformed into a count-rate in each output channel using the response matrix for synthetic data generation. We would reproduce this background here by writing a custom subclass as follows.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">CustomBackground</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Background</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The background injected to generate synthetic data. &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="c1"># first the parameters that are fundemental to this class</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        Powerlaw spectral index.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;powerlaw_index&#39;</span><span class="p">,</span>
+                                <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.01</span><span class="p">),</span>
+                                <span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">,</span>
+                                <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                                <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">,</span>
+                                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">,</span>
+                                <span class="n">permit_prepend</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="c1"># because to be shared by multiple objects</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomBackground</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">,</span> <span class="n">phases</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluate the incident background field. &quot;&quot;&quot;</span>
+
+        <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;powerlaw_index&#39;</span><span class="p">]</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">energy_edges</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="n">temp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">**</span><span class="p">(</span><span class="n">G</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="p">(</span><span class="n">G</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">G</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">temp</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="n">temp</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">background</span> <span class="o">=</span> <span class="n">CustomBackground</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="c1"># use strict bounds, but do not fix/derive</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Creating parameter:
+    &gt; Named &#34;powerlaw_index&#34; with bounds [-3.000e+00, -1.010e+00].
+    &gt; Powerlaw spectral index.
+
+
+</pre></div></div>
+</div>
+<p>We will use this same background signal, albeit with different normalisations, for both telescopes. This is simply to generate finite background contributions.</p>
+</div>
+<div class="section" id="Data-format">
+<h3>Data format<a class="headerlink" href="#Data-format" title="Permalink to this headline">¶</a></h3>
+<p>We are also in need of a simpler data object.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">SynthesiseData</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Custom data container to enable synthesis. &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="n">phases</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_first</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">last</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The first and last channels must be integers.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The first channel number must be lower than the &#39;</span>
+                             <span class="s1">&#39;the last channel number.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Instantiate:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">NICER</span><span class="o">.</span><span class="n">synth</span> <span class="o">=</span> <span class="n">SynthesiseData</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">201</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">XMM</span><span class="o">.</span><span class="n">synth</span> <span class="o">=</span> <span class="n">SynthesiseData</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">201</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting channels for event data...
+Channels set.
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Custom-method">
+<h3>Custom method<a class="headerlink" href="#Custom-method" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">xpsi.tools.synthesise</span> <span class="kn">import</span> <span class="n">synthesise_given_total_count_number</span> <span class="k">as</span> <span class="n">_synthesise</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">synthesise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+               <span class="n">require_source_counts</span><span class="p">,</span>
+               <span class="n">require_background_counts</span><span class="p">,</span>
+               <span class="n">name</span><span class="o">=</span><span class="s1">&#39;synthetic&#39;</span><span class="p">,</span>
+               <span class="n">directory</span><span class="o">=</span><span class="s1">&#39;./data&#39;</span><span class="p">,</span>
+               <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Synthesise data set.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expected_counts</span><span class="p">,</span> <span class="n">synthetic</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_synthesise</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
+                                            <span class="n">require_source_counts</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span><span class="p">,</span>
+                                            <span class="n">require_background_counts</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">registered_background</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cannot create write directory.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">name</span><span class="o">+</span><span class="s1">&#39;_realisation.dat&#39;</span><span class="p">),</span>
+                   <span class="n">synthetic</span><span class="p">,</span>
+                   <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%u</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">,</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">name</span><span class="o">+</span><span class="s1">&#39;_expected_hreadable.dat&#39;</span><span class="p">),</span>
+                    <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.8e</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">synthetic</span><span class="p">,</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">name</span><span class="o">+</span><span class="s1">&#39;_realisation_hreadable.dat&#39;</span><span class="p">),</span>
+                    <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%u</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">fmt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Write to file in human readable format. &quot;&quot;&quot;</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">rows</span> <span class="o">*=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span>
+
+    <span class="n">phases</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">rows</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span> <span class="o">+</span> <span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%u</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%.6f</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">fmt</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CustomSignal</span><span class="o">.</span><span class="n">synthesise</span> <span class="o">=</span> <span class="n">synthesise</span>
+<span class="n">CustomSignal</span><span class="o">.</span><span class="n">_write</span> <span class="o">=</span> <span class="n">_write</span>
+</pre></div>
+</div>
+</div>
+<p>We now need to instantiate, and reconfigure the likelihood object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">NICER</span><span class="o">.</span><span class="n">signal</span> <span class="o">=</span> <span class="n">CustomSignal</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">NICER</span><span class="o">.</span><span class="n">synth</span><span class="p">,</span>
+                              <span class="n">instrument</span> <span class="o">=</span> <span class="n">NICER</span><span class="o">.</span><span class="n">instrument</span><span class="p">,</span>
+                              <span class="n">background</span> <span class="o">=</span> <span class="n">background</span><span class="p">,</span>
+                              <span class="n">interstellar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+                              <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
+                              <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
+                              <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span>
+                              <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;NICER&#39;</span><span class="p">)</span>
+
+<span class="n">XMM</span><span class="o">.</span><span class="n">signal</span> <span class="o">=</span> <span class="n">CustomSignal</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">synth</span><span class="p">,</span>
+                          <span class="n">instrument</span> <span class="o">=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">instrument</span><span class="p">,</span>
+                          <span class="n">background</span> <span class="o">=</span> <span class="n">background</span><span class="p">,</span>
+                          <span class="n">interstellar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">workspace_intervals</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+                          <span class="n">epsrel</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span>
+                          <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">,</span>
+                          <span class="n">sigmas</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span>
+                          <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;XMM&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+    <span class="n">h</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">xpsi</span><span class="o">.</span><span class="n">Likelihood</span><span class="p">(</span><span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="p">,</span> <span class="n">signals</span> <span class="o">=</span> <span class="p">[</span><span class="n">NICER</span><span class="o">.</span><span class="n">signal</span><span class="p">,</span> <span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="p">],</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Warning: No data... can synthesise data but cannot evaluate a likelihood function.
+Warning: No data... can synthesise data but cannot evaluate a likelihood function.
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Synthesise">
+<h3>Synthesise<a class="headerlink" href="#Synthesise" title="Permalink to this headline">¶</a></h3>
+<p>We proceed to synthesise. First we set an environment variable to seed the random number generator being called:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">env</span> GSL_RNG_SEED=0
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+env: GSL_RNG_SEED=0
+</pre></div></div>
+</div>
+<p>Check write path:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">!</span>pwd
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/home/thomas/xpsi/docs/source
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>Free parameters
+---------------
+mass: Gravitational mass [solar masses].
+radius: Coordinate equatorial radius [km].
+distance: Earth distance [kpc].
+cos_inclination: Cosine of Earth inclination to rotation axis.
+p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+p__super_radius: The angular radius of the (circular) superseding region [radians].
+p__super_temperature: log10(superseding region effective temperature [K]).
+s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+s__super_colatitude: The colatitude of the centre of the superseding region [radians].
+s__super_radius: The angular radius of the (circular) superseding region [radians].
+powerlaw_index: Powerlaw spectral index.
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.4</span><span class="p">,</span>
+     <span class="mf">12.5</span><span class="p">,</span>
+     <span class="mf">0.2</span><span class="p">,</span>
+     <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">1.25</span><span class="p">),</span>
+     <span class="mf">0.0</span><span class="p">,</span>
+     <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">0.075</span><span class="p">,</span>
+     <span class="mf">6.2</span><span class="p">,</span>
+     <span class="mf">0.025</span><span class="p">,</span>
+     <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span>
+     <span class="mf">0.2</span><span class="p">,</span>
+     <span class="o">-</span><span class="mf">2.0</span><span class="p">]</span>
+
+<span class="n">NICER_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">require_source_counts</span> <span class="o">=</span> <span class="mf">2.0e6</span><span class="p">,</span>
+                      <span class="n">require_background_counts</span> <span class="o">=</span> <span class="mf">2.0e6</span><span class="p">,</span>
+                      <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;new_NICER&#39;</span><span class="p">,</span>
+                      <span class="n">directory</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">)</span>
+
+<span class="n">XMM_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">require_source_counts</span> <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">,</span>
+                      <span class="n">require_background_counts</span> <span class="o">=</span> <span class="mf">5.0e5</span><span class="p">,</span>
+                      <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;new_XMM&#39;</span><span class="p">,</span>
+                      <span class="n">directory</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">)</span>
+
+<span class="n">likelihood</span><span class="o">.</span><span class="n">synthesise</span><span class="p">(</span><span class="n">p</span><span class="p">,</span>
+                      <span class="n">force</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                      <span class="n">NICER</span> <span class="o">=</span> <span class="n">NICER_kwargs</span><span class="p">,</span>
+                      <span class="n">XMM</span> <span class="o">=</span> <span class="n">XMM_kwargs</span><span class="p">)</span> <span class="c1"># SEED=0</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Exposure time: 984307.618376 [s]
+Background normalisation: 1.89127981e-05
+Exposure time: 1818434.247359 [s]
+Background normalisation: 2.21408314e-04
+</pre></div></div>
+</div>
+<p>Notice that the normalisations, with units photons/s/cm^2/keV, are different because we require so many background counts. This detail is unimportant for this notebook, wherein we simply want some finite background contributions.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot_one_pulse</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_NICER_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">),</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_89_0.png" src="_images/multiple_instruments_89_0.png" />
+</div>
+</div>
+<p>Check we have generated the same count numbers, given the same seed and resolution settings:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_NICER_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+<span class="p">(</span><span class="n">diff</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_XMM_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">(</span><span class="n">diff</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hotregion_complexity.html" class="btn btn-neutral float-right" title="Hot region complexity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="model_construction.html" class="btn btn-neutral float-left" title="Modeling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020 Thomas E. Riley
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>X-PSI &mdash; xpsi 0.4.0 documentation</title>
+  <title>X-PSI &mdash; xpsi 0.5.0 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.4
+                0.5
               </div>
             
           
@@ -94,21 +94,32 @@
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Likelihood API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -121,6 +132,13 @@
 <li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Posterior API</span></p>
 <ul>
@@ -218,13 +236,21 @@
 </style>
 <span class="target" id="module-xpsi"></span><div class="section" id="x-psi">
 <span id="readme"></span><h1>X-PSI<a class="headerlink" href="#x-psi" title="Permalink to this headline">¶</a></h1>
-<p><strong>A prototype open-source package for neutron star</strong>
-<strong>X-ray Pulsation Simulation and Inference.</strong></p>
+<p><strong>An open-source package for neutron star</strong>
+<strong>X-ray Pulse Simulation and Inference.</strong></p>
+<p>X-PSI is designed to simulate rotationally-modified (pulsed) surface X-ray
+emission from neutron stars, taking into account relativistic effects on
+the emitted radiation. This can then be used to perform Bayesian statistical
+inference on real or simulated astronomical data sets. Model parameters of
+interest may include neutron star mass and radius (useful to constrain the
+properties of ultradense nuclear matter) or the system geometry and properties
+of the hot emitting surface-regions. To achieve this, X-PSI couples code for
+likelihood functionality (simulation) with existing open-source software for
+posterior sampling (inference).</p>
 <div class="section" id="concept">
 <h2>Concept<a class="headerlink" href="#concept" title="Permalink to this headline">¶</a></h2>
-<video controls loop
-    <source src="_static/skymap_animated.mp4" width="600" height="600">
-</video><p>The video above displays images of a neutron star. The star hosts a
+<p>The video below, generated by X-PSI, shows a neutron star with non-uniform
+surface temperature, as it rotates. In this specific case the star hosts a
 photospheric radiation field whose asymmetry is driven by an underlying
 ocean wave (a buoyant <span class="math notranslate nohighlight">\(r\)</span>-mode) of thermonuclear burning. The wave is
 effectively periodic over a small number of rotational cycles. The simulation
@@ -235,7 +261,9 @@ for photospheric imaging. A number of simplifying assumptions are made in mode
 calculation and imaging, but this serves to illustrate the simulation and
 visualisation of a neutron star that pulses in the X-ray regime due to
 rotational modulation of some mode of radiative asymmetry at the surface.</p>
-<p>Each panel displays a specific photon intensity sky map. Panels from top-left to
+<video controls loop
+    <source src="_static/skymap_animated.mp4" width="600" height="600">
+</video><p>Each panel displays a specific photon intensity sky map. Panels from top-left to
 bottom-right increase in photon energy. The intensity field in each panel is
 uniquely normalised to the maximum intensity over all phases and sky
 directions. The remarkable evolution of the image with photon energy is
@@ -261,8 +289,8 @@ intensity with sky direction if we are to compute the data-generating process.
 If one then integrates over phase, the phase-averaged spectrum of photons
 incident on a telescope is yielded; if one instead integrates over some
 waveband, a photon pulse-profile is yielded. The following displays
-a phase-energy resolved pulse-profile generated by the more equatorially
-trapped <span class="math notranslate nohighlight">\(r\)</span>-mode.</p>
+several cycles of a phase-energy resolved pulse-profile generated by the more
+equatorially trapped, <span class="math notranslate nohighlight">\(r\)</span>-mode rendered above.</p>
 <img alt="_images/pulse_profile_example.png" src="_images/pulse_profile_example.png" />
 <p>The integration over energy is, for likelihood function evaluation, modified
 by a kernel for the response of an X-ray telescope to the incident radiation
@@ -271,13 +299,13 @@ field.</p>
 <table class="docutils footnote" frame="void" id="id4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>See, e.g., F.R.N. Chambers &amp; A.L. Watts 2019, MNRAS, 491, 4.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>See, e.g., <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2020MNRAS.491.6032C/abstract">Chambers &amp; Watts 2020</a>.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>See O. James et al. 2015, Classical and Quantum Gravity, 32, 6.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>See <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2015CQGra..32f5001J/abstract">James et al. 2015</a>.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="id6" rules="none">
@@ -297,15 +325,59 @@ an <a class="reference external" href="https://youtu.be/by3_6rWE7po">example</a>
 </tbody>
 </table>
 </div>
+<div class="section" id="citation">
+<span id="id7"></span><h2>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h2>
+<p>If X-PSI proves to be a useful tool for your work, please cite the project
+as a software acknowledgement, e.g.:</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>X-PSI (<span class="k">\url</span><span class="nb">{</span>https://github.com/ThomasEdwardRiley/xpsi<span class="nb">}</span>)
+</pre></div>
+</div>
+<p>A JOSS paper is being drafted for the first major release.
+The technical notes in the repository on path <code class="docutils literal notranslate"><span class="pre">/docs/technical</span></code> will be
+updated and made available on the arXiv in the future. The first version of a
+subset of these technical notes appeared in a PhD thesis which you could cite
+if you wish to cite a published work in the meantime:</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@phdthesis<span class="nb">{</span>riley19,
+    author = <span class="nb">{{</span>Riley<span class="nb">}</span>, Thomas E.<span class="nb">}</span>,
+    title = &quot;<span class="nb">{</span>Neutron star parameter estimation from a NICER perspective<span class="nb">}</span>&quot;,
+    school = <span class="nb">{</span>University of Amsterdam<span class="nb">}</span>,
+    year = 2019,
+    address = <span class="nb">{</span>https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a<span class="nb">}</span>,
+    month = 12
+<span class="nb">}</span>
+</pre></div>
+</div>
+<p>Lastly, if you wish to point to the first published application of
+the X-PSI package, then please cite <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a>:</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@article<span class="nb">{</span>riley19,
+    author = <span class="nb">{{</span>Riley<span class="nb">}</span>, T.~E. and <span class="nb">{</span>Watts<span class="nb">}</span>, A.~L. and <span class="nb">{</span>Bogdanov<span class="nb">}</span>, S. and <span class="nb">{</span>Ray<span class="nb">}</span>, P.~S. and <span class="nb">{</span>Ludlam<span class="nb">}</span>, R.~M. and <span class="nb">{</span>Guillot<span class="nb">}</span>, S. and <span class="nb">{</span>Arzoumanian<span class="nb">}</span>, Z. and <span class="nb">{</span>Baker<span class="nb">}</span>, C.~L. and <span class="nb">{</span>Bilous<span class="nb">}</span>, A.~V. and <span class="nb">{</span>Chakrabarty<span class="nb">}</span>, D. and <span class="nb">{</span>Gendreau<span class="nb">}</span>, K.~C. and <span class="nb">{</span>Harding<span class="nb">}</span>, A.~K. and <span class="nb">{</span>Ho<span class="nb">}</span>, W.~C.~G. and <span class="nb">{</span>Lattimer<span class="nb">}</span>, J.~M. and <span class="nb">{</span>Morsink<span class="nb">}</span>, S.~M. and <span class="nb">{</span>Strohmayer<span class="nb">}</span>, T.~E.<span class="nb">}</span>,
+    title = &quot;<span class="nb">{</span>A NICER View of PSR J0030+0451: Millisecond Pulsar Parameter Estimation<span class="nb">}</span>&quot;,
+    doi = <span class="nb">{</span>10.3847/2041-8213/ab481c<span class="nb">}</span>,
+    journal = <span class="nb">{</span><span class="k">\apjl</span><span class="nb">}</span>,
+    month = dec,
+    year = 2019,
+    volume = 887,
+    pages = <span class="nb">{</span>L21<span class="nb">}</span>
+<span class="nb">}</span>
+</pre></div>
+</div>
+<p>This article contains a wealth of relevant information, including a number
+of schematic diagrams that might be of use. There is also an
+<a class="reference external" href="https://iopscience.iop.org/journal/2041-8205/page/Focus_on_NICER_Constraints_on_the_Dense_Matter_Equation_of_State">ApJL Focus Issue</a>
+of which this article is a member.</p>
+</div>
 <div class="section" id="state-of-development">
 <h2>State of development<a class="headerlink" href="#state-of-development" title="Permalink to this headline">¶</a></h2>
+<p>The targeted release for the first major version of X-PSI is September 2020.
+<a class="reference internal" href="todo.html#todo"><span class="std std-ref">Future</span></a> development plans and the project <a class="reference internal" href="history.html#history"><span class="std std-ref">History</span></a> provide a
+breakdown of the state of the project.</p>
 <p>The initial development of X-PSI was checkpointed with the completion of
-<a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019</span></a>, and tagged as <code class="docutils literal notranslate"><span class="pre">v0.1</span></code>. X-PSI remains, however, in the
+<a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a>, and tagged as <code class="docutils literal notranslate"><span class="pre">v0.1</span></code>. X-PSI remains, however, in the
 <a class="reference external" href="https://semver.org/">initial development stage</a>. Backwards incompatible
 changes will be committed without incrementing the major version.
 The package should not be considered stable, and as such has not been
-packaged for automatic installation via a package manager (namely Conda). To
-install X-PSI from source, and to install dependencies, see the
+packaged for automatic installation via a package manager (namely Conda nor
+PyPI). To install X-PSI from source, and to install dependencies, see the
 <a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a> page.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -314,10 +386,8 @@ install X-PSI from source, and to install dependencies, see the
 The pages often reference <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> that is tagged on the <code class="docutils literal notranslate"><span class="pre">master</span></code>
 branch of the repo, but that version is not explicitly documented.</p>
 </div>
-<p>The <em>Modelling</em>,  <em>Hot region complexity</em>, and <em>Global surface emission</em>
-tutorials in these documentation pages however, use <code class="docutils literal notranslate"><span class="pre">v0.4</span></code> of X-PSI (which
-was imported for notebook executed before the minor version bump was applied
-to the package). The required files (i.e., data files and NICER v1.01
+<p>The tutorials and examples in these documentation pages however, use
+<code class="docutils literal notranslate"><span class="pre">v0.5</span></code> of X-PSI. The required files (i.e., data files and NICER v1.01
 instrument files) may be obtained from a different repository due to file size
 considerations:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
@@ -329,8 +399,8 @@ regarding large files.</p>
 <p>Other examples may be found on path <code class="docutils literal notranslate"><span class="pre">xpsi/examples</span></code>. Note, however, that these
 examples used <code class="docutils literal notranslate"><span class="pre">v0.1</span></code> of X-PSI, which can be checked out via the tag on the
 <code class="docutils literal notranslate"><span class="pre">master</span></code> branch. Eventually, example files will be archived with Zenodo
-to accompany the paper. Moreover, the examples require cluster usage and will
-be rerun and advanced for release of the first major version of X-PSI.</p>
+to accompany a JOSS paper. Moreover, the examples require cluster usage and will
+have to be updated for release of the first major version of X-PSI.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -342,14 +412,27 @@ be rerun and advanced for release of the first major version of X-PSI.</p>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_instruments.html">Instrument synergy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hotregion_complexity.html">Hot region complexity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Extension modules</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -358,7 +441,7 @@ be rerun and advanced for release of the first major version of X-PSI.</p>
 <li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pulse.html">Pulse</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
@@ -371,6 +454,15 @@ be rerun and advanced for release of the first major version of X-PSI.</p>
 <li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -403,7 +495,7 @@ be rerun and advanced for release of the first major version of X-PSI.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Thomas E. Riley
+        &copy; Copyright 2020 Thomas E. Riley
 
     </p>
   </div>
