@@ -1002,7 +1002,6 @@ class Photosphere(ParameterSubspace):
             cmap = colormap or (cm.gray_r if invert else cm.gray)
 
             fig = Figure(figsize = figsize) #plt.figure(figsize = figsize)
-            canvas = FigureCanvas(fig)
 
             gs = gridspec.GridSpec(panel_layout[0],
                                    panel_layout[1],
@@ -1124,8 +1123,6 @@ class Photosphere(ParameterSubspace):
             filename = file_root + '_%i.png' % i
             img = mgimg.imread(filename)
             imgplot = ax.imshow(img, aspect='auto')
-            imgplot.axes.get_xaxis().set_visible(False)
-            imgplot.axes.get_yaxis().set_visible(False)
             images.append([imgplot])
 
         cycles = int(cycles)
@@ -1158,6 +1155,7 @@ class Photosphere(ParameterSubspace):
         ani.save(filename, writer = 'ffmpeg',
                  dpi = dpi, fps = fps, bitrate = bitrate)
 
+        fig.clf() # this or ax.cla() needed to free memory
         plt.close(fig)
 
 Photosphere._update_doc()
