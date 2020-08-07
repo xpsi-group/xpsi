@@ -79,6 +79,17 @@ class Photosphere(ParameterSubspace):
         mode frequency is applied to normalise the ray lags instead of the
         stellar rotation frequency.
 
+    :param iterable custom:
+        A :class:`~.Parameter.Parameter` instance or iterable over such
+        instances. Might be useful for calling image plane extensions and
+        passing global variables, without having to instantiate
+        surface-discretisation classes and without having to handle global
+        variable values at compile time or from disk for runtime access.
+
+        without instantiating surface-discretisation
+        classes and without having to handle global variable values at compile
+        time or from disk.
+
     .. note::
 
         In basic modelling patterns the frequency is the spin frequency,
@@ -95,6 +106,7 @@ class Photosphere(ParameterSubspace):
                  hot = None, elsewhere = None,
                  everywhere = None,
                  bounds = None, values = None,
+                 custom = None,
                  **kwargs):
 
         if everywhere is not None:
@@ -147,6 +159,7 @@ class Photosphere(ParameterSubspace):
 
         super(Photosphere, self).__init__(mode_frequency,
                                           hot, elsewhere, everywhere,
+                                          custom,
                                           **kwargs)
 
     @property
@@ -276,7 +289,7 @@ class Photosphere(ParameterSubspace):
                                     fast_total_counts,
                                     threads,
                                     self._elsewhere._compute_cellParamVecs)
-            else:
+            elif self._hot is not None:
                 self._hot.embed(self._spacetime,
                                 self,
                                 fast_total_counts,
@@ -1002,6 +1015,7 @@ class Photosphere(ParameterSubspace):
             cmap = colormap or (cm.gray_r if invert else cm.gray)
 
             fig = Figure(figsize = figsize) #plt.figure(figsize = figsize)
+            canvas = FigureCanvas(fig)
 
             gs = gridspec.GridSpec(panel_layout[0],
                                    panel_layout[1],

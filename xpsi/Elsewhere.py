@@ -60,12 +60,15 @@ class Elsewhere(ParameterSubspace):
     def __init__(self,
                  sqrt_num_cells = 64,
                  num_rays = 1000,
-                 bounds = {},
-                 values = {},
+                 bounds = None,
+                 values = None,
                  custom = None):
 
         self.sqrt_num_cells = sqrt_num_cells
         self.num_rays = num_rays
+
+        if bounds is None: bounds = {}
+        if values is None: values = {}
 
         if not custom: # setup default temperature parameter
             T = Parameter('elsewhere_temperature',
