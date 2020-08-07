@@ -289,6 +289,17 @@
 <span class="sd">        mode frequency is applied to normalise the ray lags instead of the</span>
 <span class="sd">        stellar rotation frequency.</span>
 
+<span class="sd">    :param iterable custom:</span>
+<span class="sd">        A :class:`~.Parameter.Parameter` instance or iterable over such</span>
+<span class="sd">        instances. Might be useful for calling image plane extensions and</span>
+<span class="sd">        passing global variables, without having to instantiate</span>
+<span class="sd">        surface-discretisation classes and without having to handle global</span>
+<span class="sd">        variable values at compile time or from disk for runtime access.</span>
+
+<span class="sd">        without instantiating surface-discretisation</span>
+<span class="sd">        classes and without having to handle global variable values at compile</span>
+<span class="sd">        time or from disk.</span>
+
 <span class="sd">    .. note::</span>
 
 <span class="sd">        In basic modelling patterns the frequency is the spin frequency,</span>
@@ -305,6 +316,7 @@
                  <span class="n">hot</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">elsewhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">everywhere</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">custom</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">everywhere</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -357,6 +369,7 @@
 
         <span class="nb">super</span><span class="p">(</span><span class="n">Photosphere</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mode_frequency</span><span class="p">,</span>
                                           <span class="n">hot</span><span class="p">,</span> <span class="n">elsewhere</span><span class="p">,</span> <span class="n">everywhere</span><span class="p">,</span>
+                                          <span class="n">custom</span><span class="p">,</span>
                                           <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -486,7 +499,7 @@
                                     <span class="n">fast_total_counts</span><span class="p">,</span>
                                     <span class="n">threads</span><span class="p">,</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">_elsewhere</span><span class="o">.</span><span class="n">_compute_cellParamVecs</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_hot</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">,</span>
                                 <span class="bp">self</span><span class="p">,</span>
                                 <span class="n">fast_total_counts</span><span class="p">,</span>
@@ -1212,6 +1225,7 @@
             <span class="n">cmap</span> <span class="o">=</span> <span class="n">colormap</span> <span class="ow">or</span> <span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">gray_r</span> <span class="k">if</span> <span class="n">invert</span> <span class="k">else</span> <span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
 
             <span class="n">fig</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="n">figsize</span><span class="p">)</span> <span class="c1">#plt.figure(figsize = figsize)</span>
+            <span class="n">canvas</span> <span class="o">=</span> <span class="n">FigureCanvas</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 
             <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="n">panel_layout</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                    <span class="n">panel_layout</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
