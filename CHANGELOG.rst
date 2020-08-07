@@ -34,6 +34,27 @@ Attribution
 ^^^^^^^^^^^
 
 
+[v0.5.1] - 2020-08-07
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Bug when plotting intensity sky maps because a line was inadvertently
+  removed.
+* Some mutable defaults in :class:`xpsi.Elsewhere` and :class:`xpsi.Everywhere`.
+* Conditional statement in :meth:`xpsi.Photosphere.embed`.
+
+Added
+^^^^^
+
+* Capability to add custom parameters when instantiating
+  :class:`xpsi.Photosphere`, which is useful for calling image plane extensions
+  whilst passing global variables, without having to instantiate
+  surface-discretisation classes and without having to handle global variable
+  values at compile time or from disk for runtime access.
+
+
 [v0.5.0] - 2020-08-06
 ~~~~~~~~~~~~~~~~~~~~~
 

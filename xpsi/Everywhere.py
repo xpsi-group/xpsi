@@ -74,8 +74,8 @@ class Everywhere(ParameterSubspace):
 
     def __init__(self,
                  time_invariant,
-                 bounds = {},
-                 values = {},
+                 bounds = None,
+                 values = None,
                  sqrt_num_cells = 64,
                  num_rays = 200,
                  num_leaves = 100,
@@ -88,6 +88,9 @@ class Everywhere(ParameterSubspace):
         self.sqrt_num_cells = sqrt_num_cells
 
         self.set_phases(num_leaves, num_phases, phases)
+
+        if bounds is None: bounds = {}
+        if values is None: values = {}
 
         if not custom: # setup default temperature parameter
             T = Parameter('temperature',
