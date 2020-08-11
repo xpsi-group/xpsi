@@ -12,7 +12,7 @@ from . import make_verbose
 from abc import ABCMeta, abstractmethod
 from .ParameterSubspace import ParameterSubspace
 
-class Prior(object):
+class Prior(ParameterSubspace):
     """ The joint prior distribution.
 
     Methods to both evaluate the distribution (required by MCMC) and
@@ -35,7 +35,7 @@ class Prior(object):
 
     __derived_names__ = None
 
-    def __init__(self, parameters):
+    def __init__(self, parameters = None, *hyperparameters):
         """
         You might want to overwrite this initialiser to do some custom
         setup for priors whose handling is more involved.
@@ -46,7 +46,10 @@ class Prior(object):
         a reference to the parameters to ensure interoperability.
 
         """
-        self.parameters = parameters
+        if parameters is not None:
+            self.parameters = parameters
+
+        super(Prior, self).__init__(*hyperparameters)
 
     def __len__(self):
         """ Number of parameter dimensions. """
