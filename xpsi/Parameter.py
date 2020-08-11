@@ -237,7 +237,7 @@ class Parameter(object):
     @property
     def is_hyperparameter(self):
         """ Is the variable a hyperparameter? """
-        return self._is_hyper
+        return self._is_hyperparameter
 
     @is_hyperparameter.setter
     def is_hyperparameter(self, is_hyper):
