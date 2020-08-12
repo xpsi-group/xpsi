@@ -361,7 +361,7 @@ def intensity_from_globals(double[::1] energies,
     else:
         data = init_ptr(numTHREADS, NULL)
 
-    cdef storage *local_vars_buf = init_local_variables(numTHREADS)
+    cdef storage *local_vars_buf = init_local_variables(numTHREADS, NULL)
 
     cdef double[::1] intensities = np.zeros(energies.shape[0],
                                             dtype = np.double)

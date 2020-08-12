@@ -1,10 +1,10 @@
-""" X-PSI: X-ray Pulsation Simulation and Inference
+""" X-PSI: X-ray Pulse Simulation and Inference
 
-A prototype open-source package for neutron star astrostatistics.
+A open-source package for neutron star astrostatistics.
 
 """
 from __future__ import print_function
-__version__ = "0.5.1"
+__version__ = "0.5.2"
 __author__ = "Thomas E. Riley"
 
 try:

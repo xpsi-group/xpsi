@@ -152,17 +152,21 @@ class Parameter(object):
         a prefix? Note that this gives permission recursively to all
         encapsulating subspaces higher in the hierarchy.
 
+    :param bool is_hyperparameter:
+        A boolean declaring whether the parameter is a hyperparameter.
+
     """
 
     @make_verbose('Creating parameter:','\n')
     def __init__(self, name, strict_bounds, bounds=(None,None),
                  doc=None, symbol=r'', value=None, permit_prepend=True,
-                 deactivate_verbosity=False):
+                 deactivate_verbosity=False, is_hyperparameter=False):
         """ See the class docstring. """
 
         self.name = name
         self.strict_bounds = strict_bounds
         self.fixed = True if bounds is None else False
+        self.is_hyperparameter = is_hyperparameter
         self.bounds = bounds
         self.doc = doc
         self.symbol = symbol
@@ -229,6 +233,17 @@ class Parameter(object):
             self._name = name
         else:
             raise TypeError('Name must be a string.')
+
+    @property
+    def is_hyperparameter(self):
+        """ Is the variable a hyperparameter? """
+        return self._is_hyperparameter
+
+    @is_hyperparameter.setter
+    def is_hyperparameter(self, is_hyper):
+        if not isinstance(is_hyper, bool):
+            raise TypeError('A boolean is required to define variable type.')
+        self._is_hyperparameter = is_hyper
 
     @property
     def permit_prepend(self):
@@ -436,6 +451,9 @@ class Parameter(object):
     @property
     def needs_update(self):
         """ Do cached dependencies need to be updated? """
+        if self.is_hyperparameter:
+            return False # likelihood implicitly dependent on hyperparameters
+
         if self.derived:
             return True # assume ulterior variables have changed
         elif self.fixed:

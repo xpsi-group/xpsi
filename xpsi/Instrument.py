@@ -68,6 +68,13 @@ class Instrument(ParameterSubspace):
         q` then it is implied that subsets of adjacent output channels are
         effectively grouped together.
 
+    :param ndarray[p+1] channel_edges:
+        The channel (energy) edges of the instrument, in keV. The array must
+        be congruent to the zeroth dimension of the :attr:`matrix`: the number
+        of edges must be :math:`p + 1`. The edges must be monotonically
+        increasing. These edges will correspond to the nominal response matrix
+        and any deviation from this matrix (see above).
+
     :param tuple args:
         Container of parameter instances.
 
@@ -77,11 +84,14 @@ class Instrument(ParameterSubspace):
         find its way to the base class.
 
     """
-    def __init__(self, matrix, energy_edges, channels, *args, **kwargs):
+    def __init__(self, matrix, energy_edges, channels, channel_edges=None,
+                 *args, **kwargs):
 
         self.matrix = matrix
         self.energy_edges = energy_edges
         self.channels = channels
+        if channel_edges is not None:
+            self.channel_edges = channel_edges
 
         super(Instrument, self).__init__(*args, **kwargs)
 
@@ -194,7 +204,7 @@ class Instrument(ParameterSubspace):
         """ Get the energy edges of the instrument, in keV.
 
         A :class:`numpy.ndarray` of edges of the input energy intervals which
-        map to output channels defined in the data space.
+        map to channels defined in the data space.
 
         """
         return self._energy_edges
@@ -208,7 +218,7 @@ class Instrument(ParameterSubspace):
                 self._energy_edges = _np.array(energy_edges)
             except TypeError:
                 raise EdgesError('Energy edges must be in a one-dimensional '
-                                 'array, and must all be postive.')
+                                 'array.')
         else:
             self._energy_edges = energy_edges
 
@@ -219,7 +229,55 @@ class Instrument(ParameterSubspace):
             assert not (self._energy_edges[1:] <= self._energy_edges[:-1]).any()
         except AssertionError:
             raise EdgesError('Energy edges must be in a one-dimensional '
-                             'array, and must be postive.')
+                             'array, and must be postive and increasing.')
+
+    @property
+    def channel_edges(self):
+        """ Get the channel (energy) edges of the instrument, in keV.
+
+        A :class:`numpy.ndarray` of edges of the registered energy intervals
+        labelled as channels defined in the data space. This is relevant when
+        there is a detector-by-detector gain scale applied to event data (such
+        as for NICER instrument calibration products), meaning that the
+        redistribution matrix is effectively shared by detectors and the
+        channels across detectors can share an energy scale definition.
+
+        An incident photon of given energy then has a registered-energy
+        distribution that generally peaks in the vicinity of the true photon
+        energy. The resdistribution matrix will have some energy resolution
+        (along with other features such as shelves). With thanks to Paul S.
+        Ray for explaining the choice to calibrate in this manner.
+
+        .. note::
+
+            If you made a channel cut that results in a non-contiguous subset
+            of channels, you will need to overwrite the setter method because
+            the checks will fail.
+
+        """
+        return self._channel_edges
+
+    @channel_edges.setter
+    def channel_edges(self, energy_edges):
+        """ Set the channel (energy) edges in keV. """
+
+        if not isinstance(channel_edges, _np.ndarray):
+            try:
+                self._channel_edges = _np.array(channel_edges)
+            except TypeError:
+                raise EdgesError('Channel edges must be in a one-dimensional '
+                                 'array')
+        else:
+            self._channel_edges = channel_edges
+
+        try:
+            assert self._channel_edges.ndim == 1
+            assert (self._channel_edges >= 0.0).all()
+            assert self._channel_edges.shape[0] == self._matrix.shape[0] + 1
+            assert not (self._channel_edges[1:] <= self._channel_edges[:-1]).any()
+        except AssertionError:
+            raise EdgesError('Channel edges must be in a one-dimensional '
+                             'array, and must be postive and increasing.')
 
     @property
     def channels(self):
@@ -252,7 +310,6 @@ class Instrument(ParameterSubspace):
             raise ChannelError('Channel numbers must be in a '
                                'one-dimensional array, and must all be '
                                'positive integers including zero.')
-
 
         if (self._channels[1:] - self._channels[:-1] != 1).any():
             yield ('Warning: Channel numbers do not uniformly increment by one.'

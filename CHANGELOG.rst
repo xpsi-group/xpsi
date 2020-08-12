@@ -33,6 +33,58 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
+[v0.5.2] - 2020-08-12
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Python API: small backwards compatible patches to add useful features.
+* C API: small backwards incompatible patch to support Python API patch.
+
+Added
+^^^^^
+
+* Support for hyperparameters (i.e., parameters of the prior distribution),
+  by making :class:`~.Prior.Prior` inherit from
+  :class:`~.ParameterSubspace.ParameterSubspace`. Custom hyperparameters can
+  then be defined in a subclass initiliser, or otherwise. The hyperparameters
+  are merged into the :class:`~.Likelihood.Likelihood` parameter subspace as
+  mostly normal parameters (with small caveat in the form of property
+  :attr:`~.Parameter.Parameter.is_hyperparameter`) and can have their own
+  prior (the hyperprior) implemented in a :class:`~.Prior.Prior` subclass along
+  with the other free parameters in the model. A tutorial will be delivered in
+  due course. These modifications are backwards compatible.
+* Simple support for transforming from global to local variables (for image-
+  plane calculations) with the help of a file on disk, whose path can be
+  specified dynamically in Python and relayed to the relevant extension where a
+  custom model implemention can do I/O with the file. This is useful if one has
+  a set of files containing precomputed data, but understandably does not want
+  to do filesystem acrobatics or recompile an extension every time the file
+  path changes. Setting the file path dynamically in this way is akin to
+  changing the value of some discrete variable in the mapping between global
+  and local variables. With thanks to Anna Bilous for the suggestion. A tutorial
+  will be delivered when possible.
+* Added :attr:`~.Instrument.Instrument.channel_edges` property, and updated
+  tutorials to reflect this new concrete implementation.
+
+Changed
+^^^^^^^
+
+* The ``init_local_variables`` function signature in the header
+  ``xpsi/surface_radiation_field/local_variables.pxd``, and in the
+  corresponding ``xpsi/surface_radiation_field/archive/local_variables``
+  extensions. You would have to modify a custom extension module manually to
+  match the function signature declared in the header.
+
+Fixed
+^^^^^
+
+* Removed remnant manual Sphinx method signatures; the decorator now preserves
+  the method signature so automated Sphinx doc works on those decorated methods.
+* Updated package docstring to reflect name change.
+* Uses of ``xpsi.Data.channel_range`` property to adhere to future deprecation.
+
 
 [v0.5.1] - 2020-08-07
 ~~~~~~~~~~~~~~~~~~~~~

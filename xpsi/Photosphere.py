@@ -86,10 +86,6 @@ class Photosphere(ParameterSubspace):
         surface-discretisation classes and without having to handle global
         variable values at compile time or from disk for runtime access.
 
-        without instantiating surface-discretisation
-        classes and without having to handle global variable values at compile
-        time or from disk.
-
     .. note::
 
         In basic modelling patterns the frequency is the spin frequency,
@@ -385,6 +381,18 @@ class Photosphere(ParameterSubspace):
             raise NotImplementedError('Subclass and provide an implementation.')
 
     @property
+    def global_to_local_file(self):
+        return self._global_to_local_file
+
+    @global_to_local_file.setter
+    def global_to_local_file(self, filepath):
+        if not isinstance(filepath, _six.string_types):
+            raise TypeError('File path must be a string.')
+        elif not _os.path.isfile(filepath):
+            raise IOError('File does not exist.')
+        self._global_to_local_file = filepath
+
+    @property
     def images(self):
         """ Get the precomputed image information. """
         return self._images
@@ -603,6 +611,7 @@ class Photosphere(ParameterSubspace):
                                 init_step,
                                 image_plane_radial_increment_power,
                                 self.global_variables,
+                                self.global_to_local_file,
                                 energies,
                                 phases,
                                 cache_intensities,

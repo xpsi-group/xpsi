@@ -12,8 +12,8 @@ from . import make_verbose
 from abc import ABCMeta, abstractmethod
 from .ParameterSubspace import ParameterSubspace
 
-class Prior(object):
-    """ The joint prior distribution.
+class Prior(ParameterSubspace):
+    """ The joint prior distribution of parameters (including hyperparameters).
 
     Methods to both evaluate the distribution (required by MCMC) and
     draw uniformly from the distribution (required for nested sampling, and
@@ -25,17 +25,25 @@ class Prior(object):
     In the ``__call__()`` method the parameter values are checked against the
     hard parameter bounds of the prior support.
 
-    .. note:: If you wish to check bounds manually, implement
-              the ``__init__()`` and ``__call__()`` methods, and do not
-              access the default code (e.g., via ``super()``) or only
-              use the default code for some parameters.
+    .. note::
+
+        If you wish to check bounds manually, implement the ``__init__()`` and
+        ``__call__()`` methods, and do not access the default code (e.g., via
+        ``super()``) or only use the default code for some parameters.
+
+    :param obj parameters:
+        An optional instance of :class:`~.ParameterSubspace.ParameterSubspace`.
+
+    :param obj hyperparameters:
+        Positional arguments that are hyperparameters (parameters of the prior
+        distribution), or iterables of hyperparameters.
 
     """
     __metaclass__ = ABCMeta
 
     __derived_names__ = None
 
-    def __init__(self, parameters):
+    def __init__(self, parameters = None, *hyperparameters):
         """
         You might want to overwrite this initialiser to do some custom
         setup for priors whose handling is more involved.
@@ -46,10 +54,19 @@ class Prior(object):
         a reference to the parameters to ensure interoperability.
 
         """
-        self.parameters = parameters
+        if parameters is not None:
+            self.parameters = parameters
+
+        super(Prior, self).__init__(*hyperparameters)
+
+        for hyperparameter in self:
+            if not hyperparameter.is_hyperparameter:
+                raise ValueError('Parameter is not declared as a '
+                                 'hyperparameter but is a parameter of the '
+                                 'prior distribution.')
 
     def __len__(self):
-        """ Number of parameter dimensions. """
+        """ Number of parameter + hyperparameter dimensions. """
         return len(self._parameters) # redirect
 
     @property
