@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Photosphere &mdash; xpsi 0.5.0 documentation</title>
+  <title>xpsi.Photosphere &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -295,10 +295,6 @@
 <span class="sd">        passing global variables, without having to instantiate</span>
 <span class="sd">        surface-discretisation classes and without having to handle global</span>
 <span class="sd">        variable values at compile time or from disk for runtime access.</span>
-
-<span class="sd">        without instantiating surface-discretisation</span>
-<span class="sd">        classes and without having to handle global variable values at compile</span>
-<span class="sd">        time or from disk.</span>
 
 <span class="sd">    .. note::</span>
 
@@ -595,6 +591,18 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Subclass and provide an implementation.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">global_to_local_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_to_local_file</span>
+
+    <span class="nd">@global_to_local_file</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">global_to_local_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">_six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;File path must be a string.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;File does not exist.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_global_to_local_file</span> <span class="o">=</span> <span class="n">filepath</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the precomputed image information. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
@@ -813,6 +821,7 @@
                                 <span class="n">init_step</span><span class="p">,</span>
                                 <span class="n">image_plane_radial_increment_power</span><span class="p">,</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">global_variables</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">global_to_local_file</span><span class="p">,</span>
                                 <span class="n">energies</span><span class="p">,</span>
                                 <span class="n">phases</span><span class="p">,</span>
                                 <span class="n">cache_intensities</span><span class="p">,</span>

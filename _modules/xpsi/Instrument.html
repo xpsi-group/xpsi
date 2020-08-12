@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Instrument &mdash; xpsi 0.5.0 documentation</title>
+  <title>xpsi.Instrument &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -278,6 +278,13 @@
 <span class="sd">        q` then it is implied that subsets of adjacent output channels are</span>
 <span class="sd">        effectively grouped together.</span>
 
+<span class="sd">    :param ndarray[p+1] channel_edges:</span>
+<span class="sd">        The channel (energy) edges of the instrument, in keV. The array must</span>
+<span class="sd">        be congruent to the zeroth dimension of the :attr:`matrix`: the number</span>
+<span class="sd">        of edges must be :math:`p + 1`. The edges must be monotonically</span>
+<span class="sd">        increasing. These edges will correspond to the nominal response matrix</span>
+<span class="sd">        and any deviation from this matrix (see above).</span>
+
 <span class="sd">    :param tuple args:</span>
 <span class="sd">        Container of parameter instances.</span>
 
@@ -287,11 +294,14 @@
 <span class="sd">        find its way to the base class.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">channel_edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">energy_edges</span> <span class="o">=</span> <span class="n">energy_edges</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span>
+        <span class="k">if</span> <span class="n">channel_edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel_edges</span> <span class="o">=</span> <span class="n">channel_edges</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">Instrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -404,7 +414,7 @@
         <span class="sd">&quot;&quot;&quot; Get the energy edges of the instrument, in keV.</span>
 
 <span class="sd">        A :class:`numpy.ndarray` of edges of the input energy intervals which</span>
-<span class="sd">        map to output channels defined in the data space.</span>
+<span class="sd">        map to channels defined in the data space.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span>
@@ -418,7 +428,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energy_edges</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Energy edges must be in a one-dimensional &#39;</span>
-                                 <span class="s1">&#39;array, and must all be postive.&#39;</span><span class="p">)</span>
+                                 <span class="s1">&#39;array.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span> <span class="o">=</span> <span class="n">energy_edges</span>
 
@@ -429,7 +439,55 @@
             <span class="k">assert</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Energy edges must be in a one-dimensional &#39;</span>
-                             <span class="s1">&#39;array, and must be postive.&#39;</span><span class="p">)</span>
+                             <span class="s1">&#39;array, and must be postive and increasing.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the channel (energy) edges of the instrument, in keV.</span>
+
+<span class="sd">        A :class:`numpy.ndarray` of edges of the registered energy intervals</span>
+<span class="sd">        labelled as channels defined in the data space. This is relevant when</span>
+<span class="sd">        there is a detector-by-detector gain scale applied to event data (such</span>
+<span class="sd">        as for NICER instrument calibration products), meaning that the</span>
+<span class="sd">        redistribution matrix is effectively shared by detectors and the</span>
+<span class="sd">        channels across detectors can share an energy scale definition.</span>
+
+<span class="sd">        An incident photon of given energy then has a registered-energy</span>
+<span class="sd">        distribution that generally peaks in the vicinity of the true photon</span>
+<span class="sd">        energy. The resdistribution matrix will have some energy resolution</span>
+<span class="sd">        (along with other features such as shelves). With thanks to Paul S.</span>
+<span class="sd">        Ray for explaining the choice to calibrate in this manner.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            If you made a channel cut that results in a non-contiguous subset</span>
+<span class="sd">            of channels, you will need to overwrite the setter method because</span>
+<span class="sd">            the checks will fail.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span>
+
+    <span class="nd">@channel_edges</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energy_edges</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the channel (energy) edges in keV. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Channel edges must be in a one-dimensional &#39;</span>
+                                 <span class="s1">&#39;array&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span> <span class="o">=</span> <span class="n">channel_edges</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EdgesError</span><span class="p">(</span><span class="s1">&#39;Channel edges must be in a one-dimensional &#39;</span>
+                             <span class="s1">&#39;array, and must be postive and increasing.&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -462,7 +520,6 @@
             <span class="k">raise</span> <span class="n">ChannelError</span><span class="p">(</span><span class="s1">&#39;Channel numbers must be in a &#39;</span>
                                <span class="s1">&#39;one-dimensional array, and must all be &#39;</span>
                                <span class="s1">&#39;positive integers including zero.&#39;</span><span class="p">)</span>
-
 
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Warning: Channel numbers do not uniformly increment by one.&#39;</span>

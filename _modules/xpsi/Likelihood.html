@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Likelihood &mdash; xpsi 0.5.0 documentation</title>
+  <title>xpsi.Likelihood &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -287,7 +287,8 @@
                  <span class="n">num_energies</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
                  <span class="n">fast_rel_num_energies</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
                  <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">llzero</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0e90</span><span class="p">,</span>
-                 <span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                 <span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">prior</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">star</span> <span class="o">=</span> <span class="n">star</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signals</span> <span class="o">=</span> <span class="n">signals</span>
@@ -329,8 +330,11 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="n">externally_updated</span>
 
+        <span class="k">if</span> <span class="n">prior</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span>
+
         <span class="c1"># merge subspaces</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_signals</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_star</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_signals</span> <span class="o">+</span> <span class="p">[</span><span class="n">prior</span><span class="p">]))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">threads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

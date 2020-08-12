@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modeling &mdash; xpsi 0.5.0 documentation</title>
+  <title>Modeling &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -512,7 +512,7 @@ div.rendered_html tbody tr:hover {
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.5.0               |
+|                Version: 0.5.2               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -783,7 +783,7 @@ Channels set.
     <span class="n">ax_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="n">profile</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
-                             <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span>
+                             <span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
                              <span class="n">pulse</span><span class="p">,</span>
                              <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
                              <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -835,17 +835,7 @@ Channels set.
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">class</span> <span class="nc">CustomInstrument</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Instrument</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A model of the NICER telescope response.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CustomInstrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span> <span class="o">=</span> <span class="n">channel_edges</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the channel edges. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span>
+    <span class="sd">&quot;&quot;&quot; A model of the NICER telescope response. &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Overwrite base just to show it is possible.</span>
@@ -898,7 +888,7 @@ Channels set.
 
         <span class="n">channels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">201</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">202</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">202</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -923,7 +913,6 @@ Channels set.
 <div class="highlight"><pre>
 Setting channels for loaded instrument response (sub)matrix...
 Channels set.
-No parameters supplied... empty subspace created.
 </pre></div></div>
 </div>
 <p>The NICER <code class="docutils literal notranslate"><span class="pre">v1.01</span></code> response matrix:</p>
@@ -1962,7 +1951,7 @@ Checking closeness of likelihood arrays:
 Closeness evaluated.
 Log-likelihood value checks passed on root process.
 Checks passed.
-time = 0.602 s
+time = 0.591 s
 </pre></div></div>
 </div>
 <p>If the secondary temperature was free, we would extend the vector <code class="docutils literal notranslate"><span class="pre">p</span></code> by one element, passing the injected value of <code class="docutils literal notranslate"><span class="pre">6.0</span></code>:</p>
@@ -2634,7 +2623,7 @@ by the solid curves without markers.</p>
 </pre></div>
 </div>
 </div>
-<p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, passing the bounds from the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object.</p>
+<p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, pass it to the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object, which stores a mutual reference to itself in <code class="docutils literal notranslate"><span class="pre">prior</span></code>. Note that if you have hyperparameters defined in the parameter subspace of <code class="docutils literal notranslate"><span class="pre">prior</span></code>, the prior needs to be passed upon instantation of the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object so that the hyperparameters get merged into the global parameter space; this is not demonstrated in this tutorial.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
 </pre></div>
@@ -2727,17 +2716,17 @@ by the solid curves without markers.</p>
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[1.5352456665518068,
- 9.978520393133147,
- 0.24298397606079597,
- 0.11428433796806958,
- 0.44300168993955136,
- 0.46642490198317677,
- 0.9756690445802341,
- 6.175826978115811,
- 0.638954292451577,
- 0.9078609312396797,
- 1.4553105936448014]
+<span></span>[1.5862576883790627,
+ 12.048028633309093,
+ 0.25019098637025405,
+ 0.2932329502322618,
+ -0.22294246012439933,
+ 2.3399681557651246,
+ 1.2500895696815577,
+ 3.012630973458471,
+ 0.08872598158517297,
+ 0.8615588879417035,
+ 1.2789056343839766]
 </pre></div>
 </div>
 </div>
@@ -2906,7 +2895,7 @@ Samples drawn.
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plot_samps</span><span class="p">(</span><span class="n">samps_plus_transformed</span><span class="p">,</span>
                <span class="n">likelihood</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;p__phase_shift&#39;</span><span class="p">),</span>
-               <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="c1"># there is not such a nice way to perform the lookup</span>
+               <span class="n">likelihood</span><span class="o">.</span><span class="n">prior</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;phase_separation&#39;</span><span class="p">),</span>
                <span class="sa">r</span><span class="s1">&#39;$\phi_</span><span class="si">{p}</span><span class="s1">$ [cycles]&#39;</span><span class="p">,</span>
                <span class="sa">r</span><span class="s1">&#39;$\Delta\phi$ [cycles]&#39;</span><span class="p">)</span>
 </pre></div>

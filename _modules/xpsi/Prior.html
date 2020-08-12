@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Prior &mdash; xpsi 0.5.0 documentation</title>
+  <title>xpsi.Prior &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -222,8 +222,8 @@
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="kn">import</span> <span class="n">ParameterSubspace</span>
 
-<div class="viewcode-block" id="Prior"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior">[docs]</a><span class="k">class</span> <span class="nc">Prior</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; The joint prior distribution.</span>
+<div class="viewcode-block" id="Prior"><a class="viewcode-back" href="../../prior.html#xpsi.Prior.Prior">[docs]</a><span class="k">class</span> <span class="nc">Prior</span><span class="p">(</span><span class="n">ParameterSubspace</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The joint prior distribution of parameters (including hyperparameters).</span>
 
 <span class="sd">    Methods to both evaluate the distribution (required by MCMC) and</span>
 <span class="sd">    draw uniformly from the distribution (required for nested sampling, and</span>
@@ -235,17 +235,25 @@
 <span class="sd">    In the ``__call__()`` method the parameter values are checked against the</span>
 <span class="sd">    hard parameter bounds of the prior support.</span>
 
-<span class="sd">    .. note:: If you wish to check bounds manually, implement</span>
-<span class="sd">              the ``__init__()`` and ``__call__()`` methods, and do not</span>
-<span class="sd">              access the default code (e.g., via ``super()``) or only</span>
-<span class="sd">              use the default code for some parameters.</span>
+<span class="sd">    .. note::</span>
+
+<span class="sd">        If you wish to check bounds manually, implement the ``__init__()`` and</span>
+<span class="sd">        ``__call__()`` methods, and do not access the default code (e.g., via</span>
+<span class="sd">        ``super()``) or only use the default code for some parameters.</span>
+
+<span class="sd">    :param obj parameters:</span>
+<span class="sd">        An optional instance of :class:`~.ParameterSubspace.ParameterSubspace`.</span>
+
+<span class="sd">    :param obj hyperparameters:</span>
+<span class="sd">        Positional arguments that are hyperparameters (parameters of the prior</span>
+<span class="sd">        distribution), or iterables of hyperparameters.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
 
     <span class="n">__derived_names__</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">hyperparameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        You might want to overwrite this initialiser to do some custom</span>
 <span class="sd">        setup for priors whose handling is more involved.</span>
@@ -256,10 +264,19 @@
 <span class="sd">        a reference to the parameters to ensure interoperability.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Prior</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">hyperparameters</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">hyperparameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">hyperparameter</span><span class="o">.</span><span class="n">is_hyperparameter</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parameter is not declared as a &#39;</span>
+                                 <span class="s1">&#39;hyperparameter but is a parameter of the &#39;</span>
+                                 <span class="s1">&#39;prior distribution.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Number of parameter dimensions. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Number of parameter + hyperparameter dimensions. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">)</span> <span class="c1"># redirect</span>
 
     <span class="nd">@property</span>

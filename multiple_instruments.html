@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instrument synergy &mdash; xpsi 0.5.0 documentation</title>
+  <title>Instrument synergy &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -492,7 +492,7 @@ div.rendered_html tbody tr:hover {
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.5.0               |
+|                Version: 0.5.2               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -614,7 +614,7 @@ Channels set.
     <span class="n">ax_cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="n">profile</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
-                             <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">20</span><span class="p">,</span>
+                             <span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
                              <span class="n">pulse</span><span class="p">,</span>
                              <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
                              <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -693,17 +693,7 @@ Channels set.
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">class</span> <span class="nc">CustomInstrument</span><span class="p">(</span><span class="n">xpsi</span><span class="o">.</span><span class="n">Instrument</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A model of the NICER telescope response.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CustomInstrument</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span> <span class="o">=</span> <span class="n">channel_edges</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">channel_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the channel edges. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_edges</span>
+    <span class="sd">&quot;&quot;&quot; A model of the NICER telescope response. &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Overwrite base just to show it is possible.</span>
@@ -763,7 +753,7 @@ Channels set.
         <span class="k">if</span> <span class="n">translate_edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">edges</span> <span class="o">+=</span> <span class="n">translate_edges</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">202</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">channels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">channel_edges</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">202</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -788,7 +778,6 @@ Channels set.
 <div class="highlight"><pre>
 Setting channels for loaded instrument response (sub)matrix...
 Channels set.
-No parameters supplied... empty subspace created.
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -813,7 +802,6 @@ No parameters supplied... empty subspace created.
 <div class="highlight"><pre>
 Setting channels for loaded instrument response (sub)matrix...
 Channels set.
-No parameters supplied... empty subspace created.
 </pre></div></div>
 </div>
 <p>The NICER <code class="docutils literal notranslate"><span class="pre">v1.01</span></code> response matrix:</p>
@@ -1270,7 +1258,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-ll = -29322.45504882; time = 0.609
+ll = -29322.45504882; time = 0.610
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">

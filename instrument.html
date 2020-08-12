@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instrument &mdash; xpsi 0.5.0 documentation</title>
+  <title>Instrument &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -241,7 +241,7 @@
 instrument.</p>
 <dl class="class">
 <dt id="xpsi.Instrument.Instrument">
-<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">Instrument</code><span class="sig-paren">(</span><em>matrix</em>, <em>energy_edges</em>, <em>channels</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">Instrument</code><span class="sig-paren">(</span><em>matrix</em>, <em>energy_edges</em>, <em>channels</em>, <em>channel_edges=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for astronomical X-ray instruments on-board space telescopes.</p>
 <p>The body of the initialiser must not be changed to ensure inter-module
 compatibility, but can be extended if appropriate using a call to
@@ -298,6 +298,11 @@ effectively grouped together.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>channel_edges</strong> (<em>ndarray</em><em>[</em><em>p+1</em><em>]</em>) – The channel (energy) edges of the instrument, in keV. The array must
+be congruent to the zeroth dimension of the <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>: the number
+of edges must be <span class="math notranslate nohighlight">\(p + 1\)</span>. The edges must be monotonically
+increasing. These edges will correspond to the nominal response matrix
+and any deviation from this matrix (see above).</li>
 <li><strong>args</strong> (<em>tuple</em>) – Container of parameter instances.</li>
 <li><strong>kwargs</strong> (<em>dict</em>) – If you want to prefix parameters of an instance of this instrument
 subspace with an identifier, pass it as keyword argument and it will
@@ -350,6 +355,29 @@ they must satisfy <span class="math notranslate nohighlight">\(indx &lt; p\)</sp
 </dd></dl>
 
 <dl class="attribute">
+<dt id="xpsi.Instrument.Instrument.channel_edges">
+<code class="descname">channel_edges</code><a class="headerlink" href="#xpsi.Instrument.Instrument.channel_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the channel (energy) edges of the instrument, in keV.</p>
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the registered energy intervals
+labelled as channels defined in the data space. This is relevant when
+there is a detector-by-detector gain scale applied to event data (such
+as for NICER instrument calibration products), meaning that the
+redistribution matrix is effectively shared by detectors and the
+channels across detectors can share an energy scale definition.</p>
+<p>An incident photon of given energy then has a registered-energy
+distribution that generally peaks in the vicinity of the true photon
+energy. The resdistribution matrix will have some energy resolution
+(along with other features such as shelves). With thanks to Paul S.
+Ray for explaining the choice to calibrate in this manner.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you made a channel cut that results in a non-contiguous subset
+of channels, you will need to overwrite the setter method because
+the checks will fail.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="xpsi.Instrument.Instrument.channels">
 <code class="descname">channels</code><a class="headerlink" href="#xpsi.Instrument.Instrument.channels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the array of channels corresponding to rows of the matrix.</p>
@@ -376,7 +404,7 @@ provide the correct implementation of this method.</p>
 <code class="descname">energy_edges</code><a class="headerlink" href="#xpsi.Instrument.Instrument.energy_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the energy edges of the instrument, in keV.</p>
 <p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy intervals which
-map to output channels defined in the data space.</p>
+map to channels defined in the data space.</p>
 </dd></dl>
 
 <dl class="attribute">

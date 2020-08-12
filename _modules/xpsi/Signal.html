@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Signal &mdash; xpsi 0.5.0 documentation</title>
+  <title>xpsi.Signal &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -374,7 +374,7 @@
 <span class="sd">                the instrument object.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channel_range</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">index_range</span>
 
             <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
                 <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
@@ -453,7 +453,7 @@
 
                         <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="n">integrated</span><span class="p">,</span>
                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
-                                                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">index_range</span><span class="p">)</span>
 
                         <span class="n">fast_total_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">temp</span><span class="p">))</span>
 
@@ -510,7 +510,7 @@
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">signals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="n">integrated</span><span class="p">,</span>
                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
-                                                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">index_range</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -523,7 +523,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">registered_background</span> <span class="o">=</span> \
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
-                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">channel_range</span><span class="p">)</span></div>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">index_range</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

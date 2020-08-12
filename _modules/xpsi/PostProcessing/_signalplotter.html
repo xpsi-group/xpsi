@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.PostProcessing._signalplotter &mdash; xpsi 0.5.0 documentation</title>
+  <title>xpsi.PostProcessing._signalplotter &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -381,9 +381,9 @@
 
             <span class="n">likelihood</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="n">state_to_restore</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span> <span class="o">=</span> <span class="n">plots</span>
-
             <span class="k">yield</span> <span class="s1">&#39;Handled posterior </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">posterior</span><span class="o">.</span><span class="n">ID</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plots</span> <span class="o">=</span> <span class="n">plots</span>
 
         <span class="c1"># in case user needs a handle (e.g., if plot objects created</span>
         <span class="c1"># via a classmethod), could return handle here</span>

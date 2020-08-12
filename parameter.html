@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Parameter &mdash; xpsi 0.5.0 documentation</title>
+  <title>Parameter &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -241,7 +241,7 @@
 model parameters, both free and fixed/derived variables.</p>
 <dl class="class">
 <dt id="xpsi.Parameter.Parameter">
-<em class="property">class </em><code class="descclassname">xpsi.Parameter.</code><code class="descname">Parameter</code><span class="sig-paren">(</span><em>name</em>, <em>strict_bounds</em>, <em>bounds=(None</em>, <em>None)</em>, <em>doc=None</em>, <em>symbol=''</em>, <em>value=None</em>, <em>permit_prepend=True</em>, <em>deactivate_verbosity=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Parameter.</code><code class="descname">Parameter</code><span class="sig-paren">(</span><em>name</em>, <em>strict_bounds</em>, <em>bounds=(None</em>, <em>None)</em>, <em>doc=None</em>, <em>symbol=''</em>, <em>value=None</em>, <em>permit_prepend=True</em>, <em>deactivate_verbosity=False</em>, <em>is_hyperparameter=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>A parameter.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -258,17 +258,12 @@ model parameters, both free and fixed/derived variables.</p>
 <li><strong>permit_prepend</strong> (<em>bool</em>) – Allow encapsulating subspaces to prepend the parameter name with
 a prefix? Note that this gives permission recursively to all
 encapsulating subspaces higher in the hierarchy.</li>
+<li><strong>is_hyperparameter</strong> (<em>bool</em>) – A boolean declaring whether the parameter is a hyperparameter.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="xpsi.Parameter.Parameter.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>name</em>, <em>strict_bounds</em>, <em>bounds=(None</em>, <em>None)</em>, <em>doc=None</em>, <em>symbol=r''</em>, <em>value=None</em>, <em>permit_prepend=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>See the class docstring.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="xpsi.Parameter.Parameter.__call__">
 <code class="descname">__call__</code><span class="sig-paren">(</span><em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Parameter.html#Parameter.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Parameter.Parameter.__call__" title="Permalink to this definition">¶</a></dt>
@@ -346,6 +341,12 @@ attributes you define in the subclass.</p>
 <dt id="xpsi.Parameter.Parameter.fixed">
 <code class="descname">fixed</code><a class="headerlink" href="#xpsi.Parameter.Parameter.fixed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is the variable fixed (or derived) or a free parameter?</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Parameter.Parameter.is_hyperparameter">
+<code class="descname">is_hyperparameter</code><a class="headerlink" href="#xpsi.Parameter.Parameter.is_hyperparameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the variable a hyperparameter?</p>
 </dd></dl>
 
 <dl class="attribute">

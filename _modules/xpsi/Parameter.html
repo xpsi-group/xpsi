@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Parameter &mdash; xpsi 0.5.0 documentation</title>
+  <title>xpsi.Parameter &mdash; xpsi 0.5.2 documentation</title>
   
 
   
@@ -362,17 +362,21 @@
 <span class="sd">        a prefix? Note that this gives permission recursively to all</span>
 <span class="sd">        encapsulating subspaces higher in the hierarchy.</span>
 
+<span class="sd">    :param bool is_hyperparameter:</span>
+<span class="sd">        A boolean declaring whether the parameter is a hyperparameter.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Parameter.__init__"><a class="viewcode-back" href="../../parameter.html#xpsi.Parameter.Parameter.__init__">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Creating parameter:&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Creating parameter:&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">strict_bounds</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span>
                  <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">permit_prepend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">deactivate_verbosity</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">deactivate_verbosity</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_hyperparameter</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; See the class docstring. &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">strict_bounds</span> <span class="o">=</span> <span class="n">strict_bounds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_hyperparameter</span> <span class="o">=</span> <span class="n">is_hyperparameter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span>
@@ -426,7 +430,7 @@
         <span class="k">if</span> <span class="n">doc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">yield</span> <span class="s1">&#39;    &gt; </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="c1"># get set version</span>
 
-        <span class="k">yield</span> <span class="kc">None</span> <span class="c1"># initialiser must return NoneType</span></div>
+        <span class="k">yield</span> <span class="kc">None</span> <span class="c1"># initialiser must return NoneType</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -439,6 +443,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Name must be a string.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_hyperparameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Is the variable a hyperparameter? &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_hyperparameter</span>
+
+    <span class="nd">@is_hyperparameter</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_hyperparameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_hyper</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">is_hyper</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;A boolean is required to define variable type.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_hyperparameter</span> <span class="o">=</span> <span class="n">is_hyper</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">permit_prepend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -646,6 +661,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">needs_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Do cached dependencies need to be updated? &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_hyperparameter</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span> <span class="c1"># likelihood implicitly dependent on hyperparameters</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">derived</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span> <span class="c1"># assume ulterior variables have changed</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span><span class="p">:</span>
