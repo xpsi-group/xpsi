@@ -32,9 +32,9 @@ class Prior(ParameterSubspace):
         ``super()``) or only use the default code for some parameters.
 
     :param obj parameters:
-        An optional instance of :class:`~.ParameterSubspace`.
+        An optional instance of :class:`~.ParameterSubspace.ParameterSubspace`.
 
-    :param obj *hyperparameters:
+    :param obj hyperparameters:
         Positional arguments that are hyperparameters (parameters of the prior
         distribution), or iterables of hyperparameters.
 
