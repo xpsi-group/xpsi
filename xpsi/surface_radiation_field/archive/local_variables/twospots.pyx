@@ -58,7 +58,8 @@ cdef int HIT_or_MISS(double theta,
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef storage* init_local_variables(size_t numTHREADS) nogil:
+cdef storage* init_local_variables(size_t numTHREADS,
+                                   const char *const filepath) nogil:
 
     cdef storage *buf = <storage*> malloc(sizeof(storage))
     buf.local_variables = <double**> malloc(numTHREADS * sizeof(double*))

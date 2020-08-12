@@ -61,6 +61,7 @@ def integrate(size_t numThreads,
               double init_step,
               double radialIncrementExponent,
               double[::1] radiation_field_global_variables,
+              global_to_local_file,
               double[::1] energies,
               double[::1] phases,
               int cache_intensities,
@@ -185,9 +186,16 @@ def integrate(size_t numThreads,
     #----------------------------------------------------------------------->>>
     # >>> Integrate over approximate incident radiation field.
     #----------------------------------------------------------------------->>>
+    cdef const unsigned char[:] _filepath
+    cdef const char *filepath = NULL
+    if global_to_local_file is not None:
+        if isinstance(global_to_local_file, unicode):
+            global_to_local_file = (<unicode>global_to_local_file).encode('utf8')
+        _filepath = global_to_local_file
+        filepath = <const char*>&(_filepath[0])
 
     # Initialise the source radiation field
-    cdef storage *local_vars_buf = init_local_variables(N_T)
+    cdef storage *local_vars_buf = init_local_variables(N_T, filepath)
     cdef _preloaded *preloaded = NULL
     cdef void *data = NULL
     if atmosphere:

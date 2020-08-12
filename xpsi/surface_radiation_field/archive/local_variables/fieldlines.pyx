@@ -52,7 +52,8 @@ cdef int HIT_or_MISS(double theta,
 
     return ptr.OPEN[POINT_INDEX]
 
-cdef storage* init_local_variables(size_t numTHREADS) nogil:
+cdef storage* init_local_variables(size_t numTHREADS,
+                                   const char *const filepath) nogil:
 
     cdef storage *buf = <storage*> malloc(sizeof(storage))
     buf.local_variables = <double**> malloc(numTHREADS * sizeof(double*))
@@ -67,7 +68,7 @@ cdef storage* init_local_variables(size_t numTHREADS) nogil:
     # azimuth (degrees), colatitude (degrees), openness (open is True)
     # format discussed with and tested with calculations by Anna Bilous (2020)
     # crude nearest-neighbour interpolation in field-line openness
-    fp = fopen("./surface_points.txt", "r") # (insert the correct path)
+    fp = fopen(filepath, "r")
 
     load.num_points = 0
     cdef char boolean[10]
