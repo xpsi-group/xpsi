@@ -77,7 +77,8 @@ class Likelihood(ParameterSubspace):
                  num_energies = 128,
                  fast_rel_num_energies = 0.25,
                  threads = 1, llzero = -1.0e90,
-                 externally_updated = False):
+                 externally_updated = False,
+                 prior = None):
 
         self.star = star
         self.signals = signals
@@ -119,8 +120,11 @@ class Likelihood(ParameterSubspace):
 
         self.externally_updated = externally_updated
 
+        if prior is not None:
+            self.prior = prior
+
         # merge subspaces
-        super(Likelihood, self).__init__(self._star, *self._signals)
+        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]))
 
     @property
     def threads(self):

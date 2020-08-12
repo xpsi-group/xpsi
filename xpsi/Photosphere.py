@@ -86,10 +86,6 @@ class Photosphere(ParameterSubspace):
         surface-discretisation classes and without having to handle global
         variable values at compile time or from disk for runtime access.
 
-        without instantiating surface-discretisation
-        classes and without having to handle global variable values at compile
-        time or from disk.
-
     .. note::
 
         In basic modelling patterns the frequency is the spin frequency,
