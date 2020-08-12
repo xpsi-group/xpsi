@@ -65,7 +65,7 @@ Added
   changing the value of some discrete variable in the mapping between global
   and local variables. With thanks to Anna Bilous for the suggestion. A tutorial
   will be delivered when possible.
-* Added :meth:`~.Instrument.Instrument.channel_edges` property, and updated
+* Added :attr:`~.Instrument.Instrument.channel_edges` property, and updated
   tutorials to reflect this new concrete implementation.
 
 Changed
