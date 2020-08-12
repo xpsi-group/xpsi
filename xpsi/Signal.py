@@ -164,7 +164,7 @@ class Signal(ParameterSubspace):
                 the instrument object.
 
             """
-            a, b = self._data.channel_range
+            a, b = self._data.index_range
 
             def search(i, j, k):
                 while self._instrument.matrix[i,j] == 0.0:
@@ -243,7 +243,7 @@ class Signal(ParameterSubspace):
 
                         temp = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.channel_range)
+                                                self._data.index_range)
 
                         fast_total_counts.append(_np.sum(temp))
 
@@ -300,7 +300,7 @@ class Signal(ParameterSubspace):
 
                 self.signals = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.channel_range)
+                                                self._data.index_range)
 
             if self._background is not None:
                 try:
@@ -313,7 +313,7 @@ class Signal(ParameterSubspace):
                 self._background.registered_background = \
                                 self._instrument(self._background.background,
                                                  self._input_interval_range,
-                                                 self._data.channel_range)
+                                                 self._data.index_range)
 
     @property
     def num_components(self):

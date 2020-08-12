@@ -75,6 +75,14 @@ Changed
   extensions. You would have to modify a custom extension module manually to
   match the function signature declared in the header.
 
+Fixed
+^^^^^
+
+* Removed remnant manual Sphinx method signatures; the decorator now preserves
+  the method signature so automated Sphinx doc works on those decorated methods.
+* Updated package docstring to reflect name change.
+* Uses of ``xpsi.Data.channel_range`` property to adhere to future deprecation.
+
 
 [v0.5.1] - 2020-08-07
 ~~~~~~~~~~~~~~~~~~~~~
