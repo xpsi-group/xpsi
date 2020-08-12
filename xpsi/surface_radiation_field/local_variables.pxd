@@ -12,7 +12,8 @@ cdef int eval_local_variables(double theta,
                               const storage *const buf,
                               size_t THREAD) nogil
 
-cdef storage* init_local_variables(size_t numTHREADS) nogil
+cdef storage* init_local_variables(size_t numTHREADS,
+                                   const char *const filepath) nogil
 
 cdef int free_local_variables(size_t numTHREADS, storage *const buf) nogil
 
