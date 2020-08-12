@@ -9,7 +9,8 @@ Instances of :class:`~.Instrument.Instrument` are objects representing a model
 instrument.
 
 .. autoclass:: xpsi.Instrument.Instrument
-    :members: matrix, energy_edges, channels, cached_signal, construct_matrix
+    :members: matrix, energy_edges, channels, cached_signal, construct_matrix,
+              channel_edges
     :special-members: __call__
 
 .. autoclass:: xpsi.Instrument.ResponseError
