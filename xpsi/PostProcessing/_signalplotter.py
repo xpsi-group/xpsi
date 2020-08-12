@@ -171,9 +171,9 @@ class SignalPlotter(PostProcessor):
 
             likelihood.externally_updated = state_to_restore
 
-            self._plots = plots
-
             yield 'Handled posterior %s.' % posterior.ID
+
+        self._plots = plots
 
         # in case user needs a handle (e.g., if plot objects created
         # via a classmethod), could return handle here
