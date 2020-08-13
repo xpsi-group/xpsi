@@ -668,8 +668,8 @@ class Photosphere(ParameterSubspace):
                 #   energy-phase resolved signal (2D array)
                 #   energy-phase resolved specific intensity sky maps (3D array)
                 # the last element is None if intensities not cached
-                self.images[0] = images[0]
-                self.images.append(images[1])
+                self.images[0] = images[1]
+                self.images.append(images[2])
             else: # the ray map is also returned
                 # tuple elements:
                 #   energy-phase resolved signal (2D array)
