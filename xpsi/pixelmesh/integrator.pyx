@@ -417,7 +417,7 @@ def integrate(size_t numThreads,
                 np.asarray(LAG, dtype = np.double, order = 'C'),
                 np.asarray(Z, dtype = np.double, order = 'C'),
                 np.asarray(cos_zenith, dtype = np.double, order = 'C'),
-                np.asarray(r_MESH = np.double, order= 'C'),
+                np.asarray(r_MESH, dtype = np.double, order= 'C'),
                 SEMI_MAJOR,
                 SEMI_MINOR,
                 _IMAGE)
