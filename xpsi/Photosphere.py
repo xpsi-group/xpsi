@@ -692,7 +692,7 @@ class Photosphere(ParameterSubspace):
             self.images[0] = self.images[0].T
 
             # memoization
-            self._spacetime(self._spacetime.vector)
+            self._spacetime([param.value for param in self._spacetime])
 
         if sky_map_kwargs is None: sky_map_kwargs = {}
         if animate_kwargs is None: animate_kwargs = {}
