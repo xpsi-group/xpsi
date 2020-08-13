@@ -2,6 +2,7 @@ from __future__ import division, print_function
 
 from .global_imports import *
 from . import global_imports
+from . import _warning
 
 from .Spacetime import Spacetime
 from .HotRegion import HotRegion
@@ -403,17 +404,16 @@ class Photosphere(ParameterSubspace):
         try:
             for i, obj in enumerate(images):
                 if not isinstance(obj, _np.ndarray):
-                    if i < len(images) - 1:
-                        raise TypeError('All image information must be '
-                                        'contained in ndarrays.')
-                    elif obj is not None:
-                        raise TypeError('All image information must be '
-                                        'contained in ndarrays.')
+                    if i < len(images) - 3:
+                        raise TypeError('Image information was expected to be '
+                                        'contained in an ndarray.')
+                    elif obj is not None and not isinstance(obj, float):
+                        raise TypeError('Unexpected type for image information.')
         except TypeError:
             raise TypeError('An iterable of objects containing image '
                             'information must be supplied.')
 
-        if len(images) != 9:
+        if len(images) != 13:
             raise ValueError('There must be six ndarray objects specifing '
                              'image information.')
 
@@ -427,8 +427,10 @@ class Photosphere(ParameterSubspace):
         assert images[5].ndim == 1, msg % (5, 1)
         assert images[6].ndim == 1, msg % (6, 1)
         assert images[7].ndim == 1, msg % (7, 1)
-        if images[8] is not None:
-            assert images[8].ndim == 3, msg % (8, 3)
+        assert images[8].ndim == 1, msg % (8, 1)
+        assert images[9].ndim == 1, msg % (9, 1)
+        if images[12] is not None:
+            assert images[12].ndim == 3, msg % (12, 3)
 
         self._images = images
 
@@ -614,19 +616,23 @@ class Photosphere(ParameterSubspace):
             except AttributeError:
                 if reuse_ray_map:
                     _warning('a ray map has not been cached... '
-                             'tracing new ray set')
+                             'tracing new ray set...')
                     reuse_ray_map = False
             else:
                 if ref.needs_update: # if spacetime configuration was updated
                     reuse_ray_map = False
 
+                # try to free up memory; CPython reference counting means this
+                # should have immediate effect
                 if not reuse_ray_map:
-                    del self.images # try to free up memory
+                    del self.images:
                 else:
-                    del self.images[-1] # try to free up memory
+                    del self.images[-1]
 
             if plot_sky_maps and not cache_intensities:
                 raise _exc
+
+            _ray_map = tuple(self.images[1:-1])
 
             images = _integrate(threads,
                                 ref.r_s,
@@ -646,34 +652,46 @@ class Photosphere(ParameterSubspace):
                                 init_step,
                                 image_plane_radial_increment_power,
                                 self.global_variables,
-                                self.global_to_local_file,
                                 energies,
                                 phases,
                                 cache_intensities,
+                                _ray_map
+                                self.global_to_local_file,
                                 self._hot_atmosphere)
 
             if images[0] == 1:
                 raise Exception('A numerical error arose during imaging '
                                 'computation... terminating simulation.')
-            else:
+            elif reuse_ray_map: # only the recalculated information is returned
+                # tuple elements:
+                #   energy-phase resolved signal (2D array)
+                #   energy-phase resolved specific intensity sky maps (3D array)
+                # the last element is None if intensities not cached
+                self.images[0] = images[0]
+                self.images.append(images[1])
+            else: # the ray map is also returned
                 # tuple elements:
                 #   energy-phase resolved signal (2D array)
                 #   x coordinate on image plane (1D array)
                 #   y coordinate on image plane (1D array)
                 #   colatitude mapped to point (x,y) on image plane (1D array)
                 #   azimuth mapped to point (x,y) on image plane (1D array)
+                #   radius mapped to point (x,y) on image plane (1D array)
                 #   phase lag
                 #   redshift
                 #   aberrated ray angle to local surface normal
+                #   elliptical image-plane radial array
+                #   elliptical image-plane semi-major axis
+                #   elliptical image-plane semi-minor axis
                 #   energy-phase resolved specific intensity sky maps (3D array)
-                # the last element is None if you do not cache intensities
+                # the last element is None if intensities not cached
                 self.images = list(images[1:])
 
-                # transpose so signal phase increments along columns
-                self.images[0] = self.images[0].T
+            # transpose so signal phase increments along columns
+            self.images[0] = self.images[0].T
 
-                # memoization
-                self._spacetime(self._spacetime.vector)
+            # memoization
+            self._spacetime(self._spacetime.vector)
 
         if sky_map_kwargs is None: sky_map_kwargs = {}
         if animate_kwargs is None: animate_kwargs = {}
