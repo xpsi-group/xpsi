@@ -617,22 +617,23 @@ class Photosphere(ParameterSubspace):
                 if reuse_ray_map:
                     _warning('a ray map has not been cached... '
                              'tracing new ray set...')
-                    reuse_ray_map = False
             else:
-                if ref.needs_update: # if spacetime configuration was updated
-                    reuse_ray_map = False
-
-                # try to free up memory; CPython reference counting means this
-                # should have immediate effect
-                if not reuse_ray_map:
-                    del self.images:
+                # if spacetime configuration was updated
+                if ref.needs_update or not reuse_ray_map:
+                    # try to free up memory; CPython reference counting means
+                    # this should have immediate effect
+                    del self.images
                 else:
-                    del self.images[-1]
+                    # del self.images[0] # doesn't require much memory
+                    del self.images[-1]  # requires far more memory
 
             if plot_sky_maps and not cache_intensities:
                 raise _exc
 
-            _ray_map = tuple(self.images[1:-1])
+            try:
+                _ray_map = tuple(self.images[1:])
+            except AttributeError:
+                _ray_map = None
 
             images = _integrate(threads,
                                 ref.r_s,
@@ -662,7 +663,7 @@ class Photosphere(ParameterSubspace):
             if images[0] == 1:
                 raise Exception('A numerical error arose during imaging '
                                 'computation... terminating simulation.')
-            elif reuse_ray_map: # only the recalculated information is returned
+            elif _ray_map is not None: # only recalculated info is returned
                 # tuple elements:
                 #   energy-phase resolved signal (2D array)
                 #   energy-phase resolved specific intensity sky maps (3D array)

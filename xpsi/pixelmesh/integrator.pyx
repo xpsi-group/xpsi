@@ -217,6 +217,8 @@ def integrate(size_t numThreads,
         Z = reuse_ray_map[6]
         cos_zenith = reuse_ray_map[7]
         r_MESH = reuse_ray_map[8]
+        SEMI_MAJOR = reuse_ray_map[9]
+        SEMI_MINOR = reuse_ray_map[10]
 
     cdef:
         size_t N = NGR
