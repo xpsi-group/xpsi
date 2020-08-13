@@ -438,6 +438,7 @@ class Photosphere(ParameterSubspace):
 
     def image(self,
               reimage = False,
+              reuse_ray_map = True,
               energies = None,
               phases = None,
               sqrt_num_rays = 100,
@@ -456,8 +457,20 @@ class Photosphere(ParameterSubspace):
         """ Image the star as a function of phase and energy.
 
         :param bool reimage:
-            Image the star. Ignored if there is no precomputed image information
-            to plot.
+            (Re)image the star. If ``False``, but the spacetime configuration
+            has been updated or the photosphere parameters have been updated,
+            a warning will be generated. In principle, one might want to plot
+            sky maps using cached imaging information, or animate sky maps
+            using images on disk, so reimaging is not forced if (non-fixed)
+            parameters have been changed.
+
+        :param bool reuse_ray_map:
+            Reuse a precomputed ray map from the stellar surface to the image
+            plane. If the spacetime configuration has changed (non-fixed
+            parameters have changed), a cached ray map will *not* be reused. If
+            the spacetime configuration is unchanged, but resolution settings
+            have changed for ray tracing, pass ``False`` to adhere to the new
+            resolution settings.
 
         :param ndarray[n] energies:
             Energies in keV to evaluate incident specific intensities at.
@@ -490,13 +503,13 @@ class Photosphere(ParameterSubspace):
             the purpose of visualisation will then smooth out any such
             artefacts.
 
-            Moreover, as an additional measure against
-            artefacts in the sky maps in the vicinity of the rotational pole,
-            rays are distributed accordingingly. For example, if we request
-            :math:`n=400` rays per dimension, a maximal spacing of the rays
-            from the rotational axis is achieved by rotating the *spokes*
-            of rays (by up to :math:`\pm\pi/n`) so that no spoke is
-            aligned (or anti-aligned) with the :math:`y`-direction.
+            Moreover, as an additional measure against artefacts in the sky
+            maps in the vicinity of the rotational pole, rays are distributed
+            accordingingly. For example, if we request :math:`n=400` rays per
+            dimension, a maximal spacing of the rays from the rotational axis
+            is achieved by rotating the *spokes* of rays (by up to
+            :math:`\pm\pi/n`) so that no spoke is aligned (or anti-aligned)
+            with the :math:`y`-direction.
 
         :param float epsabs_ray:
             Absolute error tolerance per ray to adhere to during numerical
@@ -574,24 +587,46 @@ class Photosphere(ParameterSubspace):
         """
         ref = self._spacetime # geometry shortcut saves characters
 
+        _exc = ValueError('You need to cache intensity sky maps if you '
+                          'want to plot them.')
         try:
             self.images
         except AttributeError:
             if not reimage:
-                print('Warning: star will not be reimaged... assuming images '
-                      'exist on disk.')
+                if plot_sky_maps:
+                    raise _exc
+                else:
+                    _warning('star will not be reimaged... assuming images '
+                             'exist on disk.')
+        else:
+            if not reimage and plot_sky_maps and self.images[-1] is None:
+                raise _exc
 
         if reimage:
             if not isinstance(phases, _np.ndarray):
-                raise TypeError('Imaging phases must be form an ndarray.')
+                raise TypeError('Imaging phases must be in a 1D ndarray.')
 
             if not isinstance(energies, _np.ndarray):
-                raise TypeError('Imaging energies must be form an ndarray.')
+                raise TypeError('Imaging energies must be in a 1D ndarray.')
 
             try:
-                del self.images # try to free up memory
+                self.images
             except AttributeError:
-                pass
+                if reuse_ray_map:
+                    _warning('a ray map has not been cached... '
+                             'tracing new ray set')
+                    reuse_ray_map = False
+            else:
+                if ref.needs_update: # if spacetime configuration was updated
+                    reuse_ray_map = False
+
+                if not reuse_ray_map:
+                    del self.images # try to free up memory
+                else:
+                    del self.images[-1] # try to free up memory
+
+            if plot_sky_maps and not cache_intensities:
+                raise _exc
 
             images = _integrate(threads,
                                 ref.r_s,
@@ -637,13 +672,11 @@ class Photosphere(ParameterSubspace):
                 # transpose so signal phase increments along columns
                 self.images[0] = self.images[0].T
 
+                # memoization
+                self._spacetime(self._spacetime.vector)
+
         if sky_map_kwargs is None: sky_map_kwargs = {}
         if animate_kwargs is None: animate_kwargs = {}
-
-        if plot_sky_maps:
-            if self.images[-1] is None:
-                raise ValueError('You need to cache intensity sky maps if you '
-                                 'want to plot them.')
 
         if plot_sky_maps or animate_sky_maps:
             root_dir = sky_map_kwargs.pop('root_dir', './images')
