@@ -656,7 +656,7 @@ class Photosphere(ParameterSubspace):
                                 energies,
                                 phases,
                                 cache_intensities,
-                                _ray_map
+                                _ray_map,
                                 self.global_to_local_file,
                                 self._hot_atmosphere)
 

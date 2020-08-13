@@ -338,7 +338,7 @@ def integrate(size_t numThreads,
 
                             I_E = eval_hot(T,
                                            E_prime,
-                                           ABB[INDEX],
+                                           cos_zenith[INDEX],
                                            local_vars_buf.local_variables[T],
                                            data)
 
