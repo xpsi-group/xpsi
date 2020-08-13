@@ -93,8 +93,8 @@ def integrate(size_t numThreads,
         size_t N_T = numThreads
         size_t N_E = energies.shape[0]
         size_t N_P = phases.shape[0]
-        size_t NGR = numGlobalRays
-        size_t NGR_SQ = NGR * NGR + 1
+        size_t NGR
+        size_t NGR_SQ
         _GEOM GEOM
 
         double[::1] X
@@ -108,9 +108,6 @@ def integrate(size_t numThreads,
         double[::1] r_MESH
         double[:,:,::1] IMAGE
         double SEMI_MAJOR, SEMI_MINOR
-
-    if cache_intensities == 1:
-        IMAGE = -1.0 * np.zeros((N_P, N_E, NGR_SQ), dtype = np.double)
 
     GEOM.r_s = r_s
     GEOM.R_eq = R_eq
@@ -136,6 +133,9 @@ def integrate(size_t numThreads,
     cdef RAY_MAP *MAP = NULL
 
     if reuse_ray_map is None:
+        NGR = numGlobalRays
+        NGR_SQ = NGR * NGR + 1
+
         X = np.zeros(NGR_SQ, dtype = np.double)
         Y = np.zeros(NGR_SQ, dtype = np.double)
         THETA = np.zeros(NGR_SQ, dtype = np.double)
@@ -220,6 +220,9 @@ def integrate(size_t numThreads,
         SEMI_MAJOR = reuse_ray_map[9]
         SEMI_MINOR = reuse_ray_map[10]
 
+        NGR = r_MESH.shape[0]
+        NGR_SQ = NGR * NGR + 1
+
     cdef:
         size_t N = NGR
         size_t NSQ = NGR * NGR
@@ -254,6 +257,9 @@ def integrate(size_t numThreads,
     cdef double E_prime, I_E
 
     cdef double Delta_t = _2pi / NGR
+
+    if cache_intensities == 1:
+        IMAGE = -1.0 * np.zeros((N_P, N_E, NGR_SQ), dtype = np.double)
 
     printf("\nCommencing imaging...")
 
