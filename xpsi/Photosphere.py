@@ -671,6 +671,9 @@ class Photosphere(ParameterSubspace):
                                       'of rays, energies, and/or phases, or '
                                       'override the cache size limit if '
                                       'safe.')
+                cache_intensities = True
+            else:
+                cache_intensities = False
 
             try:
                 self.images
@@ -731,7 +734,6 @@ class Photosphere(ParameterSubspace):
                 # the last element is None if intensities not cached
                 self.images[0] = images[1]
                 self.images.append(images[2])
-                yield 'Imaging complete'
             else: # the ray map is also returned
                 # tuple elements:
                 #   energy-phase resolved signal (2D array)
@@ -749,8 +751,16 @@ class Photosphere(ParameterSubspace):
                 #   energy-phase resolved specific intensity sky maps (3D array)
                 # the last element is None if intensities not cached
                 self.images = list(images[1:])
-                yield 'Ray tracing and imaging complete'
+                yield 'Ray tracing complete'
                 yield 'Ray set cached'
+
+            if cache_intensities:
+                yield 'Intensity caching complete'
+            else:
+                if len(phases) > 1:
+                    yield 'Phase-resolved specific flux integration complete'
+                else:
+                    yield 'Specific flux integration complete'
 
             # transpose so signal phase increments along columns
             self.images[0] = self.images[0].T
@@ -1171,55 +1181,61 @@ class Photosphere(ParameterSubspace):
 
             _I = 10
             for i in range(images.shape[0]):
-                with verbose(i%_I == 0 and not phase_average,
-                        'Rendering images for phase numbers [%i, %i)'%(i,i+_I),
-                        'Rendered images for phase numbers [%i, %i)'%(i,i+_I)):
-                    for j, idx in enumerate(panel_indices):
-                        ax = axes[j]
-                        if _np.product(panel_layout) - j - 1 < panel_layout[1]:
-                            if ref.R < 1.5 * ref.r_s:
-                                ax.set_xlabel(r'$(2x/(3\sqrt{3}r_{\rm s}))$')
-                            else:
-                                ax.set_xlabel(r'$(x/R_{\rm eq})\sqrt{1-r_{\rm s}/R_{\rm eq}}$')
+                if phase_average:
+                    'Rendering phase-averaged images'
+                elif i == 0 and images.shape[0] < 10:
+                    'Rendering images'
+                elif i == 0 and images.shape[0] >= 10:
+                    'Rendering images for phase numbers [%i, %i]'%(i+1, i+_I)
+                elif i%_I == 0:
+                    'Rendering images for phase numbers (%i, %i]'%(i, i+_I)
 
-                        if j % panel_layout[1] == 0:
-                            if ref.R < 1.5 * ref.r_s:
-                                ax.set_ylabel(r'$(2y/(3\sqrt{3}r_{\rm s}))$')
-                            else:
-                                ax.set_ylabel(r'$(y/R_{\rm eq})\sqrt{1-r_{\rm s}/R_{\rm eq}}$')
+                for j, idx in enumerate(panel_indices):
+                    ax = axes[j]
+                    if _np.product(panel_layout) - j - 1 < panel_layout[1]:
+                        if ref.R < 1.5 * ref.r_s:
+                            ax.set_xlabel(r'$(2x/(3\sqrt{3}r_{\rm s}))$')
+                        else:
+                            ax.set_xlabel(r'$(x/R_{\rm eq})\sqrt{1-r_{\rm s}/R_{\rm eq}}$')
 
-                        _veneer(tick_spacing, tick_spacing, ax,
-                                length = tick_length)
-                        ax.set_facecolor('white' if invert else 'black')
+                    if j % panel_layout[1] == 0:
+                        if ref.R < 1.5 * ref.r_s:
+                            ax.set_ylabel(r'$(2y/(3\sqrt{3}r_{\rm s}))$')
+                        else:
+                            ax.set_ylabel(r'$(y/R_{\rm eq})\sqrt{1-r_{\rm s}/R_{\rm eq}}$')
 
-                        lvls = levels if isinstance(levels, _np.ndarray) else levels[idx]
+                    _veneer(tick_spacing, tick_spacing, ax,
+                            length = tick_length)
+                    ax.set_facecolor('white' if invert else 'black')
 
-                        ax.tricontourf(X,
-                                       Y,
-                                       images[i,idx,:],
-                                       cmap = cmap,
-                                       levels = lvls)
+                    lvls = levels if isinstance(levels, _np.ndarray) else levels[idx]
 
-                        # correct the aspect ratio
-                        x_view = ax.xaxis.get_view_interval()
-                        diff = x_view[1] - x_view[0]
-                        ax.xaxis.set_view_interval(x_view[0] - diff * 0.025,
-                                                   x_view[1] + diff * 0.025)
-                        y_view = ax.yaxis.get_view_interval()
-                        ax.yaxis.set_view_interval(y_view[1] - diff * 1.025,
-                                                   y_view[1] + diff * 0.025)
+                    ax.tricontourf(X,
+                                   Y,
+                                   images[i,idx,:],
+                                   cmap = cmap,
+                                   levels = lvls)
 
-                        # add energy
-                        if annotate_energies:
-                            ax.text(annotate_location[0], annotate_location[1],
-                               s=energy_annotation_format % energies[idx],
-                               fontdict={'color': 'black' if invert else 'white'},
-                               transform=ax.transAxes)
+                    # correct the aspect ratio
+                    x_view = ax.xaxis.get_view_interval()
+                    diff = x_view[1] - x_view[0]
+                    ax.xaxis.set_view_interval(x_view[0] - diff * 0.025,
+                                               x_view[1] + diff * 0.025)
+                    y_view = ax.yaxis.get_view_interval()
+                    ax.yaxis.set_view_interval(y_view[1] - diff * 1.025,
+                                               y_view[1] + diff * 0.025)
 
-                    fig.savefig(file_root + '_%i.png' % i, dpi=dpi)
+                    # add energy
+                    if annotate_energies:
+                        ax.text(annotate_location[0], annotate_location[1],
+                           s=energy_annotation_format % energies[idx],
+                           fontdict={'color': 'black' if invert else 'white'},
+                           transform=ax.transAxes)
 
-                    for ax in axes:
-                        ax.clear()
+                fig.savefig(file_root + '_%i.png' % i, dpi=dpi)
+
+                for ax in axes:
+                    ax.clear()
 
             for ax in axes:
                 ax.cla()
