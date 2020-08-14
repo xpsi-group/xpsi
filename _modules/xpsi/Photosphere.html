@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Photosphere &mdash; xpsi 0.5.2 documentation</title>
+  <title>xpsi.Photosphere &mdash; xpsi 0.5.3 documentation</title>
   
 
   
@@ -212,6 +212,7 @@
 
 <span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_warning</span><span class="p">,</span> <span class="n">make_verbose</span><span class="p">,</span> <span class="n">verbose</span>
 
 <span class="kn">from</span> <span class="nn">.Spacetime</span> <span class="kn">import</span> <span class="n">Spacetime</span>
 <span class="kn">from</span> <span class="nn">.HotRegion</span> <span class="kn">import</span> <span class="n">HotRegion</span>
@@ -592,7 +593,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">global_to_local_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_to_local_file</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_to_local_file</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@global_to_local_file</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">global_to_local_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
@@ -613,22 +617,36 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;All image information must be &#39;</span>
-                                        <span class="s1">&#39;contained in ndarrays.&#39;</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;All image information must be &#39;</span>
-                                        <span class="s1">&#39;contained in ndarrays.&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Image information was expected to be &#39;</span>
+                                        <span class="s1">&#39;contained in an ndarray.&#39;</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unexpected type for image information.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;An iterable of objects containing image &#39;</span>
                             <span class="s1">&#39;information must be supplied.&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">13</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;There must be six ndarray objects specifing &#39;</span>
                              <span class="s1">&#39;image information.&#39;</span><span class="p">)</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Image information element </span><span class="si">%i</span><span class="s1"> must have </span><span class="si">%i</span><span class="s1"> dimensions.&#39;</span>
 
+        <span class="c1"># tuple elements:</span>
+        <span class="c1">#   energy-phase resolved signal (2D array)</span>
+        <span class="c1">#   x coordinate on image plane (1D array)</span>
+        <span class="c1">#   y coordinate on image plane (1D array)</span>
+        <span class="c1">#   colatitude mapped to point (x,y) on image plane (1D array)</span>
+        <span class="c1">#   azimuth mapped to point (x,y) on image plane (1D array)</span>
+        <span class="c1">#   radius mapped to point (x,y) on image plane (1D array)</span>
+        <span class="c1">#   phase lag</span>
+        <span class="c1">#   redshift</span>
+        <span class="c1">#   aberrated ray angle to local surface normal</span>
+        <span class="c1">#   elliptical image-plane radial array</span>
+        <span class="c1">#   elliptical image-plane semi-major axis</span>
+        <span class="c1">#   elliptical image-plane semi-minor axis</span>
+        <span class="c1">#   energy-phase resolved specific intensity sky maps (3D array)</span>
+        <span class="c1"># the last element is None if intensities not cached</span>
         <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -637,8 +655,36 @@
         <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">images</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">images</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="n">msg</span> <span class="o">%</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">_num_rays</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">_num_rays</span><span class="p">),</span>\
+                <span class="p">(</span><span class="s1">&#39;Ray map: array length mismatch (array at tuple index </span><span class="si">%i</span><span class="s1"> is &#39;</span>
+                 <span class="s1">&#39;not equal in length to array at tuple index 1).&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span> <span class="n">_m</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">_num_rays</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">9</span><span class="p">]),</span>\
+                <span class="p">(</span><span class="s1">&#39;Ray map: array length mismatch for image-plane radial &#39;</span>
+                 <span class="s1">&#39;coordinate array (array at tuple index 9).&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">images</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>\
+                    <span class="p">(</span><span class="s1">&#39;Intensity cache dimension 0 does not match the length of &#39;</span>
+                     <span class="s1">&#39;dimension 1 of the specific flux array &#39;</span>
+                     <span class="s1">&#39;(at tuple index 1), meaning the number of phases &#39;</span>
+                     <span class="s1">&#39;is mismatched.&#39;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>\
+                    <span class="p">(</span><span class="s1">&#39;Intensity cache dimension 1 does not match the length of &#39;</span>
+                     <span class="s1">&#39;dimension 1 of the specific flux array &#39;</span>
+                     <span class="s1">&#39;(at tuple index 0), meaning the number of energies &#39;</span>
+                     <span class="s1">&#39;is mismatched.&#39;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">images</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">_num_rays</span><span class="p">,</span>\
+                    <span class="p">(</span><span class="s1">&#39;Intensity cache dimension 2 does not match the length of &#39;</span>
+                     <span class="s1">&#39;ray map arrays (e.g., array at tuple index 1), meaning &#39;</span>
+                     <span class="s1">&#39;the number of rays is mismatched.&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="n">images</span>
 
@@ -646,8 +692,10 @@
     <span class="k">def</span> <span class="nf">images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
 
-<div class="viewcode-block" id="Photosphere.image"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.image">[docs]</a>    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="Photosphere.image"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.image">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Imaging the star&#39;</span><span class="p">,</span> <span class="s1">&#39;Star imaged&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
               <span class="n">reimage</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">reuse_ray_map</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
               <span class="n">energies</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">sqrt_num_rays</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
@@ -658,16 +706,30 @@
               <span class="n">image_plane_radial_increment_power</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
               <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
               <span class="n">cache_intensities</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">single_precision_intensities</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
               <span class="n">plot_sky_maps</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
               <span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">animate_sky_maps</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
               <span class="n">free_memory</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-              <span class="n">animate_kwargs</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+              <span class="n">animate_kwargs</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Image the star as a function of phase and energy.</span>
 
 <span class="sd">        :param bool reimage:</span>
-<span class="sd">            Image the star. Ignored if there is no precomputed image information</span>
-<span class="sd">            to plot.</span>
+<span class="sd">            (Re)image the star. If ``False``, but the spacetime configuration</span>
+<span class="sd">            has been updated or the photosphere parameters have been updated,</span>
+<span class="sd">            a warning will be generated. In principle, one might want to plot</span>
+<span class="sd">            sky maps using cached imaging information, or animate sky maps</span>
+<span class="sd">            using images on disk, so reimaging is not forced if (non-fixed)</span>
+<span class="sd">            parameters have been changed.</span>
+
+<span class="sd">        :param bool reuse_ray_map:</span>
+<span class="sd">            Reuse a precomputed ray map from the stellar surface to the image</span>
+<span class="sd">            plane. If the spacetime configuration has changed (non-fixed</span>
+<span class="sd">            parameters have changed), a cached ray map will *not* be reused. If</span>
+<span class="sd">            the spacetime configuration is unchanged, but resolution settings</span>
+<span class="sd">            have changed for ray tracing, pass ``False`` to adhere to the new</span>
+<span class="sd">            resolution settings.</span>
 
 <span class="sd">        :param ndarray[n] energies:</span>
 <span class="sd">            Energies in keV to evaluate incident specific intensities at.</span>
@@ -700,13 +762,13 @@
 <span class="sd">            the purpose of visualisation will then smooth out any such</span>
 <span class="sd">            artefacts.</span>
 
-<span class="sd">            Moreover, as an additional measure against</span>
-<span class="sd">            artefacts in the sky maps in the vicinity of the rotational pole,</span>
-<span class="sd">            rays are distributed accordingingly. For example, if we request</span>
-<span class="sd">            :math:`n=400` rays per dimension, a maximal spacing of the rays</span>
-<span class="sd">            from the rotational axis is achieved by rotating the *spokes*</span>
-<span class="sd">            of rays (by up to :math:`\pm\pi/n`) so that no spoke is</span>
-<span class="sd">            aligned (or anti-aligned) with the :math:`y`-direction.</span>
+<span class="sd">            Moreover, as an additional measure against artefacts in the sky</span>
+<span class="sd">            maps in the vicinity of the rotational pole, rays are distributed</span>
+<span class="sd">            accordingingly. For example, if we request :math:`n=400` rays per</span>
+<span class="sd">            dimension, a maximal spacing of the rays from the rotational axis</span>
+<span class="sd">            is achieved by rotating the *spokes* of rays (by up to</span>
+<span class="sd">            :math:`\pm\pi/n`) so that no spoke is aligned (or anti-aligned)</span>
+<span class="sd">            with the :math:`y`-direction.</span>
 
 <span class="sd">        :param float epsabs_ray:</span>
 <span class="sd">            Absolute error tolerance per ray to adhere to during numerical</span>
@@ -739,11 +801,27 @@
 <span class="sd">            map from image plane to surface; and image calculation at a</span>
 <span class="sd">            sequence of rotational phases.</span>
 
-<span class="sd">        :param bool cache_intensities:</span>
+<span class="sd">        :param float cache_intensities:</span>
 <span class="sd">            Cache the photon specific intensity sky maps in memory, as a</span>
-<span class="sd">            function of phase and energy? Defaults to ``False`` because this</span>
-<span class="sd">            dominates memory consumption. You need to activate this option</span>
-<span class="sd">            if you want to plot the sky maps (see below).</span>
+<span class="sd">            function of phase and energy? The type must be a float (greater than</span>
+<span class="sd">            or equal to zero) or ``False``. The value represents the limiting</span>
+<span class="sd">            size in GB that can be allocated for the intensity cache. Defaults</span>
+<span class="sd">            to zero because this dominates memory consumption. You need to</span>
+<span class="sd">            activate this option if you want to plot the sky maps (see below).</span>
+<span class="sd">            To activate, supply a limit. A hard limit of 2 GB is imposed for</span>
+<span class="sd">            safety. To override, use the secret :obj:`_OVERRIDE_MEM_LIM`</span>
+<span class="sd">            keyword argument to supply a positive limit in GB.</span>
+
+<span class="sd">        :param bool single_precision_intensities:</span>
+<span class="sd">            Cache the intensities in single precision? In most use cases,</span>
+<span class="sd">            double precision is simply unnecessary, and because memory</span>
+<span class="sd">            consumption can be high, choosing single precision can reduce</span>
+<span class="sd">            memory requirements by a factor of two. Note that this only applies</span>
+<span class="sd">            to the caching of intensities, not the calculation of intensities,</span>
+<span class="sd">            which is done safely in double precision; only the final caching</span>
+<span class="sd">            operation is a demotion cast to single precision. The default</span>
+<span class="sd">            is single precision caching. Option ignored if intensities are not</span>
+<span class="sd">            cached.</span>
 
 <span class="sd">        :param bool plot_sky_maps:</span>
 <span class="sd">            Plot (specific) intenity sky maps at a sequence of phases, or</span>
@@ -781,27 +859,96 @@
 <span class="sd">            :meth:`~Photosphere._animate`. Refer to the associated method</span>
 <span class="sd">            docstring for available options.</span>
 
+<span class="sd">        :param bool deactivate_all_verbosity:</span>
+<span class="sd">            Deactivate the verbose output? Note that despite this keyword</span>
+<span class="sd">            argument not appearing in the method signature, it is a valid</span>
+<span class="sd">            switch.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span> <span class="c1"># geometry shortcut saves characters</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_DV</span> <span class="o">=</span> <span class="n">deactivate_verbosity</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="n">_DV</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="n">_exc</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to cache intensity sky maps if you &#39;</span>
+                          <span class="s1">&#39;want to plot them.&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">images</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">reimage</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: star will not be reimaged... assuming images &#39;</span>
-                      <span class="s1">&#39;exist on disk.&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">plot_sky_maps</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">_exc</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Warning: star will not be reimaged... assuming &#39;</span>
+                           <span class="s1">&#39;images exist on disk.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">reimage</span> <span class="ow">and</span> <span class="n">plot_sky_maps</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">_exc</span>
 
         <span class="k">if</span> <span class="n">reimage</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Imaging phases must be form an ndarray.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Imaging phases must be in a 1D ndarray.&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Imaging energies must be form an ndarray.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Imaging energies must be in a 1D ndarray.&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">plot_sky_maps</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">cache_intensities</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">_exc</span>
+
+            <span class="k">if</span> <span class="n">cache_intensities</span><span class="p">:</span>
+                <span class="n">_override_mem_lim</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_OVERRIDE_MEM_LIM&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_override_mem_lim</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Intensity cache limit override must be a &#39;</span>
+                                    <span class="s1">&#39;float.&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">_override_mem_lim</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Intensity cache limit override must be &#39;</span>
+                                     <span class="s1">&#39;positive or zero.&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cache_intensities</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Intensity cache limit must be a float.&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">cache_intensities</span> <span class="o">&lt;=</span> <span class="n">_override_mem_lim</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Intensity cache limit must be positive &#39;</span>
+                                     <span class="s1">&#39;and less than the safety limit, which &#39;</span>
+                                     <span class="s1">&#39;in turn can be overridden as described &#39;</span>
+                                     <span class="s1">&#39;in the method docstring.&#39;</span><span class="p">)</span>
+
+                <span class="n">_req_size</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="k">if</span> <span class="n">single_precision_intensities</span> <span class="k">else</span> <span class="mf">8.0</span>
+                <span class="n">_req_size</span> <span class="o">*=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span> <span class="c1"># bytes</span>
+                <span class="n">_req_size</span> <span class="o">*=</span> <span class="n">sqrt_num_rays</span><span class="o">**</span><span class="mf">2.0</span> <span class="c1"># + 1.0 # origin ray negligible</span>
+
+                <span class="k">if</span> <span class="n">_req_size</span><span class="o">/</span><span class="mf">1.0e9</span> <span class="o">&gt;=</span> <span class="n">cache_intensities</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">MemoryError</span><span class="p">(</span><span class="s1">&#39;Too much memory would be required to &#39;</span>
+                                      <span class="s1">&#39;cache the intensities at this &#39;</span>
+                                      <span class="s1">&#39;resolution. Try decreasing the number &#39;</span>
+                                      <span class="s1">&#39;of rays, energies, and/or phases, or &#39;</span>
+                                      <span class="s1">&#39;override the cache size limit if &#39;</span>
+                                      <span class="s1">&#39;safe.&#39;</span><span class="p">)</span>
+                <span class="n">cache_intensities</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cache_intensities</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="c1"># try to free up memory</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">images</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">pass</span>
+                <span class="k">if</span> <span class="n">reuse_ray_map</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Warning: a ray map has not been cached... &#39;</span>
+                           <span class="s1">&#39;tracing new ray set&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># if spacetime configuration was updated</span>
+                <span class="k">if</span> <span class="n">ref</span><span class="o">.</span><span class="n">needs_update</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">reuse_ray_map</span><span class="p">:</span>
+                    <span class="c1"># try to free up memory; CPython reference counting means</span>
+                    <span class="c1"># this should have immediate effect</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># del self.images[0] # doesn&#39;t require much memory</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># requires far more memory</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_ray_map</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="k">yield</span> <span class="s1">&#39;Cached ray set to be reused... commencing imaging&#39;</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">_ray_map</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">yield</span> <span class="s1">&#39;Commencing ray tracing and imaging&#39;</span>
 
             <span class="n">images</span> <span class="o">=</span> <span class="n">_integrate</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
                                 <span class="n">ref</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span>
@@ -821,39 +968,59 @@
                                 <span class="n">init_step</span><span class="p">,</span>
                                 <span class="n">image_plane_radial_increment_power</span><span class="p">,</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">global_variables</span><span class="p">,</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">global_to_local_file</span><span class="p">,</span>
                                 <span class="n">energies</span><span class="p">,</span>
                                 <span class="n">phases</span><span class="p">,</span>
                                 <span class="n">cache_intensities</span><span class="p">,</span>
+                                <span class="n">single_precision_intensities</span><span class="p">,</span>
+                                <span class="n">_ray_map</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">global_to_local_file</span><span class="p">,</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_hot_atmosphere</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;A numerical error arose during imaging &#39;</span>
                                 <span class="s1">&#39;computation... terminating simulation.&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">_ray_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># only recalculated info is returned</span>
+                <span class="c1"># tuple elements:</span>
+                <span class="c1">#   energy-phase resolved signal (2D array)</span>
+                <span class="c1">#   energy-phase resolved specific intensity sky maps (3D array)</span>
+                <span class="c1"># the last element is None if intensities not cached</span>
+                <span class="c1"># transpose so signal phase increments along columns</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># the ray map is also returned</span>
                 <span class="c1"># tuple elements:</span>
                 <span class="c1">#   energy-phase resolved signal (2D array)</span>
                 <span class="c1">#   x coordinate on image plane (1D array)</span>
                 <span class="c1">#   y coordinate on image plane (1D array)</span>
                 <span class="c1">#   colatitude mapped to point (x,y) on image plane (1D array)</span>
                 <span class="c1">#   azimuth mapped to point (x,y) on image plane (1D array)</span>
+                <span class="c1">#   radius mapped to point (x,y) on image plane (1D array)</span>
                 <span class="c1">#   phase lag</span>
                 <span class="c1">#   redshift</span>
                 <span class="c1">#   aberrated ray angle to local surface normal</span>
+                <span class="c1">#   elliptical image-plane radial array</span>
+                <span class="c1">#   elliptical image-plane semi-major axis</span>
+                <span class="c1">#   elliptical image-plane semi-minor axis</span>
                 <span class="c1">#   energy-phase resolved specific intensity sky maps (3D array)</span>
-                <span class="c1"># the last element is None if you do not cache intensities</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-
+                <span class="c1"># the last element is None if intensities not cached</span>
                 <span class="c1"># transpose so signal phase increments along columns</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+                <span class="k">yield</span> <span class="s1">&#39;Ray tracing complete.&#39;</span>
+                <span class="k">yield</span> <span class="s1">&#39;Ray set cached.&#39;</span>
+
+            <span class="k">if</span> <span class="n">cache_intensities</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="s1">&#39;Intensity caching complete.&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="s1">&#39;Phase-resolved specific flux integration complete.&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="s1">&#39;Specific flux integration complete.&#39;</span>
+
+            <span class="c1"># memoization</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">([</span><span class="n">param</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacetime</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">sky_map_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">animate_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">animate_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">if</span> <span class="n">plot_sky_maps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to cache intensity sky maps if you &#39;</span>
-                                 <span class="s1">&#39;want to plot them.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">plot_sky_maps</span> <span class="ow">or</span> <span class="n">animate_sky_maps</span><span class="p">:</span>
             <span class="n">root_dir</span> <span class="o">=</span> <span class="n">sky_map_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;root_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;./images&#39;</span><span class="p">)</span>
@@ -868,9 +1035,9 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">root_dir</span><span class="p">):</span>
                 <span class="n">_os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root_dir</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_root</span> <span class="o">+</span> <span class="s1">&#39;_0.png&#39;</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Warning: at least one image file exists &#39;</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Warning: at least one image file exists &#39;</span>
                       <span class="s1">&#39;in ``</span><span class="si">%s</span><span class="s1">``.&#39;</span> <span class="o">%</span> <span class="n">root_dir</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Attempting to move image files to a subdirectory &#39;</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Attempting to move image files to a subdirectory &#39;</span>
                       <span class="s1">&#39;of ``</span><span class="si">%s</span><span class="s1">``.&#39;</span> <span class="o">%</span> <span class="n">root_dir</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span> <span class="c1"># to archive the existing image files</span>
                     <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -894,12 +1061,13 @@
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Aborting: image files would be &#39;</span>
                                     <span class="s1">&#39;overwritten. </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>  <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Image files archived in subdirectory ``</span><span class="si">%s</span><span class="s1">``.&#39;</span> <span class="o">%</span> <span class="n">temp</span><span class="p">)</span>
+                    <span class="k">yield</span> <span class="s1">&#39;Image files archived in subdirectory ``</span><span class="si">%s</span><span class="s1">``.&#39;</span> <span class="o">%</span> <span class="n">temp</span>
 
             <span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_sky_maps</span><span class="p">(</span><span class="n">file_root</span><span class="p">,</span>
                                                <span class="n">_phases</span> <span class="o">=</span> <span class="n">phases</span><span class="p">,</span>
                                                <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">,</span>
                                                <span class="n">_redraw</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                               <span class="n">deactivate_verbosity</span> <span class="o">=</span> <span class="n">_DV</span><span class="p">,</span>
                                                <span class="o">**</span><span class="n">sky_map_kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">animate_sky_maps</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">reimage</span><span class="p">:</span>
@@ -910,15 +1078,10 @@
                                                <span class="n">_phases</span> <span class="o">=</span> <span class="n">phases</span><span class="p">,</span>
                                                <span class="n">_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="p">,</span>
                                                <span class="n">_redraw</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                               <span class="n">deactivate_verbosity</span> <span class="o">=</span> <span class="n">_DV</span><span class="p">,</span>
                                                <span class="o">**</span><span class="n">sky_map_kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">animate_sky_maps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">free_memory</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="c1"># try to free up memory</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">pass</span>
-
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_root</span> <span class="o">+</span> <span class="s1">&#39;_0.png&#39;</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;No images located for animation.&#39;</span><span class="p">)</span>
 
@@ -931,10 +1094,21 @@
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;You need to declare the image phases &#39;</span>
                                     <span class="s1">&#39;in order to include all images from disk.&#39;</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_animate</span><span class="p">(</span><span class="n">file_root</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span>
-                          <span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span><span class="p">,</span> <span class="o">**</span><span class="n">animate_kwargs</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="n">free_memory</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="c1"># try to free up memory</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
 
-<div class="viewcode-block" id="Photosphere._plot_sky_maps"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere._plot_sky_maps">[docs]</a>    <span class="k">def</span> <span class="nf">_plot_sky_maps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_animate</span><span class="p">(</span><span class="n">file_root</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span>
+                          <span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span><span class="p">,</span>
+                          <span class="n">deactivate_verbosity</span> <span class="o">=</span> <span class="n">_DV</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">animate_kwargs</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Photosphere._plot_sky_maps"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere._plot_sky_maps">[docs]</a>    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Plotting intensity sky maps&#39;</span><span class="p">,</span> <span class="s1">&#39;Intensity sky maps plotted&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_plot_sky_maps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                        <span class="n">_file_root</span><span class="p">,</span>
                        <span class="n">_phases</span><span class="p">,</span>
                        <span class="n">_energies</span><span class="p">,</span>
@@ -1140,87 +1314,99 @@
             <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="n">energy_bounds</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">energy_bounds</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Energy bounds in a tuple must be &#39;</span>
-                                         <span class="s1">&#39;ordered.&#39;</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">bound</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">bound</span> <span class="o">&lt;=</span> <span class="n">energies</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Extrapolation would be required.&#39;</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">verbose</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="s1">&#39;Integrating specific intensity over energy intervals&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;Integrated specific intensity over energy intervals&#39;</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">energy_bounds</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Energy bounds in a tuple must be &#39;</span>
+                                             <span class="s1">&#39;ordered.&#39;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">bound</span> <span class="ow">in</span> <span class="n">bounds</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">bound</span> <span class="o">&lt;=</span> <span class="n">energies</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Extrapolation would be required.&#39;</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Fewer panels than energy intervals.&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">):</span>
+                        <span class="k">yield</span> <span class="s1">&#39;Warning: fewer panels than energy intervals.&#39;</span>
 
-                <span class="n">integrated</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                        <span class="nb">len</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">),</span>
-                                        <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+                    <span class="n">integrated</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                            <span class="nb">len</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">),</span>
+                                            <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
 
-                <span class="n">intensities</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                         <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+                    <span class="n">intensities</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                             <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
 
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span> <span class="c1"># phases</span>
-                    <span class="n">intensities</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">]</span> <span class="c1"># sky directions</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span> <span class="c1"># phases</span>
+                        <span class="n">intensities</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">]</span> <span class="c1"># sky directions</span>
 
-                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">)):</span>
-                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="p">)</span>
-                        <span class="n">_integrated</span> <span class="o">=</span> <span class="n">energy_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
-                                                        <span class="n">intensities</span><span class="p">,</span>
-                                                        <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">energies</span><span class="p">),</span>
-                                                        <span class="n">bounds</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">)):</span>
+                            <span class="n">bounds</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energy_bounds</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="p">)</span>
+                            <span class="n">_integrated</span> <span class="o">=</span> <span class="n">energy_integrator</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span>
+                                                            <span class="n">intensities</span><span class="p">,</span>
+                                                            <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">energies</span><span class="p">),</span>
+                                                            <span class="n">bounds</span><span class="p">)</span>
 
-                        <span class="n">integrated</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">_integrated</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span>
+                            <span class="n">integrated</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">_integrated</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span>
 
-                <span class="n">images</span> <span class="o">=</span> <span class="n">integrated</span>
-
+                    <span class="n">images</span> <span class="o">=</span> <span class="n">integrated</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: Fewer panels than energies.&#39;</span><span class="p">)</span>
+                    <span class="k">yield</span> <span class="s1">&#39;Warning: fewer panels than energies.&#39;</span>
 
             <span class="k">if</span> <span class="n">phase_average</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">phases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">phases</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">_2pi</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Minimum and maximum phases at which star &#39;</span>
-                                     <span class="s1">&#39;is imaged must be zero and unity if you &#39;</span>
-                                     <span class="s1">&#39;are phase averaging.&#39;</span><span class="p">)</span>
+                <span class="k">with</span> <span class="n">verbose</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="s1">&#39;Averaging (specific) intensity over rotational phase&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;Averaged (specific) intensity over rotational phase&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">phases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">phases</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">_2pi</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Minimum and maximum phases at which &#39;</span>
+                                         <span class="s1">&#39;star is imaged must be zero and unity &#39;</span>
+                                         <span class="s1">&#39;if you are phase averaging.&#39;</span><span class="p">)</span>
 
-                <span class="n">averaged</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span>
-                                      <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                      <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+                    <span class="n">averaged</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span>
+                                          <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                          <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
 
-                <span class="n">intensities</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                                         <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+                    <span class="n">intensities</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                             <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
 
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span> <span class="c1"># energies</span>
-                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span> <span class="c1"># sky directions</span>
-                        <span class="n">intensities</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">images</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span> <span class="c1"># energies</span>
+                        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span> <span class="c1"># sky directions</span>
+                            <span class="n">intensities</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">images</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
 
-                    <span class="n">_averaged</span> <span class="o">=</span> <span class="n">phase_integrator</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="c1"># exposure time</span>
-                                                 <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
-                                                 <span class="n">intensities</span><span class="p">,</span>
-                                                 <span class="n">phases</span> <span class="o">/</span> <span class="n">_2pi</span><span class="p">,</span>
-                                                 <span class="mf">0.0</span><span class="p">)</span> <span class="c1"># phase shift</span>
+                        <span class="n">_averaged</span> <span class="o">=</span> <span class="n">phase_integrator</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="c1"># exposure time</span>
+                                                     <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
+                                                     <span class="n">intensities</span><span class="p">,</span>
+                                                     <span class="n">phases</span> <span class="o">/</span> <span class="n">_2pi</span><span class="p">,</span>
+                                                     <span class="mf">0.0</span><span class="p">)</span> <span class="c1"># phase shift</span>
 
-                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
-                        <span class="n">averaged</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">_averaged</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span>
+                        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                            <span class="n">averaged</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">_averaged</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span>
 
-                <span class="n">images</span> <span class="o">=</span> <span class="n">averaged</span>
+                    <span class="n">images</span> <span class="o">=</span> <span class="n">averaged</span>
 
-            <span class="k">if</span> <span class="n">normalise_each_panel</span><span class="p">:</span> <span class="c1"># normalise intensity for each individual panel</span>
-                <span class="n">levels</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">normalise_each_panel</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">verbose</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;Normalising each sky map panel separately&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Normalised sky map panels separately&#39;</span><span class="p">):</span>
+                    <span class="c1"># normalise intensity for each individual panel</span>
+                    <span class="n">levels</span> <span class="o">=</span> <span class="p">[]</span>
 
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span> <span class="c1"># at each energy</span>
-                    <span class="c1"># find extreme intensities over discrete set of image phases</span>
-                    <span class="c1"># and sky directions</span>
-                    <span class="n">MIN</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">images</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:][</span><span class="n">images</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">])</span>
-                    <span class="n">MAX</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">images</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:])</span>
-                    <span class="n">levels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">MIN</span><span class="p">,</span>
-                                                              <span class="n">MAX</span><span class="p">,</span>
-                                                              <span class="n">num_levels</span><span class="p">))))</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span> <span class="c1"># at each energy</span>
+                        <span class="c1"># find extreme intensities over discrete set of image</span>
+                        <span class="c1"># phases and sky directions</span>
+                        <span class="n">MIN</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">images</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:][</span><span class="n">images</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">])</span>
+                        <span class="n">MAX</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">images</span><span class="p">[:,</span><span class="n">j</span><span class="p">,:])</span>
+                        <span class="n">levels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">MIN</span><span class="p">,</span>
+                                                                  <span class="n">MAX</span><span class="p">,</span>
+                                                                  <span class="n">num_levels</span><span class="p">))))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">MIN</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">images</span><span class="p">[:,:,:][</span><span class="n">images</span><span class="p">[:,:,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">])</span>
-                <span class="n">MAX</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">images</span><span class="p">[:,:,:])</span>
-                <span class="n">levels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">MIN</span><span class="p">,</span>
-                                                     <span class="n">MAX</span><span class="p">,</span>
-                                                     <span class="n">num_levels</span><span class="p">)))</span>
+                <span class="k">with</span> <span class="n">verbose</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span>
+                             <span class="s1">&#39;Normalising sky map panels globally&#39;</span>
+                             <span class="s1">&#39;Normalised sky map panels globally&#39;</span><span class="p">):</span>
+                    <span class="n">MIN</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">images</span><span class="p">[:,:,:][</span><span class="n">images</span><span class="p">[:,:,:]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">])</span>
+                    <span class="n">MAX</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">images</span><span class="p">[:,:,:])</span>
+                    <span class="n">levels</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">MIN</span><span class="p">,</span>
+                                                         <span class="n">MAX</span><span class="p">,</span>
+                                                         <span class="n">num_levels</span><span class="p">)))</span>
 
             <span class="c1"># because of default tick formatting and a minus sign,</span>
             <span class="c1"># the left and bottom margins need to be different</span>
@@ -1244,7 +1430,17 @@
 
             <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">))]</span>
 
+            <span class="n">_I</span> <span class="o">=</span> <span class="mi">10</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">phase_average</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="s1">&#39;Rendering phase-averaged images&#39;</span>
+                <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="s1">&#39;Rendering images&#39;</span>
+                <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="s1">&#39;Rendering images for phase numbers [</span><span class="si">%i</span><span class="s1">, </span><span class="si">%i</span><span class="s1">]&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">_I</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">i</span><span class="o">%</span><span class="n">_I</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="s1">&#39;Rendering images for phase numbers (</span><span class="si">%i</span><span class="s1">, </span><span class="si">%i</span><span class="s1">]&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">_I</span><span class="p">)</span>
+
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">panel_indices</span><span class="p">):</span>
                     <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">panel_layout</span><span class="p">)</span> <span class="o">-</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">panel_layout</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
@@ -1296,9 +1492,10 @@
                 <span class="n">ax</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span></div>
+        <span class="k">yield</span> <span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span></div>
 
 <div class="viewcode-block" id="Photosphere._animate"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere._animate">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Animating intensity sky maps&#39;</span><span class="p">,</span> <span class="s1">&#39;Intensity sky maps animated&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_animate</span><span class="p">(</span><span class="n">_file_root</span><span class="p">,</span> <span class="n">_num_frames</span><span class="p">,</span> <span class="n">_figsize</span><span class="p">,</span> <span class="n">_dpi</span><span class="p">,</span>
                  <span class="n">cycles</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">repeat</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">repeat_delay</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                  <span class="n">ffmpeg_path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1372,8 +1569,8 @@
                                         <span class="n">repeat_delay</span> <span class="o">=</span> <span class="n">repeat_delay</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ffmpeg_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: no path specified for ffmpeg executable. &#39;</span>
-                  <span class="s1">&#39;Resorting to rcParams default.&#39;</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="s1">&#39;Warning: no path specified for ffmpeg executable. &#39;</span>
+                   <span class="s1">&#39;Resorting to rcParams default.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;animation.ffmpeg_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ffmpeg_path</span>
 
@@ -1384,12 +1581,14 @@
         <span class="n">bitrate</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bitrate&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">filename</span> <span class="o">=</span> <span class="n">file_root</span> <span class="o">+</span> <span class="s1">&#39;_animated.mp4&#39;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Writing to disk: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="s1">&#39;Writing to disk: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">filename</span>
         <span class="n">ani</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">writer</span> <span class="o">=</span> <span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span>
                  <span class="n">dpi</span> <span class="o">=</span> <span class="n">dpi</span><span class="p">,</span> <span class="n">fps</span> <span class="o">=</span> <span class="n">fps</span><span class="p">,</span> <span class="n">bitrate</span> <span class="o">=</span> <span class="n">bitrate</span><span class="p">)</span>
 
         <span class="n">fig</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span> <span class="c1"># this or ax.cla() needed to free memory</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span></div></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="kc">None</span></div></div>
 
 <span class="n">Photosphere</span><span class="o">.</span><span class="n">_update_doc</span><span class="p">()</span>
 

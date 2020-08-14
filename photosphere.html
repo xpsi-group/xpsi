@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Photosphere &mdash; xpsi 0.5.2 documentation</title>
+  <title>Photosphere &mdash; xpsi 0.5.3 documentation</title>
   
 
   
@@ -576,15 +576,25 @@ the same memory upon each call without I/O.</p>
 
 <dl class="method">
 <dt id="xpsi.Photosphere.Photosphere.image">
-<code class="descname">image</code><span class="sig-paren">(</span><em>reimage=False</em>, <em>energies=None</em>, <em>phases=None</em>, <em>sqrt_num_rays=100</em>, <em>epsabs_ray=1e-12</em>, <em>epsrel_ray=1e-12</em>, <em>max_steps=100000</em>, <em>init_step=0.1</em>, <em>image_plane_radial_increment_power=0.5</em>, <em>threads=1</em>, <em>cache_intensities=False</em>, <em>plot_sky_maps=False</em>, <em>sky_map_kwargs=None</em>, <em>animate_sky_maps=False</em>, <em>free_memory=True</em>, <em>animate_kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.image" title="Permalink to this definition">¶</a></dt>
+<code class="descname">image</code><span class="sig-paren">(</span><em>reimage=False</em>, <em>reuse_ray_map=True</em>, <em>energies=None</em>, <em>phases=None</em>, <em>sqrt_num_rays=100</em>, <em>epsabs_ray=1e-12</em>, <em>epsrel_ray=1e-12</em>, <em>max_steps=100000</em>, <em>init_step=0.1</em>, <em>image_plane_radial_increment_power=0.5</em>, <em>threads=1</em>, <em>cache_intensities=False</em>, <em>single_precision_intensities=True</em>, <em>plot_sky_maps=False</em>, <em>sky_map_kwargs=None</em>, <em>animate_sky_maps=False</em>, <em>free_memory=True</em>, <em>animate_kwargs=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Image the star as a function of phase and energy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>reimage</strong> (<em>bool</em>) – Image the star. Ignored if there is no precomputed image information
-to plot.</li>
+<li><strong>reimage</strong> (<em>bool</em>) – (Re)image the star. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, but the spacetime configuration
+has been updated or the photosphere parameters have been updated,
+a warning will be generated. In principle, one might want to plot
+sky maps using cached imaging information, or animate sky maps
+using images on disk, so reimaging is not forced if (non-fixed)
+parameters have been changed.</li>
+<li><strong>reuse_ray_map</strong> (<em>bool</em>) – Reuse a precomputed ray map from the stellar surface to the image
+plane. If the spacetime configuration has changed (non-fixed
+parameters have changed), a cached ray map will <em>not</em> be reused. If
+the spacetime configuration is unchanged, but resolution settings
+have changed for ray tracing, pass <code class="docutils literal notranslate"><span class="pre">False</span></code> to adhere to the new
+resolution settings.</li>
 <li><strong>energies</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – Energies in keV to evaluate incident specific intensities at.</li>
 <li><strong>phases</strong> (<em>ndarray</em><em>[</em><em>m</em><em>]</em>) – Phases in radians at which to evaluate incident specific
 intensities at.</li>
@@ -614,13 +624,13 @@ it is approximated by a ray that intersects <span class="math notranslate nohigh
 Image-plane interpolation of quantities (such as intensity) for
 the purpose of visualisation will then smooth out any such
 artefacts.</p>
-<p class="last">Moreover, as an additional measure against
-artefacts in the sky maps in the vicinity of the rotational pole,
-rays are distributed accordingingly. For example, if we request
-<span class="math notranslate nohighlight">\(n=400\)</span> rays per dimension, a maximal spacing of the rays
-from the rotational axis is achieved by rotating the <em>spokes</em>
-of rays (by up to <span class="math notranslate nohighlight">\(\pm\pi/n\)</span>) so that no spoke is
-aligned (or anti-aligned) with the <span class="math notranslate nohighlight">\(y\)</span>-direction.</p>
+<p class="last">Moreover, as an additional measure against artefacts in the sky
+maps in the vicinity of the rotational pole, rays are distributed
+accordingingly. For example, if we request <span class="math notranslate nohighlight">\(n=400\)</span> rays per
+dimension, a maximal spacing of the rays from the rotational axis
+is achieved by rotating the <em>spokes</em> of rays (by up to
+<span class="math notranslate nohighlight">\(\pm\pi/n\)</span>) so that no spoke is aligned (or anti-aligned)
+with the <span class="math notranslate nohighlight">\(y\)</span>-direction.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -646,10 +656,24 @@ compromising resolution at the stellar limb.</li>
 Parallel blocks include ray integration to generate a global ray
 map from image plane to surface; and image calculation at a
 sequence of rotational phases.</li>
-<li><strong>cache_intensities</strong> (<em>bool</em>) – Cache the photon specific intensity sky maps in memory, as a
-function of phase and energy? Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code> because this
-dominates memory consumption. You need to activate this option
-if you want to plot the sky maps (see below).</li>
+<li><strong>cache_intensities</strong> (<em>float</em>) – Cache the photon specific intensity sky maps in memory, as a
+function of phase and energy? The type must be a float (greater than
+or equal to zero) or <code class="docutils literal notranslate"><span class="pre">False</span></code>. The value represents the limiting
+size in GB that can be allocated for the intensity cache. Defaults
+to zero because this dominates memory consumption. You need to
+activate this option if you want to plot the sky maps (see below).
+To activate, supply a limit. A hard limit of 2 GB is imposed for
+safety. To override, use the secret <code class="xref py py-obj docutils literal notranslate"><span class="pre">_OVERRIDE_MEM_LIM</span></code>
+keyword argument to supply a positive limit in GB.</li>
+<li><strong>single_precision_intensities</strong> (<em>bool</em>) – Cache the intensities in single precision? In most use cases,
+double precision is simply unnecessary, and because memory
+consumption can be high, choosing single precision can reduce
+memory requirements by a factor of two. Note that this only applies
+to the caching of intensities, not the calculation of intensities,
+which is done safely in double precision; only the final caching
+operation is a demotion cast to single precision. The default
+is single precision caching. Option ignored if intensities are not
+cached.</li>
 <li><strong>plot_sky_maps</strong> (<em>bool</em>) – Plot (specific) intenity sky maps at a sequence of phases, or
 by averaging over phase. Maps can be made at one more energies
 or energy intervals. The images will be written to disk and
@@ -682,9 +706,15 @@ covertly held by the matplotlib module.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>animate_kwargs</strong> (<em>dict</em>) – Dictionary of keyword arguments passed to
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>animate_kwargs</strong> (<em>dict</em>) – Dictionary of keyword arguments passed to
 <a class="reference internal" href="#xpsi.Photosphere.Photosphere._animate" title="xpsi.Photosphere.Photosphere._animate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_animate()</span></code></a>. Refer to the associated method
-docstring for available options.</td>
+docstring for available options.</li>
+<li><strong>deactivate_all_verbosity</strong> (<em>bool</em>) – Deactivate the verbose output? Note that despite this keyword
+argument not appearing in the method signature, it is a valid
+switch.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

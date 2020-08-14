@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modeling (without statistics) &mdash; xpsi 0.5.2 documentation</title>
+  <title>Modeling (without statistics) &mdash; xpsi 0.5.3 documentation</title>
   
 
   
@@ -489,7 +489,7 @@ variables to local variables from the default.</p>
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.5.0               |
+|                Version: 0.5.3               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -1772,7 +1772,6 @@ need to be reinstalled, and the Jupyter kernel restarted if this was not the cas
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;panel_indices&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
                   <span class="s1">&#39;num_levels&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="c1"># in intensity field rendering</span>
-                  <span class="s1">&#39;invert&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                   <span class="s1">&#39;colormap&#39;</span><span class="p">:</span> <span class="n">cm</span><span class="o">.</span><span class="n">Purples_r</span><span class="p">,</span>   <span class="c1"># a colormap like this will make the lowest finite</span>
                   <span class="s1">&#39;phase_average&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>     <span class="c1"># intensity distinct from the black zero-intensity</span>
                   <span class="s1">&#39;annotate_energies&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># background from the surface and behind the star</span>
@@ -1815,7 +1814,7 @@ need to be reinstalled, and the Jupyter kernel restarted if this was not the cas
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">photosphere</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">reimage</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                  <span class="n">cache_intensities</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                  <span class="n">cache_intensities</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="c1"># cache size limit in GBs</span>
                   <span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">]),</span>
                   <span class="n">phases</span> <span class="o">=</span> <span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">_2pi</span><span class="p">,</span>
                   <span class="n">sqrt_num_rays</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span>
@@ -1841,7 +1840,30 @@ need to be reinstalled, and the Jupyter kernel restarted if this was not the cas
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Writing to disk: ./images/skymap_animated.mp4
+Imaging the star...
+Warning: a ray map has not been cached... tracing new ray set...
+Commencing ray tracing and imaging...
+Ray tracing complete.
+Ray set cached.
+Intensity caching complete.
+Plotting intensity sky maps...
+Normalising each sky map panel separately...
+Normalised sky map panels separately.
+Rendering images for phase numbers [1, 10]...
+Rendering images for phase numbers (10, 20]...
+Rendering images for phase numbers (20, 30]...
+Rendering images for phase numbers (30, 40]...
+Rendering images for phase numbers (40, 50]...
+Rendering images for phase numbers (50, 60]...
+Rendering images for phase numbers (60, 70]...
+Rendering images for phase numbers (70, 80]...
+Rendering images for phase numbers (80, 90]...
+Rendering images for phase numbers (90, 100]...
+Intensity sky maps plotted.
+Animating intensity sky maps...
+Writing to disk: ./images/skymap_animated.mp4...
+Intensity sky maps animated.
+Star imaged.
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1866,7 +1888,7 @@ Writing to disk: ./images/skymap_animated.mp4
     <source src="images/skymap_animated.mp4" type="video/mp4">
 </video></div></div>
 </div>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
@@ -1875,6 +1897,14 @@ Writing to disk: ./images/skymap_animated.mp4
 <span class="o">!</span>mv images/*.png images/frames/.
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+mkdir: cannot create directory ‘images/frames’: File exists
+</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
@@ -1902,8 +1932,9 @@ Writing to disk: ./images/skymap_animated.mp4
 <img alt="_images/model_construction_streamlined_105_0.png" src="_images/model_construction_streamlined_105_0.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+<p>We freed memory above before animating, and thus lost the cached ray map and intensity cache. The ray map will now be recomputed, and the intensities cached again:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1912,10 +1943,10 @@ Writing to disk: ./images/skymap_animated.mp4
 <span class="n">sky_map_kwargs</span><span class="p">[</span><span class="s1">&#39;num_levels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
 
 <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">hot</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
-    <span class="n">obj</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="mi">96</span><span class="p">)</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">260</span><span class="p">)</span>
 
 <span class="n">photosphere</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">reimage</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                  <span class="n">cache_intensities</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                  <span class="n">cache_intensities</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="c1"># cache size limit in GBs</span>
                   <span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">]),</span>
                   <span class="n">phases</span> <span class="o">=</span> <span class="n">hot</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">_2pi</span><span class="p">,</span>
                   <span class="n">sqrt_num_rays</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span>
@@ -1927,8 +1958,29 @@ Writing to disk: ./images/skymap_animated.mp4
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Imaging the star...
+Warning: a ray map has not been cached... tracing new ray set...
+Commencing ray tracing and imaging...
+Ray tracing complete.
+Ray set cached.
+Intensity caching complete.
+Plotting intensity sky maps...
+Averaging (specific) intensity over rotational phase...
+Averaged (specific) intensity over rotational phase.
+Normalising each sky map panel separately...
+Normalised sky map panels separately.
+Rendering phase-averaged images...
+Intensity sky maps plotted.
+Star imaged.
+</pre></div></div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1937,11 +1989,11 @@ Writing to disk: ./images/skymap_animated.mp4
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_streamlined_107_0.png" src="_images/model_construction_streamlined_107_0.png" />
+<img alt="_images/model_construction_streamlined_108_0.png" src="_images/model_construction_streamlined_108_0.png" />
 </div>
 </div>
 <p>Artefacts are not very discernable, but can be further reduced with a higher phase resolution at higher memory and time cost.</p>
