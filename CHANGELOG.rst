@@ -21,6 +21,10 @@ Summary
 Fixed
 ^^^^^
 
+* Add try-except block to :attr:`~.Photosphere.Photosphere.global_to_local_file`
+  property so that explicit setting of ``None`` by user is not required if
+  file I/O is not needed in the extension module.
+
 Added
 ^^^^^
 

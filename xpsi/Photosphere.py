@@ -383,7 +383,10 @@ class Photosphere(ParameterSubspace):
 
     @property
     def global_to_local_file(self):
-        return self._global_to_local_file
+        try:
+            return self._global_to_local_file
+        except AttributeError:
+            return None
 
     @global_to_local_file.setter
     def global_to_local_file(self, filepath):
