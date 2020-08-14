@@ -15,11 +15,22 @@ and this project adheres to
 Summary
 ^^^^^^^
 
+* Backwards compatible improvements apart from corner cases (described below).
+
 Fixed
 ^^^^^
 
 Added
 ^^^^^
+
+* The surface to image-plane ray map is cached in Python process memory so it
+  can be efficiently reused for same spacetime configuration and ray map
+  resolution settings. Explicit support for writing the ray map to disk and
+  loading it is not included, but this should be entirely possible to achieve
+  manually. Backwards compatible except for corner cases, such as if resolution
+  settings changed between calls to the imager but a ray map otherwise exists
+  in Python process memory and the spacetime configuration has not been changed.
+
 
 Changed
 ^^^^^^^
