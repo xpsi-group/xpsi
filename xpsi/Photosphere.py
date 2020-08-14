@@ -455,7 +455,8 @@ class Photosphere(ParameterSubspace):
               sky_map_kwargs = None,
               animate_sky_maps = False,
               free_memory = True,
-              animate_kwargs = None):
+              animate_kwargs = None,
+              **kwargs):
         """ Image the star as a function of phase and energy.
 
         :param bool reimage:
@@ -544,11 +545,16 @@ class Photosphere(ParameterSubspace):
             map from image plane to surface; and image calculation at a
             sequence of rotational phases.
 
-        :param bool cache_intensities:
+        :param float cache_intensities:
             Cache the photon specific intensity sky maps in memory, as a
-            function of phase and energy? Defaults to ``False`` because this
-            dominates memory consumption. You need to activate this option
-            if you want to plot the sky maps (see below).
+            function of phase and energy? The type must be a float (greater than
+            or equal to zero) or ``False``. The value represents the limiting
+            size in GB that can be allocated for the intensity cache. Defaults
+            to zero because this dominates memory consumption. You need to
+            activate this option if you want to plot the sky maps (see below).
+            To activate, supply a limit. A hard limit of 2 GB is imposed for
+            safety. To override, use the secret :obj:`_OVERRIDE_MEM_LIM`
+            keyword argument to supply a positive limit in GB.
 
         :param bool plot_sky_maps:
             Plot (specific) intenity sky maps at a sequence of phases, or
@@ -611,6 +617,36 @@ class Photosphere(ParameterSubspace):
             if not isinstance(energies, _np.ndarray):
                 raise TypeError('Imaging energies must be in a 1D ndarray.')
 
+            if plot_sky_maps and not cache_intensities:
+                raise _exc
+
+            if cache_intensities:
+                _override_mem_lim = kwargs.get('_OVERRIDE_MEM_LIM', 1.0)
+                if not isinstance(_override_mem_lim, float):
+                    raise TypeError('Intensity cache limit override must be a '
+                                    'float.')
+                elif _override_mem_lim < 0.0:
+                    raise ValueError('Intensity cache limit override must be '
+                                     'positive or zero.')
+                if not isinstance(cache_intensities, float):
+                    raise TypeError('Intensity cache limit must be a float.')
+                elif not 0.0 <= cache_intensities <= _override_mem_lim:
+                    raise ValueError('Intensity cache limit must be positive '
+                                     'and less than the safety limit, which '
+                                     'in turn can be overridden as described '
+                                     'in the method docstring.')
+
+                _req_size = 8.0 * len(phases) * len(energies) # bytes
+                _req_size *= sqrt_num_rays**2.0 # + 1.0 # origin ray negligible
+
+                if _req_size/1.0e9 >= cache_intensities:
+                    raise MemoryError('Too much memory would be required to '
+                                      'cache the intensities at this '
+                                      'resolution. Try decreasing the number '
+                                      'of rays, energies, and/or phases, or '
+                                      'override the cache size limit if '
+                                      'safe.')
+
             try:
                 self.images
             except AttributeError:
@@ -626,9 +662,6 @@ class Photosphere(ParameterSubspace):
                 else:
                     # del self.images[0] # doesn't require much memory
                     del self.images[-1]  # requires far more memory
-
-            if plot_sky_maps and not cache_intensities:
-                raise _exc
 
             try:
                 _ray_map = tuple(self.images[1:])

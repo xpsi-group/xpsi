@@ -15,7 +15,8 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* Backwards compatible improvements apart from corner cases (described below).
+* Improvement patches. Deliberately backwards incompatible for safety in
+  memory allocation.
 
 Fixed
 ^^^^^
@@ -30,10 +31,26 @@ Added
   manually. Backwards compatible except for corner cases, such as if resolution
   settings changed between calls to the imager but a ray map otherwise exists
   in Python process memory and the spacetime configuration has not been changed.
-
+* A secret keyword argument to :meth:`~.Photosphere.Photosphere.image`,
+  :obj:`_OVERRIDE_MEM_LIM`, which can be used to change an internal hard limit
+  on the intensity cache size. This setting is for safety and designed so that
+  higher memory consumption is deliberate or if something goes awry, it is
+  deemed the responsibilty of the user to have read method docstring carefully.
+  The tutorials will not use this secret keyword, so if the user tries to run
+  them and encounters an exception, they will need to investigate the docstring
+  and either adapt the resolution to their system or take the responsibility of
+  setting the cache size limit for their system to accomodate the resolution
+  settings in the tutorial.
 
 Changed
 ^^^^^^^
+
+* The usage of the :meth:`~.Photosphere.Photosphere.image` argument
+  :obj:`cache_intensities`. Instead of simply activating intensity caching
+  with boolean, the user must specify a cache size limit that is adhered to.
+  If the required cache size given the resolution settings is larger than
+  the limit, imaging does not proceed. If the cache size limit is zero or
+  equivalent, then imaging safely proceeds without caching the intensities.
 
 Deprecated
 ^^^^^^^^^^
