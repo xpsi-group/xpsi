@@ -38,7 +38,13 @@ if not __XPSI_SETUP__:
         """ Decorator factory for a decorator that controls verbosity. """
         @wrapt.decorator
         def decorator(func, instance, args, kwargs):
-            deactivate_verbosity = kwargs.pop('deactivate_verbosity', False)
+            deactivate_all_verbosity = kwargs.pop('deactivate_all_verbosity',
+                                                  False)
+            if deactivate_all_verbosity:
+                deactivate_verbosity = True
+                _ =  kwargs.setdefault('deactivate_verbosity', True)
+            else:
+                deactivate_verbosity = kwargs.pop('deactivate_verbosity', False)
             if _verbose and not deactivate_verbosity:
                 if enter_msg and isinstance(enter_msg, _six.string_types):
                     msg = enter_msg

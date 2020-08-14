@@ -52,6 +52,9 @@ Added
   :obj:`single_precision_intensities`, which flags whether or not to *cache*
   the intensities in single precision do halve intensity cache memory
   requirements. The default is to cache in single precision.
+* Verbosity to :meth:`~.Photosphere.Photosphere.image` because execution can
+  take many minutes depending on settings chosen. The verbosity can be
+  deactivated via a keyword argument (see the method docstring).
 
 Changed
 ^^^^^^^
