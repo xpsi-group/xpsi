@@ -41,6 +41,10 @@ Added
   and either adapt the resolution to their system or take the responsibility of
   setting the cache size limit for their system to accomodate the resolution
   settings in the tutorial.
+* Optional argument to :meth:`~.Photosphere.Photosphere.image`,
+  :obj:`single_precision_intensities`, which flags whether or not to *cache*
+  the intensities in single precision do halve intensity cache memory
+  requirements. The default is to cache in single precision.
 
 Changed
 ^^^^^^^
@@ -51,6 +55,8 @@ Changed
   If the required cache size given the resolution settings is larger than
   the limit, imaging does not proceed. If the cache size limit is zero or
   equivalent, then imaging safely proceeds without caching the intensities.
+* Intensities are by default *cached* in single precision to reduce cache memory
+  requirements.
 
 Deprecated
 ^^^^^^^^^^

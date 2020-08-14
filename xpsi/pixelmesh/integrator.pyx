@@ -64,6 +64,7 @@ def integrate(size_t numThreads,
               double[::1] energies,
               double[::1] phases,
               int cache_intensities,
+              int single_precision_cache,
               reuse_ray_map = None,
               global_to_local_file = None,
               atmosphere = None):
@@ -106,7 +107,8 @@ def integrate(size_t numThreads,
         double[::1] LAG
         double[::1] Z
         double[::1] r_MESH
-        double[:,:,::1] IMAGE
+        float[:,:,::1] IMAGE
+        double[:,:,::1] IMAGE_DUB
         double SEMI_MAJOR, SEMI_MINOR
 
     GEOM.r_s = r_s
@@ -259,7 +261,10 @@ def integrate(size_t numThreads,
     cdef double Delta_t = _2pi / NGR
 
     if cache_intensities == 1:
-        IMAGE = -1.0 * np.zeros((N_P, N_E, NGR_SQ), dtype = np.double)
+        if single_precision_cache == 0:
+            IMAGE_DUB = -1.0 * np.zeros((N_P, N_E, NGR_SQ), dtype = np.single)
+        else:
+            IMAGE = -1.0 * np.zeros((N_P, N_E, NGR_SQ), dtype = np.single)
 
     printf("\nCommencing imaging...")
 
@@ -353,7 +358,10 @@ def integrate(size_t numThreads,
                             integrated_flux[k,p] += I_E * area * Delta_t
 
                             if cache_intensities == 1:
-                                IMAGE[k, p, INDEX + 1] = I_E / energies[p]
+                                if single_precision_cache == 0:
+                                    IMAGE_DUB[k, p, INDEX + 1] = I_E / energies[p]
+                                else:
+                                    IMAGE[k, p, INDEX + 1] = I_E / energies[p]
 
                 if ORIGIN_HIT == 1:
                     E_prime = energies[p] * Z[0]
@@ -379,7 +387,10 @@ def integrate(size_t numThreads,
                     integrated_flux[k,p] += I_E * pow(r2, 2.0) * M_PI
 
                     if cache_intensities == 1:
-                        IMAGE[k, p, 0] = I_E / energies[p]
+                        if single_precision_cache == 0:
+                            IMAGE_DUB[k, p, 0] = I_E / energies[p]
+                        else:
+                            IMAGE[k, p, 0] = I_E / energies[p]
 
                 integrated_flux[k,p] *= SEMI_MINOR * SEMI_MAJOR
                 integrated_flux[k,p] *= eval_hot_norm() / (distance * distance * energies[p] * keV)
@@ -408,7 +419,10 @@ def integrate(size_t numThreads,
     free_local_variables(N_T, local_vars_buf)
 
     if cache_intensities == 1:
-        _IMAGE = np.asarray(IMAGE, dtype = np.double, order = 'C')
+        if single_precision_cache == 0:
+            _IMAGE = np.asarray(IMAGE_DUB, dtype = np.double, order = 'C')
+        else:
+            _IMAGE = np.asarray(IMAGE, dtype = np.single, order = 'C')
     else:
         _IMAGE = None
 

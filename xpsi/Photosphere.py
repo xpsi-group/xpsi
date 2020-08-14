@@ -451,6 +451,7 @@ class Photosphere(ParameterSubspace):
               image_plane_radial_increment_power = 1.0 / 2.0,
               threads = 1,
               cache_intensities = False,
+              single_precision_intensities = True,
               plot_sky_maps = False,
               sky_map_kwargs = None,
               animate_sky_maps = False,
@@ -555,6 +556,17 @@ class Photosphere(ParameterSubspace):
             To activate, supply a limit. A hard limit of 2 GB is imposed for
             safety. To override, use the secret :obj:`_OVERRIDE_MEM_LIM`
             keyword argument to supply a positive limit in GB.
+
+        :param bool single_precision_intensities:
+            Cache the intensities in single precision? In most use cases,
+            double precision is simply unnecessary, and because memory
+            consumption can be high, choosing single precision can reduce
+            memory requirements by a factor of two. Note that this only applies
+            to the caching of intensities, not the calculation of intensities,
+            which is done safely in double precision; only the final caching
+            operation is a demotion cast to single precision. The default
+            is single precision caching. Option ignored if intensities are not
+            cached.
 
         :param bool plot_sky_maps:
             Plot (specific) intenity sky maps at a sequence of phases, or
@@ -689,6 +701,7 @@ class Photosphere(ParameterSubspace):
                                 energies,
                                 phases,
                                 cache_intensities,
+                                single_precision_intensities,
                                 _ray_map,
                                 self.global_to_local_file,
                                 self._hot_atmosphere)
