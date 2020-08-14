@@ -28,9 +28,11 @@ Added
   can be efficiently reused for same spacetime configuration and ray map
   resolution settings. Explicit support for writing the ray map to disk and
   loading it is not included, but this should be entirely possible to achieve
-  manually. Backwards compatible except for corner cases, such as if resolution
-  settings changed between calls to the imager but a ray map otherwise exists
-  in Python process memory and the spacetime configuration has not been changed.
+  manually. Backwards compatible except for corner cases, such as not using
+  keyword arguments when calling :meth:`~.Photosphere.Photosphere.image`, or if
+  resolution settings changed between calls to the imager but a ray map
+  otherwise exists in Python process memory and the spacetime configuration has
+  not been changed.
 * A secret keyword argument to :meth:`~.Photosphere.Photosphere.image`,
   :obj:`_OVERRIDE_MEM_LIM`, which can be used to change an internal hard limit
   on the intensity cache size. This setting is for safety and designed so that
