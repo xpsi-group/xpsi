@@ -61,11 +61,13 @@ def integrate(size_t numThreads,
               double init_step,
               double radialIncrementExponent,
               double[::1] radiation_field_global_variables,
-              global_to_local_file,
               double[::1] energies,
               double[::1] phases,
               int cache_intensities,
-              atmosphere):
+              int single_precision_cache,
+              reuse_ray_map = None,
+              global_to_local_file = None,
+              atmosphere = None):
 
     """
     Compute image-plane-to-star X-ray light-curves when the photospheric
@@ -92,21 +94,22 @@ def integrate(size_t numThreads,
         size_t N_T = numThreads
         size_t N_E = energies.shape[0]
         size_t N_P = phases.shape[0]
-        size_t NGR = numGlobalRays
-        size_t NGR_SQ = NGR * NGR + 1
+        size_t NGR
+        size_t NGR_SQ
         _GEOM GEOM
 
-        double[::1] X = np.zeros(NGR_SQ, dtype = np.double)
-        double[::1] Y = np.zeros(NGR_SQ, dtype = np.double)
-        double[::1] THETA = np.zeros(NGR_SQ, dtype = np.double)
-        double[::1] PHI = np.zeros(NGR_SQ, dtype = np.double)
-        double[::1] cos_zenith = np.zeros(NGR_SQ, dtype = np.double)
-        double[::1] LAG = np.zeros(NGR_SQ, dtype = np.double)
-        double[::1] Z = np.zeros(NGR_SQ, dtype = np.double)
-        double[:,:,::1] IMAGE
-
-    if cache_intensities == 1:
-        IMAGE = -1.0 * np.zeros((N_P, N_E, NGR_SQ), dtype = np.double)
+        double[::1] X
+        double[::1] Y
+        double[::1] THETA
+        double[::1] PHI
+        double[::1] RADIAL
+        double[::1] cos_zenith
+        double[::1] LAG
+        double[::1] Z
+        double[::1] r_MESH
+        float[:,:,::1] IMAGE
+        double[:,:,::1] IMAGE_DUB
+        double SEMI_MAJOR, SEMI_MINOR
 
     GEOM.r_s = r_s
     GEOM.R_eq = R_eq
@@ -128,52 +131,99 @@ def integrate(size_t numThreads,
 
     distance -= GEOM.d
 
-    cdef _RAY **RAYS = <_RAY**> malloc(N_T * sizeof(_RAY*))
-    for T in range(N_T):
-        RAYS[T] = alloc_RAY(epsabs_ray,
-                            epsrel_ray,
-                            init_step,
-                            max_steps)
-    #----------------------------------------------------------------------->>>
-    # >>> Compute sparse set of rays distributed over global image plane.
-    #----------------------------------------------------------------------->>>
-    cdef RAY_MAP *MAP = alloc_RAY_MAP(NGR)
-    # The last argument forces image plane to be circular, allowing for a
-    # trivial mapping between mesh coordinates and a plotting library.
-    compute_globalRayMap(N_T,
-                         radialIncrementExponent,
-                         &GEOM,
-                         MAP,
-                         RAYS,
-                         0)
+    cdef _RAY **RAYS = NULL
+    cdef RAY_MAP *MAP = NULL
 
-    printf("\n\nGlobal ray map computed.")
+    if reuse_ray_map is None:
+        NGR = numGlobalRays
+        NGR_SQ = NGR * NGR + 1
 
-    BOYERLINDQUIST_2_SPHERICAL(MAP, &GEOM)
+        X = np.zeros(NGR_SQ, dtype = np.double)
+        Y = np.zeros(NGR_SQ, dtype = np.double)
+        THETA = np.zeros(NGR_SQ, dtype = np.double)
+        PHI = np.zeros(NGR_SQ, dtype = np.double)
+        RADIAL = np.zeros(NGR_SQ, dtype = np.double)
+        cos_zenith = np.zeros(NGR_SQ, dtype = np.double)
+        LAG = np.zeros(NGR_SQ, dtype = np.double)
+        Z = np.zeros(NGR_SQ, dtype = np.double)
+        r_MESH = np.zeros(NGR, dtype = np.double)
 
-    printf("\nCoordinates transformed from Boyer-Lindquist to spherical.")
+        RAYS = <_RAY**> malloc(N_T * sizeof(_RAY*))
+        for T in range(N_T):
+            RAYS[T] = alloc_RAY(epsabs_ray,
+                                epsrel_ray,
+                                init_step,
+                                max_steps)
+        #-------------------------------------------------------------------->>>
+        # >>> Compute sparse set of rays distributed over global image plane.
+        #-------------------------------------------------------------------->>>
+        MAP = alloc_RAY_MAP(NGR)
+        # The last argument if one can force the image plane to be circular,
+        # allowing for a trivial mapping between mesh coordinates and a
+        # plotting library, but we use elliptical image plane with matplotlib.
+        compute_globalRayMap(N_T,
+                             radialIncrementExponent,
+                             &GEOM,
+                             MAP,
+                             RAYS,
+                             0)
 
-    # now store transformed spherical coordinates for return
+        printf("\n\nGlobal ray map computed.")
 
-    # Deal with origin and NGR + 1
-    X[0] = MAP.ORIGIN_X / GEOM.b_max
-    Y[0] = MAP.ORIGIN_Y / GEOM.b_max
-    LAG[0] = MAP.ORIGIN[0]
-    THETA[0] = MAP.ORIGIN[3]
-    PHI[0] = MAP.ORIGIN[1]
-    Z[0] = MAP.ORIGIN[4]
-    cos_zenith[0] = MAP.ORIGIN[5]
+        BOYERLINDQUIST_2_SPHERICAL(MAP, &GEOM)
 
-    INDEX = 1
-    while INDEX < NGR_SQ:
-        X[INDEX] = MAP.X_MESH[INDEX - 1] / GEOM.b_max
-        Y[INDEX] = MAP.Y_MESH[INDEX - 1] / GEOM.b_max
-        LAG[INDEX] = MAP.LAG[INDEX - 1]
-        THETA[INDEX] = MAP.THETA[INDEX - 1]
-        PHI[INDEX] = MAP.PHI[INDEX - 1]
-        Z[INDEX] = MAP.Z[INDEX - 1]
-        cos_zenith[INDEX] = MAP.ABB[INDEX - 1]
-        INDEX += 1
+        printf("\nCoordinates transformed from Boyer-Lindquist to spherical.")
+
+        # now store transformed spherical coordinates for return
+
+        # Deal with origin and NGR + 1
+        X[0] = MAP.ORIGIN_X / GEOM.b_max
+        Y[0] = MAP.ORIGIN_Y / GEOM.b_max
+        LAG[0] = MAP.ORIGIN[0]
+        THETA[0] = MAP.ORIGIN[3]
+        PHI[0] = MAP.ORIGIN[1]
+        RADIAL[0] = MAP.ORIGIN[2]
+        Z[0] = MAP.ORIGIN[4]
+        cos_zenith[0] = MAP.ORIGIN[5]
+
+        SEMI_MAJOR = MAP.SEMI_MAJOR
+        SEMI_MINOR = MAP.SEMI_MINOR
+
+        INDEX = 1
+        while INDEX < NGR_SQ:
+            X[INDEX] = MAP.X_MESH[INDEX - 1] / GEOM.b_max
+            Y[INDEX] = MAP.Y_MESH[INDEX - 1] / GEOM.b_max
+            LAG[INDEX] = MAP.LAG[INDEX - 1]
+            THETA[INDEX] = MAP.THETA[INDEX - 1]
+            PHI[INDEX] = MAP.PHI[INDEX - 1]
+            RADIAL[INDEX] = MAP.RADIAL[INDEX - 1]
+            Z[INDEX] = MAP.Z[INDEX - 1]
+            cos_zenith[INDEX] = MAP.ABB[INDEX - 1]
+            if INDEX <= NGR:
+                r_MESH[INDEX - 1] = MAP.r_MESH[INDEX - 1]
+            INDEX += 1
+
+        # free memory
+        for T in range(N_T):
+            free_RAY(RAYS[T])
+        free(RAYS)
+        free_RAY_MAP(MAP)
+
+    else: # reuse ray map
+        X = reuse_ray_map[0]
+        Y = reuse_ray_map[1]
+        THETA = reuse_ray_map[2]
+        PHI = reuse_ray_map[3]
+        RADIAL = reuse_ray_map[4]
+        LAG = reuse_ray_map[5]
+        Z = reuse_ray_map[6]
+        cos_zenith = reuse_ray_map[7]
+        r_MESH = reuse_ray_map[8]
+        SEMI_MAJOR = reuse_ray_map[9]
+        SEMI_MINOR = reuse_ray_map[10]
+
+        NGR = r_MESH.shape[0]
+        NGR_SQ = NGR * NGR + 1
 
     cdef:
         size_t N = NGR
@@ -210,6 +260,12 @@ def integrate(size_t numThreads,
 
     cdef double Delta_t = _2pi / NGR
 
+    if cache_intensities == 1:
+        if single_precision_cache == 0:
+            IMAGE_DUB = -1.0 * np.zeros((N_P, N_E, NGR_SQ), dtype = np.single)
+        else:
+            IMAGE = -1.0 * np.zeros((N_P, N_E, NGR_SQ), dtype = np.single)
+
     printf("\nCommencing imaging...")
 
     for kk in prange(N_P,
@@ -222,10 +278,10 @@ def integrate(size_t numThreads,
         T = threadid()
         THREAD_INDEX = T * NSQ
 
-        if MAP.ORIGIN[2] > 0.0:
-            if HIT_or_MISS(MAP.ORIGIN[3],
-                           MAP.ORIGIN[1],
-                           phases[k] - MAP.ORIGIN[0],
+        if RADIAL[0] > 0.0:
+            if HIT_or_MISS(THETA[0],
+                           PHI[0],
+                           phases[k] - LAG[0],
                            &(radiation_field_global_variables[0]),
                            local_vars_buf) == 1:
                 NUM_HITS = 1
@@ -243,11 +299,11 @@ def integrate(size_t numThreads,
         for i in range(NGR):
             ROOT = i * N
             for j in range(NGR):
-                INDEX = ROOT + j
-                if MAP.RADIAL[INDEX] > 0.0:
-                    if HIT_or_MISS(MAP.THETA[INDEX],
-                                   MAP.PHI[INDEX],
-                                   phases[k] - MAP.LAG[INDEX],
+                INDEX = ROOT + j + 1
+                if RADIAL[INDEX] > 0.0:
+                    if HIT_or_MISS(THETA[INDEX],
+                                   PHI[INDEX],
+                                   phases[k] - LAG[INDEX],
                                    &(radiation_field_global_variables[0]),
                                    local_vars_buf) == 1:
 
@@ -265,27 +321,27 @@ def integrate(size_t numThreads,
                 for i in range(NGR):
                     ROOT = i * N
 
-                    r1 = 0.5 * (MAP.r_MESH[i+1] + MAP.r_MESH[i])
+                    r1 = 0.5 * (r_MESH[i+1] + r_MESH[i])
                     if i < NGR - 1:
-                        r2 = 0.5 * (MAP.r_MESH[i+2] + MAP.r_MESH[i+1])
+                        r2 = 0.5 * (r_MESH[i+2] + r_MESH[i+1])
                     else:
-                        r2 = MAP.r_MESH[i + 1] + (MAP.r_MESH[i + 1] - r1)
+                        r2 = r_MESH[i + 1] + (r_MESH[i + 1] - r1)
 
                     area = 0.5 * (pow(r2, 2.0) - pow(r1, 2.0))
 
                     for j in range(NGR):
-                        INDEX = ROOT + j
+                        INDEX = ROOT + j + 1
                         if HIT[THREAD_INDEX + INDEX] == 1:
-                            E_prime = energies[p] * MAP.Z[INDEX]
+                            E_prime = energies[p] * Z[INDEX]
                             #printf("\n(i,j): %d, %d", <int>i, <int>j)
                             # The following function calls are split so that
                             # the module the latter calls is shared by the
                             # PixelMesh and CellMesh routines
                             # Move this first evaluation to outside the loop
                             # over energies since it is achromatic?
-                            eval_local_variables(MAP.THETA[INDEX],
-                                                 MAP.PHI[INDEX],
-                                                 phases[k] - MAP.LAG[INDEX],
+                            eval_local_variables(THETA[INDEX],
+                                                 PHI[INDEX],
+                                                 phases[k] - LAG[INDEX],
                                                  &GEOM,
                                                  &(radiation_field_global_variables[0]),
                                                  local_vars_buf,
@@ -293,23 +349,26 @@ def integrate(size_t numThreads,
 
                             I_E = eval_hot(T,
                                            E_prime,
-                                           MAP.ABB[INDEX],
+                                           cos_zenith[INDEX],
                                            local_vars_buf.local_variables[T],
                                            data)
 
-                            I_E = I_E * pow(MAP.Z[INDEX], -3.0)
+                            I_E = I_E * pow(Z[INDEX], -3.0)
 
                             integrated_flux[k,p] += I_E * area * Delta_t
 
                             if cache_intensities == 1:
-                                IMAGE[k, p, INDEX + 1] = I_E / energies[p]
+                                if single_precision_cache == 0:
+                                    IMAGE_DUB[k, p, INDEX + 1] = I_E / energies[p]
+                                else:
+                                    IMAGE[k, p, INDEX + 1] = I_E / energies[p]
 
                 if ORIGIN_HIT == 1:
-                    E_prime = energies[p] * MAP.ORIGIN[4]
+                    E_prime = energies[p] * Z[0]
 
-                    eval_local_variables(MAP.ORIGIN[3],
-                                         MAP.ORIGIN[1],
-                                         phases[k] - MAP.ORIGIN[0],
+                    eval_local_variables(THETA[0],
+                                         PHI[0],
+                                         phases[k] - LAG[0],
                                          &GEOM,
                                          &(radiation_field_global_variables[0]),
                                          local_vars_buf,
@@ -317,20 +376,23 @@ def integrate(size_t numThreads,
 
                     I_E = eval_hot(T,
                                    E_prime,
-                                   MAP.ORIGIN[5],
+                                   cos_zenith[0],
                                    local_vars_buf.local_variables[T],
                                    data)
 
-                    I_E = I_E * pow(MAP.ORIGIN[4], -3.0)
+                    I_E = I_E * pow(Z[0], -3.0)
 
-                    r2 = 0.5 * MAP.r_MESH[1]
+                    r2 = 0.5 * r_MESH[1]
 
                     integrated_flux[k,p] += I_E * pow(r2, 2.0) * M_PI
 
                     if cache_intensities == 1:
-                        IMAGE[k, p, 0] = I_E / energies[p]
+                        if single_precision_cache == 0:
+                            IMAGE_DUB[k, p, 0] = I_E / energies[p]
+                        else:
+                            IMAGE[k, p, 0] = I_E / energies[p]
 
-                integrated_flux[k,p] *= MAP.SEMI_MINOR * MAP.SEMI_MAJOR
+                integrated_flux[k,p] *= SEMI_MINOR * SEMI_MAJOR
                 integrated_flux[k,p] *= eval_hot_norm() / (distance * distance * energies[p] * keV)
         else:
             for p in range(N_E):
@@ -350,11 +412,6 @@ def integrate(size_t numThreads,
     #----------------------------------------------------------------------->>>
     # >>> Free memory.
     #----------------------------------------------------------------------->>>
-    for T in range(N_T):
-        free_RAY(RAYS[T])
-    free(RAYS)
-    free_RAY_MAP(MAP)
-
     if atmosphere:
         free_preload(preloaded)
 
@@ -362,17 +419,29 @@ def integrate(size_t numThreads,
     free_local_variables(N_T, local_vars_buf)
 
     if cache_intensities == 1:
-        _IMAGE = np.asarray(IMAGE, dtype = np.double, order = 'C')
+        if single_precision_cache == 0:
+            _IMAGE = np.asarray(IMAGE_DUB, dtype = np.double, order = 'C')
+        else:
+            _IMAGE = np.asarray(IMAGE, dtype = np.single, order = 'C')
     else:
         _IMAGE = None
 
-    return (SUCCESS,
-            np.asarray(integrated_flux, dtype = np.double, order = 'C'),
-            np.asarray(X, dtype = np.double, order = 'C'),
-            np.asarray(Y, dtype = np.double, order = 'C'),
-            np.asarray(THETA, dtype = np.double, order = 'C'),
-            np.asarray(PHI, dtype = np.double, order = 'C'),
-            np.asarray(LAG, dtype = np.double, order = 'C'),
-            np.asarray(Z, dtype = np.double, order = 'C'),
-            np.asarray(cos_zenith, dtype = np.double, order = 'C'),
-            _IMAGE)
+    if reuse_ray_map is None:
+        return (SUCCESS,
+                np.asarray(integrated_flux, dtype = np.double, order = 'C'),
+                np.asarray(X, dtype = np.double, order = 'C'),
+                np.asarray(Y, dtype = np.double, order = 'C'),
+                np.asarray(THETA, dtype = np.double, order = 'C'),
+                np.asarray(PHI, dtype = np.double, order = 'C'),
+                np.asarray(RADIAL, dtype = np.double, order = 'C'),
+                np.asarray(LAG, dtype = np.double, order = 'C'),
+                np.asarray(Z, dtype = np.double, order = 'C'),
+                np.asarray(cos_zenith, dtype = np.double, order = 'C'),
+                np.asarray(r_MESH, dtype = np.double, order= 'C'),
+                SEMI_MAJOR,
+                SEMI_MINOR,
+                _IMAGE)
+    else:
+        return (SUCCESS,
+                np.asarray(integrated_flux, dtype = np.double, order = 'C'),
+                _IMAGE)

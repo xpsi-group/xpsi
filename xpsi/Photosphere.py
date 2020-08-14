@@ -2,6 +2,7 @@ from __future__ import division, print_function
 
 from .global_imports import *
 from . import global_imports
+from . import _warning, make_verbose, verbose
 
 from .Spacetime import Spacetime
 from .HotRegion import HotRegion
@@ -382,7 +383,10 @@ class Photosphere(ParameterSubspace):
 
     @property
     def global_to_local_file(self):
-        return self._global_to_local_file
+        try:
+            return self._global_to_local_file
+        except AttributeError:
+            return None
 
     @global_to_local_file.setter
     def global_to_local_file(self, filepath):
@@ -403,22 +407,36 @@ class Photosphere(ParameterSubspace):
         try:
             for i, obj in enumerate(images):
                 if not isinstance(obj, _np.ndarray):
-                    if i < len(images) - 1:
-                        raise TypeError('All image information must be '
-                                        'contained in ndarrays.')
-                    elif obj is not None:
-                        raise TypeError('All image information must be '
-                                        'contained in ndarrays.')
+                    if i < len(images) - 3:
+                        raise TypeError('Image information was expected to be '
+                                        'contained in an ndarray.')
+                    elif obj is not None and not isinstance(obj, float):
+                        raise TypeError('Unexpected type for image information.')
         except TypeError:
             raise TypeError('An iterable of objects containing image '
                             'information must be supplied.')
 
-        if len(images) != 9:
+        if len(images) != 13:
             raise ValueError('There must be six ndarray objects specifing '
                              'image information.')
 
         msg = 'Image information element %i must have %i dimensions.'
 
+        # tuple elements:
+        #   energy-phase resolved signal (2D array)
+        #   x coordinate on image plane (1D array)
+        #   y coordinate on image plane (1D array)
+        #   colatitude mapped to point (x,y) on image plane (1D array)
+        #   azimuth mapped to point (x,y) on image plane (1D array)
+        #   radius mapped to point (x,y) on image plane (1D array)
+        #   phase lag
+        #   redshift
+        #   aberrated ray angle to local surface normal
+        #   elliptical image-plane radial array
+        #   elliptical image-plane semi-major axis
+        #   elliptical image-plane semi-minor axis
+        #   energy-phase resolved specific intensity sky maps (3D array)
+        # the last element is None if intensities not cached
         assert images[0].ndim == 2, msg % (0, 2)
         assert images[1].ndim == 1, msg % (1, 1)
         assert images[2].ndim == 1, msg % (2, 1)
@@ -427,8 +445,36 @@ class Photosphere(ParameterSubspace):
         assert images[5].ndim == 1, msg % (5, 1)
         assert images[6].ndim == 1, msg % (6, 1)
         assert images[7].ndim == 1, msg % (7, 1)
-        if images[8] is not None:
-            assert images[8].ndim == 3, msg % (8, 3)
+        assert images[8].ndim == 1, msg % (8, 1)
+        assert images[9].ndim == 1, msg % (9, 1)
+        if images[12] is not None:
+            assert images[12].ndim == 3, msg % (12, 3)
+
+        _num_rays = len(images[1])
+        for i in range(2,9):
+            assert len(images[i] == _num_rays),\
+                ('Ray map: array length mismatch (array at tuple index %i is '
+                 'not equal in length to array at tuple index 1).' % i)
+
+        assert int( _m.sqrt( _num_rays - 1 ) ) == len(images[9]),\
+                ('Ray map: array length mismatch for image-plane radial '
+                 'coordinate array (array at tuple index 9).')
+
+        if images[12] is not None:
+            assert images[12].shape[0] == images[0].shape[1],\
+                    ('Intensity cache dimension 0 does not match the length of '
+                     'dimension 1 of the specific flux array '
+                     '(at tuple index 1), meaning the number of phases '
+                     'is mismatched.')
+            assert images[12].shape[1] == images[0].shape[0],\
+                    ('Intensity cache dimension 1 does not match the length of '
+                     'dimension 1 of the specific flux array '
+                     '(at tuple index 0), meaning the number of energies '
+                     'is mismatched.')
+            assert images[12].shape[2] == _num_rays,\
+                    ('Intensity cache dimension 2 does not match the length of '
+                     'ray map arrays (e.g., array at tuple index 1), meaning '
+                     'the number of rays is mismatched.')
 
         self._images = images
 
@@ -436,8 +482,10 @@ class Photosphere(ParameterSubspace):
     def images(self):
         del self._images
 
+    @make_verbose('Imaging the star', 'Star imaged')
     def image(self,
               reimage = False,
+              reuse_ray_map = True,
               energies = None,
               phases = None,
               sqrt_num_rays = 100,
@@ -448,16 +496,30 @@ class Photosphere(ParameterSubspace):
               image_plane_radial_increment_power = 1.0 / 2.0,
               threads = 1,
               cache_intensities = False,
+              single_precision_intensities = True,
               plot_sky_maps = False,
               sky_map_kwargs = None,
               animate_sky_maps = False,
               free_memory = True,
-              animate_kwargs = None):
+              animate_kwargs = None,
+              **kwargs):
         """ Image the star as a function of phase and energy.
 
         :param bool reimage:
-            Image the star. Ignored if there is no precomputed image information
-            to plot.
+            (Re)image the star. If ``False``, but the spacetime configuration
+            has been updated or the photosphere parameters have been updated,
+            a warning will be generated. In principle, one might want to plot
+            sky maps using cached imaging information, or animate sky maps
+            using images on disk, so reimaging is not forced if (non-fixed)
+            parameters have been changed.
+
+        :param bool reuse_ray_map:
+            Reuse a precomputed ray map from the stellar surface to the image
+            plane. If the spacetime configuration has changed (non-fixed
+            parameters have changed), a cached ray map will *not* be reused. If
+            the spacetime configuration is unchanged, but resolution settings
+            have changed for ray tracing, pass ``False`` to adhere to the new
+            resolution settings.
 
         :param ndarray[n] energies:
             Energies in keV to evaluate incident specific intensities at.
@@ -490,13 +552,13 @@ class Photosphere(ParameterSubspace):
             the purpose of visualisation will then smooth out any such
             artefacts.
 
-            Moreover, as an additional measure against
-            artefacts in the sky maps in the vicinity of the rotational pole,
-            rays are distributed accordingingly. For example, if we request
-            :math:`n=400` rays per dimension, a maximal spacing of the rays
-            from the rotational axis is achieved by rotating the *spokes*
-            of rays (by up to :math:`\pm\pi/n`) so that no spoke is
-            aligned (or anti-aligned) with the :math:`y`-direction.
+            Moreover, as an additional measure against artefacts in the sky
+            maps in the vicinity of the rotational pole, rays are distributed
+            accordingingly. For example, if we request :math:`n=400` rays per
+            dimension, a maximal spacing of the rays from the rotational axis
+            is achieved by rotating the *spokes* of rays (by up to
+            :math:`\pm\pi/n`) so that no spoke is aligned (or anti-aligned)
+            with the :math:`y`-direction.
 
         :param float epsabs_ray:
             Absolute error tolerance per ray to adhere to during numerical
@@ -529,11 +591,27 @@ class Photosphere(ParameterSubspace):
             map from image plane to surface; and image calculation at a
             sequence of rotational phases.
 
-        :param bool cache_intensities:
+        :param float cache_intensities:
             Cache the photon specific intensity sky maps in memory, as a
-            function of phase and energy? Defaults to ``False`` because this
-            dominates memory consumption. You need to activate this option
-            if you want to plot the sky maps (see below).
+            function of phase and energy? The type must be a float (greater than
+            or equal to zero) or ``False``. The value represents the limiting
+            size in GB that can be allocated for the intensity cache. Defaults
+            to zero because this dominates memory consumption. You need to
+            activate this option if you want to plot the sky maps (see below).
+            To activate, supply a limit. A hard limit of 2 GB is imposed for
+            safety. To override, use the secret :obj:`_OVERRIDE_MEM_LIM`
+            keyword argument to supply a positive limit in GB.
+
+        :param bool single_precision_intensities:
+            Cache the intensities in single precision? In most use cases,
+            double precision is simply unnecessary, and because memory
+            consumption can be high, choosing single precision can reduce
+            memory requirements by a factor of two. Note that this only applies
+            to the caching of intensities, not the calculation of intensities,
+            which is done safely in double precision; only the final caching
+            operation is a demotion cast to single precision. The default
+            is single precision caching. Option ignored if intensities are not
+            cached.
 
         :param bool plot_sky_maps:
             Plot (specific) intenity sky maps at a sequence of phases, or
@@ -571,27 +649,96 @@ class Photosphere(ParameterSubspace):
             :meth:`~Photosphere._animate`. Refer to the associated method
             docstring for available options.
 
+        :param bool deactivate_all_verbosity:
+            Deactivate the verbose output? Note that despite this keyword
+            argument not appearing in the method signature, it is a valid
+            switch.
+
         """
         ref = self._spacetime # geometry shortcut saves characters
+        try:
+            _DV = deactivate_verbosity
+        except NameError:
+            _DV = False
 
+        _exc = ValueError('You need to cache intensity sky maps if you '
+                          'want to plot them.')
         try:
             self.images
         except AttributeError:
             if not reimage:
-                print('Warning: star will not be reimaged... assuming images '
-                      'exist on disk.')
+                if plot_sky_maps:
+                    raise _exc
+                else:
+                    yield ('Warning: star will not be reimaged... assuming '
+                           'images exist on disk.')
+        else:
+            if not reimage and plot_sky_maps and self.images[-1] is None:
+                raise _exc
 
         if reimage:
             if not isinstance(phases, _np.ndarray):
-                raise TypeError('Imaging phases must be form an ndarray.')
+                raise TypeError('Imaging phases must be in a 1D ndarray.')
 
             if not isinstance(energies, _np.ndarray):
-                raise TypeError('Imaging energies must be form an ndarray.')
+                raise TypeError('Imaging energies must be in a 1D ndarray.')
+
+            if plot_sky_maps and not cache_intensities:
+                raise _exc
+
+            if cache_intensities:
+                _override_mem_lim = kwargs.get('_OVERRIDE_MEM_LIM', 1.0)
+                if not isinstance(_override_mem_lim, float):
+                    raise TypeError('Intensity cache limit override must be a '
+                                    'float.')
+                elif _override_mem_lim < 0.0:
+                    raise ValueError('Intensity cache limit override must be '
+                                     'positive or zero.')
+                if not isinstance(cache_intensities, float):
+                    raise TypeError('Intensity cache limit must be a float.')
+                elif not 0.0 <= cache_intensities <= _override_mem_lim:
+                    raise ValueError('Intensity cache limit must be positive '
+                                     'and less than the safety limit, which '
+                                     'in turn can be overridden as described '
+                                     'in the method docstring.')
+
+                _req_size = 4.0 if single_precision_intensities else 8.0
+                _req_size *= len(phases) * len(energies) # bytes
+                _req_size *= sqrt_num_rays**2.0 # + 1.0 # origin ray negligible
+
+                if _req_size/1.0e9 >= cache_intensities:
+                    raise MemoryError('Too much memory would be required to '
+                                      'cache the intensities at this '
+                                      'resolution. Try decreasing the number '
+                                      'of rays, energies, and/or phases, or '
+                                      'override the cache size limit if '
+                                      'safe.')
+                cache_intensities = True
+            else:
+                cache_intensities = False
 
             try:
-                del self.images # try to free up memory
+                self.images
             except AttributeError:
-                pass
+                if reuse_ray_map:
+                    yield ('Warning: a ray map has not been cached... '
+                           'tracing new ray set')
+            else:
+                # if spacetime configuration was updated
+                if ref.needs_update or not reuse_ray_map:
+                    # try to free up memory; CPython reference counting means
+                    # this should have immediate effect
+                    del self.images
+                else:
+                    # del self.images[0] # doesn't require much memory
+                    del self.images[-1]  # requires far more memory
+
+            try:
+                _ray_map = tuple(self.images[1:])
+                yield 'Cached ray set to be reused... commencing imaging'
+            except AttributeError:
+                _ray_map = None
+                yield 'Commencing ray tracing and imaging'
 
             images = _integrate(threads,
                                 ref.r_s,
@@ -611,39 +758,59 @@ class Photosphere(ParameterSubspace):
                                 init_step,
                                 image_plane_radial_increment_power,
                                 self.global_variables,
-                                self.global_to_local_file,
                                 energies,
                                 phases,
                                 cache_intensities,
+                                single_precision_intensities,
+                                _ray_map,
+                                self.global_to_local_file,
                                 self._hot_atmosphere)
 
             if images[0] == 1:
                 raise Exception('A numerical error arose during imaging '
                                 'computation... terminating simulation.')
-            else:
+            elif _ray_map is not None: # only recalculated info is returned
+                # tuple elements:
+                #   energy-phase resolved signal (2D array)
+                #   energy-phase resolved specific intensity sky maps (3D array)
+                # the last element is None if intensities not cached
+                # transpose so signal phase increments along columns
+                self.images[0] = images[1].T
+                self.images.append(images[2])
+            else: # the ray map is also returned
                 # tuple elements:
                 #   energy-phase resolved signal (2D array)
                 #   x coordinate on image plane (1D array)
                 #   y coordinate on image plane (1D array)
                 #   colatitude mapped to point (x,y) on image plane (1D array)
                 #   azimuth mapped to point (x,y) on image plane (1D array)
+                #   radius mapped to point (x,y) on image plane (1D array)
                 #   phase lag
                 #   redshift
                 #   aberrated ray angle to local surface normal
+                #   elliptical image-plane radial array
+                #   elliptical image-plane semi-major axis
+                #   elliptical image-plane semi-minor axis
                 #   energy-phase resolved specific intensity sky maps (3D array)
-                # the last element is None if you do not cache intensities
-                self.images = list(images[1:])
-
+                # the last element is None if intensities not cached
                 # transpose so signal phase increments along columns
-                self.images[0] = self.images[0].T
+                self.images = [images[1].T] + list(images[2:])
+                yield 'Ray tracing complete.'
+                yield 'Ray set cached.'
+
+            if cache_intensities:
+                yield 'Intensity caching complete.'
+            else:
+                if len(phases) > 1:
+                    yield 'Phase-resolved specific flux integration complete.'
+                else:
+                    yield 'Specific flux integration complete.'
+
+            # memoization
+            self._spacetime([param.value for param in self._spacetime])
 
         if sky_map_kwargs is None: sky_map_kwargs = {}
         if animate_kwargs is None: animate_kwargs = {}
-
-        if plot_sky_maps:
-            if self.images[-1] is None:
-                raise ValueError('You need to cache intensity sky maps if you '
-                                 'want to plot them.')
 
         if plot_sky_maps or animate_sky_maps:
             root_dir = sky_map_kwargs.pop('root_dir', './images')
@@ -658,9 +825,9 @@ class Photosphere(ParameterSubspace):
             if not _os.path.isdir(root_dir):
                 _os.mkdir(root_dir)
             elif _os.path.isfile(file_root + '_0.png'):
-                print('\nWarning: at least one image file exists '
+                yield ('\nWarning: at least one image file exists '
                       'in ``%s``.' % root_dir)
-                print('Attempting to move image files to a subdirectory '
+                yield ('Attempting to move image files to a subdirectory '
                       'of ``%s``.' % root_dir)
                 try: # to archive the existing image files
                     from datetime import datetime
@@ -684,12 +851,13 @@ class Photosphere(ParameterSubspace):
                     raise Exception('Aborting: image files would be '
                                     'overwritten. %s' %  str(e))
                 else:
-                    print('Image files archived in subdirectory ``%s``.' % temp)
+                    yield 'Image files archived in subdirectory ``%s``.' % temp
 
             figsize, dpi = self._plot_sky_maps(file_root,
                                                _phases = phases,
                                                _energies = energies,
                                                _redraw = True,
+                                               deactivate_verbosity = _DV,
                                                **sky_map_kwargs)
         elif animate_sky_maps:
             if reimage:
@@ -700,15 +868,10 @@ class Photosphere(ParameterSubspace):
                                                _phases = phases,
                                                _energies = energies,
                                                _redraw = False,
+                                               deactivate_verbosity = _DV,
                                                **sky_map_kwargs)
 
         if animate_sky_maps:
-            if free_memory:
-                try:
-                    del self.images # try to free up memory
-                except AttributeError:
-                    pass
-
             if not _os.path.isfile(file_root + '_0.png'):
                 raise IOError('No images located for animation.')
 
@@ -721,9 +884,20 @@ class Photosphere(ParameterSubspace):
                     raise TypeError('You need to declare the image phases '
                                     'in order to include all images from disk.')
 
-            self._animate(file_root, num_frames,
-                          figsize, dpi, **animate_kwargs)
+            if free_memory:
+                try:
+                    del self.images # try to free up memory
+                except AttributeError:
+                    pass
 
+            self._animate(file_root, num_frames,
+                          figsize, dpi,
+                          deactivate_verbosity = _DV,
+                          **animate_kwargs)
+
+        yield None
+
+    @make_verbose('Plotting intensity sky maps', 'Intensity sky maps plotted')
     def _plot_sky_maps(self,
                        _file_root,
                        _phases,
@@ -930,87 +1104,99 @@ class Photosphere(ParameterSubspace):
             images = self.images[-1]
 
             if energy_bounds:
-                for bounds in energy_bounds:
-                    if bounds[0] > bounds[1]:
-                        raise ValueError('Energy bounds in a tuple must be '
-                                         'ordered.')
-                    for bound in bounds:
-                        if not energies[0] <= bound <= energies[-1]:
-                            raise ValueError('Extrapolation would be required.')
+                with verbose(True,
+                         'Integrating specific intensity over energy intervals',
+                         'Integrated specific intensity over energy intervals'):
+                    for bounds in energy_bounds:
+                        if bounds[0] > bounds[1]:
+                            raise ValueError('Energy bounds in a tuple must be '
+                                             'ordered.')
+                        for bound in bounds:
+                            if not energies[0] <= bound <= energies[-1]:
+                                raise ValueError('Extrapolation would be required.')
 
-                if len(panel_indices) < len(energy_bounds):
-                    print('Warning: Fewer panels than energy intervals.')
+                    if len(panel_indices) < len(energy_bounds):
+                        yield 'Warning: fewer panels than energy intervals.'
 
-                integrated = _np.zeros((images.shape[0],
-                                        len(energy_bounds),
-                                        images.shape[2]), dtype = _np.double)
+                    integrated = _np.zeros((images.shape[0],
+                                            len(energy_bounds),
+                                            images.shape[2]), dtype=_np.double)
 
-                intensities = _np.zeros((images.shape[1],
-                                         images.shape[2]), dtype = _np.double)
+                    intensities = _np.zeros((images.shape[1],
+                                             images.shape[2]), dtype=_np.double)
 
-                for i in range(images.shape[0]): # phases
-                    intensities[...] = images[i,...] # sky directions
+                    for i in range(images.shape[0]): # phases
+                        intensities[...] = images[i,...] # sky directions
 
-                    for k in range(len(energy_bounds)):
-                        bounds = _np.log10( _np.array(energy_bounds[k]) )
-                        _integrated = energy_integrator(threads,
-                                                        intensities,
-                                                        _np.log10(energies),
-                                                        bounds)
+                        for k in range(len(energy_bounds)):
+                            bounds = _np.log10( _np.array(energy_bounds[k]) )
+                            _integrated = energy_integrator(threads,
+                                                            intensities,
+                                                            _np.log10(energies),
+                                                            bounds)
 
-                        integrated[i,k,:] = _integrated[0,:]
+                            integrated[i,k,:] = _integrated[0,:]
 
-                images = integrated
-
+                    images = integrated
             else:
                 if len(panel_indices) != len(energies):
-                    print('Warning: Fewer panels than energies.')
+                    yield 'Warning: fewer panels than energies.'
 
             if phase_average:
-                if phases[0] != 0.0 or phases[-1] != _2pi:
-                    raise ValueError('Minimum and maximum phases at which star '
-                                     'is imaged must be zero and unity if you '
-                                     'are phase averaging.')
+                with verbose(True,
+                         'Averaging (specific) intensity over rotational phase',
+                         'Averaged (specific) intensity over rotational phase'):
+                    if phases[0] != 0.0 or phases[-1] != _2pi:
+                        raise ValueError('Minimum and maximum phases at which '
+                                         'star is imaged must be zero and unity '
+                                         'if you are phase averaging.')
 
-                averaged = _np.zeros((1,
-                                      images.shape[1],
-                                      images.shape[2]), dtype = _np.double)
+                    averaged = _np.zeros((1,
+                                          images.shape[1],
+                                          images.shape[2]), dtype = _np.double)
 
-                intensities = _np.zeros((images.shape[2],
-                                         images.shape[0]), dtype = _np.double)
+                    intensities = _np.zeros((images.shape[2],
+                                             images.shape[0]), dtype = _np.double)
 
-                for i in range(images.shape[1]): # energies
-                    for j in range(images.shape[2]): # sky directions
-                        intensities[j,:] = images[:,i,j]
+                    for i in range(images.shape[1]): # energies
+                        for j in range(images.shape[2]): # sky directions
+                            intensities[j,:] = images[:,i,j]
 
-                    _averaged = phase_integrator(1.0, # exposure time
-                                                 _np.array([0.0, 1.0]),
-                                                 intensities,
-                                                 phases / _2pi,
-                                                 0.0) # phase shift
+                        _averaged = phase_integrator(1.0, # exposure time
+                                                     _np.array([0.0, 1.0]),
+                                                     intensities,
+                                                     phases / _2pi,
+                                                     0.0) # phase shift
 
-                    for j in range(images.shape[2]):
-                        averaged[:,i,j] = _averaged[j,:]
+                        for j in range(images.shape[2]):
+                            averaged[:,i,j] = _averaged[j,:]
 
-                images = averaged
+                    images = averaged
 
-            if normalise_each_panel: # normalise intensity for each individual panel
-                levels = []
+            if normalise_each_panel:
+                with verbose(True,
+                             'Normalising each sky map panel separately',
+                             'Normalised sky map panels separately'):
+                    # normalise intensity for each individual panel
+                    levels = []
 
-                for j in range(images.shape[1]): # at each energy
-                    # find extreme intensities over discrete set of image phases
-                    # and sky directions
-                    MIN = _np.min(images[:,j,:][images[:,j,:] > 0.0])
-                    MAX = _np.max(images[:,j,:])
-                    levels.append(_np.array(list(_np.linspace(MIN,
-                                                              MAX,
-                                                              num_levels))))
+                    for j in range(images.shape[1]): # at each energy
+                        # find extreme intensities over discrete set of image
+                        # phases and sky directions
+                        MIN = _np.min(images[:,j,:][images[:,j,:] > 0.0])
+                        MAX = _np.max(images[:,j,:])
+                        levels.append(_np.array(list(_np.linspace(MIN,
+                                                                  MAX,
+                                                                  num_levels))))
             else:
-                MIN = _np.min(images[:,:,:][images[:,:,:] > 0.0])
-                MAX = _np.max(images[:,:,:])
-                levels = _np.array(list(_np.linspace(MIN,
-                                                     MAX,
-                                                     num_levels)))
+                with verbose(True,
+                             'Normalising sky map panels globally'
+                             'Normalised sky map panels globally'):
+                    MIN = _np.min(images[:,:,:][images[:,:,:] > 0.0])
+                    MAX = _np.max(images[:,:,:])
+                    levels = _np.array(list(_np.linspace(MIN,
+                                                         MAX,
+                                                         num_levels)))
 
             # because of default tick formatting and a minus sign,
             # the left and bottom margins need to be different
@@ -1034,7 +1220,17 @@ class Photosphere(ParameterSubspace):
 
             axes = [fig.add_subplot(gs[j]) for j in range(len(panel_indices))]
 
+            _I = 10
             for i in range(images.shape[0]):
+                if phase_average:
+                    yield 'Rendering phase-averaged images'
+                elif i == 0 and images.shape[0] < 10:
+                    yield 'Rendering images'
+                elif i == 0 and images.shape[0] >= 10:
+                    yield 'Rendering images for phase numbers [%i, %i]'%(i+1, i+_I)
+                elif i%_I == 0:
+                    yield 'Rendering images for phase numbers (%i, %i]'%(i, i+_I)
+
                 for j, idx in enumerate(panel_indices):
                     ax = axes[j]
                     if _np.product(panel_layout) - j - 1 < panel_layout[1]:
@@ -1086,9 +1282,10 @@ class Photosphere(ParameterSubspace):
                 ax.cla()
             plt.close(fig)
 
-        return figsize, dpi
+        yield figsize, dpi
 
     @staticmethod
+    @make_verbose('Animating intensity sky maps', 'Intensity sky maps animated')
     def _animate(_file_root, _num_frames, _figsize, _dpi,
                  cycles = 1, repeat = True, repeat_delay = 0.0,
                  ffmpeg_path = None, fps = None, **kwargs):
@@ -1162,8 +1359,8 @@ class Photosphere(ParameterSubspace):
                                         repeat_delay = repeat_delay)
 
         if ffmpeg_path is None:
-            print('Warning: no path specified for ffmpeg executable. '
-                  'Resorting to rcParams default.')
+            yield ('Warning: no path specified for ffmpeg executable. '
+                   'Resorting to rcParams default.')
         else:
             plt.rcParams['animation.ffmpeg_path'] = ffmpeg_path
 
@@ -1174,12 +1371,14 @@ class Photosphere(ParameterSubspace):
         bitrate = kwargs.get('bitrate', -1)
 
         filename = file_root + '_animated.mp4'
-        print('Writing to disk: %s' % filename)
+        yield 'Writing to disk: %s' % filename
         ani.save(filename, writer = 'ffmpeg',
                  dpi = dpi, fps = fps, bitrate = bitrate)
 
         fig.clf() # this or ax.cla() needed to free memory
         plt.close(fig)
+
+        yield None
 
 Photosphere._update_doc()
 

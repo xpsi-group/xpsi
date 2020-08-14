@@ -33,6 +33,67 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
+
+[v0.5.3] - 2020-08-14
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Improvement patches. Deliberately backwards incompatible for safety in
+  memory allocation.
+
+Fixed
+^^^^^
+
+* Add try-except block to :attr:`~.Photosphere.Photosphere.global_to_local_file`
+  property so that explicit setting of ``None`` by user is not required if
+  file I/O is not needed in the extension module. Actually, ``None`` could
+  not be set for the property anyway due to type checking.
+
+Added
+^^^^^
+
+* The surface to image-plane ray map is cached in Python process memory so it
+  can be efficiently reused for same spacetime configuration and ray map
+  resolution settings. Explicit support for writing the ray map to disk and
+  loading it is not included, but this should be entirely possible to achieve
+  manually. Backwards compatible except for corner cases, such as not using
+  keyword arguments when calling :meth:`~.Photosphere.Photosphere.image`, or if
+  resolution settings changed between calls to the imager but a ray map
+  otherwise exists in Python process memory and the spacetime configuration has
+  not been changed.
+* A secret keyword argument to :meth:`~.Photosphere.Photosphere.image`,
+  :obj:`_OVERRIDE_MEM_LIM`, which can be used to change an internal hard limit
+  on the intensity cache size. This setting is for safety and designed so that
+  higher memory consumption is deliberate or if something goes awry, it is
+  deemed the responsibilty of the user to have read method docstring carefully.
+  The tutorials will not use this secret keyword, so if the user tries to run
+  them and encounters an exception, they will need to investigate the docstring
+  and either adapt the resolution to their system or take the responsibility of
+  setting the cache size limit for their system to accomodate the resolution
+  settings in the tutorial.
+* Optional argument to :meth:`~.Photosphere.Photosphere.image`,
+  :obj:`single_precision_intensities`, which flags whether or not to *cache*
+  the intensities in single precision do halve intensity cache memory
+  requirements. The default is to cache in single precision.
+* Verbosity to :meth:`~.Photosphere.Photosphere.image` because execution
+  can take many minutes depending on settings chosen. The verbosity
+  can be deactivated via a keyword argument (see the method docstring).
+
+Changed
+^^^^^^^
+
+* The usage of the :meth:`~.Photosphere.Photosphere.image` argument
+  :obj:`cache_intensities`. Instead of simply activating intensity caching
+  with boolean, the user must specify a cache size limit that is adhered to.
+  If the required cache size given the resolution settings is larger than
+  the limit, imaging does not proceed. If the cache size limit is zero or
+  equivalent, then imaging safely proceeds without caching the intensities.
+* Intensities are by default *cached* in single precision to reduce cache memory
+  requirements.
+
+
 [v0.5.2] - 2020-08-12
 ~~~~~~~~~~~~~~~~~~~~~
 
