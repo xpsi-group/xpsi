@@ -422,6 +422,21 @@ class Photosphere(ParameterSubspace):
 
         msg = 'Image information element %i must have %i dimensions.'
 
+        # tuple elements:
+        #   energy-phase resolved signal (2D array)
+        #   x coordinate on image plane (1D array)
+        #   y coordinate on image plane (1D array)
+        #   colatitude mapped to point (x,y) on image plane (1D array)
+        #   azimuth mapped to point (x,y) on image plane (1D array)
+        #   radius mapped to point (x,y) on image plane (1D array)
+        #   phase lag
+        #   redshift
+        #   aberrated ray angle to local surface normal
+        #   elliptical image-plane radial array
+        #   elliptical image-plane semi-major axis
+        #   elliptical image-plane semi-minor axis
+        #   energy-phase resolved specific intensity sky maps (3D array)
+        # the last element is None if intensities not cached
         assert images[0].ndim == 2, msg % (0, 2)
         assert images[1].ndim == 1, msg % (1, 1)
         assert images[2].ndim == 1, msg % (2, 1)
@@ -434,6 +449,32 @@ class Photosphere(ParameterSubspace):
         assert images[9].ndim == 1, msg % (9, 1)
         if images[12] is not None:
             assert images[12].ndim == 3, msg % (12, 3)
+
+        _num_rays = len(images[1])
+        for i in range(2,9):
+            assert len(images[i] == _num_rays),\
+                ('Ray map: array length mismatch (array at tuple index %i is '
+                 'not equal in length to array at tuple index 1).' % i)
+
+        assert int( _m.sqrt( _num_rays - 1 ) ) == len(images[9]),\
+                ('Ray map: array length mismatch for image-plane radial '
+                 'coordinate array (array at tuple index 9).')
+
+        if images[12] is not None:
+            assert images[12].shape[0] == images[0].shape[1],\
+                    ('Intensity cache dimension 0 does not match the length of '
+                     'dimension 1 of the specific flux array '
+                     '(at tuple index 1), meaning the number of phases '
+                     'is mismatched.')
+            assert images[12].shape[1] == images[0].shape[0],\
+                    ('Intensity cache dimension 1 does not match the length of '
+                     'dimension 1 of the specific flux array '
+                     '(at tuple index 0), meaning the number of energies '
+                     'is mismatched.')
+            assert images[12].shape[2] == _num_rays,\
+                    ('Intensity cache dimension 2 does not match the length of '
+                     'ray map arrays (e.g., array at tuple index 1), meaning '
+                     'the number of rays is mismatched.')
 
         self._images = images
 
@@ -661,7 +702,8 @@ class Photosphere(ParameterSubspace):
                                      'in turn can be overridden as described '
                                      'in the method docstring.')
 
-                _req_size = 8.0 * len(phases) * len(energies) # bytes
+                _req_size = 4.0 if single_precision_intensities else 8.0
+                _req_size *= len(phases) * len(energies) # bytes
                 _req_size *= sqrt_num_rays**2.0 # + 1.0 # origin ray negligible
 
                 if _req_size/1.0e9 >= cache_intensities:
@@ -680,7 +722,7 @@ class Photosphere(ParameterSubspace):
             except AttributeError:
                 if reuse_ray_map:
                     yield ('Warning: a ray map has not been cached... '
-                           'tracing new ray set...')
+                           'tracing new ray set')
             else:
                 # if spacetime configuration was updated
                 if ref.needs_update or not reuse_ray_map:
@@ -693,10 +735,10 @@ class Photosphere(ParameterSubspace):
 
             try:
                 _ray_map = tuple(self.images[1:])
-                yield 'Cached ray set to be reused... commencing imaging...'
+                yield 'Cached ray set to be reused... commencing imaging'
             except AttributeError:
                 _ray_map = None
-                yield 'Commencing ray tracing and imaging...'
+                yield 'Commencing ray tracing and imaging'
 
             images = _integrate(threads,
                                 ref.r_s,
@@ -732,7 +774,8 @@ class Photosphere(ParameterSubspace):
                 #   energy-phase resolved signal (2D array)
                 #   energy-phase resolved specific intensity sky maps (3D array)
                 # the last element is None if intensities not cached
-                self.images[0] = images[1]
+                # transpose so signal phase increments along columns
+                self.images[0] = images[1].T
                 self.images.append(images[2])
             else: # the ray map is also returned
                 # tuple elements:
@@ -750,20 +793,18 @@ class Photosphere(ParameterSubspace):
                 #   elliptical image-plane semi-minor axis
                 #   energy-phase resolved specific intensity sky maps (3D array)
                 # the last element is None if intensities not cached
-                self.images = list(images[1:])
-                yield 'Ray tracing complete'
-                yield 'Ray set cached'
+                # transpose so signal phase increments along columns
+                self.images = [images[1].T] + list(images[2:])
+                yield 'Ray tracing complete.'
+                yield 'Ray set cached.'
 
             if cache_intensities:
-                yield 'Intensity caching complete'
+                yield 'Intensity caching complete.'
             else:
                 if len(phases) > 1:
-                    yield 'Phase-resolved specific flux integration complete'
+                    yield 'Phase-resolved specific flux integration complete.'
                 else:
-                    yield 'Specific flux integration complete'
-
-            # transpose so signal phase increments along columns
-            self.images[0] = self.images[0].T
+                    yield 'Specific flux integration complete.'
 
             # memoization
             self._spacetime([param.value for param in self._spacetime])
@@ -831,12 +872,6 @@ class Photosphere(ParameterSubspace):
                                                **sky_map_kwargs)
 
         if animate_sky_maps:
-            if free_memory:
-                try:
-                    del self.images # try to free up memory
-                except AttributeError:
-                    pass
-
             if not _os.path.isfile(file_root + '_0.png'):
                 raise IOError('No images located for animation.')
 
@@ -848,6 +883,12 @@ class Photosphere(ParameterSubspace):
                 except TypeError:
                     raise TypeError('You need to declare the image phases '
                                     'in order to include all images from disk.')
+
+            if free_memory:
+                try:
+                    del self.images # try to free up memory
+                except AttributeError:
+                    pass
 
             self._animate(file_root, num_frames,
                           figsize, dpi,
@@ -1182,13 +1223,13 @@ class Photosphere(ParameterSubspace):
             _I = 10
             for i in range(images.shape[0]):
                 if phase_average:
-                    'Rendering phase-averaged images'
+                    yield 'Rendering phase-averaged images'
                 elif i == 0 and images.shape[0] < 10:
-                    'Rendering images'
+                    yield 'Rendering images'
                 elif i == 0 and images.shape[0] >= 10:
-                    'Rendering images for phase numbers [%i, %i]'%(i+1, i+_I)
+                    yield 'Rendering images for phase numbers [%i, %i]'%(i+1, i+_I)
                 elif i%_I == 0:
-                    'Rendering images for phase numbers (%i, %i]'%(i, i+_I)
+                    yield 'Rendering images for phase numbers (%i, %i]'%(i, i+_I)
 
                 for j, idx in enumerate(panel_indices):
                     ax = axes[j]
