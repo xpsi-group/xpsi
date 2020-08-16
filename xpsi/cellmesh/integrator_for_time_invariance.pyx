@@ -10,7 +10,7 @@ from __future__ import division, print_function
 import numpy as np
 cimport numpy as np
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, sin, cos, acos, fabs, pow
+from libc.math cimport M_PI, sqrt, sin, cos, acos, fabs, pow, ceil
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf, setbuf, stdout
 
@@ -80,6 +80,7 @@ def integrate(size_t numThreads,
               double[::1] cos_gammaArray,
               double[::1] energies,
               atmosphere,
+              image_order_limit = None,
               *args):
 
     #----------------------------------------------------------------------->>>
@@ -117,8 +118,7 @@ def integrate(size_t numThreads,
         double theta_i_over_pi
         double beta_sq
         double Lorentz
-        int I
-        int image_order = 2
+        int I, image_order, _IO
 
         double[:,::1] privateFlux = np.zeros((N_T, N_E), dtype = np.double)
         double[::1] flux = np.zeros(N_E, dtype = np.double)
@@ -144,13 +144,18 @@ def integrate(size_t numThreads,
         for j in range(deflection.shape[1]):
             _deflection[i,j] = deflection[i, N_R - j - 1]
 
-    cdef double[:,::1] cos_alpha_matrix = np.zeros((deflection.shape[0],
-                                                    deflection.shape[1]),
-                                                    dtype = np.double)
+    cdef double[:,::1] _cos_alpha = np.zeros((deflection.shape[0],
+                                              deflection.shape[1]),
+                                              dtype = np.double)
 
     for i in range(deflection.shape[0]):
         for j in range(deflection.shape[1]):
-            cos_alpha_matrix[i,j] = cos_alphaMatrix[i, N_R - j - 1]
+            _cos_alpha[i,j] = cos_alphaMatrix[i, N_R - j - 1]
+
+    if image_order_limit is not None:
+        image_order = image_order_limit
+    else:
+        image_order = 0
 
     # Initialise the source radiation field
     cdef _preloaded *preloaded = NULL
@@ -184,7 +189,7 @@ def integrate(size_t numThreads,
         gsl_interp_accel_reset(accel_alpha[T])
 
         defl_ptr = &(_deflection[i,0])
-        alpha_ptr = &(cos_alpha_matrix[i,0])
+        alpha_ptr = &(_cos_alpha[i,0])
         gsl_interp_init(interp_alpha[T], defl_ptr, alpha_ptr, N_R)
 
         cos_theta_i = cos(theta[i,0])
@@ -197,11 +202,17 @@ def integrate(size_t numThreads,
         for j in range(sqrt_numPix):
             cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(phi[i,j])
             _psi = acos(cos_psi)
-            for I in range(image_order):
+            if image_order == 0: # infer maximum possible image order
+                _IO = <int>ceil(maxDeflection[i] / _pi)
+                # explanation: image_order = 1 means primary image only
+            else:
+                _IO = image_order
+            for I in range(_IO):
                 psi = eval_image_deflection(I, _psi)
                 sin_psi = sin(psi)
-                # insert visibility flag for loop break
-                if psi <= maxDeflection[i]:
+                if psi > maxDeflection[i]:
+                    break # higher order images not visible
+                else:
                     if (psi < interp_alpha[T].xmin or psi > interp_alpha[T].xmax):
                         printf("psi: %.16e\n", psi)
                         printf("min: %.16e\n", interp_alpha[T].xmin)
@@ -236,7 +247,7 @@ def integrate(size_t numThreads,
                                 deriv = deriv / 1.0e-8
                             else:
                                 deriv = deriv / sin_psi
-                        else: # take to A & E at L'Hopital
+                        else: # take to A&E at L'Hopital
                             deriv = gsl_interp_eval_deriv2(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
                             deriv = deriv / cos_psi
 
@@ -254,7 +265,8 @@ def integrate(size_t numThreads,
                                                  data)
 
                             privateFlux[T,e] += I_E * _GEOM
-
+            if terminate[T] == 1:
+                break
         if terminate[T] == 1:
             break
 

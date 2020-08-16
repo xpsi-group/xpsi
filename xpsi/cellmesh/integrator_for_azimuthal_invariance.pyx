@@ -10,7 +10,7 @@ from __future__ import division, print_function
 import numpy as np
 cimport numpy as np
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs
+from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf, setbuf, stdout
 
@@ -114,7 +114,8 @@ def integrate(size_t numThreads,
               double[::1] leaves,
               double[::1] phases,
               hot_atmosphere,
-              elsewhere_atmosphere):
+              elsewhere_atmosphere,
+              image_order_limit = None):
 
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
@@ -155,8 +156,7 @@ def integrate(size_t numThreads,
         double beta_sq
         double Lorentz
         double correction_I_E
-        int I
-        int image_order = 2
+        int I, image_order, _IO
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -210,21 +210,26 @@ def integrate(size_t numThreads,
         for j in range(deflection.shape[1]):
             _deflection[i,j] = deflection[i, N_R - j - 1]
 
-    cdef double[:,::1] _lag= np.zeros((deflection.shape[0],
-                                       deflection.shape[1]),
-                                       dtype = np.double)
+    cdef double[:,::1] _lag = np.zeros((deflection.shape[0],
+                                        deflection.shape[1]),
+                                        dtype = np.double)
 
     for i in range(lag.shape[0]):
         for j in range(lag.shape[1]):
             _lag[i,j] = lag[i, N_R - j - 1]
 
-    cdef double[:,::1] cos_alpha_matrix = np.zeros((deflection.shape[0],
-                                                    deflection.shape[1]),
-                                                    dtype = np.double)
+    cdef double[:,::1] _cos_alpha = np.zeros((deflection.shape[0],
+                                              deflection.shape[1]),
+                                              dtype = np.double)
 
     for i in range(deflection.shape[0]):
         for j in range(deflection.shape[1]):
-            cos_alpha_matrix[i,j] = cos_alphaMatrix[i, N_R - j - 1]
+            _cos_alpha[i,j] = cos_alphaMatrix[i, N_R - j - 1]
+
+    if image_order_limit is not None:
+        image_order = image_order_limit
+    else:
+        image_order = 0
 
     # initialise the source radiation field
     cdef _preloaded *hot_preloaded = NULL
@@ -297,12 +302,17 @@ def integrate(size_t numThreads,
         gsl_interp_accel_reset(accel_lag[T])
 
         defl_ptr = &(_deflection[i,0])
-        alpha_ptr = &(cos_alpha_matrix[i,0])
+        alpha_ptr = &(_cos_alpha[i,0])
         gsl_interp_init(interp_alpha[T], defl_ptr, alpha_ptr, N_R)
         lag_ptr = &(_lag[i,0])
         gsl_interp_init(interp_lag[T], defl_ptr, lag_ptr, N_R)
 
-        for I in range(image_order): # loop over images
+        if image_order == 0: # infer maximum possible image order
+            _IO = <int>ceil(maxDeflection[i] / _pi)
+            # explanation: image_order = 1 means primary image only
+        else:
+            _IO = image_order
+        for I in range(_IO): # loop over images
             InvisFlag[T] = 2
             InvisPhase[twoT] = 0
             InvisPhase[twoT + 1] = 0
@@ -312,7 +322,7 @@ def integrate(size_t numThreads,
 
             for k in range(N_L):
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
-                psi = eval_image_deflection(I, acos(psi))
+                psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
 
                 if psi <= maxDeflection[i]:
@@ -321,7 +331,7 @@ def integrate(size_t numThreads,
                         printf("min: %.16e\n", interp_alpha[T].xmin)
                         printf("max: %.16e\n", interp_alpha[T].xmax)
                         terminate[T] = 1
-                        break
+                        break # out of phase loop
                     else:
                         cos_alpha = gsl_interp_eval(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
                     sin_alpha = sqrt(1.0 - cos_alpha * cos_alpha)
@@ -350,7 +360,7 @@ def integrate(size_t numThreads,
                                 deriv = deriv / 1.0e-8
                             else:
                                 deriv = deriv / sin_psi
-                        else: # take to A & E at L'Hopital
+                        else: # take to A&E at L'Hopital
                             deriv = gsl_interp_eval_deriv2(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
                             deriv = deriv / cos_psi
 
@@ -363,7 +373,7 @@ def integrate(size_t numThreads,
                             printf("min: %.16e\n", interp_lag[T].xmin)
                             printf("max: %.16e\n", interp_lag[T].xmax)
                             terminate[T] = 1
-                            break
+                            break # out of phase loop
                         else:
                             PHASE[T][k] = leaves[k] + gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
 
@@ -400,7 +410,7 @@ def integrate(size_t numThreads,
                                 for m in range(InvisPhase[twoT], k):
                                     PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
 
-                        # Reset visibility flag
+                        # reset visibility flag
                         InvisFlag[T] = 0
 
                     else:
@@ -425,15 +435,17 @@ def integrate(size_t numThreads,
                           PROFILE[T])
 
             if terminate[T] == 1:
-               break
+                break # out of image loop
             elif InvisFlag[T] == 2: # no visibility detected
-               break # ignore higher order images, assume no visiblity
-            elif terminate[T] == 0 and InvisFlag[T] != 2:
+                break # ignore higher order images, assume no visiblity
+            else: # proceed to sum over images
                 for n in range(1, N_L):
                     if PHASE[T][n] <= PHASE[T][n-1]:
                         terminate[T] = 1
-                        break
-                if terminate[T] == 0:
+                        break # out of phase loop
+                if terminate[T] == 1:
+                    break # out of image loop
+                else:
                     phase_ptr = PHASE[T]
                     for p in range(N_E):
                         gsl_interp_accel_reset(accel_PROFILE[T])
@@ -455,7 +467,7 @@ def integrate(size_t numThreads,
                                             printf("min: %.16e\n", interp_PROFILE[T].xmin)
                                             printf("max: %.16e\n", interp_PROFILE[T].xmax)
                                             terminate[T] = 1
-                                            break
+                                            break # out of phase loop
                                         else:
                                             privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
                                     elif _PHASE_plusShift < PHASE[T][0]:
@@ -466,7 +478,7 @@ def integrate(size_t numThreads,
                                             printf("min: %.16e\n", interp_PROFILE[T].xmin)
                                             printf("max: %.16e\n", interp_PROFILE[T].xmax)
                                             terminate[T] = 1
-                                            break
+                                            break # out of phase loop
                                         else:
                                             privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
                                     else:
@@ -475,15 +487,16 @@ def integrate(size_t numThreads,
                                             printf("min: %.16e\n", interp_PROFILE[T].xmin)
                                             printf("max: %.16e\n", interp_PROFILE[T].xmax)
                                             terminate[T] = 1
-                                            break
+                                            break # out of phase loop
                                         else:
                                             privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
                             j = j + 1
                         if terminate[T] == 1:
-                            break
-
+                            break # out of energy loop
+                    if terminate[T] == 1:
+                        break # out of image loop
         if terminate[T] == 1:
-           break
+           break # out of colatitude loop
 
     for i in range(N_E):
         for T in range(N_T):
