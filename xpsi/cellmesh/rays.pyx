@@ -359,14 +359,15 @@ def compute_rays(size_t N_T,
                         deflection[i,j] = rayParams[4*T]
                         lag[i,j] = rayParams[4*T + 2]
 
-        if deflection[i,0] <= _pi:
-            maxDeflection[i] = deflection[i,0]
-        else:
-            for j in range(deflection.shape[1]):
-                if deflection[i,j] < _pi:
-                    maxDeflection[i] = deflection[i,j]
+        maxDeflection[i] = deflection[i,0]
+        #if deflection[i,0] <= _pi:
+        #    maxDeflection[i] = deflection[i,0]
+        #else:
+        #    for j in range(deflection.shape[1]):
+        #        if deflection[i,j] < _pi:
+        #            maxDeflection[i] = deflection[i,j]
 
-                    break
+        #            break
 
     gsl_set_error_handler(handler)
 

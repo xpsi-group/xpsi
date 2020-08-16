@@ -47,6 +47,12 @@ from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
                                                      eval_elsewhere,
                                                      eval_elsewhere_norm)
 
+cdef double eval_image_deflection(int order, double psi) nogil:
+    if order % 2 != 0:
+        return <double>(order + 1) * _pi + pow(-1.0, <double>order) * psi
+    else:
+        return <double>(order) * _pi + pow(-1.0, <double>order) * psi
+
 cdef void INVIS(size_t k,
                 size_t N_L,
                 int *const InvisFlag,

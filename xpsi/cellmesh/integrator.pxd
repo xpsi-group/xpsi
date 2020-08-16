@@ -1,5 +1,6 @@
 from GSL cimport (gsl_interp_eval,
                    gsl_interp_eval_deriv,
+                   gsl_interp_eval_deriv2,
                    gsl_interp_alloc,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
@@ -14,3 +15,5 @@ from GSL cimport (gsl_interp_eval,
 
 ctypedef gsl_interp_accel accel
 ctypedef gsl_interp interp
+
+cdef double eval_image_deflection(int order, double psi) nogil

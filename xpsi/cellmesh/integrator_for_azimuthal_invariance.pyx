@@ -10,12 +10,13 @@ from __future__ import division, print_function
 import numpy as np
 cimport numpy as np
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp
+from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf, setbuf, stdout
 
 from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_eval_deriv,
+                                       gsl_interp_eval_deriv2,
                                        gsl_interp_alloc,
                                        gsl_interp_accel,
                                        gsl_interp_accel_alloc,
@@ -26,7 +27,8 @@ from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_accel_free,
                                        gsl_interp_accel_reset,
                                        gsl_isnan,
-                                       gsl_isinf)
+                                       gsl_isinf,
+                                       eval_image_deflection)
 
 ctypedef gsl_interp_accel accel
 ctypedef gsl_interp interp
@@ -72,8 +74,6 @@ cdef void INVIS(size_t k,
                 size_t *const InvisPhase,
                 double *const PHASE,
                 double *const PROFILE) nogil:
-    # Revisit this... since one starts aligned to observer, some conditional
-    # statements may not be required...
     cdef size_t p, m
 
     for p in range(N_E):
@@ -149,13 +149,14 @@ def integrate(size_t numThreads,
         double _PHASE, _PHASE_plusShift, _GEOM, _Z, _ABB # TP
         double phi_shift # TP
         double superlum # TP
-        double cos_gamma_sq, sin_gamma_sq
+        double cos_gamma_sq, sin_gamma
         double cos_theta_i, sin_theta_i
-        double sqrt_cos_gamma_sq
         double theta_i_over_pi
         double beta_sq
         double Lorentz
         double correction_I_E
+        int I
+        int image_order = 2
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -170,9 +171,6 @@ def integrate(size_t numThreads,
         accel **accel_lag = <accel**> malloc(N_T * sizeof(accel*))
         interp **interp_alpha = <interp**> malloc(N_T * sizeof(interp*))
         interp **interp_lag = <interp**> malloc(N_T * sizeof(interp*))
-
-        interp *interp_alpha_store
-        interp *interp_lag_store
 
         # Intensity spline interpolation
         double **PHASE = <double**> malloc(N_T * sizeof(double*))
@@ -204,13 +202,29 @@ def integrate(size_t numThreads,
     for p in range(N_E):
         BLOCK[p] = p * N_L
 
-    cdef double[:,::1] cos_deflection = np.zeros((deflection.shape[0],
-                                                  deflection.shape[1]),
-                                                 dtype = np.double)
+    cdef double[:,::1] _deflection = np.zeros((deflection.shape[0],
+                                               deflection.shape[1]),
+                                               dtype = np.double)
 
     for i in range(deflection.shape[0]):
         for j in range(deflection.shape[1]):
-            cos_deflection[i,j] = cos(deflection[i,j])
+            _deflection[i,j] = deflection[i, N_R - j - 1]
+
+    cdef double[:,::1] _lag= np.zeros((deflection.shape[0],
+                                       deflection.shape[1]),
+                                       dtype = np.double)
+
+    for i in range(lag.shape[0]):
+        for j in range(lag.shape[1]):
+            _lag[i,j] = lag[i, N_R - j - 1]
+
+    cdef double[:,::1] cos_alpha_matrix = np.zeros((deflection.shape[0],
+                                                    deflection.shape[1]),
+                                                    dtype = np.double)
+
+    for i in range(deflection.shape[0]):
+        for j in range(deflection.shape[1]):
+            cos_alpha_matrix[i,j] = cos_alphaMatrix[i, N_R - j - 1]
 
     # initialise the source radiation field
     cdef _preloaded *hot_preloaded = NULL
@@ -270,40 +284,7 @@ def integrate(size_t numThreads,
         Grav_z = sqrt(1.0 - r_s_over_r[i])
         cos_gamma = cos_gammaArray[i]
         cos_gamma_sq = cos_gamma * cos_gamma
-        sin_gamma_sq = sqrt(1.0 - cos_gamma_sq)
-
-        gsl_interp_accel_reset(accel_alpha[T])
-        gsl_interp_accel_reset(accel_lag[T])
-
-        j = 0
-        while deflection[i,j] > _pi:
-            j = j + 1
-
-        if j != 0:
-            interp_alpha_store = interp_alpha[T]
-            interp_alpha[T] = gsl_interp_alloc(gsl_interp_steffen, N_R - j)
-            interp_lag_store = interp_lag[T]
-            interp_lag[T] = gsl_interp_alloc(gsl_interp_steffen, N_R - j)
-
-            defl_ptr = &(cos_deflection[i,j])
-            alpha_ptr = &(cos_alphaMatrix[i,j])
-            gsl_interp_init(interp_alpha[T], defl_ptr, alpha_ptr,  N_R - j)
-            lag_ptr = &(lag[i,j])
-            gsl_interp_init(interp_lag[T], defl_ptr, lag_ptr, N_R - j)
-        else:
-            interp_alpha_store = NULL
-            interp_lag_store = NULL
-
-            defl_ptr = &(cos_deflection[i,0])
-            alpha_ptr = &(cos_alphaMatrix[i,0])
-            gsl_interp_init(interp_alpha[T], defl_ptr, alpha_ptr, N_R)
-            lag_ptr = &(lag[i,0])
-            gsl_interp_init(interp_lag[T], defl_ptr, lag_ptr, N_R)
-
-        InvisFlag[T] = 2
-        InvisPhase[twoT] = 0
-        InvisPhase[twoT + 1] = 0
-        InvisStep[T] = 0.0
+        sin_gamma = sqrt(1.0 - cos_gamma_sq)
 
         cos_theta_i = cos(theta[i,0])
         sin_theta_i = sin(theta[i,0])
@@ -312,94 +293,126 @@ def integrate(size_t numThreads,
         beta_sq = beta * beta
         Lorentz = sqrt(1.0 - beta_sq)
 
-        correction_I_E = 0.0
+        gsl_interp_accel_reset(accel_alpha[T])
+        gsl_interp_accel_reset(accel_lag[T])
 
-        for k in range(N_L):
-            cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
-            psi = acos(cos_psi)
-            sin_psi = sin(psi)
+        defl_ptr = &(_deflection[i,0])
+        alpha_ptr = &(cos_alpha_matrix[i,0])
+        gsl_interp_init(interp_alpha[T], defl_ptr, alpha_ptr, N_R)
+        lag_ptr = &(_lag[i,0])
+        gsl_interp_init(interp_lag[T], defl_ptr, lag_ptr, N_R)
 
-            if psi <= maxDeflection[i]:
-                if (cos_psi < interp_alpha[T].xmin or cos_psi > interp_alpha[T].xmax):
-                    #printf("cos_psi: %.16e\n", cos_psi)
-                    #printf("min: %.16e\n", interp_alpha[T].xmin)
-                    #printf("max: %.16e\n", interp_alpha[T].xmax)
-                    terminate[T] = 1
-                    break
-                else:
-                    cos_alpha = gsl_interp_eval(interp_alpha[T], defl_ptr, alpha_ptr, cos_psi, accel_alpha[T])
-                sin_alpha = sqrt(1.0 - cos_alpha * cos_alpha)
-                mu = cos_alpha * cos_gamma
+        for I in range(image_order): # loop over images
+            InvisFlag[T] = 2
+            InvisPhase[twoT] = 0
+            InvisPhase[twoT + 1] = 0
+            InvisStep[T] = 0.0
 
-                if sin_psi != 0.0:
-                    cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
-                    if theta_i_over_pi < 0.5:
-                        mu = mu + sin_alpha * sin_gamma_sq * cos_delta
-                    else:
-                        mu = mu - sin_alpha * sin_gamma_sq * cos_delta
+            correction_I_E = 0.0
 
-                if mu > 0.0:
-                    if sin_psi != 0.0:
-                        cos_xi = sin_alpha * sin_i * sin(leaves[k]) / sin_psi
-                        superlum = (1.0 + beta * cos_xi)
-                        eta = Lorentz / superlum
-                    else:
-                        cos_xi = 0.0
-                        superlum = 1.0
-                        eta = Lorentz
+            for k in range(N_L):
+                cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
+                psi = eval_image_deflection(I, acos(psi))
+                sin_psi = sin(psi)
 
-                    # Beloborodov (2002): deriv = 1.0 - r_s_over_r[i]
-                    deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, cos_psi, accel_alpha[T])
-
-                    _Z = eta * Grav_z
-                    _ABB = mu * eta
-                    _GEOM = mu * deriv * Grav_z * eta * eta * eta / superlum
-
-                    if (cos_psi < interp_lag[T].xmin or cos_psi > interp_lag[T].xmax):
-                        #printf("lag: %.16e\n", cos_psi)
-                        #printf("min: %.16e\n", interp_lag[T].xmin)
-                        #printf("max: %.16e\n", interp_lag[T].xmax)
+                if psi <= maxDeflection[i]:
+                    if (psi < interp_alpha[T].xmin or psi > interp_alpha[T].xmax):
+                        printf("psi: %.16e\n", psi)
+                        printf("min: %.16e\n", interp_alpha[T].xmin)
+                        printf("max: %.16e\n", interp_alpha[T].xmax)
                         terminate[T] = 1
                         break
                     else:
-                        PHASE[T][k] = leaves[k] + gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, cos_psi, accel_lag[T])
+                        cos_alpha = gsl_interp_eval(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
+                    sin_alpha = sqrt(1.0 - cos_alpha * cos_alpha)
+                    mu = cos_alpha * cos_gamma
 
-                    for p in range(N_E):
-                        E_prime = energies[p] / _Z
-
-                        I_E = eval_hot(T,
-                                       E_prime,
-                                       _ABB,
-                                       &(srcCellParams[i,J,0]),
-                                       hot_data)
-
-                        if perform_correction == 1:
-                            correction_I_E = eval_elsewhere(T,
-                                                            E_prime,
-                                                            _ABB,
-                                                            &(correction[i,J,0]),
-                                                            ext_data)
-                            correction_I_E = correction_I_E * eval_elsewhere_norm()
-
-                        (PROFILE[T] + BLOCK[p] + k)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
-
-                    # Check whether cell was visible at previous rotation step
-                    if InvisFlag[T] == 1 or (k != 0 and InvisFlag[T] == 2):
-                        InvisPhase[twoT + 1] = k
-                        if InvisPhase[twoT] == 0:
-                            PHASE[T][0] = leaves[0]
-                            InvisStep[T] = (PHASE[T][k] - PHASE[T][0]) / (<double>k)
-                            for m in range(1, k):
-                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+                    if sin_psi != 0.0:
+                        cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
+                        if theta_i_over_pi < 0.5:
+                            mu = mu + sin_alpha * sin_gamma * cos_delta
                         else:
-                            InvisStep[T] = ((PHASE[T][k] - PHASE[T][InvisPhase[twoT] - 1])
-                                                    / (<double>k - <double>InvisPhase[twoT] + 1.0))
-                            for m in range(InvisPhase[twoT], k):
-                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+                            mu = mu - sin_alpha * sin_gamma * cos_delta
 
-                    # Reset visibility flag
-                    InvisFlag[T] = 0
+                    if mu > 0.0:
+                        if sin_psi != 0.0:
+                            cos_xi = sin_alpha * sin_i * sin(leaves[k]) / sin_psi
+                            superlum = (1.0 + beta * cos_xi)
+                            eta = Lorentz / superlum
+                        else:
+                            cos_xi = 0.0
+                            superlum = 1.0
+                            eta = Lorentz
 
+                        if psi != 0.0:
+                            deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
+                            if sin_psi == 0.0: # singularity
+                                deriv = deriv / 1.0e-8
+                            else:
+                                deriv = deriv / sin_psi
+                        else: # take to A & E at L'Hopital
+                            deriv = gsl_interp_eval_deriv2(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
+                            deriv = deriv / cos_psi
+
+                        _Z = eta * Grav_z
+                        _ABB = mu * eta
+                        _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
+
+                        if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
+                            printf("lag: %.16e\n", cos_psi)
+                            printf("min: %.16e\n", interp_lag[T].xmin)
+                            printf("max: %.16e\n", interp_lag[T].xmax)
+                            terminate[T] = 1
+                            break
+                        else:
+                            PHASE[T][k] = leaves[k] + gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
+
+                        for p in range(N_E):
+                            E_prime = energies[p] / _Z
+
+                            I_E = eval_hot(T,
+                                           E_prime,
+                                           _ABB,
+                                           &(srcCellParams[i,J,0]),
+                                           hot_data)
+
+                            if perform_correction == 1:
+                                correction_I_E = eval_elsewhere(T,
+                                                                E_prime,
+                                                                _ABB,
+                                                                &(correction[i,J,0]),
+                                                                ext_data)
+                                correction_I_E = correction_I_E * eval_elsewhere_norm()
+
+                            (PROFILE[T] + BLOCK[p] + k)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
+
+                        # Check whether cell was visible at previous rotation step
+                        if InvisFlag[T] == 1 or (k != 0 and InvisFlag[T] == 2):
+                            InvisPhase[twoT + 1] = k
+                            if InvisPhase[twoT] == 0:
+                                PHASE[T][0] = leaves[0]
+                                InvisStep[T] = (PHASE[T][k] - PHASE[T][0]) / (<double>k)
+                                for m in range(1, k):
+                                    PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+                            else:
+                                InvisStep[T] = ((PHASE[T][k] - PHASE[T][InvisPhase[twoT] - 1])
+                                                        / (<double>k - <double>InvisPhase[twoT] + 1.0))
+                                for m in range(InvisPhase[twoT], k):
+                                    PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+
+                        # Reset visibility flag
+                        InvisFlag[T] = 0
+
+                    else:
+                        INVIS(k,
+                              N_L,
+                              N_E,
+                              BLOCK,
+                              InvisFlag + T,
+                              InvisStep + T,
+                              InvisPhase + twoT,
+                              PHASE[T],
+                              PROFILE[T])
                 else:
                     INVIS(k,
                           N_L,
@@ -410,82 +423,67 @@ def integrate(size_t numThreads,
                           InvisPhase + twoT,
                           PHASE[T],
                           PROFILE[T])
-            else:
-                INVIS(k,
-                      N_L,
-                      N_E,
-                      BLOCK,
-                      InvisFlag + T,
-                      InvisStep + T,
-                      InvisPhase + twoT,
-                      PHASE[T],
-                      PROFILE[T])
 
-        if interp_alpha_store != NULL:
-            gsl_interp_free(interp_alpha[T])
-            gsl_interp_free(interp_lag[T])
-            interp_alpha[T] = interp_alpha_store
-            interp_lag[T] = interp_lag_store
+            if terminate[T] == 1:
+               break
+            elif InvisFlag[T] == 2: # no visibility detected
+               break # ignore higher order images, assume no visiblity
+            elif terminate[T] == 0 and InvisFlag[T] != 2:
+                for n in range(1, N_L):
+                    if PHASE[T][n] <= PHASE[T][n-1]:
+                        terminate[T] = 1
+                        break
+                if terminate[T] == 0:
+                    phase_ptr = PHASE[T]
+                    for p in range(N_E):
+                        gsl_interp_accel_reset(accel_PROFILE[T])
+                        profile_ptr = PROFILE[T] + BLOCK[p]
+                        gsl_interp_init(interp_PROFILE[T], phase_ptr, profile_ptr, N_L)
 
-        #with gil:
-        #    print("i = %i checkpoint a" % i)
+                        j = 0
+                        while j < cellArea.shape[1] and terminate[T] == 0:
+                            if CELL_RADIATES[i,j] == 1:
+                                phi_shift = phi[i,j]
+                                for k in range(N_P):
+                                    _PHASE = phases[k]
+                                    _PHASE_plusShift = _PHASE + phi_shift
+                                    if _PHASE_plusShift > PHASE[T][N_L - 1]:
+                                        while _PHASE_plusShift > PHASE[T][N_L - 1]:
+                                            _PHASE_plusShift = _PHASE_plusShift - _2pi
+                                        if (_PHASE_plusShift  < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
+                                            printf("profile_1: %.16e\n", _PHASE_plusShift)
+                                            printf("min: %.16e\n", interp_PROFILE[T].xmin)
+                                            printf("max: %.16e\n", interp_PROFILE[T].xmax)
+                                            terminate[T] = 1
+                                            break
+                                        else:
+                                            privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
+                                    elif _PHASE_plusShift < PHASE[T][0]:
+                                        while _PHASE_plusShift < PHASE[T][0]:
+                                            _PHASE_plusShift = _PHASE_plusShift + _2pi
+                                        if (_PHASE_plusShift  < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
+                                            printf("profile_2: %.16e\n", _PHASE_plusShift)
+                                            printf("min: %.16e\n", interp_PROFILE[T].xmin)
+                                            printf("max: %.16e\n", interp_PROFILE[T].xmax)
+                                            terminate[T] = 1
+                                            break
+                                        else:
+                                            privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
+                                    else:
+                                        if (_PHASE_plusShift < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
+                                            printf("profile_3: %.16e\n", _PHASE_plusShift)
+                                            printf("min: %.16e\n", interp_PROFILE[T].xmin)
+                                            printf("max: %.16e\n", interp_PROFILE[T].xmax)
+                                            terminate[T] = 1
+                                            break
+                                        else:
+                                            privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
+                            j = j + 1
+                        if terminate[T] == 1:
+                            break
+
         if terminate[T] == 1:
            break
-        elif terminate[T] == 0 and InvisFlag[T] != 2:
-            for n in range(1, N_L):
-                if PHASE[T][n] <= PHASE[T][n-1]:
-                    terminate[T] = 1
-                    break
-            if terminate[T] == 0:
-                phase_ptr = PHASE[T]
-                for p in range(N_E):
-                    gsl_interp_accel_reset(accel_PROFILE[T])
-                    profile_ptr = PROFILE[T] + BLOCK[p]
-                    gsl_interp_init(interp_PROFILE[T], phase_ptr, profile_ptr, N_L)
-
-                    j = 0
-                    while j < cellArea.shape[1] and terminate[T] == 0:
-                        if CELL_RADIATES[i,j] == 1:
-                            phi_shift = phi[i,j]
-                            for k in range(N_P):
-                                _PHASE = phases[k]
-                                _PHASE_plusShift = _PHASE + phi_shift
-                                if _PHASE_plusShift > PHASE[T][N_L - 1]:
-                                    while _PHASE_plusShift > PHASE[T][N_L - 1]:
-                                        _PHASE_plusShift = _PHASE_plusShift - _2pi
-                                    if (_PHASE_plusShift  < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
-                                        printf("profile_1: %.16e\n", _PHASE_plusShift)
-                                        printf("min: %.16e\n", interp_PROFILE[T].xmin)
-                                        printf("max: %.16e\n", interp_PROFILE[T].xmax)
-                                        terminate[T] = 1
-                                        break
-                                    else:
-                                        privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
-                                elif _PHASE_plusShift < PHASE[T][0]:
-                                    while _PHASE_plusShift < PHASE[T][0]:
-                                        _PHASE_plusShift = _PHASE_plusShift + _2pi
-                                    if (_PHASE_plusShift  < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
-                                        printf("profile_2: %.16e\n", _PHASE_plusShift)
-                                        printf("min: %.16e\n", interp_PROFILE[T].xmin)
-                                        printf("max: %.16e\n", interp_PROFILE[T].xmax)
-                                        terminate[T] = 1
-                                        break
-                                    else:
-                                        privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
-                                else:
-                                    if (_PHASE_plusShift < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
-                                        printf("profile_3: %.16e\n", _PHASE_plusShift)
-                                        printf("min: %.16e\n", interp_PROFILE[T].xmin)
-                                        printf("max: %.16e\n", interp_PROFILE[T].xmax)
-                                        terminate[T] = 1
-                                        break
-                                    else:
-                                        privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
-                        j = j + 1
-                    if terminate[T] == 1:
-                        break
-       # with gil:
-       #     print("i = %i checkpoint b" % i)
 
     for i in range(N_E):
         for T in range(N_T):
