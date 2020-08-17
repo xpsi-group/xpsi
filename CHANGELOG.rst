@@ -17,6 +17,9 @@ Summary
 
 Fixed
 ^^^^^
+* Removed the ``ValueError`` raised by :attr:`~.HotRegion.__init__` ``if not phase_bounds or None in phase_bounds`` so that user can set a derived ``phase_shift`` value.
+* Fixed the instance taken into the signature of :attr:`~Instrument.channel_edges` by changing ``energy_edges`` to ``channel_edges``.
+* Improved the :attr:``Instrument.energy_edges`` :attr:``Instrument.channel_edges`` :attr:``Instrument.channels`` to first perform checks before assigning the attribute of self instead of the other way around.
 
 Added
 ^^^^^

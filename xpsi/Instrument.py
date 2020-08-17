@@ -213,6 +213,14 @@ class Instrument(ParameterSubspace):
     def energy_edges(self, energy_edges):
         """ Set the energy edges in keV. """
 
+        try:
+            assert energy_edges.ndim == 1
+            assert (energy_edges >= 0.0).all()
+            assert energy_edges.shape[0] == self._matrix.shape[1] + 1
+            assert not (energy_edges[1:] <= energy_edges[:-1]).any()
+        except AssertionError:
+            raise EdgesError('Energy edges must be in a one-dimensional '
+                             'array, and must be postive and increasing.')
         if not isinstance(energy_edges, _np.ndarray):
             try:
                 self._energy_edges = _np.array(energy_edges)
@@ -221,15 +229,6 @@ class Instrument(ParameterSubspace):
                                  'array.')
         else:
             self._energy_edges = energy_edges
-
-        try:
-            assert self._energy_edges.ndim == 1
-            assert (self._energy_edges >= 0.0).all()
-            assert self._energy_edges.shape[0] == self._matrix.shape[1] + 1
-            assert not (self._energy_edges[1:] <= self._energy_edges[:-1]).any()
-        except AssertionError:
-            raise EdgesError('Energy edges must be in a one-dimensional '
-                             'array, and must be postive and increasing.')
 
     @property
     def channel_edges(self):
@@ -258,26 +257,25 @@ class Instrument(ParameterSubspace):
         return self._channel_edges
 
     @channel_edges.setter
-    def channel_edges(self, energy_edges):
+    def channel_edges(self, channel_edges):
         """ Set the channel (energy) edges in keV. """
-
-        if not isinstance(channel_edges, _np.ndarray):
-            try:
-                self._channel_edges = _np.array(channel_edges)
-            except TypeError:
-                raise EdgesError('Channel edges must be in a one-dimensional '
-                                 'array')
-        else:
-            self._channel_edges = channel_edges
-
+        
         try:
-            assert self._channel_edges.ndim == 1
-            assert (self._channel_edges >= 0.0).all()
-            assert self._channel_edges.shape[0] == self._matrix.shape[0] + 1
-            assert not (self._channel_edges[1:] <= self._channel_edges[:-1]).any()
+            assert channel_edges.ndim == 1
+            assert (channel_edges >= 0.0).all()
+            assert channel_edges.shape[0] == self._matrix.shape[0] + 1
+            assert not (channel_edges[1:] <= channel_edges[:-1]).any()
         except AssertionError:
             raise EdgesError('Channel edges must be in a one-dimensional '
                              'array, and must be postive and increasing.')
+        if not isinstance(channel_edges, _np.ndarray):
+             try:
+                 self._channel_edges = _np.array(channel_edges)
+             except TypeError:
+                 raise EdgesError('Channel edges must be in a one-dimensional '
+                                  'array')
+        else:
+             self._channel_edges = channel_edges
 
     @property
     def channels(self):
@@ -292,6 +290,21 @@ class Instrument(ParameterSubspace):
     @make_verbose('Setting channels for loaded instrument response (sub)matrix',
                   'Channels set')
     def channels(self, array):
+        try:
+            assert array.ndim == 1
+            assert (array >= 0).all()
+            assert array.shape[0] == self._matrix.shape[0]
+        except AssertionError:
+            raise ChannelError('Channel numbers must be in a '
+                               'one-dimensional array, and must all be '
+                               'positive integers including zero.')
+
+        if (array[1:] - array[:-1] != 1).any():
+            yield ('Warning: Channel numbers do not uniformly increment by one.'
+                   '\n         Please check for correctness.')
+
+        yield
+        
         if not isinstance(array, _np.ndarray):
             try:
                 self._channels = _np.array(array)
@@ -301,18 +314,3 @@ class Instrument(ParameterSubspace):
                                    'positive integers including zero.')
         else:
             self._channels = array
-
-        try:
-            assert self._channels.ndim == 1
-            assert (self._channels >= 0).all()
-            assert self._channels.shape[0] == self._matrix.shape[0]
-        except AssertionError:
-            raise ChannelError('Channel numbers must be in a '
-                               'one-dimensional array, and must all be '
-                               'positive integers including zero.')
-
-        if (self._channels[1:] - self._channels[:-1] != 1).any():
-            yield ('Warning: Channel numbers do not uniformly increment by one.'
-                   '\n         Please check for correctness.')
-
-        yield
