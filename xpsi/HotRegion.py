@@ -265,8 +265,6 @@ class HotRegion(ParameterSubspace):
         The phase of the hot region, a periodic parameter [cycles].
         """
         phase_bounds = bounds.get('phase_shift', None)
-        if not phase_bounds or None in phase_bounds:
-            raise ValueError('Phase-shift bounds must be specified.')
         if _np.array([not _np.isfinite(b) for b in phase_bounds]).any():
             raise ValueError('Phase-shift bounds must be finite.')
 
