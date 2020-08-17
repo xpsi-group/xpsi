@@ -13,6 +13,7 @@ from cython.parallel cimport *
 from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf, setbuf, stdout
+import xpsi
 
 from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_eval_deriv,
@@ -35,15 +36,8 @@ ctypedef gsl_interp interp
 
 cdef double _pi = M_PI
 cdef double _2pi = 2.0 * M_PI
-cdef double c = 2.99792458e8
-cdef double keV = 1.60217662e-16
-cdef double erg = 1.0e-7
-cdef double G = 6.6730831e-11
-cdef double _h_keV = 4.135667662e-18
-cdef double k_B = 1.38064852e-23
-cdef double _h = 6.62607004e-34
-cdef double SB = 5.6704e-5 # cgs
-cdef double Planck_dist_const = 5.040366110812353e22
+cdef double keV = xpsi.global_imports._keV
+cdef double c = xpsi.global_imports._c
 
 cdef int SUCCESS = 0
 cdef int ERROR = 1
@@ -135,7 +129,7 @@ def integrate(size_t numThreads,
         double Grav_z # Gravitational redshift; thread private (hereafter TP)
         double radius # Radial coordinate of pixel; TP
         double psi # Colatitude relative to star-observer direction; TP
-        double cos_psi, sin_psi
+        double cos_psi, sin_psi, _i, _cos_i, _sin_i
         double deriv # $\frac{d\cos\alpha}{d\cos\phi}$; TP
         double beta # Surface velocity in the local NRF; TP
         double cos_alpha # Emission angle w.r.t outward radial direction in CRF; TP
@@ -325,6 +319,21 @@ def integrate(size_t numThreads,
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
 
+                if psi != 0.0 and sin_psi == 0.0: # sinularity at poles
+                    # hack bypass by slight change of viewing angle
+                    if cos_i >= 0.0:
+                        _i = inclination + inclination * 1.0e-6 # arbitrary small
+                        _cos_i = cos(_i)
+                        _sin_i = sin(_i)
+                    else:
+                        _i = inclination - inclination * 1.0e-6
+                        _cos_i = cos(_i)
+                        _sin_i = sin(_i)
+
+                    cos_psi =  _cos_i * cos_theta_i + _sin_i * sin_theta_i * cos(leaves[k])
+                    psi = eval_image_deflection(I, acos(cos_psi))
+                    sin_psi = sin(psi)
+
                 if psi <= maxDeflection[i]:
                     if (psi < interp_alpha[T].xmin or psi > interp_alpha[T].xmax):
                         printf("psi: %.16e\n", psi)
@@ -337,7 +346,10 @@ def integrate(size_t numThreads,
                     sin_alpha = sqrt(1.0 - cos_alpha * cos_alpha)
                     mu = cos_alpha * cos_gamma
 
-                    if sin_psi != 0.0:
+                    # for spherical stars mu is defined, but for tilted local
+                    # surface, there is not one unique value for mu because
+                    # Einstein ring(s) and partial Einstein ring(s)
+                    if psi != 0.0:
                         cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
                         if theta_i_over_pi < 0.5:
                             mu = mu + sin_alpha * sin_gamma * cos_delta
@@ -369,7 +381,7 @@ def integrate(size_t numThreads,
                         _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
 
                         if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
-                            printf("lag: %.16e\n", cos_psi)
+                            printf("lag: %.16e\n", psi)
                             printf("min: %.16e\n", interp_lag[T].xmin)
                             printf("max: %.16e\n", interp_lag[T].xmax)
                             terminate[T] = 1
@@ -462,39 +474,24 @@ def integrate(size_t numThreads,
                                     if _PHASE_plusShift > PHASE[T][N_L - 1]:
                                         while _PHASE_plusShift > PHASE[T][N_L - 1]:
                                             _PHASE_plusShift = _PHASE_plusShift - _2pi
-                                        if (_PHASE_plusShift  < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
-                                            printf("profile_1: %.16e\n", _PHASE_plusShift)
-                                            printf("min: %.16e\n", interp_PROFILE[T].xmin)
-                                            printf("max: %.16e\n", interp_PROFILE[T].xmax)
-                                            terminate[T] = 1
-                                            break # out of phase loop
-                                        else:
-                                            privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
                                     elif _PHASE_plusShift < PHASE[T][0]:
                                         while _PHASE_plusShift < PHASE[T][0]:
                                             _PHASE_plusShift = _PHASE_plusShift + _2pi
-                                        if (_PHASE_plusShift  < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
-                                            printf("profile_2: %.16e\n", _PHASE_plusShift)
-                                            printf("min: %.16e\n", interp_PROFILE[T].xmin)
-                                            printf("max: %.16e\n", interp_PROFILE[T].xmax)
-                                            terminate[T] = 1
-                                            break # out of phase loop
-                                        else:
-                                            privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
-                                    else:
-                                        if (_PHASE_plusShift < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
-                                            printf("profile_3: %.16e\n", _PHASE_plusShift)
-                                            printf("min: %.16e\n", interp_PROFILE[T].xmin)
-                                            printf("max: %.16e\n", interp_PROFILE[T].xmax)
-                                            terminate[T] = 1
-                                            break # out of phase loop
-                                        else:
-                                            privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
+
+                                    if (_PHASE_plusShift < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
+                                        printf("phase: %.16e\n", _PHASE_plusShift)
+                                        printf("min: %.16e\n", interp_PROFILE[T].xmin)
+                                        printf("max: %.16e\n", interp_PROFILE[T].xmax)
+                                        terminate[T] = 1
+                                        break # out of phase loop
+
+                                    privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
+
                             j = j + 1
                         if terminate[T] == 1:
                             break # out of energy loop
-                    if terminate[T] == 1:
-                        break # out of image loop
+            if terminate[T] == 1:
+                break # out of image loop
         if terminate[T] == 1:
            break # out of colatitude loop
 

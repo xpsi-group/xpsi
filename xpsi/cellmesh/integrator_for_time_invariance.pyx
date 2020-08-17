@@ -13,6 +13,7 @@ from cython.parallel cimport *
 from libc.math cimport M_PI, sqrt, sin, cos, acos, fabs, pow, ceil
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf, setbuf, stdout
+import xpsi
 
 from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_eval_deriv,
@@ -35,15 +36,8 @@ ctypedef gsl_interp interp
 
 cdef double _pi = M_PI
 cdef double _2pi = 2.0 * M_PI
-cdef double c = 2.99792458e8
-cdef double keV = 1.60217662e-16
-cdef double erg = 1.0e-7
-cdef double G = 6.6730831e-11
-cdef double _h_keV = 4.135667662e-18
-cdef double k_B = 1.38064852e-23
-cdef double _h = 6.62607004e-34
-cdef double SB = 5.6704e-5 # cgs
-cdef double Planck_dist_const = 5.040366110812353e22
+cdef double keV = xpsi.global_imports._keV
+cdef double c = xpsi.global_imports._c
 
 cdef int SUCCESS = 0
 cdef int ERROR = 1

@@ -53,10 +53,11 @@ class Everywhere(ParameterSubspace):
 
     :param int sqrt_num_cells:
         Number of cells in both colatitude and azimuth which form a regular
-        mesh on the surface. The total number of cells is the square of this
-        argument value. The mesh suffers from squeezing in the polar regions,
-        leading to a high degree of non-congruence in cell shape over the
-        surface.
+        mesh on the surface. Must be an even number such that half of the cells
+        are exactly in one hemisphere. The total number of cells is the square
+        of this argument value. The mesh suffers from squeezing in the polar
+        regions, leading to a high degree of non-congruence in cell shape over
+        the surface.
 
     :param int num_rays:
         Number of rays to trace (integrate) at each colatitude, distributed
@@ -158,7 +159,8 @@ class Everywhere(ParameterSubspace):
             from .cellmesh.integrator_for_time_invariance import integrate as _integrator
         else: # more general purpose
             self._time_invariant = False
-            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+            #from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+            from .cellmesh.integrator import integrate as _integrator
         self._integrator = _integrator
 
     @property
@@ -183,11 +185,15 @@ class Everywhere(ParameterSubspace):
     def sqrt_num_cells(self, n):
         """ Set the number of cell colatitudes. """
         try:
-            self._sqrt_num_cells = int(n)
+             _n = int(n)
         except TypeError:
             raise TypeError('Number of cells must be an integer.')
         else:
-            self._num_cells = n**2
+            if not _n > 10 or _n%2 != 0:
+                raise ValueError('Number of cells must be a positive even '
+                                 'integer greater than or equal to ten.')
+        self._sqrt_num_cells = _n
+        self._num_cells = _n**2
 
     @property
     def num_cells(self):

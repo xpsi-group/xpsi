@@ -540,9 +540,15 @@ class HotRegion(ParameterSubspace):
     def sqrt_num_cells(self, n):
         """ Set the number of cell parallels. """
         try:
-            self._sqrt_num_cells = int(n)
+            _n = int(n)
         except TypeError:
             raise TypeError('Number of cells must be an integer.')
+        else:
+            if not _n >= 4:
+                raise ValueError('Number of cells must be a positive integer '
+                                 'greater than for equal to four.')
+
+        self._sqrt_num_cells = _n
 
     @property
     def leaves(self):
