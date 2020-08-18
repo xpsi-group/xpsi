@@ -17,7 +17,6 @@ import xpsi
 
 from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_eval_deriv,
-                                       gsl_interp_eval_deriv2,
                                        gsl_interp_alloc,
                                        gsl_interp_accel,
                                        gsl_interp_accel_alloc,
@@ -35,6 +34,7 @@ ctypedef gsl_interp_accel accel
 ctypedef gsl_interp interp
 
 cdef double _pi = M_PI
+cdef double _hlfpi = M_PI / 2.0
 cdef double _2pi = 2.0 * M_PI
 cdef double keV = xpsi.global_imports._keV
 cdef double c = xpsi.global_imports._c
@@ -162,8 +162,10 @@ def integrate(size_t numThreads,
         size_t *InvisPhase = <size_t*> malloc(N_T * 2 * sizeof(size_t))
 
         accel **accel_alpha = <accel**> malloc(N_T * sizeof(accel*))
+        accel **accel_alpha_alt = <accel**> malloc(N_T * sizeof(accel*))
         accel **accel_lag = <accel**> malloc(N_T * sizeof(accel*))
         interp **interp_alpha = <interp**> malloc(N_T * sizeof(interp*))
+        interp **interp_alpha_alt= <interp**> malloc(N_T * sizeof(interp*))
         interp **interp_lag = <interp**> malloc(N_T * sizeof(interp*))
 
         # Intensity spline interpolation
@@ -177,6 +179,8 @@ def integrate(size_t numThreads,
 
         double *defl_ptr
         double *alpha_ptr
+        double *defl_alt_ptr
+        double *alpha_alt_ptr
         double *lag_ptr
         double *profile_ptr
         double *phase_ptr
@@ -185,6 +189,7 @@ def integrate(size_t numThreads,
         terminate[T] = 0
         accel_alpha[T] = gsl_interp_accel_alloc()
         interp_alpha[T] = gsl_interp_alloc(gsl_interp_steffen, N_R)
+        accel_alpha_alt[T] = gsl_interp_accel_alloc()
         accel_lag[T] = gsl_interp_accel_alloc()
         interp_lag[T] = gsl_interp_alloc(gsl_interp_steffen, N_R)
 
@@ -203,6 +208,14 @@ def integrate(size_t numThreads,
     for i in range(deflection.shape[0]):
         for j in range(deflection.shape[1]):
             _deflection[i,j] = deflection[i, N_R - j - 1]
+
+    cdef double[:,::1] cos_deflection = np.zeros((deflection.shape[0],
+                                                  deflection.shape[1]),
+                                                  dtype = np.double)
+
+    for i in range(deflection.shape[0]):
+        for j in range(deflection.shape[1]):
+            cos_deflection[i,j] = cos(deflection[i,j])
 
     cdef double[:,::1] _lag = np.zeros((deflection.shape[0],
                                         deflection.shape[1]),
@@ -279,6 +292,26 @@ def integrate(size_t numThreads,
         if j == cellArea.shape[1]:
             continue
 
+        gsl_interp_accel_reset(accel_alpha[T])
+        gsl_interp_accel_reset(accel_alpha_alt[T])
+        gsl_interp_accel_reset(accel_lag[T])
+
+        j = 0
+        while deflection[i,j] > _hlfpi:
+            j = j + 1
+
+        defl_alt_ptr = &(cos_deflection[i, j])
+        alpha_alt_ptr = &(cos_alphaMatrix[i, j])
+        interp_alpha_alt[T] = gsl_interp_alloc(gsl_interp_steffen, N_R - j)
+        gsl_interp_init(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, N_R - j)
+
+        defl_ptr = &(_deflection[i,0])
+        alpha_ptr = &(_cos_alpha[i,0])
+        gsl_interp_init(interp_alpha[T], defl_ptr, alpha_ptr, N_R)
+
+        lag_ptr = &(_lag[i,0])
+        gsl_interp_init(interp_lag[T], defl_ptr, lag_ptr, N_R)
+
         radius = radialCoords_of_parallels[i]
         Grav_z = sqrt(1.0 - r_s_over_r[i])
         cos_gamma = cos_gammaArray[i]
@@ -291,15 +324,6 @@ def integrate(size_t numThreads,
         beta = radius * omega * sin_theta_i / (c * Grav_z)
         beta_sq = beta * beta
         Lorentz = sqrt(1.0 - beta_sq)
-
-        gsl_interp_accel_reset(accel_alpha[T])
-        gsl_interp_accel_reset(accel_lag[T])
-
-        defl_ptr = &(_deflection[i,0])
-        alpha_ptr = &(_cos_alpha[i,0])
-        gsl_interp_init(interp_alpha[T], defl_ptr, alpha_ptr, N_R)
-        lag_ptr = &(_lag[i,0])
-        gsl_interp_init(interp_lag[T], defl_ptr, lag_ptr, N_R)
 
         if image_order == 0: # infer maximum possible image order
             _IO = <int>ceil(maxDeflection[i] / _pi)
@@ -342,7 +366,11 @@ def integrate(size_t numThreads,
                         terminate[T] = 1
                         break # out of phase loop
                     else:
-                        cos_alpha = gsl_interp_eval(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
+                        if psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
+                            cos_alpha = gsl_interp_eval(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
+                        else:
+                            cos_alpha = gsl_interp_eval(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
+
                     sin_alpha = sqrt(1.0 - cos_alpha * cos_alpha)
                     mu = cos_alpha * cos_gamma
 
@@ -366,15 +394,11 @@ def integrate(size_t numThreads,
                             superlum = 1.0
                             eta = Lorentz
 
-                        if psi != 0.0:
+                        if psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
+                            deriv = gsl_interp_eval_deriv(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
+                        else:
                             deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
-                            if sin_psi == 0.0: # singularity
-                                deriv = deriv / 1.0e-8
-                            else:
-                                deriv = deriv / sin_psi
-                        else: # take to A&E at L'Hopital
-                            deriv = gsl_interp_eval_deriv2(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
-                            deriv = deriv / cos_psi
+                            deriv = deriv / sin_psi # singularity hack above
 
                         _Z = eta * Grav_z
                         _ABB = mu * eta
@@ -492,6 +516,7 @@ def integrate(size_t numThreads,
                             break # out of energy loop
             if terminate[T] == 1:
                 break # out of image loop
+        gsl_interp_free(interp_alpha_alt[T])
         if terminate[T] == 1:
            break # out of colatitude loop
 
@@ -507,6 +532,7 @@ def integrate(size_t numThreads,
     for T in range(N_T):
         gsl_interp_free(interp_alpha[T])
         gsl_interp_accel_free(accel_alpha[T])
+        gsl_interp_accel_free(accel_alpha_alt[T])
         gsl_interp_free(interp_lag[T])
         gsl_interp_accel_free(accel_lag[T])
 
@@ -518,6 +544,8 @@ def integrate(size_t numThreads,
 
     free(interp_alpha)
     free(accel_alpha)
+    free(interp_alpha_alt)
+    free(accel_alpha_alt)
     free(interp_lag)
     free(accel_lag)
 
@@ -552,4 +580,3 @@ def integrate(size_t numThreads,
     free(terminate)
 
     return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'))
-

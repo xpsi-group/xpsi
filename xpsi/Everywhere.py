@@ -159,8 +159,8 @@ class Everywhere(ParameterSubspace):
             from .cellmesh.integrator_for_time_invariance import integrate as _integrator
         else: # more general purpose
             self._time_invariant = False
-            #from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
-            from .cellmesh.integrator import integrate as _integrator
+            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+            #from .cellmesh.integrator import integrate as _integrator
         self._integrator = _integrator
 
     @property

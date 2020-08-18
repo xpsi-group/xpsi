@@ -17,7 +17,6 @@ import xpsi
 
 from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_eval_deriv,
-                                       gsl_interp_eval_deriv2,
                                        gsl_interp_alloc,
                                        gsl_interp_accel,
                                        gsl_interp_accel_alloc,
