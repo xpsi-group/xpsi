@@ -9,7 +9,7 @@ import numpy as np
 cimport numpy as np
 cimport cython
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, cos, asin, acos, log, atan, NAN
+from libc.math cimport M_PI, sqrt, cos, asin, acos, log, atan, NAN, pow
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
@@ -23,21 +23,19 @@ from GSL cimport (gsl_function,
                   gsl_interp_accel_alloc,
                   gsl_interp_accel_free,
                   gsl_interp_accel_reset,
+                  gsl_interp_eval,
+                  gsl_interp_eval_deriv,
+                  gsl_interp_alloc,
+                  gsl_interp,
+                  gsl_interp_steffen,
+                  gsl_interp_init,
+                  gsl_interp_free,
                   gsl_isnan,
                   GSL_INTEG_GAUSS61,
                   GSL_EFAILED,
                   gsl_set_error_handler,
                   gsl_set_error_handler_off,
                   gsl_error_handler_t)
-
-
-from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
-                                       gsl_interp_eval_deriv,
-                                       gsl_interp_alloc,
-                                       gsl_interp,
-                                       gsl_interp_steffen,
-                                       gsl_interp_init,
-                                       gsl_interp_free)
 
 ctypedef gsl_interp interp
 ctypedef gsl_interp_accel accel
@@ -48,6 +46,20 @@ cdef double _pi = M_PI
 cdef double c = 2.99792458e8
 
 cdef int ERROR = 1
+
+cdef double eval_image_deflection(int order, double psi) nogil:
+    if order % 2 != 0:
+        return <double>(order + 1) * _pi + pow(-1.0, <double>order) * psi
+    else:
+        return <double>(order) * _pi + pow(-1.0, <double>order) * psi
+
+cdef void invert(double a, double b, double *c, double *d) nogil:
+    #c_invert(a, b, c, d)
+    __pyx_f_9rayXpanda_9inversion_c_invert(a, b, c, d)
+
+cdef void deflect(double a, double b, double *c, double *d) nogil:
+    #c_deflect(a, b, c, d)
+    __pyx_f_9rayXpanda_10deflection_c_deflect(a, b, c, d)
 
 cdef double b_phsph_over_r_s = 3.0 * sqrt(3.0) / 2.0
 

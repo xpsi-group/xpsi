@@ -36,16 +36,21 @@ if __name__ == '__main__':
             raise
         else:
             print('GSL version: ' + gsl_version)
-            libraries = ['gsl','gslcblas','m'] # default BLAS interface for gsl
-            library_dirs = [gsl_prefix + '/lib']
+            libraries = ['gsl','gslcblas','m',
+                         ':inversion.so',
+                         ':deflection.so'] # default BLAS interface for gsl
+            library_dirs = [gsl_prefix + '/lib',
+                            '/home/thomas/rayXpanda/rayXpanda']
             include_dirs = [gsl_prefix + '/include',
                             './xpsi/include',
-                            numpy.get_include()]
+                            numpy.get_include(),
+                            '/home/thomas/rayXpanda']
 
         # point to shared library at compile time so runtime resolution
         # is not affected by environment variables, but is determined
         # by the binary itself
-        extra_link_args = ['-Wl,-rpath,%s'%(gsl_prefix+'/lib')]
+        extra_link_args = ['-Wl,-rpath,%s'%(gsl_prefix+'/lib'),
+                           '-Wl,-rpath,%s'%'/home/thomas/rayXpanda/rayXpanda/']
         try:
             if 'gcc' in os.environ['CC']:
                 extra_compile_args=['-fopenmp',

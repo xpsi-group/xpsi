@@ -27,8 +27,9 @@ from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_accel_free,
                                        gsl_interp_accel_reset,
                                        gsl_isnan,
-                                       gsl_isinf,
-                                       eval_image_deflection)
+                                       gsl_isinf)
+
+from .rays cimport eval_image_deflection, invert
 
 ctypedef gsl_interp_accel accel
 ctypedef gsl_interp interp
