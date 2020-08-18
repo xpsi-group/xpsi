@@ -319,7 +319,7 @@ def integrate(size_t numThreads,
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
 
-                if psi != 0.0 and sin_psi == 0.0: # sinularity at poles
+                if psi != 0.0 and sin_psi == 0.0: # singularity at poles
                     # hack bypass by slight change of viewing angle
                     if cos_i >= 0.0:
                         _i = inclination + inclination * 1.0e-6 # arbitrary small
