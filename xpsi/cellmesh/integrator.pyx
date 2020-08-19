@@ -33,11 +33,7 @@ cdef double get_rayXpanda_defl_lim():
     except ImportError:
         __rayXpanda_defl_lim__ = _hlfpi # default limit
     finally:
-        if not isinstance(__rayXpanda_defl_lim__, float):
-            raise TypeError('rayXpanda deflection limit must be a float.')
-        if not 0.0 < __rayXpanda_defl_lim__ < _pi:
-            raise ValueError('The rayXpanda limit declared is outside the '
-                             'domain of the rayXpanda expansion.')
+        xpsi.cellmesh._check_rayXpanda_defl_lim(__rayXpanda_defl_lim__)
         return <double>__rayXpanda_defl_lim__
 
 from xpsi.surface_radiation_field.preload cimport (_preloaded,
@@ -151,13 +147,14 @@ def integrate(size_t numThreads,
                 xpsi._warning('invoking rayXpanda for a signal integration '
                               'over a subdomain of the stellar image.')
                 xpsi._warning('the larger the primary image subdomain chosen '
-                              'for rayXpanda calls, the larger the rayXpanda '
-                              'expansion truncation error.')
+                              'for rayXpanda calls,')
+                xpsi._warning('the larger the rayXpanda expansion truncation '
+                              'error.')
                 xpsi._warning('you can control this by setting the '
                               'rayXpanda deflection limit manually.')
                 xpsi._warning('please use the top-level function '
                               'xpsi.set_rayXpanda_deflection_limit(float)')
-                xpsi._warning('please refer to the documentation at'
+                xpsi._warning('please refer to the documentation at '
                               'https://thomasedwardriley.github.io/rayXpanda/theory')
         xpsi.cellmesh.__cached_rayXpanda_defl_lim__ = rayXpanda_defl_lim
         xpsi.__used_rayXpanda__ = True
