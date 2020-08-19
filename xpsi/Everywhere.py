@@ -105,6 +105,14 @@ class Everywhere(ParameterSubspace):
         on a surface (accounting for the surface tilt due to rotation), then
         the iteration over image orders terminates.
 
+    :param bool _integrator_toggle:
+        For testing purposes, toggle the integrator for time-dependent signals.
+        If left as the default (``False``) the general-purpose integrator is
+        called. If toggled, an integrator is called that assumes the surface
+        radiation field is azimuthally invariant, which combined with the
+        default global mesh (i.e., no subclassing) results in a time-invariant
+        signal.
+
     """
     required_names = ['temperature (if no custom specification)']
 
@@ -118,7 +126,8 @@ class Everywhere(ParameterSubspace):
                  num_phases = None,
                  phases = None,
                  custom = None,
-                 image_order_limit = None):
+                 image_order_limit = None,
+                 _integrator_toggle = False):
 
         self.num_rays = num_rays
 
@@ -144,6 +153,10 @@ class Everywhere(ParameterSubspace):
         super(Everywhere, self).__init__(T, custom)
 
         self.time_invariant = time_invariant
+        if isinstance(_integrator_toggle, bool):
+            self._integrator_toggle = _integrator_toggle
+        else:
+            self._integrator_toggle = False
 
     @property
     def time_invariant(self):
@@ -159,8 +172,10 @@ class Everywhere(ParameterSubspace):
             from .cellmesh.integrator_for_time_invariance import integrate as _integrator
         else: # more general purpose
             self._time_invariant = False
-            #from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
-            from .cellmesh.integrator import integrate as _integrator
+            if not self._integrator_toggle:
+                from .cellmesh.integrator import integrate as _integrator
+            else:
+                from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
         self._integrator = _integrator
 
     @property
@@ -213,6 +228,20 @@ class Everywhere(ParameterSubspace):
                 raise TypeError('Image order limit must be an positive integer '
                                 'if not None.')
         self._image_order_limit = limit
+
+    @property
+    def rayXpanda_defl_lim(self):
+        """ Get the rayXpanda deflection limit. """
+        try:
+            return self._rayXpanda_defl_lim
+        except AttributeError:
+            try:
+                from .cellmesh import __rayXpanda_defl_lim__
+            except ImportError:
+                return None
+            else:
+                self._rayXpanda_defl_lim = __rayXpanda_defl_lim__
+                return __rayXpanda_defl_lim__
 
     def print_settings(self):
         """ Print numerical settings. """

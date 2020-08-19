@@ -121,6 +121,33 @@ if not __XPSI_SETUP__:
 
     import global_imports
 
+    try:
+        import rayXpanda
+    except ImportError:
+        __rayXpanda_installed__ = False
+    else:
+        __rayXpanda_installed__ = True
+        import cellmesh
+        def set_rayXpanda_deflection_limit(limit):
+            """ Control the domain of applicability of rayXpanda library.
+
+            :param float rayXpanda_defl_lim:
+                The limiting deflection angle on the interval (0,pi) radians
+                below which the rayXpanda library is called for convenient
+                calculation of the lensing factor derivative without need for
+                interpolation. Silently ignored if compile-time linking fails
+                (due to the rayXpanda package not being installed).
+
+            """
+            if not isinstance(limit, float):
+                raise TypeError('rayXpanda deflection limit must be a float.')
+            if not 0 < limit < global_imports._pi:
+                raise ValueError('rayXpanda deflection limit must be between '
+                                 'zero and pi radians, non-inclusive.')
+
+            cellmesh.__rayXpanda_defl_lim__ = limit
+        set_rayXpanda_deflection_limit(global_imports._pi/2.0)
+
     from .Parameter import Parameter, Derive
     from .ParameterSubspace import ParameterSubspace
 

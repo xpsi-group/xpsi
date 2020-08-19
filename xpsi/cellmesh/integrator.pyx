@@ -27,6 +27,33 @@ cdef int ERROR = 1
 cdef int VERBOSE = 1
 cdef int QUIET = 0
 
+cdef double rayXpanda_defl_lim
+try:
+    from . import __rayXpanda_defl_lim__
+except ImportError:
+    if xpsi.__rayXpanda_installed__:
+        __rayXpanda_defl_lim__ = _hlfpi # just in case a limit is needed
+else:
+    try:
+        xpsi.__use_rayXpanda__
+    except AttributeError:
+        pass
+    else:
+        if not xpsi.__use_rayXpanda__:
+            del __rayXpanda_defl_lim__
+finally:
+    try:
+        __rayXpanda_defl_lim__
+    except NameError:
+        pass
+    else:
+        if not isinstance(__rayXpanda_defl_lim__, float):
+            raise TypeError('rayXpanda deflection limit must be a float.')
+        if not 0.0 < __rayXpanda_defl_lim__ < _pi:
+            raise ValueError('The rayXpanda limit declared is outside the '
+                             'domain of the rayXpanda expansion.')
+        rayXpanda_defl_lim = __rayXpanda_defl_lim__
+
 from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
                                                    free_preload)
@@ -99,21 +126,40 @@ def integrate(size_t numThreads,
               double[::1] phases,
               hot_atmosphere,
               elsewhere_atmosphere,
-              image_order_limit = None,
-              double rayXpanda_lim = _hlfpi):
+              image_order_limit = None):
 
-    # check for rayXpanda
+    # check for rayXpanda explicitly in case of some linker issue
     cdef double _flag, _throwaway
     cdef bint _use_rayXpanda = 1
     invert(0.5, 0.5, &_flag, &_throwaway)
     if <signed int>_flag == -2:
         _use_rayXpanda = 0
-        print('Not using rayXpanda...')
+        xpsi.__use_rayXpanda__ = False
+        try:
+            xpsi.__used_rayXpanda__
+        except AttributeError:
+            if xpsi.__rayXpanda_installed__:
+                xpsi._warning('rayXpanda installed, but library not called')
+                xpsi._warning('due to a run-time linking failure')
+            xpsi.__used_rayXpanda__ = False
     else:
-        print('Using rayXpanda...')
-        if not 0.0 < rayXpanda_lim < _pi:
-            raise ValueError('The rayXpanda limit chosen is outside the domain '
-                             'of the rayXpanda expansion.')
+        xpsi.__use_rayXpanda__ = True
+        try:
+            xpsi.__used_rayXpanda__
+        except AttributeError:
+            if rayXpanda_defl_lim > _hlfpi:
+                xpsi._warning('invoking rayXpanda for a signal integration '
+                              'over a subdomain of the stellar image.')
+                xpsi._warning('the larger the primary image subdomain chosen '
+                              'for rayXpanda calls, the larger the rayXpanda '
+                              'expansion truncation error.')
+                xpsi._warning('you can control this by setting the '
+                              'rayXpanda deflection limit manually.')
+                xpsi._warning('please use the top-level function '
+                              'xpsi.set_rayXpanda_deflection_limit(float)')
+                xpsi._warning('and refer to the documentation at'
+                              'https://thomasedwardriley.github.io/rayXpanda/theory')
+            xpsi.__used_rayXpanda__ = True
 
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
@@ -390,7 +436,7 @@ def integrate(size_t numThreads,
                         terminate[T] = 1
                         break # out of phase loop
                     else:
-                        if _use_rayXpanda and psi <= rayXpanda_lim:
+                        if _use_rayXpanda and psi <= rayXpanda_defl_lim:
                             invert(cos_psi, r_s_over_r[i], &cos_alpha, &deriv)
                             deriv = deriv * (1.0 - r_s_over_r[i])
                         elif not _use_rayXpanda and psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
@@ -418,7 +464,7 @@ def integrate(size_t numThreads,
                             superlum = 1.0
                             eta = Lorentz
 
-                        if _use_rayXpanda and psi <= rayXpanda_lim:
+                        if _use_rayXpanda and psi <= rayXpanda_defl_lim:
                             pass
                         elif not _use_rayXpanda and psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
                             deriv = gsl_interp_eval_deriv(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
