@@ -18,6 +18,7 @@ if __name__ == '__main__':
     import sys
     OS = sys.platform
     import os
+    from os.path import join
 
     if 'darwin' in OS or 'linux' in OS:
         print('Operating system: ' + OS)
@@ -36,21 +37,49 @@ if __name__ == '__main__':
             raise
         else:
             print('GSL version: ' + gsl_version)
-            libraries = ['gsl','gslcblas','m',
-                         ':inversion.so',
-                         ':deflection.so'] # default BLAS interface for gsl
-            library_dirs = [gsl_prefix + '/lib',
-                            '/home/thomas/rayXpanda/rayXpanda']
+            libraries = ['gsl','gslcblas','m'] # default BLAS interface for gsl
+            library_dirs = [gsl_prefix + '/lib']
+            _src_dir = os.path.dirname(os.path.abspath(__file__))
             include_dirs = [gsl_prefix + '/include',
-                            './xpsi/include',
                             numpy.get_include(),
-                            '/home/thomas/rayXpanda']
+                            join(_src_dir, 'xpsi/include')]
 
-        # point to shared library at compile time so runtime resolution
-        # is not affected by environment variables, but is determined
-        # by the binary itself
-        extra_link_args = ['-Wl,-rpath,%s'%(gsl_prefix+'/lib'),
-                           '-Wl,-rpath,%s'%'/home/thomas/rayXpanda/rayXpanda/']
+            # point to shared library at compile time so runtime resolution
+            # is not affected by environment variables, but is determined
+            # by the binary itself
+            extra_link_args = ['-Wl,-rpath,%s'%(gsl_prefix+'/lib')]
+
+            # try to get the rayXpanda library
+            try:
+                import rayXpanda
+            except ImportError:
+                print('Warning: the rayXpanda package cannot be imported. '
+                      'Using fallback implementation.')
+                CC = os.environ['CC']
+                sub.call(['%s'%CC,
+                          '-c',
+                          join(_src_dir, 'xpsi/include/rayXpanda/inversion.c'),
+                          '-o',
+                          join(_src_dir, 'xpsi/include/rayXpanda/inversion.o')])
+                sub.call(['%s'%CC,
+                          '-c',
+                          join(_src_dir, 'xpsi/include/rayXpanda/deflection.c'),
+                          '-o',
+                          join(_src_dir, 'xpsi/include/rayXpanda/deflection.o')])
+                use_rayXpanda = False
+            else:
+                use_rayXpanda = True
+
+            if use_rayXpanda:
+                libraries += [':inversion.so', ':deflection.so']
+                library_dirs += [rayXpanda.__path__[0]]
+                extra_link_args += ['-Wl,-rpath,%s'%rayXpanda.__path__[0]]
+            else: # get the native dummy interface
+                libraries += [':inversion.o', ':deflection.o']
+                library_dirs += [join(_src_dir, 'xpsi/include/rayXpanda')]
+                extra_link_args += ['-Wl,-rpath,%s'%join(_src_dir,
+                                                     'xpsi/include/rayXpanda')]
+
         try:
             if 'gcc' in os.environ['CC']:
                 extra_compile_args=['-fopenmp',
