@@ -38,7 +38,7 @@ cdef double get_rayXpanda_defl_lim():
         if not 0.0 < __rayXpanda_defl_lim__ < _pi:
             raise ValueError('The rayXpanda limit declared is outside the '
                              'domain of the rayXpanda expansion.')
-        return __rayXpanda_defl_lim__
+        return <double>__rayXpanda_defl_lim__
 
 from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
@@ -143,8 +143,11 @@ def integrate(size_t numThreads,
         else:
             _cache = xpsi.__used_rayXpanda__
         finally:
-
-            if not _cache and rayXpanda_defl_lim > _hlfpi:
+            try:
+                _changed = (xpsi.cellmesh.__cached_rayXpanda_defl_lim__ != rayXpanda_defl_lim)
+            except AttributeError:
+                _changed = True
+            if rayXpanda_defl_lim > _hlfpi and (not _cache or _changed):
                 xpsi._warning('invoking rayXpanda for a signal integration '
                               'over a subdomain of the stellar image.')
                 xpsi._warning('the larger the primary image subdomain chosen '
@@ -156,6 +159,7 @@ def integrate(size_t numThreads,
                               'xpsi.set_rayXpanda_deflection_limit(float)')
                 xpsi._warning('please refer to the documentation at'
                               'https://thomasedwardriley.github.io/rayXpanda/theory')
+        xpsi.cellmesh.__cached_rayXpanda_defl_lim__ = rayXpanda_defl_lim
         xpsi.__used_rayXpanda__ = True
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
