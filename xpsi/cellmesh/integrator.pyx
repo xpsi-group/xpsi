@@ -573,7 +573,8 @@ def integrate(size_t numThreads,
     for T in range(N_T):
         gsl_interp_free(interp_alpha[T])
         gsl_interp_accel_free(accel_alpha[T])
-        gsl_interp_accel_free(accel_alpha_alt[T])
+        if not _use_rayXpanda:
+            gsl_interp_accel_free(accel_alpha_alt[T])
         gsl_interp_free(interp_lag[T])
         gsl_interp_accel_free(accel_lag[T])
 
@@ -591,8 +592,9 @@ def integrate(size_t numThreads,
 
     free(interp_alpha)
     free(accel_alpha)
-    free(interp_alpha_alt)
-    free(accel_alpha_alt)
+    if not _use_rayXpanda:
+        free(interp_alpha_alt)
+        free(accel_alpha_alt)
     free(interp_lag)
     free(accel_lag)
 
