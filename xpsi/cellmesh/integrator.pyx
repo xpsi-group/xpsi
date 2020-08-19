@@ -27,32 +27,18 @@ cdef int ERROR = 1
 cdef int VERBOSE = 1
 cdef int QUIET = 0
 
-cdef double get_rayXpanda_defl_lim(void):
+cdef double get_rayXpanda_defl_lim():
     try:
         from . import __rayXpanda_defl_lim__
     except ImportError:
-        if xpsi.__use_rayXpanda__:
-            __rayXpanda_defl_lim__ = _hlfpi # default limit
-    else:
-        try:
-            xpsi.__use_rayXpanda__
-        except AttributeError:
-            pass
-        else:
-            if not xpsi.__use_rayXpanda__:
-                del __rayXpanda_defl_lim__
+        __rayXpanda_defl_lim__ = _hlfpi # default limit
     finally:
-        try:
-            __rayXpanda_defl_lim__
-        except NameError:
-            return -2.0
-        else:
-            if not isinstance(__rayXpanda_defl_lim__, float):
-                raise TypeError('rayXpanda deflection limit must be a float.')
-            if not 0.0 < __rayXpanda_defl_lim__ < _pi:
-                raise ValueError('The rayXpanda limit declared is outside the '
-                                 'domain of the rayXpanda expansion.')
-            return __rayXpanda_defl_lim__
+        if not isinstance(__rayXpanda_defl_lim__, float):
+            raise TypeError('rayXpanda deflection limit must be a float.')
+        if not 0.0 < __rayXpanda_defl_lim__ < _pi:
+            raise ValueError('The rayXpanda limit declared is outside the '
+                             'domain of the rayXpanda expansion.')
+        return __rayXpanda_defl_lim__
 
 from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
