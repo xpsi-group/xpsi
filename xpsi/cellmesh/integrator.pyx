@@ -633,5 +633,4 @@ def integrate(size_t numThreads,
             free(terminate)
             return (ERROR, None)
 
-    #printf("\nIntegration completed.")
     return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'))

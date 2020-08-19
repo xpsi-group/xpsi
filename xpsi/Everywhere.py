@@ -153,10 +153,21 @@ class Everywhere(ParameterSubspace):
         super(Everywhere, self).__init__(T, custom)
 
         self.time_invariant = time_invariant
-        if isinstance(_integrator_toggle, bool):
-            self._integrator_toggle = _integrator_toggle
-        else:
-            self._integrator_toggle = False
+        self._integrator_toggle = _integrator_toggle
+
+    @property
+    def _integrator_toggle(self):
+        """ Get the toggle setting. """
+        return self._intoggle
+
+    @_integrator_toggle.setter
+    def _integrator_toggle(self, toggle):
+        if isinstance(toggle, bool):
+            self._intoggle = toggle
+        else: # silently default
+            self._intoggle = False
+
+        self.time_invariant = self.time_invariant
 
     @property
     def time_invariant(self):
