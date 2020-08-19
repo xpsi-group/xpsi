@@ -63,7 +63,7 @@ cdef void deflect(double a, double b, double *c, double *d) nogil:
     #c_deflect(a, b, c, d)
     __pyx_f_9rayXpanda_10deflection_c_deflect(a, b, c, d)
 
-cdef double _get_rayXpanda_defl_lim():
+cdef double _get_rayXpanda_defl_lim() except *:
     try:
         from . import __rayXpanda_defl_lim__
     except ImportError:
@@ -72,7 +72,7 @@ cdef double _get_rayXpanda_defl_lim():
         xpsi.cellmesh._check_rayXpanda_defl_lim(__rayXpanda_defl_lim__)
         return <double>__rayXpanda_defl_lim__
 
-cdef void link_rayXpanda(bint *use_rayXpanda, double *rayXpanda_defl_lim):
+cdef void link_rayXpanda(bint *use_rayXpanda, double *rayXpanda_defl_lim) except *:
     cdef double _flag, _throwaway
     use_rayXpanda[0] = 1
     invert(0.5, 0.5, &_flag, &_throwaway)

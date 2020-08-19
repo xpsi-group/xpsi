@@ -104,7 +104,20 @@ def integrate(size_t numThreads,
     # check for rayXpanda explicitly in case of some linker issue
     cdef double rayXpanda_defl_lim
     cdef bint _use_rayXpanda
-    link_rayXpanda(&_use_rayXpanda, &rayXpanda_defl_lim)
+    try:
+        xpsi.cellmesh.__deactivate_rayXpanda__
+    except AttributeError:
+        _try_rayXpanda = True
+    else:
+        if xpsi.cellmesh.__deactivate_rayXpanda__:
+            _try_rayXpanda = False
+            _use_rayXpanda = 0
+        else:
+            _try_rayXpanda = True
+    finally:
+        if _try_rayXpanda:
+            link_rayXpanda(&_use_rayXpanda, &rayXpanda_defl_lim)
+
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
     # >>>
