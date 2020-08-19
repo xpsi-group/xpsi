@@ -12,6 +12,7 @@ from cython.parallel cimport *
 from libc.math cimport M_PI, sqrt, cos, asin, acos, log, atan, NAN, pow
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
+import xpsi
 
 from GSL cimport (gsl_function,
                   gsl_integration_workspace,
@@ -43,6 +44,7 @@ ctypedef gsl_integration_workspace gsl_work
 ctypedef gsl_integration_cquad_workspace gsl_cq_work
 
 cdef double _pi = M_PI
+cdef double _hlfpi = M_PI / 2.0
 cdef double c = 2.99792458e8
 
 cdef int ERROR = 1
@@ -60,6 +62,64 @@ cdef void invert(double a, double b, double *c, double *d) nogil:
 cdef void deflect(double a, double b, double *c, double *d) nogil:
     #c_deflect(a, b, c, d)
     __pyx_f_9rayXpanda_10deflection_c_deflect(a, b, c, d)
+
+cdef double _get_rayXpanda_defl_lim():
+    try:
+        from . import __rayXpanda_defl_lim__
+    except ImportError:
+        __rayXpanda_defl_lim__ = _hlfpi # default limit
+    finally:
+        xpsi.cellmesh._check_rayXpanda_defl_lim(__rayXpanda_defl_lim__)
+        return <double>__rayXpanda_defl_lim__
+
+cdef void link_rayXpanda(bint *use_rayXpanda, double *rayXpanda_defl_lim):
+    cdef double _flag, _throwaway
+    use_rayXpanda[0] = 1
+    invert(0.5, 0.5, &_flag, &_throwaway)
+    if <signed int>_flag == -2:
+        use_rayXpanda[0] = 0
+        xpsi.__use_rayXpanda__ = False
+        try:
+            xpsi.__used_rayXpanda__
+        except AttributeError:
+            _cache = None
+        else:
+            _cache = xpsi.__used_rayXpanda
+        finally:
+            if _cache or (_cache is None and xpsi.__rayXpanda_installed__):
+                xpsi._warning('rayXpanda installed, but library not called')
+                xpsi._warning('this is due to a run-time linking failure')
+        xpsi.__used_rayXpanda__ = False
+    else:
+        use_rayXpanda[0] = 1
+        xpsi.__use_rayXpanda__ = True
+        rayXpanda_defl_lim[0] = _get_rayXpanda_defl_lim()
+        try:
+            xpsi.__used_rayXpanda__
+        except AttributeError:
+            _cache = None
+        else:
+            _cache = xpsi.__used_rayXpanda__
+        finally:
+            try:
+                _changed = (xpsi.cellmesh.__cached_rayXpanda_defl_lim__ != rayXpanda_defl_lim[0])
+            except AttributeError:
+                _changed = True
+            if rayXpanda_defl_lim[0] > _hlfpi and (not _cache or _changed):
+                xpsi._warning('invoking rayXpanda for a signal integration '
+                              'over a subdomain of the stellar image.')
+                xpsi._warning('the larger the primary image subdomain chosen '
+                              'for rayXpanda calls,')
+                xpsi._warning('the larger the rayXpanda expansion truncation '
+                              'error.')
+                xpsi._warning('you can control this by setting the '
+                              'rayXpanda deflection limit manually.')
+                xpsi._warning('please use the top-level function '
+                              'xpsi.set_rayXpanda_deflection_limit(float)')
+                xpsi._warning('please refer to the documentation at '
+                              'https://thomasedwardriley.github.io/rayXpanda/theory ')
+        xpsi.cellmesh.__cached_rayXpanda_defl_lim__ = rayXpanda_defl_lim[0]
+        xpsi.__used_rayXpanda__ = True
 
 cdef double b_phsph_over_r_s = 3.0 * sqrt(3.0) / 2.0
 
