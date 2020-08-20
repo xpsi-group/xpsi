@@ -339,7 +339,7 @@ def compute_rays(size_t N_T,
         double alpha, cos_alpha_inc, delta, extreme
         int terminate = 0
         int *terminate_thread = <int*> malloc(N_T * sizeof(int))
-        cdef double _epsilon = 1.0e-12
+        cdef double _epsilon = 1.0e-8
 
     for i in range(N_T):
         w[i] = gsl_integration_workspace_alloc(100)

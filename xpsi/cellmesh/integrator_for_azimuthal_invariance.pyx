@@ -349,6 +349,8 @@ def integrate(size_t numThreads,
         beta = radius * omega * sin_theta_i / (c * Grav_z)
         beta_sq = beta * beta
         Lorentz = sqrt(1.0 - beta_sq)
+        cos_alpha = -1.0 # lastprivate
+        deriv = -1.0 # lastprivate
 
         if image_order == 0: # infer maximum possible image order
             _IO = <int>ceil(maxDeflection[i] / _pi)
