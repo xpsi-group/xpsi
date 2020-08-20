@@ -339,6 +339,7 @@ def compute_rays(size_t N_T,
         double alpha, cos_alpha_inc, delta, extreme
         int terminate = 0
         int *terminate_thread = <int*> malloc(N_T * sizeof(int))
+        cdef double _epsilon = 1.0e-12
 
     for i in range(N_T):
         w[i] = gsl_integration_workspace_alloc(100)
@@ -376,8 +377,8 @@ def compute_rays(size_t N_T,
         elif 2.0/3.0 < r_s_over_R[i] < 1.0:
             extreme = asin(sqrt(1.0 - r_s_over_R[i]) * b_phsph_over_r_s * r_s_over_R[i])
 
-        if maxAlpha[i] >= extreme:
-            maxAlpha[i] = (1.0 - 1.0e-8) * extreme
+        if maxAlpha[i] >= (1.0 - _epsilon) * extreme:
+            maxAlpha[i] = (1.0 - _epsilon) * extreme
 
         cos_alpha_inc = (1.0 - cos(maxAlpha[i])) / (<double>N_R - 1.0)
 
