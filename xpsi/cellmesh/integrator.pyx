@@ -43,38 +43,6 @@ from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
 
 from .rays cimport eval_image_deflection, invert, link_rayXpanda
 
-cdef void INVIS(size_t k,
-                size_t N_L,
-                int *const InvisFlag,
-                double *const InvisStep,
-                size_t *const InvisPhase,
-                double *const _PHASE,
-                double *const _GEOM,
-                double *const _Z,
-                double *const _ABB) nogil:
-
-    cdef size_t m
-
-    _GEOM[k] = 0.0
-    _ABB[k] = 0.0
-
-    if InvisPhase[0] == 0:
-        _Z[k] = 0.0
-    else:
-        _Z[k] = _Z[InvisPhase[0] - 1]
-
-    if k == N_L - 1 and InvisFlag[0] == 0:
-        _PHASE[k] = _PHASE[k - 1] + InvisStep[0]
-    elif InvisFlag[0] == 0:
-        InvisFlag[0] = 1
-        InvisPhase[0] = k
-    elif k == N_L - 1 and InvisFlag[0] == 1:
-        if InvisStep[0] == 0.0:
-            InvisFlag[0] = 2
-        else:
-            for m in range(InvisPhase[0], k + 1):
-                _PHASE[m] = _PHASE[m - 1] + InvisStep[0]
-
 def integrate(size_t numThreads,
               double R,
               double omega,
@@ -124,12 +92,13 @@ def integrate(size_t numThreads,
     #----------------------------------------------------------------------->>>
     cdef:
         signed int ii
-        size_t i, j, k, m, n, p # Array indexing
+        size_t i, j, k, ks, _kdx, m, p # Array indexing
         size_t T, twoT # Used globally to represent thread index
         size_t N_T = numThreads # shared
         size_t N_R = numRays # shared
         size_t N_E = energies.shape[0] # shared
         size_t N_L = leaves.shape[0] # shared
+        size_t leaf_lim
         size_t N_P = phases.shape[0] # shared
         double sin_i = sin(inclination) # shared
         double cos_i = cos(inclination) # shared
@@ -158,6 +127,7 @@ def integrate(size_t numThreads,
         double Lorentz
         double correction_I_E
         int I, image_order, _IO
+        double _phase_lag
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_P, N_E), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -166,7 +136,7 @@ def integrate(size_t numThreads,
 
         int *InvisFlag = <int*> malloc(N_T * sizeof(int))
         double *InvisStep = <double*> malloc(N_T * sizeof(double))
-        size_t *InvisPhase = <size_t*> malloc(N_T * 2 * sizeof(size_t))
+        double _Z_step, _ABB_step
 
         accel **accel_alpha = <accel**> malloc(N_T * sizeof(accel*))
         accel **accel_lag = <accel**> malloc(N_T * sizeof(accel*))
@@ -262,6 +232,11 @@ def integrate(size_t numThreads,
         image_order = image_order_limit
     else:
         image_order = 0
+
+    if N_L%2 == 0:
+        leaf_lim = N_L / 2
+    else:
+        leaf_lim = (N_L + 1)/2
 
     # initialise the source radiation field
     cdef _preloaded *hot_preloaded = NULL
@@ -359,10 +334,6 @@ def integrate(size_t numThreads,
             _IO = image_order
         for I in range(_IO):
             InvisFlag[T] = 2
-            InvisPhase[twoT] = 0
-            InvisPhase[twoT + 1] = 0
-            InvisStep[T] = 0.0
-
             correction_I_E = 0.0
 
             for k in range(N_L):
@@ -387,9 +358,10 @@ def integrate(size_t numThreads,
 
                 if psi <= maxDeflection[i]:
                     if (psi < interp_alpha[T].xmin or psi > interp_alpha[T].xmax):
-                        printf("cos_psi: %.16e\n", psi)
-                        printf("min: %.16e\n", interp_alpha[T].xmin)
-                        printf("max: %.16e\n", interp_alpha[T].xmax)
+                        # some crude diagnostic output
+                        printf("Interpolation error: deflection = %.16e\n", psi)
+                        printf("Out of bounds: min = %.16e\n", interp_alpha[T].xmin)
+                        printf("Out of bounds: max = %.16e\n", interp_alpha[T].xmax)
                         terminate[T] = 1
                         break # out of phase loop
                     else:
@@ -412,15 +384,6 @@ def integrate(size_t numThreads,
                             mu = mu - sin_alpha * sin_gamma * cos_delta
 
                     if mu > 0.0:
-                        if psi != 0.0:
-                            cos_xi = sin_alpha * sin_i * sin(leaves[k]) / sin_psi
-                            superlum = (1.0 + beta * cos_xi)
-                            eta = Lorentz / superlum
-                        else:
-                            cos_xi = 0.0
-                            superlum = 1.0
-                            eta = Lorentz
-
                         if _use_rayXpanda and psi <= rayXpanda_defl_lim:
                             pass
                         elif not _use_rayXpanda and psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
@@ -429,67 +392,133 @@ def integrate(size_t numThreads,
                             deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
                             deriv = deriv / sin_psi # singularity hack above
 
-                        _Z[T][k] = eta * Grav_z
-                        _ABB[T][k] = mu * eta
-                        _GEOM[T][k] = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
-
                         if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
-                            printf("lag: %.16e\n", psi)
-                            printf("min: %.16e\n", interp_lag[T].xmin)
-                            printf("max: %.16e\n", interp_lag[T].xmax)
+                            printf("Interpolation error: deflection = %.16e\n", psi)
+                            printf("Out of bounds: min = %.16e\n", interp_lag[T].xmin)
+                            printf("Out of bounds: max = %.16e\n", interp_lag[T].xmax)
                             terminate[T] = 1
                             break # out of phase loop
                         else:
-                            _PHASE[T][k] = leaves[k] + gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
-                            #printf("\nphase, cos_psi, i, k, leaf: %.8e, %.8e, %i, %i, %.8e", _PHASE[T][k], cos_psi, <int>i, <int>k, leaves[k])
+                            _phase_lag = gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
 
-                        # Check whether cell was visible at previous rotation step
-                        if InvisFlag[T] == 1 or (k != 0 and InvisFlag[T] == 2):
-                            InvisPhase[twoT + 1] = k
-                            if InvisPhase[twoT] == 0:
-                                _PHASE[T][0] = leaves[0]
-                                InvisStep[T] = (_PHASE[T][k] - _PHASE[T][0]) / (<double>k)
-                                for m in range(1, k):
-                                    _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
-                            else:
-                                InvisStep[T] = ((_PHASE[T][k] - _PHASE[T][InvisPhase[twoT] - 1])
-                                                        / (<double>k - <double>InvisPhase[twoT] + 1.0))
-                                for m in range(InvisPhase[twoT], k):
-                                    _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
+                        for ks in range(2):
+                            if (0 < k < leaf_lim - 1
+                                    or (k == 0 and ks == 0)
+                                    or (k == leaf_lim - 1 and N_L%2 == 1 and ks == 0)
+                                    or (k == leaf_lim - 1 and N_L%2 == 0)):
 
-                        # Reset visibility flag
+                                if ks == 0:
+                                    _kdx = k
+                                else:
+                                    _kdx = N_L - 1 - k # switch due to symmetry
+
+                                if psi != 0.0:
+                                    cos_xi = sin_alpha * sin_i * sin(leaves[_kdx]) / sin_psi
+                                    superlum = (1.0 + beta * cos_xi)
+                                    eta = Lorentz / superlum
+                                else:
+                                    cos_xi = 0.0
+                                    superlum = 1.0
+                                    eta = Lorentz
+
+                                _Z[T][_kdx] = eta * Grav_z
+                                _ABB[T][_kdx] = mu * eta
+                                _GEOM[T][_kdx] = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
+                                _PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
+
+                        if k == 0: # if initially visible at first/last phase steps
+                            # periodic
+                            _PHASE[T][N_L - 1] = _PHASE[T][0] + _2pi
+                            for p in range(N_E):
+                                _Z[T][N_L - 1] = _Z[T][0]
+                                _ABB[T][N_L - 1] = _ABB[T][0]
+                                _GEOM[T][N_L - 1] = _GEOM[T][0]
+                        elif k > 0 and InvisFlag[T] == 2: # initially not visible
+                            # calculate the appropriate phase increment for
+                            # phase steps through non-visible fraction of cycle
+                            InvisStep[T] = leaves[k] / <double>k
+                            _Z_step = (_Z[T][k] - _Z[T][N_L - k - 1]) / (2.0*<double>k)
+                            _ABB_step =(_ABB[T][k] - _ABB[T][N_L - k - 1]) / (2.0*<double>k)
+
+                            # increment phase from start to end of non-visible
+                            # interval
+                            # first up to the periodic boundary
+                            for m in range(N_L - k, N_L):
+                                _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
+                                _Z[T][m] = _Z[T][m - 1] + _Z_step
+                                _ABB[T][m] = _ABB[T][m - 1] + _ABB_step
+                                _GEOM[T][m] = 0.0
+
+                            # handle the duplicate points at the periodic
+                            # boundary which are needed for interpolation
+                            _PHASE[T][0] = _PHASE[T][N_L - 1] - _2pi
+
+                            _Z[T][0] =  _Z[T][N_L - 1]
+                            _ABB[T][0] = _ABB[T][N_L - 1]
+                            _GEOM[T][0] = _GEOM[T][N_L - 1]
+
+                            # now after the periodic boundary up to the step
+                            # where image becomes visible
+                            for m in range(1, k):
+                                _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
+                                _Z[T][m] = _Z[T][m - 1] + _Z_step
+                                _ABB[T][m] = _ABB[T][m - 1] + _ABB_step
+                                _GEOM[T][m] = 0.0
+
+                        # reset visibility flag
                         InvisFlag[T] = 0
 
                     else:
-                        #printf("\ncos_psi, i, k, leaf: %.8e, %i, %i, %.8e", cos_psi, <int>i, <int>k, leaves[k])
-                        INVIS(k,
-                              N_L,
-                              InvisFlag + T,
-                              InvisStep + T,
-                              InvisPhase + twoT,
-                              _PHASE[T],
-                              _GEOM[T],
-                              _Z[T],
-                              _ABB[T])
+                        # check whether cell was visible at previous phase step
+                        if InvisFlag[T] == 0:
+                            # if image was visible, calculate the appropriate
+                            # phase step for the fraction of the cycle when
+                            # image is not visible
+                            InvisStep[T] = _PHASE[T][N_L - k] - _PHASE[T][k - 1]
+                            InvisStep[T] = InvisStep[T] / <double>(N_L - 2*k + 1)
+
+                            _Z_step = (_Z[T][N_L - k] - _Z[T][k - 1])
+                            _Z_step = _Z_step / <double>(N_L - 2*k + 1)
+
+                            _ABB_step = (_ABB[T][N_L - k] - _ABB[T][k - 1])
+                            _ABB_step = _ABB_step / <double>(N_L - 2*k + 1)
+
+                            # step in phase between the phases at which image
+                            # is visible
+                            for m in range(k, N_L - k):
+                                _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
+                                _Z[T][m] = _Z[T][m - 1] + _Z_step
+                                _ABB[T][m] = _ABB[T][m - 1] + _Z_step
+                                _GEOM[T][m] = 0.0
+
+                            InvisFlag[T] = 1 # declare not visible
                 else:
-                    #printf("\ncos_psi, i, k, leaf: %.8e, %i, %i, %.8e", cos_psi, <int>i, <int>k, leaves[k])
-                    INVIS(k,
-                          N_L,
-                          InvisFlag + T,
-                          InvisStep + T,
-                          InvisPhase + twoT,
-                          _PHASE[T],
-                          _GEOM[T],
-                          _Z[T],
-                          _ABB[T])
+                    if InvisFlag[T] == 0:
+                        InvisStep[T] = _PHASE[T][N_L - k] - _PHASE[T][k - 1]
+                        InvisStep[T] = InvisStep[T] / <double>(N_L - 2*k + 1)
+
+                        _Z_step = (_Z[T][N_L - k] - _Z[T][k - 1])
+                        _Z_step = _Z_step / <double>(N_L - 2*k + 1)
+
+                        _ABB_step = (_ABB[T][N_L - k] - _ABB[T][k - 1])
+                        _ABB_step = _ABB_step / <double>(N_L - 2*k + 1)
+
+                        for m in range(k, N_L - k):
+                            _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
+                            _Z[T][m] = _Z[T][m - 1] + _Z_step
+                            _ABB[T][m] = _ABB[T][m - 1] + _Z_step
+                            _GEOM[T][m] = 0.0
+
+                        InvisFlag[T] = 1
 
             if terminate[T] == 1:
                 break # out of image loop
             elif InvisFlag[T] == 2: # no visibility detected
                 break # ignore higher order images, assume no visiblity
             else: # proceed to sum over images
-                for n in range(1, N_L):
-                    if _PHASE[T][n] <= _PHASE[T][n-1]:
+                for m in range(1, N_L):
+                    if _PHASE[T][m] <= _PHASE[T][m - 1]:
+                        printf("Interpolation error: phases are not strictly increasing.")
                         terminate[T] = 1
                         break # out of phase loop
                 if terminate[T] == 1:
@@ -523,9 +552,9 @@ def integrate(size_t numThreads,
                                         __PHASE_plusShift = __PHASE_plusShift + _2pi
 
                                 if (__PHASE_plusShift < interp_GEOM[T].xmin or __PHASE_plusShift > interp_GEOM[T].xmax):
-                                    printf("phase: %.16e\n", __PHASE_plusShift)
-                                    printf("min: %.16e\n", interp_GEOM[T].xmin)
-                                    printf("max: %.16e\n", interp_GEOM[T].xmax)
+                                    printf("Interpolation error: phase = %.16e\n", __PHASE_plusShift)
+                                    printf("Out of bounds: min = %.16e\n", interp_GEOM[T].xmin)
+                                    printf("Out of bounds: max = %.16e\n", interp_GEOM[T].xmax)
                                     terminate[T] = 1
                                     break # out of phase loop
 
@@ -615,7 +644,6 @@ def integrate(size_t numThreads,
 
     free(InvisFlag)
     free(InvisStep)
-    free(InvisPhase)
 
     if hot_atmosphere:
         free_preload(hot_preloaded)

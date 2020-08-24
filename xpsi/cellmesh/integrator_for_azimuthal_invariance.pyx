@@ -400,7 +400,14 @@ def integrate(size_t numThreads,
                             deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
                             deriv = deriv / sin_psi # singularity hack above
 
-                        _phase_lag = gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
+                        if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
+                            printf("Interpolation error: deflection = %.16e\n", psi)
+                            printf("Out of bounds: min = %.16e\n", interp_lag[T].xmin)
+                            printf("Out of bounds: max = %.16e\n", interp_lag[T].xmax)
+                            terminate[T] = 1
+                            break # out of phase loop
+                        else:
+                            _phase_lag = gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
 
                         for ks in range(2):
                             if (0 < k < leaf_lim - 1
@@ -414,7 +421,7 @@ def integrate(size_t numThreads,
                                     _kdx = N_L - 1 - k # switch due to symmetry
 
                                 # phase asymmetric now
-                                if sin_psi != 0.0:
+                                if psi != 0.0:
                                     cos_xi = sin_alpha * sin_i * sin(leaves[_kdx]) / sin_psi
                                     superlum = (1.0 + beta * cos_xi)
                                     eta = Lorentz / superlum
@@ -427,14 +434,7 @@ def integrate(size_t numThreads,
                                 _ABB = mu * eta
                                 _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
 
-                                if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
-                                    printf("Interpolation error: lag = %.16e\n", psi)
-                                    printf("Out of bounds: min = %.16e\n", interp_lag[T].xmin)
-                                    printf("Out of bounds: max = %.16e\n", interp_lag[T].xmax)
-                                    terminate[T] = 1
-                                    break # out of phase loop
-                                else:
-                                    PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
+                                PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
 
                                 # specific intensities
                                 for p in range(N_E):
@@ -455,9 +455,6 @@ def integrate(size_t numThreads,
                                         correction_I_E = correction_I_E * eval_elsewhere_norm()
 
                                     (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
-
-                            if terminate[T] == 1:
-                                break # out of phase loop
 
                         if k == 0: # if initially visible at first/last phase steps
                             # periodic
@@ -483,8 +480,6 @@ def integrate(size_t numThreads,
                             # handle the duplicate points at the periodic
                             # boundary which are needed for interpolation
                             PHASE[T][0] = PHASE[T][N_L - 1] - _2pi
-                            (PROFILE[T] + BLOCK[p])[0] = 0.0
-                            (PROFILE[T] + BLOCK[p] + N_L - 1)[0] = 0.0
 
                             # now after the periodic boundary up to the step
                             # where image becomes visible
@@ -493,6 +488,7 @@ def integrate(size_t numThreads,
 
                             # set the reminaing specific intensities to zero
                             for p in range(N_E):
+                                (PROFILE[T] + BLOCK[p])[0] = 0.0
                                 for m in range(1, k):
                                     (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
 
