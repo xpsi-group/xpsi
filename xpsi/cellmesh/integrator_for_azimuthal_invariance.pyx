@@ -109,7 +109,7 @@ def integrate(size_t numThreads,
     #----------------------------------------------------------------------->>>
     cdef:
         signed int ii
-        size_t i, j, J, k, ks, _kdx, m, n, p # Array indexing
+        size_t i, j, J, k, ks, _kdx, m, p # Array indexing
         size_t T, twoT # Used globally to represent thread index
         size_t N_T = numThreads # shared
         size_t N_R = numRays # shared
@@ -339,6 +339,7 @@ def integrate(size_t numThreads,
             _IO = image_order
         for I in range(_IO): # loop over images
             InvisFlag[T] = 2 # initialise image order as not visible
+            correction_I_E = 0.0
 
             for k in range(leaf_lim):
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
@@ -362,9 +363,10 @@ def integrate(size_t numThreads,
 
                 if psi <= maxDeflection[i]:
                     if (psi < interp_alpha[T].xmin or psi > interp_alpha[T].xmax):
-                        printf("psi: %.16e\n", psi)
-                        printf("min: %.16e\n", interp_alpha[T].xmin)
-                        printf("max: %.16e\n", interp_alpha[T].xmax)
+                        # some crude diagnostic output
+                        printf("Interpolation error: deflection = %.16e\n", psi)
+                        printf("Out of bounds: min = %.16e\n", interp_alpha[T].xmin)
+                        printf("Out of bounds: max = %.16e\n", interp_alpha[T].xmax)
                         terminate[T] = 1
                         break # out of phase loop
                     else:
@@ -400,10 +402,13 @@ def integrate(size_t numThreads,
 
                         _phase_lag = gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
 
-                        for ks in range(1,3):
-                            if (0 < k < leaf_lim - 1 or
-                                (not 0 < k < leaf_lim - 1 and ks == 1)):
-                                if ks == 1:
+                        for ks in range(2):
+                            if (0 < k < leaf_lim - 1
+                                    or (k == 0 and ks == 0)
+                                    or (k == leaf_lim - 1 and N_L%2 == 1 and ks == 0)
+                                    or (k == leaf_lim - 1 and N_L%2 == 0)):
+
+                                if ks == 0:
                                     _kdx = k
                                 else:
                                     _kdx = N_L - 1 - k # switch due to symmetry
@@ -423,9 +428,9 @@ def integrate(size_t numThreads,
                                 _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
 
                                 if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
-                                    printf("lag: %.16e\n", psi)
-                                    printf("min: %.16e\n", interp_lag[T].xmin)
-                                    printf("max: %.16e\n", interp_lag[T].xmax)
+                                    printf("Interpolation error: lag = %.16e\n", psi)
+                                    printf("Out of bounds: min = %.16e\n", interp_lag[T].xmin)
+                                    printf("Out of bounds: max = %.16e\n", interp_lag[T].xmax)
                                     terminate[T] = 1
                                     break # out of phase loop
                                 else:
@@ -495,7 +500,7 @@ def integrate(size_t numThreads,
                         InvisFlag[T] = 0
 
                     else:
-                        # check whether cell was visible at previous rotation step
+                        # check whether cell was visible at previous phase step
                         if InvisFlag[T] == 0:
                             # if image was visible, calculate the appropriate
                             # phase step for the fraction of the cycle when
@@ -512,9 +517,9 @@ def integrate(size_t numThreads,
                             # is not visible
                             for p in range(N_E):
                                 for m in range(k, N_L - k):
-                                    (PROFILE[T] + BLOCK[p] + k)[0] = 0.0
+                                    (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
 
-                            InvisFlag[0] = 1 # declare not visible
+                            InvisFlag[T] = 1 # declare not visible
                 else:
                     if InvisFlag[T] == 0:
                         InvisStep[T] = PHASE[T][N_L - k] - PHASE[T][k - 1]
@@ -525,17 +530,18 @@ def integrate(size_t numThreads,
 
                         for p in range(N_E):
                             for m in range(k, N_L - k):
-                                (PROFILE[T] + BLOCK[p] + k)[0] = 0.0
+                                (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
 
-                        InvisFlag[0] = 1
+                        InvisFlag[T] = 1
 
             if terminate[T] == 1:
                 break # out of image loop
             elif InvisFlag[T] == 2: # no visibility detected
                 break # ignore higher order images, assume no visiblity
             else: # proceed to sum over images
-                for n in range(1, N_L):
-                    if PHASE[T][n] <= PHASE[T][n-1]:
+                for m in range(1, N_L):
+                    if PHASE[T][m] <= PHASE[T][m - 1]:
+                        printf("Interpolation error: phases are not strictly increasing.")
                         terminate[T] = 1
                         break # out of phase loop
                 if terminate[T] == 1:
@@ -562,9 +568,9 @@ def integrate(size_t numThreads,
                                             _PHASE_plusShift = _PHASE_plusShift + _2pi
 
                                     if (_PHASE_plusShift < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
-                                        printf("phase: %.16e\n", _PHASE_plusShift)
-                                        printf("min: %.16e\n", interp_PROFILE[T].xmin)
-                                        printf("max: %.16e\n", interp_PROFILE[T].xmax)
+                                        printf("Interpolation error: phase = %.16e\n", _PHASE_plusShift)
+                                        printf("Out of bounds: min = %.16e\n", interp_PROFILE[T].xmin)
+                                        printf("Out of bounds: max = %.16e\n", interp_PROFILE[T].xmax)
                                         terminate[T] = 1
                                         break # out of phase loop
 
