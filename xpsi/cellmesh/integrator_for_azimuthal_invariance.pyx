@@ -60,32 +60,6 @@ from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
                                                      eval_elsewhere,
                                                      eval_elsewhere_norm)
 
-cdef void INVIS(size_t k,
-                size_t N_L,
-                size_t N_E,
-                const size_t *const BLOCK,
-                int *const InvisFlag,
-                double *const InvisStep,
-                size_t *const InvisPhase,
-                double *const PHASE,
-                double *const PROFILE) nogil:
-    cdef size_t p, m
-
-    for p in range(N_E):
-        (PROFILE + BLOCK[p] + k)[0] = 0.0
-
-    if k == N_L - 1 and InvisFlag[0] == 0:
-        PHASE[k] = PHASE[k - 1] + InvisStep[0]
-    elif InvisFlag[0] == 0:
-        InvisFlag[0] = 1
-        InvisPhase[0] = k
-    elif k == N_L - 1 and InvisFlag[0] == 1:
-        if InvisStep[0] == 0.0:
-            InvisFlag[0] = 2
-        else:
-            for m in range(InvisPhase[0], k + 1):
-                PHASE[m] = PHASE[m - 1] + InvisStep[0]
-
 def integrate(size_t numThreads,
               double R,
               double omega,
@@ -135,12 +109,13 @@ def integrate(size_t numThreads,
     #----------------------------------------------------------------------->>>
     cdef:
         signed int ii
-        size_t i, j, J, k, m, n, p # Array indexing
+        size_t i, j, J, k, ks, _kdx, m, n, p # Array indexing
         size_t T, twoT # Used globally to represent thread index
         size_t N_T = numThreads # shared
         size_t N_R = numRays # shared
         size_t N_E = energies.shape[0] # shared
         size_t N_L = leaves.shape[0] # shared
+        size_t leaf_lim
         size_t N_P = phases.shape[0] # shared
         double sin_i = sin(inclination) # shared
         double cos_i = cos(inclination) # shared
@@ -262,6 +237,11 @@ def integrate(size_t numThreads,
     else:
         image_order = 0
 
+    if N_L%2 == 0:
+        leaf_lim = N_L / 2
+    else:
+        leaf_lim = (N_L + 1)/2
+
     # initialise the source radiation field
     cdef _preloaded *hot_preloaded = NULL
     cdef _preloaded *ext_preloaded = NULL
@@ -359,13 +339,10 @@ def integrate(size_t numThreads,
             _IO = image_order
         for I in range(_IO): # loop over images
             InvisFlag[T] = 2
-            InvisPhase[twoT] = 0
-            InvisPhase[twoT + 1] = 0
-            InvisStep[T] = 0.0
 
             correction_I_E = 0.0
 
-            for k in range(N_L):
+            for k in range(leaf_lim):
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
@@ -415,15 +392,6 @@ def integrate(size_t numThreads,
                             mu = mu - sin_alpha * sin_gamma * cos_delta
 
                     if mu > 0.0:
-                        if sin_psi != 0.0:
-                            cos_xi = sin_alpha * sin_i * sin(leaves[k]) / sin_psi
-                            superlum = (1.0 + beta * cos_xi)
-                            eta = Lorentz / superlum
-                        else:
-                            cos_xi = 0.0
-                            superlum = 1.0
-                            eta = Lorentz
-
                         if _use_rayXpanda and psi <= rayXpanda_defl_lim:
                             pass
                         elif not _use_rayXpanda and psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
@@ -432,75 +400,114 @@ def integrate(size_t numThreads,
                             deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
                             deriv = deriv / sin_psi # singularity hack above
 
-                        _Z = eta * Grav_z
-                        _ABB = mu * eta
-                        _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
+                        for ks in range(1,3):
+                            if (0 < k < leaf_lim - 1 or
+                                (not 0 < k < leaf_lim - 1 and ks == 1):
+                                if ks == 1: # switch due to symmetry
+                                    _kdx = k
+                                else:
+                                    _kdx = N_L - 1 - k
 
-                        if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
-                            printf("lag: %.16e\n", psi)
-                            printf("min: %.16e\n", interp_lag[T].xmin)
-                            printf("max: %.16e\n", interp_lag[T].xmax)
-                            terminate[T] = 1
-                            break # out of phase loop
-                        else:
-                            PHASE[T][k] = leaves[k] + gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
+                                # phase asymmetric now
+                                if sin_psi != 0.0:
+                                    cos_xi = sin_alpha * sin_i * sin(leaves[_kdx]) / sin_psi
+                                    superlum = (1.0 + beta * cos_xi)
+                                    eta = Lorentz / superlum
+                                else:
+                                    cos_xi = 0.0
+                                    superlum = 1.0
+                                    eta = Lorentz
 
-                        for p in range(N_E):
-                            E_prime = energies[p] / _Z
+                                _Z = eta * Grav_z
+                                _ABB = mu * eta
+                                _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
 
-                            I_E = eval_hot(T,
-                                           E_prime,
-                                           _ABB,
-                                           &(srcCellParams[i,J,0]),
-                                           hot_data)
+                                if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
+                                    printf("lag: %.16e\n", psi)
+                                    printf("min: %.16e\n", interp_lag[T].xmin)
+                                    printf("max: %.16e\n", interp_lag[T].xmax)
+                                    terminate[T] = 1
+                                    break # out of phase loop
+                                else:
+                                    PHASE[T][_kdx] = leaves[_kdx] + gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
 
-                            if perform_correction == 1:
-                                correction_I_E = eval_elsewhere(T,
-                                                                E_prime,
-                                                                _ABB,
-                                                                &(correction[i,J,0]),
-                                                                ext_data)
-                                correction_I_E = correction_I_E * eval_elsewhere_norm()
+                                # specific intensities
+                                for p in range(N_E):
+                                    E_prime = energies[p] / _Z
 
-                            (PROFILE[T] + BLOCK[p] + k)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
+                                    I_E = eval_hot(T,
+                                                   E_prime,
+                                                   _ABB,
+                                                   &(srcCellParams[i,J,0]),
+                                                   hot_data)
 
-                        # Check whether cell was visible at previous rotation step
-                        if InvisFlag[T] == 1 or (k != 0 and InvisFlag[T] == 2):
-                            InvisPhase[twoT + 1] = k
-                            if InvisPhase[twoT] == 0:
-                                PHASE[T][0] = leaves[0]
-                                InvisStep[T] = (PHASE[T][k] - PHASE[T][0]) / (<double>k)
+                                    if perform_correction == 1:
+                                        correction_I_E = eval_elsewhere(T,
+                                                                        E_prime,
+                                                                        _ABB,
+                                                                        &(correction[i,J,0]),
+                                                                        ext_data)
+                                        correction_I_E = correction_I_E * eval_elsewhere_norm()
+
+                                    (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
+
+                        if k == 0:
+                            PHASE[T][N_L - 1] = PHASE[T][0] + _2pi
+                            for p in range(N_E):
+                                (PROFILE[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE[T] + BLOCK[p])[0]
+
+                        if k > 0 and InvisFlag[T] == 2:
+                            InvisStep[T] = leaves[0] / <double>k
+
+                            for m in range(N_L - k, N_L):
+                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+
+                            for p in range(N_E):
+                                for m in range(N_L - k, N_L):
+                                    (PROFILE + BLOCK[p] + m)[0] = 0.0
+
+                            PHASE[T][0] = PHASE[T][N_L - 1] - _2pi
+                            (PROFILE + BLOCK[p])[0] = 0.0
+                            (PROFILE + BLOCK[p] + N_L - 1)[0] = 0.0
+
+                            for m in range(1, k):
+                                PHASE[T][m] = PHASE[T][m - 1] - InvisStep[T]
+
+                            for p in range(N_E):
                                 for m in range(1, k):
-                                    PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
-                            else:
-                                InvisStep[T] = ((PHASE[T][k] - PHASE[T][InvisPhase[twoT] - 1])
-                                                        / (<double>k - <double>InvisPhase[twoT] + 1.0))
-                                for m in range(InvisPhase[twoT], k):
-                                    PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+                                    (PROFILE + BLOCK[p] + m)[0] = 0.0
 
                         # reset visibility flag
                         InvisFlag[T] = 0
 
                     else:
-                        INVIS(k,
-                              N_L,
-                              N_E,
-                              BLOCK,
-                              InvisFlag + T,
-                              InvisStep + T,
-                              InvisPhase + twoT,
-                              PHASE[T],
-                              PROFILE[T])
+                        # check whether cell was visible at previous rotation step
+                        if InvisFlag[T] == 0:
+                            InvisStep[T] = PHASE[T][N_L - k] - PHASE[T][k - 1]
+                            InvisStep[T] = InvisStep[T] / <double>(N_L - 2*k + 1)
+
+                            for m in range(k, N_L - k):
+                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+
+                            for p in range(N_E):
+                                for m in range(k, N_L - k):
+                                    (PROFILE + BLOCK[p] + k)[0] = 0.0
+
+                            InvisFlag[0] = 1
                 else:
-                    INVIS(k,
-                          N_L,
-                          N_E,
-                          BLOCK,
-                          InvisFlag + T,
-                          InvisStep + T,
-                          InvisPhase + twoT,
-                          PHASE[T],
-                          PROFILE[T])
+                    # check whether cell was visible at previous rotation step
+                    if InvisFlag[T] == 0:
+                        InvisStep[T] = PHASE[T][N_L - k] - PHASE[T][k - 1]
+                        InvisStep[T] = InvisStep[T] / <double>(N_L - 2*k + 1)
+
+                        for m in range(k, N_L - k):
+                            PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+
+                        for p in range(N_E):
+                            for m in range(k, N_L - k):
+                                (PROFILE + BLOCK[p] + k)[0] = 0.0
+
+                        InvisFlag[0] = 1
 
             if terminate[T] == 1:
                 break # out of image loop
