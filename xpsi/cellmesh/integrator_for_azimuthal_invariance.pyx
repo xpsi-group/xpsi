@@ -144,6 +144,7 @@ def integrate(size_t numThreads,
         double Lorentz
         double correction_I_E
         int I, image_order, _IO
+        double _phase_lag
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -152,7 +153,6 @@ def integrate(size_t numThreads,
 
         int *InvisFlag = <int*> malloc(N_T * sizeof(int))
         double *InvisStep = <double*> malloc(N_T * sizeof(double))
-        size_t *InvisPhase = <size_t*> malloc(N_T * 2 * sizeof(size_t))
 
         accel **accel_alpha = <accel**> malloc(N_T * sizeof(accel*))
         accel **accel_alpha_alt = NULL
@@ -338,9 +338,7 @@ def integrate(size_t numThreads,
         else:
             _IO = image_order
         for I in range(_IO): # loop over images
-            InvisFlag[T] = 2
-
-            correction_I_E = 0.0
+            InvisFlag[T] = 2 # initialise image order as not visible
 
             for k in range(leaf_lim):
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
@@ -400,13 +398,15 @@ def integrate(size_t numThreads,
                             deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
                             deriv = deriv / sin_psi # singularity hack above
 
+                        _phase_lag = gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
+
                         for ks in range(1,3):
                             if (0 < k < leaf_lim - 1 or
-                                (not 0 < k < leaf_lim - 1 and ks == 1):
-                                if ks == 1: # switch due to symmetry
+                                (not 0 < k < leaf_lim - 1 and ks == 1)):
+                                if ks == 1:
                                     _kdx = k
                                 else:
-                                    _kdx = N_L - 1 - k
+                                    _kdx = N_L - 1 - k # switch due to symmetry
 
                                 # phase asymmetric now
                                 if sin_psi != 0.0:
@@ -429,7 +429,7 @@ def integrate(size_t numThreads,
                                     terminate[T] = 1
                                     break # out of phase loop
                                 else:
-                                    PHASE[T][_kdx] = leaves[_kdx] + gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
+                                    PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
 
                                 # specific intensities
                                 for p in range(N_E):
@@ -451,31 +451,45 @@ def integrate(size_t numThreads,
 
                                     (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
 
-                        if k == 0:
+                            if terminate[T] == 1:
+                                break # out of phase loop
+
+                        if k == 0: # if initially visible at first/last phase steps
+                            # periodic
                             PHASE[T][N_L - 1] = PHASE[T][0] + _2pi
                             for p in range(N_E):
                                 (PROFILE[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE[T] + BLOCK[p])[0]
+                        elif k > 0 and InvisFlag[T] == 2: # initially not visible
+                            # calculate the appropriate phase increment for
+                            # phase steps through non-visible fraction of cycle
+                            InvisStep[T] = leaves[k] / <double>k
 
-                        if k > 0 and InvisFlag[T] == 2:
-                            InvisStep[T] = leaves[0] / <double>k
-
+                            # increment phase from start to end of non-visible
+                            # interval
+                            # first up to the periodic boundary
                             for m in range(N_L - k, N_L):
                                 PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
 
+                            # set the specific intensities to zero
                             for p in range(N_E):
                                 for m in range(N_L - k, N_L):
-                                    (PROFILE + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
 
+                            # handle the duplicate points at the periodic
+                            # boundary which are needed for interpolation
                             PHASE[T][0] = PHASE[T][N_L - 1] - _2pi
-                            (PROFILE + BLOCK[p])[0] = 0.0
-                            (PROFILE + BLOCK[p] + N_L - 1)[0] = 0.0
+                            (PROFILE[T] + BLOCK[p])[0] = 0.0
+                            (PROFILE[T] + BLOCK[p] + N_L - 1)[0] = 0.0
 
+                            # now after the periodic boundary up to the step
+                            # where image becomes visible
                             for m in range(1, k):
-                                PHASE[T][m] = PHASE[T][m - 1] - InvisStep[T]
+                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
 
+                            # set the reminaing specific intensities to zero
                             for p in range(N_E):
                                 for m in range(1, k):
-                                    (PROFILE + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
 
                         # reset visibility flag
                         InvisFlag[T] = 0
@@ -483,19 +497,25 @@ def integrate(size_t numThreads,
                     else:
                         # check whether cell was visible at previous rotation step
                         if InvisFlag[T] == 0:
+                            # if image was visible, calculate the appropriate
+                            # phase step for the fraction of the cycle when
+                            # image is not visible
                             InvisStep[T] = PHASE[T][N_L - k] - PHASE[T][k - 1]
                             InvisStep[T] = InvisStep[T] / <double>(N_L - 2*k + 1)
 
+                            # step in phase between the phases at which image
+                            # is visible
                             for m in range(k, N_L - k):
                                 PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
 
+                            # set the specific intensities to zero when image
+                            # is not visible
                             for p in range(N_E):
                                 for m in range(k, N_L - k):
-                                    (PROFILE + BLOCK[p] + k)[0] = 0.0
+                                    (PROFILE[T] + BLOCK[p] + k)[0] = 0.0
 
-                            InvisFlag[0] = 1
+                            InvisFlag[0] = 1 # declare not visible
                 else:
-                    # check whether cell was visible at previous rotation step
                     if InvisFlag[T] == 0:
                         InvisStep[T] = PHASE[T][N_L - k] - PHASE[T][k - 1]
                         InvisStep[T] = InvisStep[T] / <double>(N_L - 2*k + 1)
@@ -505,7 +525,7 @@ def integrate(size_t numThreads,
 
                         for p in range(N_E):
                             for m in range(k, N_L - k):
-                                (PROFILE + BLOCK[p] + k)[0] = 0.0
+                                (PROFILE[T] + BLOCK[p] + k)[0] = 0.0
 
                         InvisFlag[0] = 1
 
@@ -599,7 +619,6 @@ def integrate(size_t numThreads,
 
     free(InvisFlag)
     free(InvisStep)
-    free(InvisPhase)
 
     free(BLOCK)
 
