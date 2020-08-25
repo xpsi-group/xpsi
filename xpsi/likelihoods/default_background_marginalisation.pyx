@@ -16,6 +16,7 @@ from GSL cimport (gsl_interp,
                    gsl_interp_free,
                    gsl_interp_eval,
                    gsl_interp_eval_integ,
+                   gsl_interp_akima_periodic,
                    gsl_interp_steffen,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
@@ -225,6 +226,7 @@ def eval_marginal_likelihood(double exposure_time,
 
         double n = <double>(phases.shape[0] - 1)
         double SCALE = exposure_time / n
+        double _val
 
     cdef args a
     a.n = <size_t>n
@@ -255,7 +257,8 @@ def eval_marginal_likelihood(double exposure_time,
 
     for p in range(num_components):
         pulse_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(gsl_interp_steffen, pulse_phase_set.shape[0])
+        interp[p] = gsl_interp_alloc(gsl_interp_akima_periodic,
+                                     pulse_phase_set.shape[0])
         acc[p] = gsl_interp_accel_alloc()
         gsl_interp_accel_reset(acc[p])
 
@@ -284,23 +287,29 @@ def eval_marginal_likelihood(double exposure_time,
                 pb -= floor(pb)
 
                 if pa < pb:
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        pulse_ptr,
                                                        pa, pb,
                                                        acc_ptr)
+                    if _val > 0.0:
+                        STAR[i,j] += _val
                 else:
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        pulse_ptr,
                                                        pa, 1.0,
                                                        acc_ptr)
+                    if _val > 0.0:
+                        STAR[i,j] += _val
 
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        pulse_ptr,
                                                        0.0, pb,
                                                        acc_ptr)
+                    if _val > 0.0:
+                        STAR[i,j] += _val
 
         av_DATA = 0.0; av_STAR = 0.0
 

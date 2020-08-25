@@ -13,6 +13,7 @@ from GSL cimport (gsl_interp,
                    gsl_interp_free,
                    gsl_interp_eval,
                    gsl_interp_eval_integ,
+                   gsl_interp_akima_periodic,
                    gsl_interp_steffen,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
@@ -54,8 +55,9 @@ def phase_integrator(double exposure_time,
     cdef:
         size_t i, j
         double a, b
+        double _val
 
-        gsl_interp *interp = gsl_interp_alloc(gsl_interp_steffen, signal_phases.shape[0])
+        gsl_interp *interp = gsl_interp_alloc(gsl_interp_akima_periodic, signal_phases.shape[0])
         gsl_interp_accel *acc = gsl_interp_accel_alloc()
 
         double[:,::1] _signal = np.zeros((signal.shape[0], phases.shape[0] - 1),
@@ -78,13 +80,22 @@ def phase_integrator(double exposure_time,
             b -= floor(b)
 
             if a < b:
-                _signal[i,j] = gsl_interp_eval_integ(interp, phase_ptr,
+                _val = gsl_interp_eval_integ(interp, phase_ptr,
                                                      signal_ptr, a, b, acc)
+
+                if _val > 0.0:
+                    _signal[i,j] = _val
             else:
-                _signal[i,j] = gsl_interp_eval_integ(interp, phase_ptr,
+                _val = gsl_interp_eval_integ(interp, phase_ptr,
                                                      signal_ptr, a, 1.0, acc)
-                _signal[i,j] += gsl_interp_eval_integ(interp, phase_ptr,
+                if _val > 0.0:
+                    _signal[i,j] = _val
+
+                _val = gsl_interp_eval_integ(interp, phase_ptr,
                                                       signal_ptr, 0.0, b, acc)
+
+                if _val > 0.0:
+                    _signal[i,j] += _val
 
             _signal[i,j] *= exposure_time
 

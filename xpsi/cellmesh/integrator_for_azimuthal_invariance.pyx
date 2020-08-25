@@ -33,6 +33,7 @@ from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_accel,
                                        gsl_interp_accel_alloc,
                                        gsl_interp,
+                                       gsl_interp_akima_periodic,
                                        gsl_interp_steffen,
                                        gsl_interp_init,
                                        gsl_interp_free,
@@ -145,6 +146,7 @@ def integrate(size_t numThreads,
         double correction_I_E
         int I, image_order, _IO
         double _phase_lag
+        double _specific_flux
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -194,7 +196,7 @@ def integrate(size_t numThreads,
         PHASE[T] = <double*> malloc(N_L * sizeof(double))
         PROFILE[T] = <double*> malloc(N_E * N_L * sizeof(double))
         accel_PROFILE[T] = gsl_interp_accel_alloc()
-        interp_PROFILE[T] = gsl_interp_alloc(gsl_interp_steffen, N_L)
+        interp_PROFILE[T] = gsl_interp_alloc(gsl_interp_akima_periodic, N_L)
 
     for p in range(N_E):
         BLOCK[p] = p * N_L
@@ -570,7 +572,9 @@ def integrate(size_t numThreads,
                                         terminate[T] = 1
                                         break # out of phase loop
 
-                                    privateFlux[T,p,k] += cellArea[i,j] * gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
+                                    _specific_flux = gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
+                                    if _specific_flux > 0.0:
+                                        privateFlux[T,p,k] += cellArea[i,j] * _specific_flux
 
                             j = j + 1
                         if terminate[T] == 1:

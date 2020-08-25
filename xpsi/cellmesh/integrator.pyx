@@ -128,6 +128,7 @@ def integrate(size_t numThreads,
         double correction_I_E
         int I, image_order, _IO
         double _phase_lag
+        double _specific_flux
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_P, N_E), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -193,7 +194,7 @@ def integrate(size_t numThreads,
         accel_ABB[T] = gsl_interp_accel_alloc()
         interp_ABB[T] = gsl_interp_alloc(gsl_interp_steffen, N_L)
         accel_GEOM[T] = gsl_interp_accel_alloc()
-        interp_GEOM[T] = gsl_interp_alloc(gsl_interp_steffen, N_L)
+        interp_GEOM[T] = gsl_interp_alloc(gsl_interp_akima_periodic, N_L)
 
     cdef double[:,::1] _deflection = np.zeros((deflection.shape[0],
                                                deflection.shape[1]),
@@ -401,7 +402,7 @@ def integrate(size_t numThreads,
                         else:
                             _phase_lag = gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
 
-                        for ks in range(2):
+                        for ks in range(2): # phase asymmetric now
                             if (0 < k < leaf_lim - 1
                                     or (k == 0 and ks == 0)
                                     or (k == leaf_lim - 1 and N_L%2 == 1 and ks == 0)
@@ -583,7 +584,9 @@ def integrate(size_t numThreads,
 
                                             correction_I_E = correction_I_E * eval_elsewhere_norm()
 
-                                        privateFlux[T,k,p] += cellArea[i,j] * (I_E - correction_I_E) * __GEOM
+                                        _specific_flux = (I_E - correction_I_E) * __GEOM
+                                        if _specific_flux > 0.0:
+                                            privateFlux[T,k,p] += cellArea[i,j] * _specific_flux
                         j = j + 1
             if terminate[T] == 1:
                 break # out of image loop

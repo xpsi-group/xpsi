@@ -15,6 +15,7 @@ from GSL cimport (gsl_interp_eval,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
                    gsl_interp,
+                   gsl_interp_akima_periodic,
                    gsl_interp_steffen,
                    gsl_interp_init,
                    gsl_interp_free,
@@ -56,10 +57,12 @@ def phase_interpolator(double[::1] new_phases,
                                             dtype = np.double)
 
         gsl_interp_accel *accel = gsl_interp_accel_alloc()
-        gsl_interp *interp = gsl_interp_alloc(gsl_interp_steffen, phases.shape[0])
+        gsl_interp *interp = gsl_interp_alloc(gsl_interp_akima_periodic,
+                                              phases.shape[0])
 
     cdef double *phase_ptr
     cdef double *signal_ptr
+    cdef double _val
 
     for i in range(signal.shape[0]):
         gsl_interp_accel_reset(accel)
@@ -71,8 +74,10 @@ def phase_interpolator(double[::1] new_phases,
             PHASE = new_phases[j] + phase_shift
             PHASE -= floor(PHASE)
 
-            new_signal[i,j] = gsl_interp_eval(interp, phase_ptr, signal_ptr,
+            _val =  gsl_interp_eval(interp, phase_ptr, signal_ptr,
                                              PHASE, accel)
+            if _val > 0.0:
+                new_signal[i,j] = _val
 
     gsl_interp_free(interp)
     gsl_interp_accel_free(accel)
