@@ -129,6 +129,7 @@ def integrate(size_t numThreads,
         int I, image_order, _IO
         double _phase_lag
         double _specific_flux
+        size_t _InvisPhase
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_P, N_E), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -465,6 +466,36 @@ def integrate(size_t numThreads,
                                 _Z[T][m] = _Z[T][m - 1] + _Z_step
                                 _ABB[T][m] = _ABB[T][m - 1] + _ABB_step
                                 _GEOM[T][m] = 0.0
+                        elif InvisFlag[T] == 1: # handle linearly spaced phases
+                            InvisStep[T] = _PHASE[T][k] - _PHASE[T][_InvisPhase - 1]
+                            InvisStep[T] = InvisStep[T] / <double>(k - _InvisPhase + 1)
+
+                            _Z_step = (_Z[T][k] - _Z[T][_InvisPhase - 1])
+                            _Z_step = _Z_step / <double>(k - _InvisPhase + 1)
+
+                            _ABB_step = (_ABB[T][k] - _ABB[T][_InvisPhase - 1])
+                            _ABB_step = _ABB_step / <double>(k - _InvisPhase + 1)
+
+                            # step in phase between the phases at which image
+                            # is visible
+                            for m in range(_InvisPhase, k):
+                                _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
+                                _Z[T][m] = _Z[T][m - 1] + _Z_step
+                                _ABB[T][m] = _ABB[T][m - 1] + _ABB_step
+
+                            InvisStep[T] = _PHASE[T][N_L - _InvisPhase] - _PHASE[T][N_L - 1 - k]
+                            InvisStep[T] = InvisStep[T] / <double>(k - _InvisPhase + 1)
+
+                            _Z_step = (_Z[T][N_L - _InvisPhase] - _Z[T][N_L - 1 - k])
+                            _Z_step = _Z_step / <double>(k - _InvisPhase + 1)
+
+                            _ABB_step = (_ABB[T][N_L - _InvisPhase] - _ABB[T][N_L - 1 - k])
+                            _ABB_step = _ABB_step / <double>(k - _InvisPhase + 1)
+
+                            for m in range(N_L - k, N_L - _InvisPhase):
+                                _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
+                                _Z[T][m] = _Z[T][m - 1] + _Z_step
+                                _ABB[T][m] = _ABB[T][m - 1] + _ABB_step
 
                         # reset visibility flag
                         InvisFlag[T] = 0
@@ -489,10 +520,11 @@ def integrate(size_t numThreads,
                             for m in range(k, N_L - k):
                                 _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
                                 _Z[T][m] = _Z[T][m - 1] + _Z_step
-                                _ABB[T][m] = _ABB[T][m - 1] + _Z_step
+                                _ABB[T][m] = _ABB[T][m - 1] + _ABB_step
                                 _GEOM[T][m] = 0.0
 
                             InvisFlag[T] = 1 # declare not visible
+                            _InvisPhase = k
                 else:
                     if InvisFlag[T] == 0:
                         InvisStep[T] = _PHASE[T][N_L - k] - _PHASE[T][k - 1]
@@ -507,10 +539,11 @@ def integrate(size_t numThreads,
                         for m in range(k, N_L - k):
                             _PHASE[T][m] = _PHASE[T][m - 1] + InvisStep[T]
                             _Z[T][m] = _Z[T][m - 1] + _Z_step
-                            _ABB[T][m] = _ABB[T][m - 1] + _Z_step
+                            _ABB[T][m] = _ABB[T][m - 1] + _ABB_step
                             _GEOM[T][m] = 0.0
 
                         InvisFlag[T] = 1
+                        _InvisPhase = k
 
             if terminate[T] == 1:
                 break # out of image loop
@@ -520,6 +553,7 @@ def integrate(size_t numThreads,
                 for m in range(1, N_L):
                     if _PHASE[T][m] <= _PHASE[T][m - 1]:
                         printf("Interpolation error: phases are not strictly increasing.")
+                        printf('%.8e -> %.8e\n', _PHASE[T][m - 1], _PHASE[T][m])
                         terminate[T] = 1
                         break # out of phase loop
                 if terminate[T] == 1:

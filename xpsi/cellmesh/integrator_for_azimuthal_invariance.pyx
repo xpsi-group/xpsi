@@ -147,6 +147,7 @@ def integrate(size_t numThreads,
         int I, image_order, _IO
         double _phase_lag
         double _specific_flux
+        size_t _InvisPhase
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -493,6 +494,18 @@ def integrate(size_t numThreads,
                                 (PROFILE[T] + BLOCK[p])[0] = 0.0
                                 for m in range(1, k):
                                     (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
+                        elif InvisFlag[T] == 1: # handle linearly spaced phases
+                            InvisStep[T] = PHASE[T][k] - PHASE[T][_InvisPhase - 1]
+                            InvisStep[T] = InvisStep[T] / <double>(k - _InvisPhase + 1)
+
+                            for m in range(_InvisPhase, k):
+                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
+
+                            InvisStep[T] = PHASE[T][N_L - _InvisPhase] - PHASE[T][N_L - 1 - k]
+                            InvisStep[T] = InvisStep[T] / <double>(k - _InvisPhase + 1)
+
+                            for m in range(N_L - k, N_L - _InvisPhase):
+                                PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
 
                         # reset visibility flag
                         InvisFlag[T] = 0
@@ -518,6 +531,7 @@ def integrate(size_t numThreads,
                                     (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
 
                             InvisFlag[T] = 1 # declare not visible
+                            _InvisPhase = k
                 else:
                     if InvisFlag[T] == 0:
                         InvisStep[T] = PHASE[T][N_L - k] - PHASE[T][k - 1]
@@ -531,6 +545,7 @@ def integrate(size_t numThreads,
                                 (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
 
                         InvisFlag[T] = 1
+                        _InvisPhase = k
 
             if terminate[T] == 1:
                 break # out of image loop
@@ -539,7 +554,8 @@ def integrate(size_t numThreads,
             else: # proceed to sum over images
                 for m in range(1, N_L):
                     if PHASE[T][m] <= PHASE[T][m - 1]:
-                        printf("Interpolation error: phases are not strictly increasing.")
+                        printf("Interpolation error: phases are not strictly increasing.\n")
+                        printf('%.8e -> %.8e\n', PHASE[T][m - 1], PHASE[T][m])
                         terminate[T] = 1
                         break # out of phase loop
                 if terminate[T] == 1:
