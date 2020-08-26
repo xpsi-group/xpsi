@@ -10,7 +10,7 @@ from __future__ import division, print_function
 import numpy as np
 cimport numpy as np
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, sin, cos, acos, fabs, pow, ceil
+from libc.math cimport M_PI, sqrt, sin, cos, acos, fabs, pow, ceil, log, exp
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf, setbuf, stdout
 import xpsi
@@ -315,7 +315,7 @@ def integrate(size_t numThreads,
                             deriv = gsl_interp_eval_deriv(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
                         else:
                             deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
-                            deriv = deriv / sin_psi # singularity hack above
+                            deriv = exp( log(fabs(deriv)) - log(fabs(sin_psi)) ) # singularity hack above
 
                         _Z = eta * Grav_z
                         _ABB = mu * eta

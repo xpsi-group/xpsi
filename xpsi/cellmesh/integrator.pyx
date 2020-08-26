@@ -10,7 +10,7 @@ from __future__ import division
 import numpy as np
 cimport numpy as np
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil
+from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil, log
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 import xpsi
@@ -122,13 +122,12 @@ def integrate(size_t numThreads,
         double superlum # TP
         double cos_gamma_sq, sin_gamma
         double cos_theta_i, sin_theta_i
-        double theta_ij_over_pi
+        double theta_i_over_pi
         double beta_sq
         double Lorentz
         double correction_I_E
         int I, image_order, _IO
         double _phase_lag
-        double _specific_flux
         size_t _InvisPhase
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_P, N_E), dtype = np.double)
@@ -322,7 +321,7 @@ def integrate(size_t numThreads,
 
         cos_theta_i = cos(theta[i,0])
         sin_theta_i = sin(theta[i,0])
-        theta_ij_over_pi = theta[i,0] / _pi
+        theta_i_over_pi = theta[i,0] / _pi
         beta = radius * omega * sin_theta_i / (c * Grav_z)
         beta_sq = beta * beta
         Lorentz = sqrt(1.0 - beta_sq)
@@ -380,7 +379,7 @@ def integrate(size_t numThreads,
 
                     if psi != 0.0:
                         cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
-                        if theta_ij_over_pi < 0.5:
+                        if theta_i_over_pi < 0.5:
                             mu = mu + sin_alpha * sin_gamma * cos_delta
                         else:
                             mu = mu - sin_alpha * sin_gamma * cos_delta
@@ -392,7 +391,7 @@ def integrate(size_t numThreads,
                             deriv = gsl_interp_eval_deriv(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
                         else:
                             deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
-                            deriv = deriv / sin_psi # singularity hack above
+                            deriv = exp( log(fabs(deriv)) - log(fabs(sin_psi)) ) # singularity hack above
 
                         if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
                             printf("Interpolation error: deflection = %.16e\n", psi)
@@ -431,10 +430,9 @@ def integrate(size_t numThreads,
                         if k == 0: # if initially visible at first/last phase steps
                             # periodic
                             _PHASE[T][N_L - 1] = _PHASE[T][0] + _2pi
-                            for p in range(N_E):
-                                _Z[T][N_L - 1] = _Z[T][0]
-                                _ABB[T][N_L - 1] = _ABB[T][0]
-                                _GEOM[T][N_L - 1] = _GEOM[T][0]
+                            _Z[T][N_L - 1] = _Z[T][0]
+                            _ABB[T][N_L - 1] = _ABB[T][0]
+                            _GEOM[T][N_L - 1] = _GEOM[T][0]
                         elif k > 0 and InvisFlag[T] == 2: # initially not visible
                             # calculate the appropriate phase increment for
                             # phase steps through non-visible fraction of cycle
@@ -618,9 +616,7 @@ def integrate(size_t numThreads,
 
                                             correction_I_E = correction_I_E * eval_elsewhere_norm()
 
-                                        _specific_flux = (I_E - correction_I_E) * __GEOM
-                                        if _specific_flux > 0.0:
-                                            privateFlux[T,k,p] += cellArea[i,j] * _specific_flux
+                                        privateFlux[T,k,p] += cellArea[i,j] * (I_E - correction_I_E) * __GEOM
                         j = j + 1
             if terminate[T] == 1:
                 break # out of image loop

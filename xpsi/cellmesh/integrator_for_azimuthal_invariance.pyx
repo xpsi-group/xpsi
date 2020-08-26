@@ -10,7 +10,7 @@ from __future__ import division, print_function
 import numpy as np
 cimport numpy as np
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil
+from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil, log
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 import xpsi
@@ -401,7 +401,7 @@ def integrate(size_t numThreads,
                             deriv = gsl_interp_eval_deriv(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
                         else:
                             deriv = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
-                            deriv = deriv / sin_psi # singularity hack above
+                            deriv = exp( log(fabs(deriv)) - log(fabs(sin_psi)) ) # singularity hack above
 
                         if (psi < interp_lag[T].xmin or psi > interp_lag[T].xmax):
                             printf("Interpolation error: deflection = %.16e\n", psi)
@@ -589,7 +589,7 @@ def integrate(size_t numThreads,
                                         break # out of phase loop
 
                                     _specific_flux = gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
-                                    if _specific_flux > 0.0:
+                                    if _specific_flux > 0.0 or perform_correction == 1:
                                         privateFlux[T,p,k] += cellArea[i,j] * _specific_flux
 
                             j = j + 1
