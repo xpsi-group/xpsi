@@ -7,8 +7,11 @@
 from __future__ import print_function
 
 import numpy as np
+cimport numpy as np
 from libc.stdlib cimport malloc, free
 from libc.math cimport exp, pow, log, sqrt, fabs, floor
+
+ctypedef np.uint8_t uint8
 
 from GSL cimport (gsl_interp,
                    gsl_interp_alloc,
@@ -123,7 +126,8 @@ def eval_marginal_likelihood(double exposure_time,
                              double epsrel,
                              double epsilon,
                              double sigmas,
-                             double llzero):
+                             double llzero,
+                             allow_negative = False):
     """ Evaluate the Poisson likelihood.
 
     The count rate is integrated over phase intervals.
@@ -249,7 +253,20 @@ def eval_marginal_likelihood(double exposure_time,
     cdef double[:,::1] pulse
     cdef double[::1] pulse_phase_set
     cdef double phase_shift
+    cdef uint8[::1] _allow_negative = np.zeros(num_components, dtype=np.uint8)
 
+    if isinstance(allow_negative, bool):
+        for i in range(num_components):
+            _allow_negative[i] = <uint8>allow_negative
+    else:
+        try:
+            len(allow_negative)
+        except TypeError:
+            raise TypeError('An iterable is required to specify component-by-'
+                            'component positivity.')
+        else:
+            for i in range(num_components):
+                _allow_negative[i] = allow_negative[i]
 
     cdef gsl_interp **interp = <gsl_interp**> malloc(num_components * sizeof(gsl_interp*))
     cdef accel **acc =  <accel**> malloc(num_components * sizeof(accel*))
@@ -292,7 +309,7 @@ def eval_marginal_likelihood(double exposure_time,
                                                        pulse_ptr,
                                                        pa, pb,
                                                        acc_ptr)
-                    if _val > 0.0:
+                    if _val > 0.0 or _allow_negative[p] == 1:
                         STAR[i,j] += _val
                 else:
                     _val = gsl_interp_eval_integ(interp_ptr,
@@ -300,7 +317,7 @@ def eval_marginal_likelihood(double exposure_time,
                                                        pulse_ptr,
                                                        pa, 1.0,
                                                        acc_ptr)
-                    if _val > 0.0:
+                    if _val > 0.0 or _allow_negative[p] == 1:
                         STAR[i,j] += _val
 
                     _val = gsl_interp_eval_integ(interp_ptr,
@@ -308,8 +325,12 @@ def eval_marginal_likelihood(double exposure_time,
                                                        pulse_ptr,
                                                        0.0, pb,
                                                        acc_ptr)
-                    if _val > 0.0:
+                    if _val > 0.0 or _allow_negative[p] == 1:
                         STAR[i,j] += _val
+
+        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+            if STAR[i,j] < 0.0:
+                STAR[i,j] = 0.0
 
         av_DATA = 0.0; av_STAR = 0.0
 

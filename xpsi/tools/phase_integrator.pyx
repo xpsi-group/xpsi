@@ -24,7 +24,8 @@ def phase_integrator(double exposure_time,
                      double[::1] phases,
                      double[:,::1] signal,
                      double[::1] signal_phases,
-                     double phase_shift):
+                     double phase_shift,
+                     bint allow_negative = 0):
     """ Integrate a signal over phase intervals.
 
     :param double exposure_time:
@@ -83,18 +84,18 @@ def phase_integrator(double exposure_time,
                 _val = gsl_interp_eval_integ(interp, phase_ptr,
                                                      signal_ptr, a, b, acc)
 
-                if _val > 0.0:
+                if _val > 0.0 or allow_negative:
                     _signal[i,j] = _val
             else:
                 _val = gsl_interp_eval_integ(interp, phase_ptr,
                                                      signal_ptr, a, 1.0, acc)
-                if _val > 0.0:
+                if _val > 0.0 or allow_negative:
                     _signal[i,j] = _val
 
                 _val = gsl_interp_eval_integ(interp, phase_ptr,
                                                       signal_ptr, 0.0, b, acc)
 
-                if _val > 0.0:
+                if _val > 0.0 or allow_negative:
                     _signal[i,j] += _val
 
             _signal[i,j] *= exposure_time

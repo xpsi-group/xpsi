@@ -25,7 +25,8 @@ from GSL cimport (gsl_interp_eval,
 def phase_interpolator(double[::1] new_phases,
                        double[::1] phases,
                        double[:,::1] signal,
-                       double phase_shift):
+                       double phase_shift,
+                       bint allow_negative = 0):
     """ Interpolate a signal in phase.
 
     :param double[::1] new_phases:
@@ -76,7 +77,7 @@ def phase_interpolator(double[::1] new_phases,
 
             _val =  gsl_interp_eval(interp, phase_ptr, signal_ptr,
                                              PHASE, accel)
-            if _val > 0.0:
+            if _val > 0.0 or allow_negative:
                 new_signal[i,j] = _val
 
     gsl_interp_free(interp)
