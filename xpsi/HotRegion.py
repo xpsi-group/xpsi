@@ -260,12 +260,7 @@ class HotRegion(ParameterSubspace):
 
         self.image_order_limit = image_order_limit
 
-        # find the required integrator
-        if symmetry: # can we safely assume azimuthal invariance?
-            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
-        else: # more general purpose
-            from .cellmesh.integrator import integrate as _integrator
-        self._integrator = _integrator
+        self.symmetry = symmetry
 
         # first the parameters that are fundemental to this class
         doc = """
@@ -474,6 +469,29 @@ class HotRegion(ParameterSubspace):
     def objects(self):
         """ Return self for uniform interface with other classes. """
         return [self]
+
+    @property
+    def symmetry(self):
+        """ Get the symmetry declaration (controls integrator invocation). """
+        return self._symmetry
+
+    @symmetry.setter
+    def symmetry(self, declaration):
+        if isinstance(declaration, bool):
+            self._symmetry = declaration
+        else:
+            raise TypeError('Declare symmetry existence with a boolean.')
+        # find the required integrator
+        if declaration: # can we safely assume azimuthal invariance?
+            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+        else: # more general purpose
+            from .cellmesh.integrator import integrate as _integrator
+        self._integrator = _integrator
+
+    @property
+    def integrator(self):
+        """ Get the integrator to be invoked. """
+        return self._integrator
 
     def set_num_rays(self, num_rays, fast_num_rays):
         self.num_rays = num_rays
