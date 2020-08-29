@@ -76,7 +76,7 @@ def integrate(size_t numThreads,
               correction_srcCellParams,
               int numRays,
               double[:,::1] deflection,
-              double[:,::1] cos_alphaMatrix,
+              double[:,::1] cos_alpha,
               double[:,::1] lag,
               double[::1] maxDeflection,
               double[::1] cos_gammaArray,
@@ -126,7 +126,7 @@ def integrate(size_t numThreads,
         double cos_psi, sin_psi, _i, _cos_i, _sin_i
         double deriv # $\frac{d\cos\alpha}{d\cos\phi}$; TP
         double beta # Surface velocity in the local NRF; TP
-        double cos_alpha # Emission angle w.r.t outward radial direction in CRF; TP
+        double _cos_alpha # Emission angle w.r.t outward radial direction in CRF; TP
         double sin_alpha
         double cos_delta # Unit sphere trigonometric identity; TP
         double cos_gamma # Surface normal tilt w.r.t outward radial direction; TP
@@ -202,14 +202,7 @@ def integrate(size_t numThreads,
     for p in range(N_E):
         BLOCK[p] = p * N_L
 
-    cdef double[:,::1] _deflection = np.zeros((deflection.shape[0],
-                                               deflection.shape[1]),
-                                               dtype = np.double)
-
-    for i in range(deflection.shape[0]):
-        for j in range(deflection.shape[1]):
-            _deflection[i,j] = deflection[i, N_R - j - 1]
-
+    cdef double[:,::1] cos_alpha_alt
     cdef double[:,::1] cos_deflection
     if not _use_rayXpanda:
         cos_deflection = np.zeros((deflection.shape[0],
@@ -217,23 +210,15 @@ def integrate(size_t numThreads,
                                    dtype = np.double)
         for i in range(deflection.shape[0]):
             for j in range(deflection.shape[1]):
-                cos_deflection[i,j] = cos(deflection[i,j])
+                cos_deflection[i,j] = cos(deflection[i, N_R - j - 1])
 
-    cdef double[:,::1] _lag = np.zeros((deflection.shape[0],
-                                        deflection.shape[1]),
-                                        dtype = np.double)
+        cos_alpha_alt = np.zeros((cos_alpha.shape[0],
+                                  cos_alpha.shape[1]),
+                                  dtype = np.double)
 
-    for i in range(lag.shape[0]):
-        for j in range(lag.shape[1]):
-            _lag[i,j] = lag[i, N_R - j - 1]
-
-    cdef double[:,::1] _cos_alpha = np.zeros((deflection.shape[0],
-                                              deflection.shape[1]),
-                                              dtype = np.double)
-
-    for i in range(deflection.shape[0]):
-        for j in range(deflection.shape[1]):
-            _cos_alpha[i,j] = cos_alphaMatrix[i, N_R - j - 1]
+        for i in range(cos_alpha.shape[0]):
+            for j in range(cos_alpha.shape[1]):
+                cos_alpha_alt[i,j] = cos_alpha[i, N_R - j - 1]
 
     if image_order_limit is not None:
         image_order = image_order_limit
@@ -304,20 +289,20 @@ def integrate(size_t numThreads,
 
         if not _use_rayXpanda:
             j = 0
-            while deflection[i,j] > _hlfpi:
+            while deflection[i,j] <= _hlfpi:
                 j = j + 1
 
-            defl_alt_ptr = &(cos_deflection[i, j])
-            alpha_alt_ptr = &(cos_alphaMatrix[i, j])
-            interp_alpha_alt[T] = gsl_interp_alloc(gsl_interp_steffen, N_R - j)
-            gsl_interp_init(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, N_R - j)
+            defl_alt_ptr = &(cos_deflection[i, N_R - j - 1])
+            alpha_alt_ptr = &(cos_alpha_alt[i, N_R - j - 1])
+            interp_alpha_alt[T] = gsl_interp_alloc(gsl_interp_steffen, j + 1)
+            gsl_interp_init(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, j + 1)
             gsl_interp_accel_reset(accel_alpha_alt[T])
 
-        defl_ptr = &(_deflection[i,0])
-        alpha_ptr = &(_cos_alpha[i,0])
+        defl_ptr = &(deflection[i,0])
+        alpha_ptr = &(cos_alpha[i,0])
         gsl_interp_init(interp_alpha[T], defl_ptr, alpha_ptr, N_R)
 
-        lag_ptr = &(_lag[i,0])
+        lag_ptr = &(lag[i,0])
         gsl_interp_init(interp_lag[T], defl_ptr, lag_ptr, N_R)
 
         radius = radialCoords_of_parallels[i]
@@ -332,7 +317,7 @@ def integrate(size_t numThreads,
         beta = radius * omega * sin_theta_i / (c * Grav_z)
         beta_sq = beta * beta
         Lorentz = sqrt(1.0 - beta_sq)
-        cos_alpha = -1.0 # lastprivate
+        _cos_alpha = -1.0 # lastprivate
         deriv = -1.0 # lastprivate
 
         if image_order == 0: # infer maximum possible image order
@@ -374,15 +359,15 @@ def integrate(size_t numThreads,
                         break # out of phase loop
                     else:
                         if _use_rayXpanda and psi <= rayXpanda_defl_lim:
-                            invert(cos_psi, r_s_over_r[i], &cos_alpha, &deriv)
+                            invert(cos_psi, r_s_over_r[i], &_cos_alpha, &deriv)
                             deriv = deriv * (1.0 - r_s_over_r[i])
                         elif not _use_rayXpanda and psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
-                            cos_alpha = gsl_interp_eval(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
+                            _cos_alpha = gsl_interp_eval(interp_alpha_alt[T], defl_alt_ptr, alpha_alt_ptr, cos_psi, accel_alpha_alt[T])
                         else:
-                            cos_alpha = gsl_interp_eval(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
+                            _cos_alpha = gsl_interp_eval(interp_alpha[T], defl_ptr, alpha_ptr, psi, accel_alpha[T])
 
-                    sin_alpha = sqrt(1.0 - cos_alpha * cos_alpha)
-                    mu = cos_alpha * cos_gamma
+                    sin_alpha = sqrt(1.0 - _cos_alpha * _cos_alpha)
+                    mu = _cos_alpha * cos_gamma
 
                     # for spherical stars mu is defined, but for tilted local
                     # surface, there is not one unique value for mu because

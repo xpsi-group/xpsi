@@ -477,10 +477,11 @@ class HotRegion(ParameterSubspace):
 
     @symmetry.setter
     def symmetry(self, declaration):
-        if isinstance(declaration, bool):
-            self._symmetry = declaration
-        else:
+        if not isinstance(declaration, bool):
             raise TypeError('Declare symmetry existence with a boolean.')
+
+        self._symmetry = declaration
+
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
             from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator

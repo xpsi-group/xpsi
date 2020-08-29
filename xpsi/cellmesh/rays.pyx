@@ -384,9 +384,9 @@ def compute_rays(size_t N_T,
 
         for j in range(N_R):
 
-            cos_alpha[i,j] = cos(maxAlpha[i]) + (<double>j) * cos_alpha_inc
+            cos_alpha[i,j] = 1.0 - (<double>j) * cos_alpha_inc
 
-            if j == N_R - 1:
+            if j == 0:
                 cos_alpha[i,j] = 1.0
                 deflection[i,j] = 0.0
                 lag[i,j] = 0.0
@@ -398,13 +398,13 @@ def compute_rays(size_t N_T,
                         terminate_thread[T] = ERROR
                     elif (j == N_R - 1 and
                           (gsl_isnan(rayParams[4*T]) == 1 or
-                           rayParams[4*T] >= deflection[i,j - 1])):
+                           rayParams[4*T] <= deflection[i,j - 1])):
 
                         terminate_thread[T] = ERROR
                     elif (interp_counter[T] > 0 and
                           gsl_isnan(rayParams[4*T]) == 0 and
                           (0.0 <= rayParams[4*T] < 100.0 * _pi) and
-                          rayParams[4*T] < deflection[i,interp_index[T]]):
+                          rayParams[4*T] > deflection[i,interp_index[T]]):
 
                         deflection[i,j] = rayParams[4*T]
                         lag[i,j] = rayParams[4*T + 2]
@@ -432,7 +432,7 @@ def compute_rays(size_t N_T,
                         deflection[i,j] = rayParams[4*T]
                         lag[i,j] = rayParams[4*T + 2]
 
-        maxDeflection[i] = deflection[i,0]
+        maxDeflection[i] = deflection[i, N_R - 1]
 
     gsl_set_error_handler(handler)
 
@@ -459,9 +459,11 @@ def compute_derivative(size_t N_T,
                        double[:,::1] cos_alpha):
     """ Compute the lensing factor via a monotone cubic spline approximation.
 
+    For primary images only. Used for the rayXpanda documentation.
+
     :param int: Number of OpenMP threads.
-    :param obj: 1D :class:`numpy.ndarray` of :math:`\cos\psi`
-    :param obj: 1D :class:`numpy.ndarray` of :math:`\cos\\alpha`
+    :param obj: 1D :class:`numpy.ndarray` of :math:`\psi`, decreasing.
+    :param obj: 1D :class:`numpy.ndarray` of :math:`\cos\\alpha`, increasing.
 
     :return: 1D :class:`numpy.ndarray` of :math:`\partial\cos\\alpha/\partial\cos\psi/(1-u)`)
 
