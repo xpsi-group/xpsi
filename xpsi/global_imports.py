@@ -90,3 +90,67 @@ def inv_gravradius(R):
 
 class xpsiError(Exception):
     """ Base exception for xpsi-specific runtime errors. """
+
+
+__interpolants__ = {'Akima': 0, 'Steffen': 1, 'Cubic': 2}
+
+def get_phase_interpolant():
+    """ Get the globally-set phase interpolant. """
+    try:
+        __phase_interpolant__
+    except NameError:
+        raise xpsiError('Phase interpolant not set.')
+    else:
+        for key, value in __interpolants__.items():
+            if __phase_interpolant__ == value:
+                return key
+
+def set_phase_interpolant(interpolant):
+    """ Globally set the phase interpolant to invoke from the GSL library.
+
+    :param str interpolant:
+        Name of the spline interpolant. Options are "Akima" (default), "Steffen"
+        (pre-v0.6 choice), and "Cubic". The first and last have periodic
+        boundary conditions.
+
+    """
+    global __phase_interpolant__
+    global __interpolants__
+
+    if not isinstance(interpolant, _six.string_types):
+        raise TypeError('Interpolant declaration must be a string.')
+
+    if interpolant not in __interpolants__.keys():
+        raise ValueError('Invalid interpolant name. See the docstring.')
+
+    __phase_interpolant__ = __interpolants__[interpolant]
+
+def get_energy_interpolant():
+    """ Get the globally-set energy interpolant. """
+    try:
+        __energy_interpolant__
+    except NameError:
+        raise xpsiError('Energy interpolant not set.')
+    else:
+        for key, value in __interpolants__.items():
+            if __energy_interpolant__ == value:
+                return key
+
+def set_energy_interpolant(interpolant):
+    """ Globally set the energy interpolant to invoke from the GSL library.
+
+    :param str interpolant:
+        Name of the spline interpolant. Options are "Akima" (default), "Steffen"
+        (pre-v0.6 choice), and "Cubic". All have natural boundary conditions.
+
+    """
+    global __energy_interpolant__
+    global __interpolants__
+
+    if not isinstance(interpolant, _six.string_types):
+        raise TypeError('Interpolant declaration must be a string.')
+
+    if interpolant not in __interpolants__.keys():
+        raise ValueError('Invalid interpolant name. See the docstring.')
+
+    __energy_interpolant__ = __interpolants__[interpolant]

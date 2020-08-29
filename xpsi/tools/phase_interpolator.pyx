@@ -15,12 +15,12 @@ from GSL cimport (gsl_interp_eval,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
                    gsl_interp,
-                   gsl_interp_akima_periodic,
-                   gsl_interp_steffen,
                    gsl_interp_init,
                    gsl_interp_free,
                    gsl_interp_accel_free,
                    gsl_interp_accel_reset)
+
+from ..tools cimport _get_phase_interpolant, gsl_interp_type
 
 def phase_interpolator(double[::1] new_phases,
                        double[::1] phases,
@@ -44,11 +44,23 @@ def phase_interpolator(double[::1] new_phases,
     :param double phase_shift:
         A phase shift in cycles, such as on the interval ``[-0.5,0.5]``.
 
+    :param obj allow_negative:
+        A boolean declaring whether to allow negative phase interpolant
+        integrals. If the interpolant is not a Steffen spline, then the
+        interpolant of a non-negative function can be negative due to
+        oscillations. For the default Akima Periodic spline from GSL, such
+        oscillations should manifest as small relative to those present in
+        cubic splines, for instance, because it is designed to handle a rapidly
+        changing second-order derivative.
+
     :returns:
         A 2D :class:`numpy.ndarray` of the phase-shifted signal interpolated
         at the new set of phases. Phase increases with column number.
 
     """
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
 
     cdef:
         size_t i, j
@@ -58,7 +70,7 @@ def phase_interpolator(double[::1] new_phases,
                                             dtype = np.double)
 
         gsl_interp_accel *accel = gsl_interp_accel_alloc()
-        gsl_interp *interp = gsl_interp_alloc(gsl_interp_akima_periodic,
+        gsl_interp *interp = gsl_interp_alloc(_interpolant,
                                               phases.shape[0])
 
     cdef double *phase_ptr

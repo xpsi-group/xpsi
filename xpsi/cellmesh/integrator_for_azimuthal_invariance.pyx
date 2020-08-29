@@ -32,9 +32,8 @@ from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
                                        gsl_interp_alloc,
                                        gsl_interp_accel,
                                        gsl_interp_accel_alloc,
-                                       gsl_interp,
-                                       gsl_interp_akima_periodic,
                                        gsl_interp_steffen,
+                                       gsl_interp,
                                        gsl_interp_init,
                                        gsl_interp_free,
                                        gsl_interp_accel_free,
@@ -60,6 +59,8 @@ from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
                                                      free_elsewhere,
                                                      eval_elsewhere,
                                                      eval_elsewhere_norm)
+
+from ..tools cimport _get_phase_interpolant, gsl_interp_type
 
 def integrate(size_t numThreads,
               double R,
@@ -103,6 +104,10 @@ def integrate(size_t numThreads,
     finally:
         if _try_rayXpanda:
             link_rayXpanda(&_use_rayXpanda, &rayXpanda_defl_lim)
+
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
 
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
@@ -197,7 +202,7 @@ def integrate(size_t numThreads,
         PHASE[T] = <double*> malloc(N_L * sizeof(double))
         PROFILE[T] = <double*> malloc(N_E * N_L * sizeof(double))
         accel_PROFILE[T] = gsl_interp_accel_alloc()
-        interp_PROFILE[T] = gsl_interp_alloc(gsl_interp_akima_periodic, N_L)
+        interp_PROFILE[T] = gsl_interp_alloc(_interpolant, N_L)
 
     for p in range(N_E):
         BLOCK[p] = p * N_L

@@ -13,12 +13,12 @@ from GSL cimport (gsl_interp,
                    gsl_interp_free,
                    gsl_interp_eval,
                    gsl_interp_eval_integ,
-                   gsl_interp_akima_periodic,
-                   gsl_interp_steffen,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
                    gsl_interp_accel_free,
                    gsl_interp_accel_reset)
+
+from ..tools cimport _get_phase_interpolant, gsl_interp_type
 
 def phase_integrator(double exposure_time,
                      double[::1] phases,
@@ -46,19 +46,31 @@ def phase_integrator(double exposure_time,
     :param double phase_shift:
         A phase shift in cycles such as on the interval ``[-0.5,0.5]``.
 
+    :param obj allow_negative:
+        A boolean declaring whether to allow negative phase interpolant
+        integrals. If the interpolant is not a Steffen spline, then the
+        interpolant of a non-negative function can be negative due to
+        oscillations. For the default Akima Periodic spline from GSL, such
+        oscillations should manifest as small relative to those present in
+        cubic splines, for instance, because it is designed to handle a rapidly
+        changing second-order derivative.
+
     :returns:
         A 2D :class:`numpy.ndarray` of the phase-shifted signal integrated
         over phase intervals and scaled by the exposure time. Phase interval
         number increases with column number.
 
     """
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
 
     cdef:
         size_t i, j
         double a, b
         double _val
 
-        gsl_interp *interp = gsl_interp_alloc(gsl_interp_akima_periodic, signal_phases.shape[0])
+        gsl_interp *interp = gsl_interp_alloc(_interpolant, signal_phases.shape[0])
         gsl_interp_accel *acc = gsl_interp_accel_alloc()
 
         double[:,::1] _signal = np.zeros((signal.shape[0], phases.shape[0] - 1),
@@ -66,7 +78,6 @@ def phase_integrator(double exposure_time,
 
         double *phase_ptr
         double *signal_ptr
-
     for i in range(signal.shape[0]):
         gsl_interp_accel_reset(acc)
         phase_ptr = &(signal_phases[0])

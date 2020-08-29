@@ -19,8 +19,6 @@ from GSL cimport (gsl_interp,
                    gsl_interp_free,
                    gsl_interp_eval,
                    gsl_interp_eval_integ,
-                   gsl_interp_akima_periodic,
-                   gsl_interp_steffen,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
                    gsl_interp_accel_free,
@@ -36,6 +34,8 @@ ctypedef gsl_interp_accel accel
 cdef extern from "gsl/gsl_sf_gamma.h":
 
     double gsl_sf_lnfact(const unsigned int n)
+
+from ..tools cimport _get_phase_interpolant, gsl_interp_type
 
 def precomputation(int[:,::1] data):
     """ Compute negative of sum of log-factorials of data count numbers.
@@ -209,6 +209,15 @@ def eval_marginal_likelihood(double exposure_time,
         computation can be avoided, returning a number slightly above this
         zero-threshold.
 
+    :param obj allow_negative:
+        A boolean or an array of booleans, one per component, declaring whether
+        to allow negative phase interpolant integrals. If the interpolant is
+        not a Steffen spline, then the interpolant of a non-negative function
+        can be negative due to oscillations. For the default Akima Periodic
+        spline from GSL, such oscillations should manifest as small relative
+        to those present in cubic splines, for instance, because it is
+        designed to handle a rapidly changing second-order derivative.
+
     :returns:
         A tuple ``(double, 2D ndarray, 1D ndarray)``. The first element is
         the logarithm of the marginal likelihood. The second element is the
@@ -243,6 +252,10 @@ def eval_marginal_likelihood(double exposure_time,
 
     f.function = &marginal_integrand
 
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
+
     cdef double *phases_ptr = NULL
     cdef double *pulse_ptr = NULL
 
@@ -265,6 +278,10 @@ def eval_marginal_likelihood(double exposure_time,
             raise TypeError('An iterable is required to specify component-by-'
                             'component positivity.')
         else:
+            if len(allow_negative) != num_components:
+                raise ValueError('Number of allow_negative declarations does '
+                                 'not match the number of components..')
+
             for i in range(num_components):
                 _allow_negative[i] = allow_negative[i]
 
@@ -274,7 +291,7 @@ def eval_marginal_likelihood(double exposure_time,
 
     for p in range(num_components):
         pulse_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(gsl_interp_akima_periodic,
+        interp[p] = gsl_interp_alloc(_interpolant,
                                      pulse_phase_set.shape[0])
         acc[p] = gsl_interp_accel_alloc()
         gsl_interp_accel_reset(acc[p])

@@ -43,6 +43,8 @@ from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
 
 from .rays cimport eval_image_deflection, invert, link_rayXpanda
 
+from ..tools cimport _get_phase_interpolant, gsl_interp_type
+
 def integrate(size_t numThreads,
               double R,
               double omega,
@@ -85,6 +87,10 @@ def integrate(size_t numThreads,
     finally:
         if _try_rayXpanda:
             link_rayXpanda(&_use_rayXpanda, &rayXpanda_defl_lim)
+
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
 
     #----------------------------------------------------------------------->>>
     # >>> General memory allocation.
@@ -194,7 +200,7 @@ def integrate(size_t numThreads,
         accel_ABB[T] = gsl_interp_accel_alloc()
         interp_ABB[T] = gsl_interp_alloc(gsl_interp_steffen, N_L)
         accel_GEOM[T] = gsl_interp_accel_alloc()
-        interp_GEOM[T] = gsl_interp_alloc(gsl_interp_akima_periodic, N_L)
+        interp_GEOM[T] = gsl_interp_alloc(_interpolant, N_L)
 
     cdef double[:,::1] cos_alpha_alt
     cdef double[:,::1] cos_deflection

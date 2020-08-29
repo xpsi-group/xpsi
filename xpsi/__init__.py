@@ -132,6 +132,10 @@ if not __XPSI_SETUP__:
         from cellmesh import set_rayXpanda_deflection_limit
         set_rayXpanda_deflection_limit(global_imports._pi/2.0)
 
+    from global_imports import set_phase_interpolant, set_energy_interpolant
+    set_phase_interpolant('Akima')
+    set_energy_interpolant('Steffen')
+
     from .Parameter import Parameter, Derive
     from .ParameterSubspace import ParameterSubspace
 

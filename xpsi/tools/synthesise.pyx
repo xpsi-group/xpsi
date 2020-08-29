@@ -110,6 +110,10 @@ def synthesise_exposure(double exposure_time,
             raise TypeError('An iterable is required to specify component-by-'
                             'component positivity.')
         else:
+            if len(allow_negative) != num_components:
+                raise ValueError('Number of allow_negative declarations does '
+                                 'not match the number of components..')
+
             for i in range(num_components):
                 _allow_negative[i] = allow_negative[i]
 
@@ -173,6 +177,10 @@ def synthesise_exposure(double exposure_time,
                                                        acc_ptr)
                     if _val > 0.0 or _allow_negative[p] == 1:
                         STAR[i,j] += _val
+
+        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+            if STAR[i,j] < 0.0:
+                STAR[i,j] = 0.0
 
         for j in range(phases.shape[0] - 1):
             BACKGROUND += background[i,j]
@@ -253,6 +261,15 @@ def synthesise_given_total_count_number(double[::1] phases,
         of :obj:`components` and the number of phase intervals constructed
         from :obj:`phases`.
 
+    :param obj allow_negative:
+        A boolean or an array of booleans, one per component, declaring whether
+        to allow negative phase interpolant integrals. If the interpolant is
+        not a Steffen spline, then the interpolant of a non-negative function
+        can be negative due to oscillations. For the default Akima Periodic
+        spline from GSL, such oscillations should manifest as small relative
+        to those present in cubic splines, for instance, because it is
+        designed to handle a rapidly changing second-order derivative.
+
     :returns:
         A tuple ``(2D ndarray, 2D ndarray, double, double)``. The first element
         is the expected count numbers in joint phase-channel intervals. The
@@ -290,6 +307,10 @@ def synthesise_given_total_count_number(double[::1] phases,
             raise TypeError('An iterable is required to specify component-by-'
                             'component positivity.')
         else:
+            if len(allow_negative) != num_components:
+                raise ValueError('Number of allow_negative declarations does '
+                                 'not match the number of components..')
+
             for i in range(num_components):
                 _allow_negative[i] = allow_negative[i]
 
@@ -354,6 +375,10 @@ def synthesise_given_total_count_number(double[::1] phases,
                                                           acc_ptr)
                     if _val > 0.0 or _allow_negative[p] == 1:
                         _signal[i,j] += _val
+
+        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+            if _signal[i,j] < 0.0:
+                _signal[i,j] = 0.0
 
         for j in range(phases.shape[0] - 1):
             STAR += _signal[i,j]
