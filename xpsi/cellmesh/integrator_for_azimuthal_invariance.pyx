@@ -376,7 +376,7 @@ def integrate(size_t numThreads,
 
                     # for spherical stars mu is defined, but for tilted local
                     # surface, there is not one unique value for mu because
-                    # Einstein ring(s) and partial Einstein ring(s)
+                    # Einstein ring(s)
                     if psi != 0.0:
                         cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
                         if theta_i_over_pi < 0.5:
