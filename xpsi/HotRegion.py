@@ -264,18 +264,20 @@ class HotRegion(ParameterSubspace):
         doc = """
         The phase of the hot region, a periodic parameter [cycles].
         """
+        phase_value = values.get('phase_shift', None)
         phase_bounds = bounds.get('phase_shift', None)
-        if not phase_bounds or None in phase_bounds:
-            raise ValueError('Phase-shift bounds must be specified.')
-        if _np.array([not _np.isfinite(b) for b in phase_bounds]).any():
-            raise ValueError('Phase-shift bounds must be finite.')
+        if phase_value is None:
+            if not phase_bounds or None in phase_bounds:
+                raise ValueError('Phase-shift bounds must be specified.')
+            elif _np.array([not _np.isfinite(b) for b in phase_bounds]).any():
+                raise ValueError('Phase-shift bounds must be finite.')
 
         phase_shift = Parameter('phase_shift',
                                 strict_bounds = (-_np.infty, _np.infty),
                                 bounds = phase_bounds,
                                 doc = doc,
                                 symbol = r'$\phi$',
-                                value = values.get('phase_shift', None))
+                                value = phase_value)
 
         self.cede = cede # takes precedence below over omission setting
         self.omit = omit
