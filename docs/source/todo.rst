@@ -18,7 +18,8 @@ unique. That is, ``v1.a`` might ultimately not contain a feature next to which
 it is listed, and/or it might be identical to ``v1.b``.
 
 * Compute secondary images, and more generally images up to some optional order
-  using surface discretisation. Target: minor release ``v0.a``.
+  using integrators that discretise surface with regular mesh. Target: minor
+  release ``v0.6``.
 * Make a dedicated directory for the tutorial notebooks in the documentation
   pages, link to them on GitHub, and state what is necessary to run those
   notebooks completely. Target: major release ``v1.0``.
@@ -118,5 +119,5 @@ General
   domain (surface and image plane).
 * Support for acceleration via analytic techniques.
 * Expand support for samplers, either natively or by refactoring to use a
-  framework for general inferene such as
+  framework for general inference such as
   `Bilby <https://pypi.org/project/bilby/>`_.
