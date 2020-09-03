@@ -93,6 +93,23 @@ Attribution
 ^^^^^^^^^^^
 
 
+[v0.5.4] - 2020-09-01
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Bug due to local variable ``NameError`` when setting instrument channel
+  energy edges.
+* Bug that prevented a hot region phase parameter from being a fixed or derived
+  variable.
+
+Attribution
+^^^^^^^^^^^
+
+* With thanks to Devarshi Choudhury.
+
+
 [v0.5.3] - 2020-08-14
 ~~~~~~~~~~~~~~~~~~~~~
 
