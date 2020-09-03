@@ -77,6 +77,7 @@ Intellectual contribution & engagement (explicit and/or implicit).
 Specific acknowledgements of people whose direct advice either influenced the
 direction of this project or led to some specific improvements.
 
+* `CythonGSL <https://github.com/twiecki/CythonGSL>`_ header file
 * Existing open-source projects (which are either external dependencies or
   served as examples during the development of this project, such as *emcee*
   and *stingray*)

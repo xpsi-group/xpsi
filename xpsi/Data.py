@@ -96,16 +96,30 @@ class Data(object):
     def __init__(self, counts, channels, phases, first, last, exposure_time):
 
         if not isinstance(counts, _np.ndarray):
-            raise TypeError('Counts object is not a ``numpy.ndarray``.')
-        else:
-            self._counts = counts
+            try:
+                counts = _np.array(counts)
+            except TypeError:
+                raise TypeError('Counts object is not a ``numpy.ndarray``.')
+
+        if counts.ndim not in [1,2]:
+            raise TypeError('Counts must be in a one- or two-dimensional '
+                            'array.')
+
+        if (counts < 0.0).any():
+            raise ValueError('Negative count numbers are invalid.')
 
         self.channels = channels
 
         if not isinstance(phases, _np.ndarray):
-            raise TypeError('Phases object is not a ``numpy.ndarray``.')
-        else:
-            self._phases = phases
+            try:
+                phases = _np.array(phases)
+            except TypeError:
+                raise TypeError('Phases object is not a ``numpy.ndarray``.')
+
+        if phases.ndim != 1:
+            raise ValueError('Phases must form a one-dimensional sequence.')
+
+        self._phases = phases
 
         try:
             self._first = int(first)
@@ -117,11 +131,16 @@ class Data(object):
             raise ValueError('The first channel number must be lower than the '
                              'the last channel number.')
 
-        if self._counts.shape[0] != self._last - self._first + 1:
+        if counts.shape[0] != self._last - self._first + 1:
             raise ValueError('The number of rows must be compatible '
                              'with the first and last channel numbers.')
 
-        self._exposure_time = exposure_time
+        self._counts = counts
+
+        try:
+            self._exposure_time = float(exposure_time)
+        except TypeError:
+            raise TypeError('Exposure time must be a float.')
 
     @property
     def exposure_time(self):
@@ -159,28 +178,28 @@ class Data(object):
     def channels(self, array):
         if not isinstance(array, _np.ndarray):
             try:
-                self._channels = _np.array(array)
+                array = _np.array(array)
             except TypeError:
                 raise ChannelError('Channel numbers must be in a '
                                    'one-dimensional array, and must all be '
                                    'positive integers including zero.')
-        else:
-            self._channels = array
 
-        if self._channels.ndim != 1 or (self._channels < 0).any():
+        if array.ndim != 1 or (array < 0).any():
             raise ChannelError('Channel numbers must be in a '
                                'one-dimensional array, and must all be '
                                'positive integers including zero.')
 
         try:
-            if self._channels.shape[0] != self._counts.shape[0]:
+            if array.shape[0] != array.shape[0]:
                 raise ChannelError('Number of channels does')
         except AttributeError:
             pass # if synthesising there will not be any counts loaded here
 
-        if (self._channels[1:] - self._channels[:-1] != 1).any():
+        if (array[1:] - array[:-1] != 1).any():
             yield ('Warning: Channel numbers do not uniformly increment by one.'
                    '\n         Please check for correctness.')
+
+        self._channels = array
 
         yield
 
@@ -190,7 +209,9 @@ class Data(object):
     def phase_bin__event_list(cls, path, channels, phases,
                               phase_shift=0.0,
                               phase_column=1,
-                              skiprows=1, *args, **kwargs):
+                              skiprows=1,
+                              dtype=_np.int,
+                              *args, **kwargs):
         """ Load a phase-folded event list and bin the events in phase.
 
         :param str path:
@@ -223,6 +244,12 @@ class Data(object):
             The top row of couple of rows will typically be reserved for
             column headers.
 
+        :param type dtype:
+            The type of the count data. Sensible options are ``numpy.int`` (the
+            default) or a :mod:`numpy` floating point type. The choice here
+            only matters when executing custom likelihood evaluation code, which
+            might expect a type without checking or casting.
+
         """
         events = _np.loadtxt(path, skiprows=skiprows)
 
@@ -231,7 +258,7 @@ class Data(object):
 
         yield 'Total number of events: %i.' % events.shape[0]
 
-        data = _np.zeros((len(channels), len(phases)-1), dtype=_np.int)
+        data = _np.zeros((len(channels), len(phases)-1), dtype=dtype)
 
         for i in range(events.shape[0]):
             if events[i,channel_col] in channels:

@@ -7,8 +7,11 @@
 from __future__ import print_function
 
 import numpy as np
+cimport numpy as np
 from libc.stdlib cimport malloc, free
 from libc.math cimport exp, pow, log, sqrt, fabs, floor
+
+ctypedef np.uint8_t uint8
 
 from GSL cimport (gsl_interp,
                    gsl_interp_alloc,
@@ -16,7 +19,6 @@ from GSL cimport (gsl_interp,
                    gsl_interp_free,
                    gsl_interp_eval,
                    gsl_interp_eval_integ,
-                   gsl_interp_steffen,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
                    gsl_interp_accel_free,
@@ -32,6 +34,8 @@ ctypedef gsl_interp_accel accel
 cdef extern from "gsl/gsl_sf_gamma.h":
 
     double gsl_sf_lnfact(const unsigned int n)
+
+from ..tools cimport _get_phase_interpolant, gsl_interp_type
 
 def precomputation(int[:,::1] data):
     """ Compute negative of sum of log-factorials of data count numbers.
@@ -122,7 +126,8 @@ def eval_marginal_likelihood(double exposure_time,
                              double epsrel,
                              double epsilon,
                              double sigmas,
-                             double llzero):
+                             double llzero,
+                             allow_negative = False):
     """ Evaluate the Poisson likelihood.
 
     The count rate is integrated over phase intervals.
@@ -204,6 +209,15 @@ def eval_marginal_likelihood(double exposure_time,
         computation can be avoided, returning a number slightly above this
         zero-threshold.
 
+    :param obj allow_negative:
+        A boolean or an array of booleans, one per component, declaring whether
+        to allow negative phase interpolant integrals. If the interpolant is
+        not a Steffen spline, then the interpolant of a non-negative function
+        can be negative due to oscillations. For the default Akima Periodic
+        spline from GSL, such oscillations should manifest as small relative
+        to those present in cubic splines, for instance, because it is
+        designed to handle a rapidly changing second-order derivative.
+
     :returns:
         A tuple ``(double, 2D ndarray, 1D ndarray)``. The first element is
         the logarithm of the marginal likelihood. The second element is the
@@ -225,6 +239,7 @@ def eval_marginal_likelihood(double exposure_time,
 
         double n = <double>(phases.shape[0] - 1)
         double SCALE = exposure_time / n
+        double _val
 
     cdef args a
     a.n = <size_t>n
@@ -237,6 +252,10 @@ def eval_marginal_likelihood(double exposure_time,
 
     f.function = &marginal_integrand
 
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
+
     cdef double *phases_ptr = NULL
     cdef double *pulse_ptr = NULL
 
@@ -247,7 +266,24 @@ def eval_marginal_likelihood(double exposure_time,
     cdef double[:,::1] pulse
     cdef double[::1] pulse_phase_set
     cdef double phase_shift
+    cdef uint8[::1] _allow_negative = np.zeros(num_components, dtype=np.uint8)
 
+    if isinstance(allow_negative, bool):
+        for i in range(num_components):
+            _allow_negative[i] = <uint8>allow_negative
+    else:
+        try:
+            len(allow_negative)
+        except TypeError:
+            raise TypeError('An iterable is required to specify component-by-'
+                            'component positivity.')
+        else:
+            if len(allow_negative) != num_components:
+                raise ValueError('Number of allow_negative declarations does '
+                                 'not match the number of components..')
+
+            for i in range(num_components):
+                _allow_negative[i] = allow_negative[i]
 
     cdef gsl_interp **interp = <gsl_interp**> malloc(num_components * sizeof(gsl_interp*))
     cdef accel **acc =  <accel**> malloc(num_components * sizeof(accel*))
@@ -255,7 +291,8 @@ def eval_marginal_likelihood(double exposure_time,
 
     for p in range(num_components):
         pulse_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(gsl_interp_steffen, pulse_phase_set.shape[0])
+        interp[p] = gsl_interp_alloc(_interpolant,
+                                     pulse_phase_set.shape[0])
         acc[p] = gsl_interp_accel_alloc()
         gsl_interp_accel_reset(acc[p])
 
@@ -284,23 +321,33 @@ def eval_marginal_likelihood(double exposure_time,
                 pb -= floor(pb)
 
                 if pa < pb:
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        pulse_ptr,
                                                        pa, pb,
                                                        acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        STAR[i,j] += _val
                 else:
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        pulse_ptr,
                                                        pa, 1.0,
                                                        acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        STAR[i,j] += _val
 
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        pulse_ptr,
                                                        0.0, pb,
                                                        acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        STAR[i,j] += _val
+
+        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+            if STAR[i,j] < 0.0:
+                STAR[i,j] = 0.0
 
         av_DATA = 0.0; av_STAR = 0.0
 

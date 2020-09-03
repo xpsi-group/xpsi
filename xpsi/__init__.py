@@ -117,9 +117,24 @@ if not __XPSI_SETUP__:
 
     def _warning(msg):
         if _verbose:
-            print('Warning: ' + msg + ('.' if msg[-1] != '.' else ''))
+            _ends = ['.',',',':',';','!','?']
+            _append = ('.' if msg[-1] not in _ends else '')
+            print('Warning: ' + msg + _append)
 
     import global_imports
+
+    try:
+        import rayXpanda
+    except ImportError:
+        __rayXpanda_installed__ = False
+    else:
+        __rayXpanda_installed__ = True
+        from cellmesh import set_rayXpanda_deflection_limit
+        set_rayXpanda_deflection_limit(global_imports._pi/2.0)
+
+    from tools import set_phase_interpolant, set_energy_interpolant
+    set_phase_interpolant('Akima')
+    set_energy_interpolant('Steffen')
 
     from .Parameter import Parameter, Derive
     from .ParameterSubspace import ParameterSubspace

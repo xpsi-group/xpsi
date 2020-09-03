@@ -7,6 +7,7 @@
 from __future__ import division
 
 import numpy as np
+cimport numpy as np
 from libc.math cimport pow, log, floor
 from libc.stdlib cimport malloc, free
 
@@ -16,7 +17,6 @@ from GSL cimport (gsl_interp,
                    gsl_interp_free,
                    gsl_interp_eval,
                    gsl_interp_eval_integ,
-                   gsl_interp_steffen,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
                    gsl_interp_accel_free,
@@ -24,13 +24,18 @@ from GSL cimport (gsl_interp,
 
 ctypedef gsl_interp_accel accel
 
+ctypedef np.uint8_t uint8
+
+from ..tools cimport _get_phase_interpolant, gsl_interp_type
+
 def poisson_likelihood_given_background(double exposure_time,
                                         double[::1] phases,
                                         double[:,::1] counts,
                                         components,
                                         component_phases,
                                         phase_shifts,
-                                        double[:,::1] background):
+                                        double[:,::1] background,
+                                        allow_negative = False):
     """ Evaluate the Poisson likelihood.
 
     The count rate is integrated over phase intervals.
@@ -61,6 +66,15 @@ def poisson_likelihood_given_background(double exposure_time,
         of :obj:`components` and the number of phase intervals constructed
         from :obj:`phases`.
 
+    :param obj allow_negative:
+        A boolean or an array of booleans, one per component, declaring whether
+        to allow negative phase interpolant integrals. If the interpolant is
+        not a Steffen spline, then the interpolant of a non-negative function
+        can be negative due to oscillations. For the default Akima Periodic
+        spline from GSL, such oscillations should manifest as small relative
+        to those present in cubic splines, for instance, because it is
+        designed to handle a rapidly changing second-order derivative.
+
     :returns:
         A tuple ``(double, 2D ndarray)``. The first element is
         the logarithm of the marginal likelihood. The second element is the
@@ -76,19 +90,42 @@ def poisson_likelihood_given_background(double exposure_time,
         double[:,::1] STAR = np.zeros((components[0].shape[0], phases.shape[0]-1),
                                        dtype = np.double)
 
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
+
+    cdef uint8[::1] _allow_negative = np.zeros(num_components, dtype=np.uint8)
+
+    if isinstance(allow_negative, bool):
+        for i in range(num_components):
+            _allow_negative[i] = <uint8>allow_negative
+    else:
+        try:
+            len(allow_negative)
+        except TypeError:
+            raise TypeError('An iterable is required to specify component-by-'
+                            'component positivity.')
+        else:
+            if len(allow_negative) != num_components:
+                raise ValueError('Number of allow_negative declarations does '
+                                 'not match the number of components..')
+
+            for i in range(num_components):
+                _allow_negative[i] = allow_negative[i]
+
     cdef double *phases_ptr = NULL
     cdef double *signal_ptr = NULL
 
     cdef double[:,::1] signal
     cdef double[::1] signal_phase_set
-    cdef double phase_shift
+    cdef double phase_shift, _val
 
     cdef gsl_interp **interp = <gsl_interp**> malloc(num_components * sizeof(gsl_interp*))
     cdef accel **acc =  <accel**> malloc(num_components * sizeof(accel*))
 
     for p in range(num_components):
         signal_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(gsl_interp_steffen, signal_phase_set.shape[0])
+        interp[p] = gsl_interp_alloc(_interpolant, signal_phase_set.shape[0])
         acc[p] = gsl_interp_accel_alloc()
         gsl_interp_accel_reset(acc[p])
 
@@ -117,23 +154,33 @@ def poisson_likelihood_given_background(double exposure_time,
                 b -= floor(b)
 
                 if a < b:
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        signal_ptr,
                                                        a, b,
                                                        acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        STAR[i,j] += _val
                 else:
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val =  gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        signal_ptr,
                                                        a, 1.0,
                                                        acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        STAR[i,j] += _val
 
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        signal_ptr,
                                                        0.0, b,
                                                        acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        STAR[i,j] += _val
+
+        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+            if STAR[i,j] < 0.0:
+                STAR[i,j] = 0.0
 
     for p in range(num_components):
         gsl_interp_accel_free(acc[p])

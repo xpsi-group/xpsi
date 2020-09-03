@@ -102,12 +102,12 @@ class Spacetime(ParameterSubspace):
     @property
     def M(self):
         """ Get the (rotationally deformed) gravitational mass in SI. """
-        return self['mass'] * _M_s
+        return self['mass'] * _GM * _csq / _G
 
     @property
     def r_g(self):
         """ Get the Schwarzschild gravitational radius in SI. """
-        return _G * self.M / _csq
+        return self['mass'] * _GM
 
     @property
     def r_s(self):

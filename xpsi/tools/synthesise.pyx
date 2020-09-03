@@ -7,6 +7,7 @@
 from __future__ import print_function
 
 import numpy as np
+cimport numpy as np
 from libc.stdlib cimport malloc, free
 from libc.math cimport exp, pow, log, sqrt, fabs, floor
 
@@ -16,6 +17,7 @@ from GSL cimport (gsl_interp,
                    gsl_interp_free,
                    gsl_interp_eval,
                    gsl_interp_eval_integ,
+                   gsl_interp_akima_periodic,
                    gsl_interp_steffen,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
@@ -31,13 +33,16 @@ from GSL cimport (gsl_interp,
 
 ctypedef gsl_interp_accel accel
 
+ctypedef np.uint8_t uint8
+
 def synthesise_exposure(double exposure_time,
                         double[::1] phases,
                         components,
                         component_phases,
                         phase_shifts,
                         double expected_background_counts,
-                        double[:,::1] background):
+                        double[:,::1] background,
+                        allow_negative = False):
     """ Synthesise Poissonian count numbers given an exposure time.
 
     :param double exposure_time:
@@ -92,13 +97,32 @@ def synthesise_exposure(double exposure_time,
     cdef double[:,::1] signal
     cdef double[::1] signal_phase_set
     cdef double phase_shift
+    cdef double _val
+    cdef uint8[::1] _allow_negative = np.zeros(num_components, dtype=np.uint8)
+
+    if isinstance(allow_negative, bool):
+        for i in range(num_components):
+            _allow_negative[i] = <uint8>allow_negative
+    else:
+        try:
+            len(allow_negative)
+        except TypeError:
+            raise TypeError('An iterable is required to specify component-by-'
+                            'component positivity.')
+        else:
+            if len(allow_negative) != num_components:
+                raise ValueError('Number of allow_negative declarations does '
+                                 'not match the number of components..')
+
+            for i in range(num_components):
+                _allow_negative[i] = allow_negative[i]
 
     cdef gsl_interp **interp = <gsl_interp**> malloc(num_components * sizeof(gsl_interp*))
     cdef accel **acc =  <accel**> malloc(num_components * sizeof(accel*))
 
     for p in range(num_components):
         signal_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(gsl_interp_steffen, signal_phase_set.shape[0])
+        interp[p] = gsl_interp_alloc(gsl_interp_akima_periodic, signal_phase_set.shape[0])
         acc[p] = gsl_interp_accel_alloc()
         gsl_interp_accel_reset(acc[p])
 
@@ -130,23 +154,33 @@ def synthesise_exposure(double exposure_time,
                 b -= floor(b)
 
                 if a < b:
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        signal_ptr,
                                                        a, b,
                                                        acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        STAR[i,j] += _val
                 else:
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        signal_ptr,
                                                        a, 1.0,
                                                        acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        STAR[i,j] += _val
 
-                    STAR[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                        phases_ptr,
                                                        signal_ptr,
                                                        0.0, b,
                                                        acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        STAR[i,j] += _val
+
+        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+            if STAR[i,j] < 0.0:
+                STAR[i,j] = 0.0
 
         for j in range(phases.shape[0] - 1):
             BACKGROUND += background[i,j]
@@ -190,7 +224,8 @@ def synthesise_given_total_count_number(double[::1] phases,
                                         component_phases,
                                         phase_shifts,
                                         double expected_background_counts,
-                                        double[:,::1] background):
+                                        double[:,::1] background,
+                                        allow_negative = False):
     """ Synthesise Poissonian count numbers given expected target source counts.
 
     :param double[::1] phases:
@@ -226,6 +261,15 @@ def synthesise_given_total_count_number(double[::1] phases,
         of :obj:`components` and the number of phase intervals constructed
         from :obj:`phases`.
 
+    :param obj allow_negative:
+        A boolean or an array of booleans, one per component, declaring whether
+        to allow negative phase interpolant integrals. If the interpolant is
+        not a Steffen spline, then the interpolant of a non-negative function
+        can be negative due to oscillations. For the default Akima Periodic
+        spline from GSL, such oscillations should manifest as small relative
+        to those present in cubic splines, for instance, because it is
+        designed to handle a rapidly changing second-order derivative.
+
     :returns:
         A tuple ``(2D ndarray, 2D ndarray, double, double)``. The first element
         is the expected count numbers in joint phase-channel intervals. The
@@ -250,13 +294,32 @@ def synthesise_given_total_count_number(double[::1] phases,
     cdef double[:,::1] signal
     cdef double[::1] signal_phase_set
     cdef double phase_shift
+    cdef double _val
+    cdef uint8[::1] _allow_negative = np.zeros(num_components, dtype=np.uint8)
+
+    if isinstance(allow_negative, bool):
+        for i in range(num_components):
+            _allow_negative[i] = <uint8>allow_negative
+    else:
+        try:
+            len(allow_negative)
+        except TypeError:
+            raise TypeError('An iterable is required to specify component-by-'
+                            'component positivity.')
+        else:
+            if len(allow_negative) != num_components:
+                raise ValueError('Number of allow_negative declarations does '
+                                 'not match the number of components..')
+
+            for i in range(num_components):
+                _allow_negative[i] = allow_negative[i]
 
     cdef gsl_interp **interp = <gsl_interp**> malloc(num_components * sizeof(gsl_interp*))
     cdef accel **acc =  <accel**> malloc(num_components * sizeof(accel*))
 
     for p in range(num_components):
         signal_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(gsl_interp_steffen, signal_phase_set.shape[0])
+        interp[p] = gsl_interp_alloc(gsl_interp_akima_periodic, signal_phase_set.shape[0])
         acc[p] = gsl_interp_accel_alloc()
         gsl_interp_accel_reset(acc[p])
 
@@ -289,23 +352,33 @@ def synthesise_given_total_count_number(double[::1] phases,
                 b -= floor(b)
 
                 if a < b:
-                    _signal[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                           phases_ptr,
                                                           signal_ptr,
                                                           a, b,
                                                           acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        _signal[i,j] += _val
                 else:
-                    _signal[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                           phases_ptr,
                                                           signal_ptr,
                                                           a, 1.0,
                                                           acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        _signal[i,j] += _val
 
-                    _signal[i,j] += gsl_interp_eval_integ(interp_ptr,
+                    _val = gsl_interp_eval_integ(interp_ptr,
                                                           phases_ptr,
                                                           signal_ptr,
                                                           0.0, b,
                                                           acc_ptr)
+                    if _val > 0.0 or _allow_negative[p] == 1:
+                        _signal[i,j] += _val
+
+        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+            if _signal[i,j] < 0.0:
+                _signal[i,j] = 0.0
 
         for j in range(phases.shape[0] - 1):
             STAR += _signal[i,j]

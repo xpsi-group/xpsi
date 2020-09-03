@@ -15,58 +15,73 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* Improvement patches. Deliberately backwards incompatible for safety in
-  memory allocation.
+* Backwards compatible.
+* The new feature is support for higher-order images when invoking an integrator
+  that discretises the surface (with a regular mesh). Secondary images can
+  be very important, whilst tertiary images less so. Quaternary, quinary, and
+  possibly senary images can sometimes be detected and included too, with
+  accuracy that decreases with order. Fortunately, the contribution to the
+  photon specific flux generally decays rapidly with image order beyond the
+  secondary or tertiary images. The computational cost scales almost
+  linearly with order *if* an appreciable fraction of every iso-latitudinal ring
+  on the surface is multiply-imaged at each order. Note that multiple-imaging
+  manifests entirely naturally when an image-plane is discretised in such away
+  that the regular mesh resolves the stellar limb sufficiently well, where
+  higher-order images get insanely squeezed.
 
 Fixed
 ^^^^^
 
-* Add try-except block to :attr:`~.Photosphere.Photosphere.global_to_local_file`
-  property so that explicit setting of ``None`` by user is not required if
-  file I/O is not needed in the extension module. Actually, ``None`` could
-  not be set for the property anyway due to type checking.
-
 Added
 ^^^^^
+.. _rayXpanda: <https://github.com/ThomasEdwardRiley/rayXpanda>
 
-* The surface to image-plane ray map is cached in Python process memory so it
-  can be efficiently reused for same spacetime configuration and ray map
-  resolution settings. Explicit support for writing the ray map to disk and
-  loading it is not included, but this should be entirely possible to achieve
-  manually. Backwards compatible except for corner cases, such as not using
-  keyword arguments when calling :meth:`~.Photosphere.Photosphere.image`, or if
-  resolution settings changed between calls to the imager but a ray map
-  otherwise exists in Python process memory and the spacetime configuration has
-  not been changed.
-* A secret keyword argument to :meth:`~.Photosphere.Photosphere.image`,
-  :obj:`_OVERRIDE_MEM_LIM`, which can be used to change an internal hard limit
-  on the intensity cache size. This setting is for safety and designed so that
-  higher memory consumption is deliberate or if something goes awry, it is
-  deemed the responsibilty of the user to have read method docstring carefully.
-  The tutorials will not use this secret keyword, so if the user tries to run
-  them and encounters an exception, they will need to investigate the docstring
-  and either adapt the resolution to their system or take the responsibility of
-  setting the cache size limit for their system to accomodate the resolution
-  settings in the tutorial.
-* Optional argument to :meth:`~.Photosphere.Photosphere.image`,
-  :obj:`single_precision_intensities`, which flags whether or not to *cache*
-  the intensities in single precision do halve intensity cache memory
-  requirements. The default is to cache in single precision.
-* Verbosity to :meth:`~.Photosphere.Photosphere.image` because execution
-  can take many minutes depending on settings chosen. The verbosity
-  can be deactivated via a keyword argument (see the method docstring).
+* Multiple-imaging support including an option to specify the maximum image
+  order to iterate up to, with automatic truncation when no image at a given
+  order is detected. If no limit is specified (the default), then images are
+  included as far as they can be detected given the numerical resolution
+  settings, which is typically between quaternary and senary images.
+* A multiple-imaging tutorial.
+* A global switch for changing phase and energy interpolants without
+  recompilation of extensions. To change interpolants, you can use top-level
+  functions :func:`xpsi.set_phase_interpolant` and
+  :func:`xpsi.set_energy_interpolant`. Generally computations are more
+  sensitive to the phase interpolants, of which the options from GSL are:
+  Steffen spline (pre-v0.6 choice), Akima periodic spline, and cubic periodic
+  spline. The default choice is now an Akima periodic spline in an attempt to
+  improve interpolation accuracy of the interpolant at function maxima, where
+  the accuracy is generally most important in the context of likelihood
+  evaluations.  Note that in some corner cases, the signal from a hot region is
+  negative in specific flux because there is a correction computed to yield the
+  intended signal from :class:`~.Elsewhere.Elsewhere` when it is partially
+  masked by hot regions. In this case, when using phase interpolant tools from
+  the :mod:`~.tools` and :mod:`~.likelihood` modules it is necessary to use a
+  ``allow_negative`` option when calling the tools to specify that a negative
+  interpolant is permitted.
+* Automatic linking of the package rayXpanda_ for calculation of the inverse of
+  the deflection integral, and it's derivative via a high-order symbolic
+  expansion, for a subset of primary images. The purpose is to mainly as an
+  orthogonal validation of a subset of integrals executed via numerical
+  quadrature and inversion via spline interpolation.  The other reason is
+  because to support multiple-imaging with the surface-discretisation
+  integrators this aforementioned interpolation had to change due to
+  non-injectivity of functions when interpolating with respect to the cosine of
+  the deflection angle. However, to calculate the convergence derivative
+  sufficiently accurately, interpolating with respect to the cosine of the
+  deflection seems necessary. Therefore rayXpanda_ can be linked in, if it is
+  available, for low deflection angles instead of avoid having to allocate
+  additional memory and construct splines specifically for low-deflection
+  primary images. Simple testing suggests there are no valuable speed gains,
+  however, possibly because the high-order expansion and simultaneous evaluation
+  of the polynomial and it's derivate with a nested Horner scheme itself
+  requires a substantial number of floating point operations.
+* A helper method :meth:`~.ParameterSubspace.ParameterSubspace.merge` that
+  merges a set of parameters, or a parameter subspace, or a set of subspaces,
+  into a subspace that has already been instantiated.
+
 
 Changed
 ^^^^^^^
-
-* The usage of the :meth:`~.Photosphere.Photosphere.image` argument
-  :obj:`cache_intensities`. Instead of simply activating intensity caching
-  with boolean, the user must specify a cache size limit that is adhered to.
-  If the required cache size given the resolution settings is larger than
-  the limit, imaging does not proceed. If the cache size limit is zero or
-  equivalent, then imaging safely proceeds without caching the intensities.
-* Intensities are by default *cached* in single precision to reduce cache memory
-  requirements.
 
 Deprecated
 ^^^^^^^^^^
@@ -111,6 +126,8 @@ Fixed
   property so that explicit setting of ``None`` by user is not required if
   file I/O is not needed in the extension module. Actually, ``None`` could
   not be set for the property anyway due to type checking.
+* Bug when declaring that sky maps should be animated and memory freed
+  beforehand.
 
 Added
 ^^^^^

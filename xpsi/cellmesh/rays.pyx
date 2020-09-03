@@ -9,9 +9,10 @@ import numpy as np
 cimport numpy as np
 cimport cython
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, cos, asin, acos, log, atan, NAN
+from libc.math cimport M_PI, sqrt, cos, asin, acos, log, atan, NAN, pow
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
+import xpsi
 
 from GSL cimport (gsl_function,
                   gsl_integration_workspace,
@@ -23,6 +24,13 @@ from GSL cimport (gsl_function,
                   gsl_interp_accel_alloc,
                   gsl_interp_accel_free,
                   gsl_interp_accel_reset,
+                  gsl_interp_eval,
+                  gsl_interp_eval_deriv,
+                  gsl_interp_alloc,
+                  gsl_interp,
+                  gsl_interp_steffen,
+                  gsl_interp_init,
+                  gsl_interp_free,
                   gsl_isnan,
                   GSL_INTEG_GAUSS61,
                   GSL_EFAILED,
@@ -30,24 +38,88 @@ from GSL cimport (gsl_function,
                   gsl_set_error_handler_off,
                   gsl_error_handler_t)
 
-
-from xpsi.cellmesh.integrator cimport (gsl_interp_eval,
-                                       gsl_interp_eval_deriv,
-                                       gsl_interp_alloc,
-                                       gsl_interp,
-                                       gsl_interp_steffen,
-                                       gsl_interp_init,
-                                       gsl_interp_free)
-
 ctypedef gsl_interp interp
 ctypedef gsl_interp_accel accel
 ctypedef gsl_integration_workspace gsl_work
 ctypedef gsl_integration_cquad_workspace gsl_cq_work
 
 cdef double _pi = M_PI
+cdef double _hlfpi = M_PI / 2.0
 cdef double c = 2.99792458e8
 
 cdef int ERROR = 1
+
+cdef double eval_image_deflection(int order, double psi) nogil:
+    if order % 2 != 0:
+        return <double>(order + 1) * _pi + pow(-1.0, <double>order) * psi
+    else:
+        return <double>(order) * _pi + pow(-1.0, <double>order) * psi
+
+cdef void invert(double a, double b, double *c, double *d) nogil:
+    #c_invert(a, b, c, d)
+    __pyx_f_9rayXpanda_9inversion_c_invert(a, b, c, d)
+
+cdef void deflect(double a, double b, double *c, double *d) nogil:
+    #c_deflect(a, b, c, d)
+    __pyx_f_9rayXpanda_10deflection_c_deflect(a, b, c, d)
+
+cdef double _get_rayXpanda_defl_lim() except *:
+    try:
+        from . import __rayXpanda_defl_lim__
+    except ImportError:
+        __rayXpanda_defl_lim__ = _hlfpi # default limit
+    finally:
+        xpsi.cellmesh._check_rayXpanda_defl_lim(__rayXpanda_defl_lim__)
+        return <double>__rayXpanda_defl_lim__
+
+cdef void link_rayXpanda(bint *use_rayXpanda, double *rayXpanda_defl_lim) except *:
+    cdef double _flag, _throwaway
+    use_rayXpanda[0] = 1
+    invert(0.5, 0.5, &_flag, &_throwaway)
+    if <signed int>_flag == -2:
+        use_rayXpanda[0] = 0
+        xpsi.__use_rayXpanda__ = False
+        try:
+            xpsi.__used_rayXpanda__
+        except AttributeError:
+            _cache = None
+        else:
+            _cache = xpsi.__used_rayXpanda
+        finally:
+            if _cache or (_cache is None and xpsi.__rayXpanda_installed__):
+                xpsi._warning('rayXpanda installed, but library not called')
+                xpsi._warning('this is due to a run-time linking failure')
+        xpsi.__used_rayXpanda__ = False
+    else:
+        use_rayXpanda[0] = 1
+        xpsi.__use_rayXpanda__ = True
+        rayXpanda_defl_lim[0] = _get_rayXpanda_defl_lim()
+        try:
+            xpsi.__used_rayXpanda__
+        except AttributeError:
+            _cache = None
+        else:
+            _cache = xpsi.__used_rayXpanda__
+        finally:
+            try:
+                _changed = (xpsi.cellmesh.__cached_rayXpanda_defl_lim__ != rayXpanda_defl_lim[0])
+            except AttributeError:
+                _changed = True
+            if rayXpanda_defl_lim[0] > _hlfpi and (not _cache or _changed):
+                xpsi._warning('invoking rayXpanda for a signal integration '
+                              'over a subdomain of the stellar image.')
+                xpsi._warning('the larger the primary image subdomain chosen '
+                              'for rayXpanda calls,')
+                xpsi._warning('the larger the rayXpanda expansion truncation '
+                              'error.')
+                xpsi._warning('you can control this by setting the '
+                              'rayXpanda deflection limit manually.')
+                xpsi._warning('please use the top-level function '
+                              'xpsi.set_rayXpanda_deflection_limit(float)')
+                xpsi._warning('please refer to the documentation at '
+                              'https://thomasedwardriley.github.io/rayXpanda/theory ')
+        xpsi.cellmesh.__cached_rayXpanda_defl_lim__ = rayXpanda_defl_lim[0]
+        xpsi.__used_rayXpanda__ = True
 
 cdef double b_phsph_over_r_s = 3.0 * sqrt(3.0) / 2.0
 
@@ -267,6 +339,7 @@ def compute_rays(size_t N_T,
         double alpha, cos_alpha_inc, delta, extreme
         int terminate = 0
         int *terminate_thread = <int*> malloc(N_T * sizeof(int))
+        cdef double _epsilon = 1.0e-8
 
     for i in range(N_T):
         w[i] = gsl_integration_workspace_alloc(100)
@@ -304,16 +377,16 @@ def compute_rays(size_t N_T,
         elif 2.0/3.0 < r_s_over_R[i] < 1.0:
             extreme = asin(sqrt(1.0 - r_s_over_R[i]) * b_phsph_over_r_s * r_s_over_R[i])
 
-        if maxAlpha[i] >= extreme:
-            maxAlpha[i] = (1.0 - 1.0e-8) * extreme
+        if maxAlpha[i] >= (1.0 - _epsilon) * extreme:
+            maxAlpha[i] = (1.0 - _epsilon) * extreme
 
         cos_alpha_inc = (1.0 - cos(maxAlpha[i])) / (<double>N_R - 1.0)
 
         for j in range(N_R):
 
-            cos_alpha[i,j] = cos(maxAlpha[i]) + (<double>j) * cos_alpha_inc
+            cos_alpha[i,j] = 1.0 - (<double>j) * cos_alpha_inc
 
-            if j == N_R - 1:
+            if j == 0:
                 cos_alpha[i,j] = 1.0
                 deflection[i,j] = 0.0
                 lag[i,j] = 0.0
@@ -325,13 +398,13 @@ def compute_rays(size_t N_T,
                         terminate_thread[T] = ERROR
                     elif (j == N_R - 1 and
                           (gsl_isnan(rayParams[4*T]) == 1 or
-                           rayParams[4*T] >= deflection[i,j - 1])):
+                           rayParams[4*T] <= deflection[i,j - 1])):
 
                         terminate_thread[T] = ERROR
                     elif (interp_counter[T] > 0 and
                           gsl_isnan(rayParams[4*T]) == 0 and
                           (0.0 <= rayParams[4*T] < 100.0 * _pi) and
-                          rayParams[4*T] < deflection[i,interp_index[T]]):
+                          rayParams[4*T] > deflection[i,interp_index[T]]):
 
                         deflection[i,j] = rayParams[4*T]
                         lag[i,j] = rayParams[4*T + 2]
@@ -359,14 +432,7 @@ def compute_rays(size_t N_T,
                         deflection[i,j] = rayParams[4*T]
                         lag[i,j] = rayParams[4*T + 2]
 
-        if deflection[i,0] <= _pi:
-            maxDeflection[i] = deflection[i,0]
-        else:
-            for j in range(deflection.shape[1]):
-                if deflection[i,j] < _pi:
-                    maxDeflection[i] = deflection[i,j]
-
-                    break
+        maxDeflection[i] = deflection[i, N_R - 1]
 
     gsl_set_error_handler(handler)
 
@@ -393,9 +459,11 @@ def compute_derivative(size_t N_T,
                        double[:,::1] cos_alpha):
     """ Compute the lensing factor via a monotone cubic spline approximation.
 
+    For primary images only. Used for the rayXpanda documentation.
+
     :param int: Number of OpenMP threads.
-    :param obj: 1D :class:`numpy.ndarray` of :math:`\cos\psi`
-    :param obj: 1D :class:`numpy.ndarray` of :math:`\cos\\alpha`
+    :param obj: 1D :class:`numpy.ndarray` of :math:`\psi`, decreasing.
+    :param obj: 1D :class:`numpy.ndarray` of :math:`\cos\\alpha`, increasing.
 
     :return: 1D :class:`numpy.ndarray` of :math:`\partial\cos\\alpha/\partial\cos\psi/(1-u)`)
 

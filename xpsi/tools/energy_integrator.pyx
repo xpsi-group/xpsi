@@ -10,7 +10,6 @@ from libc.stdlib cimport malloc, free
 from libc.math cimport pow, log
 
 from GSL cimport (gsl_interp,
-                   gsl_interp_steffen,
                    gsl_interp_alloc,
                    gsl_interp_init,
                    gsl_interp_free,
@@ -22,6 +21,8 @@ from GSL cimport (gsl_interp,
                    gsl_interp_accel_reset)
 
 ctypedef gsl_interp_accel accel
+
+from ..tools cimport _get_phase_interpolant, gsl_interp_type
 
 def energy_integrator(size_t N_Ts,
                        double[:,::1] signal,
@@ -48,6 +49,9 @@ def energy_integrator(size_t N_Ts,
         intervals. Energy interval number increases with row number.
 
     """
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
 
     cdef:
         signed int ii
@@ -64,7 +68,7 @@ def energy_integrator(size_t N_Ts,
 
     for T in range(N_Ts):
         acc[T] = gsl_interp_accel_alloc()
-        interp[T] = gsl_interp_alloc(gsl_interp_steffen, energies.shape[0])
+        interp[T] = gsl_interp_alloc(_interpolant, energies.shape[0])
         _signal[T] = <double*> malloc(sizeof(double) * energies.shape[0])
 
     for ii in prange(<signed int>signal.shape[1],
