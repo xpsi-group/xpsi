@@ -8,7 +8,6 @@ The format is based on
 and this project adheres to
 `Semantic Versioning <http://semver.org/spec/v2.0.0.html>`_.
 
-
 [Unreleased]
 ~~~~~~~~~~~~
 
@@ -32,6 +31,99 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+
+
+[v0.6.0] - 2020-09-05
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Backwards compatible for most use cases, but possible corner cases.
+* Includes a non-critical, but important patch for animating intensity skymaps,
+  and updates to the environment file for cloning.
+* The new feature is support for higher-order images when invoking an integrator
+  that discretises the surface (with a regular mesh). Secondary images can
+  be very important, whilst tertiary images less so. Quaternary, quinary, and
+  possibly senary images can sometimes be detected and included too, with
+  accuracy that decreases with order. Fortunately, the contribution to the
+  photon specific flux generally decays rapidly with image order beyond the
+  secondary or tertiary images. The computational cost scales almost
+  linearly with order *if* an appreciable fraction of every iso-latitudinal ring
+  on the surface is multiply-imaged at each order. Note that multiple-imaging
+  manifests entirely naturally when an image-plane is discretised in such away
+  that the regular mesh resolves the stellar limb sufficiently well, where
+  higher-order images get insanely squeezed.
+
+Fixed
+^^^^^
+
+* The memory consumption problem of the animator method in
+  :class:`~.Photosphere.Photosphere`. Now animation should generally require
+  an entirely tracable amount of memory.
+
+Added
+^^^^^
+.. _rayXpanda: <https://github.com/ThomasEdwardRiley/rayXpanda>
+
+* Multiple-imaging support including an option to specify the maximum image
+  order to iterate up to, with automatic truncation when no image at a given
+  order is detected. If no limit is specified (the default), then images are
+  included as far as they can be detected given the numerical resolution
+  settings, which is typically between quaternary and senary images.
+* A multiple-imaging tutorial.
+* A global switch for changing phase and energy interpolants without
+  recompilation of extensions. To change interpolants, you can use top-level
+  functions :func:`xpsi.set_phase_interpolant` and
+  :func:`xpsi.set_energy_interpolant`. Generally computations are more
+  sensitive to the phase interpolants, of which the options from GSL are:
+  Steffen spline (pre-v0.6 choice), Akima periodic spline, and cubic periodic
+  spline. The default choice is now an Akima periodic spline in an attempt to
+  improve interpolation accuracy of the interpolant at function maxima, where
+  the accuracy is generally most important in the context of likelihood
+  evaluations.  Note that in some corner cases, the signal from a hot region is
+  negative in specific flux because there is a correction computed to yield the
+  intended signal from :class:`~.Elsewhere.Elsewhere` when it is partially
+  masked by hot regions. In this case, when using phase interpolant tools from
+  the :mod:`~.tools` and :mod:`~.likelihood` modules it is necessary to use a
+  ``allow_negative`` option when calling the tools to specify that a negative
+  interpolant is permitted.
+* Automatic linking of the package rayXpanda_ for calculation of the inverse of
+  the deflection integral, and it's derivative via a high-order symbolic
+  expansion, for a subset of primary images. The purpose is to mainly as an
+  orthogonal validation of a subset of integrals executed via numerical
+  quadrature and inversion via spline interpolation.  The other reason is
+  because to support multiple-imaging with the surface-discretisation
+  integrators this aforementioned interpolation had to change due to
+  non-injectivity of functions when interpolating with respect to the cosine of
+  the deflection angle. However, to calculate the convergence derivative
+  sufficiently accurately, interpolating with respect to the cosine of the
+  deflection seems necessary. Therefore rayXpanda_ can be linked in, if it is
+  available, for low deflection angles instead of avoid having to allocate
+  additional memory and construct splines specifically for low-deflection
+  primary images. Simple testing suggests there are no valuable speed gains,
+  however, possibly because the high-order expansion and simultaneous evaluation
+  of the polynomial and it's derivate with a nested Horner scheme itself
+  requires a substantial number of floating point operations.
+* A helper method :meth:`~.ParameterSubspace.ParameterSubspace.merge` that
+  merges a set of parameters, or a parameter subspace, or a set of subspaces,
+  into a subspace that has already been instantiated.
+
+Changed
+^^^^^^^
+
+* Updated the Conda ``environment.yml`` file for replication of the development
+  environment. The ``basic_environment.yml`` file was also updated in an
+  earlier release in an additional necessary package, ``wrapt``.
+
+Deprecated
+^^^^^^^^^^
+
+* The ``repeat``, ``repeat_delay``, and ``ffmpeg_path`` keyword arguments for
+  the animator method in :class:`~.Photosphere.Photosphere`. These were
+  ultimately not effective. To repeat the animation intrinsically, set the
+  number of ``cycles``, and extrinsically, this can be looped when embedded in
+  another environment.
 
 
 [v0.5.4] - 2020-09-01
@@ -67,6 +159,8 @@ Fixed
   property so that explicit setting of ``None`` by user is not required if
   file I/O is not needed in the extension module. Actually, ``None`` could
   not be set for the property anyway due to type checking.
+* Bug when declaring that sky maps should be animated and memory freed
+  beforehand.
 
 Added
 ^^^^^

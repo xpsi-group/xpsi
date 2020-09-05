@@ -18,7 +18,7 @@ __all__ = ["_np",
            "_kpc",
            "_keV",
            "_G",
-           "_M_s",
+           "_GM",
            "_h_keV",
            "_h",
            "_k_B",
@@ -72,8 +72,8 @@ _c = 2.99792458E8
 _csq = _c * _c
 _kpc = 3.08567758e19
 _keV = 1.60217662e-16
-_G = 6.6730831e-11
-_M_s = 1.9887724767047002e30
+_GM = 0.5 * 2.95325024e3 # Solar Schwarzschild gravitational radius in SI
+_G = 6.6740831e-11
 _h_keV = 4.135667662e-18
 _h = 6.62607004e-34
 _dpr = 180.0 / _pi
@@ -81,12 +81,12 @@ _km = 1.0e3
 _k_B = 1.38064852e-23
 
 def gravradius(M):
-    """ Get the gravitational radius in km given gravitational mass. """
-    return _G * M * _M_s/(1000.0 * _c * _c)
+    """ Get the gravitational radius in km given gravitational mass in Solar masses. """
+    return M * _GM / _km
 
 def inv_gravradius(R):
-    """ Get the gravitational mass in solar masses given gravitational radius. """
-    return R * 1000.0 * _c * _c / (_G * _M_s)
+    """ Get the gravitational mass in solar masses given gravitational radius in km. """
+    return R * _km / _GM
 
 class xpsiError(Exception):
     """ Base exception for xpsi-specific runtime errors. """

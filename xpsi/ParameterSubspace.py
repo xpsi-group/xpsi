@@ -40,7 +40,10 @@ class ParameterSubspace(object):
             print('No parameters supplied... empty subspace created.')
 
         self._params = []
+        self.merge(*args)
 
+    def merge(self, *args):
+        """ Merge parameters into the subspace, thereby expanding it. """
         for obj in args: # siphon off the parameters for merge
             if isinstance(obj, Parameter):
                 self._handle(obj)

@@ -179,6 +179,30 @@ class HotRegion(ParameterSubspace):
         target the radiation field within the hot regions as defined
         above.
 
+    :param int image_order_limit:
+        The highest-order image to sum over. A value of *one* means primary
+        images only (deflections :math:`<\pi`) whilst a value of *two* means
+        primary and secondary images (deflections :math:`<2pi`) where visible,
+        and so on. If ``None`` (the default), there is no hard limit. In this
+        case the limit is determined quasi-naturally for each mesh element,
+        meaning that images will be summed over until higher order images are
+        not visible or the visibility limit is truncated due to lack of
+        numerical precision (e.g. for rays that orbit very close to the
+        Schwarzschild photon sphere three times or more).  Higher-order images
+        generally contribute less and less due to geometric projection effects
+        (higher-order images become more tangential), and the images of
+        elements get squeezed in solid angle at the stellar limb. In principle,
+        effects such as relativistic beaming can counter this effect to a
+        degree for certain source-receiver configurations, by increasing
+        brightness whilst solid angle decreases, and thus the flux contribution
+        relative to that from a primary image can be greater than suggested
+        simply by geometric project effects. Nevertheless, inclusion of these
+        images is more computationally expensive. If, when iterating through
+        image orders, an image is not visible because the deflection required
+        is greater than the highest deflection permitted at a given colatitude
+        on a surface (accounting for the surface tilt due to rotation), then
+        the iteration over image orders terminates.
+
     """
     required_names = ['super_colatitude',
                       'super_radius',
@@ -217,6 +241,7 @@ class HotRegion(ParameterSubspace):
                  fast_phases = None,
                  is_antiphased = False,
                  custom = None,
+                 image_order_limit = None,
                  **kwargs):
 
         self.is_antiphased = kwargs.get('is_secondary', is_antiphased)
@@ -233,12 +258,9 @@ class HotRegion(ParameterSubspace):
         self.set_phases(num_leaves, num_phases, phases,
                         fast_num_leaves, fast_num_phases, fast_phases)
 
-        # find the required integrator
-        if symmetry: # can we safely assume azimuthal invariance?
-            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
-        else: # more general purpose
-            from .cellmesh.integrator import integrate as _integrator
-        self._integrator = _integrator
+        self.image_order_limit = image_order_limit
+
+        self.symmetry = symmetry
 
         # first the parameters that are fundemental to this class
         doc = """
@@ -450,6 +472,30 @@ class HotRegion(ParameterSubspace):
         """ Return self for uniform interface with other classes. """
         return [self]
 
+    @property
+    def symmetry(self):
+        """ Get the symmetry declaration (controls integrator invocation). """
+        return self._symmetry
+
+    @symmetry.setter
+    def symmetry(self, declaration):
+        if not isinstance(declaration, bool):
+            raise TypeError('Declare symmetry existence with a boolean.')
+
+        self._symmetry = declaration
+
+        # find the required integrator
+        if declaration: # can we safely assume azimuthal invariance?
+            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+        else: # more general purpose
+            from .cellmesh.integrator import integrate as _integrator
+        self._integrator = _integrator
+
+    @property
+    def integrator(self):
+        """ Get the integrator to be invoked. """
+        return self._integrator
+
     def set_num_rays(self, num_rays, fast_num_rays):
         self.num_rays = num_rays
         self._fast_num_rays = fast_num_rays
@@ -466,6 +512,20 @@ class HotRegion(ParameterSubspace):
             self._num_rays = int(n)
         except TypeError:
             raise TypeError('Number of rays must be an integer.')
+
+    @property
+    def image_order_limit(self):
+        """ Get the image order limit. """
+        return self._image_order_limit
+
+    @image_order_limit.setter
+    def image_order_limit(self, limit):
+        """ Set the image order limit. """
+        if limit is not None:
+            if not isinstance(limit, int):
+                raise TypeError('Image order limit must be an positive integer '
+                                'if not None.')
+        self._image_order_limit = limit
 
     def set_num_cells(self,
                       sqrt_num_cells = 32,
@@ -501,9 +561,15 @@ class HotRegion(ParameterSubspace):
     def sqrt_num_cells(self, n):
         """ Set the number of cell parallels. """
         try:
-            self._sqrt_num_cells = int(n)
+            _n = int(n)
         except TypeError:
             raise TypeError('Number of cells must be an integer.')
+        else:
+            if not _n >= 4:
+                raise ValueError('Number of cells must be a positive integer '
+                                 'greater than for equal to four.')
+
+        self._sqrt_num_cells = _n
 
     @property
     def leaves(self):
@@ -1038,7 +1104,8 @@ class HotRegion(ParameterSubspace):
                                        leaves,
                                        phases,
                                        hot_atmosphere,
-                                       elsewhere_atmosphere)
+                                       elsewhere_atmosphere,
+                                       self._image_order_limit)
 
         if super_pulse[0] == 1:
             raise PulseError('Fatal numerical error during superseding-'
@@ -1068,7 +1135,8 @@ class HotRegion(ParameterSubspace):
                                           leaves,
                                           phases,
                                           hot_atmosphere,
-                                          elsewhere_atmosphere)
+                                          elsewhere_atmosphere,
+                                          self._image_order_limit)
         except AttributeError:
             pass
         else:

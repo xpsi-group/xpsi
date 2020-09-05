@@ -38,24 +38,6 @@ class Everywhere(ParameterSubspace):
         is simple and azimuthally invariant, we do not provide a default
         value for this argument to force the user to verify their intentions.
 
-    :param int num_rays:
-        Number of rays to trace (integrate) at each colatitude, distributed
-        in angle subtended between ray tangent 4-vector and radial outward unit
-        vector w.r.t a local orthonormal tetrad.
-
-    :param int sqrt_num_cells:
-        Number of cells in both colatitude and azimuth which form a regular
-        mesh on the surface. The total number of cells is the square of this
-        argument value. The mesh suffers from squeezing in the polar regions,
-        leading to a high degree of non-congruence in cell shape over the
-        surface.
-
-    :param iterable custom:
-        Iterable over :class:`~.Parameter.Parameter` instances. If you
-        supply custom parameter definitions, you need to overwrite the
-        :func:`~.Everywhere.Everwhere._compute_cellParamVecs` method to
-        implement your custom behaviour.
-
     :param dict bounds:
         If ``custom is None``, these bounds are supplied for instantiation
         of a temperature parameter. The parameter name
@@ -69,6 +51,68 @@ class Everywhere(ParameterSubspace):
         temperature is free. The dictionary must have a key with name
         ``'temperature'`` if it is *fixed* or *derived*.
 
+    :param int sqrt_num_cells:
+        Number of cells in both colatitude and azimuth which form a regular
+        mesh on the surface. Must be an even number such that half of the cells
+        are exactly in one hemisphere. The total number of cells is the square
+        of this argument value. The mesh suffers from squeezing in the polar
+        regions, leading to a high degree of non-congruence in cell shape over
+        the surface.
+
+    :param int num_rays:
+        Number of rays to trace (integrate) at each colatitude, distributed
+        in angle subtended between ray tangent 4-vector and radial outward unit
+        vector w.r.t a local orthonormal tetrad.
+
+    :param int num_leaves:
+        Number of stellar rotation phases to rotate a moving mesh through
+        during signal integration.
+
+    :param int num_phases:
+        Number of phases to resolve the signal at if the signal is time-
+        dependent.
+
+    :param ndarray[m]:
+        Array of phases to resolve a time-dependent signal at.
+
+    :param iterable custom:
+        Iterable over :class:`~.Parameter.Parameter` instances. If you
+        supply custom parameter definitions, you need to overwrite the
+        :func:`~.Everywhere.Everwhere._compute_cellParamVecs` method to
+        implement your custom behaviour.
+
+    :param int image_order_limit:
+        The highest-order image to sum over. A value of *one* means primary
+        images only (deflections :math:`<\pi`) whilst a value of *two* means
+        primary and secondary images (deflections :math:`<2pi`) where visible,
+        and so on. If ``None`` (the default), there is no hard limit. In this
+        case the limit is determined quasi-naturally for each mesh element,
+        meaning that images will be summed over until higher order images are
+        not visible or the visibility limit is truncated due to lack of
+        numerical precision (e.g. for rays that orbit very close to the
+        Schwarzschild photon sphere three times or more).  Higher-order images
+        generally contribute less and less due to geometric projection effects
+        (higher-order images become more tangential), and the images of
+        elements get squeezed in solid angle at the stellar limb. In principle,
+        effects such as relativistic beaming can counter this effect to a
+        degree for certain source-receiver configurations, by increasing
+        brightness whilst solid angle decreases, and thus the flux contribution
+        relative to that from a primary image can be greater than suggested
+        simply by geometric project effects. Nevertheless, inclusion of these
+        images is more computationally expensive. If, when iterating through
+        image orders, an image is not visible because the deflection required
+        is greater than the highest deflection permitted at a given colatitude
+        on a surface (accounting for the surface tilt due to rotation), then
+        the iteration over image orders terminates.
+
+    :param bool _integrator_toggle:
+        For testing purposes, toggle the integrator for time-dependent signals.
+        If left as the default (``False``) the general-purpose integrator is
+        called. If toggled, an integrator is called that assumes the surface
+        radiation field is azimuthally invariant, which combined with the
+        default global mesh (i.e., no subclassing) results in a time-invariant
+        signal.
+
     """
     required_names = ['temperature (if no custom specification)']
 
@@ -81,13 +125,17 @@ class Everywhere(ParameterSubspace):
                  num_leaves = 100,
                  num_phases = None,
                  phases = None,
-                 custom = None):
+                 custom = None,
+                 image_order_limit = None,
+                 _integrator_toggle = False):
 
         self.num_rays = num_rays
 
         self.sqrt_num_cells = sqrt_num_cells
 
         self.set_phases(num_leaves, num_phases, phases)
+
+        self.image_order_limit = image_order_limit
 
         if bounds is None: bounds = {}
         if values is None: values = {}
@@ -105,6 +153,24 @@ class Everywhere(ParameterSubspace):
         super(Everywhere, self).__init__(T, custom)
 
         self.time_invariant = time_invariant
+        self._integrator_toggle = _integrator_toggle
+
+    @property
+    def _integrator_toggle(self):
+        """ Get the toggle setting. """
+        try:
+            return self._intoggle
+        except AttributeError:
+            return False
+
+    @_integrator_toggle.setter
+    def _integrator_toggle(self, toggle):
+        if isinstance(toggle, bool):
+            self._intoggle = toggle
+        else: # silently default
+            self._intoggle = False
+
+        self.time_invariant = self.time_invariant
 
     @property
     def time_invariant(self):
@@ -120,7 +186,10 @@ class Everywhere(ParameterSubspace):
             from .cellmesh.integrator_for_time_invariance import integrate as _integrator
         else: # more general purpose
             self._time_invariant = False
-            from .cellmesh.integrator import integrate as _integrator
+            if not self._integrator_toggle:
+                from .cellmesh.integrator import integrate as _integrator
+            else:
+                from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
         self._integrator = _integrator
 
     @property
@@ -145,16 +214,48 @@ class Everywhere(ParameterSubspace):
     def sqrt_num_cells(self, n):
         """ Set the number of cell colatitudes. """
         try:
-            self._sqrt_num_cells = int(n)
+             _n = int(n)
         except TypeError:
             raise TypeError('Number of cells must be an integer.')
         else:
-            self._num_cells = n**2
+            if not _n > 10 or _n%2 != 0:
+                raise ValueError('Number of cells must be a positive even '
+                                 'integer greater than or equal to ten.')
+        self._sqrt_num_cells = _n
+        self._num_cells = _n**2
 
     @property
     def num_cells(self):
         """ Get the total number of cells in the mesh. """
         return self._num_cells
+
+    @property
+    def image_order_limit(self):
+        """ Get the image order limit. """
+        return self._image_order_limit
+
+    @image_order_limit.setter
+    def image_order_limit(self, limit):
+        """ Set the image order limit. """
+        if limit is not None:
+            if not isinstance(limit, int):
+                raise TypeError('Image order limit must be an positive integer '
+                                'if not None.')
+        self._image_order_limit = limit
+
+    @property
+    def rayXpanda_defl_lim(self):
+        """ Get the rayXpanda deflection limit. """
+        try:
+            return self._rayXpanda_defl_lim
+        except AttributeError:
+            try:
+                from .cellmesh import __rayXpanda_defl_lim__
+            except ImportError:
+                return None
+            else:
+                self._rayXpanda_defl_lim = __rayXpanda_defl_lim__
+                return __rayXpanda_defl_lim__
 
     def print_settings(self):
         """ Print numerical settings. """
@@ -200,8 +301,8 @@ class Everywhere(ParameterSubspace):
                     assert phases[i] < phases[i+1]
             except AssertionError:
                 raise TypeError('Phases must be a one-dimensional '
-                                '``numpy.ndarray`` with monotonically '
-                                'increasing elements on the interval [0,1].')
+                                'ndarray with monotonically increasing '
+                                'elements on the interval [0,1].')
             else:
                 self._phases_cycles = phases
 
@@ -341,7 +442,8 @@ class Everywhere(ParameterSubspace):
                                    self._maxDeflection,
                                    self._cos_gamma,
                                    energies,
-                                   atmosphere)
+                                   atmosphere,
+                                   self._image_order_limit)
         else:
             out = self._integrator(threads,
                                    st.R,
@@ -366,7 +468,8 @@ class Everywhere(ParameterSubspace):
                                    self._leaves,
                                    self._phases,
                                    atmosphere,
-                                   None) # no other atmosphere needed
+                                   None, # no other atmosphere needed
+                                   self._image_order_limit)
         if out[0] == 1:
             raise IntegrationError('Fatal numerical error during integration.')
 

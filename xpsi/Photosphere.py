@@ -1287,8 +1287,7 @@ class Photosphere(ParameterSubspace):
     @staticmethod
     @make_verbose('Animating intensity sky maps', 'Intensity sky maps animated')
     def _animate(_file_root, _num_frames, _figsize, _dpi,
-                 cycles = 1, repeat = True, repeat_delay = 0.0,
-                 ffmpeg_path = None, fps = None, **kwargs):
+                 cycles = 1, fps = None, **kwargs):
         """ Helper method to animate the intensity sky maps.
 
         :param str _file_root:
@@ -1309,21 +1308,22 @@ class Photosphere(ParameterSubspace):
             their phase evolution. There is no delay between cycles in this
             type of repitition.
 
-        :param bool repeat:
-            Inform *ffmpeg* to enter a loop when video play back commences.
-
-        :param repeat_delay:
-            Delay between repeats in milliseconds.
-
-        :param str ffmpeg_path:
-            Absolute path to *ffmpeg* executable. If ``None``, defaults
-            to matplotlib rcParams settings, but no guarantee that the package
-            will be found even if installed on system.
-
         :param int fps:
             Frames per second. If ``None``, then one cycle (assuming images
             have been precomputed for a complete cycle), consisting of
             so many frames, will exhibit a period of one second.
+
+        :param bool repeat:
+            Inform *ffmpeg* to enter a loop when video play back commences.
+            Deprecated.
+
+        :param repeat_delay:
+            Delay between repeats in milliseconds. Deprecated.
+
+        :param str ffmpeg_path:
+            Absolute path to *ffmpeg* executable. If ``None``, defaults
+            to matplotlib rcParams settings, but no guarantee that the package
+            will be found even if installed on system. Deprecated.
 
         """
         file_root = _file_root
@@ -1337,43 +1337,57 @@ class Photosphere(ParameterSubspace):
         fig.subplots_adjust(left=0, bottom=0, right=1, top=1,
                             wspace=None, hspace=None)
 
-        images = []
-
-        for i in range(num_frames): # load phase-ordered set of images
-            filename = file_root + '_%i.png' % i
-            img = mgimg.imread(filename)
-            imgplot = ax.imshow(img, aspect='auto')
-            images.append([imgplot])
+        # animation code based on:
+        # http://jakevdp.github.io/blog/2012/08/18/matplotlib-animation-tutorial/
+        filename = file_root + '_0.png'
+        img = mgimg.imread(filename)
+        imgplot = ax.imshow(img, aspect='auto')
 
         cycles = int(cycles)
 
         if cycles < 1:
             cycles = 1
         elif cycles > 1:
-            for i in range(cycles - 1):
-                for j in range(1, num_frames):
-                    images.append(images[j])
+            num_frames += (cycles - 1) * (_num_frames - 1)
 
-        ani = animation.ArtistAnimation(fig, images,
-                                        repeat = repeat,
-                                        repeat_delay = repeat_delay)
+        class _context: # mutable nonlocal namespace in closure
+            _cycle_idx = 0 # track cycle
+            _j = -1        # track image index
+            _last = -1
 
-        if ffmpeg_path is None:
-            yield ('Warning: no path specified for ffmpeg executable. '
-                   'Resorting to rcParams default.')
-        else:
-            plt.rcParams['animation.ffmpeg_path'] = ffmpeg_path
+        def _update(i): # load phase-ordered set of images
+            if _context._last == i:
+                return imgplot,
+
+            if _context._cycle_idx == 0 and i == _num_frames:
+                _context._j = 1
+                _context._cycle_idx = 1
+            elif i == _num_frames + _context._cycle_idx * (_num_frames - 1):
+                _context._j = 1
+                _context._cycle_idx += 1
+            else:
+                _context._j += 1
+
+            _context._last = i
+
+            filename = file_root + '_%i.png' % _context._j
+            img = mgimg.imread(filename)
+            imgplot.set_data(img)
+            return imgplot,
+
+        ani = animation.FuncAnimation(fig, _update, frames=num_frames, blit=True)
 
         if fps is None:
             fps = num_frames # all frames span one second
 
         # secret keyword argument; not clear whether should be exposed to user
-        bitrate = kwargs.get('bitrate', -1)
+        bitrate = kwargs.get('bitrate', -1) # default is let _mpl choose
 
         filename = file_root + '_animated.mp4'
         yield 'Writing to disk: %s' % filename
         ani.save(filename, writer = 'ffmpeg',
-                 dpi = dpi, fps = fps, bitrate = bitrate)
+                 dpi = dpi, fps = fps, bitrate = bitrate,
+                 extra_args=['-vcodec', 'libx264'])
 
         fig.clf() # this or ax.cla() needed to free memory
         plt.close(fig)

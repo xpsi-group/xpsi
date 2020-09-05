@@ -23,23 +23,18 @@ class Elsewhere(ParameterSubspace):
     comoving radiation field properties are *assumed* (for now) to be
     azimuthally invariant but can in principle vary colatitudinally.
 
-    :param int num_rays:
-        Number of rays to trace (integrate) at each colatitude, distributed
-        in angle subtended between ray tangent 4-vector and radial outward unit
-        vector w.r.t a local orthonormal tetrad.
-
     :param int sqrt_num_cells:
         Number of cells in both colatitude and azimuth which form a regular
-        mesh on the surface. The total number of cells is the square of this
+        mesh on the surface. Must be an even number such that half of the cells
+        are exactly in one hemisphere. The total number of cells is the square
         argument value. The mesh suffers from squeezing in the polar regions,
         leading to a high degree of non-congruence in cell shape over the
         surface.
 
-    :param iterable custom:
-        Iterable over :class:`~.Parameter.Parameter` instances. If you
-        supply custom parameter definitions, you need to overwrite the
-        :func:`~.Elsewhere.Elsewhere._compute_cellParamVecs` method to
-        handle your custom behaviour.
+    :param int num_rays:
+        Number of rays to trace (integrate) at each colatitude, distributed
+        in angle subtended between ray tangent 4-vector and radial outward unit
+        vector w.r.t a local orthonormal tetrad.
 
     :param dict bounds:
         If ``custom is None``, these bounds are supplied for instantiation
@@ -54,6 +49,36 @@ class Elsewhere(ParameterSubspace):
         temperature is free. The dictionary must have a key with name
         ``'elsewhere_temperature'`` if it is *fixed* or *derived*.
 
+    :param iterable custom:
+        Iterable over :class:`~.Parameter.Parameter` instances. If you
+        supply custom parameter definitions, you need to overwrite the
+        :func:`~.Elsewhere.Elsewhere._compute_cellParamVecs` method to
+        handle your custom behaviour.
+
+    :param int image_order_limit:
+        The highest-order image to sum over. A value of *one* means primary
+        images only (deflections :math:`<\pi`) whilst a value of *two* means
+        primary and secondary images (deflections :math:`<2pi`) where visible,
+        and so on. If ``None`` (the default), there is no hard limit. In this
+        case the limit is determined quasi-naturally for each mesh element,
+        meaning that images will be summed over until higher order images are
+        not visible or the visibility limit is truncated due to lack of
+        numerical precision (e.g. for rays that orbit very close to the
+        Schwarzschild photon sphere three times or more).  Higher-order images
+        generally contribute less and less due to geometric projection effects
+        (higher-order images become more tangential), and the images of
+        elements get squeezed in solid angle at the stellar limb. In principle,
+        effects such as relativistic beaming can counter this effect to a
+        degree for certain source-receiver configurations, by increasing
+        brightness whilst solid angle decreases, and thus the flux contribution
+        relative to that from a primary image can be greater than suggested
+        simply by geometric project effects. Nevertheless, inclusion of these
+        images is more computationally expensive. If, when iterating through
+        image orders, an image is not visible because the deflection required
+        is greater than the highest deflection permitted at a given colatitude
+        on a surface (accounting for the surface tilt due to rotation), then
+        the iteration over image orders terminates.
+
     """
     required_names = ['elsewhere_temperature (if no custom specification)']
 
@@ -62,10 +87,13 @@ class Elsewhere(ParameterSubspace):
                  num_rays = 1000,
                  bounds = None,
                  values = None,
-                 custom = None):
+                 custom = None,
+                 image_order_limit = None):
 
         self.sqrt_num_cells = sqrt_num_cells
         self.num_rays = num_rays
+
+        self.image_order_limit = image_order_limit
 
         if bounds is None: bounds = {}
         if values is None: values = {}
@@ -104,16 +132,34 @@ class Elsewhere(ParameterSubspace):
     def sqrt_num_cells(self, n):
         """ Set the number of cell colatitudes. """
         try:
-            self._sqrt_num_cells = int(n)
+             _n = int(n)
         except TypeError:
             raise TypeError('Number of cells must be an integer.')
         else:
-            self._num_cells = n**2
+            if not _n >= 10 or _n%2 != 0:
+                raise ValueError('Number of cells must be a positive even '
+                                 'integer greater than or equal to ten.')
+        self._sqrt_num_cells = _n
+        self._num_cells = _n**2
 
     @property
     def num_cells(self):
         """ Get the total number of cells in the mesh. """
         return self._num_cells
+
+    @property
+    def image_order_limit(self):
+        """ Get the image order limit. """
+        return self._image_order_limit
+
+    @image_order_limit.setter
+    def image_order_limit(self, limit):
+        """ Set the image order limit. """
+        if limit is not None:
+            if not isinstance(limit, int):
+                raise TypeError('Image order limit must be an positive integer '
+                                'if not None.')
+        self._image_order_limit = limit
 
     def print_settings(self):
         """ Print numerical settings. """
@@ -251,7 +297,8 @@ class Elsewhere(ParameterSubspace):
                            self._maxDeflection,
                            self._cos_gamma,
                            _energies,
-                           atmosphere)
+                           atmosphere,
+                           self._image_order_limit)
         if out[0] == 1:
             raise IntegrationError('Fatal numerical error during elsewhere integration.')
 
