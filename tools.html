@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tools &mdash; xpsi 0.5.3 documentation</title>
+  <title>Tools &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -250,7 +251,7 @@ code.</p>
 <h2>Phase handling<a class="headerlink" href="#phase-handling" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="xpsi.tools.phase_integrator">
-<code class="descclassname">xpsi.tools.</code><code class="descname">phase_integrator</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice signal</em>, <em>__Pyx_memviewslice signal_phases</em>, <em>double phase_shift</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.tools.phase_integrator" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">xpsi.tools.</code><code class="descname">phase_integrator</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice signal</em>, <em>__Pyx_memviewslice signal_phases</em>, <em>double phase_shift</em>, <em>bool allow_negative=0</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.tools.phase_integrator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integrate a signal over phase intervals.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -265,6 +266,13 @@ increases with column number.</li>
 <li><strong>signal_phases</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of phases in cycles at which
 the model <code class="xref py py-obj docutils literal notranslate"><span class="pre">signal</span></code> is evaluated on the interval <code class="docutils literal notranslate"><span class="pre">[0,1]</span></code>.</li>
 <li><strong>phase_shift</strong> (<em>double</em>) – A phase shift in cycles such as on the interval <code class="docutils literal notranslate"><span class="pre">[-0.5,0.5]</span></code>.</li>
+<li><strong>allow_negative</strong> (<em>obj</em>) – A boolean declaring whether to allow negative phase interpolant
+integrals. If the interpolant is not a Steffen spline, then the
+interpolant of a non-negative function can be negative due to
+oscillations. For the default Akima Periodic spline from GSL, such
+oscillations should manifest as small relative to those present in
+cubic splines, for instance, because it is designed to handle a rapidly
+changing second-order derivative.</li>
 </ul>
 </td>
 </tr>
@@ -279,7 +287,7 @@ number increases with column number.</p>
 
 <dl class="function">
 <dt id="xpsi.tools.phase_interpolator">
-<code class="descclassname">xpsi.tools.</code><code class="descname">phase_interpolator</code><span class="sig-paren">(</span><em>__Pyx_memviewslice new_phases</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice signal</em>, <em>double phase_shift</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.tools.phase_interpolator" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">xpsi.tools.</code><code class="descname">phase_interpolator</code><span class="sig-paren">(</span><em>__Pyx_memviewslice new_phases</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice signal</em>, <em>double phase_shift</em>, <em>bool allow_negative=0</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.tools.phase_interpolator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolate a signal in phase.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -293,6 +301,13 @@ the model <code class="xref py py-obj docutils literal notranslate"><span class=
 <li><strong>signal</strong> (<em>double</em><em>[</em><em>:</em><em>,</em><em>::1</em><em>]</em>) – A C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of signal count rates. Phase
 increases with column number.</li>
 <li><strong>phase_shift</strong> (<em>double</em>) – A phase shift in cycles, such as on the interval <code class="docutils literal notranslate"><span class="pre">[-0.5,0.5]</span></code>.</li>
+<li><strong>allow_negative</strong> (<em>obj</em>) – A boolean declaring whether to allow negative phase interpolant
+integrals. If the interpolant is not a Steffen spline, then the
+interpolant of a non-negative function can be negative due to
+oscillations. For the default Akima Periodic spline from GSL, such
+oscillations should manifest as small relative to those present in
+cubic splines, for instance, because it is designed to handle a rapidly
+changing second-order derivative.</li>
 </ul>
 </td>
 </tr>
@@ -365,7 +380,7 @@ of energies. Energy increases with row number.</p>
 <h2>Synthesis<a class="headerlink" href="#synthesis" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="xpsi.tools.synthesise_exposure">
-<code class="descclassname">xpsi.tools.</code><code class="descname">synthesise_exposure</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>double expected_background_counts</em>, <em>__Pyx_memviewslice background</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.tools.synthesise_exposure" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">xpsi.tools.</code><code class="descname">synthesise_exposure</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>double expected_background_counts</em>, <em>__Pyx_memviewslice background</em>, <em>allow_negative=False</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.tools.synthesise_exposure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synthesise Poissonian count numbers given an exposure time.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -402,7 +417,7 @@ The last element is the required normalisation of the background.</p>
 
 <dl class="function">
 <dt id="xpsi.tools.synthesise_given_total_count_number">
-<code class="descclassname">xpsi.tools.</code><code class="descname">synthesise_given_total_count_number</code><span class="sig-paren">(</span><em>__Pyx_memviewslice phases</em>, <em>double expected_star_counts</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>double expected_background_counts</em>, <em>__Pyx_memviewslice background</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.tools.synthesise_given_total_count_number" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">xpsi.tools.</code><code class="descname">synthesise_given_total_count_number</code><span class="sig-paren">(</span><em>__Pyx_memviewslice phases</em>, <em>double expected_star_counts</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>double expected_background_counts</em>, <em>__Pyx_memviewslice background</em>, <em>allow_negative=False</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.tools.synthesise_given_total_count_number" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synthesise Poissonian count numbers given expected target source counts.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -426,6 +441,13 @@ normalisation (given the exposure time).</li>
 <em>counts</em>, whose shape matches the number of channels in each element
 of <code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code> and the number of phase intervals constructed
 from <code class="xref py py-obj docutils literal notranslate"><span class="pre">phases</span></code>.</li>
+<li><strong>allow_negative</strong> (<em>obj</em>) – A boolean or an array of booleans, one per component, declaring whether
+to allow negative phase interpolant integrals. If the interpolant is
+not a Steffen spline, then the interpolant of a non-negative function
+can be negative due to oscillations. For the default Akima Periodic
+spline from GSL, such oscillations should manifest as small relative
+to those present in cubic splines, for instance, because it is
+designed to handle a rapidly changing second-order derivative.</li>
 </ul>
 </td>
 </tr>

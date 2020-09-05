@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Global surface emission &mdash; xpsi 0.5.3 documentation</title>
+  <title>Global surface emission &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -116,6 +116,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -446,7 +447,7 @@ static mesh that does <em>not</em> move (between temporal hyperslices of the spa
 <p>The unexecuted notebook for this tutorial may be found in a GitHub repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
 
-<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.5/
+<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.6/
 </pre></div>
 </div>
 <p>You can use the default atmosphere extension module <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/hot/blackbody.pyx</span></code> as described below. To run this tutorial, you should therefore be able to simply use the default <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot.pyx</span></code> extension that is automatically compiled when X-PSI is installed. However, you’ll have to switch the contents of the <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/local_variables.pyx</span></code> extension, as instructed below, in order to change the mapping from global
@@ -475,7 +476,7 @@ variables to local variables.</p>
 <span class="kn">import</span> <span class="nn">xpsi</span>
 <span class="kn">from</span> <span class="nn">xpsi</span> <span class="kn">import</span> <span class="n">Parameter</span>
 
-<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_2pi</span>
+<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_2pi</span>
 </pre></div>
 </div>
 </div>
@@ -487,7 +488,7 @@ variables to local variables.</p>
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.5.3               |
+|                Version: 0.6.0               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -700,7 +701,7 @@ temperature: log10(effective temperature [K] everywhere).
 </div>
 <p>We need a helper function to plot the signal, normalised to the maximum specific flux:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -708,16 +709,18 @@ temperature: log10(effective temperature [K] everywhere).
 
 <span class="k">def</span> <span class="nf">plot_2D_pulse</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span>
                   <span class="n">num_rotations</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                  <span class="n">error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                   <span class="n">cm</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Helper function to plot a phase-energy pulse.</span>
 
 <span class="sd">    :param array-like z:</span>
-<span class="sd">        A pair of *ndarray[m,n]* objects representing the signal at</span>
-<span class="sd">        *n* phases and *m* values of an energy variable.</span>
+<span class="sd">        Either one, or a pair, of *ndarray[m,n]* objects representing the signal at</span>
+<span class="sd">        *n* phases and *m* values of an energy variable. A pair is required if</span>
+<span class="sd">        the fractional difference is to be plotted.</span>
 
 <span class="sd">    :param ndarray[n] x: Phases the signal is resolved at.</span>
 
-<span class="sd">    :param tuple shift: Hot region phase parameters.</span>
+<span class="sd">    :param float shift: Phase shift to apply.</span>
 
 <span class="sd">    :param ndarray[m] x: Energy values the signal is resolved at.</span>
 
@@ -731,17 +734,34 @@ temperature: log10(effective temperature [K] everywhere).
 
     <span class="n">new_phases</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">num_rotations</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
 
-    <span class="n">interpolated</span> <span class="o">=</span> <span class="n">phase_interpolator</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
+    <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">interpolated</span> <span class="o">=</span> <span class="n">phase_interpolator</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
+                                      <span class="n">x</span><span class="p">,</span>
+                                      <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">shift</span><span class="p">)</span>
+
+        <span class="n">interpolated</span> <span class="o">/=</span> <span class="n">phase_interpolator</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
+                                      <span class="n">x</span><span class="p">,</span>
+                                      <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">shift</span><span class="p">)</span>
+
+        <span class="n">interpolated</span> <span class="o">-=</span> <span class="mf">1.0</span>
+        <span class="n">interpolated</span> <span class="o">*=</span> <span class="mf">100.0</span>
+
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">interpolated</span><span class="p">))</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="n">vmax</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">interpolated</span> <span class="o">=</span> <span class="n">phase_interpolator</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
                                       <span class="n">x</span><span class="p">,</span>
                                       <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">shift</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
-        <span class="n">interpolated</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">interpolated</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">interpolated</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">interpolated</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">interpolated</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">interpolated</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">interpolated</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">interpolated</span><span class="p">)</span>
 
     <span class="n">profile</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
                              <span class="n">y</span><span class="p">,</span>
@@ -754,7 +774,7 @@ temperature: log10(effective temperature [K] everywhere).
 
     <span class="n">profile</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
 
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">num_rotations</span><span class="p">])</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Phase&#39;</span><span class="p">)</span>
@@ -770,7 +790,7 @@ temperature: log10(effective temperature [K] everywhere).
     <span class="n">cb</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
 <span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">14.0</span>
+<span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">18.0</span>
 
 <span class="k">def</span> <span class="nf">veneer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Make the plots a little more aesthetically pleasing. &quot;&quot;&quot;</span>
@@ -807,6 +827,7 @@ temperature: log10(effective temperature [K] everywhere).
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
               <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
+              <span class="n">num_rotations</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
               <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Energy (keV)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -842,16 +863,15 @@ temperature: log10(effective temperature [K] everywhere).
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">temp</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span>
+<span></span><span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">temp</span><span class="p">),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
-              <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
+              <span class="n">shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
               <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Energy (keV)&#39;</span><span class="p">,</span>
               <span class="n">cm</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">,</span>
-              <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Abs. </span><span class="si">% f</span><span class="s2">rac. diff.&quot;</span><span class="p">,</span>
-              <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.002</span><span class="p">,</span> <span class="c1"># if None just uses minimum abs. diff.</span>
-              <span class="n">vmax</span><span class="o">=</span><span class="mf">0.002</span><span class="p">,</span>  <span class="c1"># if None just uses maximum abs. diff.</span>
-              <span class="n">normalise</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+              <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Pct. frac. diff.&quot;</span><span class="p">,</span>
+              <span class="n">num_rotations</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+              <span class="n">error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -900,9 +920,9 @@ problematic. Alternatively, if you want to examine convergence of integrators, a
 Imaging the star...
 Warning: a ray map has not been cached... tracing new ray set...
 Commencing ray tracing and imaging...
-Ray tracing complete...
-Ray set cached...
-Phase-resolved specific flux integration complete...
+Ray tracing complete.
+Ray set cached.
+Phase-resolved specific flux integration complete.
 Star imaged.
 </pre></div></div>
 </div>
@@ -913,16 +933,15 @@ photons/cm<span class="math notranslate nohighlight">\(^{2}\)</span>/s/keV becau
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="mf">100.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d_sq</span><span class="o">/</span><span class="n">temp</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span>
+<span></span><span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d_sq</span><span class="p">,</span> <span class="n">temp</span><span class="p">),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
-              <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
+              <span class="n">shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
               <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Energy (keV)&#39;</span><span class="p">,</span>
               <span class="n">cm</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">,</span>
-              <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Abs. </span><span class="si">% f</span><span class="s2">rac. diff.&quot;</span><span class="p">,</span>
-              <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.021</span><span class="p">,</span>
-              <span class="n">vmax</span><span class="o">=</span> <span class="mf">0.021</span><span class="p">,</span>
-              <span class="n">normalise</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+              <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Pct. frac. diff.&quot;</span><span class="p">,</span>
+              <span class="n">num_rotations</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+              <span class="n">error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1057,7 +1076,7 @@ surface-discretisation signal integrators.</p>
 <div class="highlight"><pre>
 Imaging the star...
 Cached ray set to be reused... commencing imaging...
-Intensity caching complete...
+Intensity caching complete.
 Star imaged.
 </pre></div></div>
 </div>
@@ -1174,6 +1193,7 @@ Averaging (specific) intensity over rotational phase...
 Averaged (specific) intensity over rotational phase.
 Normalising each sky map panel separately...
 Normalised sky map panels separately.
+Rendering phase-averaged images...
 Intensity sky maps plotted.
 Star imaged.
 </pre></div></div>
@@ -1201,7 +1221,8 @@ Star imaged.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">!</span>mv images/skymap_0.png images/skymap_default.png
+<span></span><span class="o">!</span>mkdir images/uniform
+<span class="o">!</span>mv images/skymap_0.png images/uniform/skymap_default.png
 </pre></div>
 </div>
 </div>
@@ -1209,7 +1230,7 @@ Star imaged.
 </div>
 <div class="section" id="Custom-(phase-dependent)">
 <h2>Custom (phase-dependent)<a class="headerlink" href="#Custom-(phase-dependent)" title="Permalink to this headline">¶</a></h2>
-<p>Let us, inspired by <a class="reference external" href="https://arxiv.org/abs/1904.11534">Lockhart et al. (2019)</a>, set up a surface radiation field constituted by: (i) a hot spot whose temperature decreases away from a point <span class="math notranslate nohighlight">\(P\)</span> as a function of angular separation; and (ii) a hot ring whose angular centre is the antipode <span class="math notranslate nohighlight">\(Q\)</span> of <span class="math notranslate nohighlight">\(P\)</span> and whose temperature decreases away (as a function of angular separation from <span class="math notranslate nohighlight">\(Q\)</span>) from a locus of points with constant angular separation to point <span class="math notranslate nohighlight">\(Q\)</span>. The
+<p>Let us, inspired by <a class="reference external" href="https://arxiv.org/abs/1904.11534">Lockhart et al.&nbsp;(2019)</a>, set up a surface radiation field constituted by: (i) a hot spot whose temperature decreases away from a point <span class="math notranslate nohighlight">\(P\)</span> as a function of angular separation; and (ii) a hot ring whose angular centre is the antipode <span class="math notranslate nohighlight">\(Q\)</span> of <span class="math notranslate nohighlight">\(P\)</span> and whose temperature decreases away (as a function of angular separation from <span class="math notranslate nohighlight">\(Q\)</span>) from a locus of points with constant angular separation to point <span class="math notranslate nohighlight">\(Q\)</span>. The
 temperature is everywhere that of the local comoving photosphere, which radiates isotropically as a blackbody.</p>
 <p>You now need to reinstalled the package after replacing the contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/local_variables.pyx</span></code> with the exact contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/tutorial_spot_and_ring.pyx</span></code>. The <code class="docutils literal notranslate"><span class="pre">local_variables.pyx</span></code> extension module must transform some set of <em>global</em> variables into <em>local</em> variables at the spacetime event defined by the intersection of a ray with the stellar surface. A vector of local variables is then passed to the
 <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot.pyx</span></code> module for evaluation of the specific intensity of radiation, w.r.t a local comoving surface frame, that after Lorentz transformation is transported along the ray to the image plane.</p>
@@ -1450,7 +1471,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
-              <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
+              <span class="n">shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
               <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Energy (keV)&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1549,9 +1570,9 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 Imaging the star...
 Warning: a ray map has not been cached... tracing new ray set...
 Commencing ray tracing and imaging...
-Ray tracing complete...
-Ray set cached...
-Phase-resolved specific flux integration complete...
+Ray tracing complete.
+Ray set cached.
+Phase-resolved specific flux integration complete.
 Star imaged.
 </pre></div></div>
 </div>
@@ -1563,7 +1584,7 @@ Star imaged.
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
-              <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
+              <span class="n">shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
               <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Energy (keV)&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1581,16 +1602,15 @@ Star imaged.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot_2D_pulse</span><span class="p">(</span><span class="mf">100.0</span><span class="o">*</span><span class="p">(</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d_sq</span><span class="o">/</span><span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span>
+<span></span><span class="n">plot_2D_pulse</span><span class="p">((</span><span class="n">photosphere</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">spacetime</span><span class="o">.</span><span class="n">d_sq</span><span class="p">,</span> <span class="n">photosphere</span><span class="o">.</span><span class="n">signal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
               <span class="n">x</span><span class="o">=</span><span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span><span class="p">,</span>
-              <span class="n">shift</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]),</span>
+              <span class="n">shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
               <span class="n">y</span><span class="o">=</span><span class="n">energies</span><span class="p">,</span>
               <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Energy (keV)&#39;</span><span class="p">,</span>
               <span class="n">cm</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">,</span>
-              <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Abs. </span><span class="si">% f</span><span class="s2">rac. diff.&quot;</span><span class="p">,</span>
-              <span class="n">vmin</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
-              <span class="n">vmax</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-              <span class="n">normalise</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+              <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Pct. frac. diff.&quot;</span><span class="p">,</span>
+              <span class="n">num_rotations</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+              <span class="n">error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1601,8 +1621,8 @@ Star imaged.
 <img alt="_images/global_surface_emission_80_0.png" src="_images/global_surface_emission_80_0.png" />
 </div>
 </div>
-<p>Now the really fun part: photon specific intensity sky maps. Now that we are not pursuing a high-resolution signal to compare to an integrator that discretises the stellar surface, we reduce the number of energies and rays to avoid memory issues when caching the sky photon specific intensity field in four dimensions. Nevertheless, if you run these cells as is, you might want to grab a beverage of choice while you wait up to ~30 minutes. <strong>Moreover, up to ~20 GB of RAM might be needed by the
-animator. You can deactivate the animator if this is problematic, and handle the image files via some other mode.</strong></p>
+<p>Now the really fun part: photon specific intensity sky maps. Now that we are not pursuing a high-resolution signal to compare to an integrator that discretises the stellar surface, we reduce the number of energies and rays to avoid memory issues when caching the sky photon specific intensity field in four dimensions. Nevertheless, if you run these cells as is, you might want to grab a beverage of choice while you wait up to ~30 minutes. <strong>In previous X-PSI versions, the animator required massive
+memory due to matplotlib imshow() usage issues, but this was fixed in X-PSI v0.6; nevertheless, you could start with a smaller number of phases, just to check that it works without eating more memory than you want to spare.</strong></p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
@@ -1611,22 +1631,32 @@ animator. You can deactivate the animator if this is problematic, and handle the
 <span></span><span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;panel_indices&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
                   <span class="s1">&#39;num_levels&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="c1"># in intensity field rendering</span>
                   <span class="s1">&#39;colormap&#39;</span><span class="p">:</span> <span class="n">cm</span><span class="o">.</span><span class="n">Greys_r</span><span class="p">,</span>
-                  <span class="s1">&#39;phase_average&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+                  <span class="s1">&#39;phase_average&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                  <span class="s1">&#39;annotate_energies&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># background from the surface and behind the star</span>
+                  <span class="s1">&#39;energy_annotation_format&#39;</span><span class="p">:</span> <span class="s1">&#39;[</span><span class="si">%.2f</span><span class="s1"> keV]&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;annotate_location&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.025</span><span class="p">,</span><span class="mf">0.025</span><span class="p">)}</span>
 
-<span class="c1"># edit the ffmpeg path for your system and activate the animator below</span>
-<span class="c1"># you can install ffmpeg with conda</span>
-<span class="n">animate_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cycles&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-                  <span class="s1">&#39;ffmpeg_path&#39;</span><span class="p">:</span> <span class="s1">&#39;/home/thomas/miniconda2/envs/xpsi/bin/ffmpeg&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;fps&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">}</span>
+<span class="c1"># you can install ffmpeg with conda in order to animate</span>
+<span class="n">animate_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cycles&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fps&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">!</span>rm images/*.png
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">photosphere</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">reimage</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                  <span class="n">reuse_ray_map</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                   <span class="n">cache_intensities</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="c1"># cache size limit in GBs</span>
                   <span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">]),</span>
                   <span class="n">phases</span> <span class="o">=</span> <span class="n">everywhere</span><span class="o">.</span><span class="n">phases_in_cycles</span> <span class="o">*</span> <span class="n">_2pi</span><span class="p">,</span>
@@ -1635,16 +1665,10 @@ animator. You can deactivate the animator if this is problematic, and handle the
                   <span class="n">max_steps</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">,</span>
                   <span class="n">epsrel_ray</span> <span class="o">=</span> <span class="mf">1.0e-12</span><span class="p">,</span>
                   <span class="n">plot_sky_maps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># activate if you want to plot frames</span>
-                  <span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="n">sky_map_kwargs</span><span class="p">,</span> <span class="c1"># activate if you want to animate (BEWARE high memory usage)</span>
-                  <span class="n">animate_sky_maps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                  <span class="n">free_memory</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># activate if memory is a concern</span>
+                  <span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="n">sky_map_kwargs</span><span class="p">,</span>
+                  <span class="n">animate_sky_maps</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># activate if you want to animate</span>
+                  <span class="n">free_memory</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># activate if memory is a concern, then ray-map/intensity caches deleted</span>
                   <span class="n">animate_kwargs</span> <span class="o">=</span> <span class="n">animate_kwargs</span><span class="p">)</span>
-
-<span class="c1"># To reduce animation memory requirements, you can reduce the number of phases.</span>
-<span class="c1"># If phase-averaging only, it is safe to increase the phase resolution</span>
-<span class="c1"># to remove artefacts, but start with a smaller number of phases if you</span>
-<span class="c1"># want to plot phase-resolved sky map frames and animate the sequence</span>
-<span class="c1"># in order to get a handle on the memory requirements.</span>
 </pre></div>
 </div>
 </div>
@@ -1654,15 +1678,10 @@ animator. You can deactivate the animator if this is problematic, and handle the
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Imaging the star...
-Warning: a ray map has not been cached... tracing new ray set...
 Commencing ray tracing and imaging...
-Ray tracing complete...
-Ray set cached...
-Intensity caching complete...
-
-Warning: at least one image file exists in ``./images``.
-Attempting to move image files to a subdirectory of ``./images``.
-Image files archived in subdirectory ``./images/archived___datetime__14.8.2020__21.58.24``.
+Ray tracing complete.
+Ray set cached.
+Intensity caching complete.
 Plotting intensity sky maps...
 Normalising each sky map panel separately...
 Normalised sky map panels separately.
@@ -1685,7 +1704,7 @@ Star imaged.
 </div>
 <p>If you are executing this notebook, you can view the video file:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1706,45 +1725,37 @@ Star imaged.
     <source src="images/skymap_animated.mp4" type="video/mp4">
 </video></div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">!</span>mkdir images/frames
-<span class="o">!</span>mv images/*.png images/frames/.
+<span></span><span class="o">!</span>mkdir images/frames_ring_and_spot
+<span class="o">!</span>mv images/*.png images/frames_ring_and_spot/.
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-mkdir: cannot create directory ‘images/frames’: File exists
-</pre></div></div>
 </div>
 <p>Here is a frame for the purpose of the documentation notebook. Each panel displays the photon specific intensity field, on the sky, at a given energy; energy increases from top-left to bottom-right. The intensity field in each panel is normalised over sky direction and phase, for each energy in the sequence.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;./images/frames/skymap_50.png&quot;</span><span class="p">)</span>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;./images/frames_ring_and_spot/skymap_50.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_88_0.png" src="_images/global_surface_emission_88_0.png" />
+<img alt="_images/global_surface_emission_89_0.png" src="_images/global_surface_emission_89_0.png" />
 </div>
 </div>
 <p>Finally, let’s phase-average the intensity sky maps:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1777,39 +1788,39 @@ Star imaged.
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">!</span>mv images/skymap_0.png images/skymap_phase_averaged_spot_and_ring.png
+<span></span><span class="o">!</span>mv images/skymap_0.png images/frames_ring_and_spot/skymap_phase_averaged_spot_and_ring.png
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;images/skymap_phase_averaged_spot_and_ring.png&quot;</span><span class="p">)</span>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;images/frames_ring_and_spot/skymap_phase_averaged_spot_and_ring.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_92_0.png" src="_images/global_surface_emission_92_0.png" />
+<img alt="_images/global_surface_emission_93_0.png" src="_images/global_surface_emission_93_0.png" />
 </div>
 </div>
 <p>To understand the phase-averaged intensity field associated with the ring, consider a fix sky direction through which the upper and lower extremities (in colatitude) of the ring pass as the star rotates. The bright surface regions pass over such sky directions for a greater fraction of the one revolution than for sky directions closer in surface colatitude to the centre of the ring.</p>
 </div>
 <div class="section" id="Rotating-spacetime">
 <h2>Rotating spacetime<a class="headerlink" href="#Rotating-spacetime" title="Permalink to this headline">¶</a></h2>
-<p>The integrator that discretises an image plane, being more general purpose (but not as general purpose as a number of other open-source codes), can also handle a rotating spacetime via a CPU-based implementation of the quasi-Kerr formalism <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2012ApJ...745....1P/abstract">Psaltis &amp; Johannsen (2012)</a> and <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2012ApJ...753..175B/abstract">Bauböck et al. (2012)</a>, in which the exterior spacetime solution has a finite angular
+<p>The integrator that discretises an image plane, being more general purpose (but not as general purpose as a number of other open-source codes), can also handle a rotating spacetime via a CPU-based implementation of the quasi-Kerr formalism <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2012ApJ...745....1P/abstract">Psaltis &amp; Johannsen (2012)</a> and <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2012ApJ...753..175B/abstract">Bauböck et al.&nbsp;(2012)</a>, in which the exterior spacetime solution has a finite angular
 momentum and mass quadrupole moment. If we delete the custom values of these spacetime variables, universal relations from <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2014ApJ...791...78A/abstract">AlGendy &amp; Morsink (2014)</a> will be invoked.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1819,7 +1830,7 @@ momentum and mass quadrupole moment. If we delete the custom values of these spa
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1828,16 +1839,16 @@ momentum and mass quadrupole moment. If we delete the custom values of these spa
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>765.8498947579515
+<span></span>765.8499186550695
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1846,16 +1857,16 @@ momentum and mass quadrupole moment. If we delete the custom values of these spa
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>0.11461990695733322
+<span></span>0.1146198823594334
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1885,9 +1896,9 @@ momentum and mass quadrupole moment. If we delete the custom values of these spa
 <div class="highlight"><pre>
 Imaging the star...
 Commencing ray tracing and imaging...
-Ray tracing complete...
-Ray set cached...
-Intensity caching complete...
+Ray tracing complete.
+Ray set cached.
+Intensity caching complete.
 Plotting intensity sky maps...
 Averaging (specific) intensity over rotational phase...
 Averaged (specific) intensity over rotational phase.
@@ -1899,29 +1910,29 @@ Star imaged.
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">!</span>mv images/skymap_0.png images/skymap_phase_averaged_spot_and_ring__rotating_spacetime.png
+<span></span><span class="o">!</span>mv images/skymap_0.png images/frames_ring_and_spot/skymap_phase_averaged_spot_and_ring__rotating_spacetime.png
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;images/skymap_phase_averaged_spot_and_ring__rotating_spacetime.png&quot;</span><span class="p">)</span>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;images/frames_ring_and_spot/skymap_phase_averaged_spot_and_ring__rotating_spacetime.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/global_surface_emission_101_0.png" src="_images/global_surface_emission_101_0.png" />
+<img alt="_images/global_surface_emission_102_0.png" src="_images/global_surface_emission_102_0.png" />
 </div>
 </div>
 <p>You should be able to detect the extra lateral asymmetry introduced at lower energies that was not present for a static ambient spacetime.</p>

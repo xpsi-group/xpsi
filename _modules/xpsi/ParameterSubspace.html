@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.ParameterSubspace &mdash; xpsi 0.5.3 documentation</title>
+  <title>xpsi.ParameterSubspace &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -109,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
@@ -250,7 +251,10 @@
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No parameters supplied... empty subspace created.&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
+<div class="viewcode-block" id="ParameterSubspace.merge"><a class="viewcode-back" href="../../parameterSubspace.html#xpsi.Likelihood.ParameterSubspace.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Merge parameters into the subspace, thereby expanding it. &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span> <span class="c1"># siphon off the parameters for merge</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Parameter</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
@@ -269,7 +273,7 @@
                         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">ParameterSubspace</span><span class="p">):</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_handle_prefix</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
                             <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">o</span><span class="p">:</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">param</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ParameterSubspace._handle"><a class="viewcode-back" href="../../parameterSubspace.html#xpsi.Likelihood.ParameterSubspace._handle">[docs]</a>    <span class="k">def</span> <span class="nf">_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Check for duplicates and grow in dimensionality if not. &quot;&quot;&quot;</span>

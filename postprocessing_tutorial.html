@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Post-processing &mdash; xpsi 0.5.3 documentation</title>
+  <title>Post-processing &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Example script and modules" href="example_script.html" />
-    <link rel="prev" title="Modeling (without statistics)" href="model_construction_streamlined.html" /> 
+    <link rel="prev" title="Multiple imaging" href="multiple_imaging.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Post-processing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Model-loading-&amp;-metadata">Model loading &amp; metadata</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Marginal-posterior-plotting-&amp;-estimators">Marginal posterior plotting &amp; estimators</a></li>
@@ -445,18 +446,18 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="Post-processing">
 <h1>Post-processing<a class="headerlink" href="#Post-processing" title="Permalink to this headline">¶</a></h1>
-<p>In this tutorial we demonstrate the functionality and posterior operations supported by the <a class="reference internal" href="postprocessing.html"><span class="doc">PostProcessing</span></a> module by operating with the posterior samples reported by <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al. (2019)</span></a>.</p>
+<p>In this tutorial we demonstrate the functionality and posterior operations supported by the <a class="reference internal" href="postprocessing.html"><span class="doc">PostProcessing</span></a> module by operating with the posterior samples reported by <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al.&nbsp;(2019)</span></a>.</p>
 <p>The unexecuted notebook for this tutorial may be found in a GitHub repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
 
 <span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.5/
 </pre></div>
 </div>
-<p>However, to run this tutorial, the all dependencies of X-PSI package need to be accurately <a class="reference internal" href="install.html"><span class="doc">installed</span></a>, <em>and</em> you need posterior files from <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Zenodo</span></a>, <em>and</em> the NICER event list from <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..25B/abstract">Bogdanov et al. (2019)</a>, available from <a class="reference external" href="https://zenodo.org/record/3524457#.XyrG_y2w200">Zenodo</a>, <em>and</em> the model component files (Bogdanov et al.&nbsp;submitted), <em>and</em> finally the
+<p>However, to run this tutorial, the all dependencies of X-PSI package need to be accurately <a class="reference internal" href="install.html"><span class="doc">installed</span></a>, <em>and</em> you need posterior files from <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Zenodo</span></a>, <em>and</em> the NICER event list from <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..25B/abstract">Bogdanov et al.&nbsp;(2019)</a>, available from <a class="reference external" href="https://zenodo.org/record/3524457#.XyrG_y2w200">Zenodo</a>, <em>and</em> the model component files (Bogdanov et al.&nbsp;submitted), <em>and</em> finally the
 model <a class="reference external" href="https://github.com/ThomasEdwardRiley/xpsi_workshop/tree/master/tutorials/v0.5/postprocessing/">modules</a> for X-PSI implementation (the module set for of one these models is <a class="reference internal" href="example_script.html#example-script-and-modules"><span class="std std-ref">included</span></a> in the online documentation).</p>
 <p>Unfortunately, the model files (instrument, atmosphere, attenuation) required for the likelihood function are not all clearly available (yet at least) because they are intellectual properties of various co-authors and public release is being worked out. In the meantime, feel free to contact the corresponding authors of Riley et al.&nbsp;2019 to discuss access. Note that the event files contain pre-processed (gain-scaled, cleaned, filtered, phase-folded) lists, and so you only need to phase-bin the
-event data either with the same number of bins that Riley et al. (2019) used, or a different number (e.g., to test sensitivity), but the latter requires a tweak of the model module (<code class="docutils literal notranslate"><span class="pre">main.py</span></code>) that loads the event number matrix. A constructor to process the event list into phase bins has been included in the <a class="reference internal" href="data.html#xpsi.Data.Data.phase_bin__event_list"><span class="std std-ref">source code</span></a> for posterity, so just select the phase resolution of choice.</p>
-<p>If you choose to accept this mission, you would basically be reproducing a subset of the post-processing operations executed by Riley et al. (2019), which would be excellent! Alas, this might take substantial effort to piece together. You can of course contact the X-PSI team or the corresponding authors of <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al. (2019)</span></a> directly for assistance. (This message will not self-destruct imminently.)</p>
+event data either with the same number of bins that Riley et al.&nbsp;(2019) used, or a different number (e.g., to test sensitivity), but the latter requires a tweak of the model module (<code class="docutils literal notranslate"><span class="pre">main.py</span></code>) that loads the event number matrix. A constructor to process the event list into phase bins has been included in the <a class="reference internal" href="data.html#xpsi.Data.Data.phase_bin__event_list"><span class="std std-ref">source code</span></a> for posterity, so just select the phase resolution of choice.</p>
+<p>If you choose to accept this mission, you would basically be reproducing a subset of the post-processing operations executed by Riley et al.&nbsp;(2019), which would be excellent! Alas, this might take substantial effort to piece together. You can of course contact the X-PSI team or the corresponding authors of <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al.&nbsp;(2019)</span></a> directly for assistance. (This message will not self-destruct imminently.)</p>
 <p>On the bright side, if you can get this tutorial to be fully functioning, and given new posterior samples from your analysis of NICER data, the tools are in place for you to produce some plots that could be considered publication worthy!</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -514,7 +515,7 @@ Imported GetDist version: 0.3.1
 Imported nestcheck version: 0.2.0
 </pre></div></div>
 </div>
-<p>Below we import a reproduced pair of models from <a class="reference external" href="https://arxiv.org/abs/1912.05702">Riley et al. (2019)</a>, together with the posterior sample files which may be acquired from a <a class="reference external" href="http://doi.org/10.5281/zenodo.3707821">Zenodo</a> repository.</p>
+<p>Below we import a reproduced pair of models from <a class="reference external" href="https://arxiv.org/abs/1912.05702">Riley et al.&nbsp;(2019)</a>, together with the posterior sample files which may be acquired from a <a class="reference external" href="http://doi.org/10.5281/zenodo.3707821">Zenodo</a> repository.</p>
 <div class="section" id="Model-loading-&amp;-metadata">
 <h2>Model loading &amp; metadata<a class="headerlink" href="#Model-loading-&-metadata" title="Permalink to this headline">¶</a></h2>
 <p>Let’s instantiate the likelihood object for each model and import it (a basic check of the likelihood callable is also performed in each module):</p>
@@ -1281,7 +1282,7 @@ Posterior density estimation complete.
 <img alt="_images/postprocessing_tutorial_33_1.png" src="_images/postprocessing_tutorial_33_1.png" />
 </div>
 </div>
-<p>Note that the <span class="math notranslate nohighlight">\(\cos(i)\)</span> prior is not isotropic, meaning a flat density function of <span class="math notranslate nohighlight">\(\cos(i)\)</span>, because the prior density for <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al. (2019)</span></a> was flat in <span class="math notranslate nohighlight">\(i\)</span> due to oversight of the default prior settings.</p>
+<p>Note that the <span class="math notranslate nohighlight">\(\cos(i)\)</span> prior is not isotropic, meaning a flat density function of <span class="math notranslate nohighlight">\(\cos(i)\)</span>, because the prior density for <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al.&nbsp;(2019)</span></a> was flat in <span class="math notranslate nohighlight">\(i\)</span> due to oversight of the default prior settings.</p>
 <p>Let’s isolate the parameters of the secondary hot region in the ST+PST model because the geometric configurations they generate on the surface are different to the ST-U model:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -2919,7 +2920,7 @@ Plotted signals for posterior checking.
         <a href="example_script.html" class="btn btn-neutral float-right" title="Example script and modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="model_construction_streamlined.html" class="btn btn-neutral float-left" title="Modeling (without statistics)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="multiple_imaging.html" class="btn btn-neutral float-left" title="Multiple imaging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

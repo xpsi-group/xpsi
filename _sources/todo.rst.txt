@@ -17,8 +17,6 @@ indication of priorty within a major release cycle, and are not generaly
 unique. That is, ``v1.a`` might ultimately not contain a feature next to which
 it is listed, and/or it might be identical to ``v1.b``.
 
-* Compute secondary images, and more generally images up to some optional order
-  using surface discretisation. Target: minor release ``v0.a``.
 * Make a dedicated directory for the tutorial notebooks in the documentation
   pages, link to them on GitHub, and state what is necessary to run those
   notebooks completely. Target: major release ``v1.0``.
@@ -37,6 +35,8 @@ it is listed, and/or it might be identical to ``v1.b``.
   pre-``v0.1`` but was not removed because of the intent to update it).
 * Update HPC usage guide, specifically for the SURFsara systems. Target: major
   release ``v1.0``.
+* Support for sensitivity analysis via importance sampling when post-processing
+  posterior samples. Target: minor release ``v1.d``.
 
 Prospective
 ^^^^^^^^^^^
@@ -60,8 +60,6 @@ Unordered.
   with a posterior sample) cached when the likelihood function is evaluated,
   as demonstrated in the various tutorial notebooks (thus some such functions
   already prototyped). Which module(s) to add these to?
-* Support for sensitivity analysis via importance sampling when post-processing
-  posterior samples.
 * Support for specifying which subset of energies is used for calculating
   signals from which surface components.
 * Module containing a class for arbitrary likelihood factor that might be a
@@ -109,7 +107,8 @@ Unordered.
 * Decide whether to allow user to define their photon energy and effective area
   units (requires a minor tweak and explanation in docstrings/comments).
 * Examine if memory is being freed properly by garbage collection after
-  plotting a sky map frame and after animating a sky-map phase sequence.
+  plotting a skymap frame and after animating a sky-map phase sequence, and
+  if memory consumption is not excessively high.
 
 General
 ^^^^^^^
@@ -118,5 +117,5 @@ General
   domain (surface and image plane).
 * Support for acceleration via analytic techniques.
 * Expand support for samplers, either natively or by refactoring to use a
-  framework for general inferene such as
+  framework for general inference such as
   `Bilby <https://pypi.org/project/bilby/>`_.

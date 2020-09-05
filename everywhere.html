@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Everywhere &mdash; xpsi 0.5.3 documentation</title>
+  <title>Everywhere &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -240,7 +241,7 @@
 <p>Instances of <a class="reference internal" href="#xpsi.Everywhere.Everywhere" title="xpsi.Everywhere.Everywhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Everywhere</span></code></a> represents the global photosphere.</p>
 <dl class="class">
 <dt id="xpsi.Everywhere.Everywhere">
-<em class="property">class </em><code class="descclassname">xpsi.Everywhere.</code><code class="descname">Everywhere</code><span class="sig-paren">(</span><em>time_invariant</em>, <em>bounds=None</em>, <em>values=None</em>, <em>sqrt_num_cells=64</em>, <em>num_rays=200</em>, <em>num_leaves=100</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>custom=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.Everywhere.</code><code class="descname">Everywhere</code><span class="sig-paren">(</span><em>time_invariant</em>, <em>bounds=None</em>, <em>values=None</em>, <em>sqrt_num_cells=64</em>, <em>num_rays=200</em>, <em>num_leaves=100</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>custom=None</em>, <em>image_order_limit=None</em>, <em>_integrator_toggle=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Everywhere.html#Everywhere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Everywhere.Everywhere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>The photospheric radiation field represented by a global mesh.</p>
 <p>An instance of this class <em>cannot</em> be used in conjuction with hot region
@@ -263,18 +264,6 @@ is phase-invariant.</p>
 generating a phase-invariant signal? Although the default configuration
 is simple and azimuthally invariant, we do not provide a default
 value for this argument to force the user to verify their intentions.</li>
-<li><strong>num_rays</strong> (<em>int</em>) – Number of rays to trace (integrate) at each colatitude, distributed
-in angle subtended between ray tangent 4-vector and radial outward unit
-vector w.r.t a local orthonormal tetrad.</li>
-<li><strong>sqrt_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth which form a regular
-mesh on the surface. The total number of cells is the square of this
-argument value. The mesh suffers from squeezing in the polar regions,
-leading to a high degree of non-congruence in cell shape over the
-surface.</li>
-<li><strong>custom</strong> (<em>iterable</em>) – Iterable over <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instances. If you
-supply custom parameter definitions, you need to overwrite the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">_compute_cellParamVecs()</span></code> method to
-implement your custom behaviour.</li>
 <li><strong>bounds</strong> (<em>dict</em>) – If <code class="docutils literal notranslate"><span class="pre">custom</span> <span class="pre">is</span> <span class="pre">None</span></code>, these bounds are supplied for instantiation
 of a temperature parameter. The parameter name
 <code class="docutils literal notranslate"><span class="pre">'temperature'</span></code> must be a key in the dictionary unless the
@@ -284,6 +273,52 @@ is set equal to a strict hard-coded bound.</li>
 temperature is <em>derived</em>, or a value upon initialisation if the
 temperature is free. The dictionary must have a key with name
 <code class="docutils literal notranslate"><span class="pre">'temperature'</span></code> if it is <em>fixed</em> or <em>derived</em>.</li>
+<li><strong>sqrt_num_cells</strong> (<em>int</em>) – Number of cells in both colatitude and azimuth which form a regular
+mesh on the surface. Must be an even number such that half of the cells
+are exactly in one hemisphere. The total number of cells is the square
+of this argument value. The mesh suffers from squeezing in the polar
+regions, leading to a high degree of non-congruence in cell shape over
+the surface.</li>
+<li><strong>num_rays</strong> (<em>int</em>) – Number of rays to trace (integrate) at each colatitude, distributed
+in angle subtended between ray tangent 4-vector and radial outward unit
+vector w.r.t a local orthonormal tetrad.</li>
+<li><strong>num_leaves</strong> (<em>int</em>) – Number of stellar rotation phases to rotate a moving mesh through
+during signal integration.</li>
+<li><strong>num_phases</strong> (<em>int</em>) – Number of phases to resolve the signal at if the signal is time-
+dependent.</li>
+<li><strong>ndarray</strong><strong>[</strong><strong>m</strong><strong>]</strong> – Array of phases to resolve a time-dependent signal at.</li>
+<li><strong>custom</strong> (<em>iterable</em>) – Iterable over <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instances. If you
+supply custom parameter definitions, you need to overwrite the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_compute_cellParamVecs()</span></code> method to
+implement your custom behaviour.</li>
+<li><strong>image_order_limit</strong> (<em>int</em>) – The highest-order image to sum over. A value of <em>one</em> means primary
+images only (deflections <span class="math notranslate nohighlight">\(&lt;\pi\)</span>) whilst a value of <em>two</em> means
+primary and secondary images (deflections <span class="math notranslate nohighlight">\(&lt;2pi\)</span>) where visible,
+and so on. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), there is no hard limit. In this
+case the limit is determined quasi-naturally for each mesh element,
+meaning that images will be summed over until higher order images are
+not visible or the visibility limit is truncated due to lack of
+numerical precision (e.g. for rays that orbit very close to the
+Schwarzschild photon sphere three times or more).  Higher-order images
+generally contribute less and less due to geometric projection effects
+(higher-order images become more tangential), and the images of
+elements get squeezed in solid angle at the stellar limb. In principle,
+effects such as relativistic beaming can counter this effect to a
+degree for certain source-receiver configurations, by increasing
+brightness whilst solid angle decreases, and thus the flux contribution
+relative to that from a primary image can be greater than suggested
+simply by geometric project effects. Nevertheless, inclusion of these
+images is more computationally expensive. If, when iterating through
+image orders, an image is not visible because the deflection required
+is greater than the highest deflection permitted at a given colatitude
+on a surface (accounting for the surface tilt due to rotation), then
+the iteration over image orders terminates.</li>
+<li><strong>_integrator_toggle</strong> (<em>bool</em>) – For testing purposes, toggle the integrator for time-dependent signals.
+If left as the default (<code class="docutils literal notranslate"><span class="pre">False</span></code>) the general-purpose integrator is
+called. If toggled, an integrator is called that assumes the surface
+radiation field is azimuthally invariant, which combined with the
+default global mesh (i.e., no subclassing) results in a time-invariant
+signal.</li>
 </ul>
 </td>
 </tr>

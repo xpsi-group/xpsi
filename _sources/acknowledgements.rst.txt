@@ -51,21 +51,21 @@ Requirement is to have added a feature to previous major version.
 Community
 ~~~~~~~~~
 
-**Contributor tier one**
+**Contributor group one**
 
 Explicit engagement, testing (including contribution of patches explicitly or
 implicitly), and (optionally) direct application to their research.
 
 * Sebastien Guillot
 * Devarshi Choudhury
+* Anna Bilous
 * Emma van der Wateren
 * Bob de Witte
 
-**Contributor tier two**
+**Contributor group two**
 
 Intellectual contribution & engagement (explicit and/or implicit).
 
-* Anya Bilous
 * Yuri Cavecchi
 * Geert Raaijmakers
 * The NICER collaboration
@@ -77,6 +77,7 @@ Intellectual contribution & engagement (explicit and/or implicit).
 Specific acknowledgements of people whose direct advice either influenced the
 direction of this project or led to some specific improvements.
 
+* `CythonGSL <https://github.com/twiecki/CythonGSL>`_ header file
 * Existing open-source projects (which are either external dependencies or
   served as examples during the development of this project, such as *emcee*
   and *stingray*)
@@ -85,7 +86,7 @@ direction of this project or led to some specific improvements.
 * Will M. Farr & Ilya Mandel (for advice about posterior computation validation,
   and about model space definitions)
 * Will M. Farr (for ideas to accelerate likelihood function evaluation; WIP)
-* Sam Geen (expanding support to include Windows OS)
+* Sam Geen (for expanding support to include Windows OS)
 
 
 Literature
@@ -103,5 +104,6 @@ of which this article is a member.
 
 Funding
 ~~~~~~~
+
 T.E.R. and A.L.W. acknowledge support from ERC Starting Grant No. 639217
 CSINEUTRONSTAR and ERC Consolidator Grant No. 865768 AEONS.

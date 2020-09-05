@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Likelihoods &mdash; xpsi 0.5.3 documentation</title>
+  <title>Likelihoods &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -292,7 +293,7 @@ log-factorials of data count numbers.</td>
 
 <dl class="function">
 <dt id="xpsi.likelihoods.eval_marginal_likelihood">
-<code class="descclassname">xpsi.likelihoods.</code><code class="descname">eval_marginal_likelihood</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice counts</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>__Pyx_memviewslice neg_sum_ln_data_factorial</em>, <em>__Pyx_memviewslice support</em>, <em>size_t workspace_intervals</em>, <em>double epsabs</em>, <em>double epsrel</em>, <em>double epsilon</em>, <em>double sigmas</em>, <em>double llzero</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.likelihoods.eval_marginal_likelihood" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">xpsi.likelihoods.</code><code class="descname">eval_marginal_likelihood</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice counts</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>__Pyx_memviewslice neg_sum_ln_data_factorial</em>, <em>__Pyx_memviewslice support</em>, <em>size_t workspace_intervals</em>, <em>double epsabs</em>, <em>double epsrel</em>, <em>double epsilon</em>, <em>double sigmas</em>, <em>double llzero</em>, <em>allow_negative=False</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.likelihoods.eval_marginal_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the Poisson likelihood.</p>
 <p>The count rate is integrated over phase intervals.</p>
 <p>A Newton iteration procedure is implemented channel-by-channel to
@@ -350,6 +351,13 @@ negative. This is useful because if the likelihood is predicted, in
 advance of full executation of this function, to be incredibly small,
 computation can be avoided, returning a number slightly above this
 zero-threshold.</li>
+<li><strong>allow_negative</strong> (<em>obj</em>) – A boolean or an array of booleans, one per component, declaring whether
+to allow negative phase interpolant integrals. If the interpolant is
+not a Steffen spline, then the interpolant of a non-negative function
+can be negative due to oscillations. For the default Akima Periodic
+spline from GSL, such oscillations should manifest as small relative
+to those present in cubic splines, for instance, because it is
+designed to handle a rapidly changing second-order derivative.</li>
 </ul>
 </td>
 </tr>
@@ -367,7 +375,7 @@ likelihood function, one per channel.</p>
 
 <dl class="function">
 <dt id="xpsi.likelihoods.poisson_likelihood_given_background">
-<code class="descclassname">xpsi.likelihoods.</code><code class="descname">poisson_likelihood_given_background</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice counts</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>__Pyx_memviewslice background</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.likelihoods.poisson_likelihood_given_background" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">xpsi.likelihoods.</code><code class="descname">poisson_likelihood_given_background</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice counts</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>__Pyx_memviewslice background</em>, <em>allow_negative=False</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.likelihoods.poisson_likelihood_given_background" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the Poisson likelihood.</p>
 <p>The count rate is integrated over phase intervals.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -389,6 +397,13 @@ the component signals.</li>
 <em>counts</em>, whose shape matches the number of channels in each element
 of <code class="xref py py-obj docutils literal notranslate"><span class="pre">components</span></code> and the number of phase intervals constructed
 from <code class="xref py py-obj docutils literal notranslate"><span class="pre">phases</span></code>.</li>
+<li><strong>allow_negative</strong> (<em>obj</em>) – A boolean or an array of booleans, one per component, declaring whether
+to allow negative phase interpolant integrals. If the interpolant is
+not a Steffen spline, then the interpolant of a non-negative function
+can be negative due to oscillations. For the default Akima Periodic
+spline from GSL, such oscillations should manifest as small relative
+to those present in cubic splines, for instance, because it is
+designed to handle a rapidly changing second-order derivative.</li>
 </ul>
 </td>
 </tr>

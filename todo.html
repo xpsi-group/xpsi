@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Future &mdash; xpsi 0.5.3 documentation</title>
+  <title>Future &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -254,8 +255,6 @@ indication of priorty within a major release cycle, and are not generaly
 unique. That is, <code class="docutils literal notranslate"><span class="pre">v1.a</span></code> might ultimately not contain a feature next to which
 it is listed, and/or it might be identical to <code class="docutils literal notranslate"><span class="pre">v1.b</span></code>.</p>
 <ul class="simple">
-<li>Compute secondary images, and more generally images up to some optional order
-using surface discretisation. Target: minor release <code class="docutils literal notranslate"><span class="pre">v0.a</span></code>.</li>
 <li>Make a dedicated directory for the tutorial notebooks in the documentation
 pages, link to them on GitHub, and state what is necessary to run those
 notebooks completely. Target: major release <code class="docutils literal notranslate"><span class="pre">v1.0</span></code>.</li>
@@ -274,6 +273,8 @@ enable post-processing with the current API; that backend only ever worked
 pre-<code class="docutils literal notranslate"><span class="pre">v0.1</span></code> but was not removed because of the intent to update it).</li>
 <li>Update HPC usage guide, specifically for the SURFsara systems. Target: major
 release <code class="docutils literal notranslate"><span class="pre">v1.0</span></code>.</li>
+<li>Support for sensitivity analysis via importance sampling when post-processing
+posterior samples. Target: minor release <code class="docutils literal notranslate"><span class="pre">v1.d</span></code>.</li>
 </ul>
 </div>
 <div class="section" id="prospective">
@@ -297,8 +298,6 @@ functions to plot single signals (instead of many signals, each associated
 with a posterior sample) cached when the likelihood function is evaluated,
 as demonstrated in the various tutorial notebooks (thus some such functions
 already prototyped). Which module(s) to add these to?</li>
-<li>Support for sensitivity analysis via importance sampling when post-processing
-posterior samples.</li>
 <li>Support for specifying which subset of energies is used for calculating
 signals from which surface components.</li>
 <li>Module containing a class for arbitrary likelihood factor that might be a
@@ -346,7 +345,8 @@ instead of having similar operations coded twice, for maintainability.</li>
 <li>Decide whether to allow user to define their photon energy and effective area
 units (requires a minor tweak and explanation in docstrings/comments).</li>
 <li>Examine if memory is being freed properly by garbage collection after
-plotting a sky map frame and after animating a sky-map phase sequence.</li>
+plotting a skymap frame and after animating a sky-map phase sequence, and
+if memory consumption is not excessively high.</li>
 </ul>
 </div>
 <div class="section" id="general">
@@ -356,7 +356,7 @@ plotting a sky map frame and after animating a sky-map phase sequence.</li>
 domain (surface and image plane).</li>
 <li>Support for acceleration via analytic techniques.</li>
 <li>Expand support for samplers, either natively or by refactoring to use a
-framework for general inferene such as
+framework for general inference such as
 <a class="reference external" href="https://pypi.org/project/bilby/">Bilby</a>.</li>
 </ul>
 </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instrument synergy &mdash; xpsi 0.5.3 documentation</title>
+  <title>Instrument synergy &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -126,6 +126,7 @@
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -480,7 +481,7 @@ div.rendered_html tbody tr:hover {
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
 
-<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_2pi</span>
+<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_2pi</span>
 </pre></div>
 </div>
 </div>
@@ -492,7 +493,7 @@ div.rendered_html tbody tr:hover {
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.5.2               |
+|                Version: 0.6.0               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -604,7 +605,8 @@ Channels set.
     <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">plot_one_pulse</span><span class="p">(</span><span class="n">pulse</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Counts&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_one_pulse</span><span class="p">(</span><span class="n">pulse</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Counts&#39;</span><span class="p">,</span>
+                   <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Plot a pulse resolved over a single rotational cycle. &quot;&quot;&quot;</span>
 
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
@@ -616,7 +618,9 @@ Channels set.
     <span class="n">profile</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
                              <span class="n">data</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
                              <span class="n">pulse</span><span class="p">,</span>
-                             <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">magma</span><span class="p">,</span>
+                             <span class="n">cmap</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">,</span>
+                             <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
+                             <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
                              <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                              <span class="n">rasterized</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 
@@ -778,6 +782,7 @@ Channels set.
 <div class="highlight"><pre>
 Setting channels for loaded instrument response (sub)matrix...
 Channels set.
+No parameters supplied... empty subspace created.
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -802,6 +807,7 @@ Channels set.
 <div class="highlight"><pre>
 Setting channels for loaded instrument response (sub)matrix...
 Channels set.
+No parameters supplied... empty subspace created.
 </pre></div></div>
 </div>
 <p>The NICER <code class="docutils literal notranslate"><span class="pre">v1.01</span></code> response matrix:</p>
@@ -1258,7 +1264,7 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-ll = -29322.45504882; time = 0.610
+ll = -29322.44228096; time = 0.576
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1266,7 +1272,7 @@ ll = -29322.45504882; time = 0.610
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">NICER</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">loglikelihood</span> <span class="c1"># check NICER ll ~ -26713.6136 ?</span>
+<span></span><span class="n">NICER</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">loglikelihood</span> <span class="c1"># check NICER ll ~ -26713.602 ?</span>
 </pre></div>
 </div>
 </div>
@@ -1275,7 +1281,7 @@ ll = -29322.45504882; time = 0.610
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-26713.614013114762
+<span></span>-26713.601245249793
 </pre></div>
 </div>
 </div>
@@ -1284,7 +1290,7 @@ ll = -29322.45504882; time = 0.610
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">loglikelihood</span> <span class="c1"># check XMM ll ~ -2608.8410 ?</span>
+<span></span><span class="n">XMM</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">loglikelihood</span> <span class="c1"># check XMM ll ~ -2608.841 ?</span>
 </pre></div>
 </div>
 </div>
@@ -1293,7 +1299,7 @@ ll = -29322.45504882; time = 0.610
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-2608.8410357102216
+<span></span>-2608.8410357102134
 </pre></div>
 </div>
 </div>
@@ -1343,7 +1349,7 @@ ll = -29322.45504882; time = 0.610
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-2610.1212043019414
+<span></span>-2610.1216087603784
 </pre></div>
 </div>
 </div>
@@ -1444,7 +1450,7 @@ simplifying approximation to the probability of the background data <span class=
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-391362.7194516132
+<span></span>-391383.38618038653
 </pre></div>
 </div>
 </div>
@@ -1462,7 +1468,7 @@ simplifying approximation to the probability of the background data <span class=
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-321096.5505391409
+<span></span>-321117.01604620664
 </pre></div>
 </div>
 </div>
@@ -1847,10 +1853,10 @@ powerlaw_index: Powerlaw spectral index.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Exposure time: 984307.618376 [s]
-Background normalisation: 1.89127981e-05
-Exposure time: 1818434.247359 [s]
-Background normalisation: 2.21408314e-04
+Exposure time: 984282.669803 [s]
+Background normalisation: 1.89132775e-05
+Exposure time: 1818398.807973 [s]
+Background normalisation: 2.21412629e-04
 </pre></div></div>
 </div>
 <p>Notice that the normalisations, with units photons/s/cm^2/keV, are different because we require so many background counts. This detail is unimportant for this notebook, wherein we simply want some finite background contributions.</p>
@@ -1876,7 +1882,7 @@ Background normalisation: 2.21408314e-04
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_NICER_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+<span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_XMM_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="p">(</span><span class="n">diff</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1886,7 +1892,7 @@ Background normalisation: 2.21408314e-04
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>False
+<span></span>True
 </pre></div>
 </div>
 </div>
@@ -1895,7 +1901,7 @@ Background normalisation: 2.21408314e-04
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">XMM</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_XMM_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_NICER_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
 <span class="p">(</span><span class="n">diff</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1905,8 +1911,80 @@ Background normalisation: 2.21408314e-04
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>False
+<span></span>True
 </pre></div>
+</div>
+</div>
+<p>As discussed in the <code class="docutils literal notranslate"><span class="pre">Modeling</span></code> tutorial, with <code class="docutils literal notranslate"><span class="pre">xpsi.__version__</span></code> of <code class="docutils literal notranslate"><span class="pre">v0.6</span></code>, the same RNG seed does not yield the same (<span class="math notranslate nohighlight">\(\pm1\)</span>) count numbers, despite the small fractional difference between Poisson random variable expectations, for reasons that are unclear at present.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/NICER_expected_hreadable.dat&#39;</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_NICER_expected_hreadable.dat&#39;</span><span class="p">)</span>
+
+<span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">xx</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">32</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">yy</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">32</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot_one_pulse</span><span class="p">(</span><span class="n">yy</span><span class="o">-</span><span class="n">xx</span><span class="p">,</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_95_0.png" src="_images/multiple_instruments_95_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">_r</span> <span class="o">=</span> <span class="p">(</span><span class="n">yy</span><span class="o">-</span><span class="n">xx</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">yy</span><span class="p">)</span>
+<span class="n">plot_one_pulse</span><span class="p">(</span><span class="n">_r</span><span class="p">,</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+               <span class="s1">&#39;Standardised residuals&#39;</span><span class="p">,</span>
+               <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">,</span>
+               <span class="n">vmin</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">_r</span><span class="p">)),</span>
+               <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">_r</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_96_0.png" src="_images/multiple_instruments_96_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot_one_pulse</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span> <span class="n">NICER</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/multiple_instruments_97_0.png" src="_images/multiple_instruments_97_0.png" />
 </div>
 </div>
 </div>

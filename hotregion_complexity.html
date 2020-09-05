@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Hot region complexity &mdash; xpsi 0.5.3 documentation</title>
+  <title>Hot region complexity &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -116,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -443,7 +444,7 @@ div.rendered_html tbody tr:hover {
 <p>The unexecuted notebook for this tutorial may be found in a GitHub repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
 
-<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.5/
+<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.6/
 </pre></div>
 </div>
 <p>You can use the default atmosphere extension modules (<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/hot/blackbody.pyx</span></code> and <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/elsewhere/blackbody.pyx</span></code>) or customise as you desire. To run this tutorial, you should therefore be able to simply use the default extensions that are automatically compiled when X-PSI is installed.</p>
@@ -468,7 +469,7 @@ div.rendered_html tbody tr:hover {
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
 
-<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_2pi</span>
+<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_2pi</span>
 <span class="kn">from</span> <span class="nn">xpsi.cellmesh.mesh_tools</span> <span class="kn">import</span> <span class="n">eval_cedeCentreCoords</span>
 </pre></div>
 </div>
@@ -481,7 +482,7 @@ div.rendered_html tbody tr:hover {
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.5.0               |
+|                Version: 0.6.0               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -1154,10 +1155,12 @@ reflection-symmetric properties intact.</p>
 
     <span class="n">interpolated</span> <span class="o">=</span> <span class="n">phase_interpolator</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
                                       <span class="n">x</span><span class="p">,</span>
-                                      <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shift</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                                      <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shift</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                      <span class="n">allow_negative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">interpolated</span> <span class="o">+=</span> <span class="n">phase_interpolator</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
                                        <span class="n">x</span><span class="p">,</span>
-                                       <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shift</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                                       <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shift</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                       <span class="n">allow_negative</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">profile</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">new_phases</span><span class="p">,</span>
                              <span class="n">y</span><span class="p">,</span>

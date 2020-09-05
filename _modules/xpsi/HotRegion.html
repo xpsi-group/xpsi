@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.HotRegion &mdash; xpsi 0.5.3 documentation</title>
+  <title>xpsi.HotRegion &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -109,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_job.html">Example job</a></li>
@@ -389,6 +390,30 @@
 <span class="sd">        target the radiation field within the hot regions as defined</span>
 <span class="sd">        above.</span>
 
+<span class="sd">    :param int image_order_limit:</span>
+<span class="sd">        The highest-order image to sum over. A value of *one* means primary</span>
+<span class="sd">        images only (deflections :math:`&lt;\pi`) whilst a value of *two* means</span>
+<span class="sd">        primary and secondary images (deflections :math:`&lt;2pi`) where visible,</span>
+<span class="sd">        and so on. If ``None`` (the default), there is no hard limit. In this</span>
+<span class="sd">        case the limit is determined quasi-naturally for each mesh element,</span>
+<span class="sd">        meaning that images will be summed over until higher order images are</span>
+<span class="sd">        not visible or the visibility limit is truncated due to lack of</span>
+<span class="sd">        numerical precision (e.g. for rays that orbit very close to the</span>
+<span class="sd">        Schwarzschild photon sphere three times or more).  Higher-order images</span>
+<span class="sd">        generally contribute less and less due to geometric projection effects</span>
+<span class="sd">        (higher-order images become more tangential), and the images of</span>
+<span class="sd">        elements get squeezed in solid angle at the stellar limb. In principle,</span>
+<span class="sd">        effects such as relativistic beaming can counter this effect to a</span>
+<span class="sd">        degree for certain source-receiver configurations, by increasing</span>
+<span class="sd">        brightness whilst solid angle decreases, and thus the flux contribution</span>
+<span class="sd">        relative to that from a primary image can be greater than suggested</span>
+<span class="sd">        simply by geometric project effects. Nevertheless, inclusion of these</span>
+<span class="sd">        images is more computationally expensive. If, when iterating through</span>
+<span class="sd">        image orders, an image is not visible because the deflection required</span>
+<span class="sd">        is greater than the highest deflection permitted at a given colatitude</span>
+<span class="sd">        on a surface (accounting for the surface tilt due to rotation), then</span>
+<span class="sd">        the iteration over image orders terminates.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">required_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;super_colatitude&#39;</span><span class="p">,</span>
                       <span class="s1">&#39;super_radius&#39;</span><span class="p">,</span>
@@ -427,6 +452,7 @@
                  <span class="n">fast_phases</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">is_antiphased</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">custom</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">image_order_limit</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">is_antiphased</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_secondary&#39;</span><span class="p">,</span> <span class="n">is_antiphased</span><span class="p">)</span>
@@ -443,12 +469,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_phases</span><span class="p">(</span><span class="n">num_leaves</span><span class="p">,</span> <span class="n">num_phases</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span>
                         <span class="n">fast_num_leaves</span><span class="p">,</span> <span class="n">fast_num_phases</span><span class="p">,</span> <span class="n">fast_phases</span><span class="p">)</span>
 
-        <span class="c1"># find the required integrator</span>
-        <span class="k">if</span> <span class="n">symmetry</span><span class="p">:</span> <span class="c1"># can we safely assume azimuthal invariance?</span>
-            <span class="kn">from</span> <span class="nn">.cellmesh.integrator_for_azimuthal_invariance</span> <span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrator</span>
-        <span class="k">else</span><span class="p">:</span> <span class="c1"># more general purpose</span>
-            <span class="kn">from</span> <span class="nn">.cellmesh.integrator</span> <span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrator</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span> <span class="o">=</span> <span class="n">_integrator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_order_limit</span> <span class="o">=</span> <span class="n">image_order_limit</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">symmetry</span> <span class="o">=</span> <span class="n">symmetry</span>
 
         <span class="c1"># first the parameters that are fundemental to this class</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -474,18 +497,20 @@
         <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        The phase of the hot region, a periodic parameter [cycles].</span>
 <span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">phase_value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">phase_bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">phase_bounds</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be specified.&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be finite.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">phase_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">phase_bounds</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be specified.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be finite.&#39;</span><span class="p">)</span>
 
         <span class="n">phase_shift</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span>
                                 <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">),</span>
                                 <span class="n">bounds</span> <span class="o">=</span> <span class="n">phase_bounds</span><span class="p">,</span>
                                 <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
                                 <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\phi$&#39;</span><span class="p">,</span>
-                                <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                                <span class="n">value</span> <span class="o">=</span> <span class="n">phase_value</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cede</span> <span class="o">=</span> <span class="n">cede</span> <span class="c1"># takes precedence below over omission setting</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">omit</span> <span class="o">=</span> <span class="n">omit</span>
@@ -658,6 +683,30 @@
         <span class="sd">&quot;&quot;&quot; Return self for uniform interface with other classes. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">symmetry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the symmetry declaration (controls integrator invocation). &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_symmetry</span>
+
+    <span class="nd">@symmetry</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">symmetry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">declaration</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">declaration</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Declare symmetry existence with a boolean.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_symmetry</span> <span class="o">=</span> <span class="n">declaration</span>
+
+        <span class="c1"># find the required integrator</span>
+        <span class="k">if</span> <span class="n">declaration</span><span class="p">:</span> <span class="c1"># can we safely assume azimuthal invariance?</span>
+            <span class="kn">from</span> <span class="nn">.cellmesh.integrator_for_azimuthal_invariance</span> <span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrator</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># more general purpose</span>
+            <span class="kn">from</span> <span class="nn">.cellmesh.integrator</span> <span class="kn">import</span> <span class="n">integrate</span> <span class="k">as</span> <span class="n">_integrator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span> <span class="o">=</span> <span class="n">_integrator</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">integrator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the integrator to be invoked. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span>
+
     <span class="k">def</span> <span class="nf">set_num_rays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_rays</span><span class="p">,</span> <span class="n">fast_num_rays</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_rays</span> <span class="o">=</span> <span class="n">num_rays</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fast_num_rays</span> <span class="o">=</span> <span class="n">fast_num_rays</span>
@@ -674,6 +723,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_num_rays</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of rays must be an integer.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image_order_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the image order limit. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_order_limit</span>
+
+    <span class="nd">@image_order_limit</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">image_order_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the image order limit. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Image order limit must be an positive integer &#39;</span>
+                                <span class="s1">&#39;if not None.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_order_limit</span> <span class="o">=</span> <span class="n">limit</span>
 
     <span class="k">def</span> <span class="nf">set_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                       <span class="n">sqrt_num_cells</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
@@ -709,9 +772,15 @@
     <span class="k">def</span> <span class="nf">sqrt_num_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set the number of cell parallels. &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">_n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of cells must be an integer.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_n</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of cells must be a positive integer &#39;</span>
+                                 <span class="s1">&#39;greater than for equal to four.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_num_cells</span> <span class="o">=</span> <span class="n">_n</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1246,7 +1315,8 @@
                                        <span class="n">leaves</span><span class="p">,</span>
                                        <span class="n">phases</span><span class="p">,</span>
                                        <span class="n">hot_atmosphere</span><span class="p">,</span>
-                                       <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
+                                       <span class="n">elsewhere_atmosphere</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">_image_order_limit</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">super_pulse</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PulseError</span><span class="p">(</span><span class="s1">&#39;Fatal numerical error during superseding-&#39;</span>
@@ -1276,7 +1346,8 @@
                                           <span class="n">leaves</span><span class="p">,</span>
                                           <span class="n">phases</span><span class="p">,</span>
                                           <span class="n">hot_atmosphere</span><span class="p">,</span>
-                                          <span class="n">elsewhere_atmosphere</span><span class="p">)</span>
+                                          <span class="n">elsewhere_atmosphere</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_image_order_limit</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modeling (without statistics) &mdash; xpsi 0.5.3 documentation</title>
+  <title>Modeling (without statistics) &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Post-processing" href="postprocessing_tutorial.html" />
+    <link rel="next" title="Multiple imaging" href="multiple_imaging.html" />
     <link rel="prev" title="Surface radiation field tools" href="surface_radiation_field_checking_tools_tutorial.html" /> 
 </head>
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#Summary">Summary</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -447,10 +448,10 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="Modeling-(without-statistics)">
 <h1>Modeling (without statistics)<a class="headerlink" href="#Modeling-(without-statistics)" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial we build a star object for signal computation, but streamline by omitting any demonstration of statistical modeling (for which there exist other tutorials).</p>
-<p>The unexecuted and streamlined notebook for this tutorial may be found in a GitHub repository:</p>
+<p>The unexecuted notebook for this tutorial may be found in a GitHub repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ThomasEdwardRiley/xpsi_workshop.git &lt;/path/to/clone&gt;
 
-<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.5/
+<span class="nb">cd</span> &lt;/path/to/clone&gt;/tutorials/v0.6/
 </pre></div>
 </div>
 <p>You can use the default atmosphere extension module <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/hot/blackbody.pyx</span></code> as described below. To run this tutorial, you should therefore be able to simply use the default <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot.pyx</span></code> extension that is automatically compiled when X-PSI is installed. However, you’ll have to switch the contents of the <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/local_variables.pyx</span></code> extension, as instructed below, in order to change the mapping from global
@@ -477,7 +478,7 @@ variables to local variables from the default.</p>
 
 <span class="kn">import</span> <span class="nn">xpsi</span>
 
-<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_M_s</span><span class="p">,</span> <span class="n">_2pi</span>
+<span class="kn">from</span> <span class="nn">xpsi.global_imports</span> <span class="kn">import</span> <span class="n">_c</span><span class="p">,</span> <span class="n">_G</span><span class="p">,</span> <span class="n">_dpr</span><span class="p">,</span> <span class="n">gravradius</span><span class="p">,</span> <span class="n">_csq</span><span class="p">,</span> <span class="n">_km</span><span class="p">,</span> <span class="n">_2pi</span>
 </pre></div>
 </div>
 </div>
@@ -489,7 +490,7 @@ variables to local variables from the default.</p>
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.5.3               |
+|                Version: 0.6.0               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -745,8 +746,8 @@ also needs to be included and linked in <code class="docutils literal notranslat
     <span class="k">return</span> <span class="n">erg</span> <span class="o">*</span> <span class="n">Planck_dist_const</span>
 </pre></div>
 </div>
-<p>In most use-cases we need to modify these functions to enable handling of the numerical atmosphere data. An extension for such a case may be found as an <a class="reference internal" href="surface_radiation_field.html#a-numerical-atmosphere"><span class="std std-ref">example</span></a>, which contains the extension used by <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al. (2019)</span></a> to implement a numerical atmosphere generated by the NSX atmosphere code (<a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2001MNRAS.327.1081H/abstract">Ho, W.C.G &amp; Lai, D. 2001</a>;
-<a class="reference external" href="https://ui.adsabs.harvard.edu/link_gateway/2009Natur.462...71H/doi:10.1038/nature08525">Ho, W.C.G &amp; Heinke, C.O. 2009</a>), courtesy of W.C.G. Ho for NICER modeling efforts. A fully-ionized hydrogen atmosphere (Ho &amp; Lai 2001) was used in <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al. (2019)</span></a>; also see Bogdanov et al. (2020).</p>
+<p>In most use-cases we need to modify these functions to enable handling of the numerical atmosphere data. An extension for such a case may be found as an <a class="reference internal" href="surface_radiation_field.html#a-numerical-atmosphere"><span class="std std-ref">example</span></a>, which contains the extension used by <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al.&nbsp;(2019)</span></a> to implement a numerical atmosphere generated by the NSX atmosphere code (<a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2001MNRAS.327.1081H/abstract">Ho, W.C.G &amp; Lai, D. 2001</a>;
+<a class="reference external" href="https://ui.adsabs.harvard.edu/link_gateway/2009Natur.462...71H/doi:10.1038/nature08525">Ho, W.C.G &amp; Heinke, C.O. 2009</a>), courtesy of W.C.G. Ho for NICER modeling efforts. A fully-ionized hydrogen atmosphere (Ho &amp; Lai 2001) was used in <a class="reference internal" href="applications.html#riley-et-al-2019-apjl-887-l21"><span class="std std-ref">Riley et al.&nbsp;(2019)</span></a>; also see Bogdanov et al.&nbsp;(2020).</p>
 <p>In general, if you wish to change the model for the parametrised surface local-comoving-frame radiation field model, you can archive the extensions in, e.g., the <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive</span></code>, and completely replace the contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot.pyx</span></code> when X-PSI is compiled and installed. Alternatively, you can compile your extension elsewhere and link it when X-PSI is installed (by editing the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script), <code class="docutils literal notranslate"><span class="pre">cimporting</span></code> or <code class="docutils literal notranslate"><span class="pre">extern</span></code>ing from the
 appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</span></code> header file(s), and calling those precompiled binaries from the functions declared in the <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot.pxd</span></code> header.</p>
 <p>We now instantiate hot region objects. We can find the required and optional parameter names in the class docstring:</p>
@@ -768,7 +769,7 @@ appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</s
 </pre></div>
 </div>
 </div>
-<p>The names can also be found as class attributes as follows (refer to the <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> class docstring and <a class="reference internal" href="applications.html"><span class="doc">Riley et al. (2019)</span></a> for the meaning of <em>super</em>):</p>
+<p>The names can also be found as class attributes as follows (refer to the <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> class docstring and <a class="reference internal" href="applications.html"><span class="doc">Riley et al.&nbsp;(2019)</span></a> for the meaning of <em>super</em>):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -1778,11 +1779,8 @@ need to be reinstalled, and the Jupyter kernel restarted if this was not the cas
                   <span class="s1">&#39;energy_annotation_format&#39;</span><span class="p">:</span> <span class="s1">&#39;[</span><span class="si">%.2f</span><span class="s1"> keV]&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;annotate_location&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.025</span><span class="p">,</span><span class="mf">0.025</span><span class="p">)}</span>
 
-<span class="c1"># edit the ffmpeg path for your system and activate the animator below</span>
-<span class="c1"># you can install ffmpeg with conda</span>
-<span class="n">animate_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cycles&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-                  <span class="s1">&#39;ffmpeg_path&#39;</span><span class="p">:</span> <span class="s1">&#39;/home/thomas/miniconda2/envs/xpsi/bin/ffmpeg&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;fps&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">}</span>
+<span class="c1"># you can install ffmpeg with conda in order to animate</span>
+<span class="n">animate_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cycles&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;fps&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -1823,15 +1821,9 @@ need to be reinstalled, and the Jupyter kernel restarted if this was not the cas
                   <span class="n">epsrel_ray</span> <span class="o">=</span> <span class="mf">1.0e-12</span><span class="p">,</span>
                   <span class="n">plot_sky_maps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># activate if you want to plot frames</span>
                   <span class="n">sky_map_kwargs</span> <span class="o">=</span> <span class="n">sky_map_kwargs</span><span class="p">,</span>
-                  <span class="n">animate_sky_maps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># activate if you want to animate (BEWARE high memory usage)</span>
-                  <span class="n">free_memory</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># try to free memory before animating</span>
+                  <span class="n">animate_sky_maps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># activate if you want to animate</span>
+                  <span class="n">free_memory</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># try to free ray-map/intensity cache memory before animating</span>
                   <span class="n">animate_kwargs</span> <span class="o">=</span> <span class="n">animate_kwargs</span><span class="p">)</span>
-
-<span class="c1"># To reduce animation memory requirements, you can reduce the number of phases.</span>
-<span class="c1"># If phase-averaging only, it is safe to increase the phase resolution</span>
-<span class="c1"># to remove artefacts, but start with a smaller number of phases if you</span>
-<span class="c1"># want to plot phase-resolved sky map frames and animate the sequence</span>
-<span class="c1"># in order to get a handle on the memory requirements.</span>
 </pre></div>
 </div>
 </div>
@@ -1888,23 +1880,15 @@ Star imaged.
     <source src="images/skymap_animated.mp4" type="video/mp4">
 </video></div></div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">!</span>mkdir images/frames
-<span class="o">!</span>mv images/*.png images/frames/.
+<span></span><span class="o">!</span>mkdir images/frames_twospots
+<span class="o">!</span>mv images/*.png images/frames_twospots/.
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-mkdir: cannot create directory ‘images/frames’: File exists
-</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
@@ -1920,7 +1904,7 @@ mkdir: cannot create directory ‘images/frames’: File exists
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;./images/frames/skymap_0.png&quot;</span><span class="p">)</span>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;./images/frames_twospots/skymap_0.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1979,21 +1963,30 @@ Intensity sky maps plotted.
 Star imaged.
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;images/skymap_0.png&quot;</span><span class="p">)</span>
+<span></span><span class="o">!</span>mv images/skymap_0.png images/frames_twospots/skymap_phase_averaged.png
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;images/frames_twospots/skymap_phase_averaged.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_streamlined_108_0.png" src="_images/model_construction_streamlined_108_0.png" />
+<img alt="_images/model_construction_streamlined_109_0.png" src="_images/model_construction_streamlined_109_0.png" />
 </div>
 </div>
 <p>Artefacts are not very discernable, but can be further reduced with a higher phase resolution at higher memory and time cost.</p>
@@ -2012,7 +2005,7 @@ Star imaged.
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="postprocessing_tutorial.html" class="btn btn-neutral float-right" title="Post-processing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="multiple_imaging.html" class="btn btn-neutral float-right" title="Multiple imaging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="surface_radiation_field_checking_tools_tutorial.html" class="btn btn-neutral float-left" title="Surface radiation field tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

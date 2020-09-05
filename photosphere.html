@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Photosphere &mdash; xpsi 0.5.3 documentation</title>
+  <title>Photosphere &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -322,7 +323,7 @@ dynamically when the derived mode frequency variable is called for.</p>
 </dl>
 <dl class="staticmethod">
 <dt id="xpsi.Photosphere.Photosphere._animate">
-<em class="property">static </em><code class="descname">_animate</code><span class="sig-paren">(</span><em>_file_root</em>, <em>_num_frames</em>, <em>_figsize</em>, <em>_dpi</em>, <em>cycles=1</em>, <em>repeat=True</em>, <em>repeat_delay=0.0</em>, <em>ffmpeg_path=None</em>, <em>fps=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere._animate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere._animate" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">_animate</code><span class="sig-paren">(</span><em>_file_root</em>, <em>_num_frames</em>, <em>_figsize</em>, <em>_dpi</em>, <em>cycles=1</em>, <em>fps=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere._animate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere._animate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper method to animate the intensity sky maps.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -337,14 +338,15 @@ dynamically when the derived mode frequency variable is called for.</p>
 the principal cycle are reused, so the images are periodic in
 their phase evolution. There is no delay between cycles in this
 type of repitition.</li>
-<li><strong>repeat</strong> (<em>bool</em>) – Inform <em>ffmpeg</em> to enter a loop when video play back commences.</li>
-<li><strong>repeat_delay</strong> – Delay between repeats in milliseconds.</li>
-<li><strong>ffmpeg_path</strong> (<em>str</em>) – Absolute path to <em>ffmpeg</em> executable. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults
-to matplotlib rcParams settings, but no guarantee that the package
-will be found even if installed on system.</li>
 <li><strong>fps</strong> (<em>int</em>) – Frames per second. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then one cycle (assuming images
 have been precomputed for a complete cycle), consisting of
 so many frames, will exhibit a period of one second.</li>
+<li><strong>repeat</strong> (<em>bool</em>) – Inform <em>ffmpeg</em> to enter a loop when video play back commences.
+Deprecated.</li>
+<li><strong>repeat_delay</strong> – Delay between repeats in milliseconds. Deprecated.</li>
+<li><strong>ffmpeg_path</strong> (<em>str</em>) – Absolute path to <em>ffmpeg</em> executable. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults
+to matplotlib rcParams settings, but no guarantee that the package
+will be found even if installed on system. Deprecated.</li>
 </ul>
 </td>
 </tr>

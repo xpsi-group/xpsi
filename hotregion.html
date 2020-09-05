@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HotRegion &mdash; xpsi 0.5.3 documentation</title>
+  <title>HotRegion &mdash; xpsi 0.6.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -111,6 +111,7 @@
 <li class="toctree-l1"><a class="reference internal" href="global_surface_emission.html">Global surface emission</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surface_radiation_field_checking_tools_tutorial.html">Surface radiation field tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model_construction_streamlined.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_imaging.html">Multiple imaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postprocessing_tutorial.html">Post-processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_script.html">Example script and modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_job.html">Example job</a></li>
@@ -241,7 +242,7 @@
 intense regions of the source photosphere.</p>
 <dl class="class">
 <dt id="xpsi.HotRegion.HotRegion">
-<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">HotRegion</code><span class="sig-paren">(</span><em>bounds</em>, <em>values</em>, <em>symmetry=True</em>, <em>omit=False</em>, <em>cede=False</em>, <em>concentric=False</em>, <em>sqrt_num_cells=32</em>, <em>min_sqrt_num_cells=10</em>, <em>max_sqrt_num_cells=80</em>, <em>num_rays=200</em>, <em>num_leaves=64</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>do_fast=False</em>, <em>fast_sqrt_num_cells=16</em>, <em>fast_min_sqrt_num_cells=4</em>, <em>fast_max_sqrt_num_cells=16</em>, <em>fast_num_rays=100</em>, <em>fast_num_leaves=32</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em>, <em>is_antiphased=False</em>, <em>custom=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">HotRegion</code><span class="sig-paren">(</span><em>bounds</em>, <em>values</em>, <em>symmetry=True</em>, <em>omit=False</em>, <em>cede=False</em>, <em>concentric=False</em>, <em>sqrt_num_cells=32</em>, <em>min_sqrt_num_cells=10</em>, <em>max_sqrt_num_cells=80</em>, <em>num_rays=200</em>, <em>num_leaves=64</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>do_fast=False</em>, <em>fast_sqrt_num_cells=16</em>, <em>fast_min_sqrt_num_cells=4</em>, <em>fast_max_sqrt_num_cells=16</em>, <em>fast_num_rays=100</em>, <em>fast_num_leaves=32</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em>, <em>is_antiphased=False</em>, <em>custom=None</em>, <em>image_order_limit=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
 <p>A photospheric hot region that is contiguously radiating.</p>
 <p>Instances of this class can take the following forms:</p>
@@ -395,12 +396,37 @@ in a <a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xps
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>custom</strong> (<em>iterable</em>) – Iterable over <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instances. If you
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>custom</strong> (<em>iterable</em>) – Iterable over <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instances. If you
 supply custom parameter definitions, you need to overwrite the
 <code class="xref py py-func docutils literal notranslate"><span class="pre">__compute_cellParamVecs()</span></code> method to
 handle your custom behaviour. This custom behaviour can only
 target the radiation field within the hot regions as defined
-above.</td>
+above.</li>
+<li><strong>image_order_limit</strong> (<em>int</em>) – The highest-order image to sum over. A value of <em>one</em> means primary
+images only (deflections <span class="math notranslate nohighlight">\(&lt;\pi\)</span>) whilst a value of <em>two</em> means
+primary and secondary images (deflections <span class="math notranslate nohighlight">\(&lt;2pi\)</span>) where visible,
+and so on. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), there is no hard limit. In this
+case the limit is determined quasi-naturally for each mesh element,
+meaning that images will be summed over until higher order images are
+not visible or the visibility limit is truncated due to lack of
+numerical precision (e.g. for rays that orbit very close to the
+Schwarzschild photon sphere three times or more).  Higher-order images
+generally contribute less and less due to geometric projection effects
+(higher-order images become more tangential), and the images of
+elements get squeezed in solid angle at the stellar limb. In principle,
+effects such as relativistic beaming can counter this effect to a
+degree for certain source-receiver configurations, by increasing
+brightness whilst solid angle decreases, and thus the flux contribution
+relative to that from a primary image can be greater than suggested
+simply by geometric project effects. Nevertheless, inclusion of these
+images is more computationally expensive. If, when iterating through
+image orders, an image is not visible because the deflection required
+is greater than the highest deflection permitted at a given colatitude
+on a surface (accounting for the surface tilt due to rotation), then
+the iteration over image orders terminates.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
