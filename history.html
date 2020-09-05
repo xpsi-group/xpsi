@@ -428,8 +428,8 @@ masked by hot regions. In this case, when using phase interpolant tools from
 the <a class="reference internal" href="tools.html#module-xpsi.tools" title="xpsi.tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tools</span></code></a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">likelihood</span></code> modules it is necessary to use a
 <code class="docutils literal notranslate"><span class="pre">allow_negative</span></code> option when calling the tools to specify that a negative
 interpolant is permitted.</li>
-<li>Automatic linking of the package <a class="reference external" href="&lt;https://github.com/ThomasEdwardRiley/rayXpanda&gt;">rayXpanda</a> for calculation of the inverse of
-the deflection integral, and it’s derivative via a high-order symbolic
+<li>Automatic linking of the package <a class="reference external" href="https://github.com/ThomasEdwardRiley/rayXpanda">rayXpanda</a> for calculation of the inverse of
+the deflection integral, and its derivative via a high-order symbolic
 expansion, for a subset of primary images. The purpose is to mainly as an
 orthogonal validation of a subset of integrals executed via numerical
 quadrature and inversion via spline interpolation.  The other reason is
@@ -438,12 +438,12 @@ integrators this aforementioned interpolation had to change due to
 non-injectivity of functions when interpolating with respect to the cosine of
 the deflection angle. However, to calculate the convergence derivative
 sufficiently accurately, interpolating with respect to the cosine of the
-deflection seems necessary. Therefore <a class="reference external" href="&lt;https://github.com/ThomasEdwardRiley/rayXpanda&gt;">rayXpanda</a> can be linked in, if it is
+deflection seems necessary. Therefore <a class="reference external" href="https://github.com/ThomasEdwardRiley/rayXpanda">rayXpanda</a> can be linked in, if it is
 available, for low deflection angles instead of avoid having to allocate
 additional memory and construct splines specifically for low-deflection
 primary images. Simple testing suggests there are no valuable speed gains,
 however, possibly because the high-order expansion and simultaneous evaluation
-of the polynomial and it’s derivate with a nested Horner scheme itself
+of the polynomial and its derivate with a nested Horner scheme itself
 requires a substantial number of floating point operations.</li>
 <li>A helper method <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace.merge" title="xpsi.ParameterSubspace.ParameterSubspace.merge"><code class="xref py py-meth docutils literal notranslate"><span class="pre">merge()</span></code></a> that
 merges a set of parameters, or a parameter subspace, or a set of subspaces,
@@ -455,7 +455,7 @@ into a subspace that has already been instantiated.</li>
 <ul class="simple">
 <li>Updated the Conda <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> file for replication of the development
 environment. The <code class="docutils literal notranslate"><span class="pre">basic_environment.yml</span></code> file was also updated in an
-earlier release in an additional necessary package, <code class="docutils literal notranslate"><span class="pre">wrapt</span></code>.</li>
+earlier release to list an additional dependency, <code class="docutils literal notranslate"><span class="pre">wrapt</span></code>.</li>
 </ul>
 </div>
 <div class="section" id="id6">
