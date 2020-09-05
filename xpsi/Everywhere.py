@@ -158,7 +158,10 @@ class Everywhere(ParameterSubspace):
     @property
     def _integrator_toggle(self):
         """ Get the toggle setting. """
-        return self._intoggle
+        try:
+            return self._intoggle
+        except AttributeError:
+            return False
 
     @_integrator_toggle.setter
     def _integrator_toggle(self, toggle):
