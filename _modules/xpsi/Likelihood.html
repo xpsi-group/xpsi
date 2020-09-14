@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Likelihood &mdash; xpsi 0.6.0 documentation</title>
+  <title>xpsi.Likelihood &mdash; xpsi 0.6.1 documentation</title>
   
 
   
@@ -386,6 +386,8 @@
                 <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">Signal</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">l</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for a signal object.&#39;</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span> <span class="o">=</span> <span class="n">obj</span>
             <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">Signal</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">,]</span>
             <span class="k">else</span><span class="p">:</span>
@@ -428,6 +430,10 @@
                             <span class="s1">&#39;Prior class.&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span> <span class="c1"># assume no prior parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span> <span class="c1"># a reference to the parameter container</span>
 
     <span class="nd">@prior</span><span class="o">.</span><span class="n">deleter</span>

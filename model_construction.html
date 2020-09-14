@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modeling &mdash; xpsi 0.6.0 documentation</title>
+  <title>Modeling &mdash; xpsi 0.6.1 documentation</title>
   
 
   
@@ -513,7 +513,7 @@ div.rendered_html tbody tr:hover {
 /=============================================\
 | X-PSI: X-ray Pulse Simulation and Inference |
 |---------------------------------------------|
-|                Version: 0.6.0               |
+|                Version: 0.6.1               |
 |---------------------------------------------|
 |  https://thomasedwardriley.github.io/xpsi/  |
 \=============================================/
@@ -1108,28 +1108,18 @@ Configuring default bounds with fixed spin...
 Creating parameter:
     &gt; Named &#34;frequency&#34; with fixed value 3.000e+02.
     &gt; Spin frequency [Hz].
-
-
 Creating parameter:
     &gt; Named &#34;mass&#34; with bounds [1.000e+00, 3.000e+00].
     &gt; Gravitational mass [solar masses].
-
-
 Creating parameter:
     &gt; Named &#34;radius&#34; with bounds [1.477e+00, 1.600e+01].
     &gt; Coordinate equatorial radius [km].
-
-
 Creating parameter:
     &gt; Named &#34;distance&#34; with bounds [5.000e-02, 2.000e+00].
     &gt; Earth distance [kpc].
-
-
 Creating parameter:
     &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
     &gt; Cosine of Earth inclination to rotation axis.
-
-
 Spacetime configured.
 </pre></div></div>
 </div>
@@ -1195,28 +1185,18 @@ Cosine of Earth inclination to rotation axis.
 Creating parameter:
     &gt; Named &#34;frequency&#34; with fixed value 3.000e+02.
     &gt; Spin frequency [Hz].
-
-
 Creating parameter:
     &gt; Named &#34;mass&#34; with bounds [1.000e+00, 3.000e+00].
     &gt; Gravitational mass [solar masses].
-
-
 Creating parameter:
     &gt; Named &#34;radius&#34; with bounds [4.430e+00, 1.600e+01].
     &gt; Coordinate equatorial radius [km].
-
-
 Creating parameter:
     &gt; Named &#34;distance&#34; with bounds [1.000e-01, 1.000e+00].
     &gt; Earth distance [kpc].
-
-
 Creating parameter:
     &gt; Named &#34;cos_inclination&#34; with bounds [0.000e+00, 1.000e+00].
     &gt; Cosine of Earth inclination to rotation axis.
-
-
 </pre></div></div>
 </div>
 </div>
@@ -1414,7 +1394,6 @@ appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</s
                             <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
                             <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                             <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span> <span class="c1"># unique prefix needed because &gt;1 instance</span>
 </pre></div>
 </div>
@@ -1427,23 +1406,15 @@ appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</s
 Creating parameter:
     &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
     &gt; The colatitude of the centre of the superseding region [radians].
-
-
 Creating parameter:
     &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
     &gt; The angular radius of the (circular) superseding region [radians].
-
-
 Creating parameter:
     &gt; Named &#34;phase_shift&#34; with bounds [-2.500e-01, 7.500e-01].
     &gt; The phase of the hot region, a periodic parameter [cycles].
-
-
 Creating parameter:
     &gt; Named &#34;super_temperature&#34; with bounds [3.000e+00, 7.000e+00].
     &gt; log10(superseding region effective temperature [K]).
-
-
 </pre></div></div>
 </div>
 <p>Note that since the atmospheric local-comoving-frame effective temperature is uniform everywhere within the hot region boundaries, we can use the default value of the <code class="docutils literal notranslate"><span class="pre">symmetry</span></code> keyword, <code class="docutils literal notranslate"><span class="pre">True</span></code>. All other arguments determine the numerical resolution, and have defaults which have been (somewhat arbitrarily) chosen to be result in a likelihood evaluation time of <span class="math notranslate nohighlight">\(\mathcal{O}(1)\)</span> s.</p>
@@ -1502,7 +1473,6 @@ Creating parameter:
                               <span class="n">max_sqrt_num_cells</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                               <span class="n">num_leaves</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                               <span class="n">num_rays</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                              <span class="n">do_fast</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                               <span class="n">is_antiphased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                               <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="c1"># unique prefix needed because &gt;1 instance</span>
 </pre></div>
@@ -1516,23 +1486,15 @@ Creating parameter:
 Creating parameter:
     &gt; Named &#34;super_colatitude&#34; with bounds [0.000e+00, 3.142e+00].
     &gt; The colatitude of the centre of the superseding region [radians].
-
-
 Creating parameter:
     &gt; Named &#34;super_radius&#34; with bounds [0.000e+00, 1.571e+00].
     &gt; The angular radius of the (circular) superseding region [radians].
-
-
 Creating parameter:
     &gt; Named &#34;phase_shift&#34; with bounds [-2.500e-01, 7.500e-01].
     &gt; The phase of the hot region, a periodic parameter [cycles].
-
-
 Creating parameter:
     &gt; Named &#34;super_temperature&#34; that is derived from ulterior variables.
     &gt; log10(superseding region effective temperature [K]).
-
-
 </pre></div></div>
 </div>
 <p>The description <em>derived from ulterior variables</em> means that when we lookup the value, it is calculated dynamically from the values of other (ulterior) model parameters. We clearly expect the temperature of the secondary hot region to behave in this way. A few other varibles do to because of keyword arguments passed upon instantiation of the hot regions. For example, the colatitude of the <em>zero-radii</em> omission and ceding regions (<code class="docutils literal notranslate"><span class="pre">omit=False</span></code> and <code class="docutils literal notranslate"><span class="pre">cede=False</span></code>) are equivalent to the
@@ -1766,8 +1728,6 @@ Creating parameter:
     &gt; Named &#34;mode_frequency&#34; with fixed value 3.000e+02.
     &gt; Coordinate frequency of the mode of radiative asymmetry in the
 photosphere that is assumed to generate the pulsed signal [Hz].
-
-
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1947,7 +1907,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <span class="c1"># Cannot import ``allclose`` function from NumPy.</span>
 <span class="c1"># Using fallback implementation...</span>
 <span class="c1"># Checking closeness of likelihood arrays:</span>
-<span class="c1"># -2.67136013e+04 | -2.67136137e+04 .....</span>
+<span class="c1"># -2.67136012e+04 | -2.67136137e+04 .....</span>
 <span class="c1"># Closeness evaluated.</span>
 <span class="c1"># Log-likelihood value checks passed on root process.</span>
 <span class="c1"># Checks passed.</span>
@@ -1990,7 +1950,7 @@ Checking closeness of likelihood arrays:
 Closeness evaluated.
 Log-likelihood value checks passed on root process.
 Checks passed.
-time = 0.569 s
+time = 0.590 s
 </pre></div></div>
 </div>
 <p>If the secondary temperature was free, we would extend the vector <code class="docutils literal notranslate"><span class="pre">p</span></code> by one element, passing the injected value of <code class="docutils literal notranslate"><span class="pre">6.0</span></code>:</p>
@@ -2786,17 +2746,17 @@ No parameters supplied... empty subspace created.
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[1.349424714270147,
- 6.489156529672178,
- 0.3061470490646998,
- 0.9090811201061951,
- 0.08829441463979038,
- 1.590818481419004,
- 0.13308258467652595,
- 3.8649492075280394,
- 0.7056987756951965,
- 0.6491916603894706,
- 0.4345366160976861]
+<span></span>[2.3341954824001987,
+ 10.60195054536041,
+ 0.27819953864231406,
+ 0.042268943830421346,
+ 0.0345120220181776,
+ 1.1337904971368222,
+ 0.7049490311536339,
+ 5.134168474700057,
+ 0.6039657445287777,
+ 2.008663413095534,
+ 0.4223272254536369]
 </pre></div>
 </div>
 </div>
@@ -2867,7 +2827,7 @@ Samples drawn.
 <img alt="_images/model_construction_183_0.png" src="_images/model_construction_183_0.png" />
 </div>
 </div>
-<p>Note that the prior support is defined with a constraint that the polar radius <span class="math notranslate nohighlight">\(R_{\rm p}(R_{\rm eq}, M, \Omega)\geq 1.76r_{s}(M)\)</span>, which is why there is a region devoid of samples between the prior support and the dashed line <span class="math notranslate nohighlight">\(R_{\rm eq} = 1.76r_s(M)\)</span>.</p>
+<p>Note that the prior support is defined with a constraint that the polar radius <span class="math notranslate nohighlight">\(R_{\rm p}(R_{\rm eq}, M, \Omega)\geq 1.76r_{s}(M)\)</span>, which is why there is a region devoid of samples between the prior support and the dashed line <span class="math notranslate nohighlight">\(R_{\rm eq} = 1.76r_s(M)\)</span>. This condition is not necessary though because as of <code class="docutils literal notranslate"><span class="pre">v0.6</span></code>, X-PSI can include higher-order images, with the secondary and tertiary expected to be entirely sufficient in practice.</p>
 <p>Let’s now plot the hot region (circular spot) colatitudes:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
@@ -3390,8 +3350,6 @@ Sampling efficiency set to: 6.7485.
 Creating parameter:
     &gt; Named &#34;powerlaw_index&#34; with bounds [-3.000e+00, -1.010e+00].
     &gt; Powerlaw spectral index.
-
-
 </pre></div></div>
 </div>
 </div>
@@ -3846,6 +3804,88 @@ spline interpolants (the important feature for comparison being that minima and 
 </div>
 <div class="output_area docutils container">
 <img alt="_images/model_construction_264_0.png" src="_images/model_construction_264_0.png" />
+</div>
+</div>
+<p>If we switch back to a Steffen phase spline, the issue does not entirely disappear, but the differences are seemingly too small to affect random number generation.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[103]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">xpsi</span><span class="o">.</span><span class="n">set_phase_interpolant</span><span class="p">(</span><span class="s1">&#39;Steffen&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[104]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">synthesise</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">NICER</span><span class="o">=</span><span class="n">NICER_kwargs</span><span class="p">)</span> <span class="c1"># SEED=0</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Exposure time: 984307.670283 [s]
+Background normalisation: 1.89127971e-05
+</pre></div></div>
+</div>
+<p>Note the small difference here in exposure time and background normalisation.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[105]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_synthetic_expected_hreadable.dat&#39;</span><span class="p">)</span>
+<span class="n">zz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">zz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">32</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[106]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">_r</span> <span class="o">=</span> <span class="p">(</span><span class="n">zz</span><span class="o">-</span><span class="n">xx</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">zz</span><span class="p">)</span>
+<span class="n">plot_one_pulse</span><span class="p">(</span><span class="n">_r</span><span class="p">,</span> <span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
+               <span class="s1">&#39;Standardised residuals&#39;</span><span class="p">,</span>
+               <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">,</span>
+               <span class="n">vmin</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">_r</span><span class="p">)),</span>
+               <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">_r</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/model_construction_270_0.png" src="_images/model_construction_270_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[107]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">counts</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;data/new_synthetic_realisation.dat&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+<span class="p">(</span><span class="n">diff</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[107]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>False
+</pre></div>
 </div>
 </div>
 </div>

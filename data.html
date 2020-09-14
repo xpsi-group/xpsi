@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data &mdash; xpsi 0.6.0 documentation</title>
+  <title>Data &mdash; xpsi 0.6.1 documentation</title>
   
 
   
@@ -347,7 +347,7 @@ the <code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="classmethod">
 <dt id="xpsi.Data.Data.phase_bin__event_list">
-<em class="property">classmethod </em><code class="descname">phase_bin__event_list</code><span class="sig-paren">(</span><em>path</em>, <em>channels</em>, <em>phases</em>, <em>phase_shift=0.0</em>, <em>phase_column=1</em>, <em>skiprows=1</em>, <em>dtype=&lt;type 'int'&gt;</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Data.html#Data.phase_bin__event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Data.Data.phase_bin__event_list" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">phase_bin__event_list</code><span class="sig-paren">(</span><em>path</em>, <em>channels</em>, <em>phases</em>, <em>channel_column</em>, <em>phase_column</em>, <em>phase_shift=0.0</em>, <em>skiprows=1</em>, <em>dtype=&lt;type 'int'&gt;</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Data.html#Data.phase_bin__event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Data.Data.phase_bin__event_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a phase-folded event list and bin the events in phase.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -367,8 +367,8 @@ The first and last elements will almost always be zero and unity
 respectively.</li>
 <li><strong>phase_shift</strong> (<em>float</em>) – A phase-shift in cycles to be applied when binning the events in
 phase.</li>
-<li><strong>phase_column</strong> (<em>int</em>) – The column in the loaded file containing event phases. Either zero
-or one.</li>
+<li><strong>phase_column</strong> (<em>int</em>) – The column in the loaded file containing event phases.</li>
+<li><strong>channel_column</strong> (<em>int</em>) – The column in the loaded file containing event channels.</li>
 <li><strong>skiprows</strong> (<em>int</em>) – The number of top rows to skip when loading the events from file.
 The top row of couple of rows will typically be reserved for
 column headers.</li>

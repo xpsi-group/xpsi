@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Data &mdash; xpsi 0.6.0 documentation</title>
+  <title>xpsi.Data &mdash; xpsi 0.6.1 documentation</title>
   
 
   
@@ -418,8 +418,9 @@
     <span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Loading event list and phase binning&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;Events loaded and binned&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">phase_bin__event_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span>
+                              <span class="n">channel_column</span><span class="p">,</span>
+                              <span class="n">phase_column</span><span class="p">,</span>
                               <span class="n">phase_shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-                              <span class="n">phase_column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                               <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                               <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int</span><span class="p">,</span>
                               <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -447,8 +448,10 @@
 <span class="sd">            phase.</span>
 
 <span class="sd">        :param int phase_column:</span>
-<span class="sd">            The column in the loaded file containing event phases. Either zero</span>
-<span class="sd">            or one.</span>
+<span class="sd">            The column in the loaded file containing event phases.</span>
+
+<span class="sd">        :param int channel_column:</span>
+<span class="sd">            The column in the loaded file containing event channels.</span>
 
 <span class="sd">        :param int skiprows:</span>
 <span class="sd">            The number of top rows to skip when loading the events from file.</span>
@@ -465,20 +468,19 @@
         <span class="n">events</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">skiprows</span><span class="p">)</span>
 
         <span class="n">channels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span>
-        <span class="n">channel_col</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="ow">not</span> <span class="n">phase_column</span><span class="p">)</span>
 
         <span class="k">yield</span> <span class="s1">&#39;Total number of events: </span><span class="si">%i</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_col</span><span class="p">]</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_column</span><span class="p">]</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
                 <span class="n">_temp</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">phase_column</span><span class="p">]</span> <span class="o">+</span> <span class="n">phase_shift</span>
                 <span class="n">_temp</span> <span class="o">-=</span> <span class="n">_np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">_temp</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_temp</span> <span class="o">&lt;=</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
-                        <span class="n">data</span><span class="p">[</span><span class="n">channels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_col</span><span class="p">])),</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">channels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_column</span><span class="p">])),</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                         <span class="k">break</span>
 
         <span class="k">yield</span> <span class="s1">&#39;Number of events constituting data set: </span><span class="si">%i</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
