@@ -22,7 +22,7 @@ from GSL cimport (gsl_interp,
 
 ctypedef gsl_interp_accel accel
 
-from ..tools cimport _get_phase_interpolant, gsl_interp_type
+from . cimport _get_phase_interpolant, gsl_interp_type
 
 def energy_integrator(size_t N_Ts,
                        double[:,::1] signal,

@@ -12,7 +12,6 @@ from .Interstellar import Interstellar
 
 from .tools.energy_integrator import energy_integrator
 from .tools.energy_interpolator import energy_interpolator
-from .tools.energy_adaptor import energy_adaptor
 from .tools.phase_integrator import phase_integrator
 
 from abc import abstractmethod

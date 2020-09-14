@@ -207,8 +207,9 @@ class Data(object):
     @make_verbose('Loading event list and phase binning',
                   'Events loaded and binned')
     def phase_bin__event_list(cls, path, channels, phases,
+                              channel_column,
+                              phase_column,
                               phase_shift=0.0,
-                              phase_column=1,
                               skiprows=1,
                               dtype=_np.int,
                               *args, **kwargs):
@@ -236,8 +237,10 @@ class Data(object):
             phase.
 
         :param int phase_column:
-            The column in the loaded file containing event phases. Either zero
-            or one.
+            The column in the loaded file containing event phases.
+
+        :param int channel_column:
+            The column in the loaded file containing event channels.
 
         :param int skiprows:
             The number of top rows to skip when loading the events from file.
@@ -254,20 +257,19 @@ class Data(object):
         events = _np.loadtxt(path, skiprows=skiprows)
 
         channels = list(channels)
-        channel_col = int(not phase_column)
 
         yield 'Total number of events: %i.' % events.shape[0]
 
         data = _np.zeros((len(channels), len(phases)-1), dtype=dtype)
 
         for i in range(events.shape[0]):
-            if events[i,channel_col] in channels:
+            if events[i,channel_column] in channels:
                 _temp = events[i,phase_column] + phase_shift
                 _temp -= _np.floor(_temp)
 
                 for j in range(phases.shape[0]-1):
                     if phases[j] <= _temp <= phases[j+1]:
-                        data[channels.index(int(events[i,channel_col])),j] += 1
+                        data[channels.index(int(events[i,channel_column])),j] += 1
                         break
 
         yield 'Number of events constituting data set: %i.' % _np.sum(data)

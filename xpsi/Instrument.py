@@ -140,7 +140,7 @@ class Instrument(ParameterSubspace):
         self._matrix = matrix
 
     def construct_matrix(self):
-        """ Construct the response matrix if it is parametrised.
+        """ Construct the response matrix if it is parameterised.
 
         If customising, do operations to calculate a matrix, and return it.
         You can access parameters (free, fixed, and derived) via the container

@@ -17,8 +17,6 @@ from GSL cimport (gsl_interp,
                    gsl_interp_free,
                    gsl_interp_eval,
                    gsl_interp_eval_integ,
-                   gsl_interp_akima_periodic,
-                   gsl_interp_steffen,
                    gsl_interp_accel,
                    gsl_interp_accel_alloc,
                    gsl_interp_accel_free,
@@ -34,6 +32,8 @@ from GSL cimport (gsl_interp,
 ctypedef gsl_interp_accel accel
 
 ctypedef np.uint8_t uint8
+
+from . cimport _get_phase_interpolant, gsl_interp_type
 
 def synthesise_exposure(double exposure_time,
                         double[::1] phases,
@@ -81,6 +81,9 @@ def synthesise_exposure(double exposure_time,
         The last element is the required normalisation of the background.
 
     """
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
 
     cdef:
         size_t i, j, p, num_components = len(components)
@@ -122,7 +125,7 @@ def synthesise_exposure(double exposure_time,
 
     for p in range(num_components):
         signal_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(gsl_interp_akima_periodic, signal_phase_set.shape[0])
+        interp[p] = gsl_interp_alloc(_interpolant, signal_phase_set.shape[0])
         acc[p] = gsl_interp_accel_alloc()
         gsl_interp_accel_reset(acc[p])
 
@@ -278,6 +281,9 @@ def synthesise_given_total_count_number(double[::1] phases,
         the required normalisation of the background.
 
     """
+    cdef const gsl_interp_type *_interpolant
+
+    _interpolant = _get_phase_interpolant()
 
     cdef:
         size_t i, j, p, num_components = len(components)
@@ -319,7 +325,7 @@ def synthesise_given_total_count_number(double[::1] phases,
 
     for p in range(num_components):
         signal_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(gsl_interp_akima_periodic, signal_phase_set.shape[0])
+        interp[p] = gsl_interp_alloc(_interpolant, signal_phase_set.shape[0])
         acc[p] = gsl_interp_accel_alloc()
         gsl_interp_accel_reset(acc[p])
 
