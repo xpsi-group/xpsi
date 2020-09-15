@@ -175,6 +175,8 @@ class Likelihood(ParameterSubspace):
                 for l in obj:
                     if not all(isinstance(o, Signal) for o in l):
                         raise TypeError('Invalid type for a signal object.')
+
+                self._signals = obj
             elif all(isinstance(o, Signal) for o in obj):
                 self._signals = [obj,]
             else:
@@ -217,6 +219,10 @@ class Likelihood(ParameterSubspace):
                             'Prior class.')
 
         self._prior = obj
+        try:
+            self.merge(obj)
+        except TypeError:
+            pass # assume no prior parameters
         self._prior.parameters = self # a reference to the parameter container
 
     @prior.deleter

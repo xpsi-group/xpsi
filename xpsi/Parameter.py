@@ -157,7 +157,7 @@ class Parameter(object):
 
     """
 
-    @make_verbose('Creating parameter:','\n')
+    @make_verbose('Creating parameter:')
     def __init__(self, name, strict_bounds, bounds=(None,None),
                  doc=None, symbol=r'', value=None, permit_prepend=True,
                  deactivate_verbosity=False, is_hyperparameter=False):

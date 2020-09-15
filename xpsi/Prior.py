@@ -67,7 +67,7 @@ class Prior(ParameterSubspace):
 
     def __len__(self):
         """ Number of parameter + hyperparameter dimensions. """
-        return len(self._parameters) # redirect
+        return len(self._parameters) # redirect, overwriting base class
 
     @property
     def parameters(self):

@@ -51,7 +51,8 @@ class ParameterSubspace(object):
                 try:
                     iter(obj)
                 except TypeError:
-                    print('Argument must be parameter or an iterable of parameters or subspaces.')
+                    print('Argument must be a parameter or an iterable of '
+                          'parameters or subspaces.')
                     raise
                 else:
                     if isinstance(obj, ParameterSubspace):

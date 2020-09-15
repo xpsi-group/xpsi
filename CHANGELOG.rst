@@ -92,6 +92,29 @@ Attribution
 ^^^^^^^^^^^
 
 
+[v0.6.1] - 2020-09-14
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Bug wherein multiple :class:`~.Signal.Signal` instances passed to a
+  :class:`~.Likelihood.Likelihood` instance do not have references stored.
+* The :mod:`~.tools` synthesis functions adhering to the global phase
+  interpolant switch, and updated tutorial accordingly.
+
+Changed
+^^^^^^^
+
+* The :meth:`~.Data.Data.phase_bin__event_list` constructor signature, so that
+  the phase and channel columns can be arbitrary.
+
+Removed
+^^^^^^^
+
+* An unused prototype extension module.
+
+
 [v0.6.0] - 2020-09-05
 ~~~~~~~~~~~~~~~~~~~~~
 
