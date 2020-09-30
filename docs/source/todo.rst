@@ -49,6 +49,7 @@ Unordered.
   and custom structs with code from the ``surface_radiation_field/archive``)
   and then recompile. Perhaps look into C function pointers passed to Cython for
   runtime specification of shared object.
+* Draw samples from the joint prior more efficiently when post-processing.
 * Extension to interpolate in arbitrary number of dimensions (currently hard-
   coded four-dimensional cubic polynomial interpolation for, meaning two
   variables in addition to energy and zenith angle).

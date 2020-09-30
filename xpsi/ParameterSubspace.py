@@ -3,7 +3,7 @@
 from __future__ import division, print_function
 
 from .global_imports import *
-from . import global_imports
+from . import global_imports, make_verbose
 
 from abc import ABCMeta
 
@@ -29,6 +29,7 @@ class ParameterSubspace(object):
 
     __metaclass__ = ABCMeta
 
+    @make_verbose()
     def __init__(self, *args, **kwargs):
 
         prefix = kwargs.get('prefix', None)
@@ -37,10 +38,12 @@ class ParameterSubspace(object):
             self.prefix = prefix
 
         if not args:
-            print('No parameters supplied... empty subspace created.')
+            yield 'No parameters supplied... empty subspace created.'
 
         self._params = []
         self.merge(*args)
+
+        yield
 
     def merge(self, *args):
         """ Merge parameters into the subspace, thereby expanding it. """

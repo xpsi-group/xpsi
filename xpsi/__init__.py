@@ -4,7 +4,7 @@ A open-source package for neutron star astrostatistics.
 
 """
 from __future__ import print_function
-__version__ = "0.6.1"
+__version__ = "0.6.2"
 __author__ = "Thomas E. Riley"
 
 try:
@@ -160,6 +160,9 @@ if not __XPSI_SETUP__:
     from .Prior import Prior
 
     if global_imports._size == 1:
-        from .PostProcessing import *
+        try:
+            from .PostProcessing import *
+        except ImportError:
+            pass
 
     __XPSI_SETUP__ = True

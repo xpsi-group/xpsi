@@ -1,5 +1,7 @@
 from __future__ import division, print_function
 
+from .. import _warning
+
 try:
     import h5py
 except ImportError:

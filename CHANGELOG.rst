@@ -92,6 +92,34 @@ Attribution
 ^^^^^^^^^^^
 
 
+[v0.6.2] - 2020-09-28
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Bug in :func:`~.Sample.nested` when initialisation of nested sampler class
+  tries to call ``set_default`` dictionary method instead of the correct
+  ``setdefault`` method.
+* Import errors associated with the :mod:`~.PostProcessing` module.
+
+Changed
+^^^^^^^
+
+* The :attr:`~.Parameter.Parameter.cached` property of a
+  :class:`~.Parameter.Parameter` instance can be set to ``None``.
+* The :class:`~.ParameterSubspace.ParameterSubspace` initialiser is decorated
+  to avoid verbose output by every MPI process.
+* The :class:`~.Prior.Prior` uses the class attribute
+  ``__draws_from_support__`` to set the number of Monte Carlo draws from the
+  joint prior support to require to set the MultiNest hypervolume expansion
+  factor appropriately. The default value is ``5``, which means :math:`10^5`
+  draws from the joint prior support.
+* Checks if an instance of  ``six.string_types`` in
+  :class:`~.PostProcessing._metadata.Metadata`, e.g., to allow unicode strings
+  in posterior ID labels.
+
+
 [v0.6.1] - 2020-09-14
 ~~~~~~~~~~~~~~~~~~~~~
 
