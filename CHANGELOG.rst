@@ -14,70 +14,11 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* Backwards compatible.
-* The new feature is support for higher-order images when invoking an integrator
-  that discretises the surface (with a regular mesh). Secondary images can
-  be very important, whilst tertiary images less so. Quaternary, quinary, and
-  possibly senary images can sometimes be detected and included too, with
-  accuracy that decreases with order. Fortunately, the contribution to the
-  photon specific flux generally decays rapidly with image order beyond the
-  secondary or tertiary images. The computational cost scales almost
-  linearly with order *if* an appreciable fraction of every iso-latitudinal ring
-  on the surface is multiply-imaged at each order. Note that multiple-imaging
-  manifests entirely naturally when an image-plane is discretised in such away
-  that the regular mesh resolves the stellar limb sufficiently well, where
-  higher-order images get insanely squeezed.
-
 Fixed
 ^^^^^
 
 Added
 ^^^^^
-.. _rayXpanda: <https://github.com/ThomasEdwardRiley/rayXpanda>
-
-* Multiple-imaging support including an option to specify the maximum image
-  order to iterate up to, with automatic truncation when no image at a given
-  order is detected. If no limit is specified (the default), then images are
-  included as far as they can be detected given the numerical resolution
-  settings, which is typically between quaternary and senary images.
-* A multiple-imaging tutorial.
-* A global switch for changing phase and energy interpolants without
-  recompilation of extensions. To change interpolants, you can use top-level
-  functions :func:`xpsi.set_phase_interpolant` and
-  :func:`xpsi.set_energy_interpolant`. Generally computations are more
-  sensitive to the phase interpolants, of which the options from GSL are:
-  Steffen spline (pre-v0.6 choice), Akima periodic spline, and cubic periodic
-  spline. The default choice is now an Akima periodic spline in an attempt to
-  improve interpolation accuracy of the interpolant at function maxima, where
-  the accuracy is generally most important in the context of likelihood
-  evaluations.  Note that in some corner cases, the signal from a hot region is
-  negative in specific flux because there is a correction computed to yield the
-  intended signal from :class:`~.Elsewhere.Elsewhere` when it is partially
-  masked by hot regions. In this case, when using phase interpolant tools from
-  the :mod:`~.tools` and :mod:`~.likelihood` modules it is necessary to use a
-  ``allow_negative`` option when calling the tools to specify that a negative
-  interpolant is permitted.
-* Automatic linking of the package rayXpanda_ for calculation of the inverse of
-  the deflection integral, and it's derivative via a high-order symbolic
-  expansion, for a subset of primary images. The purpose is to mainly as an
-  orthogonal validation of a subset of integrals executed via numerical
-  quadrature and inversion via spline interpolation.  The other reason is
-  because to support multiple-imaging with the surface-discretisation
-  integrators this aforementioned interpolation had to change due to
-  non-injectivity of functions when interpolating with respect to the cosine of
-  the deflection angle. However, to calculate the convergence derivative
-  sufficiently accurately, interpolating with respect to the cosine of the
-  deflection seems necessary. Therefore rayXpanda_ can be linked in, if it is
-  available, for low deflection angles instead of avoid having to allocate
-  additional memory and construct splines specifically for low-deflection
-  primary images. Simple testing suggests there are no valuable speed gains,
-  however, possibly because the high-order expansion and simultaneous evaluation
-  of the polynomial and it's derivate with a nested Horner scheme itself
-  requires a substantial number of floating point operations.
-* A helper method :meth:`~.ParameterSubspace.ParameterSubspace.merge` that
-  merges a set of parameters, or a parameter subspace, or a set of subspaces,
-  into a subspace that has already been instantiated.
-
 
 Changed
 ^^^^^^^
@@ -90,6 +31,97 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+
+
+[v0.7.0] - 2020-09-30
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* New plotting functionality.
+* Should be backwards compatible, but some small internal tweaks or default
+  behaviour changes could result in small differences in plots that might not
+  even be discernable.
+
+Added
+^^^^^
+
+* Option to specify only the number of phases per cycle when calling
+  :meth:`~.Photosphere.Photosphere.image`, instead of having to supply the
+  phase set.
+* New plot type for animated photon specific intensity skymaps with their
+  associated photon specific flux pulse-profiles and the photon specific flux
+  spectrum that connects the signals at those energies. See the documentation
+  of the :meth:`~.Photosphere.Photosphere.image` method for options, details,
+  and an example.
+* Example plots to the :class:`~.Photosphere.Photosphere` documentation.
+* New helper methods :meth:`~.Photosphere.Photosphere.write_image_data`
+  and :meth:`~.Photosphere.Photosphere.load_image_data` to write ray map data,
+  photon specific intensity image data, and photon specific flux signal data to
+  disk, and then read the data back into memory as attributes so that the data
+  can be reused to accelerate calls to calculate images and generate static and
+  animated plots.
+* Option to :meth:`~.Photosphere.Photosphere._plot_sky_maps`,
+  ``add_zero_intensity_level``, that applies a colormap such that zero intensity
+  corresponds to the lowest colour. In this case a non-radiating part of the
+  stellar surface, and the background sky, have well-defined colour. If lowest
+  colour in the colormap is instead associated with the lowest finite intensity
+  in the skymap panel, then the background sky for instance is assigned the same
+  colour so that the least bright part of the image merges with the background
+  sky colour. The latter choice resolve the variation in the intensity as a
+  function of phase and sky direction better with colour, but the former might
+  gives more of an indication of how bright the image is relative to the
+  background sky in the limit of perfect imaging.
+
+Changed
+^^^^^^^
+
+* A phase set supplied to :meth:`~.Photosphere.Photosphere.image` must have
+  units of cycles, not radians as was previously the requirement.
+* The photon specific flux can be calculated with
+  :meth:`~.Photosphere.Photosphere.image` at far more energies than photon
+  specific intensities are cached at, by using the :obj:`cache_energy_indices`
+  keyword to supply and array of integers to index the energy array. This
+  saves memory and means that imaging with an extension module can be executed
+  once to generate both skymaps (which require cached intensities but only
+  typically at a few representative energies) and the photon specific flux
+  (which does not require cached intensities, but typically is computed for
+  a much finer energy array).
+
+Attribution
+^^^^^^^^^^^
+
+* With thanks to Anna Bilous and Serena Vinciguerra for helpful suggestions
+  about the new animated plot type.
+
+
+[v0.6.2] - 2020-09-28
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Bug in :class:`~.NestedSampler.NestedSampler` trying to call ``set_default``
+  dictionary method instead of the correct ``setdefault`` method.
+* Import errors associated with the :mod:`~.PostProcessing` module.
+
+Changed
+^^^^^^^
+
+* The :attr:`~.Parameter.Parameter.cached` property of a
+  :class:`~.Parameter.Parameter` instance can be set to ``None``.
+* The :class:`~.ParameterSubspace.ParameterSubspace` initialiser is decorated
+  to avoid verbose output by every MPI process.
+* The :class:`~.Prior.Prior` uses the class attribute
+  ``__draws_from_support__`` to set the number of Monte Carlo draws from the
+  joint prior support to require to set the MultiNest hypervolume expansion
+  factor appropriately. The default value is ``5``, which means :math:`10^5`
+  draws from the joint prior support.
+* Checks if an instance of  ``six.string_types`` in
+  :class:`~.PostProcessing.MetaData`, e.g., to allow unicode strings in
+  posterior ID labels.
+
 
 
 [v0.6.2] - 2020-09-28
