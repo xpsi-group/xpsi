@@ -435,7 +435,10 @@ class Parameter(object):
         try:
             self._cached = float(value)
         except TypeError:
-            raise TypeError('A float is required.')
+            if value is None:
+                self._cached = None
+            else:
+                raise TypeError('A float is required.')
 
     @cached.deleter
     def cached(self):

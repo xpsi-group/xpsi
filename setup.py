@@ -49,36 +49,39 @@ if __name__ == '__main__':
             # by the binary itself
             extra_link_args = ['-Wl,-rpath,%s'%(gsl_prefix+'/lib')]
 
-            # try to get the rayXpanda library
-            try:
-                import rayXpanda
-            except ImportError:
-                print('Warning: the rayXpanda package cannot be imported. '
-                      'Using fallback implementation.')
-                CC = os.environ['CC']
-                sub.call(['%s'%CC,
-                          '-c',
-                          join(_src_dir, 'xpsi/include/rayXpanda/inversion.c'),
-                          '-o',
-                          join(_src_dir, 'xpsi/include/rayXpanda/inversion.o')])
-                sub.call(['%s'%CC,
-                          '-c',
-                          join(_src_dir, 'xpsi/include/rayXpanda/deflection.c'),
-                          '-o',
-                          join(_src_dir, 'xpsi/include/rayXpanda/deflection.o')])
-                use_rayXpanda = False
-            else:
-                use_rayXpanda = True
+        # try to get the rayXpanda library:
+        # please modify these compilation steps it does not work for your
+        # environment; this specification of the (shared) object files
+        # seems to work fine for gcc and icc compilers at least
+        try:
+            import rayXpanda
+        except ImportError:
+            print('Warning: the rayXpanda package cannot be imported. '
+                  'Using fallback implementation.')
+            CC = os.environ['CC']
+            sub.call(['%s'%CC,
+                      '-c',
+                      join(_src_dir, 'xpsi/include/rayXpanda/inversion.c'),
+                      '-o',
+                      join(_src_dir, 'xpsi/include/rayXpanda/inversion.o')])
+            sub.call(['%s'%CC,
+                      '-c',
+                      join(_src_dir, 'xpsi/include/rayXpanda/deflection.c'),
+                      '-o',
+                      join(_src_dir, 'xpsi/include/rayXpanda/deflection.o')])
+            use_rayXpanda = False
+        else:
+            use_rayXpanda = True
 
-            if use_rayXpanda:
-                libraries += [':inversion.so', ':deflection.so']
-                library_dirs += [rayXpanda.__path__[0]]
-                extra_link_args += ['-Wl,-rpath,%s'%rayXpanda.__path__[0]]
-            else: # get the native dummy interface
-                libraries += [':inversion.o', ':deflection.o']
-                library_dirs += [join(_src_dir, 'xpsi/include/rayXpanda')]
-                extra_link_args += ['-Wl,-rpath,%s'%join(_src_dir,
-                                                     'xpsi/include/rayXpanda')]
+        if use_rayXpanda:
+            libraries += [':inversion.so', ':deflection.so']
+            library_dirs += [rayXpanda.__path__[0]]
+            extra_link_args += ['-Wl,-rpath,%s'%rayXpanda.__path__[0]]
+        else: # get the native dummy interface
+            libraries += [':inversion.o', ':deflection.o']
+            library_dirs += [join(_src_dir, 'xpsi/include/rayXpanda')]
+            extra_link_args += ['-Wl,-rpath,%s'%join(_src_dir,
+                                                 'xpsi/include/rayXpanda')]
 
         try:
             if 'gcc' in os.environ['CC']:
@@ -91,9 +94,13 @@ if __name__ == '__main__':
                                     '-Wno-cpp']
                 extra_link_args.append('-fopenmp')
             elif 'icc' in os.environ['CC']:
+                # on high-performance systems using Intel processors
+                # on compute nodes, it is usually recommended to select the
+                # instruction set (extensions) optimised for a given processor
                 extra_compile_args=['-qopenmp',
                                     '-O3',
                                     '-xHOST',
+                                    # alternative instruction set
                                     '-axCORE-AVX2,AVX',
                                     '-funroll-loops',
                                     '-Wno-unused-function']

@@ -43,6 +43,8 @@ class Prior(ParameterSubspace):
 
     __derived_names__ = None
 
+    __draws_from_support__ = 5
+
     def __init__(self, parameters = None, *hyperparameters):
         """
         You might want to overwrite this initialiser to do some custom
@@ -296,7 +298,6 @@ class Prior(ParameterSubspace):
             at which the density is finite.
 
         """
-
         if _rank == 0:
             ndraws = 10**ndraws
             yield ('Requiring %.E draws from the prior support '
@@ -324,7 +325,7 @@ class Prior(ParameterSubspace):
             return self._unit_hypercube_frac
         except AttributeError:
             try:
-                self.estimate_hypercube_frac()
+                self.estimate_hypercube_frac(self.__draws_from_support__)
             except AttributeError:
                 print('Cannot locate method for estimating fraction.')
             else:
