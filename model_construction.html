@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modeling &mdash; xpsi 0.6.2 documentation</title>
+  <title>Modeling &mdash; xpsi 0.7.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.6
+                0.7
               </div>
             
           
@@ -2677,12 +2677,21 @@ No parameters supplied... empty subspace created.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span> <span class="c1"># if there were hyperparameters, can merge them in</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># already set above, but for clarity</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -2691,7 +2700,7 @@ No parameters supplied... empty subspace created.
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
@@ -2824,7 +2833,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_183_0.png" src="_images/model_construction_183_0.png" />
+<img alt="_images/model_construction_184_0.png" src="_images/model_construction_184_0.png" />
 </div>
 </div>
 <p>Note that the prior support is defined with a constraint that the polar radius <span class="math notranslate nohighlight">\(R_{\rm p}(R_{\rm eq}, M, \Omega)\geq 1.76r_{s}(M)\)</span>, which is why there is a region devoid of samples between the prior support and the dashed line <span class="math notranslate nohighlight">\(R_{\rm eq} = 1.76r_s(M)\)</span>. This condition is not necessary though because as of <code class="docutils literal notranslate"><span class="pre">v0.6</span></code>, X-PSI can include higher-order images, with the secondary and tertiary expected to be entirely sufficient in practice.</p>
@@ -2848,7 +2857,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_186_0.png" src="_images/model_construction_186_0.png" />
+<img alt="_images/model_construction_187_0.png" src="_images/model_construction_187_0.png" />
 </div>
 </div>
 <p>Note that the samples, marginalised over other region geometry parameters, are sparser when both hot regions approach the poles because we exclude overlapping configurations from the prior support. This is because the hot regions are by convention defined as disjoint, and cannot merge. If one wanted a more complex hot region, one would not invoke multiple hot regions that are permitted to overlap, but one would instead handle the extra complexity within the <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> class or a subclass.</p>
@@ -2870,7 +2879,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_189_0.png" src="_images/model_construction_189_0.png" />
+<img alt="_images/model_construction_190_0.png" src="_images/model_construction_190_0.png" />
 </div>
 </div>
 <p>Note that the prior density is greater for hot regions that subtend smaller solid angles at the centre of the star, which also derives from the non-overlapping criterion for prior support.</p>
@@ -2892,7 +2901,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_192_0.png" src="_images/model_construction_192_0.png" />
+<img alt="_images/model_construction_193_0.png" src="_images/model_construction_193_0.png" />
 </div>
 </div>
 <p>Note that again because the hot regions cannot overlap, rarefaction occurs in the vicinity of lines of minimal phase separation. Note that the boundaries are all periodic, so this pattern tesselates. Because we implemented a transformation in our <code class="docutils literal notranslate"><span class="pre">CustomPrior</span></code> subclass, we can actually draw the samples and transform them, which is useful in post-processing contexts. We defined the intervals <code class="docutils literal notranslate"><span class="pre">[-0.25,</span> <span class="pre">0.75]</span></code> for the inverse sampling so that the posterior mode(s) will not be near a boundary.
@@ -2935,7 +2944,7 @@ Samples drawn.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_198_0.png" src="_images/model_construction_198_0.png" />
+<img alt="_images/model_construction_199_0.png" src="_images/model_construction_199_0.png" />
 </div>
 </div>
 <p>We can see the rarefaction occurs for <span class="math notranslate nohighlight">\(\Delta\phi\sim0.0=1.0\)</span>.</p>
@@ -3085,7 +3094,7 @@ Sampling complete.
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_209_0.png" src="_images/model_construction_209_0.png" />
+<img alt="_images/model_construction_210_0.png" src="_images/model_construction_210_0.png" />
 </div>
 </div>
 <p>The chains rendered in the documentation were run on a desktop machine in about a day of wall-time. It is visually discernable that the ensemble distribution has not yet evolved to a stationary state: a rigourous application of ensemble MCMC would cover convergence criteria, auto-correlation, and examination of sensitivity to initial conditions and the transition kernel. In fact, based on the analysis with nested sampling on path <code class="docutils literal notranslate"><span class="pre">xpsi/examples/default_background</span></code>, we know that the posterior
@@ -3635,7 +3644,7 @@ Background normalisation: 1.89132777e-05
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_248_0.png" src="_images/model_construction_248_0.png" />
+<img alt="_images/model_construction_249_0.png" src="_images/model_construction_249_0.png" />
 </div>
 </div>
 <p>Check we have generated the same count numbers, given the same seed and resolution settings:</p>
@@ -3692,7 +3701,7 @@ spline interpolants (the important feature for comparison being that minima and 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_254_0.png" src="_images/model_construction_254_0.png" />
+<img alt="_images/model_construction_255_0.png" src="_images/model_construction_255_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -3708,7 +3717,7 @@ spline interpolants (the important feature for comparison being that minima and 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_255_0.png" src="_images/model_construction_255_0.png" />
+<img alt="_images/model_construction_256_0.png" src="_images/model_construction_256_0.png" />
 </div>
 </div>
 <p>And normalised by the root-variance:</p>
@@ -3730,7 +3739,7 @@ spline interpolants (the important feature for comparison being that minima and 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_257_0.png" src="_images/model_construction_257_0.png" />
+<img alt="_images/model_construction_258_0.png" src="_images/model_construction_258_0.png" />
 </div>
 </div>
 <p>The difference between realisations is far larger than one count (which is what might be expected in some cases due to discreteness of the Poisson probability mass function) for many intervals, despite the small change in the expectation:</p>
@@ -3747,7 +3756,7 @@ spline interpolants (the important feature for comparison being that minima and 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_259_0.png" src="_images/model_construction_259_0.png" />
+<img alt="_images/model_construction_260_0.png" src="_images/model_construction_260_0.png" />
 </div>
 </div>
 <p>I’m actually unsure why a such small changes in the Poisson-distributed random variable expectations yields such large differences in the random variates for the same GSL RNG seed. For a substantial subset of elements, the random variates <em>are</em> equal, and that is not always where the difference in expectations is zero or relatively small. I consider this an open problem: please get in touch if you happen to read this and you have some insight you can share!</p>
@@ -3782,7 +3791,7 @@ spline interpolants (the important feature for comparison being that minima and 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_262_0.png" src="_images/model_construction_262_0.png" />
+<img alt="_images/model_construction_263_0.png" src="_images/model_construction_263_0.png" />
 </div>
 </div>
 <p>And there are no discernable correlations:</p>
@@ -3803,7 +3812,7 @@ spline interpolants (the important feature for comparison being that minima and 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_264_0.png" src="_images/model_construction_264_0.png" />
+<img alt="_images/model_construction_265_0.png" src="_images/model_construction_265_0.png" />
 </div>
 </div>
 <p>If we switch back to a Steffen phase spline, the issue does not entirely disappear, but the differences are seemingly too small to affect random number generation.</p>
@@ -3866,7 +3875,7 @@ Background normalisation: 1.89127971e-05
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/model_construction_270_0.png" src="_images/model_construction_270_0.png" />
+<img alt="_images/model_construction_271_0.png" src="_images/model_construction_271_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">

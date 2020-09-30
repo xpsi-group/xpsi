@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Photosphere &mdash; xpsi 0.6.2 documentation</title>
+  <title>Photosphere &mdash; xpsi 0.7.0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.6
+                0.7
               </div>
             
           
@@ -356,7 +356,7 @@ will be found even if installed on system. Deprecated.</li>
 
 <dl class="method">
 <dt id="xpsi.Photosphere.Photosphere._plot_sky_maps">
-<code class="descname">_plot_sky_maps</code><span class="sig-paren">(</span><em>_file_root</em>, <em>_phases</em>, <em>_energies</em>, <em>_redraw</em>, <em>threads=1</em>, <em>panel_layout=None</em>, <em>panel_indices=None</em>, <em>phase_average=False</em>, <em>energy_bounds=None</em>, <em>num_levels=100</em>, <em>normalise_each_panel=True</em>, <em>invert=False</em>, <em>annotate_energies=False</em>, <em>energy_annotation_format='[%.1f keV]'</em>, <em>annotate_location=(0.05</em>, <em>0.05)</em>, <em>colormap=None</em>, <em>figsize=(10</em>, <em>10)</em>, <em>usetex=False</em>, <em>fontsize_scale=1.0</em>, <em>tick_spacing=(0.2</em>, <em>1.0)</em>, <em>tick_length_scaling=1.0</em>, <em>dpi_scale=1.0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere._plot_sky_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere._plot_sky_maps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_plot_sky_maps</code><span class="sig-paren">(</span><em>_file_root</em>, <em>_phases</em>, <em>_energies</em>, <em>_c_idxs</em>, <em>_redraw</em>, <em>threads=1</em>, <em>with_pulse_profile_and_spectrum=False</em>, <em>panel_layout=None</em>, <em>panel_indices=None</em>, <em>cycles=1</em>, <em>phase_average=False</em>, <em>energy_bounds=None</em>, <em>num_levels=100</em>, <em>add_zero_intensity_level=True</em>, <em>normalise_each_panel=True</em>, <em>invert=False</em>, <em>annotate_energies=False</em>, <em>energy_annotation_format='[%.1f keV]'</em>, <em>annotate_location=(0.05</em>, <em>0.05)</em>, <em>colormap=None</em>, <em>figsize=(10</em>, <em>10)</em>, <em>usetex=False</em>, <em>fontsize_scale=1.0</em>, <em>tick_spacing=(0.2</em>, <em>1.0)</em>, <em>tick_length_scaling=1.0</em>, <em>dpi_scale=1.0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere._plot_sky_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere._plot_sky_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper method for specific intensity sky map visualization.</p>
 <p>Uses Delaunay triangulation to create an irregular sky mesh and
 calculate photon (specific) intensity contours at a sequence of phases.</p>
@@ -394,9 +394,50 @@ the minimum and maximum phases must be zero and <span class="math notranslate no
 radians (i.e., zero and one cycles).</li>
 <li><strong>_energies</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – The energies at which the star was imaged. This is handled
 internally, so do <em>not</em> pass a keyword argument.</li>
+<li><strong>_c_idxs</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – The energy indices for which the intensity maps were cached for
+memory-efficieny plotting. This is handled internally, so do <em>not</em>
+pass a keyword argument.</li>
 <li><strong>_redraw</strong> (<em>bool</em>) – Redraw the sky maps? This is handled internally, so do <em>not</em> pass
 a keyword argument.</li>
-<li><strong>panel_layout</strong> (<em>tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – Two elements: the number of rows and columns of panels. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
+<li><strong>threads</strong> (<em>int</em>) – Number of OpenMP threads to spawn.</li>
+<li><strong>with_pulse_profile_and_spectrum</strong> (<em>bool</em>) – A setting that fundamentally changes some behaviours. If
+deactivated (the default), only photon (specific) intensity skymaps
+are plotted. The following frame is an example:</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<img alt="_images/_skymap_plot.png" src="_images/_skymap_plot.png" />
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>with_pulse_profile_and_spectrum</strong> (<em>bool</em>) – If deactivated, the following keyword arguments do not have a use:
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">cycles</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">colormap</span></code>. If <em>activated</em>, photon specific
+intensity skymaps at three energies are plotted in each frame,
+together with their associated photon specific flux pulse-profiles,
+and also the photon specific flux spectrum at a finer array of
+energies. Use <code class="xref py py-obj docutils literal notranslate"><span class="pre">panel_indices</span></code> to select the energies. The
+pulse-profiles are each normalised to their respective maxima,
+and the spectrum shows the relative orders of magnitude of the
+specific flux signals. The following frame is an example:</td>
+</tr>
+</tbody>
+</table>
+<img alt="_images/_skymap_with_pulse_profile_and_spectrum_plot.png" src="_images/_skymap_with_pulse_profile_and_spectrum_plot.png" />
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>with_pulse_profile_and_spectrum</strong> (<em>bool</em>) – If activated, a subset of other keyword arguments are ignored:
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">energy_bounds</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">phase_average</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">panel_layout</span></code>,
+and <code class="xref py py-obj docutils literal notranslate"><span class="pre">invert</span></code>. The panel layout is rigid (not customisable) in
+order to focus on the plot quality. If more energies were added, the
+information density in the plot-space might become too high without
+adding much more new information.</li>
+<li><strong>panel_layout</strong> (<em>tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – Two elements: the number of rows and columns of panels. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
 a layout is automatically determined based on the number of
 images to be plotted.</li>
 <li><strong>panel_indices</strong> (<em>iterable</em>) – These ordered integers will be used to select intensity information
@@ -405,20 +446,71 @@ specific intensites are plotted, these integers should index
 a subset of energies at which the star was imaged. If intensities
 are plotted, these integers should index a subset of the energy
 intervals over which specific intensities are integrated. See
-the <code class="docutils literal notranslate"><span class="pre">energy_bounds</span></code> keyword argument.</li>
+the <code class="xref py py-obj docutils literal notranslate"><span class="pre">energy_bounds</span></code> keyword argument. If the flux is
+calculated at more energies than specific intensities are cached
+at, then these integers need to index the
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">cache_energy_indices</span></code> array appropriately.</li>
+<li><strong>cycles</strong> (<em>int</em>) – Nuber of cycles to generate images for. Only relevant if one cycle
+is different to the next in terms of the frame, e.g., most commonly
+if plotting the pulse-profile traces over more than one cycle. If
+frames separated by one cycle are identical, declare the number
+of cycles to the animator instead.</li>
 <li><strong>phase_average</strong> (<em>bool</em>) – Average each sky map over one revolution (cycle) in phase?
 Note that the resulting image is incompatible with the currently
-supported animation mode.</li>
-<li><strong>energy_bounds</strong> (<em>iterable</em>) – A set of two-element containers. Each container has an ordered pair
+supported animation mode. The following image is an example:</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<img alt="_images/_skymap_phaseaveraged.png" src="_images/_skymap_phaseaveraged.png" />
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>energy_bounds</strong> (<em>iterable</em>) – A set of two-element containers. Each container has an ordered pair
 of energies which delimit an integration domain. Specific intensity
 is integrated along each sky direction, at each phase, between
 these energy bounds. The bounds must be between the minimum and
 maximum energies at which the star was imaged. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
-specific intensity sky maps will be plotted (the default).</li>
+specific intensity sky maps will be plotted (the default).</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To use this functionality, the specific intensities must have
+been cached at all energies the specific flux is calculated at.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>num_levels</strong> (<em>int</em>) – Number of contour levels in (specific) intensity, distributed
 between minimum finite, and maximum values per panel, or over all
-panels. See <code class="docutils literal notranslate"><span class="pre">normalise_each_panel</span></code> keyword argument.</li>
-<li><strong>normalise_each_panel</strong> (<em>bool</em>) – Normalise the contour grey scale to each panel uniquely, or
+panels. See <code class="xref py py-obj docutils literal notranslate"><span class="pre">normalise_each_panel</span></code> keyword argument.</li>
+<li><strong>add_zero_intensity_level</strong> (<em>bool</em>) – Add a contour level at zero intensity such that the colormap
+minimum corresponds to zero intensity? If <code class="docutils literal notranslate"><span class="pre">True</span></code> (the default),
+then the background sky, where there is by definition zero model
+intensity, has the same colour only as the subset of the image of
+the surface that is not radiating in the model. The disadvantage of
+this choice is that the intensity structure of the image as a
+function of phase and sky direction is generally not as well-
+resolved by the colour and greyscale variation. In the limit
+that the minimum finite intensity of the image is far smaller than
+the maximum, then the intensity resolution by colour and greyscale
+values is highest. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, then the minimum colour is
+assigned to the minimum finite intensity as a function of phase
+and sky direction. This also maximally resolves the intensity by
+colour and greyscale values, which is useful for models wherein the
+surface radiation field is constructed, for instance, from
+uniform-temperature localised hot regions. However, in this case
+the background sky colour is undefined; the background sky colour
+is thus set to the minimum colour in the colormap, meaning that the
+fainest subset of the image over phase and sky direction merges
+with the background sky in terms of colour and greyscale values.</li>
+<li><strong>normalise_each_panel</strong> (<em>bool</em>) – Normalise the contour colormap to each skymap panel uniquely, or
 globally over all panels? The former yields relative intensity
 as function of phase and sky direction for an energy or energy
 interval, whilst the latter offers more spectral information but
@@ -428,12 +520,26 @@ plot background. If a colormap is manually supplied, this just
 controls the plot background colour. Inversion is recommended
 for printed format, whilst a black background is more intuitive
 when in digital format.</li>
-<li><strong>colormap</strong> (<em>obj</em>) – A matplotlib colormap object. Choose something appropriate and
-<em>accessible</em> for a non-negative scalar field (sky intensities).</li>
+<li><strong>colormap</strong> (<em>obj</em>) – Usage dependent on other settings. If not plotting the pulse-profile
+and spectrum, then this is simply a (matplotlib) colormap object.
+Choose something appropriate and <em>accessible</em> for a non-negative
+scalar field (sky intensities). If plotting the pulse-profile and
+spectrum too, then <code class="xref py py-obj docutils literal notranslate"><span class="pre">colormap</span></code> can be the string
+<code class="docutils literal notranslate"><span class="pre">'RedGreyBlue'</span></code> to invoke the default colour scheme which is reds
+for the lowest energy intensity skymap and pulse-profile; pure
+greyscale for the intermediate energy; and blues for the highest
+energy.  Alternatively, if <code class="xref py py-obj docutils literal notranslate"><span class="pre">colormap</span></code> is simply <code class="docutils literal notranslate"><span class="pre">None</span></code>, the
+default greyscale will be used for all energies, with all
+pulse-profiles in black. Lastly, you can supply a three-element
+list or tuple of colormap objects, ordered from lowest to highest
+energy; the pulse-profile line colours will be retrieved as the
+midpoint of the colormap. Note that the background sky colour will
+be set to the lowest colour in each colourmap.</li>
 <li><strong>figsize</strong> (<em>tuple</em><em>(</em><em>int</em><em>,</em><em>int</em><em>)</em>) – The figure size (width, height) in <em>inches</em>. If the dimensions are
-inconsistent with the aspect ratio suggested by the <code class="docutils literal notranslate"><span class="pre">panel_layout</span></code>
-settings, the height of the figure will be automatically rescaled
-to achieve congruence, meaning each panel is approximately square.</li>
+inconsistent with the aspect ratio suggested by the
+:obj`panel_layout` settings, the height of the figure will be
+automatically rescaled to achieve congruence, meaning each panel is
+approximately square.</li>
 <li><strong>usetex</strong> (<em>bool</em>) – Use TeX backend for figure text.</li>
 <li><strong>fontsize_scale</strong> (<em>float</em>) – Use this argument to scale the font size of figure text relative
 to the default font size that is automatically determined based
@@ -442,7 +548,9 @@ figure size and the panel layout.</li>
 <li><strong>tick_spacing</strong> (<em>tuple</em><em>[</em><em>float</em><em>,</em><em>float</em><em>]</em>) – A two-element container. The first element is the minor tick
 spacing, and the second is the major tick spacing, for both
 the <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> directions on the image plane. The
-units are gravitational radii (<span class="math notranslate nohighlight">\(GM/c^2\)</span>).</li>
+units are both the maximum possible angular size of the image of the
+surface in an ambient Schwarzschild spacetime,
+<span class="math notranslate nohighlight">\(R_{\rm eq}/\sqrt{1-r_{\rm s}/R_{\rm eq}}\)</span>.</li>
 <li><strong>tick_length_scaling</strong> (<em>float</em>) – Use this argument to scale the axis tick lengths relative to the
 default lengths that are automatically determined based on the
 panel size.</li>
@@ -578,7 +686,7 @@ the same memory upon each call without I/O.</p>
 
 <dl class="method">
 <dt id="xpsi.Photosphere.Photosphere.image">
-<code class="descname">image</code><span class="sig-paren">(</span><em>reimage=False</em>, <em>reuse_ray_map=True</em>, <em>energies=None</em>, <em>phases=None</em>, <em>sqrt_num_rays=100</em>, <em>epsabs_ray=1e-12</em>, <em>epsrel_ray=1e-12</em>, <em>max_steps=100000</em>, <em>init_step=0.1</em>, <em>image_plane_radial_increment_power=0.5</em>, <em>threads=1</em>, <em>cache_intensities=False</em>, <em>single_precision_intensities=True</em>, <em>plot_sky_maps=False</em>, <em>sky_map_kwargs=None</em>, <em>animate_sky_maps=False</em>, <em>free_memory=True</em>, <em>animate_kwargs=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.image" title="Permalink to this definition">¶</a></dt>
+<code class="descname">image</code><span class="sig-paren">(</span><em>reimage=False</em>, <em>reuse_ray_map=True</em>, <em>energies=None</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>phases_in_cycles=False</em>, <em>sqrt_num_rays=100</em>, <em>epsabs_ray=1e-12</em>, <em>epsrel_ray=1e-12</em>, <em>max_steps=100000</em>, <em>init_step=0.1</em>, <em>image_plane_radial_increment_power=0.5</em>, <em>threads=1</em>, <em>cache_intensities=False</em>, <em>cache_energy_indices=None</em>, <em>single_precision_intensities=True</em>, <em>plot_sky_maps=False</em>, <em>sky_map_kwargs=None</em>, <em>animate_sky_maps=False</em>, <em>free_memory=True</em>, <em>animate_kwargs=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Image the star as a function of phase and energy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -598,8 +706,14 @@ the spacetime configuration is unchanged, but resolution settings
 have changed for ray tracing, pass <code class="docutils literal notranslate"><span class="pre">False</span></code> to adhere to the new
 resolution settings.</li>
 <li><strong>energies</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – Energies in keV to evaluate incident specific intensities at.</li>
-<li><strong>phases</strong> (<em>ndarray</em><em>[</em><em>m</em><em>]</em>) – Phases in radians at which to evaluate incident specific
-intensities at.</li>
+<li><strong>num_phases</strong> (<em>int</em>) – The number of phases spanning the unit interval (zero and unity
+inclusive) to image at.</li>
+<li><strong>phases</strong> (<em>ndarray</em><em>[</em><em>m</em><em>]</em>) – Phases in <em>radians</em> or <em>cycles</em> at which to evaluate incident
+specific intensities at. If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, takes precedence over
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">num_phases</span></code>. The units need to be specified with the
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">phases_in_cycles</span></code> keyword argument: if <code class="docutils literal notranslate"><span class="pre">False</span></code>, give
+the phase array in <em>radians</em>.</li>
+<li><strong>phases_in_cycles</strong> (<em>bool</em>) – Is the phase array, if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, in units of rotational cycles?</li>
 <li><strong>sqrt_num_rays</strong> (<em>int</em>) – Square-root of the number of rays. This is the level of
 discretisation in both a radial coordinate and a polar coordinate
 on an elliptical image plane.</li>
@@ -667,6 +781,18 @@ activate this option if you want to plot the sky maps (see below).
 To activate, supply a limit. A hard limit of 2 GB is imposed for
 safety. To override, use the secret <code class="xref py py-obj docutils literal notranslate"><span class="pre">_OVERRIDE_MEM_LIM</span></code>
 keyword argument to supply a positive limit in GB.</li>
+<li><strong>cache_energy_indices</strong> (<em>ndarray</em><em>[</em><em>m</em><em>]</em>) – A one-dimensional <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <code class="docutils literal notranslate"><span class="pre">dtype=numpy.int32</span></code>,
+specifying the energy-array indices to cache intensities at. This
+is useful to save memory when you want to plot specific intensity
+skymaps but also compute the specific flux at many more energies. If
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, intensities will be cached at all energies subject to
+memory constraints. Note that the order of the list matters for
+plotting order, so the indices should generally increase, as should
+the energies themselves. If plotting the pulse-profile and spectrum,
+then this is a case where many more energies are useful for the
+resolving specific flux spectrum than are needed to plot specific
+intensity skymaps and specific flux pulse-profiles at three
+representative energies.</li>
 <li><strong>single_precision_intensities</strong> (<em>bool</em>) – Cache the intensities in single precision? In most use cases,
 double precision is simply unnecessary, and because memory
 consumption can be high, choosing single precision can reduce

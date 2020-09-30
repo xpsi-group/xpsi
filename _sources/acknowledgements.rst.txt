@@ -72,7 +72,7 @@ Intellectual contribution & engagement (explicit and/or implicit).
 * Alex Chen
 * Frank Chambers
 
-**Miscellanous**
+**Miscellaneous**
 
 Specific acknowledgements of people whose direct advice either influenced the
 direction of this project or led to some specific improvements.
