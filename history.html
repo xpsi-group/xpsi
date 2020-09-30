@@ -419,8 +419,8 @@ spectrum that connects the signals at those energies. See the documentation
 of the <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere.image" title="xpsi.Photosphere.Photosphere.image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image()</span></code></a> method for options, details,
 and an example.</li>
 <li>Example plots to the <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere" title="xpsi.Photosphere.Photosphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Photosphere</span></code></a> documentation.</li>
-<li>New helper methods <code class="xref py py-meth docutils literal notranslate"><span class="pre">write_image_data()</span></code>
-and <code class="xref py py-meth docutils literal notranslate"><span class="pre">load_image_data()</span></code> to write ray map data,
+<li>New helper methods <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere.write_image_data" title="xpsi.Photosphere.Photosphere.write_image_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write_image_data()</span></code></a>
+and <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere.load_image_data" title="xpsi.Photosphere.Photosphere.load_image_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load_image_data()</span></code></a> to write ray map data,
 photon specific intensity image data, and photon specific flux signal data to
 disk, and then read the data back into memory as attributes so that the data
 can be reused to accelerate calls to calculate images and generate static and
@@ -432,17 +432,19 @@ stellar surface, and the background sky, have well-defined colour. If lowest
 colour in the colormap is instead associated with the lowest finite intensity
 in the skymap panel, then the background sky for instance is assigned the same
 colour so that the least bright part of the image merges with the background
-sky colour. The latter choice resolve the variation in the intensity as a
+sky colour. The latter choice resolves the variation in the intensity as a
 function of phase and sky direction better with colour, but the former might
-gives more of an indication of how bright the image is relative to the
-background sky in the limit of perfect imaging.</li>
+give more of an indication of the magnitude of the variation in intensity
+as a function of phase and sky direction relative to the background sky.</li>
 </ul>
 </div>
 <div class="section" id="id4">
 <h3>Changed<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>A phase set supplied to <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere.image" title="xpsi.Photosphere.Photosphere.image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image()</span></code></a> must have
-units of cycles, not radians as was previously the requirement.</li>
+<li>A phase set supplied to <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere.image" title="xpsi.Photosphere.Photosphere.image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image()</span></code></a> can have
+units of cycles, not radians as was previously the requirement, by setting
+the <code class="docutils literal notranslate"><span class="pre">phase_in_cycles</span></code> keyword argument to <code class="docutils literal notranslate"><span class="pre">True</span></code> if the supplied phase
+array as units of cycles.</li>
 <li>The photon specific flux can be calculated with
 <a class="reference internal" href="photosphere.html#xpsi.Photosphere.Photosphere.image" title="xpsi.Photosphere.Photosphere.image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image()</span></code></a> at far more energies than photon
 specific intensities are cached at, by using the <code class="xref py py-obj docutils literal notranslate"><span class="pre">cache_energy_indices</span></code>
