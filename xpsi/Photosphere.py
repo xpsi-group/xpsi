@@ -592,6 +592,7 @@ class Photosphere(ParameterSubspace):
               energies = None,
               num_phases = None,
               phases = None,
+              phases_in_cycles = False,
               sqrt_num_rays = 100,
               epsabs_ray = 1.0e-12,
               epsrel_ray = 1.0e-12,
@@ -634,9 +635,14 @@ class Photosphere(ParameterSubspace):
             inclusive) to image at.
 
         :param ndarray[m] phases:
-            Phases in *cycles* at which to evaluate incident specific
-            intensities at. If not ``None``, takes precedence over
-            :obj:`num_phases`.
+            Phases in *radians* or *cycles* at which to evaluate incident
+            specific intensities at. If not ``None``, takes precedence over
+            :obj:`num_phases`. The units need to be specified with the
+            :obj:`phases_in_cycles` keyword argument: if ``False``, give
+            the phase array in *radians*.
+
+        :param bool phases_in_cycles:
+            Is the phase array, if not ``None``, in units of rotational cycles?
 
         :param int sqrt_num_rays:
             Square-root of the number of rays. This is the level of
@@ -803,9 +809,10 @@ class Photosphere(ParameterSubspace):
         if phases is not None and not isinstance(phases, _np.ndarray):
             raise TypeError('Imaging phases must be in a 1D ndarray.')
         elif isinstance(phases, _np.ndarray):
-            if phases[0] != 0.0 or phases[-1] != 1.0:
-                _warning('Phase array does not span the unit interval.')
-            phases *= _2pi
+            if phases_in_cycles:
+                if phases[0] != 0.0 or phases[-1] != 1.0:
+                    _warning('Phase array does not span the unit interval.')
+                phases *= _2pi
         elif phases is None:
             if num_phases is None or not isinstance(num_phases, int):
                 raise TypeError('Integer number of phases required.')
