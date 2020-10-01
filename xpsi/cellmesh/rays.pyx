@@ -84,7 +84,7 @@ cdef void link_rayXpanda(bint *use_rayXpanda, double *rayXpanda_defl_lim) except
         except AttributeError:
             _cache = None
         else:
-            _cache = xpsi.__used_rayXpanda
+            _cache = xpsi.__used_rayXpanda__
         finally:
             if _cache or (_cache is None and xpsi.__rayXpanda_installed__):
                 xpsi._warning('rayXpanda installed, but library not called')
