@@ -33,6 +33,21 @@ Attribution
 ^^^^^^^^^^^
 
 
+[v0.6.3] - 2020-10-01
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* An ``AttributeError`` raised during runtime linking to the fallback rayXpanda
+  implementation.
+
+Attribution
+^^^^^^^^^^^
+
+* With thanks to Devarshi Choudhury for bug testing.
+
+
 [v0.6.2] - 2020-09-28
 ~~~~~~~~~~~~~~~~~~~~~
 
