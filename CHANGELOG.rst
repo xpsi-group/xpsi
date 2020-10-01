@@ -111,32 +111,19 @@ Attribution
   about the new animated plot type.
 
 
-[v0.6.2] - 2020-09-28
+[v0.6.3] - 2020-10-01
 ~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
 ^^^^^
 
-* Bug in :class:`~.NestedSampler.NestedSampler` trying to call ``set_default``
-  dictionary method instead of the correct ``setdefault`` method.
-* Import errors associated with the :mod:`~.PostProcessing` module.
+* An ``AttributeError`` raised during runtime linking to the fallback rayXpanda
+  implementation.
 
-Changed
-^^^^^^^
+Attribution
+^^^^^^^^^^^
 
-* The :attr:`~.Parameter.Parameter.cached` property of a
-  :class:`~.Parameter.Parameter` instance can be set to ``None``.
-* The :class:`~.ParameterSubspace.ParameterSubspace` initialiser is decorated
-  to avoid verbose output by every MPI process.
-* The :class:`~.Prior.Prior` uses the class attribute
-  ``__draws_from_support__`` to set the number of Monte Carlo draws from the
-  joint prior support to require to set the MultiNest hypervolume expansion
-  factor appropriately. The default value is ``5``, which means :math:`10^5`
-  draws from the joint prior support.
-* Checks if an instance of  ``six.string_types`` in
-  :class:`~.PostProcessing.MetaData`, e.g., to allow unicode strings in
-  posterior ID labels.
-
+* With thanks to Devarshi Choudhury for bug testing.
 
 
 [v0.6.2] - 2020-09-28
