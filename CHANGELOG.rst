@@ -33,6 +33,20 @@ Attribution
 ^^^^^^^^^^^
 
 
+[v0.7.2] - 2020-11-04
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Error raised while running ``setup.py`` for linking rayXpanda with clang compiler.
+
+Attribution
+^^^^^^^^^^^
+
+* Serena Vinciguerra.
+
+
 [v0.7.1] - 2020-10-01
 ~~~~~~~~~~~~~~~~~~~~~
 

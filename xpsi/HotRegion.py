@@ -97,7 +97,7 @@ class HotRegion(ParameterSubspace):
         effect only when the hot region has two temperature components, in
         the form of a superseding region and a ceding region.
 
-    :param min_sqrt_num_cells:
+    :param max_sqrt_num_cells:
         Sets the maximum number of cells per *subregion*, discretised to
         the same degree in colatitude and azimuth. This setting has an
         effect even when there is only one temperature component.

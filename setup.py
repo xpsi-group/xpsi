@@ -74,11 +74,17 @@ if __name__ == '__main__':
             use_rayXpanda = True
 
         if use_rayXpanda:
-            libraries += [':inversion.so', ':deflection.so']
+            if 'clang' in os.environ['CC']:
+                libraries += ['inversion.so', 'deflection.so']
+            else:
+                libraries += [':inversion.so', ':deflection.so']
             library_dirs += [rayXpanda.__path__[0]]
             extra_link_args += ['-Wl,-rpath,%s'%rayXpanda.__path__[0]]
         else: # get the native dummy interface
-            libraries += [':inversion.o', ':deflection.o']
+            if 'clang' in os.environ['CC']:
+                libraries += ['inversion.o', 'deflection.o']
+            else:
+                libraries += [':inversion.o', ':deflection.o']
             library_dirs += [join(_src_dir, 'xpsi/include/rayXpanda')]
             extra_link_args += ['-Wl,-rpath,%s'%join(_src_dir,
                                                  'xpsi/include/rayXpanda')]
@@ -198,7 +204,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.7.1',
+        version = '0.7.2',
         author = 'Thomas Edward Riley',
         author_email = 't.e.riley@uva.nl; t.riley.phd@gmail.com',
         url = 'https://github.com/ThomasEdwardRiley/xpsi',
