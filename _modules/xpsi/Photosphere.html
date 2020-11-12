@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Photosphere &mdash; xpsi 0.7.2 documentation</title>
+  <title>xpsi.Photosphere &mdash; xpsi 0.7.3 documentation</title>
   
 
   
@@ -690,7 +690,7 @@
     <span class="k">def</span> <span class="nf">images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
 
-    <span class="k">def</span> <span class="nf">load_image_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
+<div class="viewcode-block" id="Photosphere.load_image_data"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.load_image_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_image_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Load imaging data from disk.</span>
 
 <span class="sd">        :param str directory:</span>
@@ -736,9 +736,9 @@
                        <span class="n">IP_radial_array</span><span class="p">,</span>
                        <span class="n">IP_ellipse_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                        <span class="n">IP_ellipse_axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                       <span class="n">intensity</span><span class="p">]</span>
+                       <span class="n">intensity</span><span class="p">]</span></div>
 
-    <span class="k">def</span> <span class="nf">write_image_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
+<div class="viewcode-block" id="Photosphere.write_image_data"><a class="viewcode-back" href="../../photosphere.html#xpsi.Photosphere.Photosphere.write_image_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_image_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Write imaging data to disk.</span>
 
 <span class="sd">        :param str directory:</span>
@@ -770,7 +770,7 @@
         <span class="n">_np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">_join</span><span class="p">(</span><span class="n">_d</span><span class="p">,</span> <span class="s1">&#39;IP_ellipse_axes.npy&#39;</span><span class="p">),</span>
                  <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">12</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">))</span>
 
-        <span class="n">_np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">_join</span><span class="p">(</span><span class="n">_d</span><span class="p">,</span> <span class="s1">&#39;intensity.npy&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">_join</span><span class="p">(</span><span class="n">_d</span><span class="p">,</span> <span class="s1">&#39;intensity.npy&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">photon_specific_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
