@@ -76,11 +76,6 @@ class HotRegion(ParameterSubspace):
         axis) within superseding (and ceding) member regions? This determines
         which ``CellMesh`` integrator to deploy based on this safety check.
 
-    :param sqrt_num_cells:
-        Number of cells in both colatitude and azimuth which form a
-        regular mesh on a curved 2-surface (a spacelike leaf of the
-        spacetime foliation).
-
     :param int sqrt_num_cells:
         Number of cells in both colatitude and azimuth which form a regular
         mesh over a subset of the surface spanning a hot region. This is the

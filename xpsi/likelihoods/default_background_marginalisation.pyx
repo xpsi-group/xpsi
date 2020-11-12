@@ -317,8 +317,12 @@ def eval_marginal_likelihood(double exposure_time,
                 pa = phases[j] + phase_shift
                 pb = phases[j+1] + phase_shift
 
-                pa -= floor(pa)
-                pb -= floor(pb)
+                if pb - pa == 1.0:
+                    pa = 0.0
+                    pb = 1.0
+                else:
+                    pa -= floor(pa)
+                    pb -= floor(pb)
 
                 if pa < pb:
                     _val = gsl_interp_eval_integ(interp_ptr,

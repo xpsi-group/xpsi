@@ -33,13 +33,26 @@ Attribution
 ^^^^^^^^^^^
 
 
+[v0.7.3] - 2020-11-12
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Phase-averaging issue that can sometimes occur due to numerical effects when
+  comparing two numbers that should be the same but can differ by tiny degrees
+  at machine precision level.
+* Some documentation typographic errors.
+
+
 [v0.7.2] - 2020-11-04
 ~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
 ^^^^^
 
-* Error raised while running ``setup.py`` for linking rayXpanda with clang compiler.
+* Error raised while running ``setup.py`` for linking rayXpanda with
+  clang compiler.
 
 Attribution
 ^^^^^^^^^^^
@@ -98,16 +111,18 @@ Added
   colour in the colormap is instead associated with the lowest finite intensity
   in the skymap panel, then the background sky for instance is assigned the same
   colour so that the least bright part of the image merges with the background
-  sky colour. The latter choice resolve the variation in the intensity as a
+  sky colour. The latter choice resolves the variation in the intensity as a
   function of phase and sky direction better with colour, but the former might
-  gives more of an indication of how bright the image is relative to the
-  background sky in the limit of perfect imaging.
+  give more of an indication of the magnitude of the variation in intensity
+  as a function of phase and sky direction relative to the background sky.
 
 Changed
 ^^^^^^^
 
-* A phase set supplied to :meth:`~.Photosphere.Photosphere.image` must have
-  units of cycles, not radians as was previously the requirement.
+* A phase set supplied to :meth:`~.Photosphere.Photosphere.image` can have
+  units of cycles, not radians as was previously the requirement, by setting
+  the ``phase_in_cycles`` keyword argument to ``True`` if the supplied phase
+  array as units of cycles.
 * The photon specific flux can be calculated with
   :meth:`~.Photosphere.Photosphere.image` at far more energies than photon
   specific intensities are cached at, by using the :obj:`cache_energy_indices`

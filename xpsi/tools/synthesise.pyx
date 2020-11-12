@@ -153,8 +153,12 @@ def synthesise_exposure(double exposure_time,
                 a = phases[j] + phase_shift
                 b = phases[j+1] + phase_shift
 
-                a -= floor(a)
-                b -= floor(b)
+                if b - a == 1.0:
+                    a = 0.0
+                    b = 1.0
+                else:
+                    a -= floor(a)
+                    b -= floor(b)
 
                 if a < b:
                     _val = gsl_interp_eval_integ(interp_ptr,

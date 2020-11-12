@@ -204,7 +204,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.7.2',
+        version = '0.7.3',
         author = 'Thomas Edward Riley',
         author_email = 't.e.riley@uva.nl; t.riley.phd@gmail.com',
         url = 'https://github.com/ThomasEdwardRiley/xpsi',
@@ -212,13 +212,7 @@ if __name__ == '__main__':
         description = """X-PSI: An open-source package for
                          neutron star X-ray Pulse Simulation and Inference.""",
         long_description = open('README.rst').read(),
-        packages = ['xpsi',
-                    'xpsi/PostProcessing',
-                    'xpsi/cellmesh',
-                    'xpsi/tools',
-                    'xpsi/surface_radiation_field',
-                    'xpsi/likelihoods',
-                    'xpsi/pixelmesh'],
+        packages = ['xpsi',],
         install_requires = ['numpy'],
         setup_requires = ['cython'],
         package_data = {'': ['README.rst', 'LICENSE']},
