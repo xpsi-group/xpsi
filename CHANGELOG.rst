@@ -43,7 +43,7 @@ Fixed
 Attribution
 ^^^^^^^^^^^
 
-* Tom Riley, Yves Kini, Devarshi Choudhury, Serena Vinciguerra 
+* Yves Kini, Devarshi Choudhury, Serena Vinciguerra 
 
 
 [v0.7.3] - 2020-11-12
