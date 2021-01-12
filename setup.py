@@ -185,6 +185,7 @@ if __name__ == '__main__':
                 'xpsi.surface_radiation_field.elsewhere',
                 'xpsi.cellmesh.integrator',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance',
+                'xpsi.cellmesh.pol_integrator_for_azimuthal_invariance',
                 'xpsi.cellmesh.integrator_for_time_invariance',
                 'xpsi.pixelmesh.METRIC_qK',
                 'xpsi.pixelmesh.RODES_qK',

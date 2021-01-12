@@ -481,7 +481,8 @@ class HotRegion(ParameterSubspace):
 
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
-            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+            from .cellmesh.pol_integrator_for_azimuthal_invariance import integrate as _integrator
+            #from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
         else: # more general purpose
             from .cellmesh.integrator import integrate as _integrator
         self._integrator = _integrator
