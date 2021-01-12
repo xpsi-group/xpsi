@@ -70,3 +70,22 @@ cdef double eval_hot_norm() nogil:
     # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
     return erg * Planck_dist_const
+
+
+
+cdef double eval_hot_PD(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
+    cdef double PD = 0.1171*(mu - 1.)/(1. + 3.582*mu)
+
+    return PD
+
+
