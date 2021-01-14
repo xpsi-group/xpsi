@@ -164,10 +164,32 @@ p = [1.4,
      0.2]
 star(p)
 
-#Another way to set param values:
-star['cos_inclination'] = math.cos(3.14*60.0/(180.0))#math.cos(2.0)
-star['p__super_colatitude'] = 3.14*20.0/(180.0) #0.0 #2.0
+#mass: Gravitational mass [solar masses].
+#radius: Coordinate equatorial radius [km].
+#distance: Earth distance [kpc].
+#cos_inclination: Cosine of Earth inclination to rotation axis.
+#p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+#p__super_colatitude: The colatitude of the centre of the superseding region [radians].
+#p__super_radius: The angular radius of the (circular) superseding region [radians].
+#p__super_temperature: log10(superseding region effective temperature [K]).
+#s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
+#s__super_colatitude: The colatitude of the centre of the superseding region [radians].
+#s__super_radius: The angular radius of the (circular) superseding region [radians].
 
+
+#Another way to set param values:
+star['mass'] = 1.4
+star['radius'] = 12.0
+star['distance'] = 0.2
+incl_deg = 40.0
+star['cos_inclination'] = math.cos(math.pi*incl_deg/180.0)#math.cos(2.0)
+theta_deg = 60.0
+star['p__super_colatitude'] = math.pi*theta_deg/180.0 #0.0 #2.0
+rho_deg = 10.0
+star['p__super_radius'] = 0.075 #math.pi*rho_deg/180.0
+tplanck = 1.0 #in keV #1 keV -> log10(T[K]) = 7.06 (out of bounds)
+#print(np.log10(tplanck*11604525.0061657))
+star['p__super_temperature'] = np.log10(tplanck*11604525.0061657)
 print("Parameters of the star:")
 print(star.params)
 
@@ -218,18 +240,17 @@ def plot_pulse():
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/pulse_profileX.pdf")
 
-def save_pulse(): #To be continued ...
+def save_pulse(PulsName): #To be continued ...
     """Save the pulse profile in ASCII format. """
-    #print(photosphere.signal[0][0]) #spot1?
-    #print("???")
-    #print(photosphere.signal[1][0]) #spot2?
-    #print(hot.phases_in_cycles[0])
-    #print(hot.phases_in_cycles[1])
     pulse1 = np.sum(photosphere.signal[0][0], axis=0)
     pulse2 = np.sum(photosphere.signal[1][0], axis=0)
     phase1 = hot.phases_in_cycles[0]
     phase2 = hot.phases_in_cycles[1]
     pulse_tot = pulse1+pulse2
+    outF = open(PulsName + '_F.bin','w')
+    outf = open(PulsName + '_p.bin','w')
+    pulse1.tofile(outF,format="%e") 
+    phase1.tofile(outf,format="%e")
 
 energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
 
@@ -245,8 +266,7 @@ photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 
 
 plot_pulse()
-
-save_pulse()
+save_pulse("pulses/pulse3")
 
 
 
