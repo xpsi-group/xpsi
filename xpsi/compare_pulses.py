@@ -98,7 +98,8 @@ for ish in range(1,2):#len(shapes)):
 		PulsName='res/B/lbb_rhoinf_chi-1'
 	if(ish == 1):
 	        #PulsName='../../../polcslab/CompSlab/pOS_pulses/lbb_rho10_sp1_f600_obl_burst2_dt'
-	        PulsName='pulses/pulse3'
+		pversion = '7i'
+	        PulsName='pulses/pulse'+pversion
 	if(ish == 2):
 		PulsName='res/B/lbb_rho10_sp1_f600_sph'#_accspot'
 	#PulsName=AtmName+'P1'
@@ -117,9 +118,13 @@ for ish in range(1,2):#len(shapes)):
 	#inphi = open(PulsName+'ff.bin')
 	inFlux = open(PulsName+'_F.bin')
 	inphi = open(PulsName+'_p.bin')
+	inQ = open(PulsName+'_Q.bin')
+	inU = open(PulsName+'_U.bin')
 
 
 	Flux1 = fromfile(inFlux)
+	FluxQ = fromfile(inQ)
+	FluxU = fromfile(inU)
 	phi = fromfile(inphi)
 	#print(phi, Flux1)
 	#print(len(phi))
@@ -155,7 +160,8 @@ for ish in range(1,2):#len(shapes)):
 	for t in range(NPhase):#+1):
 		#I[t],Q[t],U[t]=Flux[t-1,e]*x[e] 
 		#I[t],Q[t],U[t]=fluxlcurve_Iene[t-1]*x_ene[ene] ,fluxlcurve_Qene[t-1]*x_ene[ene] ,fluxlcurve_Uene[t-1]*x_ene[ene] 
-		I[t],Q[t],U[t]=Flux1[t],1.0 ,1.0
+		#I[t],Q[t],U[t]=Flux1[t],1.0 ,1.0
+		I[t],Q[t],U[t]=Flux1[t],FluxQ[t],FluxU[t]
 
 	p=sqrt(Q**2+U**2)/I*100
 	#PA=arctan2(-U,-Q)*90/pi+90
@@ -218,13 +224,13 @@ for ish in range(1,2):#len(shapes)):
 	PA_VP04 = PA
 	phase_VP04 = phase
 	if(ish == 1): 
-		find best-phasehift: #This would work now only if running arcmancer part fist...
-		phshift1, gf1 = find_best_phshift.find_best_phshift(np.array(phase),PA,phase_acm0,PA_acm0)
+		#find best-phasehift: #This would work now only if running arcmancer part fist...
+		#phshift1, gf1 = find_best_phshift.find_best_phshift(np.array(phase),PA,phase_acm0,PA_acm0)
 		#phshift1 = phshift1 -1.0
-		print(phshift1)
-		quit()
+		#print(phshift1)
+		#quit()
 		#in the end, setting the shift by hand seems still to produce better results		
-		#phshift1 = -0.047590550687164 #0.0#-0.048315#-0.2517#0.019#0.0#0.019#0.195#-0.07#-0.2517#0.0#0.001#0.008#0.2421#0.2517#0.2535#0.069#0.0#-0.195#-0.18#-0.172#0.0
+		phshift1 = -0.04829 #-0.047590550687164 #0.0 #-0.12 #0.0 #-0.047590550687164 #0.0#-0.048315#-0.2517#0.019#0.0#0.019#0.195#-0.07#-0.2517#0.0#0.001#0.008#0.2421#0.2517#0.2535#0.069#0.0#-0.195#-0.18#-0.172#0.0
 		phase_new = shift_phase(np.array(phase),phshift1)
 		for ipha in range(0,len(phase_new)-1):
 			if(phase_new[ipha+1] > phase_new[ipha]):
@@ -633,7 +639,7 @@ else:
 
 
 #figA.savefig('res/C2/obl_sph_comp.pdf')#.format(e))
-figA.savefig('figs/pulse_comp3.pdf',bbox_inches='tight')#.format(e))
+figA.savefig('figs/pulse_comp'+pversion+'.pdf',bbox_inches='tight')#.format(e))
 figA.clf()
 
 
