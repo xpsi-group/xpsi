@@ -158,7 +158,7 @@ def integrate(size_t numThreads,
         double theta_i_over_pi
         double beta_sq
         double Lorentz
-        double correction_I_E
+        double correction_Q
         int I, image_order, _IO
         double _phase_lag
         double _specific_flux
@@ -342,7 +342,7 @@ def integrate(size_t numThreads,
             _IO = image_order
         for I in range(_IO): # loop over images
             InvisFlag[T] = 2 # initialise image order as not visible
-            correction_I_E = 0.0
+            correction_Q = 0.0
 
             for k in range(leaf_lim):
                 #printf("leaves = %.6e\n", leaves[k])
@@ -468,9 +468,10 @@ def integrate(size_t numThreads,
 
                                 chi = chi_0+chi_1+chi_prime
 
-                                #printf("chi_0 = %.6e\n",chi_0)
-                                #printf("chi_1 = %.6e\n",chi_1)
-                                #printf("chi_prime = %.6e\n",chi_prime)
+                                #printf("leaves[k] = %.6e ",leaves[k])
+                                #printf("chi_0 = %.6e ",chi_0)
+                                #printf("chi_1 = %.6e ",chi_1)
+                                #printf("chi_prime = %.6e ",chi_prime)
                                 #printf("PA_tot = %.6e\n",chi)
                                 cos_2chi = cos(2*chi)
                                 sin_2chi = sin(2*chi)
@@ -493,27 +494,19 @@ def integrate(size_t numThreads,
 
 
                                     Q_obs = PD*I_E*cos_2chi
-                                    U_obs = PD*I_E*sin_2chi
+                                    #U_obs = PD*I_E*sin_2chi
+                                    #printf("Q_obs = %.6e\n",Q_obs)
 
                                     if perform_correction == 1:
-                                        correction_I_E = eval_elsewhere(T,
+                                        correction_Q = eval_elsewhere(T,
                                                                         E_prime,
                                                                         _ABB,
                                                                         &(correction[i,J,0]),
                                                                         ext_data)
-                                        correction_I_E = correction_I_E * eval_elsewhere_norm()
-                                    #TBD: Perform corrections also to Q_E and U_E when needed
+                                        correction_Q = correction_Q * eval_elsewhere_norm()
 
-                                    (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
-                                    #printf("I_E_org = = %.6e\n",(I_E * eval_hot_norm() - correction_I_E) * _GEOM)
-                                    #printf("I_E_all = = %.6e\n",(PROFILE[T] + BLOCK[p] + _kdx)[0])
-                                    #printf("I_E_1 = = %.6e\n",(PROFILE[T])[0])
-                                    #printf("I_E_2 = = %.6e\n",(BLOCK[p]))
-                                    #printf("I_E_3 = = %.6e\n",(_kdx))
-                                    #printf("I_E_0 = = %.6e\n",(PROFILE[T]))
-                                    #printf("Profile = %.6e\n",PROFILE[T])
-                                    #printf("Block = %.6e\n",BLOCK[p])
-                                    #printf("kdx = %.6e\n",_kdx)
+                                    (PROFILE[T] + BLOCK[p] + _kdx)[0] = (Q_obs * eval_hot_norm() - correction_Q) * _GEOM
+                                    #printf("Q_obs = %.6e\n",(Q_obs * eval_hot_norm() - correction_Q) * _GEOM)
 
                         if k == 0: # if initially visible at first/last phase steps
                             # periodic
@@ -645,7 +638,8 @@ def integrate(size_t numThreads,
                                         break # out of phase loop
 
                                     _specific_flux = gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
-                                    if _specific_flux > 0.0 or perform_correction == 1:
+                                    #if _specific_flux > 0.0 or perform_correction == 1:
+                                    if True or perform_correction == 1:
                                         privateFlux[T,p,k] += cellArea[i,j] * _specific_flux
 
                             j = j + 1
@@ -717,6 +711,8 @@ def integrate(size_t numThreads,
             return (ERROR, None)
 
     free(terminate)
+
+    #printf("FluxQ = %.6e\n", flux)
 
     return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'))
 

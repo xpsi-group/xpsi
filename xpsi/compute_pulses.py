@@ -20,7 +20,7 @@ import xpsi
 from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
 
 
-freq = 300.0
+freq = 600.0 #300.0
 
 #spacetime = xpsi.Spacetime.fixed_spin(freq)
 #for p in spacetime:
@@ -53,7 +53,8 @@ bounds = dict(super_colatitude = (None, None),
 # a simple circular, simply-connected spot
 primary = xpsi.HotRegion(bounds=bounds,
                             values={}, # no initial values and no derived/fixed
-                            symmetry=True,
+                            symmetry=True, 
+                            #symmetry=False, 
                             omit=False,
                             cede=False,
                             concentric=False,
@@ -110,7 +111,6 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
 from xpsi import HotRegions
 
 hot = HotRegions((primary, secondary))
-#TBD: Check how to have only 1 spot
 
 
 print(hot.objects[0]) # 'p'
@@ -142,6 +142,12 @@ class CustomPhotosphere(xpsi.Photosphere):
 
 photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
+
+
+
+
+
+
 print(photosphere['mode_frequency'] == spacetime['frequency'])
 
 star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
@@ -186,13 +192,17 @@ star['cos_inclination'] = math.cos(math.pi*incl_deg/180.0)#math.cos(2.0)
 theta_deg = 60.0
 star['p__super_colatitude'] = math.pi*theta_deg/180.0 #0.0 #2.0
 rho_deg = 10.0
-star['p__super_radius'] = 0.075 #math.pi*rho_deg/180.0
+star['p__super_radius'] = math.pi*rho_deg/180.0
+#print("rho[deg]=",math.pi*rho_deg/180.0)
 tplanck = 1.0 #in keV #1 keV -> log10(T[K]) = 7.06 (out of bounds)
 #print(np.log10(tplanck*11604525.0061657))
 star['p__super_temperature'] = np.log10(tplanck*11604525.0061657)
 print("Parameters of the star:")
 print(star.params)
 
+
+
+#photosphere._hot_atmosphere = (logT, logg, mu, logE, buf) ???? -Check the example script and CustomPhotosphere in tutorial
 
 
 #Now some pulse profiles:
@@ -240,20 +250,45 @@ def plot_pulse():
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/pulse_profileX.pdf")
 
+nene = 128
+
 def save_pulse(PulsName): #To be continued ...
-    """Save the pulse profile in ASCII format. """
-    pulse1 = np.sum(photosphere.signal[0][0], axis=0)
-    pulse2 = np.sum(photosphere.signal[1][0], axis=0)
+    """Save the pulse profile in a file. """
+    #print("F(E) = ",photosphere.signal[0][0][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
+    #print("F(T) = ", photosphere.signal[0][0][0,:], len(photosphere.signal[0][0][0,:]))
+    #exit()
+
+    print(np.shape(photosphere.signal_stokes))
+    print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
+    print("F(T) = ", photosphere.signal_stokes[0][1][0,:], len(photosphere.signal[0][0][0,:]))
+    print("F(E) = ",photosphere.signal_stokes[0][2][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
+    print("F(T) = ", photosphere.signal_stokes[0][2][0,:], len(photosphere.signal[0][0][0,:]))
+
+    #pulse1 = np.sum(photosphere.signal[0][0], axis=0)
+    pulse1 = photosphere.signal[0][0][nene-1,:] #pulse in one energy bin
+
+    #pulse1 = photosphere.signal_stokes[0][0][nene-1,:] 
+    pulseQ = photosphere.signal_stokes[0][1][nene-1,:] 
+    pulseU = photosphere.signal_stokes[0][2][nene-1,:] 
+
+    #pulse2 = np.sum(photosphere.signal[1][0], axis=0)
     phase1 = hot.phases_in_cycles[0]
-    phase2 = hot.phases_in_cycles[1]
-    pulse_tot = pulse1+pulse2
+    #phase2 = hot.phases_in_cycles[1]
+    #pulse_tot = pulse1+pulse2
     outF = open(PulsName + '_F.bin','w')
     outf = open(PulsName + '_p.bin','w')
     pulse1.tofile(outF,format="%e") 
     phase1.tofile(outf,format="%e")
+    outQ = open(PulsName + '_Q.bin','w')
+    pulseQ.tofile(outQ,format="%e") 
+    outU = open(PulsName + '_U.bin','w')
+    pulseU.tofile(outU,format="%e") 
 
-energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
 
+#energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
+energies = np.logspace(-1.0, np.log10(4.94), nene, base=10.0)
+
+print("energies (keV) =",energies)
 
 star.update() #Calculating the space-time integrals etc. 
 
@@ -265,8 +300,9 @@ photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 #print(photosphere.signal[0][0])
 
 
-plot_pulse()
-save_pulse("pulses/pulse3")
+#plot_pulse()
+save_pulse("pulses/pulseX")
+#save_pulse("pulses/pulse7i")
 
 
 

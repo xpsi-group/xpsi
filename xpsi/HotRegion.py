@@ -483,14 +483,29 @@ class HotRegion(ParameterSubspace):
         if declaration: # can we safely assume azimuthal invariance?
             from .cellmesh.pol_integrator_for_azimuthal_invariance import integrate as _integrator
             #from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+            from .cellmesh.integratorQ_for_azimuthal_invariance import integrate as _integratorQ
+            from .cellmesh.integratorU_for_azimuthal_invariance import integrate as _integratorU
+            self._integratorQ = _integratorQ
+            self._integratorU = _integratorU
         else: # more general purpose
-            from .cellmesh.integrator import integrate as _integrator
+            #from .cellmesh.integrator import integrate as _integrator
+            from .cellmesh.integrator_stokes import integrate as _integrator
+
         self._integrator = _integrator
+
 
     @property
     def integrator(self):
         """ Get the integrator to be invoked. """
         return self._integrator
+    @property
+    def integratorQ(self):
+        """ Get the integrator to be invoked. """
+        return self._integratorQ
+    @property
+    def integratorU(self):
+        """ Get the integrator to be invoked. """
+        return self._integratorU
 
     def set_num_rays(self, num_rays, fast_num_rays):
         self.num_rays = num_rays
@@ -1142,6 +1157,254 @@ class HotRegion(ParameterSubspace):
             else:
                 return (super_pulse[1], cede_pulse[1])
 
+        #return (super_pulse[1],)
         return (super_pulse[1],)
+
+    def integrate_stokes(self, st, energies, threads,
+                  hot_atmosphere, elsewhere_atmosphere):
+        """ Integrate over the photospheric radiation field.
+
+        Calls the CellMesh Stokes integrators, with or without exploitation of
+        azimuthal invariance of the radiation field of the hot region.
+
+        :param st: Instance of :class:`~.Spacetime.Spacetime`.
+
+        :param energies: A one-dimensional :class:`numpy.ndarray` of energies
+                         in keV.
+
+        :param int threads: Number of ``OpenMP`` threads for pulse
+                            integration.
+
+        """
+        if self.fast_mode and not self.do_fast:
+            try:
+                if self.cede:
+                    return (None, None)
+            except AttributeError:
+                return (None,)
+
+        leaves = self._fast_leaves if self.fast_mode else self._leaves
+        phases = self._fast_phases if self.fast_mode else self._phases
+        num_rays = self._fast_num_rays if self.fast_mode else self._num_rays
+
+        if isinstance(energies, tuple):
+            try:
+                super_energies, cede_energies = energies
+            except ValueError:
+                super_energies = energies[0]
+                try:
+                    self._cede_cellArea
+                except AttributeError:
+                    pass
+                else:
+                    cede_energies = super_energies
+        else:
+            super_energies = cede_energies = energies
+
+
+        if(self._symmetry):
+            super_pulse = self._integrator(threads,
+                                       st.R,
+                                       st.Omega,
+                                       st.r_s,
+                                       st.i,
+                                       self._super_cellArea,
+                                       self._super_r,
+                                       self._super_r_s_over_r,
+                                       self._super_theta,
+                                       self._super_phi,
+                                       self._super_cellParamVecs,
+                                       self._super_radiates,
+                                       self._super_correctionVecs,
+                                       num_rays,
+                                       self._super_deflection,
+                                       self._super_cos_alpha,
+                                       self._super_lag,
+                                       self._super_maxDeflection,
+                                       self._super_cos_gamma,
+                                       super_energies,
+                                       leaves,
+                                       phases,
+                                       hot_atmosphere,
+                                       elsewhere_atmosphere,
+                                       self._image_order_limit)
+
+            super_pulse_Q = self._integratorQ(threads,
+                                       st.R,
+                                       st.Omega,
+                                       st.r_s,
+                                       st.i,
+                                       self._super_cellArea,
+                                       self._super_r,
+                                       self._super_r_s_over_r,
+                                       self._super_theta,
+                                       self._super_phi,
+                                       self._super_cellParamVecs,
+                                       self._super_radiates,
+                                       self._super_correctionVecs,
+                                       num_rays,
+                                       self._super_deflection,
+                                       self._super_cos_alpha,
+                                       self._super_lag,
+                                       self._super_maxDeflection,
+                                       self._super_cos_gamma,
+                                       super_energies,
+                                       leaves,
+                                       phases,
+                                       hot_atmosphere,
+                                       elsewhere_atmosphere,
+                                       self._image_order_limit)
+
+            super_pulse_U = self._integratorU(threads,
+                                       st.R,
+                                       st.Omega,
+                                       st.r_s,
+                                       st.i,
+                                       self._super_cellArea,
+                                       self._super_r,
+                                       self._super_r_s_over_r,
+                                       self._super_theta,
+                                       self._super_phi,
+                                       self._super_cellParamVecs,
+                                       self._super_radiates,
+                                       self._super_correctionVecs,
+                                       num_rays,
+                                       self._super_deflection,
+                                       self._super_cos_alpha,
+                                       self._super_lag,
+                                       self._super_maxDeflection,
+                                       self._super_cos_gamma,
+                                       super_energies,
+                                       leaves,
+                                       phases,
+                                       hot_atmosphere,
+                                       elsewhere_atmosphere,
+                                       self._image_order_limit)
+            print("sp0 =",super_pulse[0])
+        else:
+            all_pulses = self._integrator(threads,
+                                       st.R,
+                                       st.Omega,
+                                       st.r_s,
+                                       st.i,
+                                       self._super_cellArea,
+                                       self._super_r,
+                                       self._super_r_s_over_r,
+                                       self._super_theta,
+                                       self._super_phi,
+                                       self._super_cellParamVecs,
+                                       self._super_radiates,
+                                       self._super_correctionVecs,
+                                       num_rays,
+                                       self._super_deflection,
+                                       self._super_cos_alpha,
+                                       self._super_lag,
+                                       self._super_maxDeflection,
+                                       self._super_cos_gamma,
+                                       super_energies,
+                                       leaves,
+                                       phases,
+                                       hot_atmosphere,
+                                       elsewhere_atmosphere,
+                                       self._image_order_limit)
+            super_pulse = all_pulses[0], all_pulses[1] #success and flux
+            super_pulse_Q = all_pulses[0], all_pulses[2]
+            super_pulse_U = all_pulses[0], all_pulses[3]
+
+        if super_pulse[0] == 1:
+            raise PulseError('Fatal numerical error during superseding-'
+                             'region pulse integration.')
+
+        try: 
+            cede_pulse = self._integrator(threads,
+                                          st.R,
+                                          st.Omega,
+                                          st.r_s,
+                                          st.i,
+                                          self._cede_cellArea,
+                                          self._cede_r,
+                                          self._cede_r_s_over_r,
+                                          self._cede_theta,
+                                          self._cede_phi,
+                                          self._cede_cellParamVecs,
+                                          self._cede_radiates,
+                                          self._cede_correctionVecs,
+                                          num_rays,
+                                          self._cede_deflection,
+                                          self._cede_cos_alpha,
+                                          self._cede_lag,
+                                          self._cede_maxDeflection,
+                                          self._cede_cos_gamma,
+                                          cede_energies,
+                                          leaves,
+                                          phases,
+                                          hot_atmosphere,
+                                          elsewhere_atmosphere,
+                                          self._image_order_limit)
+
+            cede_pulse_Q = self._integratorQ(threads,
+                                          st.R,
+                                          st.Omega,
+                                          st.r_s,
+                                          st.i,
+                                          self._cede_cellArea,
+                                          self._cede_r,
+                                          self._cede_r_s_over_r,
+                                          self._cede_theta,
+                                          self._cede_phi,
+                                          self._cede_cellParamVecs,
+                                          self._cede_radiates,
+                                          self._cede_correctionVecs,
+                                          num_rays,
+                                          self._cede_deflection,
+                                          self._cede_cos_alpha,
+                                          self._cede_lag,
+                                          self._cede_maxDeflection,
+                                          self._cede_cos_gamma,
+                                          cede_energies,
+                                          leaves,
+                                          phases,
+                                          hot_atmosphere,
+                                          elsewhere_atmosphere,
+                                          self._image_order_limit)
+
+            cede_pulse_U = self._integratorU(threads,
+                                          st.R,
+                                          st.Omega,
+                                          st.r_s,
+                                          st.i,
+                                          self._cede_cellArea,
+                                          self._cede_r,
+                                          self._cede_r_s_over_r,
+                                          self._cede_theta,
+                                          self._cede_phi,
+                                          self._cede_cellParamVecs,
+                                          self._cede_radiates,
+                                          self._cede_correctionVecs,
+                                          num_rays,
+                                          self._cede_deflection,
+                                          self._cede_cos_alpha,
+                                          self._cede_lag,
+                                          self._cede_maxDeflection,
+                                          self._cede_cos_gamma,
+                                          cede_energies,
+                                          leaves,
+                                          phases,
+                                          hot_atmosphere,
+                                          elsewhere_atmosphere,
+                                          self._image_order_limit)
+        except AttributeError:
+            pass
+        else:
+            if cede_pulse[0] == 1:
+                raise PulseError('Fatal numerical error during ceding-region '
+                                 'pulse integration.')
+            else:
+                return (super_pulse[1],super_pulse_Q[1],super_pulse_U[1], cede_pulse[1],cede_pulse_Q[1],cede_pulse_U[1])
+
+        #return (super_pulse[1],)
+        #for qwe in range(len(super_pulse_Q[1][:])):
+        #	print("Q=",super_pulse_Q[1][qwe])
+        return (super_pulse[1],super_pulse_Q[1],super_pulse_U[1])
 
 HotRegion._update_doc()

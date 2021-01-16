@@ -327,6 +327,14 @@ class Photosphere(ParameterSubspace):
                                                    self._hot_atmosphere,
                                                    self._elsewhere_atmosphere)
 
+                self._signal_stokes = self._hot.integrate_stokes(self._spacetime,
+                                                   energies,
+                                                   threads,
+                                                   self._hot_atmosphere,
+                                                   self._elsewhere_atmosphere)
+                #print(self._signal_stokes)
+                #exit()
+
                 if not isinstance(self._signal[0], tuple):
                     self._signal = (self._signal,)
 
@@ -334,6 +342,7 @@ class Photosphere(ParameterSubspace):
                 if self._elsewhere is not None:
                     for i in range(self._signal[0][0].shape[1]):
                         self._signal[0][0][:,i] += spectrum
+
 
     @property
     def signal(self):
@@ -349,6 +358,23 @@ class Photosphere(ParameterSubspace):
 
         """
         return self._signal
+
+
+    @property
+    def signal_stokes(self):
+        """ Get the stored signal.
+
+        :returns:
+            A tuple of tuples of *ndarray[m,n]*.
+            Here :math:`m` is the number of energies, and
+            :math:`n` is the number of phases. Units are photon/s/keV; the
+            distance is a fast parameter so the areal units are not yet
+            factored in. If the signal is a spectrum because the signal is
+            time-invariant, then :math:`n=1`.
+
+        """
+        return self._signal_stokes
+
 
     @property
     def global_variables(self):
