@@ -20,7 +20,7 @@ import xpsi
 from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
 
 
-freq = 600.0 #300.0
+freq = 600.0 #800.0 #600.0 #300.0
 
 #spacetime = xpsi.Spacetime.fixed_spin(freq)
 #for p in spacetime:
@@ -184,22 +184,29 @@ star(p)
 
 
 #Another way to set param values:
-star['mass'] = 1.4
-star['radius'] = 12.0
+
+#compactness = 0
+star['mass'] = 1.4 #0.112*20.0 #1.4
+star['radius'] = 12.0 #20.0 #12.0
 star['distance'] = 0.2
-incl_deg = 40.0
+incl_deg = 40.0 #90.0 #40.0
 star['cos_inclination'] = math.cos(math.pi*incl_deg/180.0)#math.cos(2.0)
 theta_deg = 60.0
 star['p__super_colatitude'] = math.pi*theta_deg/180.0 #0.0 #2.0
 rho_deg = 10.0
 star['p__super_radius'] = math.pi*rho_deg/180.0
 #print("rho[deg]=",math.pi*rho_deg/180.0)
-tplanck = 1.0 #in keV #1 keV -> log10(T[K]) = 7.06 (out of bounds)
+tplanck = 1.0 #in keV #1 keV -> log10(T[K]) = 7.06 (out of bounds originally)
 #print(np.log10(tplanck*11604525.0061657))
 star['p__super_temperature'] = np.log10(tplanck*11604525.0061657)
+
+#star['s__phase_shift'] = 0.025
+#star['s__super_colatitude'] = 2.142
+#star['s__super_radius'] = 0.2
+
 print("Parameters of the star:")
 print(star.params)
-
+#exit()
 
 
 #photosphere._hot_atmosphere = (logT, logg, mu, logE, buf) ???? -Check the example script and CustomPhotosphere in tutorial
@@ -243,6 +250,7 @@ def plot_pulse():
     ax.set_xlabel('Phase [cycles]')
 
     temp = np.sum(photosphere.signal[0][0], axis=0)
+    #temp = photosphere.signal[0][0][nene-1,:] 
     ax.plot(hot.phases_in_cycles[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
     temp = np.sum(photosphere.signal[1][0], axis=0)
     ax.plot(hot.phases_in_cycles[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)
@@ -258,14 +266,15 @@ def save_pulse(PulsName): #To be continued ...
     #print("F(T) = ", photosphere.signal[0][0][0,:], len(photosphere.signal[0][0][0,:]))
     #exit()
 
-    print(np.shape(photosphere.signal_stokes))
-    print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
-    print("F(T) = ", photosphere.signal_stokes[0][1][0,:], len(photosphere.signal[0][0][0,:]))
-    print("F(E) = ",photosphere.signal_stokes[0][2][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
-    print("F(T) = ", photosphere.signal_stokes[0][2][0,:], len(photosphere.signal[0][0][0,:]))
+    #print(np.shape(photosphere.signal_stokes))
+    #print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
+    #print("F(T) = ", photosphere.signal_stokes[0][1][0,:], len(photosphere.signal[0][0][0,:]))
+    #print("F(E) = ",photosphere.signal_stokes[0][2][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
+    #print("F(T) = ", photosphere.signal_stokes[0][2][0,:], len(photosphere.signal[0][0][0,:]))
 
     #pulse1 = np.sum(photosphere.signal[0][0], axis=0)
-    pulse1 = photosphere.signal[0][0][nene-1,:] #pulse in one energy bin
+    #pulse1 = photosphere.signal[0][0][nene-1,:] #pulse in one energy bin
+    pulse1 = photosphere.signal_stokes[0][0][nene-1,:] #pulse in one energy bin
 
     #pulse1 = photosphere.signal_stokes[0][0][nene-1,:] 
     pulseQ = photosphere.signal_stokes[0][1][nene-1,:] 
@@ -300,9 +309,9 @@ photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 #print(photosphere.signal[0][0])
 
 
-#plot_pulse()
-save_pulse("pulses/pulseX")
-#save_pulse("pulses/pulse7i")
+plot_pulse()
+#save_pulse("pulses/pulse_f800r20")
+save_pulse("pulses/pulse7j")
 
 
 

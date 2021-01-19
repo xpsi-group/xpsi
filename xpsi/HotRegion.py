@@ -481,10 +481,12 @@ class HotRegion(ParameterSubspace):
 
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
-            from .cellmesh.pol_integrator_for_azimuthal_invariance import integrate as _integrator
-            #from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator 
+
+            from .cellmesh.integratorI_for_azimuthal_invariance import integrate as _integratorI
             from .cellmesh.integratorQ_for_azimuthal_invariance import integrate as _integratorQ
             from .cellmesh.integratorU_for_azimuthal_invariance import integrate as _integratorU
+            self._integratorI = _integratorI
             self._integratorQ = _integratorQ
             self._integratorU = _integratorU
         else: # more general purpose
@@ -498,6 +500,10 @@ class HotRegion(ParameterSubspace):
     def integrator(self):
         """ Get the integrator to be invoked. """
         return self._integrator
+    @property
+    def integratorI(self):
+        """ Get the integrator to be invoked. """
+        return self._integratorQ
     @property
     def integratorQ(self):
         """ Get the integrator to be invoked. """
@@ -1203,7 +1209,7 @@ class HotRegion(ParameterSubspace):
 
 
         if(self._symmetry):
-            super_pulse = self._integrator(threads,
+            super_pulse = self._integratorI(threads,
                                        st.R,
                                        st.Omega,
                                        st.r_s,
@@ -1280,7 +1286,6 @@ class HotRegion(ParameterSubspace):
                                        hot_atmosphere,
                                        elsewhere_atmosphere,
                                        self._image_order_limit)
-            print("sp0 =",super_pulse[0])
         else:
             all_pulses = self._integrator(threads,
                                        st.R,

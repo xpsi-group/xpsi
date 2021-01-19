@@ -468,11 +468,11 @@ def integrate(size_t numThreads,
 
                                 chi = chi_0+chi_1+chi_prime#+(3.14/2.0)
 
-                                printf("leaves[_kdx] = %.6e ",leaves[_kdx])
-                                printf("chi_0 = %.6e ",chi_0)
-                                printf("chi_1 = %.6e ",chi_1)
-                                printf("chi_prime = %.6e ",chi_prime)
-                                printf("PA_tot = %.6e\n",chi)
+                                #printf("leaves[_kdx] = %.6e ",leaves[_kdx])
+                                #printf("chi_0 = %.6e ",chi_0)
+                                #printf("chi_1 = %.6e ",chi_1)
+                                #printf("chi_prime = %.6e ",chi_prime)
+                                #printf("PA_tot = %.6e\n",chi)
                                 cos_2chi = cos(2*chi)
                                 sin_2chi = sin(2*chi)
                                 #printf("leaves[k] = %.6e ",leaves[k]/3.14)
