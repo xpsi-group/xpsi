@@ -503,7 +503,7 @@ class HotRegion(ParameterSubspace):
     @property
     def integratorI(self):
         """ Get the integrator to be invoked. """
-        return self._integratorQ
+        return self._integratorI
     @property
     def integratorQ(self):
         """ Get the integrator to be invoked. """
