@@ -31,6 +31,23 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+[v0.7.5] - 2021-01-26
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* A few typos in the documentation.
+
+Added
+^^^^^
+* A few images in the documentation. 
+
+Attribution
+^^^^^^^^^^^
+
+* Serena Vinciguerra
+
 
 [v0.7.4] - 2020-11-17
 ~~~~~~~~~~~~~~~~~~~~~
