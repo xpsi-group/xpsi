@@ -12,6 +12,7 @@ instrument.
     :members: matrix, energy_edges, channels, cached_signal, construct_matrix,
               channel_edges
     :special-members: __call__
+    :show-inheritance:
 
 .. autoclass:: xpsi.Instrument.ResponseError
     :show-inheritance:
