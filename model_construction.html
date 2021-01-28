@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modeling &mdash; xpsi 0.7.3 documentation</title>
+  <title>Modeling &mdash; xpsi 0.7.4 documentation</title>
   
 
   
@@ -630,7 +630,7 @@ flexible and thus more powerful. More extensive examples of this paradigm are gi
 <li><code class="docutils literal notranslate"><span class="pre">photosphere_1</span></code> (non-optional):<ul>
 <li>coordinate rotation frequency of a mode of radiative asymmetry assumed to generate the observed pulsations</li>
 <li>subvector of geometric hot-region parameters (e.g., spot centre colatitude, spot angular radius, and so on) and a parameter controlling the surface local-comoving-frame radiation field <em>within</em> the region boundaries</li>
-<li>(optional) subvector of additional parameters controlling the surface local-comoving-frameradiation field <em>within</em> the hot-region boundaries (e.g., pertaining to ionisation degree or composition)</li>
+<li>(optional) subvector of additional parameters controlling the surface local-comoving-frame radiation field <em>within</em> the hot-region boundaries (e.g., pertaining to ionisation degree or composition)</li>
 <li>(optional) subvector of parameters controlling the surface local-comoving-frame radiation field <em>outside</em> the hot-region boundaries</li>
 <li>subvector of fast parameters for the phases of the hot region(s) relative to some fiducial phase</li>
 </ul>
@@ -1864,7 +1864,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 </pre></div>
 </div>
 </div>
-<p><strong>Note that if you want to modify the definition of the model parameter space you should restart the process of constructing a</strong> <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> <strong>object, intead of manipulating existing objects, for ultimate safety.</strong> (You can also restart the kernel although if this is required it is a bug.)</p>
+<p><strong>Note that if you want to modify the definition of the model parameter space you should restart the process of constructing a</strong> <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> <strong>object, instead of manipulating existing objects, for ultimate safety.</strong> (You can also restart the kernel although if this is required it is a bug.)</p>
 <p>Let’s call the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object with the true model parameter values that we injected to generate the synthetic data rendered above, omitting background parameters. Note that you can switch the phase interpolant invoked from GSL by:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
@@ -2512,16 +2512,16 @@ by the solid curves without markers.</p>
 
         <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">star</span><span class="o">.</span><span class="n">spacetime</span> <span class="c1"># shortcut</span>
 
-        <span class="c1"># polar radius at photon sphere for ~static star (static ambient spacetime)</span>
-        <span class="c1">#if R_p &lt; 1.5 / ref.R_r_s:</span>
-        <span class="c1">#    return -np.inf</span>
-
         <span class="c1"># limit polar radius to try to exclude deflections &gt;= \pi radians</span>
         <span class="c1"># due to oblateness this does not quite eliminate all configurations</span>
         <span class="c1"># with deflections &gt;= \pi radians</span>
         <span class="n">R_p</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">ref</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.788</span> <span class="o">+</span> <span class="mf">1.030</span> <span class="o">*</span> <span class="n">ref</span><span class="o">.</span><span class="n">zeta</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">R_p</span> <span class="o">&lt;</span> <span class="mf">1.76</span> <span class="o">/</span> <span class="n">ref</span><span class="o">.</span><span class="n">R_r_s</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="c1"># polar radius at photon sphere for ~static star (static ambient spacetime)</span>
+        <span class="c1">#if R_p &lt; 1.5 / ref.R_r_s:</span>
+        <span class="c1">#    return -np.inf</span>
 
         <span class="n">mu</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">ref</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.788</span> <span class="o">+</span> <span class="mf">1.030</span> <span class="o">*</span> <span class="n">ref</span><span class="o">.</span><span class="n">zeta</span><span class="p">)))</span>
 
@@ -3056,7 +3056,7 @@ Sampling complete.
 <span class="c1"># These chains plotted were generated using</span>
 <span class="c1"># v0.2 so the labels here are in a different</span>
 <span class="c1"># order. The model also had two free</span>
-<span class="c1"># temperature parameters instead of just.</span>
+<span class="c1"># temperature parameters instead of just one.</span>
 <span class="c1"># Also, inclination was the parameter, not</span>
 <span class="c1"># cos(inclination), and the prior was flat</span>
 <span class="c1"># in inclination, not cos(inclination).</span>

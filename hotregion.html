@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>HotRegion &mdash; xpsi 0.7.3 documentation</title>
+  <title>HotRegion &mdash; xpsi 0.7.4 documentation</title>
   
 
   
@@ -240,6 +240,14 @@
 <span id="id1"></span><h1>HotRegion<a class="headerlink" href="#hotregion" title="Permalink to this headline">¶</a></h1>
 <p>Instances of <a class="reference internal" href="#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a> are objects representing radiatively
 intense regions of the source photosphere.</p>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/super_cede_omit.png"><img alt="_images/super_cede_omit.png" src="_images/super_cede_omit.png" style="width: 600px;" /></a>
+</div>
+<p>Representation of the <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> class instantiation options <code class="docutils literal notranslate"><span class="pre">omit</span></code> and <code class="docutils literal notranslate"><span class="pre">cede</span></code>. The image also shows the prefixes used for the instance attributes associated with each type of region constituting a <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> object.</p>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/HotRegion_parameters.png"><img alt="_images/HotRegion_parameters.png" src="_images/HotRegion_parameters.png" style="width: 600px;" /></a>
+</div>
+<p>Representation of a <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> instance configuration, when <code class="docutils literal notranslate"><span class="pre">omit</span></code> or <code class="docutils literal notranslate"><span class="pre">cede</span></code> are set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. A description of these parameters is also presented below. If <code class="docutils literal notranslate"><span class="pre">is_antiphased</span> <span class="pre">=</span> <span class="pre">True</span></code>, the parameter <code class="docutils literal notranslate"><span class="pre">phase_shift</span></code> is added to :math:pi radians. For example, if <code class="docutils literal notranslate"><span class="pre">phase_shift</span> <span class="pre">=</span> <span class="pre">0</span></code>, the omission or the superseding region (respectively on the left and right side of the image) is in anti-phase with the observer meridian (i.e., its azimuth is :math:pi).</p>
 <dl class="class">
 <dt id="xpsi.HotRegion.HotRegion">
 <em class="property">class </em><code class="descclassname">xpsi.HotRegion.</code><code class="descname">HotRegion</code><span class="sig-paren">(</span><em>bounds</em>, <em>values</em>, <em>symmetry=True</em>, <em>omit=False</em>, <em>cede=False</em>, <em>concentric=False</em>, <em>sqrt_num_cells=32</em>, <em>min_sqrt_num_cells=10</em>, <em>max_sqrt_num_cells=80</em>, <em>num_rays=200</em>, <em>num_leaves=64</em>, <em>num_phases=None</em>, <em>phases=None</em>, <em>do_fast=False</em>, <em>fast_sqrt_num_cells=16</em>, <em>fast_min_sqrt_num_cells=4</em>, <em>fast_max_sqrt_num_cells=16</em>, <em>fast_num_rays=100</em>, <em>fast_num_leaves=32</em>, <em>fast_num_phases=None</em>, <em>fast_phases=None</em>, <em>is_antiphased=False</em>, <em>custom=None</em>, <em>image_order_limit=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/HotRegion.html#HotRegion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.HotRegion.HotRegion" title="Permalink to this definition">¶</a></dt>

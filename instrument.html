@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instrument &mdash; xpsi 0.7.3 documentation</title>
+  <title>Instrument &mdash; xpsi 0.7.4 documentation</title>
   
 
   
@@ -243,7 +243,8 @@ instrument.</p>
 <dl class="class">
 <dt id="xpsi.Instrument.Instrument">
 <em class="property">class </em><code class="descclassname">xpsi.Instrument.</code><code class="descname">Instrument</code><span class="sig-paren">(</span><em>matrix</em>, <em>energy_edges</em>, <em>channels</em>, <em>channel_edges=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Instrument.html#Instrument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Instrument.Instrument" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for astronomical X-ray instruments on-board space telescopes.</p>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
+<p>Base class for astronomical X-ray instruments on-board space telescopes.</p>
 <p>The body of the initialiser must not be changed to ensure inter-module
 compatibility, but can be extended if appropriate using a call to
 <code class="docutils literal notranslate"><span class="pre">super().__init__</span></code>. Specialist constructors can be defined in a subclass

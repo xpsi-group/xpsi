@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Global surface emission &mdash; xpsi 0.7.3 documentation</title>
+  <title>Global surface emission &mdash; xpsi 0.7.4 documentation</title>
   
 
   
@@ -1218,7 +1218,7 @@ Star imaged.
 <h2>Custom (phase-dependent)<a class="headerlink" href="#Custom-(phase-dependent)" title="Permalink to this headline">¶</a></h2>
 <p>Let us, inspired by <a class="reference external" href="https://arxiv.org/abs/1904.11534">Lockhart et al.&nbsp;(2019)</a>, set up a surface radiation field constituted by: (i) a hot spot whose temperature decreases away from a point <span class="math notranslate nohighlight">\(P\)</span> as a function of angular separation; and (ii) a hot ring whose angular centre is the antipode <span class="math notranslate nohighlight">\(Q\)</span> of <span class="math notranslate nohighlight">\(P\)</span> and whose temperature decreases away (as a function of angular separation from <span class="math notranslate nohighlight">\(Q\)</span>) from a locus of points with constant angular separation to point <span class="math notranslate nohighlight">\(Q\)</span>. The
 temperature is everywhere that of the local comoving photosphere, which radiates isotropically as a blackbody.</p>
-<p>You now need to reinstalled the package after replacing the contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/local_variables.pyx</span></code> with the exact contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/tutorial_spot_and_ring.pyx</span></code>. The <code class="docutils literal notranslate"><span class="pre">local_variables.pyx</span></code> extension module must transform some set of <em>global</em> variables into <em>local</em> variables at the spacetime event defined by the intersection of a ray with the stellar surface. A vector of local variables is then passed to the
+<p>You now need to reinstall the package after replacing the contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/local_variables.pyx</span></code> with the exact contents of <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/archive/local_variables/tutorial_spot_and_ring.pyx</span></code>. The <code class="docutils literal notranslate"><span class="pre">local_variables.pyx</span></code> extension module must transform some set of <em>global</em> variables into <em>local</em> variables at the spacetime event defined by the intersection of a ray with the stellar surface. A vector of local variables is then passed to the
 <code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot.pyx</span></code> module for evaluation of the specific intensity of radiation, w.r.t a local comoving surface frame, that after Lorentz transformation is transported along the ray to the image plane.</p>
 <p><strong>Once you can reinstalled the package, you need to restart the IPython kernel and then execute code cells [1], [2], and [12] above.</strong></p>
 <p>First we will subclass <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere"><span class="std std-ref">Everywhere</span></a> to provide a custom implementation of the surface radiation field for a surface-discretisation integrator.</p>
