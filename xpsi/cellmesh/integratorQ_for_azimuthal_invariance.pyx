@@ -163,6 +163,7 @@ def integrate(size_t numThreads,
         double _phase_lag
         double _specific_flux
         size_t _InvisPhase
+        int esec 
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -334,6 +335,7 @@ def integrate(size_t numThreads,
         Lorentz = sqrt(1.0 - beta_sq) #inverse of Lorentz factor
         _cos_alpha = -1.0 # lastprivate
         deriv = -1.0 # lastprivate
+        esec = 1
 
         if image_order == 0: # infer maximum possible image order
             _IO = <int>ceil(maxDeflection[i] / _pi)
@@ -468,11 +470,21 @@ def integrate(size_t numThreads,
 
                                 chi = chi_0+chi_1+chi_prime
 
-                                #printf("leaves[k] = %.6e ",leaves[k])
+                                #printf("leaves[_kdx] = %.6e ",leaves[_kdx]/_2pi)
                                 #printf("chi_0 = %.6e ",chi_0)
                                 #printf("chi_1 = %.6e ",chi_1)
                                 #printf("chi_prime = %.6e ",chi_prime)
                                 #printf("PA_tot = %.6e\n",chi)
+                                #printf("sin_alpha = %.6e ",sin_alpha)
+                                #printf("sin_psi = %.6e\n ",sin_psi)
+                                #printf("redshift = %.6e\n",1.0/Grav_z)
+                                #printf("%d\n ",esec)
+                                #if esec==1:
+                                #    printf("%.6e, ",leaves[_kdx]/_2pi)
+                                #    printf("%.6e\n",eta)
+                                #    esec = esec-1
+                                #else:
+                                #    esec = esec+1
                                 cos_2chi = cos(2*chi)
                                 sin_2chi = sin(2*chi)
 
@@ -496,6 +508,10 @@ def integrate(size_t numThreads,
                                     Q_obs = PD*I_E*cos_2chi
                                     #U_obs = PD*I_E*sin_2chi
                                     #printf("Q_obs = %.6e\n",Q_obs)
+                                    #if p==118:
+                                    #    printf("phase = %.6e ",leaves[_kdx]/_2pi)
+                                    #    printf("E_prime = %.6e ",E_prime)
+                                    #    printf("E_obs = %.6e\n",energies[p])
 
                                     if perform_correction == 1:
                                         correction_Q = eval_elsewhere(T,

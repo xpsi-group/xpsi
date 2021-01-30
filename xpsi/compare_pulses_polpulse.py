@@ -23,9 +23,9 @@ evere=.5109989e6 # electron volts in elecron rest energy
 G=13275412528e1 # G*M_sol in km^3/s^2 
 c=299792458e-3 # speed of light in km/s
 
-NPhase = 121 #100 #150# Number of equidistant phase points
+NPhase = 100 #150# Number of equidistant phase points
 NEnergy = 281 # 50# 101 # number of energy points (x)
-phi,phi_weight=linspace(0,2*pi,num=NPhase,endpoint=False,retstep=True) #Size of spacing between samples = phi_weight
+#phi,phi_weight=linspace(0,2*pi,num=NPhase,endpoint=False,retstep=True) #Size of spacing between samples = phi_weight
 x_l, x_u = -3.7 , .3 # lower and upper bounds of the log_10 energy span
 IntEnergy = logspace(x_l,x_u,NEnergy), log(1e1)*(x_u-x_l)/(NEnergy-1.) # sample points and weights for integrations over the spectrum computing sorce function
 x_ene,x_weight=IntEnergy
@@ -82,12 +82,13 @@ else:
 #shapes = ["Sphere","AlGendy"]
 
 #colors = ["yellow","black","red"]
-colors = ["yellow","blue","green"]
+#colors = ["green","blue"]
+colors = ["black","blue"]
 #colors = ["blue"]
 shapes = np.copy(colors)
 
 
-for ish in range(1,2):#len(shapes)):
+for ish in range(1,-1,-1): #(0,2):#len(shapes)):
 
 	#oblateness='AlGendy'#'Sphere'#'AlGendy'
 	oblateness=shapes[ish]
@@ -95,13 +96,13 @@ for ish in range(1,2):#len(shapes)):
 	#AtmName='res/B/C1obl' # the prefix for all result files related to the set of parameters
 	#AtmName='res/B/B0P2' # the prefix for all result files related to the set of parameters
 	if(ish == 0):
-		PulsName='res/B/lbb_rhoinf_chi-1'
+		PulsName='../../../polcslab/CompSlab/res/B/test_rho10f600_Tc'#'../../../polcslab/ixpe_git/ixpe_sim/pulse_model/pulse_comp_xpsi2'
+		NPhase = 150
 	if(ish == 1):
 	        #PulsName='../../../polcslab/CompSlab/pOS_pulses/lbb_rho10_sp1_f600_obl_burst2_dt'
-		pversion = '7i_rho10f600_Tc' #'7j'
+		pversion = '7i_rho10f600_Tc'#'_f800r20'#'7i'
 	        PulsName='pulses/pulse'+pversion
-	if(ish == 2):
-		PulsName='res/B/lbb_rho10_sp1_f600_sph'#_accspot'
+		NPhase = 121 #100
 	#PulsName=AtmName+'P1'
 	computePulse= True
 	plotAtm=not True
@@ -114,33 +115,37 @@ for ish in range(1,2):#len(shapes)):
 	#phi.tofile(outf,format="%e")
 	print(PulsName)
 
-	#inFlux = open(PulsName+'FF.bin')
-	#inphi = open(PulsName+'ff.bin')
-	inFlux = open(PulsName+'_F.bin')
-	inphi = open(PulsName+'_p.bin')
-	inQ = open(PulsName+'_Q.bin')
-	inU = open(PulsName+'_U.bin')
+	if(ish==0):
+		inFlux = open(PulsName+'FF.bin')
+		inphi = open(PulsName+'ff.bin')
+		Flux1 = fromfile(inFlux)
+		fluxlcurve0 = Flux1[0:len(Flux1):3*NEnergy] #light curve with lowest E
+		fluxspec0 = Flux1[0:3*NEnergy:3] #spectrum at phase=0
+		ene = 118#166#140#166#140 #The chosen energy index
+		#print("The chosen energy (keV): ", x_ene[ene]*evere/1e3)
+		fluxlcurve_Iene = Flux1[0+ene*3:len(Flux1):3*NEnergy]
+		fluxlcurve_Qene = Flux1[1+ene*3:len(Flux1):3*NEnergy]
+		fluxlcurve_Uene = Flux1[2+ene*3:len(Flux1):3*NEnergy]
+		#Or integrate over all energies:
+		#fluxlcurve_Iene = Flux1[0:len(Flux1):3*NEnergy]
+		#fluxlcurve_Qene = Flux1[1:len(Flux1):3*NEnergy]
+		#fluxlcurve_Uene = Flux1[2:len(Flux1):3*NEnergy]
+		#for iene in range(1,150):#len(x_ene)):
+		#	fluxlcurve_Iene =+ Flux1[0+iene*3:len(Flux1):3*NEnergy]
+		#	fluxlcurve_Qene =+ Flux1[1+iene*3:len(Flux1):3*NEnergy]
+		#	fluxlcurve_Uene =+ Flux1[2+iene*3:len(Flux1):3*NEnergy]
+	else:
+		inFlux = open(PulsName+'_F.bin')
+		inphi = open(PulsName+'_p.bin')
+		inQ = open(PulsName+'_Q.bin')
+		inU = open(PulsName+'_U.bin')
 
+		Flux1 = fromfile(inFlux)
+		FluxQ = fromfile(inQ)
+		FluxU = fromfile(inU)
 
-	Flux1 = fromfile(inFlux)
-	FluxQ = fromfile(inQ)
-	FluxU = fromfile(inU)
 	phi = fromfile(inphi)
-	#print(phi, Flux1)
-	#print(len(phi))
-	#print(len(Flux1))
-	#exit()
-	#fluxlcurve0 = Flux1[0:len(Flux1):3*NEnergy] #light curve with lowest E
-	#fluxspec0 = Flux1[0:3*NEnergy:3] #spectrum at phase=0
-	#print(fluxlcurve0)
-	#print(" ")
-	#print(fluxspec0)
 
-	#ene = 118#166#140#166#140 #The chosen energy index
-	#print("The chosen energy (keV): ", x_ene[ene]*evere/1e3)
-	#fluxlcurve_Iene = Flux1[0+ene*3:len(Flux1):3*NEnergy]
-	#fluxlcurve_Qene = Flux1[1+ene*3:len(Flux1):3*NEnergy]
-	#fluxlcurve_Uene = Flux1[2+ene*3:len(Flux1):3*NEnergy]
             	            
 	#Flux=zeros((NPhase,NEnergy,3))
 	#print(fluxlcurve_Iene)
@@ -158,11 +163,13 @@ for ish in range(1,2):#len(shapes)):
 	Q=zeros(NPhase)#+1)
 	U=zeros(NPhase)#+1)
 	for t in range(NPhase):#+1):
-		#I[t],Q[t],U[t]=Flux[t-1,e]*x[e] 
-		#I[t],Q[t],U[t]=fluxlcurve_Iene[t-1]*x_ene[ene] ,fluxlcurve_Qene[t-1]*x_ene[ene] ,fluxlcurve_Uene[t-1]*x_ene[ene] 
-		#I[t],Q[t],U[t]=Flux1[t],1.0 ,1.0
-		I[t],Q[t],U[t]=Flux1[t],FluxQ[t],FluxU[t]
+		if(ish==0):
+			I[t],Q[t],U[t]=fluxlcurve_Iene[t-1],fluxlcurve_Qene[t-1],fluxlcurve_Uene[t-1] 
+			#print("Q=",Q[t])
+		else:
+			I[t],Q[t],U[t]=Flux1[t],FluxQ[t],FluxU[t]
 
+	#exit()
 	p=sqrt(Q**2+U**2)/I*100
 	#PA=arctan2(-U,-Q)*90/pi+90
 	PA=arctan2(U,Q)*90/pi+90
@@ -230,7 +237,7 @@ for ish in range(1,2):#len(shapes)):
 		#print(phshift1)
 		#quit()
 		#in the end, setting the shift by hand seems still to produce better results		
-		phshift1 = -0.04829 #-0.047590550687164 #0.0 #-0.12 #0.0 #-0.047590550687164 #0.0#-0.048315#-0.2517#0.019#0.0#0.019#0.195#-0.07#-0.2517#0.0#0.001#0.008#0.2421#0.2517#0.2535#0.069#0.0#-0.195#-0.18#-0.172#0.0
+		phshift1 = 0.0 #-0.00213 #-0.04829 #-0.047590550687164 #0.0 #-0.12 #0.0 #-0.047590550687164 #0.0#-0.048315#-0.2517#0.019#0.0#0.019#0.195#-0.07#-0.2517#0.0#0.001#0.008#0.2421#0.2517#0.2535#0.069#0.0#-0.195#-0.18#-0.172#0.0
 		phase_new = shift_phase(np.array(phase),phshift1)
 		for ipha in range(0,len(phase_new)-1):
 			if(phase_new[ipha+1] > phase_new[ipha]):
@@ -258,29 +265,38 @@ for ish in range(1,2):#len(shapes)):
 		U0_VP04 = U/I
 		phase0_VP04 = phase
 
-	if(ish == 2): 
-		phshift2 = 0.0
-		phase_new = shift_phase(np.array(phase),phshift)
-		#find best-phasehift:#not working now
-		phshift2, gf2 = find_best_phshift.find_best_phshift(np.array(phase),PA,phase_acm0,PA_acm0)
-		phshift2 = phshift2 -1.0
-		print(phshift2)
+	if(ish == 0): 
+		phshift2 = 0.0 #-0.047590550687164 #0.0 #-0.04829 #0.0
+		#phase_new = shift_phase(np.array(phase),phshift)
+		##find best-phasehift:#not working now
+		#phshift2, gf2 = find_best_phshift.find_best_phshift(np.array(phase),PA,phase_acm0,PA_acm0)
+		#phshift2 = phshift2 -1.0
+		#print(phshift2)
 		#phshift2 = -0.2517#0.0#0.001#0.008#0.2421#0.2517#0.2535#0.069#0.0#-0.195#-0.18#-0.172#0.0
 		phase_new = shift_phase(np.array(phase),phshift2)
 		print(len(phase_new))
 		for ipha in range(0,len(phase_new)-1):
 			if(phase_new[ipha+1] > phase_new[ipha]):
-				plotAc.plot(phase_new[ipha:ipha+2],PA[ipha:ipha+2],"-",color=col,markersize="1.0")
+				plotAc.plot(phase_new[ipha:ipha+2],PA[ipha:ipha+2],"--",color=col,dashes=[2,2])
 				if(plot_all):
-					plotAF.plot(phase_new[ipha:ipha+2],I[ipha:ipha+2]/I.max(),color=col)
-					#plotAF.plot(phase_new[ipha:ipha+2],Q[ipha:ipha+2]/Q.max(),color="darkgreen")
-					#plotAF.plot(phase_new[ipha:ipha+2],U[ipha:ipha+2]/U.max(),color="lightgreen")
-					plotAp.plot(phase_new[ipha:ipha+2],Q[ipha:ipha+2]/Q.max(),color=col)
-					plotAd.plot(phase_new[ipha:ipha+2],U[ipha:ipha+2]/U.max(),color=col)
+					if plot5:
+						plotAFF.plot(phase_new[ipha:ipha+2],I[ipha:ipha+2]/I.max(),"--",color=col,dashes=[2,2])
+						plotAF.plot(phase_new[ipha:ipha+2],Q[ipha:ipha+2]/I[ipha:ipha+2],"--",color=col,dashes=[2,2]) 
+						plotAF.plot(phase_new[ipha:ipha+2],U[ipha:ipha+2]/I[ipha:ipha+2],"--",color=col,dashes=[2,2])
+					else:
+						print("This option is not supported!")
+						exit()
 		PA0_VP04_2 = PA
+		PA_acm0 = PA
+		phase_acm0 = phase_new
+		phase_acm0[len(phase_acm0)-1]=1.0
+		F_acm0 = I/I.max()
+		Q_acm0 = Q/I
+		U_acm0 = U/I
+
 		F0_VP04_2 = I/I.max()
-		Q0_VP04_2 = Q/Q.max()
-		U0_VP04_2 = U/U.max()
+		Q0_VP04_2 = Q/I
+		U0_VP04_2 = U/I
 		phase0_VP04_2 = phase
 	#else:
 	#	#plotAc.plot(phase,PA,color=col,marker="o",markersize=1.0)
@@ -288,7 +304,7 @@ for ish in range(1,2):#len(shapes)):
 
 
 
-compare_to_arcmancer = True
+compare_to_arcmancer = False #True
 if(compare_to_arcmancer): 
 	#colors = ["green","blue","black"]
 	colors = ["black","black","black"]
@@ -500,8 +516,8 @@ if(plot_PA_residuals):
 	#plotAd.set_ylim(-4.0,3.0)
 	#plotAd.set_ylim(-0.02,0.02)
 	#plotAd.set_ylim(-0.005,0.005)
-	#plotAd.set_ylim(-1.0,1.0)
-	plotAd.set_ylim(-0.3,0.3)
+	#plotAd.set_ylim(-1.0,2.0)
+	plotAd.set_ylim(-0.3,0.3) #<-
 	#plotAd.set_ylim(-10.0,10.0)
 	#plotAF.set_ylim(-1.2,1.2)
 
@@ -529,6 +545,7 @@ if(plot_PA_residuals):
 
 	#print(phase_acm0)
 	res_PA = (PA_acm0-PA0_VP04_interp(phase_acm0))/norm
+	print(res_PA)
 	plotAd.plot(phase_acm0[abs(res_PA) < 5.0],res_PA[abs(res_PA) < 5.0],"-",markersize=5,color="black")#"red")
 	#res_PA_2 = (PA_acm0-PA0_VP04_2_interp(phase_acm0))/norm
 	#plotAd.plot(phase_acm0[abs(res_PA_2) < 20.0],res_PA_2[abs(res_PA_2) < 20.0],color="green")
@@ -639,7 +656,8 @@ else:
 
 
 #figA.savefig('res/C2/obl_sph_comp.pdf')#.format(e))
-figA.savefig('figs/pulse_comp'+pversion+'.pdf',bbox_inches='tight')#.format(e))
+#figA.savefig('figs/pulse_comp'+pversion+'.pdf',bbox_inches='tight')#.format(e))
+figA.savefig('figs/pulse_compX.pdf',bbox_inches='tight')#.format(e))
 figA.clf()
 
 

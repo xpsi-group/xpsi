@@ -61,7 +61,8 @@ primary = xpsi.HotRegion(bounds=bounds,
                             sqrt_num_cells=32,
                             min_sqrt_num_cells=10,
                             max_sqrt_num_cells=64,
-                            num_leaves=100,
+                            #num_leaves=100,
+                            num_leaves=121,
                             num_rays=200,
                             do_fast=False,
                             prefix='p')
@@ -193,10 +194,10 @@ incl_deg = 40.0 #90.0 #40.0
 star['cos_inclination'] = math.cos(math.pi*incl_deg/180.0)#math.cos(2.0)
 theta_deg = 60.0
 star['p__super_colatitude'] = math.pi*theta_deg/180.0 #0.0 #2.0
-rho_deg = 10.0
+rho_deg = 10.0 #0.001 #10.0
 star['p__super_radius'] = math.pi*rho_deg/180.0
 #print("rho[deg]=",math.pi*rho_deg/180.0)
-tplanck = 1.0 #in keV #1 keV -> log10(T[K]) = 7.06 (out of bounds originally)
+tplanck = 1.0219978 #1.0 #in keV #1 keV -> log10(T[K]) = 7.06 (out of bounds originally)
 #print(np.log10(tplanck*11604525.0061657))
 star['p__super_temperature'] = np.log10(tplanck*11604525.0061657)
 
@@ -258,7 +259,7 @@ def plot_pulse():
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/pulse_profileX.pdf")
 
-nene = 128
+nene = 281 #128
 
 def save_pulse(PulsName): #To be continued ...
     """Save the pulse profile in a file. """
@@ -274,11 +275,15 @@ def save_pulse(PulsName): #To be continued ...
 
     #pulse1 = np.sum(photosphere.signal[0][0], axis=0)
     #pulse1 = photosphere.signal[0][0][nene-1,:] #pulse in one energy bin
-    pulse1 = photosphere.signal_stokes[0][0][nene-1,:] #pulse in one energy bin
+    #pulse1 = photosphere.signal_stokes[0][0][nene-1,:]
+    #pulseQ = photosphere.signal_stokes[0][1][nene-1,:] 
+    #pulseU = photosphere.signal_stokes[0][2][nene-1,:] 
+    pulse1 = photosphere.signal_stokes[0][0][118,:]
+    pulseQ = photosphere.signal_stokes[0][1][118,:] 
+    pulseU = photosphere.signal_stokes[0][2][118,:] 
 
-    #pulse1 = photosphere.signal_stokes[0][0][nene-1,:] 
-    pulseQ = photosphere.signal_stokes[0][1][nene-1,:] 
-    pulseU = photosphere.signal_stokes[0][2][nene-1,:] 
+
+
 
     #pulse2 = np.sum(photosphere.signal[1][0], axis=0)
     phase1 = hot.phases_in_cycles[0]
@@ -294,10 +299,19 @@ def save_pulse(PulsName): #To be continued ...
     pulseU.tofile(outU,format="%e") 
 
 
-#energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
-energies = np.logspace(-1.0, np.log10(4.94), nene, base=10.0)
+from numpy import logspace
+from numpy import log
+evere=0.5109989e6 # electron volts in elecron rest energy 
+x_l, x_u = -3.7 , .3 # lower and upper bounds of the log_10 energy span
+IntEnergy = logspace(x_l,x_u,nene), log(1e1)*(x_u-x_l)/(nene-1.) # sample poi
+x, x_weight = IntEnergy
+energies = (x*evere)/1e3
 
-print("energies (keV) =",energies)
+#energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
+#energies = np.logspace(-1.0, np.log10(4.94), nene, base=10.0)
+#energies = np.logspace(-1.0, np.log10(4.86), nene, base=10.0) #this seems to match better
+
+#print("energies (keV) =",energies)
 
 star.update() #Calculating the space-time integrals etc. 
 
@@ -311,7 +325,8 @@ photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 
 plot_pulse()
 #save_pulse("pulses/pulse_f800r20")
-save_pulse("pulses/pulse7j")
+#save_pulse("pulses/pulse7i_rho10f600_Tc")
+#save_pulse("pulses/pulseX")
 
 
 
