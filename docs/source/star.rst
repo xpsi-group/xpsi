@@ -21,3 +21,4 @@ A model star is constituted by:
 
 .. autoclass:: xpsi.Star.Star
     :members: photospheres, update
+    :show-inheritance:

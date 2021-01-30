@@ -31,19 +31,21 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
-
-[v0.7.4] - 2020-11-17
+[v0.7.4] - 2021-01-26
 ~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
 ^^^^^
-
 * Missing packages in ``setup.py`` causing errors when importing xpsi.
+* A few typos in the documentation.
+
+Added
+^^^^^
+* A few images in the documentation. 
 
 Attribution
 ^^^^^^^^^^^
-
-* Yves Kini, Devarshi Choudhury, Serena Vinciguerra 
+* Yves Kini, Devarshi Choudhury, Serena Vinciguerra
 
 
 [v0.7.3] - 2020-11-12
