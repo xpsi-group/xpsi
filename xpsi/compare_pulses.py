@@ -98,7 +98,7 @@ for ish in range(1,2):#len(shapes)):
 		PulsName='res/B/lbb_rhoinf_chi-1'
 	if(ish == 1):
 	        #PulsName='../../../polcslab/CompSlab/pOS_pulses/lbb_rho10_sp1_f600_obl_burst2_dt'
-		pversion = '7i_rho10f600_Tc' #'7j'
+		pversion = '7i_rho10f600_Tc_IQUi2' #'7j'
 	        PulsName='pulses/pulse'+pversion
 	if(ish == 2):
 		PulsName='res/B/lbb_rho10_sp1_f600_sph'#_accspot'

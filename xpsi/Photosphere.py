@@ -294,7 +294,7 @@ class Photosphere(ParameterSubspace):
                                 fast_total_counts,
                                 threads)
 
-    def integrate(self, energies, threads):
+    def integrate(self, energies, threads, stokes=False):
         """ Integrate over the photospheric radiation field.
 
         :param energies:
@@ -321,27 +321,29 @@ class Photosphere(ParameterSubspace):
                                                      *self._elsewhere_atmosphere)
 
             if self._hot is not None:
-                self._signal = self._hot.integrate(self._spacetime,
+                if stokes:
+                    self._signal_stokes = self._hot.integrate_stokes(self._spacetime,
+                                                   energies,
+                                                   threads,
+                                                   self._hot_atmosphere,
+                                                   self._elsewhere_atmosphere)
+                else:
+                    self._signal = self._hot.integrate(self._spacetime,
                                                    energies,
                                                    threads,
                                                    self._hot_atmosphere,
                                                    self._elsewhere_atmosphere)
 
-                self._signal_stokes = self._hot.integrate_stokes(self._spacetime,
-                                                   energies,
-                                                   threads,
-                                                   self._hot_atmosphere,
-                                                   self._elsewhere_atmosphere)
-                #print(self._signal_stokes)
-                #exit()
+                    #print(self._signal_stokes)
+                    #exit()
 
-                if not isinstance(self._signal[0], tuple):
-                    self._signal = (self._signal,)
+                    if not isinstance(self._signal[0], tuple):
+                        self._signal = (self._signal,)
 
-                # add time-invariant component to first time-dependent component
-                if self._elsewhere is not None:
-                    for i in range(self._signal[0][0].shape[1]):
-                        self._signal[0][0][:,i] += spectrum
+                    # add time-invariant component to first time-dependent component
+                    if self._elsewhere is not None:
+                        for i in range(self._signal[0][0].shape[1]):
+                            self._signal[0][0][:,i] += spectrum
 
 
     @property

@@ -1,4 +1,3 @@
-#NOTE: This integrator is not working yet.
 #cython: cdivision=True
 #cython: boundscheck=False
 #cython: nonecheck=False
@@ -744,5 +743,4 @@ def integrate(size_t numThreads,
             free(terminate)
             return (ERROR, None)
 
-    #printf("chi_0 = %.6e\n",chi_0)
     return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'),np.asarray(fluxQ, dtype = np.double, order = 'C'),np.asarray(fluxU, dtype = np.double, order = 'C'))

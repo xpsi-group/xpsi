@@ -189,6 +189,7 @@ if __name__ == '__main__':
                 'xpsi.cellmesh.integratorQ_for_azimuthal_invariance',
                 'xpsi.cellmesh.integratorU_for_azimuthal_invariance',
                 'xpsi.cellmesh.integratorI_for_azimuthal_invariance',
+                'xpsi.cellmesh.integratorIQU_for_azimuthal_invariance',
                 'xpsi.cellmesh.integrator_for_time_invariance',
                 'xpsi.pixelmesh.METRIC_qK',
                 'xpsi.pixelmesh.RODES_qK',

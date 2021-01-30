@@ -317,16 +317,26 @@ star.update() #Calculating the space-time integrals etc.
 
 #NOTE: Atmosphere evaluation is only applied during the following integration:
 #print("Now the actual computation!:")
-photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
+
+
+import time
+
+start = time.time()
+photosphere.integrate(energies, threads=1, stokes=True) # the number of OpenMP threads to use
+end = time.time()
+print("Time spent in integration:",end - start)
+
+#print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
+
 #_ = plot_pulse()
 #print("Light curve finished,")
 #print(photosphere.signal[0][0])
 
 
-plot_pulse()
+#plot_pulse()
 #save_pulse("pulses/pulse_f800r20")
-#save_pulse("pulses/pulse7i_rho10f600_Tc")
-#save_pulse("pulses/pulseX")
+save_pulse("pulses/pulseX")
+#save_pulse("pulses/pulse7i_rho10f600_Tc_IQUi2")
 
 
 

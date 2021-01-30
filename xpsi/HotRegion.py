@@ -486,14 +486,16 @@ class HotRegion(ParameterSubspace):
             from .cellmesh.integratorI_for_azimuthal_invariance import integrate as _integratorI
             from .cellmesh.integratorQ_for_azimuthal_invariance import integrate as _integratorQ
             from .cellmesh.integratorU_for_azimuthal_invariance import integrate as _integratorU
+            from .cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
             self._integratorI = _integratorI
             self._integratorQ = _integratorQ
             self._integratorU = _integratorU
         else: # more general purpose
-            #from .cellmesh.integrator import integrate as _integrator
-            from .cellmesh.integrator_stokes import integrate as _integrator
+            from .cellmesh.integrator import integrate as _integrator
+            from .cellmesh.integrator_stokes import integrate as _integratorIQU #Not finished yet.
 
         self._integrator = _integrator
+        self._integratorIQU = _integratorIQU
 
 
     @property
@@ -512,6 +514,10 @@ class HotRegion(ParameterSubspace):
     def integratorU(self):
         """ Get the integrator to be invoked. """
         return self._integratorU
+    @property
+    def integratorIQU(self):
+        """ Get the integrator to be invoked. """
+        return self._integratorIQU
 
     def set_num_rays(self, num_rays, fast_num_rays):
         self.num_rays = num_rays
@@ -1207,9 +1213,10 @@ class HotRegion(ParameterSubspace):
         else:
             super_energies = cede_energies = energies
 
-
+        separate_integrators = False 
         if(self._symmetry):
-            super_pulse = self._integratorI(threads,
+            if separate_integrators:
+               super_pulse = self._integratorI(threads,
                                        st.R,
                                        st.Omega,
                                        st.r_s,
@@ -1235,7 +1242,7 @@ class HotRegion(ParameterSubspace):
                                        elsewhere_atmosphere,
                                        self._image_order_limit)
 
-            super_pulse_Q = self._integratorQ(threads,
+               super_pulse_Q = self._integratorQ(threads,
                                        st.R,
                                        st.Omega,
                                        st.r_s,
@@ -1261,7 +1268,7 @@ class HotRegion(ParameterSubspace):
                                        elsewhere_atmosphere,
                                        self._image_order_limit)
 
-            super_pulse_U = self._integratorU(threads,
+               super_pulse_U = self._integratorU(threads,
                                        st.R,
                                        st.Omega,
                                        st.r_s,
@@ -1286,8 +1293,37 @@ class HotRegion(ParameterSubspace):
                                        hot_atmosphere,
                                        elsewhere_atmosphere,
                                        self._image_order_limit)
-        else:
-            all_pulses = self._integrator(threads,
+            else:
+               all_pulses = self._integratorIQU(threads,
+                                       st.R,
+                                       st.Omega,
+                                       st.r_s,
+                                       st.i,
+                                       self._super_cellArea,
+                                       self._super_r,
+                                       self._super_r_s_over_r,
+                                       self._super_theta,
+                                       self._super_phi,
+                                       self._super_cellParamVecs,
+                                       self._super_radiates,
+                                       self._super_correctionVecs,
+                                       num_rays,
+                                       self._super_deflection,
+                                       self._super_cos_alpha,
+                                       self._super_lag,
+                                       self._super_maxDeflection,
+                                       self._super_cos_gamma,
+                                       super_energies,
+                                       leaves,
+                                       phases,
+                                       hot_atmosphere,
+                                       elsewhere_atmosphere,
+                                       self._image_order_limit)
+               super_pulse = all_pulses[0], all_pulses[1] #success and flux
+               super_pulse_Q = all_pulses[0], all_pulses[2]
+               super_pulse_U = all_pulses[0], all_pulses[3]
+        else: 
+            all_pulses = self._integratorIQU(threads,
                                        st.R,
                                        st.Omega,
                                        st.r_s,
@@ -1321,7 +1357,8 @@ class HotRegion(ParameterSubspace):
                              'region pulse integration.')
 
         try: 
-            cede_pulse = self._integrator(threads,
+            if separate_integrators:
+               cede_pulse = self._integrator(threads,
                                           st.R,
                                           st.Omega,
                                           st.r_s,
@@ -1347,7 +1384,7 @@ class HotRegion(ParameterSubspace):
                                           elsewhere_atmosphere,
                                           self._image_order_limit)
 
-            cede_pulse_Q = self._integratorQ(threads,
+               cede_pulse_Q = self._integratorQ(threads,
                                           st.R,
                                           st.Omega,
                                           st.r_s,
@@ -1373,7 +1410,7 @@ class HotRegion(ParameterSubspace):
                                           elsewhere_atmosphere,
                                           self._image_order_limit)
 
-            cede_pulse_U = self._integratorU(threads,
+               cede_pulse_U = self._integratorU(threads,
                                           st.R,
                                           st.Omega,
                                           st.r_s,
@@ -1398,6 +1435,37 @@ class HotRegion(ParameterSubspace):
                                           hot_atmosphere,
                                           elsewhere_atmosphere,
                                           self._image_order_limit)
+            else:
+               all_pulses = self._integrator(threads,
+                                       st.R,
+                                       st.Omega,
+                                       st.r_s,
+                                       st.i,
+                                       self._cede_cellArea,
+                                       self._cede_r,
+                                       self._cede_r_s_over_r,
+                                       self._cede_theta,
+                                       self._cede_phi,
+                                       self._cede_cellParamVecs,
+                                       self._cede_radiates,
+                                       self._cede_correctionVecs,
+                                       num_rays,
+                                       self._cede_deflection,
+                                       self._cede_cos_alpha,
+                                       self._cede_lag,
+                                       self._cede_maxDeflection,
+                                       self._cede_cos_gamma,
+                                       cede_energies,
+                                       leaves,
+                                       phases,
+                                       hot_atmosphere,
+                                       elsewhere_atmosphere,
+                                       self._image_order_limit)
+               cede_pulse = all_pulses[0], all_pulses[1] #success and flux
+               cede_pulse_Q = all_pulses[0], all_pulses[2]
+               cede_pulse_U = all_pulses[0], all_pulses[3]
+
+   
         except AttributeError:
             pass
         else:
@@ -1405,6 +1473,7 @@ class HotRegion(ParameterSubspace):
                 raise PulseError('Fatal numerical error during ceding-region '
                                  'pulse integration.')
             else:
+                print("????")
                 return (super_pulse[1],super_pulse_Q[1],super_pulse_U[1], cede_pulse[1],cede_pulse_Q[1],cede_pulse_U[1])
 
         #return (super_pulse[1],)
