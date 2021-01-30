@@ -492,7 +492,7 @@ class HotRegion(ParameterSubspace):
             self._integratorU = _integratorU
         else: # more general purpose
             from .cellmesh.integrator import integrate as _integrator
-            from .cellmesh.integrator_stokes import integrate as _integratorIQU #Not finished yet.
+            from .cellmesh.integrator_stokes import integrate as _integratorIQU
 
         self._integrator = _integrator
         self._integratorIQU = _integratorIQU
