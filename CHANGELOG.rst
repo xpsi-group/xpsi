@@ -31,6 +31,27 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+
+[v0.7.5] - 2021-02-5
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+* Typo in _precision function in xpsi/PostProcessing/__init__.py
+* math typo in the docs/source/hotregion.rst file
+
+Changed
+^^^^^
+* few things in the images appearing in the HotRegion page
+* printing error statement including name of the parameter in xpsi/Parameter.py
+
+Attribution
+^^^^^^^^^^^
+* Serena Vinciguerra
+
+
+
+
 [v0.7.4] - 2021-01-26
 ~~~~~~~~~~~~~~~~~~~~~
 
