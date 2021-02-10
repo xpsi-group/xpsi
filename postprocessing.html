@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>PostProcessing &mdash; xpsi 0.7.4 documentation</title>
+  <title>PostProcessing &mdash; xpsi 0.7.5 documentation</title>
   
 
   
@@ -1203,7 +1203,7 @@ class, such as the identification (ID) string of the run.</p>
 <dl class="attribute">
 <dt id="xpsi.PostProcessing._backends.NestedBackend.getdist_backend">
 <code class="descname">getdist_backend</code><a class="headerlink" href="#xpsi.PostProcessing._backends.NestedBackend.getdist_backend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a> instance.</p>
+<dd><p>Get the <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a> instance.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1279,13 +1279,13 @@ of parameters.</td>
 <li><strong>names</strong> (<em>list</em>) – An ordered list of <code class="docutils literal notranslate"><span class="pre">str</span></code> parameter names. The ordering must match
 the parameter vector ordering defined in sample backend objects.</li>
 <li><strong>bounds</strong> (<em>dict</em>) – A dictionary of one-dimensional <em>hard</em> parameter bounds. See
-<a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>; the keys must match the
+<a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>; the keys must match the
 <a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata.names" title="xpsi.PostProcessing._metadata.Metadata.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a> list. For the purpose of density estimation plots these
 bounds can be viewing bounds.</li>
 <li><strong>labels</strong> (<em>list</em>) – An ordered list of (LaTeX compatible) <code class="docutils literal notranslate"><span class="pre">str</span></code> literal parameter labels.</li>
 <li><strong>implementation</strong> (<em>str</em>) – Sampling software applied to generate the samples. Known options are
 <code class="docutils literal notranslate"><span class="pre">['multinest',</span> <span class="pre">'polychord',</span> <span class="pre">'emcee']</span></code>.</li>
-<li><strong>kde_settings</strong> (<em>dict</em>) – Settings for instantiation of <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>.</li>
+<li><strong>kde_settings</strong> (<em>dict</em>) – Settings for instantiation of <a class="reference external" href="https://getdist.readthedocs.io/en/latest/mcsamples.html#getdist.mcsamples.MCSamples" title="(in GetDist v1.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">getdist.mcsamples.MCSamples</span></code></a>.</li>
 <li><strong>truths</strong> (<em>dict</em>) – Optional dictionary of parameter truths, if <em>known</em>; if <em>unknown</em>
 leave as <code class="docutils literal notranslate"><span class="pre">None</span></code>. The keys must be names which match those in
 <a class="reference internal" href="#xpsi.PostProcessing._metadata.Metadata.names" title="xpsi.PostProcessing._metadata.Metadata.names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">names</span></code></a>.</li>

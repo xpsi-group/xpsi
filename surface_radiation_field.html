@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Surface radiation field &mdash; xpsi 0.7.4 documentation</title>
+  <title>Surface radiation field &mdash; xpsi 0.7.5 documentation</title>
   
 
   
@@ -314,13 +314,13 @@ surface radiation field models.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>energies</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV to evaluate photon
+<li><strong>energies</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV to evaluate photon
 specific intensity at, in the local comoving frame.</li>
-<li><strong>mu</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of angles at which to evaluate the photon
+<li><strong>mu</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of angles at which to evaluate the photon
 specific intensity at. Specifically, the angle is the cosine of the
 angle of the ray direction to the local surface normal, in the local
 comoving frame.</li>
-<li><strong>local_variables</strong> (<em>double</em><em>[</em><em>:</em><em>,</em><em>::1</em><em>]</em>) – A 2D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of local variables such as temperature
+<li><strong>local_variables</strong> (<em>double</em><em>[</em><em>:</em><em>,</em><em>::1</em><em>]</em>) – A 2D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of local variables such as temperature
 and effective gravity. Rows correspond to the sequence of points in the
 space of energy and angle specified above, and columns contain the
 required variable values, one variable per column, in the expected
@@ -328,9 +328,9 @@ order.</li>
 <li><strong>atmosphere</strong> (<em>tuple</em>) – <p>A numerical atmosphere preloaded into buffers. The buffers must be
 supplied in an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
 <span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
 elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
 multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
 first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
 arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
@@ -356,7 +356,7 @@ the same memory upon each call without I/O.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the photon specific intensities in
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the photon specific intensities in
 units of photons/s/keV/cm^2.</p>
 </td>
 </tr>
@@ -375,21 +375,21 @@ coordinates of events at the surface.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>energies</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV to evaluate photon
+<li><strong>energies</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV to evaluate photon
 specific intensity at, in the local comoving frame.</li>
-<li><strong>mu</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of angles at which to evaluate the photon
+<li><strong>mu</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of angles at which to evaluate the photon
 specific intensity at. Specifically, the angle is the cosine of the
 angle of the ray direction to the local surface normal, in the local
 comoving frame.</li>
-<li><strong>colatitude</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of colatitudes in radians at which to
+<li><strong>colatitude</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of colatitudes in radians at which to
 evaluate photon specific intensity, in the local comoving frame. This
 is the coordinate of a fixed point relative to a distant static
 observer.</li>
-<li><strong>azimuth</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of azimuths in radians at which to
+<li><strong>azimuth</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of azimuths in radians at which to
 evaluate photon specific intensity, in the local comoving frame. This
 is the coordinate of a fixed point relative to a distant static
 observer.</li>
-<li><strong>phase</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of rotational phases in radians at which to
+<li><strong>phase</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of rotational phases in radians at which to
 evaluate photon specific intensity, in the local comoving frame. The
 phase describes the rotation of the surface radiation field through
 the fixed points alluded to above. A localised hot region for instance
@@ -397,7 +397,7 @@ rotates so that it’s azimuth changes relative to a point with fixed
 azimuth described above. Specifying zero phase means that the intensity
 is evaluated at the fixed points for the initial configuration of the
 hot region (or more general radiation field).</li>
-<li><strong>global_variables</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of global variables controlling the surface
+<li><strong>global_variables</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of global variables controlling the surface
 radiation field.</li>
 <li><strong>R_eq</strong> (<em>double</em>) – The equatorial radius in metres. Needed for effective gravity universal
 relation.</li>
@@ -410,9 +410,9 @@ dimensionless variable by using an instance of <a class="reference internal" hre
 <li><strong>atmosphere</strong> (<em>tuple</em>) – <p>A numerical atmosphere preloaded into buffers. The buffers must be
 supplied in an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
 <span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
 elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
 multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
 first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
 arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
@@ -436,7 +436,7 @@ the same memory upon each call without I/O.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the photon specific intensities in
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the photon specific intensities in
 units of photons/s/keV/cm^2.</p>
 </td>
 </tr>
@@ -455,21 +455,21 @@ units of photons/s/keV/cm^2.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>cos_colatitude</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of colatitudes, with respect to <em>a</em>
+<li><strong>cos_colatitude</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of colatitudes, with respect to <em>a</em>
 rotational pole, at which to evaluate the local effective gravity.
 on the surface. Specifically, the angle is the cosine of the
 colatitude of the ray direction to the local surface normal, in the
 local comoving frame.</li>
-<li><strong>R_eq</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of surface coordinate equatorial radii in
+<li><strong>R_eq</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of surface coordinate equatorial radii in
 metres.</li>
-<li><strong>zeta</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of a dimensionless function of stellar
+<li><strong>zeta</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of a dimensionless function of stellar
 properties. See <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime.zeta" title="xpsi.Spacetime.Spacetime.zeta"><code class="xref py py-attr docutils literal notranslate"><span class="pre">zeta</span></code></a>.</li>
-<li><strong>epsilon</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of a dimensionless function of stellar
+<li><strong>epsilon</strong> (<em>double</em><em>[</em><em>::1</em><em>]</em>) – A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of a dimensionless function of stellar
 properties. See <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime.epsilon" title="xpsi.Spacetime.Spacetime.epsilon"><code class="xref py py-attr docutils literal notranslate"><span class="pre">epsilon</span></code></a>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the logarithms (base 10) of the
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A 1D <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the logarithms (base 10) of the
 effective gravities in units of cm/s^2.</p>
 </td>
 </tr>

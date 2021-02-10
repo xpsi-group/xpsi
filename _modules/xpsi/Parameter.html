@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Parameter &mdash; xpsi 0.7.4 documentation</title>
+  <title>xpsi.Parameter &mdash; xpsi 0.7.5 documentation</title>
   
 
   
@@ -597,7 +597,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="c1"># handle this exception externally if sampling software can</span>
                 <span class="c1"># make proposals outside of strict bounds</span>
-                <span class="k">raise</span> <span class="n">StrictBoundsError</span><span class="p">(</span><span class="s1">&#39;Value is not within the strict bounds.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">StrictBoundsError</span><span class="p">(</span><span class="s1">&#39;Value of parameter </span><span class="si">%s</span><span class="s1"> is not within the strict bounds.&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Value must be a float.&#39;</span><span class="p">)</span>

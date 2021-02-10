@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instrument &mdash; xpsi 0.7.4 documentation</title>
+  <title>Instrument &mdash; xpsi 0.7.5 documentation</title>
   
 
   
@@ -360,7 +360,7 @@ they must satisfy <span class="math notranslate nohighlight">\(indx &lt; p\)</sp
 <dt id="xpsi.Instrument.Instrument.channel_edges">
 <code class="descname">channel_edges</code><a class="headerlink" href="#xpsi.Instrument.Instrument.channel_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the channel (energy) edges of the instrument, in keV.</p>
-<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the registered energy intervals
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the registered energy intervals
 labelled as channels defined in the data space. This is relevant when
 there is a detector-by-detector gain scale applied to event data (such
 as for NICER instrument calibration products), meaning that the
@@ -405,7 +405,7 @@ provide the correct implementation of this method.</p>
 <dt id="xpsi.Instrument.Instrument.energy_edges">
 <code class="descname">energy_edges</code><a class="headerlink" href="#xpsi.Instrument.Instrument.energy_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the energy edges of the instrument, in keV.</p>
-<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy intervals which
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of edges of the input energy intervals which
 map to channels defined in the data space.</p>
 </dd></dl>
 
@@ -423,7 +423,7 @@ output channels.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The attribute <a class="reference internal" href="#xpsi.Instrument.Instrument.matrix" title="xpsi.Instrument.Instrument.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a> must be assigned, and it must be
-a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> for use with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.19)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> (even
+a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> for use with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.20)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> (even
 if the matrix is sparse to some degree).</p>
 </div>
 </dd></dl>
