@@ -456,6 +456,9 @@ class Likelihood(ParameterSubspace):
             for signal in signals:
                 loglikelihood += signal.loglikelihood
 
+        if loglikelihood <= self.llzero:
+            return self.random_near_llzero
+
         try:
             return loglikelihood + logprior
         except NameError:

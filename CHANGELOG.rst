@@ -31,21 +31,60 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+
+
+[v0.7.5] - 2021-02-10
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Corner-case stability improvements for default background marginalisation.
+* If likelihood function is below :attr:`~.Likelihood.Likelihood.llzero` after
+  evaluation, the parameter vector is included in the prior support as
+  intended.
+* Typo in ``_precision`` function in ``xpsi/PostProcessing/__init__.py``. (S.V.)
+* Math typo on the :mod:`~.HotRegion` page. (S.V.)
+* Explanatory text in the multiple-imaging tutorial. (T.S.)
+
+Changed
+^^^^^^^
+
+* A few image components appearing on the :mod:`~.HotRegion` page. (S.V.)
+* Bounds exception now prints the name of the offending parameter in
+  :class:`~.Parameter.Parameter`. (S.V.)
+
+Added
+^^^^^
+
+* An extension module for calculating hot region local variables from global
+  variables for hot region configurations under the umbrella of the PST-U model
+  introduced in :ref:`R19`.
+
+Attribution
+^^^^^^^^^^^
+
+* With thanks to Serena Vinciguerra (S.V.) and Tuomo Salmi (T.S.).
+
+
 [v0.7.4] - 2021-01-26
 ~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
 ^^^^^
+
 * Missing packages in ``setup.py`` causing errors when importing xpsi.
 * A few typos in the documentation.
 
 Added
 ^^^^^
-* A few images in the documentation. 
+
+* A few images in the documentation.
 
 Attribution
 ^^^^^^^^^^^
-* Yves Kini, Devarshi Choudhury, Serena Vinciguerra
+
+* Serena Vinciguerra, Yves Kini, Devarshi Choudhury.
 
 
 [v0.7.3] - 2020-11-12
