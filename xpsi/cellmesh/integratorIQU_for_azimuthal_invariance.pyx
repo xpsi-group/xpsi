@@ -366,8 +366,6 @@ def integrate(size_t numThreads,
             #correction_I_E = 0.0
 
             for k in range(leaf_lim):
-                #printf("leaves = %.6e\n", leaves[k])
-                #printf("k = %d\n", k)
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
@@ -388,9 +386,6 @@ def integrate(size_t numThreads,
                     cos_psi =  _cos_i * cos_theta_i + _sin_i * sin_theta_i * cos(leaves[k])
                     psi = eval_image_deflection(I, acos(cos_psi))
                     sin_psi = sin(psi)
-                #if sin_psi <= 1.0e-2: #Examine more this ...
-                #    printf("sinpsi = %.6e\n", sin_psi)
-                #    printf("psi = %.6e\n", psi)
 
                 if psi <= maxDeflection[i]:
                     if (psi < interp_alpha[T].xmin or psi > interp_alpha[T].xmax):
@@ -467,8 +462,6 @@ def integrate(size_t numThreads,
 
                                 PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
 
-                                #sin_2chi, cos_2chi = eval_PA()
-                                #Or calculaing the PA here in place:
                                 sin_chi_0 = - sin_theta_i*sin(leaves[_kdx]) 
                                 cos_chi_0 = sin_i*cos_theta_i - sin_theta_i*cos_i*cos(leaves[_kdx])
                                 chi_0 = atan2(sin_chi_0,cos_chi_0)
@@ -791,28 +784,6 @@ def integrate(size_t numThreads,
     #printf("FluxQ = %.6e\n", flux)
 
     return (SUCCESS, np.asarray(flux_I, dtype = np.double, order = 'C'),np.asarray(flux_Q, dtype = np.double, order = 'C'),np.asarray(flux_U, dtype = np.double, order = 'C'))
-
-
-#sin_chi_0= - sin_theta*sin_phi # times sin psi
-#cos_chi_0=sin_i*cos_theta - sin_theta*cos_i*cos_phi # times sin psi 
-#chi_0=arctan2(sin_chi_0,cos_chi_0)
-
-#sin_chi_1=sin_gamma*sin_i*sin_phi*sin_alpha_over_sin_psi #times sin alpha sin sigma 
-#cos_chi_1=cos_gamma - cos_alpha*cos_sigma  #times sin alpha sin sigma 
-#chi_1=arctan2(sin_chi_1,cos_chi_1)
-
-#sin_lambda=sin_theta*cos_gamma - sin_gamma*cos_theta
-#cos_lambda=cos_theta*cos_gamma + sin_theta*sin_gamma
-#cos_eps = sin_alpha_over_sin_psi*(cos_i*sin_lambda - sin_i*cos_lambda*cos_phi + cos_psi*sin_gamma) - cos_alpha*sin_gamma
-
-#sin_chi_prime=cos_eps*mu0*Gamma*beta#*the_thing#*delta**3#*delta
-#cos_chi_prime=(1. - cos_sigma**2 /(1. - beta*cos_xi))#*the_thing
-#chi_prime=arctan2(sin_chi_prime,cos_chi_prime)   
-#chi=chi_0 + chi_1 + chi_prime
-#  print(chi,'\t',chi_0/chi,'\t',chi_1/chi ,'\t',  chi_prime/chi )
-
-#sin_2chi=sin(2*chi)
-#cos_2chi=cos(2*chi)
 
 
      
