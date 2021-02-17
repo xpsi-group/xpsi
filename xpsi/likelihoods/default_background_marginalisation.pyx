@@ -87,7 +87,10 @@ cdef double marginal_integrand(double B, void *params) nogil:
 
     for j in range(a.n):
         c = a.SCALE * (a.star[j] + B)
-        x += a.data[j] * log(c) - c
+        if c == 0.0 and a.data[j] == 0.0:
+            x += 1.0
+        else:
+            x += a.data[j] * log(c) - c
 
     #with gil:
     #    if x - a.A > 0.0:
@@ -375,91 +378,110 @@ def eval_marginal_likelihood(double exposure_time,
         a.star = &(STAR[i,0])
         a.T_exp = exposure_time
 
-        B_min = 0.0
-        B = av_DATA - av_STAR
-        if B <= B_min:
-            min_counts = -1.0
-            for j in range(0, a.n):
-                if STAR[i,j] == 0.0:
-                    min_counts = -2.0
-                    break
-            if min_counts == -2.0:
+        if av_DATA == 0.0 and av_STAR == 0.0:
+            # zero counts in channel and zero hot region signal
+
+            lower = 0.0
+            if lower < support[i,0]:
+                lower = support[i,0]
+            upper = 10.0 / exposure_time
+            if upper > support[i,1]:
+                upper = support[i,1]
+
+            B = 0.0
+
+            LOGLIKE += log( ( exp(-1.0 * lower * exposure_time) - exp(-1.0 * upper * exposure_time)) / exposure_time )
+        else:
+            B_min = 0.0
+            B = av_DATA - av_STAR
+
+            if B <= B_min:
+                min_counts = -1.0
                 for j in range(0, a.n):
-                    if min_counts == -2.0 or 0.0 < counts[i,j] < min_counts:
-                        min_counts = counts[i,j]
-            if min_counts != -1.0:
-                B = 0.01 * min_counts / SCALE
-                B_min = 0.1 * B
-                #print("i, B = %i, %.16f" % (a.i,B))
-            else:
-                B = B_min
-
-        dB = delta(B, &a)
-
-        #print("B_0 = %.16e" % B)
-        counter = 0
-        while fabs(dB) > epsilon*a.std and counter < 2:
-            B += dB
-            #print("i, B = %i, %.8f" % (a.i,B))
-            if B < B_min:
-                if B_min > 0.0:
-                    counter += 1
+                    if STAR[i,j] == 0.0:
+                        min_counts = -2.0
+                        break
+                if min_counts == -2.0:
+                    for j in range(0, a.n):
+                        if (min_counts == -2.0 and counts[i,j] > 0.0) or (0.0 < counts[i,j] < min_counts):
+                            min_counts = counts[i,j]
+                if min_counts != -1.0:
+                    B = 0.01 * min_counts / SCALE
+                    B_min = 0.1 * B
+                    #print("i, B = %i, %.16f" % (a.i,B))
                 else:
-                    counter = 2
-                B = B_min
+                    B = B_min
 
             dB = delta(B, &a)
 
-        std_est = 0.0
-        for j in range(a.n):
-            #print("i, j, STAR[i,j] + B = %i, %i, %.16e, %.16e" % (a.i,j,STAR[i,j], B))
-            std_est += counts[i,j] / pow(STAR[i,j] + B, 2.0)
+            #print("B_0 = %.16e" % B)
+            counter = 0
+            while fabs(dB) > epsilon*a.std and counter < 2:
+                B += dB
+                #print("i, B = %i, %.8f" % (a.i,B))
+                if B < B_min:
+                    if B_min > 0.0:
+                        counter += 1
+                    else:
+                        counter = 2
+                    B = B_min
 
-        std_est = sqrt(1.0 / std_est)
-        #print("i, B, std = %i, %.16e, %.16e" % (a.i,B,std_est))
+                dB = delta(B, &a)
 
-        a.B = B
-        lower = B - sigmas * std_est
+            std_est = 0.0
+            for j in range(a.n):
+                #print("i, j, STAR[i,j] + B = %i, %i, %.16e, %.16e" % (a.i,j,STAR[i,j], B))
+                std_est += counts[i,j] / pow(STAR[i,j] + B, 2.0)
 
-        if lower < B_min:
-            lower = B_min
+            std_est = sqrt(1.0 / std_est)
+            #print("i, B, std = %i, %.16e, %.16e" % (a.i,B,std_est))
 
-        upper = B + sigmas * std_est
+            a.B = B
+            lower = B - sigmas * std_est
 
-        #a.interval = upper - lower
+            if lower < B_min:
+                lower = B_min
 
-        B_for_integrand = B
+            upper = B + sigmas * std_est
 
-        if lower < support[i,0]:
-            lower = support[i,0]
-            if upper < support[i,0] and support[i,1] > 0.0:
-                upper = support[i,1]
-                B_for_integrand = support[i,0]
-            elif upper < support[i,0]:
-                upper = support[i,0] + sigmas * std_est
-                B_for_integrand = support[i,0]
+            #a.interval = upper - lower
 
-        if upper > support[i,1] and support[i,1] > 0.0:
-            upper = support[i,1]
-            if lower > support[i,1]:
+            B_for_integrand = B
+
+            if lower < support[i,0]:
                 lower = support[i,0]
-                B_for_integrand = support[i,1]
+                if upper < support[i,0] and support[i,1] > 0.0:
+                    upper = support[i,1]
+                    B_for_integrand = support[i,0]
+                elif upper < support[i,0]:
+                    upper = support[i,0] + sigmas * std_est
+                    B_for_integrand = support[i,0]
 
-        f.params = &a
+            if upper > support[i,1] and support[i,1] > 0.0:
+                upper = support[i,1]
+                if lower > support[i,1]:
+                    lower = support[i,0]
+                    B_for_integrand = support[i,1]
 
-        a.A = 0.0
-        for j in range(a.n):
-            c = a.SCALE * (a.star[j] + B_for_integrand)
-            a.A += a.data[j] * log(c) - c
+            f.params = &a
 
-        gsl_integration_cquad(&f, lower, upper,
-                              epsabs, epsrel,
-                              w, &result,
-                              &abserr, &nevals)
-        if result > 0.0:
-            LOGLIKE += log(result) + a.A + a.precomp[a.i]
-        else:
-            LOGLIKE += llzero
+            a.A = 0.0
+            for j in range(a.n):
+                c = a.SCALE * (a.star[j] + B_for_integrand)
+                if c == 0.0 and a.data[j] == 0.0:
+                    a.A += 1.0
+                else:
+                    a.A += a.data[j] * log(c) - c
+
+            gsl_integration_cquad(&f, lower, upper,
+                                  epsabs, epsrel,
+                                  w, &result,
+                                  &abserr, &nevals)
+            if result > 0.0:
+                LOGLIKE += log(result) + a.A + a.precomp[a.i]
+            else:
+                LOGLIKE = llzero * (0.1 + 0.9 * np.random.rand(1))
+                break
 
         MCL_BACKGROUND[i] = B * exposure_time
 
