@@ -303,6 +303,9 @@ class Photosphere(ParameterSubspace):
         :param int threads:
             Number of ``OpenMP`` threads to spawn for signal integration.
 
+        :param bool stokes:
+            If activated, a full Stokes vector is computed and stored in signal_stokes.
+
         """
         if self._everywhere is not None:
             spectrum = self._everywhere.integrate(self._spacetime,
@@ -334,8 +337,6 @@ class Photosphere(ParameterSubspace):
                                                    self._hot_atmosphere,
                                                    self._elsewhere_atmosphere)
 
-                    #print(self._signal_stokes)
-                    #exit()
 
                     if not isinstance(self._signal[0], tuple):
                         self._signal = (self._signal,)
@@ -366,8 +367,8 @@ class Photosphere(ParameterSubspace):
     def signal_stokes(self):
         """ Get the stored signal.
 
-        :returns:
-            A tuple of tuples of *ndarray[m,n]*.
+        :returns: 
+            A tuple of tuples of *ndarray[m,n]* for I, Q, and U separately.
             Here :math:`m` is the number of energies, and
             :math:`n` is the number of phases. Units are photon/s/keV; the
             distance is a fast parameter so the areal units are not yet

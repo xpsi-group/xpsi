@@ -21,7 +21,7 @@ Representation of a ``HotRegion`` instance configuration, when ``omit`` or ``ced
 .. autoclass:: xpsi.HotRegion.HotRegion
     :members: _HotRegion__construct_cellMesh, _HotRegion__compute_rays,
               _HotRegion__compute_cellParamVecs, embed,
-              psi, integrate, num_rays, sqrt_num_cells, leaves, phases,
+              psi, integrate, integrate_stokes, num_rays, sqrt_num_cells, leaves, phases,
               set_phases, phases_in_cycles, print_settings, num_cells,
               cede, concentric
     :show-inheritance:

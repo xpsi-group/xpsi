@@ -786,6 +786,7 @@ class HotRegion(ParameterSubspace):
             else:
                 mesh_func = _construct_spot_cellMesh
 
+
             (self._cede_theta,
              self._cede_phi,
              self._cede_r,
@@ -1260,7 +1261,7 @@ class HotRegion(ParameterSubspace):
 
         try:
   
-            all_pulses = self._integrator(threads,
+            all_pulses = self._integratorIQU(threads,
                                        st.R,
                                        st.Omega,
                                        st.r_s,
@@ -1297,12 +1298,7 @@ class HotRegion(ParameterSubspace):
                 raise PulseError('Fatal numerical error during ceding-region '
                                  'pulse integration.')
             else:
-                print("????")
                 return (super_pulse[1],super_pulse_Q[1],super_pulse_U[1], cede_pulse[1],cede_pulse_Q[1],cede_pulse_U[1])
-
-        #return (super_pulse[1],)
-        #for qwe in range(len(super_pulse_Q[1][:])):
-        #	print("Q=",super_pulse_Q[1][qwe])
         return (super_pulse[1],super_pulse_Q[1],super_pulse_U[1])
 
 HotRegion._update_doc()
