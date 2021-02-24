@@ -45,10 +45,19 @@ spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=freq))
 
 #exit()
 
-bounds = dict(super_colatitude = (None, None),
+#bounds = dict(super_colatitude = (None, None),
+#              super_radius = (None, None),
+#              phase_shift = (0.0, 0.1),
+#              super_temperature = (None, None))
+
+bounds = dict(super_colatitude=(None,None),
               super_radius = (None, None),
-              phase_shift = (0.0, 0.1),
-              super_temperature = (None, None))
+              phase_shift = (0.0, 1.0),
+              super_temperature = (None, None),
+              cede_colatitude = (None, None),
+              cede_radius = (None, None),
+              cede_azimuth = (None, None),
+              cede_temperature = (None, None))
 
 # a simple circular, simply-connected spot
 primary = xpsi.HotRegion(bounds=bounds,
@@ -56,7 +65,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                             symmetry=True, 
                             #symmetry=False, 
                             omit=False,
-                            cede=False,
+                            cede=True, #False,
                             concentric=False,
                             sqrt_num_cells=32,
                             min_sqrt_num_cells=10,
@@ -98,7 +107,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
                               values={'super_temperature': derive()}, # create a callable value
                               symmetry=True,
                               omit=False,
-                              cede=False,
+                              cede=True, #False,
                               concentric=False,
                               sqrt_num_cells=32,
                               min_sqrt_num_cells=10,
@@ -157,6 +166,27 @@ print(star)
 
 print("Parameters of the star:")
 print(star.params)
+#Parameters of the star:
+#[Gravitational mass [solar masses], 
+#Coordinate equatorial radius [km], 
+#Earth distance [kpc], Cosine of Earth inclination to rotation axis, 
+#The phase of the hot region, a periodic parameter [cycles], 
+#The colatitude of the centre of the superseding region [radians], 
+#The angular radius of the (circular) superseding region [radians], 
+#log10(superseding region effective temperature [K]) = 6.000e+00, 
+#The colatitude of the centre of the ceding region [radians], 
+#The angular radius of the (circular) ceding region [radians], 
+#The azimuth of the centre of the ceding region relative to the centre of the superseding region [radians], 
+#log10(ceding region effective temperature [K]), 
+#The phase of the hot region, a periodic parameter [cycles], 
+#The colatitude of the centre of the superseding region [radians], 
+#The angular radius of the (circular) superseding region [radians], 
+#The colatitude of the centre of the ceding region [radians], 
+#The angular radius of the (circular) ceding region [radians], 
+#The azimuth of the centre of the ceding region relative to the centre of the superseding region [radians], 
+#log10(ceding region effective temperature [K])]
+
+
 #For fixed values:
 p = [1.4,
      12.5,
@@ -170,6 +200,8 @@ p = [1.4,
      math.pi - 1.0,
      0.2]
 star(p)
+
+exit()
 
 #mass: Gravitational mass [solar masses].
 #radius: Coordinate equatorial radius [km].
@@ -204,6 +236,18 @@ star['p__super_temperature'] = np.log10(tplanck*11604525.0061657)
 #star['s__phase_shift'] = 0.025
 #star['s__super_colatitude'] = 2.142
 #star['s__super_radius'] = 0.2
+
+star['p__cede_colatitude'] = math.pi*theta_deg/180.0 
+star['p__cede_azimuth'] = 0.0 #0.0
+star['p__cede_radius'] = math.pi*rho_deg/180.0+0.02
+star['p__cede_temperature'] = np.log10(tplanck*11604525.0061657)
+star['s__super_radius'] = math.pi*rho_deg/180.0
+star['s__super_colatitude'] = math.pi-math.pi*theta_deg/180.0
+star['s__cede_colatitude'] = math.pi-math.pi*theta_deg/180.0 
+star['s__cede_azimuth'] = 0.1 #math.pi/2.0
+star['s__cede_radius'] = math.pi*rho_deg/180.0+0.02
+star['s__cede_temperature'] = np.log10(tplanck*11604525.0061657)
+
 
 print("Parameters of the star:")
 print(star.params)
@@ -265,13 +309,22 @@ def save_pulse(PulsName): #To be continued ...
     """Save the pulse profile in a file. """
     #print("F(E) = ",photosphere.signal[0][0][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
     #print("F(T) = ", photosphere.signal[0][0][0,:], len(photosphere.signal[0][0][0,:]))
+    #print("F(E) = ",photosphere.signal[0][0][:,50], len(photosphere.signal[0][0][:,50])) #np.shape
+    #print("F(E) = ", photosphere.signal[1][0][:,50], len(photosphere.signal[1][0][:,50]))
+
+    #print("F(E) = ",photosphere.signal[0][1][:,50], len(photosphere.signal[0][1][:,50])) #np.shape
+    #print("F(E) = ", photosphere.signal[1][1][:,50], len(photosphere.signal[1][1][:,50]))
     #exit()
 
     #print(np.shape(photosphere.signal_stokes))
-    #print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
-    #print("F(T) = ", photosphere.signal_stokes[0][1][0,:], len(photosphere.signal[0][0][0,:]))
-    #print("F(E) = ",photosphere.signal_stokes[0][2][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
-    #print("F(T) = ", photosphere.signal_stokes[0][2][0,:], len(photosphere.signal[0][0][0,:]))
+    #print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal_stokes[0][0][:,0])) #np.shape
+    #print("F(T) = ", photosphere.signal_stokes[0][1][0,:], len(photosphere.signal_stokes[0][0][0,:]))
+    #print("F(E) = ",photosphere.signal_stokes[0][2][:,0], len(photosphere.signal_stokes[0][0][:,0])) #np.shape
+    print("F(T) = ", photosphere.signal_stokes[1][0][0,:], len(photosphere.signal_stokes[0][0][0,:]))
+    #print("F(E) = ",photosphere.signal_stokes[0][5][:,0], len(photosphere.signal_stokes[0][0][:,0])) #np.shape
+    print("F(T) = ", photosphere.signal_stokes[1][3][0,:], len(photosphere.signal_stokes[0][0][0,:]))
+
+    #print(photosphere.signal)
 
     #pulse1 = np.sum(photosphere.signal[0][0], axis=0)
     #pulse1 = photosphere.signal[0][0][nene-1,:] #pulse in one energy bin
