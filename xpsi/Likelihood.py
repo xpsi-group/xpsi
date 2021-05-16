@@ -504,7 +504,7 @@ class Likelihood(ParameterSubspace):
             def allclose(a, b, rtol, atol, equal_nan=None):
                 """ Fallback based on NumPy v1.17. """
                 for _a, _b in zip(a, b):
-                    yield '%.8e | %.8e .....' % (a, b)
+                    yield '%.8e | %.8e .....' % (_a, _b)
                 yield ~((_np.abs(a - b) > atol + rtol*_np.abs(b)).any())
                 #raise NotImplementedError('Implement a fallback.')
 

@@ -239,6 +239,7 @@ def eval_marginal_likelihood(double exposure_time,
         double[:,::1] STAR = np.zeros((components[0].shape[0], phases.shape[0] - 1),
                                       dtype = np.double)
         double[::1] MCL_BACKGROUND = np.zeros(components[0].shape[0], dtype = np.double)
+        double[::1] MCL_BACKGROUND_GIVEN_SUPPORT = np.zeros(components[0].shape[0], dtype = np.double)
 
         double n = <double>(phases.shape[0] - 1)
         double SCALE = exposure_time / n
@@ -493,6 +494,8 @@ def eval_marginal_likelihood(double exposure_time,
         for j in range(a.n):
             STAR[i,j] = a.SCALE * (a.star[j] + B)
 
+        MCL_BACKGROUND_GIVEN_SUPPORT[i] = B * exposure_time
+
     for p in range(num_components):
         gsl_interp_accel_free(acc[p])
         gsl_interp_free(interp[p])
@@ -504,4 +507,5 @@ def eval_marginal_likelihood(double exposure_time,
 
     return (LOGLIKE,
             np.asarray(STAR, dtype=np.double, order='C'),
-            np.asarray(MCL_BACKGROUND, dtype=np.double, order='C'))
+            np.asarray(MCL_BACKGROUND, dtype=np.double, order='C'),
+            np.asarray(MCL_BACKGROUND_GIVEN_SUPPORT, dtype=np.double, order='C'))
