@@ -45,19 +45,23 @@ spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=freq))
 
 #exit()
 
-#bounds = dict(super_colatitude = (None, None),
-#              super_radius = (None, None),
-#              phase_shift = (0.0, 0.1),
-#              super_temperature = (None, None))
+ceding = False
 
-bounds = dict(super_colatitude=(None,None),
+bounds = dict(super_colatitude = (None, None),
               super_radius = (None, None),
-              phase_shift = (0.0, 1.0),
-              super_temperature = (None, None),
-              cede_colatitude = (None, None),
-              cede_radius = (None, None),
-              cede_azimuth = (None, None),
-              cede_temperature = (None, None))
+              phase_shift = (0.0, 0.1),
+              super_temperature = (None, None))
+
+if ceding:
+
+	bounds = dict(super_colatitude=(None,None),
+		      super_radius = (None, None),
+		      phase_shift = (0.0, 1.0),
+		      super_temperature = (None, None),
+		      cede_colatitude = (None, None),
+		      cede_radius = (None, None),
+		      cede_azimuth = (None, None),
+		      cede_temperature = (None, None))
 
 # a simple circular, simply-connected spot
 primary = xpsi.HotRegion(bounds=bounds,
@@ -65,7 +69,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                             symmetry=True, 
                             #symmetry=False, 
                             omit=False,
-                            cede=True, #False,
+                            cede=ceding, 
                             concentric=False,
                             sqrt_num_cells=32,
                             min_sqrt_num_cells=10,
@@ -107,7 +111,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
                               values={'super_temperature': derive()}, # create a callable value
                               symmetry=True,
                               omit=False,
-                              cede=True, #False,
+                              cede=ceding, 
                               concentric=False,
                               sqrt_num_cells=32,
                               min_sqrt_num_cells=10,
@@ -129,7 +133,7 @@ print(hot.objects[1]) # 's'
 h = hot.objects[0]
 print(h.names)
 print(h.prefix)
-print(h.get_param('phase_shift'))
+
 hot['p__super_temperature'] = 6.0 # equivalent to ``primary['super_temperature'] = 6.0``
 print(secondary['super_temperature'])
 
@@ -199,9 +203,29 @@ p = [1.4,
      0.025,
      math.pi - 1.0,
      0.2]
+if ceding:
+	p = [1.4, #mass
+	     12.0, #radius
+	     0.2, #distance
+	     math.cos(1.25), #cos_inclination
+	     0.0, #p__phase_shift
+	     1.0, #p__super_colatitude
+	     0.075, #p__super_radius
+	     6.2, #p__super_temperature
+	     0.1, #p__cede_colatitude
+	     0.1, #p__cede_radius
+	     0.0, #p__cede_azimuth
+	     6.2, #p__cede_temperature
+	     0.025, #s__phase_shift
+	     math.pi - 1.0, #s__super_colatitude
+	     0.2, #s__super_radius
+	     math.pi-1.0, #s__cede_colatitude ..
+	     0.3, #s__cede_radius
+	     0.0, #s__cede_azimuth
+	     6.2] #s__cede_temperature
+
 star(p)
 
-exit()
 
 #mass: Gravitational mass [solar masses].
 #radius: Coordinate equatorial radius [km].
@@ -219,14 +243,14 @@ exit()
 #Another way to set param values:
 
 #compactness = 0
-star['mass'] = 1.4 #0.112*20.0 #1.4
+star['mass'] = 1.4 #2.7088795 #1.4 #0.112*20.0 #1.4
 star['radius'] = 12.0 #20.0 #12.0
 star['distance'] = 0.2
 incl_deg = 40.0 #90.0 #40.0
 star['cos_inclination'] = math.cos(math.pi*incl_deg/180.0)#math.cos(2.0)
 theta_deg = 60.0
 star['p__super_colatitude'] = math.pi*theta_deg/180.0 #0.0 #2.0
-rho_deg = 10.0 #0.001 #10.0
+rho_deg = 10.0 #10.0 #0.001 #10.0
 star['p__super_radius'] = math.pi*rho_deg/180.0
 #print("rho[deg]=",math.pi*rho_deg/180.0)
 tplanck = 1.0219978 #1.0 #in keV #1 keV -> log10(T[K]) = 7.06 (out of bounds originally)
@@ -237,16 +261,18 @@ star['p__super_temperature'] = np.log10(tplanck*11604525.0061657)
 #star['s__super_colatitude'] = 2.142
 #star['s__super_radius'] = 0.2
 
-star['p__cede_colatitude'] = math.pi*theta_deg/180.0 
-star['p__cede_azimuth'] = 0.0 #0.0
-star['p__cede_radius'] = math.pi*rho_deg/180.0+0.02
-star['p__cede_temperature'] = np.log10(tplanck*11604525.0061657)
-star['s__super_radius'] = math.pi*rho_deg/180.0
-star['s__super_colatitude'] = math.pi-math.pi*theta_deg/180.0
-star['s__cede_colatitude'] = math.pi-math.pi*theta_deg/180.0 
-star['s__cede_azimuth'] = 0.1 #math.pi/2.0
-star['s__cede_radius'] = math.pi*rho_deg/180.0+0.02
-star['s__cede_temperature'] = np.log10(tplanck*11604525.0061657)
+
+if ceding:
+	star['p__cede_colatitude'] = math.pi*theta_deg/180.0 
+	star['p__cede_azimuth'] = 0.0 #0.0
+	star['p__cede_radius'] = math.pi*rho_deg/180.0+0.02
+	star['p__cede_temperature'] = np.log10(tplanck*11604525.0061657)
+	star['s__super_radius'] = math.pi*rho_deg/180.0
+	star['s__super_colatitude'] = math.pi-math.pi*theta_deg/180.0
+	star['s__cede_colatitude'] = math.pi-math.pi*theta_deg/180.0 
+	star['s__cede_azimuth'] = 0.1 #math.pi/2.0
+	star['s__cede_radius'] = math.pi*rho_deg/180.0+0.02
+	star['s__cede_temperature'] = np.log10(tplanck*11604525.0061657)
 
 
 print("Parameters of the star:")
@@ -320,9 +346,9 @@ def save_pulse(PulsName): #To be continued ...
     #print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal_stokes[0][0][:,0])) #np.shape
     #print("F(T) = ", photosphere.signal_stokes[0][1][0,:], len(photosphere.signal_stokes[0][0][0,:]))
     #print("F(E) = ",photosphere.signal_stokes[0][2][:,0], len(photosphere.signal_stokes[0][0][:,0])) #np.shape
-    print("F(T) = ", photosphere.signal_stokes[1][0][0,:], len(photosphere.signal_stokes[0][0][0,:]))
+    #print("F(T) = ", photosphere.signal_stokes[1][0][0,:], len(photosphere.signal_stokes[0][0][0,:]))
     #print("F(E) = ",photosphere.signal_stokes[0][5][:,0], len(photosphere.signal_stokes[0][0][:,0])) #np.shape
-    print("F(T) = ", photosphere.signal_stokes[1][3][0,:], len(photosphere.signal_stokes[0][0][0,:]))
+    #print("F(T) = ", photosphere.signal_stokes[1][3][0,:], len(photosphere.signal_stokes[0][0][0,:]))
 
     #print(photosphere.signal)
 
@@ -374,10 +400,15 @@ star.update() #Calculating the space-time integrals etc.
 
 import time
 
+primary.image_order_limit = 1
+
+
 start = time.time()
 photosphere.integrate(energies, threads=1, stokes=True) # the number of OpenMP threads to use
 end = time.time()
 print("Time spent in integration:",end - start)
+
+#exit()
 
 #print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
 
@@ -388,9 +419,10 @@ print("Time spent in integration:",end - start)
 
 #plot_pulse()
 #save_pulse("pulses/pulse_f800r20")
-save_pulse("pulses/pulseX")
+#save_pulse("pulses/pulse_io2")
+#save_pulse("pulses/pulse7i_rho10f600m27_Tc_io1")
 #save_pulse("pulses/pulse7i_rho10f600_Tc_IQUi2")
-
+save_pulse("pulses/pulse_lisa0")
 
 
 

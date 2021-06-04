@@ -417,7 +417,7 @@ likelihood.clear_cache()
 t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
-likelihood.check(None, [-26713.6136777], 1.0e-6, stokes=True,
+likelihood.check(None, [-26713.6136777], 1.0e-6, #stokes=True,
                  physical_points=[p])
 print('time = %.3f s' % (time.time() - t))
 
@@ -426,7 +426,7 @@ print("likelihood.params=",likelihood.params)
 
 #TypeError: __call__() got an unexpected keyword argument 'stokes' !!!
 
-exit()
+#exit()
 
 # > xpsi.set_phase_interpolant('Akima')
 # Checking likelihood and prior evaluation before commencing sampling...
@@ -486,7 +486,7 @@ def plot_pulse():
 
 
 likelihood(p, reinitialise=False)
-_ = plot_pulse()
+#_ = plot_pulse()
 
 #The rest of the modelling examples and emcmc are still only in the notebook version.
 #Let's still test multinest here:

@@ -12,7 +12,7 @@ from scipy.interpolate import interp1d
 from scipy.special import kn
 from matplotlib.pyplot import *
 from bisect import bisect
-import find_best_phshift
+#import find_best_phshift
 
 def shift_phase(phi,shift):
 	return (phi + shift) % 1 
@@ -98,7 +98,8 @@ for ish in range(1,2):#len(shapes)):
 		PulsName='res/B/lbb_rhoinf_chi-1'
 	if(ish == 1):
 	        #PulsName='../../../polcslab/CompSlab/pOS_pulses/lbb_rho10_sp1_f600_obl_burst2_dt'
-		pversion = '7i_rho10f600_Tc_IQUi2' #'7j'
+		#pversion = '7i_rho10f600_Tc_IQUi2' #'7j'
+		pversion = '_lisa0'		
 	        PulsName='pulses/pulse'+pversion
 	if(ish == 2):
 		PulsName='res/B/lbb_rho10_sp1_f600_sph'#_accspot'
@@ -261,9 +262,9 @@ for ish in range(1,2):#len(shapes)):
 	if(ish == 2): 
 		phshift2 = 0.0
 		phase_new = shift_phase(np.array(phase),phshift)
-		#find best-phasehift:#not working now
-		phshift2, gf2 = find_best_phshift.find_best_phshift(np.array(phase),PA,phase_acm0,PA_acm0)
-		phshift2 = phshift2 -1.0
+		##find best-phasehift:#not working now
+		#phshift2, gf2 = find_best_phshift.find_best_phshift(np.array(phase),PA,phase_acm0,PA_acm0)
+		#phshift2 = phshift2 -1.0
 		print(phshift2)
 		#phshift2 = -0.2517#0.0#0.001#0.008#0.2421#0.2517#0.2535#0.069#0.0#-0.195#-0.18#-0.172#0.0
 		phase_new = shift_phase(np.array(phase),phshift2)
