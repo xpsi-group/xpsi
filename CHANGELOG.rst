@@ -17,6 +17,9 @@ Summary
 Fixed
 ^^^^^
 
+* A bug in :meth:`~.Likelihood.Likelihood.check` that prevented checking
+  the likelihood function for more than one point.
+
 Added
 ^^^^^
 
@@ -31,6 +34,48 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+
+[v0.7.6] - 2021-05-16
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* NB: This patch is unfortunately not backwards compatible. This patch has been
+  pushed nevertheless to comply with a NICER collaboration publication which
+  uses X-PSI v0.7 with some features from a development version. The analysis is
+  open-source, so the development features used have been pushed in this patch.
+  The next minor release will officially include these tested features together
+  with documentation.
+
+* New skymap plotting functionality and an MPI-capable importance sampling
+  method that can handle likelihood function and prior PDF changes. New
+  documentation and examples will be made available in the future.
+
+Changed
+^^^^^^^
+
+* The extension module for default background marginalisation returns a tuple
+  with an extra element. This is probably backwards incompatible with custom
+  subclasses of the :class:`~.Signal` class.
+
+Added
+^^^^^
+
+* Skymap plotting functionality. Examples will be added to the documentation
+  in a future patch. The most useful feature is plotting a skymap time-series
+  so that the image of the model surface hot regions rotates across and down
+  a static figure. This is useful for papers to summarise an animated figure.
+  This feature is functional but still being tested and developed.
+
+* An MPI-capable importance sampling method that can handle likelihood function
+  and prior PDF changes. This is useful to save computation time. This feature
+  is being tested and developed.
+
+Attribution
+^^^^^^^^^^^
+
+* With thanks to Serena Vinciguerra (S.V.) for testing importance sampling.
 
 
 [v0.7.5] - 2021-02-10

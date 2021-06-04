@@ -631,6 +631,7 @@ class Photosphere(ParameterSubspace):
               threads = 1,
               cache_intensities = False,
               cache_energy_indices = None,
+              cache_phase_indices = None,
               single_precision_intensities = True,
               plot_sky_maps = False,
               sky_map_kwargs = None,
@@ -747,6 +748,20 @@ class Photosphere(ParameterSubspace):
             safety. To override, use the secret :obj:`_OVERRIDE_MEM_LIM`
             keyword argument to supply a positive limit in GB.
 
+        :param ndarray[m] cache_phase_indices:
+            A one-dimensional :class:`numpy.ndarray` of ``dtype=numpy.int32``,
+            specifying the phase-array indices to cache intensities at. This
+            is useful to save memory when you want to plot specific intensity
+            skymaps but also compute the specific flux at many more phases. If
+            ``None``, intensities will be cached at all phases subject to
+            memory constraints. Note that the order of the list matters for
+            plotting order, so the indices should generally increase, as should
+            the phases themselves. If plotting the pulse-profile and spectrum,
+            then this is a case where many more phases are useful for the
+            resolving specific flux pulse-profile than are needed to plot
+            specific intensity skymaps and specific flux spectra at three
+            representative phases.
+
         :param ndarray[m] cache_energy_indices:
             A one-dimensional :class:`numpy.ndarray` of ``dtype=numpy.int32``,
             specifying the energy-array indices to cache intensities at. This
@@ -850,6 +865,8 @@ class Photosphere(ParameterSubspace):
         if not isinstance(energies, _np.ndarray):
             raise TypeError('Imaging energies must be in a 1D ndarray.')
 
+        time_is_space = sky_map_kwargs.get('time_is_space', False)
+
         if reimage:
             if plot_sky_maps and not cache_intensities:
                 raise _exc
@@ -879,9 +896,23 @@ class Photosphere(ParameterSubspace):
                 elif cache_energy_indices.dtype != _np.int32:
                     raise TypeError('Energy indices for intensity caching '
                                     'must be integers.')
+                elif time_is_space and len(cache_energy_indices) != len(energies):
+                    raise TypeError('Sky maps must be cached at all energies.')
+
+                if cache_phase_indices is None:
+                    cache_phase_indices = _np.arange(len(phases),
+                                                      dtype=_np.int32)
+                elif not isinstance(cache_phases_indices, _np.ndarray):
+                    raise TypeError('Phase indices for intensity caching '
+                                    'must be supplied in a 1D numpy.ndarray.')
+                elif cache_phase_indices.dtype != _np.int32:
+                    raise TypeError('Phase indices for intensity caching '
+                                    'must be integers.')
+                elif not time_is_space and len(cache_phases_indices) != len(phases):
+                    raise TypeError('Sky maps must be cached at all phases.')
 
                 _req_size = 4.0 if single_precision_intensities else 8.0
-                _req_size *= len(phases) * len(cache_energy_indices) # bytes
+                _req_size *= len(cache_phase_indices) * len(cache_energy_indices) # bytes
                 _req_size *= sqrt_num_rays**2.0 # + 1.0 # origin ray negligible
 
                 if _req_size/1.0e9 >= cache_intensities:
@@ -940,6 +971,7 @@ class Photosphere(ParameterSubspace):
                                 phases,
                                 cache_intensities,
                                 cache_energy_indices,
+                                cache_phase_indices,
                                 single_precision_intensities,
                                 _ray_map,
                                 self.global_to_local_file,
@@ -997,8 +1029,18 @@ class Photosphere(ParameterSubspace):
             file_root = _os.path.join(root_dir, file_root)
 
             phase_average = sky_map_kwargs.get('phase_average', False)
+            if phase_average and time_is_space:
+                raise ValueError('Cannot phase average sky maps when spatial '
+                                 'dimensions are used to render time.')
             if phase_average and animate_sky_maps:
                 raise ValueError('Phase averaged sky maps cannot be animated.')
+
+            bolometric = sky_map_kwargs.get('bolometric', False)
+            if bolometric and not time_is_space:
+                raise ValueError('Cannot energy-integrate sky maps when spatial '
+                                 'dimensions are used to render energy.')
+            if bolometric and animate_sky_maps:
+                raise ValueError('Bolometric sky maps cannot be animated.')
 
         if plot_sky_maps:
             if not _os.path.isdir(root_dir):
@@ -1036,6 +1078,7 @@ class Photosphere(ParameterSubspace):
                                                _phases = phases,
                                                _energies = energies,
                                                _c_idxs = cache_energy_indices,
+                                               _c_pidxs = cache_phase_indices,
                                                _redraw = True,
                                                deactivate_verbosity = _DV,
                                                **sky_map_kwargs)
@@ -1047,6 +1090,8 @@ class Photosphere(ParameterSubspace):
             figsize, dpi, num_frames = self._plot_sky_maps(file_root,
                                                _phases = phases,
                                                _energies = energies,
+                                               _c_idxs = cache_energy_indices,
+                                               _c_pidxs = cache_phase_indices,
                                                _redraw = False,
                                                deactivate_verbosity = _DV,
                                                **sky_map_kwargs)
@@ -1056,14 +1101,23 @@ class Photosphere(ParameterSubspace):
                 raise IOError('No images located for animation.')
 
             if num_frames is None and reimage:
-                num_frames = self.images[-1].shape[0]
+                if not time_is_space:
+                    num_frames = self.images[-1].shape[0]
+                else:
+                    num_frames = self.images[-1].shape[1]
             elif num_frames is None:
-                try:
-                    num_frames = len(phases)
-                except TypeError:
-                    raise TypeError('You need to declare the image phases '
-                                    'in order to include all images from disk.')
-
+                if not time_is_space:
+                    try:
+                        num_frames = len(phases)
+                    except TypeError:
+                        raise TypeError('You need to declare the image phases '
+                                        'in order to include all images from disk.')
+                else:
+                    try:
+                        num_frames = len(energies)
+                    except TypeError:
+                        raise TypeError('You need to declare the image energies '
+                                        'in order to include all images from disk.')
             if free_memory:
                 try:
                     del self.images # try to free up memory
@@ -1083,20 +1137,26 @@ class Photosphere(ParameterSubspace):
                        _phases,
                        _energies,
                        _c_idxs,
+                       _c_pidxs,
                        _redraw,
                        threads = 1,
                        with_pulse_profile_and_spectrum = False,
+                       time_is_space = False,
                        panel_layout = None,
                        panel_indices = None,
                        cycles = 1,
                        phase_average = False,
+                       bolometric = False,
                        energy_bounds = None,
+                       phase_bounds = None,
                        num_levels = 100,
                        add_zero_intensity_level = True,
                        normalise_each_panel = True,
                        invert = False,
                        annotate_energies=False,
+                       annotate_phases=False,
                        energy_annotation_format='[%.1f keV]',
+                       phase_annotation_format='[%.1f cycles]',
                        annotate_location=(0.05,0.05),
                        colormap = None,
                        figsize = (10,10),
@@ -1153,6 +1213,11 @@ class Photosphere(ParameterSubspace):
             memory-efficieny plotting. This is handled internally, so do *not*
             pass a keyword argument.
 
+        :param ndarray[n] _c_pidxs:
+            The energy indices for which the intensity maps were cached for
+            memory-efficieny plotting. This is handled internally, so do *not*
+            pass a keyword argument.
+
         :param bool _redraw:
             Redraw the sky maps? This is handled internally, so do *not* pass
             a keyword argument.
@@ -1188,6 +1253,11 @@ class Photosphere(ParameterSubspace):
             information density in the plot-space might become too high without
             adding much more new information.
 
+        :param bool time_is_space:
+            Each image is at constant energy (or is a spectral trace up to
+            that energy) instead of being at constant phase (or a pulse-profile
+            trace up to that phase).
+
         :param tuple[int,int] panel_layout:
             Two elements: the number of rows and columns of panels. If ``None``,
             a layout is automatically determined based on the number of
@@ -1219,13 +1289,29 @@ class Photosphere(ParameterSubspace):
 
         .. image:: _static/_skymap_phaseaveraged.png
 
+        :param bool bolometric:
+            Integrate each sky map over energy? Note that the resulting image
+            is incompatible with the currently supported animation mode.
+
         :param iterable energy_bounds:
             A set of two-element containers. Each container has an ordered pair
             of energies which delimit an integration domain. Specific intensity
             is integrated along each sky direction, at each phase, between
             these energy bounds. The bounds must be between the minimum and
             maximum energies at which the star was imaged. If ``None``,
-            specific intensity sky maps will be plotted (the default).
+            specific intensity sky maps will be plotted (the default). This
+            option is ignored if energy is defined as the time dimension,
+            meaning the sky maps are animated with respect to energy.
+
+        :param iterable phase_bounds:
+            A set of two-element containers. Each container has an ordered pair
+            of energies which delimit an integration domain. Specific intensity
+            is integrated along each sky direction, at each phase, between
+            these energy bounds. The bounds must be between the minimum and
+            maximum energies at which the star was imaged. If ``None``,
+            specific intensity sky maps will be plotted (the default). This
+            option is ignored if phase is defined as the time dimension,
+            meaning the sky maps are animated with respect to phase.
 
         .. note::
 
@@ -1335,25 +1421,34 @@ class Photosphere(ParameterSubspace):
                 raise ValueError('Selected plot type designed for showcasing '
                                  'the specific photon intensity skymaps and '
                                  'their associated specific photon flux '
-                                 'pulse-profiles specifically at three '
-                                 'energies to avoid excessive information '
-                                 'density.')
+                                 'pulse-profiles or spectra specifically at '
+                                 'at three energies or phases to avoid '
+                                 'excessive information density.')
             panel_layout = (2,3)
 
             if not isinstance(cycles, int):
                 raise TypeError('Declare the number of cycles with an integer.')
             elif cycles < 1:
                 cycles = 1 # quietly ignore input
-                num_frames = None
+                if not time_is_space:
+                    num_frames = len(phases)
+                else:
+                    num_frames = len(energies)
             elif cycles > 1:
-                num_frames = len(phases) + (cycles - 1) * (len(phases) - 1)
+                if not time_is_space:
+                    num_frames = len(phases) + (cycles - 1) * (len(phases) - 1)
+                else:
+                    num_frames = len(energies)
         elif panel_layout is None:
             x = int(_m.ceil(_m.sqrt(len(panel_indices))))
             if x * (x - 1) >= len(panel_indices):
                 panel_layout = (x, x - 1)
             else:
                 panel_layout = (x, x)
-            num_frames = len(phases)
+            if not time_is_space:
+                num_frames = len(phases)
+            else:
+                num_frames = len(energies)
 
         # try to improve the aspect ratio so that each panel is
         # approximately square
@@ -1392,15 +1487,28 @@ class Photosphere(ParameterSubspace):
             X = self.images[1]
             Y = self.images[2]
 
-            if not isinstance(energies, _np.ndarray):
-                raise TypeError('Imaging energies must be form an ndarray.')
+            #if not isinstance(energies, _np.ndarray):
+            #    raise TypeError('Imaging energies must be in an ndarray.')
+            #if not isinstance(phases, _np.ndarray):
+            #    raise TypeError('Imaging phases must be in an ndarray.')
 
             images = self.images[-1]
+            if time_is_space: # transpose dimensions
+                _images_ = _np.zeros((images.shape[1],
+                                     images.shape[0],
+                                     images.shape[-1]), dtype=_np.double)
+                for i in range(images.shape[-1]):
+                    _images_[:,:,i] = images[:,:,i].T
+
+                images = _images_
 
             if with_pulse_profile_and_spectrum:
-                flux = self.images[0]
+                if not time_is_space:
+                    flux = self.images[0]
+                else:
+                    flux = self.images[0].T
 
-            if not with_pulse_profile_and_spectrum and energy_bounds:
+            if not with_pulse_profile_and_spectrum and not time_is_space and energy_bounds:
                 with verbose(True,
                          'Integrating specific intensity over energy intervals',
                          'Integrated specific intensity over energy intervals'):
@@ -1435,11 +1543,16 @@ class Photosphere(ParameterSubspace):
                             integrated[i,k,:] = _integrated[0,:]
 
                     images = integrated
-            elif not with_pulse_profile_and_spectrum:
-                if len(panel_indices) != len(energies):
-                    yield 'Warning: fewer panels than energies.'
+            elif not with_pulse_profile_and_spectrum and not time_is_space:
+                if len(panel_indices) != len(_c_idxs):
+                    yield ('Warning: number of panels not equal to number of '
+                            'phases.')
+            elif not with_pulse_profile_and_spectrum and time_is_space:
+                if len(panel_indices) != len(_c_pidxs):
+                    yield ('Warning: number of panels not equal to number of '
+                           'phases.')
 
-            if not with_pulse_profile_and_spectrum and phase_average:
+            if not with_pulse_profile_and_spectrum and not time_is_space and phase_average:
                 with verbose(True,
                          'Averaging (specific) intensity over rotational phase',
                          'Averaged (specific) intensity over rotational phase'):
@@ -1470,6 +1583,74 @@ class Photosphere(ParameterSubspace):
 
                     images = averaged
 
+            if not with_pulse_profile_and_spectrum and time_is_space and phase_bounds:
+                with verbose(True,
+                         'Integrating specific intensity over phase intervals',
+                         'Integrated specific intensity over phase intervals'):
+                    for bounds in phase_bounds:
+                        if bounds[0] > bounds[1]:
+                            raise ValueError('Phase bounds in a tuple must be '
+                                             'ordered.')
+                        for bound in bounds:
+                            if not phases[0] <= bound <= phases[-1]:
+                                raise ValueError('Extrapolation would be required.')
+
+                    if len(panel_indices) < len(phase_bounds):
+                        yield 'Warning: fewer panels than phase intervals.'
+
+                    integrated = _np.zeros((images.shape[0],
+                                            len(phase_bounds),
+                                            images.shape[2]), dtype=_np.double)
+
+                    intensities = _np.zeros((images.shape[2],
+                                             images.shape[1]), dtype=_np.double)
+
+                    for i in range(images.shape[0]): # energies
+                        intensities[...] = images[i,...].T # sky directions
+
+                        for k in range(len(phase_bounds)):
+                            bounds = _np.array(phase_bounds[k])
+                            _integrated = phase_integrator(1.0,
+                                                           bounds,
+                                                           intensities,
+                                                           phases / _2pi,
+                                                           0.0)
+
+                            integrated[i,k,:] = _integrated[:,0]
+
+                    images = integrated
+
+            if not with_pulse_profile_and_spectrum and time_is_space and bolometric:
+                with verbose(True,
+                         'Integrating bolometric intensity',
+                         'Averaged bolometric intensity'):
+                    if phases[0] != 0.0 or phases[-1] != _2pi:
+                        raise ValueError('Minimum and maximum phases at which '
+                                         'star is imaged must be zero and unity '
+                                         'if you are phase averaging.')
+
+                    integrated = _np.zeros((images.shape[0],
+                                            1,
+                                            images.shape[2]), dtype = _np.double)
+
+                    intensities = _np.zeros((images.shape[1],
+                                             images.shape[2]), dtype = _np.double)
+
+                    for i in range(images.shape[0]): # phases
+                        for j in range(images.shape[2]): # sky directions
+                            intensities[:,j] = images[i,:,j]
+
+                        bounds = _np.log10( _np.array([energies[0], energies[-1]]) )
+                        _integrated = energy_integrator(threads,
+                                                        intensities,
+                                                        _np.log10(energies),
+                                                        bounds)
+
+                        for j in range(images.shape[2]):
+                            integrated[i,:,j] = _integrated[:,j]
+
+                    images = integrated
+
             if normalise_each_panel:
                 with verbose(True,
                              'Normalising each sky map panel separately',
@@ -1477,15 +1658,26 @@ class Photosphere(ParameterSubspace):
                     # normalise intensity for each individual panel
                     levels = []
 
-                    for j in range(images.shape[1]): # at each energy
-                        # find extreme intensities over discrete set of image
-                        # phases and sky directions
-                        MIN = _np.min(images[:,j,:][images[:,j,:] > 0.0])
-                        MAX = _np.max(images[:,j,:])
-                        levels.append(_np.linspace(MIN, MAX, num_levels))
+                    if not time_is_space:
+                        for j in range(images.shape[1]): # at each energy
+                            # find extreme intensities over discrete set of image
+                            # phases and sky directions
+                            MIN = _np.min(images[:,j,:][images[:,j,:] > 0.0])
+                            MAX = _np.max(images[:,j,:])
+                            levels.append(_np.linspace(MIN, MAX, num_levels))
 
-                        if add_zero_intensity_level:
-                            levels[-1] = _np.array([0.0, 0.001*MIN] + list(levels[-1]))
+                            if add_zero_intensity_level:
+                                levels[-1] = _np.array([0.0, 0.001*MIN] + list(levels[-1]))
+                    else:
+                        for j in range(images.shape[0]): # at each energy
+                            # find extreme intensities over discrete set of image
+                            # phases and sky directions
+                            MIN = _np.min(images[j,:,:][images[j,:,:] > 0.0])
+                            MAX = _np.max(images[j,:,:])
+                            levels.append(_np.linspace(MIN, MAX, num_levels))
+
+                            if add_zero_intensity_level:
+                                levels[-1] = _np.array([0.0, 0.001*MIN] + list(levels[-1]))
             else:
                 with verbose(True,
                              'Normalising sky map panels globally'
@@ -1510,7 +1702,7 @@ class Photosphere(ParameterSubspace):
             canvas = FigureCanvas(fig)
 
             if with_pulse_profile_and_spectrum:
-                if colormap == 'RedGreyBlue':
+                if not time_is_space and colormap == 'RedGreyBlue':
                     cmap = [cm.Reds_r, cm.Greys_r, cm.Blues_r]
                     _line_colors = [cm.Reds_r(0.25),
                                     cm.Greys_r(0.0),
@@ -1543,16 +1735,22 @@ class Photosphere(ParameterSubspace):
 
                 axes = [fig.add_subplot(gs[j]) for j in range(len(panel_indices))]
 
+            if with_pulse_profile_and_spectrum:
+                if not time_is_space: annotate_energies = True
+                else: annotate_phases = True
+
             _I = 10
             for i in range(images.shape[0]):
                 if phase_average:
                     yield 'Rendering phase-averaged images'
+                elif bolometric:
+                    yield 'Rendering bolometric images'
                 elif i == 0 and images.shape[0] < 10:
                     yield 'Rendering images'
                 elif i == 0 and images.shape[0] >= 10:
-                    yield 'Rendering images for phase numbers [%i, %i]'%(i+1, i+_I)
+                    yield 'Rendering image numbers [%i, %i]'%(i+1, i+_I)
                 elif i%_I == 0:
-                    yield 'Rendering images for phase numbers (%i, %i]'%(i, i+_I)
+                    yield 'Rendering image numbers (%i, %i]'%(i, i+_I)
 
                 for j, idx in enumerate(panel_indices):
                     ax = axes[j]
@@ -1580,7 +1778,10 @@ class Photosphere(ParameterSubspace):
                     else:
                         ax.set_facecolor('white' if invert else 'black')
 
-                    lvls = levels if isinstance(levels, _np.ndarray) else levels[idx]
+                    if not time_is_space:
+                        lvls = levels if isinstance(levels, _np.ndarray) else levels[idx]
+                    else:
+                        lvls = levels if isinstance(levels, _np.ndarray) else levels[i]
 
                     ax.tricontourf(X,
                                    Y,
@@ -1597,14 +1798,19 @@ class Photosphere(ParameterSubspace):
                     ax.yaxis.set_view_interval(y_view[1] - diff * 1.025,
                                                y_view[1] + diff * 0.025)
 
-                    # add energy
-                    if with_pulse_profile_and_spectrum or annotate_energies:
+                    if not time_is_space and annotate_energies:
                         ax.text(annotate_location[0], annotate_location[1],
                            s=energy_annotation_format % energies[_c_idxs[idx]],
                            fontdict={'color': 'black' if invert else 'white'},
                            transform=ax.transAxes)
 
-                if with_pulse_profile_and_spectrum: # plot spectrum
+                    if time_is_space and annotate_phases:
+                        ax.text(annotate_location[0], annotate_location[1],
+                           s=phase_annotation_format % (phases[_c_pidxs[idx]]/_2pi),
+                           fontdict={'color': 'black' if invert else 'white'},
+                           transform=ax.transAxes)
+
+                if with_pulse_profile_and_spectrum: # plot summaries
                     _upper_view_lim = _np.max(flux) * 100.0
                     _lower_view_lim = _np.min(flux)
                     _view_lim_diff = _np.log10(_upper_view_lim)
@@ -1619,7 +1825,6 @@ class Photosphere(ParameterSubspace):
                                  color=_line_colors[j],
                                  ls=line_styles[j], lw=1.0)
 
-                    spec_ax.plot(energies, flux[:,i], 'k-', lw=1.0)
                     spec_ax.set_xscale('log')
                     spec_ax.set_yscale('log')
                     spec_ax.set_xlim(energies[0], energies[-1])
@@ -1628,27 +1833,55 @@ class Photosphere(ParameterSubspace):
                             log=(True, True))
                     spec_ax.set_xlabel('Photon energy [keV]')
 
-                    for _cycle in range(cycles):
-                        _ext_phases = []
-                        for _i in range(_cycle):
-                            _ext_phases += list(phases[1 if _i > 0  else 0:] + _i * _2pi)
-                        _ext_phases += list(phases[1 if _cycle > 0 else 0:i+1] + _cycle * _2pi)
-                        _ext_phases = _np.array(_ext_phases)
+                    if not time_is_space:
+                        spec_ax.plot(energies, flux[:,i], 'k-', lw=1.0)
+                    else:
                         for j, idx in enumerate(panel_indices):
-                            _idx = _c_idxs[idx]
-                            _max = _np.max(flux[_idx,:])
-                            _ext_flux = []
-                            for _i in range(_cycle):
-                                _ext_flux += list(flux[_idx, 1 if _i > 0 else 0:])
-                            _ext_flux += list(flux[_idx, 1 if _cycle > 0 else 0:i+1])
-                            _ext_flux = _np.array(_ext_flux)
-                            pp_ax.plot(_ext_phases/_2pi,
-                                   _ext_flux/_max,
-                                   color=_line_colors[j],
-                                   ls=line_styles[j], lw=1.0,
-                                   label=energy_annotation_format % energies[_idx])
+                            _idx = _c_pidxs[idx]
+                            spec_ax.plot(energies, flux[_idx,:i],
+                                         color=_line_colors[j],
+                                         ls=line_styles[j], lw=1.0,
+                                         label=phase_annotation_format % phases[_idx])
 
-                        pp_ax.set_xlim(0.0, float(cycles))
+                    if not time_is_space:
+                        for _cycle in range(cycles): # plot pulse-profiles
+                            _ext_phases = []
+                            for _i in range(_cycle):
+                                _ext_phases += list(phases[1 if _i > 0  else 0:] + _i * _2pi)
+                            _ext_phases += list(phases[1 if _cycle > 0 else 0:i+1] + _cycle * _2pi)
+                            _ext_phases = _np.array(_ext_phases)
+                            for j, idx in enumerate(panel_indices):
+                                _idx = _c_idxs[idx]
+                                _max = _np.max(flux[_idx,:])
+                                _ext_flux = []
+                                for _i in range(_cycle):
+                                    _ext_flux += list(flux[_idx, 1 if _i > 0 else 0:])
+                                _ext_flux += list(flux[_idx, 1 if _cycle > 0 else 0:i+1])
+                                _ext_flux = _np.array(_ext_flux)
+                                pp_ax.plot(_ext_phases/_2pi,
+                                       _ext_flux/_max,
+                                       color=_line_colors[j],
+                                       ls=line_styles[j], lw=1.0,
+                                       label=energy_annotation_format % energies[_idx])
+
+                            pp_ax.set_xlim(0.0, float(cycles))
+                            pp_ax.set_ylim(0.0,1.2)
+                            _veneer((0.1,0.5), (0.05,0.2), pp_ax, length = tick_length)
+                            pp_ax.legend(loc='upper center', ncol=3, mode='expand',
+                                         handlelength=4.0,
+                                         frameon=False, fancybox=False)
+                            pp_ax.set_xlabel('Phase [$2\pi$ radians]')
+                            pp_ax.set_ylabel('photons/cm$^2$/s/keV')
+
+                            fig.savefig(file_root + '_%i.png' % (len(_ext_phases) - 1),
+                                        dpi=dpi)
+                            pp_ax.clear()
+                        spec_ax.clear()
+                    else:
+                        pp_ax.plot(phases/_2pi,
+                                 flux[i,:]/_np.max(flux[i,:]), 'k-', lw=1.0)
+
+                        pp_ax.set_xlim(0.0, 1.0)
                         pp_ax.set_ylim(0.0,1.2)
                         _veneer((0.1,0.5), (0.05,0.2), pp_ax, length = tick_length)
                         pp_ax.legend(loc='upper center', ncol=3, mode='expand',
@@ -1657,10 +1890,7 @@ class Photosphere(ParameterSubspace):
                         pp_ax.set_xlabel('Phase [$2\pi$ radians]')
                         pp_ax.set_ylabel('photons/cm$^2$/s/keV')
 
-                        fig.savefig(file_root + '_%i.png' % (len(_ext_phases) - 1),
-                                    dpi=dpi)
-                        pp_ax.clear()
-                    spec_ax.clear()
+                        fig.savefig(file_root + '_%i.png' % i, dpi=dpi)
                 else:
                     fig.savefig(file_root + '_%i.png' % i, dpi=dpi)
 
