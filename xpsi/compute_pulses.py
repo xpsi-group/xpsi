@@ -312,7 +312,7 @@ def veneer(x, y, axes, lw=1.0, length=8):
     axes.tick_params(which='minor', colors='black', length=int(length/2), width=lw)
     plt.setp(axes.spines.values(), linewidth=lw, color='black')
 
-def plot_pulse():
+def plot_pulse(stokes=False):
     """ Plot hot region signals before telescope operation. """
     fig = plt.figure(figsize=(7,7))
     ax = fig.add_subplot(111)
@@ -320,11 +320,19 @@ def plot_pulse():
     ax.set_ylabel('Signal [arbitrary normalisation]')
     ax.set_xlabel('Phase [cycles]')
 
-    temp = np.sum(photosphere.signal[0][0], axis=0)
-    #temp = photosphere.signal[0][0][nene-1,:] 
-    ax.plot(hot.phases_in_cycles[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
-    temp = np.sum(photosphere.signal[1][0], axis=0)
-    ax.plot(hot.phases_in_cycles[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)
+
+    if stokes:
+        temp = np.sum(photosphere.signal_stokes[0][0], axis=0) #[][0] for I [][1] for Q and [][2] for U
+        #temp = photosphere.signal[0][0][nene-1,:] 
+        ax.plot(hot.phases_in_cycles[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+        temp = np.sum(photosphere.signal_stokes[1][0], axis=0)
+        ax.plot(hot.phases_in_cycles[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)
+    else:
+        temp = np.sum(photosphere.signal[0][0], axis=0)
+        #temp = photosphere.signal[0][0][nene-1,:] 
+        ax.plot(hot.phases_in_cycles[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+        temp = np.sum(photosphere.signal[1][0], axis=0)
+        ax.plot(hot.phases_in_cycles[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)
 
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/pulse_profileX.pdf")
@@ -417,12 +425,12 @@ print("Time spent in integration:",end - start)
 #print(photosphere.signal[0][0])
 
 
-#plot_pulse()
+plot_pulse(stokes=True)
 #save_pulse("pulses/pulse_f800r20")
 #save_pulse("pulses/pulse_io2")
 #save_pulse("pulses/pulse7i_rho10f600m27_Tc_io1")
 #save_pulse("pulses/pulse7i_rho10f600_Tc_IQUi2")
-save_pulse("pulses/pulse_lisa0")
+#save_pulse("pulses/pulse_lisa0")
 
 
 

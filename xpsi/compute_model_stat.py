@@ -235,7 +235,7 @@ class CustomSignal(xpsi.Signal):
                 self._support[:,0] = 0.0
 
     def __call__(self, *args, **kwargs):
-        self.loglikelihood, self.expected_counts, self.background_signal = \
+        self.loglikelihood, self.expected_counts, self.background_signal, extra_element = \
                 eval_marginal_likelihood(self._data.exposure_time,
                                           self._data.phases,
                                           self._data.counts,
