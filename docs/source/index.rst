@@ -33,6 +33,7 @@
    surface_radiation_field_checking_tools_tutorial
    model_construction_streamlined
    multiple_imaging
+   polarization
    postprocessing_tutorial
    example_script
    example_job
