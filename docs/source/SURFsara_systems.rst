@@ -38,6 +38,12 @@ Modify clean environment with Intel toolchain information:
 
     module load intel/2017b
 
+Load the module environment:
+
+.. code-block:: bash
+
+    module load pre2019
+
 Point to Intel compilers:
 
 .. code-block:: bash
@@ -71,6 +77,15 @@ installed globally or are outdated.
 .. code-block:: bash
 
     pip install --user Cython==0.27.3
+    pip install --user wrap
+    pip install --user tools
+
+We set the library and python paths: 
+
+.. code-block:: bash
+    
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
+    export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
 
 To prepare MPI from ``$HOME``:
 
@@ -125,6 +140,7 @@ To build and install `GSL <https://www.gnu.org/software/gsl/>`_ from ``$HOME``:
 
     wget -v http://mirror.koddos.net/gnu/gsl/http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
     tar -xvf gsl-latest.tar.gz
+    mkdir gsl-latest/build
     cd gsl-latest/build
     ./configure FC=ifort CC=icc CFLAGS='-O3 -xAVX -axCORE-AVX2 -mieee-fp -funroll-loops' --prefix=$HOME/gsl
     make
