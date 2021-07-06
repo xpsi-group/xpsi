@@ -23,6 +23,9 @@ Fixed
 Added
 ^^^^^
 
+* Tips for installing X-PSI on a Mac OS in the documentation (S.V. & D.C.);
+* Some additional lines to install X-PSI on Cartesius (S.V.);
+
 Changed
 ^^^^^^^
 
@@ -34,6 +37,8 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+
+* With thanks to Serena Vinciguerra (S.V.) and Devarshi Choudhury (D.C.).
 
 [v0.7.6] - 2021-05-16
 ~~~~~~~~~~~~~~~~~~~~~
