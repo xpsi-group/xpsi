@@ -17,11 +17,11 @@ Summary
 Fixed
 ^^^^^
 
-* A bug in :meth:`~.Likelihood.Likelihood.check` that prevented checking
-  the likelihood function for more than one point.
-
 Added
 ^^^^^
+
+* Tips for installing X-PSI on a Mac OS in the documentation (S.V. & D.C.);
+* Some additional lines to install X-PSI on Cartesius (S.V.);
 
 Changed
 ^^^^^^^
@@ -34,6 +34,38 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+
+
+[v0.7.7] - 2021-06-24
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Bugs in mesh cell allocation routine. These bugs occur for some specific
+  subset of hot regions with both a superseding member region and a ceding
+  member region and both radiate. This bug does not affect any production
+  analyses to date, but was encountered by D.C. when preparing a model with
+  such a hot region for posterior sampling.
+* Importance sampling bug when reweighting the likelihood function.
+
+Added
+^^^^^
+
+* Guidelines to the documentation for dependency citation.
+* Tips for installing X-PSI on a macOS in the documentation (S.V. & D.C.).
+* Some additional lines to install X-PSI on SURFsara's Cartesius (S.V.).
+* Instructions to install X-PSI on SURFsara's Lisa (T.S.).
+
+Attribution
+^^^^^^^^^^^
+
+* With thanks to Devarshi Choudhury (D.C.) for noticing and investigating
+  potentially buggy mesh construction behaviour that was, indeed, buggy.
+* With thanks to Serena Vinciguerra for noticing and investigating
+  potentially buggy importance sampling behaviour that was, indeed, buggy.
+* With thanks to Serena Vinciguerra (S.V.), D.C., and
+  Tuomo Salmi (T.S.) for patches to documentation install instructions.
 
 [v0.7.6] - 2021-05-16
 ~~~~~~~~~~~~~~~~~~~~~
@@ -71,6 +103,12 @@ Added
 * An MPI-capable importance sampling method that can handle likelihood function
   and prior PDF changes. This is useful to save computation time. This feature
   is being tested and developed.
+
+Fixed
+^^^^^
+
+* A bug in :meth:`~.Likelihood.Likelihood.check` that prevented checking
+  the likelihood function for more than one point.
 
 Attribution
 ^^^^^^^^^^^

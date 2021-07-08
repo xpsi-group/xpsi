@@ -253,7 +253,8 @@ def importance(target, importance,
             if likelihood_change:
                 _target = target([theta[names.index(n)] for n in target.names])
                 _importance = importance([theta[names.index(n)] for n in importance.names])
-                weight = _target/_importance
+                # objects return logarithm of likelihood
+                weight = _np.exp(_target - _importance)
 
             if prior_change:
                 if weight is not None:
