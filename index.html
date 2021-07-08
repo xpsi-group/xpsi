@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>X-PSI &mdash; xpsi 0.7.5 documentation</title>
+  <title>X-PSI &mdash; xpsi 0.7.7 documentation</title>
   
 
   
@@ -330,7 +330,21 @@ an <a class="reference external" href="https://youtu.be/by3_6rWE7po">example</a>
 <span id="id7"></span><h2>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h2>
 <p>If X-PSI proves to be a useful tool for your work, please cite the project
 as a software acknowledgement, e.g.:</p>
-<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>X-PSI (<span class="k">\url</span><span class="nb">{</span>https://github.com/ThomasEdwardRiley/xpsi<span class="nb">}</span>)
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>X-PSI (<span class="k">\url</span><span class="nb">{</span>https://github.com/ThomasEdwardRiley/xpsi<span class="nb">}</span>, <span class="k">\citet</span><span class="nb">{</span>xpsi<span class="nb">}</span>)
+
+@MISC<span class="nb">{</span>xpsi,
+    author = <span class="nb">{{</span>Riley<span class="nb">}</span>, Thomas Edward<span class="nb">}</span>,
+    title = &quot;<span class="nb">{</span>X-PSI: X-ray Pulse Simulation and Inference<span class="nb">}</span>&quot;,
+    keywords = <span class="nb">{</span>Software<span class="nb">}</span>,
+    year = 2021,
+    month = feb,
+    eid = <span class="nb">{</span>ascl:2102.005<span class="nb">}</span>,
+    pages = <span class="nb">{</span>ascl:2102.005<span class="nb">}</span>,
+    archivePrefix = <span class="nb">{</span>ascl<span class="nb">}</span>,
+    eprint = <span class="nb">{</span>2102.005<span class="nb">}</span>,
+    adsurl = <span class="nb">{</span>https://ui.adsabs.harvard.edu/abs/2021ascl.soft02005R<span class="nb">}</span>,
+    adsnote = <span class="nb">{</span>Provided by the SAO/NASA Astrophysics Data System<span class="nb">}</span>
+<span class="nb">}</span>
 </pre></div>
 </div>
 <p>A JOSS paper is being drafted for the first major release.
@@ -348,10 +362,24 @@ if you wish to cite a published work in the meantime:</p>
 <span class="nb">}</span>
 </pre></div>
 </div>
-<p>Lastly, if you wish to point to the first published application of
-the X-PSI package, then please cite <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a>:</p>
+<p>If you wish to point to the first published applications of the X-PSI package,
+then please cite <a class="reference internal" href="applications.html#r19"><span class="std std-ref">Riley et al. 2019 (ApJL, 887, L21)</span></a> and <a class="reference internal" href="applications.html#r21"><span class="std std-ref">Riley et al. 2021 (ApJL in press)</span></a>:</p>
 <div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@article<span class="nb">{</span>riley19,
-    author = <span class="nb">{{</span>Riley<span class="nb">}</span>, T.~E. and <span class="nb">{</span>Watts<span class="nb">}</span>, A.~L. and <span class="nb">{</span>Bogdanov<span class="nb">}</span>, S. and <span class="nb">{</span>Ray<span class="nb">}</span>, P.~S. and <span class="nb">{</span>Ludlam<span class="nb">}</span>, R.~M. and <span class="nb">{</span>Guillot<span class="nb">}</span>, S. and <span class="nb">{</span>Arzoumanian<span class="nb">}</span>, Z. and <span class="nb">{</span>Baker<span class="nb">}</span>, C.~L. and <span class="nb">{</span>Bilous<span class="nb">}</span>, A.~V. and <span class="nb">{</span>Chakrabarty<span class="nb">}</span>, D. and <span class="nb">{</span>Gendreau<span class="nb">}</span>, K.~C. and <span class="nb">{</span>Harding<span class="nb">}</span>, A.~K. and <span class="nb">{</span>Ho<span class="nb">}</span>, W.~C.~G. and <span class="nb">{</span>Lattimer<span class="nb">}</span>, J.~M. and <span class="nb">{</span>Morsink<span class="nb">}</span>, S.~M. and <span class="nb">{</span>Strohmayer<span class="nb">}</span>, T.~E.<span class="nb">}</span>,
+    author = <span class="nb">{{</span>Riley<span class="nb">}</span>, T.~E. and <span class="nb">{</span>Watts<span class="nb">}</span>, A.~L.
+                             and <span class="nb">{</span>Bogdanov<span class="nb">}</span>, S.
+                             and <span class="nb">{</span>Ray<span class="nb">}</span>, P.~S.
+                             and <span class="nb">{</span>Ludlam<span class="nb">}</span>, R.~M.
+                             and <span class="nb">{</span>Guillot<span class="nb">}</span>, S.
+                             and <span class="nb">{</span>Arzoumanian<span class="nb">}</span>, Z.
+                             and <span class="nb">{</span>Baker<span class="nb">}</span>, C.~L.
+                             and <span class="nb">{</span>Bilous<span class="nb">}</span>, A.~V.
+                             and <span class="nb">{</span>Chakrabarty<span class="nb">}</span>, D.
+                             and <span class="nb">{</span>Gendreau<span class="nb">}</span>, K.~C.
+                             and <span class="nb">{</span>Harding<span class="nb">}</span>, A.~K.
+                             and <span class="nb">{</span>Ho<span class="nb">}</span>, W.~C.~G.
+                             and <span class="nb">{</span>Lattimer<span class="nb">}</span>, J.~M.
+                             and <span class="nb">{</span>Morsink<span class="nb">}</span>, S.~M.
+                             and <span class="nb">{</span>Strohmayer<span class="nb">}</span>, T.~E.<span class="nb">}</span>,
     title = &quot;<span class="nb">{</span>A NICER View of PSR J0030+0451: Millisecond Pulsar Parameter Estimation<span class="nb">}</span>&quot;,
     doi = <span class="nb">{</span>10.3847/2041-8213/ab481c<span class="nb">}</span>,
     journal = <span class="nb">{</span><span class="k">\apjl</span><span class="nb">}</span>,
@@ -360,12 +388,61 @@ the X-PSI package, then please cite <a class="reference internal" href="applicat
     volume = 887,
     pages = <span class="nb">{</span>L21<span class="nb">}</span>
 <span class="nb">}</span>
+
+@article<span class="nb">{</span>riley21,
+    author = <span class="nb">{{</span>Riley<span class="nb">}</span>, Thomas E. and <span class="nb">{</span>Watts<span class="nb">}</span>, Anna L.
+                                    and <span class="nb">{</span>Ray<span class="nb">}</span>, Paul S.
+                                    and <span class="nb">{</span>Bogdanov<span class="nb">}</span>, Slavko
+                                    and <span class="nb">{</span>Guillot<span class="nb">}</span>, Sebastien
+                                    and <span class="nb">{</span>Morsink<span class="nb">}</span>, Sharon M.
+                                    and <span class="nb">{</span>Bilous<span class="nb">}</span>, Anna V.
+                                    and <span class="nb">{</span>Arzoumanian<span class="nb">}</span>, Zaven
+                                    and <span class="nb">{</span>Choudhury<span class="nb">}</span>, Devarshi
+                                    and <span class="nb">{</span>Deneva<span class="nb">}</span>, Julia S.
+                                    and <span class="nb">{</span>Gendreau<span class="nb">}</span>, Keith C.
+                                    and <span class="nb">{</span>Harding<span class="nb">}</span>, Alice K.
+                                    and <span class="nb">{</span>Ho<span class="nb">}</span>, Wynn C.~G.
+                                    and <span class="nb">{</span>Lattimer<span class="nb">}</span>, James M.
+                                    and <span class="nb">{</span>Loewenstein<span class="nb">}</span>, Michael
+                                    and <span class="nb">{</span>Ludlam<span class="nb">}</span>, Renee M.
+                                    and <span class="nb">{</span>Markwardt<span class="nb">}</span>, Craig B.
+                                    and <span class="nb">{</span>Okajima<span class="nb">}</span>, Takashi
+                                    and <span class="nb">{</span>Prescod-Weinstein<span class="nb">}</span>, Chanda
+                                    and <span class="nb">{</span>Remillard<span class="nb">}</span>, Ronald A.
+                                    and <span class="nb">{</span>Wolff<span class="nb">}</span>, Michael T.
+                                    and <span class="nb">{</span>Fonseca<span class="nb">}</span>, Emmanuel
+                                    and <span class="nb">{</span>Cromartie<span class="nb">}</span>, H. Thankful
+                                    and <span class="nb">{</span>Kerr<span class="nb">}</span>, Matthew
+                                    and <span class="nb">{</span>Pennucci<span class="nb">}</span>, Timothy T.
+                                    and <span class="nb">{</span>Parthasarathy<span class="nb">}</span>, Aditya
+                                    and <span class="nb">{</span>Ransom<span class="nb">}</span>, Scott
+                                    and <span class="nb">{</span>Stairs<span class="nb">}</span>, Ingrid
+                                    and <span class="nb">{</span>Guillemot<span class="nb">}</span>, Lucas
+                                    and <span class="nb">{</span>Cognard<span class="nb">}</span>, Ismael<span class="nb">}</span>,
+    title = &quot;<span class="nb">{</span>A NICER View of the Massive Pulsar PSR J0740+6620 Informed by Radio Timing and XMM-Newton Spectroscopy<span class="nb">}</span>&quot;,
+    journal = <span class="nb">{</span>arXiv e-prints<span class="nb">}</span>,
+    keywords = <span class="nb">{</span>Astrophysics - High Energy Astrophysical Phenomena, Astrophysics - Solar and Stellar Astrophysics, Nuclear Theory<span class="nb">}</span>,
+    year = 2021,
+    month = may,
+    eid = <span class="nb">{</span>arXiv:2105.06980<span class="nb">}</span>,
+    pages = <span class="nb">{</span>arXiv:2105.06980<span class="nb">}</span>,
+    archivePrefix = <span class="nb">{</span>arXiv<span class="nb">}</span>,
+    eprint = <span class="nb">{</span>2105.06980<span class="nb">}</span>,
+    primaryClass = <span class="nb">{</span>astro-ph.HE<span class="nb">}</span>,
+    adsurl = <span class="nb">{</span>https://ui.adsabs.harvard.edu/abs/2021arXiv210506980R<span class="nb">}</span>,
+    adsnote = <span class="nb">{</span>Provided by the SAO/NASA Astrophysics Data System<span class="nb">}</span>
+<span class="nb">}</span>
 </pre></div>
 </div>
 <p>This article contains a wealth of relevant information, including a number
 of schematic diagrams that might be of use. There is also an
 <a class="reference external" href="https://iopscience.iop.org/journal/2041-8205/page/Focus_on_NICER_Constraints_on_the_Dense_Matter_Equation_of_State">ApJL Focus Issue</a>
 of which this article is a member.</p>
+<p><em>Regardless of whether you cite the above articles, they critically demonstrate
+how to cite the numerous X-PSI the dependencies that users of X-PSI benefit
+from. These citations may be found in the software acknowledgements and in the
+article where the relevant software is appled, and links to the software and
+associated preprints and journal articles may be found in the bibliographies.</em></p>
 </div>
 <div class="section" id="state-of-development">
 <h2>State of development<a class="headerlink" href="#state-of-development" title="Permalink to this headline">¶</a></h2>
@@ -497,7 +574,7 @@ have to be updated for release of the first major version of X-PSI.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 Thomas E. Riley
+        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
 
     </p>
   </div>

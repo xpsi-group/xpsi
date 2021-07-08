@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; xpsi 0.7.5 documentation</title>
+  <title>Installation &mdash; xpsi 0.7.7 documentation</title>
   
 
   
@@ -101,7 +101,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tips-for-installing-on-a-mac-os">Tips for installing on a Mac OS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-on-windows">Installing on Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-of-bash-profile">Example of .bash_profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-of-bashrc">Example of .bashrc</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
@@ -408,6 +411,10 @@ https://github.com/ThomasEdwardRiley/nestcheck.git
 </td></tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For installing X-PSI on a Mac OS, please look at the tips below before proceeding with the installation of the various depnedencies.</p>
+</div>
 </div>
 <div class="section" id="from-source">
 <span id="source"></span><h2>From source<a class="headerlink" href="#from-source" title="Permalink to this headline">¶</a></h2>
@@ -581,6 +588,45 @@ script. Then make sure the extension modules are inside the source directory
 dependencies that are not resolved will print warning messages.</p>
 </div>
 </div>
+<div class="section" id="tips-for-installing-on-a-mac-os">
+<h2>Tips for installing on a Mac OS<a class="headerlink" href="#tips-for-installing-on-a-mac-os" title="Permalink to this headline">¶</a></h2>
+<p>Be mindful on the order of the programs that need to be installed.
+Install <code class="docutils literal notranslate"><span class="pre">xcode</span></code> or <code class="docutils literal notranslate"><span class="pre">xcode</span> <span class="pre">tools</span></code>.
+Install <code class="docutils literal notranslate"><span class="pre">GSL</span></code> (see above).
+Install <code class="docutils literal notranslate"><span class="pre">maplotlib</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="docutils literal notranslate"><span class="pre">cython</span></code>, <code class="docutils literal notranslate"><span class="pre">h5py</span></code> and <code class="docutils literal notranslate"><span class="pre">emcee</span></code> using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>.
+Install  <code class="docutils literal notranslate"><span class="pre">homebrew</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/usr/bin/ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Install <code class="docutils literal notranslate"><span class="pre">llvm</span></code> with homebrew, even if weird messages appear, saying llvm is already present in the Mac OS:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew install llvm
+</pre></div>
+</div>
+<p>Install <code class="docutils literal notranslate"><span class="pre">fortran</span></code> before <code class="docutils literal notranslate"><span class="pre">MPI</span></code>.
+If you have some troubles with specifying or using gfortran (and it “doesn’t not pass simple tests”) specify in the mpif90 wrapper files the compiler as being gfortran and delete the files that were already in the build directory.
+Once <code class="docutils literal notranslate"><span class="pre">MPI</span></code> is installed,
+export PATH and LD_LIBRARY_PATH:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="s2">&quot;/Users/&lt;your_path&gt;/openmpi/lib:</span><span class="nv">$LD_LIBRARY_PATH</span><span class="s2">&quot;</span>
+<span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/Users/&lt;your_path&gt;/mpi/bin/
+</pre></div>
+</div>
+<p>Consider if to add these lines directly in your bashrc (or equivalent file for a different shell).</p>
+<p>Install <code class="docutils literal notranslate"><span class="pre">X-PSI</span></code> using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC</span><span class="o">=</span>/usr/local/opt/llvm/bin/clang python setup.py install <span class="o">[</span>--user<span class="o">]</span>
+</pre></div>
+</div>
+<p>If it gives problem, remove the <code class="docutils literal notranslate"><span class="pre">tools</span></code> and <code class="docutils literal notranslate"><span class="pre">surface_radiation_field</span></code> entires from <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> of <code class="docutils literal notranslate"><span class="pre">X-PSI</span></code>.
+The line in the setup.py file would then look like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">packages</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;xpsi&#39;</span>, <span class="s1">&#39;xpsi/PostProcessing&#39;</span><span class="o">]</span>
+</pre></div>
+</div>
+<p>If you encounter any problems with permissions when installing X-PSI, use the <code class="docutils literal notranslate"><span class="pre">--user</span></code> option.</p>
+<p>For compatibility, install the <code class="docutils literal notranslate"><span class="pre">GetDist</span></code> and <code class="docutils literal notranslate"><span class="pre">nestcheck</span></code> versions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>GetDist version: <span class="m">0</span>.3.1
+nestcheck version: <span class="m">0</span>.2.0
+</pre></div>
+</div>
+</div>
 <div class="section" id="installing-on-windows">
 <h2>Installing on Windows<a class="headerlink" href="#installing-on-windows" title="Permalink to this headline">¶</a></h2>
 <p>X-PSI has been successfully installed and run on Windows, at least for the
@@ -600,6 +646,38 @@ post-processing functionality if you have posterior sample sets available.</li>
 <li>Install Jupyter notebook using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">notebook</span></code>.</li>
 <li>Start the kernel with the command <code class="docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">notebook</span></code>.</li>
 </ul>
+</div>
+<div class="section" id="example-of-bash-profile">
+<h2>Example of .bash_profile<a class="headerlink" href="#example-of-bash-profile" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># .bash_profile</span>
+<span class="c1"># Get the aliases and functions</span>
+<span class="k">if</span> <span class="o">[</span> -f ~/.bashrc <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    . ~/.bashrc
+<span class="k">fi</span>
+<span class="c1"># User specific environment and startup programs</span>
+<span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$HOME</span>/bin
+<span class="nb">export</span> PATH
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-of-bashrc">
+<h2>Example of .bashrc<a class="headerlink" href="#example-of-bashrc" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load pre2019
+module load intel/2017b
+module load cmake
+module load python/2.7.9
+<span class="nb">export</span> <span class="nv">FC</span><span class="o">=</span>ifort
+<span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>icc
+<span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>icpc
+<span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:<span class="nv">$HOME</span>/multinest/MultiNest_v3.12_CMake/multinest/lib/
+<span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$HOME</span>/.local/lib/python2.7/site-packages/:<span class="nv">$PYTHONPATH</span>
+<span class="c1"># Source global definitions</span>
+<span class="k">if</span> <span class="o">[</span> -f /etc/bashrc <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    . /etc/bashrc
+<span class="k">fi</span>
+<span class="c1"># User specific aliases and functions</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -623,7 +701,7 @@ post-processing functionality if you have posterior sample sets available.</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 Thomas E. Riley
+        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
 
     </p>
   </div>

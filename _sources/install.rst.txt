@@ -170,6 +170,11 @@ ensemble-MCMC is optional.
           git clone [--single-branch] -b feature/getdist_kde \
           https://github.com/ThomasEdwardRiley/nestcheck.git
 
+.. note::
+
+    For installing X-PSI on a Mac OS, please look at the tips below before proceeding with the installation of the various depnedencies.
+
+
 __ source_
 
 .. _source:
@@ -208,6 +213,7 @@ the prefix and version of GSL on your path:
 
     gsl-config --version
     gsl-config --prefix
+
 
 
 MultiNest
@@ -401,6 +407,59 @@ script. Then make sure the extension modules are inside the source directory
    To build the documentation, all modules need to be imported, and the
    dependencies that are not resolved will print warning messages.
 
+Tips for installing on a Mac OS
+-------------------------------
+Be mindful on the order of the programs that need to be installed.
+Install ``xcode`` or ``xcode tools``. 
+Install ``GSL`` (see above).
+Install ``maplotlib``, ``numpy``, ``cython``, ``h5py`` and ``emcee`` using ``pip install``.
+Install  ``homebrew``:
+
+.. code-block:: bash
+
+   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+Install ``llvm`` with homebrew, even if weird messages appear, saying llvm is already present in the Mac OS:
+
+.. code-block:: bash
+
+   brew install llvm
+
+Install ``fortran`` before ``MPI``.
+If you have some troubles with specifying or using gfortran (and it "doesn’t not pass simple tests") specify in the mpif90 wrapper files the compiler as being gfortran and delete the files that were already in the build directory.
+Once ``MPI`` is installed, 
+export PATH and LD_LIBRARY_PATH:
+
+.. code-block:: bash
+
+   LD_LIBRARY_PATH="/Users/<your_path>/openmpi/lib:$LD_LIBRARY_PATH" 
+   PATH=$PATH:/Users/<your_path>/mpi/bin/ 
+
+Consider if to add these lines directly in your bashrc (or equivalent file for a different shell).
+
+
+Install ``X-PSI`` using: 
+
+.. code-block:: bash
+
+   CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user]
+
+If it gives problem, remove the ``tools`` and ``surface_radiation_field`` entires from ``setup.py`` of ``X-PSI``. 
+The line in the setup.py file would then look like: 
+
+.. code-block:: bash
+
+   packages = ['xpsi', 'xpsi/PostProcessing']
+
+If you encounter any problems with permissions when installing X-PSI, use the ``--user`` option. 
+
+For compatibility, install the ``GetDist`` and ``nestcheck`` versions:
+
+.. code-block:: bash
+
+   GetDist version: 0.3.1
+   nestcheck version: 0.2.0
+
 Installing on Windows
 ---------------------
 
@@ -426,3 +485,38 @@ procedure.
   post-processing functionality if you have posterior sample sets available.
 * Install Jupyter notebook using ``pip install notebook``.
 * Start the kernel with the command ``Jupyter notebook``.
+
+
+Example of .bash_profile
+------------------------
+
+.. code-block:: bash
+   
+   # .bash_profile
+   # Get the aliases and functions
+   if [ -f ~/.bashrc ]; then
+       . ~/.bashrc
+   fi
+   # User specific environment and startup programs
+   PATH=$PATH:$HOME/bin
+   export PATH
+
+Example of .bashrc
+------------------
+
+.. code-block:: bash
+
+   module load pre2019
+   module load intel/2017b
+   module load cmake
+   module load python/2.7.9
+   export FC=ifort
+   export CC=icc
+   export CXX=icpc
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
+   export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
+   # Source global definitions
+   if [ -f /etc/bashrc ]; then
+       . /etc/bashrc
+   fi
+   # User specific aliases and functions

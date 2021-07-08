@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Likelihood &mdash; xpsi 0.7.5 documentation</title>
+  <title>xpsi.Likelihood &mdash; xpsi 0.7.7 documentation</title>
   
 
   
@@ -715,7 +715,7 @@
             <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="sd">&quot;&quot;&quot; Fallback based on NumPy v1.17. &quot;&quot;&quot;</span>
                 <span class="k">for</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-                    <span class="k">yield</span> <span class="s1">&#39;</span><span class="si">%.8e</span><span class="s1"> | </span><span class="si">%.8e</span><span class="s1"> .....&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+                    <span class="k">yield</span> <span class="s1">&#39;</span><span class="si">%.8e</span><span class="s1"> | </span><span class="si">%.8e</span><span class="s1"> .....&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">_a</span><span class="p">,</span> <span class="n">_b</span><span class="p">)</span>
                 <span class="k">yield</span> <span class="o">~</span><span class="p">((</span><span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">atol</span> <span class="o">+</span> <span class="n">rtol</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="o">.</span><span class="n">any</span><span class="p">())</span>
                 <span class="c1">#raise NotImplementedError(&#39;Implement a fallback.&#39;)</span>
 
@@ -873,7 +873,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 Thomas E. Riley
+        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
 
     </p>
   </div>

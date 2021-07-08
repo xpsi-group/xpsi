@@ -38,6 +38,12 @@ Modify clean environment with Intel toolchain information:
 
     module load intel/2017b
 
+Load the module environment:
+
+.. code-block:: bash
+
+    module load pre2019
+
 Point to Intel compilers:
 
 .. code-block:: bash
@@ -71,6 +77,15 @@ installed globally or are outdated.
 .. code-block:: bash
 
     pip install --user Cython==0.27.3
+    pip install --user wrap
+    pip install --user tools
+
+We set the library and python paths: 
+
+.. code-block:: bash
+    
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
+    export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
 
 To prepare MPI from ``$HOME``:
 
@@ -125,6 +140,7 @@ To build and install `GSL <https://www.gnu.org/software/gsl/>`_ from ``$HOME``:
 
     wget -v http://mirror.koddos.net/gnu/gsl/http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
     tar -xvf gsl-latest.tar.gz
+    mkdir gsl-latest/build
     cd gsl-latest/build
     ./configure FC=ifort CC=icc CFLAGS='-O3 -xAVX -axCORE-AVX2 -mieee-fp -funroll-loops' --prefix=$HOME/gsl
     make
@@ -254,15 +270,120 @@ For an example job script, refer to :ref:`example_script`.
 Lisa
 ----
 
-The following are *system-specific* instructions for the
-`Lisa <https://userinfo.surfsara.nl/systems/lisa>`_ Cluster, *that differ from
-the Cartesius instructions given above*.
+The following are the instructions for the
+`Lisa <https://userinfo.surfsara.nl/systems/lisa>`_ Cluster, that mostly correspond to those 
+of Cartesius instructions given above but with few exceptions.
+ 
+After cleaning your home file system of existing versions of dependencies (as explained for Cartesius), we need to make the environment with Intel toolchain information:
 
-The instruction sets for targeting Intel Ivy Bridge processors (Lisa normal
-nodes) are CORE-AVX-I. Use these arguments for the C and Fortran compiler
-flags ``-ax`` (Intel compiler).
+.. code-block:: bash
 
-The structure of the Lisa filesystem for batch jobs is different to Cartesius.
+    module load 2019
+    module load intel/2019b
+    
+The default ``cmake`` module can be obtained from:
+
+.. code-block:: bash
+
+    module load Cmake
+
+To prepare the correct Python environment:
+
+.. code-block:: bash
+
+    module load Python/2.7.15-intel-2019b
+
+Next, we need to use ``pip`` to install packages
+locally in ``$HOME/.local/lib/python2.7/site-packages/``:
+
+.. code-block:: bash
+
+    pip install --user Cython==0.28; pip install --user wrapt
+    
+To prepare MPI and MultiNest from ``$HOME``:
+
+.. code-block:: bash
+
+    wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
+    tar -xvf mpi4py-3.0.0.tar.gz
+    cd mpi4py-3.0.0
+    python setup.py install --user
+    
+.. code-block:: bash
+    
+    git clone https://github.com/farhanferoz/MultiNest.git ~/multinest
+    cd ~/multinest/MultiNest_v3.12_CMake/multinest
+    mkdir build
+    cd build
+    cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" ..
+    make   
+
+In case of having problems, the ``-xAVX`` and ``-axCORE-AVX2`` compiler flags can be omitted. 
+
+Finally, we need the Python interface to MultiNest, GSL, and X-PSI, all starting from ``$HOME``:
+
+.. code-block:: bash
+
+    cd; git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
+    cd pymultinest
+    python setup.py install --user    
+
+.. code-block:: bash
+
+    cd; wget -v http://mirror.koddos.net/gnu/gsl/http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+    tar -xvf gsl-latest.tar.gz
+    cd gsl-2.6
+    mkdir build; cd build
+    ../configure CC=icc CFLAGS='-O3 -xAVX -axCORE-AVX2 -mieee-fp -funroll-loops' --prefix=$HOME/gsl
+    make
+    make install
+    export PATH=$HOME/gsl/bin:$PATH
+
+.. code-block:: bash
+
+    cd; git clone https://github.com/ThomasEdwardRiley/xpsi.git
+    cd xpsi
+    LDSHARED="icc -shared" CC=icc python setup.py install --user    
+
+The success of different installation steps can be checked as described in the Cartesius instructions, as well as the instructions for possible re-installations. 
+
+The structure of the Lisa filesystem for batch jobs is different to Cartesius. Here is given an example job: 
+
+.. code-block:: bash
+
+   #!/bin/bash
+   #SBATCH -N 4
+   #SBATCH --tasks-per-node=8
+   #SBATCH -t 3-00:00:00
+   #SBATCH -p normal
+   #SBATCH --job-name=run1
+
+   echo start of job in directory $SLURM_SUBMIT_DIR
+   echo number of nodes is $SLURM_JOB_NUM_NODES
+   echo the allocated nodes are:
+   echo $SLURM_JOB_NODELIST
+
+   module load 2019
+   module load intel/2019b
+   module load Python/2.7.15-intel-2019b
+
+   cp -r $HOME/NICER_analyses/J0030_ST_PST $TMPDIR
+
+   cd $TMPDIR/J0030_ST_PST
+
+   export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
+
+   export OMP_NUM_THREADS=1
+   export OPENBLAS_NUM_THREADS=1
+   export GOTO_NUM_THREADS=1
+   export MKL_NUM_THREADS=1
+   export LD_LIBRARY_PATH=$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/:$LD_LIBRARY_PATH
+   export PATH=$HOME/gsl/bin:$PATH
+
+   srun python main_run1.py > out_run1 2> err_run1
+
+   cp run1* out_run1 err_run1 $HOME/NICER_analyses/J0030_ST_PST/.
+   #end of job file
 
 .. todo::
 

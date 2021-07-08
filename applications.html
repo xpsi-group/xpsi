@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Applications &mdash; xpsi 0.7.5 documentation</title>
+  <title>Applications &mdash; xpsi 0.7.7 documentation</title>
   
 
   
@@ -94,6 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">(FA)Q</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Applications</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#riley-et-al-2019-apjl-887-l21">Riley et al. 2019 (ApJL, 887, L21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#riley-et-al-2021-apjl-in-press">Riley et al. 2021 (ApJL in press)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="SURFsara_systems.html">SURFsara systems</a></li>
@@ -262,14 +263,14 @@ In total, the sampling problems in R19 required ~450,000 core hours.</p>
 <p><strong>Likelihood function settings</strong></p>
 <p>On compute nodes, the likelihood function evaluation times ranged from ~1 to
 ~3 seconds (single-threaded), depending on the model and point in parameter
-space.<a class="footnote-reference" href="#id9" id="id5">[1]</a> The parallelisation was purely via MPI, with all but one process
+space.<a class="footnote-reference" href="#id12" id="id5">[1]</a> The parallelisation was purely via MPI, with all but one process
 receiving likelihood function evaluation requests.</p>
 <p><em>Resolution settings</em></p>
 <ul class="simple">
-<li>number of surface cells/elements per hot (closed) region:<a class="footnote-reference" href="#id10" id="id6">[2]</a> 24x24</li>
+<li>number of surface cells/elements per hot (closed) region:<a class="footnote-reference" href="#id13" id="id6">[2]</a> 24x24</li>
 <li>number of phases (linearly spaced): 100</li>
 <li>number of energies (logarithmically spaced): 175</li>
-<li>number of rays (per parallel; linear in cosine of ray angle alpha):<a class="footnote-reference" href="#id11" id="id7">[3]</a> 200</li>
+<li>number of rays (per parallel; linear in cosine of ray angle alpha):<a class="footnote-reference" href="#id14" id="id7">[3]</a> 200</li>
 </ul>
 <p><em>Interpolation settings</em></p>
 <ul class="simple">
@@ -277,10 +278,17 @@ receiving likelihood function evaluation requests.</p>
 <li>for the atmosphere cubic polynomial interpolants were used in four dimensions</li>
 </ul>
 <p><strong>Compilation</strong></p>
-<p>Intel compiler collection,<a class="footnote-reference" href="#id12" id="id8">[4]</a> with the CORE-AVX2 instruction set, for X-PSI
-and dependencies (apart from <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.20)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a>, which was centrally installed).</p>
+<p>Intel compiler collection,<a class="footnote-reference" href="#id15" id="id8">[4]</a> with the CORE-AVX2 instruction set, for X-PSI
+and dependencies (apart from <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.21)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a>, which was centrally installed).</p>
+</div>
+<div class="section" id="riley-et-al-2021-apjl-in-press">
+<span id="r21"></span><h2><a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2021arXiv210506980R/abstract">Riley et al. 2021 (ApJL in press)</a><a class="headerlink" href="#riley-et-al-2021-apjl-in-press" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2021arXiv210506980R/abstract">Riley et al. (2021; hereafter R21)</a> used <code class="docutils literal notranslate"><span class="pre">v0.7.6</span></code> of X-PSI to model
+<em>NICER</em> observations of the rotation-powered millisecond X-ray pulsar
+J0740+6620.</p>
+<p>See also the associated <a class="reference external" href="https://zenodo.org/record/4697625">Zenodo repository</a>.</p>
 <p class="rubric">Footnotes</p>
-<table class="docutils footnote" frame="void" id="id9" rules="none">
+<table class="docutils footnote" frame="void" id="id12" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id5">[1]</a></td><td>Variation between models on the same processor results from a
@@ -289,7 +297,7 @@ as a function of parameters also occurs due to issues like mesh
 construction on the surface subject to the resolution settings.</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id10" rules="none">
+<table class="docutils footnote" frame="void" id="id13" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id6">[2]</a></td><td>This is the approximate number of cells that have centres lying
@@ -302,7 +310,7 @@ distribution of cells would further be weighted by the approximate
 total number of counts generated by each subregion.</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id11" rules="none">
+<table class="docutils footnote" frame="void" id="id14" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id7">[3]</a></td><td>The rays were integrated for each likelihood function call instead of
@@ -312,7 +320,7 @@ a high-order expansion (see, e.g.,
 Only primary images were included.</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id12" rules="none">
+<table class="docutils footnote" frame="void" id="id15" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id8">[4]</a></td><td>On Cartesius (and Lisa), one can simply execute
@@ -342,7 +350,7 @@ Only primary images were included.</td></tr>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 Thomas E. Riley
+        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
 
     </p>
   </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Sample &mdash; xpsi 0.7.5 documentation</title>
+  <title>xpsi.Sample &mdash; xpsi 0.7.7 documentation</title>
   
 
   
@@ -215,6 +215,8 @@
 
 <span class="kn">from</span> <span class="nn">.global_imports</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">global_imports</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_comm</span><span class="p">,</span> <span class="n">_rank</span><span class="p">,</span> <span class="n">_size</span><span class="p">,</span> <span class="n">make_verbose</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Likelihood</span>
 
 <span class="n">posterior</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -328,6 +330,183 @@
                             <span class="n">likelihood</span><span class="p">,</span>
                             <span class="n">prior</span><span class="p">)</span>
     <span class="n">sampler</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<span class="nd">@make_verbose</span><span class="p">(</span><span class="s1">&#39;Importance sampling commencing&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Importance sampling completed&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">importance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">importance</span><span class="p">,</span>
+               <span class="n">sample_root</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span>
+               <span class="n">weight_threshold</span><span class="o">=</span><span class="mf">1.0e-3</span><span class="p">,</span>
+               <span class="n">likelihood_change</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+               <span class="n">prior_change</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+               <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Importance sample from target using approximative distribution.</span>
+
+<span class="sd">    :param obj target:</span>
+<span class="sd">        A :class:`~.Likelihood` object for the target posterior distribution.</span>
+
+<span class="sd">    :param obj importance:</span>
+<span class="sd">        A :class:`~.Likelihood` object for the importance posterior</span>
+<span class="sd">        distribution. This distribution should be some sufficient approxmation</span>
+<span class="sd">        to the target distribution for validity.</span>
+
+<span class="sd">    :param str sample_root:</span>
+<span class="sd">        Path to sample files, with the file root but without the file extension.</span>
+
+<span class="sd">    :param list names:</span>
+<span class="sd">        The parameter names for the samples on disk. These names must match</span>
+<span class="sd">        the parameter names in the :class:`~.Likelihood` objects.</span>
+
+<span class="sd">    :param float weight_threshold:</span>
+<span class="sd">        Only use samples with weight greater than this fraction of the maximum</span>
+<span class="sd">        weight amongst samples.</span>
+
+<span class="sd">    :param bool likelihood_change:</span>
+<span class="sd">        Declare whether the likelihood function has changed. If so, it is</span>
+<span class="sd">        recommended that workload is distributed amongst a world of MPI</span>
+<span class="sd">        processes on a cluster.</span>
+
+<span class="sd">    :param bool prior_change:</span>
+<span class="sd">         Declare whether the prior density function has changed. Generally,</span>
+<span class="sd">         this reweighting factor is inexpensive to evaluate and can be</span>
+<span class="sd">         executed on a desktop in minutes.</span>
+
+<span class="sd">    :param bool overwrite:</span>
+<span class="sd">        Overwrite an existing importance sample file on disk?</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Cross-checking parameter names&#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">importance</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Every target distribution parameter must &#39;</span>
+                        <span class="s1">&#39;be an importance distribution parameter.&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;Every target distribution parameter must be &#39;</span>
+                            <span class="s1">&#39;an importance sample space dimension.&#39;</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">importance</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;The importance samples must be &#39;</span>
+                                           <span class="s1">&#39;draws from the the importance &#39;</span>
+                                           <span class="s1">&#39;distribution&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">importance</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;Every importance distribution parameter must be &#39;</span>
+                            <span class="s1">&#39;an importance sample space dimension.&#39;</span><span class="p">)</span>
+
+    <span class="n">_target_state_to_restore</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">externally_updated</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">_importance_state_to_restore</span> <span class="o">=</span> <span class="n">importance</span><span class="o">.</span><span class="n">externally_updated</span>
+    <span class="n">importance</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Loading samples&#39;</span>
+    <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">sample_root</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+
+        <span class="n">_max</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">samples</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">_ref</span> <span class="o">=</span> <span class="n">importance_sampled</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="n">samples</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">_max</span> <span class="o">&gt;=</span> <span class="n">weight_threshold</span><span class="p">,:]</span>
+
+        <span class="k">yield</span> <span class="s1">&#39;Importance sample fraction = </span><span class="si">%.3f%%</span><span class="s1">.&#39;</span><span class="o">%</span><span class="p">(</span><span class="mf">100.0</span> <span class="o">*</span> <span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_prior_reweight</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Helper function for to break conditional statement. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;prior&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">importance</span><span class="p">,</span> <span class="s1">&#39;prior&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No prior object available... prior reweighting ignored.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">1.0</span> <span class="c1"># silently terminate</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">prior</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">importance</span><span class="o">.</span><span class="n">prior</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No prior density method available... prior reweighting ignored.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">1.0</span> <span class="c1"># silently terminate</span>
+
+        <span class="n">_target_theta</span> <span class="o">=</span> <span class="p">[</span><span class="n">theta</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+        <span class="n">_importance_theta</span> <span class="o">=</span> <span class="p">[</span><span class="n">theta</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">importance</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">likelihood_change</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">_target_theta</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">importance</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">_importance_theta</span><span class="p">)</span>
+
+        <span class="n">_target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">prior</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">_target_theta</span><span class="p">)</span>
+        <span class="n">_importance</span> <span class="o">=</span> <span class="n">importance</span><span class="o">.</span><span class="n">prior</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">_importance_theta</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">likelihood_change</span><span class="p">:</span> <span class="c1"># memoization: revert parameter value cache</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
+
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">importance</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">importance</span><span class="o">.</span><span class="n">cached</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">,</span> <span class="n">importance</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">importance</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_target</span><span class="o">/</span><span class="n">_importance</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Distributing workload amongst </span><span class="si">%i</span><span class="s1"> MPI processes&#39;</span><span class="o">%</span><span class="n">_size</span>
+    <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># number of MPI scatterings</span>
+        <span class="n">_iterations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_m</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">_size</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_iterations</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">_iterations</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">bcast</span><span class="p">(</span><span class="n">_iterations</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_iterations</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">_iterations</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">_remaining</span> <span class="o">=</span> <span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">%</span><span class="n">_size</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="k">for</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="o">+</span><span class="n">_remaining</span><span class="p">,</span><span class="mi">2</span><span class="p">:]]</span>
+                <span class="n">theta</span> <span class="o">+=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">_size</span> <span class="o">-</span> <span class="n">_remaining</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="k">for</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">_size</span><span class="p">,</span><span class="mi">2</span><span class="p">:]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">_target</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">likelihood_change</span><span class="p">:</span>
+                <span class="n">_target</span> <span class="o">=</span> <span class="n">target</span><span class="p">([</span><span class="n">theta</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">names</span><span class="p">])</span>
+                <span class="n">_importance</span> <span class="o">=</span> <span class="n">importance</span><span class="p">([</span><span class="n">theta</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">importance</span><span class="o">.</span><span class="n">names</span><span class="p">])</span>
+                <span class="c1"># objects return logarithm of likelihood</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">_target</span> <span class="o">-</span> <span class="n">_importance</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">prior_change</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">weight</span> <span class="o">*=</span> <span class="n">_prior_reweight</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">weight</span> <span class="o">=</span> <span class="n">_prior_reweight</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">likelihood_change</span><span class="p">:</span>
+            <span class="n">_target</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">_target</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">_iterations</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="o">+</span><span class="n">_remaining</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weight</span><span class="p">[:</span><span class="n">_remaining</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">likelihood_change</span><span class="p">:</span>
+                    <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="o">+</span><span class="n">_remaining</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_target</span><span class="p">[:</span><span class="n">_remaining</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">_size</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">likelihood_change</span><span class="p">:</span>
+                    <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">_size</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_target</span><span class="p">)</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Renormalising weights&#39;</span>
+    <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># renormalise</span>
+        <span class="n">_ref</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">_ref</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">_file</span> <span class="o">=</span> <span class="n">sample_root</span> <span class="o">+</span> <span class="s1">&#39;__importance_sampled&#39;</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span>
+        <span class="k">if</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">_file</span><span class="p">):</span>
+            <span class="n">_write</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">overwrite</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_write</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">_write</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="s1">&#39;Writing to disk&#39;</span>
+            <span class="n">_np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">_file</span><span class="p">,</span> <span class="n">_ref</span><span class="p">)</span>
+
+    <span class="k">yield</span> <span class="s1">&#39;Restoring likelihood-object parameter update protocol attributes&#39;</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="n">_target_state_to_restore</span>
+    <span class="n">importance</span><span class="o">.</span><span class="n">externally_updated</span> <span class="o">=</span> <span class="n">_importance_state_to_restore</span>
+
+    <span class="k">yield</span>
 </pre></div>
 
            </div>
@@ -340,7 +519,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 Thomas E. Riley
+        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
 
     </p>
   </div>

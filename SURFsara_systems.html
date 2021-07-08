@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>SURFsara systems &mdash; xpsi 0.7.5 documentation</title>
+  <title>SURFsara systems &mdash; xpsi 0.7.7 documentation</title>
   
 
   
@@ -273,6 +273,10 @@ log back in order to get a clean environment.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load intel/2017b
 </pre></div>
 </div>
+<p>Load the module environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load pre2019
+</pre></div>
+</div>
 <p>Point to Intel compilers:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">FC</span><span class="o">=</span>ifort
 <span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>icc
@@ -296,6 +300,13 @@ Below we write these flags arguments explicitly where required.</p>
 locally in <code class="docutils literal notranslate"><span class="pre">$HOME/.local/lib/python2.7/site-packages/</span></code> if they are not
 installed globally or are outdated.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --user <span class="nv">Cython</span><span class="o">==</span><span class="m">0</span>.27.3
+pip install --user wrap
+pip install --user tools
+</pre></div>
+</div>
+<p>We set the library and python paths:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:<span class="nv">$HOME</span>/multinest/MultiNest_v3.12_CMake/multinest/lib/
+<span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$HOME</span>/.local/lib/python2.7/site-packages/:<span class="nv">$PYTHONPATH</span>
 </pre></div>
 </div>
 <p>To prepare MPI from <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
@@ -338,6 +349,7 @@ do this using the information above and on the <a class="reference internal" hre
 <p>To build and install <a class="reference external" href="https://www.gnu.org/software/gsl/">GSL</a> from <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget -v http://mirror.koddos.net/gnu/gsl/http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
 tar -xvf gsl-latest.tar.gz
+mkdir gsl-latest/build
 <span class="nb">cd</span> gsl-latest/build
 ./configure <span class="nv">FC</span><span class="o">=</span>ifort <span class="nv">CC</span><span class="o">=</span>icc <span class="nv">CFLAGS</span><span class="o">=</span><span class="s1">&#39;-O3 -xAVX -axCORE-AVX2 -mieee-fp -funroll-loops&#39;</span> --prefix<span class="o">=</span><span class="nv">$HOME</span>/gsl
 make
@@ -404,7 +416,7 @@ environment variables need to be exported in your <code class="docutils literal 
 in your <code class="docutils literal notranslate"><span class="pre">.bash.rc</span></code> script which can be sourced by your <code class="docutils literal notranslate"><span class="pre">.bash_profile</span></code>
 script (the default default behaviour).</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">/sara/sw/python-2.7.9/</span></code> Python distribution does not
-seem to have <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.20)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> linked against the Intel MKL library. Instead it
+seem to have <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.21)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> linked against the Intel MKL library. Instead it
 uses the open-source, multithreaded OpenBLAS library which still offers an
 optimised interface to BLAS and LAPACK. However for our purposes on distributed
 memory architectures, we  wish to export the following environment variables
@@ -422,10 +434,10 @@ multithreading regions are used which do not take instructions from the
 above.
 However, the <code class="docutils literal notranslate"><span class="pre">MKL_NUM_THREADS</span></code> environment variable should either not be
 exported (in which case the <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> variable is used), or increased
-so that <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.20)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> can multithread outside of the local multithreading
+so that <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.21)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> can multithread outside of the local multithreading
 regions in the X-PSI extension modules.</p>
 <p>Note that OpenBLAS may not be compiled against the OpenMP library but instead
-use Pthreads. If <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.20)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> <em>is</em> linked against MKL, we have covered all
+use Pthreads. If <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.21)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> <em>is</em> linked against MKL, we have covered all
 possibilities because MKL whilst uses OpenMP threading but the
 <code class="docutils literal notranslate"><span class="pre">MKL_NUM_THREADS</span></code> environment variable takes precedence if set and thus we
 ensure it is set to one.</p>
@@ -445,13 +457,101 @@ compiler and linked against MKL.</p>
 </div>
 <div class="section" id="lisa">
 <h2>Lisa<a class="headerlink" href="#lisa" title="Permalink to this headline">¶</a></h2>
-<p>The following are <em>system-specific</em> instructions for the
-<a class="reference external" href="https://userinfo.surfsara.nl/systems/lisa">Lisa</a> Cluster, <em>that differ from
-the Cartesius instructions given above</em>.</p>
-<p>The instruction sets for targeting Intel Ivy Bridge processors (Lisa normal
-nodes) are CORE-AVX-I. Use these arguments for the C and Fortran compiler
-flags <code class="docutils literal notranslate"><span class="pre">-ax</span></code> (Intel compiler).</p>
-<p>The structure of the Lisa filesystem for batch jobs is different to Cartesius.</p>
+<p>The following are the instructions for the
+<a class="reference external" href="https://userinfo.surfsara.nl/systems/lisa">Lisa</a> Cluster, that mostly correspond to those
+of Cartesius instructions given above but with few exceptions.</p>
+<p>After cleaning your home file system of existing versions of dependencies (as explained for Cartesius), we need to make the environment with Intel toolchain information:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load <span class="m">2019</span>
+module load intel/2019b
+</pre></div>
+</div>
+<p>The default <code class="docutils literal notranslate"><span class="pre">cmake</span></code> module can be obtained from:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load Cmake
+</pre></div>
+</div>
+<p>To prepare the correct Python environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load Python/2.7.15-intel-2019b
+</pre></div>
+</div>
+<p>Next, we need to use <code class="docutils literal notranslate"><span class="pre">pip</span></code> to install packages
+locally in <code class="docutils literal notranslate"><span class="pre">$HOME/.local/lib/python2.7/site-packages/</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --user <span class="nv">Cython</span><span class="o">==</span><span class="m">0</span>.28<span class="p">;</span> pip install --user wrapt
+</pre></div>
+</div>
+<p>To prepare MPI and MultiNest from <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
+tar -xvf mpi4py-3.0.0.tar.gz
+<span class="nb">cd</span> mpi4py-3.0.0
+python setup.py install --user
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/farhanferoz/MultiNest.git ~/multinest
+<span class="nb">cd</span> ~/multinest/MultiNest_v3.12_CMake/multinest
+mkdir build
+<span class="nb">cd</span> build
+cmake -DCMAKE_<span class="o">{</span>C,CXX<span class="o">}</span><span class="nv">_FLAGS</span><span class="o">=</span><span class="s2">&quot;-O3 -xAVX -axCORE-AVX2 -funroll-loops&quot;</span> -DCMAKE_Fortran_FLAGS<span class="o">=</span><span class="s2">&quot;-O3 -xAVX -axCORE-AVX2 -funroll-loops&quot;</span> ..
+make
+</pre></div>
+</div>
+<p>In case of having problems, the <code class="docutils literal notranslate"><span class="pre">-xAVX</span></code> and <code class="docutils literal notranslate"><span class="pre">-axCORE-AVX2</span></code> compiler flags can be omitted.</p>
+<p>Finally, we need the Python interface to MultiNest, GSL, and X-PSI, all starting from <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
+<span class="nb">cd</span> pymultinest
+python setup.py install --user
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> wget -v http://mirror.koddos.net/gnu/gsl/http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+tar -xvf gsl-latest.tar.gz
+<span class="nb">cd</span> gsl-2.6
+mkdir build<span class="p">;</span> <span class="nb">cd</span> build
+../configure <span class="nv">CC</span><span class="o">=</span>icc <span class="nv">CFLAGS</span><span class="o">=</span><span class="s1">&#39;-O3 -xAVX -axCORE-AVX2 -mieee-fp -funroll-loops&#39;</span> --prefix<span class="o">=</span><span class="nv">$HOME</span>/gsl
+make
+make install
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/gsl/bin:<span class="nv">$PATH</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> git clone https://github.com/ThomasEdwardRiley/xpsi.git
+<span class="nb">cd</span> xpsi
+<span class="nv">LDSHARED</span><span class="o">=</span><span class="s2">&quot;icc -shared&quot;</span> <span class="nv">CC</span><span class="o">=</span>icc python setup.py install --user
+</pre></div>
+</div>
+<p>The success of different installation steps can be checked as described in the Cartesius instructions, as well as the instructions for possible re-installations.</p>
+<p>The structure of the Lisa filesystem for batch jobs is different to Cartesius. Here is given an example job:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH -N 4</span>
+<span class="c1">#SBATCH --tasks-per-node=8</span>
+<span class="c1">#SBATCH -t 3-00:00:00</span>
+<span class="c1">#SBATCH -p normal</span>
+<span class="c1">#SBATCH --job-name=run1</span>
+
+<span class="nb">echo</span> start of job in directory <span class="nv">$SLURM_SUBMIT_DIR</span>
+<span class="nb">echo</span> number of nodes is <span class="nv">$SLURM_JOB_NUM_NODES</span>
+<span class="nb">echo</span> the allocated nodes are:
+<span class="nb">echo</span> <span class="nv">$SLURM_JOB_NODELIST</span>
+
+module load <span class="m">2019</span>
+module load intel/2019b
+module load Python/2.7.15-intel-2019b
+
+cp -r <span class="nv">$HOME</span>/NICER_analyses/J0030_ST_PST <span class="nv">$TMPDIR</span>
+
+<span class="nb">cd</span> <span class="nv">$TMPDIR</span>/J0030_ST_PST
+
+<span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$HOME</span>/.local/lib/python2.7/site-packages/:<span class="nv">$PYTHONPATH</span>
+
+<span class="nb">export</span> <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span> <span class="nv">OPENBLAS_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span> <span class="nv">GOTO_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span> <span class="nv">MKL_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$HOME</span>/multinest/MultiNest_v3.12_CMake/multinest/lib/:<span class="nv">$LD_LIBRARY_PATH</span>
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/gsl/bin:<span class="nv">$PATH</span>
+
+srun python main_run1.py &gt; out_run1 <span class="m">2</span>&gt; err_run1
+
+cp run1* out_run1 err_run1 <span class="nv">$HOME</span>/NICER_analyses/J0030_ST_PST/.
+<span class="c1">#end of job file</span>
+</pre></div>
+</div>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <p class="last">Things here.</p>
@@ -479,7 +579,7 @@ flags <code class="docutils literal notranslate"><span class="pre">-ax</span></c
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020 Thomas E. Riley
+        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
 
     </p>
   </div>

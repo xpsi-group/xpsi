@@ -65,6 +65,29 @@ receiving likelihood function evaluation requests.
 Intel compiler collection,\ [#]_ with the CORE-AVX2 instruction set, for X-PSI
 and dependencies (apart from :mod:`numpy`, which was centrally installed).
 
+
+.. _R21:
+
+`Riley et al. 2021 (ApJL in press)`__
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _ADS21: https://ui.adsabs.harvard.edu/abs/2021arXiv210506980R/abstract
+
+__ ADS21_
+
+`Riley et al. (2021; hereafter R21)`__ used ``v0.7.6`` of X-PSI to model
+*NICER* observations of the rotation-powered millisecond X-ray pulsar
+J0740+6620.
+
+__ ADS21_
+
+See also the associated `Zenodo repository`__.
+
+.. _Zenodo21: https://zenodo.org/record/4697625
+
+__ Zenodo21_
+
+
 .. rubric:: Footnotes
 
 .. [#] Variation between models on the same processor results from a
