@@ -202,10 +202,10 @@ def importance(target, importance,
         """ Helper function for to break conditional statement. """
         if not hasattr(target, 'prior') or not hasattr(importance, 'prior'):
             print('No prior object available... prior reweighting ignored.')
-            return 1.0 # silently terminate
+            return 2.0 # silently terminate
         if not hasattr(target.prior, 'density') or not hasattr(importance.prior, 'density'):
             print('No prior density method available... prior reweighting ignored.')
-            return 1.0 # silently terminate
+            return 2.0 # silently terminate
 
         _target_theta = [theta[names.index(n)] for n in target.names]
         _importance_theta = [theta[names.index(n)] for n in importance.names]
@@ -236,7 +236,7 @@ def importance(target, importance,
 
     for i in range(_iterations):
         if _rank == 0:
-            if i == _iterations - 1:
+            if i == _iterations - 1 and _ref.shape[0]%_size != 0:
                 _remaining = _ref.shape[0]%_size
                 theta = [list(vector) for vector in _ref[i*_size:i*_size+_remaining,2:]]
                 theta += [None]*(_size - _remaining)
@@ -267,7 +267,7 @@ def importance(target, importance,
             _target = _comm.gather(_target, root=0)
 
         if _rank == 0:
-            if i == _iterations - 1:
+            if i == _iterations - 1 and _ref.shape[0]%_size != 0:
                 _ref[i*_size:i*_size+_remaining,0] *= _np.array(weight[:_remaining])
                 if likelihood_change:
                     _ref[i*_size:i*_size+_remaining,1] = -2.0*_np.array(_target[:_remaining])

@@ -34,6 +34,28 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+[v0.7.8] - 2021-22-09
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+Changed
+^^^^^^^
+
+* Sign correction in the importance sampling involving prior re-weighting. (T.R.)
+* Correction of the image appearing on the :mod:`~.HotRegion` page. (S.V.)
+* Minor typos corrected. (T.S. & Y.K.)
+* Updating Synthesize class to handle zero background and make sure that
+ the input background does not get modified once it gets called more than twice. (T.S. & Y.K.)
+
+Added
+^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+* Thomas Riley (T.R.) Serena Vinciguerra (S.V.) , Tuomo Salmi (T.S.) and Yves Kini (Y.K.)
 
 
 [v0.7.7] - 2021-06-24
@@ -899,7 +921,7 @@ Fixed
 ^^^^^
 
 * Ensure consistency between input parameter ``bounds`` and ``values`` by
-  always requiring dictionaries. Fix applies to ``Elsewhere`` and 
+  always requiring dictionaries. Fix applies to ``Elsewhere`` and
   ``Photosphere``. Courtesy Sebastien Guillot.
 * Gravitational mass doc typo fix.
 
