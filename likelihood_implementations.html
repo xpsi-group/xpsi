@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Likelihoods &mdash; xpsi 0.7.7 documentation</title>
+  <title>Likelihoods &mdash; xpsi 0.7.8 documentation</title>
   
 
   
@@ -293,7 +293,7 @@ log-factorials of data count numbers.</td>
 
 <dl class="function">
 <dt id="xpsi.likelihoods.eval_marginal_likelihood">
-<code class="descclassname">xpsi.likelihoods.</code><code class="descname">eval_marginal_likelihood</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice counts</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>__Pyx_memviewslice neg_sum_ln_data_factorial</em>, <em>__Pyx_memviewslice support</em>, <em>size_t workspace_intervals</em>, <em>double epsabs</em>, <em>double epsrel</em>, <em>double epsilon</em>, <em>double sigmas</em>, <em>double llzero</em>, <em>allow_negative=False</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.likelihoods.eval_marginal_likelihood" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">xpsi.likelihoods.</code><code class="descname">eval_marginal_likelihood</code><span class="sig-paren">(</span><em>double exposure_time</em>, <em>__Pyx_memviewslice phases</em>, <em>__Pyx_memviewslice counts</em>, <em>components</em>, <em>component_phases</em>, <em>phase_shifts</em>, <em>__Pyx_memviewslice neg_sum_ln_data_factorial</em>, <em>__Pyx_memviewslice support</em>, <em>size_t workspace_intervals</em>, <em>double epsabs</em>, <em>double epsrel</em>, <em>double epsilon</em>, <em>double sigmas</em>, <em>double llzero</em>, <em>allow_negative=False</em>, <em>background=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.likelihoods.eval_marginal_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the Poisson likelihood.</p>
 <p>The count rate is integrated over phase intervals.</p>
 <p>A Newton iteration procedure is implemented channel-by-channel to
@@ -358,6 +358,11 @@ can be negative due to oscillations. For the default Akima Periodic
 spline from GSL, such oscillations should manifest as small relative
 to those present in cubic splines, for instance, because it is
 designed to handle a rapidly changing second-order derivative.</li>
+<li><strong>background</strong> (<em>obj</em>) – If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then a C-contiguous <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of
+background count rates where phase interval increases with column
+number. Useful for phase-dependent backgrounds, or a phase-independent
+background if the channel-by-channel background variable prior support
+is restricted.</li>
 </ul>
 </td>
 </tr>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example script and modules &mdash; xpsi 0.7.7 documentation</title>
+  <title>Example script and modules &mdash; xpsi 0.7.8 documentation</title>
   
 
   
@@ -259,7 +259,7 @@ four physical cores, we spawn as many MPI processes.</p>
 (see, e.g., <a class="reference internal" href="SURFsara_systems.html#surfsystems"><span class="std std-ref">SURFsara systems</span></a>) to avoid hybrid parallelisation by
 libraries linked to NumPy and GSL, for instance.</p>
 </div>
-<p>The optional <code class="docutils literal notranslate"><span class="pre">-m</span></code> argument is to run the module <code class="xref py py-mod docutils literal notranslate"><span class="pre">mpi4py</span></code> as main, which
+<p>The optional <code class="docutils literal notranslate"><span class="pre">-m</span></code> argument is to run the module <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/mpi4py.html#module-mpi4py" title="(in MPI for Python v3.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mpi4py</span></code></a> as main, which
 enables elegant termination of all MPI processes if one process encounters
 an unhandled exception, for instance; without out this flag, MPI processes
 may hang if an unhandled exception is raised in a subset of processes. An

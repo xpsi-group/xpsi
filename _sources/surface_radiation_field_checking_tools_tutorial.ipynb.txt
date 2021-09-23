@@ -36,7 +36,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "To run this tutorial, you fully you'll need to change the atmosphere extensions as instructed below. Moreover, you'll need numerical atmosphere data. The data used for this tutorial is not the intellectual property of the X-PSI team so we do not distribute it. The author of the atmosphere model data is listed where relevant below."
+    "To run this tutorial, you'll need to change the atmosphere extensions as instructed below. Moreover, you'll need numerical atmosphere data. The data used for this tutorial is not the intellectual property of the X-PSI team so we do not distribute it. The author of the atmosphere model data is listed where relevant below."
    ]
   },
   {

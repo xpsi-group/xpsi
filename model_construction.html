@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modeling &mdash; xpsi 0.7.7 documentation</title>
+  <title>Modeling &mdash; xpsi 0.7.8 documentation</title>
   
 
   
@@ -2636,7 +2636,7 @@ by the solid curves without markers.</p>
 </pre></div>
 </div>
 </div>
-<p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, pass it to the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object, which stores a mutual reference to itself in <code class="docutils literal notranslate"><span class="pre">prior</span></code>. Note that if you have hyperparameters defined in the parameter subspace of <code class="docutils literal notranslate"><span class="pre">prior</span></code>, the prior needs to be passed upon instantation of the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object so that the hyperparameters get merged into the global parameter space; this is not demonstrated in this tutorial.</p>
+<p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, pass it to the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object, which stores a mutual reference to itself in <code class="docutils literal notranslate"><span class="pre">prior</span></code>. Note that if you have hyperparameters defined in the parameter subspace of <code class="docutils literal notranslate"><span class="pre">prior</span></code>, the prior needs to be passed upon instantiation of the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object so that the hyperparameters get merged into the global parameter space; this is not demonstrated in this tutorial.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
 </pre></div>

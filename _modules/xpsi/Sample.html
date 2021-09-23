@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Sample &mdash; xpsi 0.7.7 documentation</title>
+  <title>xpsi.Sample &mdash; xpsi 0.7.8 documentation</title>
   
 
   
@@ -412,10 +412,8 @@
     <span class="k">def</span> <span class="nf">_prior_reweight</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Helper function for to break conditional statement. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;prior&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">importance</span><span class="p">,</span> <span class="s1">&#39;prior&#39;</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No prior object available... prior reweighting ignored.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="mf">1.0</span> <span class="c1"># silently terminate</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">prior</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">importance</span><span class="o">.</span><span class="n">prior</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No prior density method available... prior reweighting ignored.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="mf">1.0</span> <span class="c1"># silently terminate</span>
 
         <span class="n">_target_theta</span> <span class="o">=</span> <span class="p">[</span><span class="n">theta</span><span class="p">[</span><span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
@@ -447,7 +445,7 @@
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_iterations</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">_iterations</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">_iterations</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">%</span><span class="n">_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">_remaining</span> <span class="o">=</span> <span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">%</span><span class="n">_size</span>
                 <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="k">for</span> <span class="n">vector</span> <span class="ow">in</span> <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="o">+</span><span class="n">_remaining</span><span class="p">,</span><span class="mi">2</span><span class="p">:]]</span>
                 <span class="n">theta</span> <span class="o">+=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">_size</span> <span class="o">-</span> <span class="n">_remaining</span><span class="p">)</span>
@@ -478,7 +476,7 @@
             <span class="n">_target</span> <span class="o">=</span> <span class="n">_comm</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">_target</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">_rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">_iterations</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">_iterations</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">_ref</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">%</span><span class="n">_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="o">+</span><span class="n">_remaining</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weight</span><span class="p">[:</span><span class="n">_remaining</span><span class="p">])</span>
                 <span class="k">if</span> <span class="n">likelihood_change</span><span class="p">:</span>
                     <span class="n">_ref</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="n">_size</span><span class="o">+</span><span class="n">_remaining</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_target</span><span class="p">[:</span><span class="n">_remaining</span><span class="p">])</span>
