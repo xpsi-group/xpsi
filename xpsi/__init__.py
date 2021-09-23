@@ -4,7 +4,7 @@ An open-source package for neutron star astrostatistics.
 
 """
 from __future__ import print_function
-__version__ = "0.7.7"
+__version__ = "0.7.8"
 __author__ = "Thomas E. Riley"
 
 try:

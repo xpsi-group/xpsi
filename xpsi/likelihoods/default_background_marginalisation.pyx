@@ -130,7 +130,8 @@ def eval_marginal_likelihood(double exposure_time,
                              double epsilon,
                              double sigmas,
                              double llzero,
-                             allow_negative = False):
+                             allow_negative = False,
+                             background = None):
     """ Evaluate the Poisson likelihood.
 
     The count rate is integrated over phase intervals.
@@ -221,6 +222,13 @@ def eval_marginal_likelihood(double exposure_time,
         to those present in cubic splines, for instance, because it is
         designed to handle a rapidly changing second-order derivative.
 
+    :param obj background:
+        If not ``None``, then a C-contiguous :class:`numpy.ndarray` of
+        background count rates where phase interval increases with column
+        number. Useful for phase-dependent backgrounds, or a phase-independent
+        background if the channel-by-channel background variable prior support
+        is restricted.
+
     :returns:
         A tuple ``(double, 2D ndarray, 1D ndarray)``. The first element is
         the logarithm of the marginal likelihood. The second element is the
@@ -241,9 +249,14 @@ def eval_marginal_likelihood(double exposure_time,
         double[::1] MCL_BACKGROUND = np.zeros(components[0].shape[0], dtype = np.double)
         double[::1] MCL_BACKGROUND_GIVEN_SUPPORT = np.zeros(components[0].shape[0], dtype = np.double)
 
+        double[:,::1] _background
+
         double n = <double>(phases.shape[0] - 1)
         double SCALE = exposure_time / n
         double _val
+
+    if background is not None:
+        _background = background
 
     cdef args a
     a.n = <size_t>n
@@ -361,6 +374,8 @@ def eval_marginal_likelihood(double exposure_time,
 
         for j in range(phases.shape[0] - 1):
             STAR[i,j] *= n
+            if background is not None:
+                STAR[i,j] += _background[i,j]
 
             av_STAR += STAR[i,j]
             av_DATA += counts[i,j]

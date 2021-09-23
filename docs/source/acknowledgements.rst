@@ -33,6 +33,9 @@ Requirement is to have added a feature to latest major version.
 People who are experienced with the X-PSI package.
 
 * Devarshi Choudhury (d.choudhury[at]uva.nl), University of Amsterdam
+* Serena Vinciguerra (s.vinciguerra[at]uva.nl), University of Amsterdam
+* Tuomo Salmi (t.h.j.salmi[at]uva.nl)
+* Yves Kini (y.kini[at]uva.nl)
 
 **Science Case developers**
 
@@ -56,9 +59,12 @@ Community
 Explicit engagement, testing (including contribution of patches explicitly or
 implicitly), and (optionally) direct application to their research.
 
-* Sebastien Guillot
 * Devarshi Choudhury
+* Serena Vinciguerra
+* Sebastien Guillot
 * Anna Bilous
+* Tuomo Salmi
+* Yves Kini
 * Emma van der Wateren
 * Bob de Witte
 
