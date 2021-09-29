@@ -17,9 +17,6 @@ Summary
 Fixed
 ^^^^^
 
-* A bug in :meth:`~.Likelihood.Likelihood.check` that prevented checking
-  the likelihood function for more than one point.
-
 Added
 ^^^^^
 
@@ -34,6 +31,78 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+
+
+[v0.7.8] - 2021-22-09
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Correction in the importance sampling function. If the number of MPI
+  processes is a factor of the number of samples reweighted, a subset of
+  samples, with cardinality equal to the size of the MPU world, was not
+  reweighted but is included for renormalisation with the same weight as the
+  input weight. E.g., if there is one MPI process, then the last sample is not
+  reweighted, so the output weight is equal to the input weight. (S.V.)
+* Correction of the image appearing on the :mod:`~.HotRegion` page. (S.V.)
+* Minor typos corrected. (T.S. & Y.K.)
+
+Changed
+^^^^^^^
+
+* Updated the :func:`~.tools.synthesise_exposure` and
+  :func:`~.tools.synthesise_given_total_count_number` functions to handle zero
+  background and make sure that the input background memory buffer does not get
+  modified by the synthesis routines. (T.S. & Y.K.)
+* Added a keyword argument to the default background marginalisation function
+  to enable passing of a background signal in the form of a channel-phase
+  interval buffer. The background should already be averaged over phase
+  intervals, having units of counts/s. Useful for phase-dependent backgrounds,
+  or a phase-independent background if the channel-by-channel background
+  variable prior support is restricted.
+
+Added
+^^^^^
+
+* Updates to the project acknowledgements page of the documentation.
+
+Attribution
+^^^^^^^^^^^
+
+* Serena Vinciguerra (S.V.), Yves Kini (Y.K.), and Tuomo Salmi (T.S.).
+
+
+[v0.7.7] - 2021-06-24
+~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Bugs in mesh cell allocation routine. These bugs occur for some specific
+  subset of hot regions with both a superseding member region and a ceding
+  member region and both radiate. This bug does not affect any production
+  analyses to date, but was encountered by D.C. when preparing a model with
+  such a hot region for posterior sampling.
+* Importance sampling bug when reweighting the likelihood function.
+
+Added
+^^^^^
+
+* Guidelines to the documentation for dependency citation.
+* Tips for installing X-PSI on a macOS in the documentation (S.V. & D.C.).
+* Some additional lines to install X-PSI on SURFsara's Cartesius (S.V.).
+* Instructions to install X-PSI on SURFsara's Lisa (T.S.).
+
+Attribution
+^^^^^^^^^^^
+
+* With thanks to Devarshi Choudhury (D.C.) for noticing and investigating
+  potentially buggy mesh construction behaviour that was, indeed, buggy.
+* With thanks to Serena Vinciguerra for noticing and investigating
+  potentially buggy importance sampling behaviour that was, indeed, buggy.
+* With thanks to Serena Vinciguerra (S.V.), D.C., and
+  Tuomo Salmi (T.S.) for patches to documentation install instructions.
 
 [v0.7.6] - 2021-05-16
 ~~~~~~~~~~~~~~~~~~~~~
@@ -71,6 +140,12 @@ Added
 * An MPI-capable importance sampling method that can handle likelihood function
   and prior PDF changes. This is useful to save computation time. This feature
   is being tested and developed.
+
+Fixed
+^^^^^
+
+* A bug in :meth:`~.Likelihood.Likelihood.check` that prevented checking
+  the likelihood function for more than one point.
 
 Attribution
 ^^^^^^^^^^^
@@ -861,7 +936,7 @@ Fixed
 ^^^^^
 
 * Ensure consistency between input parameter ``bounds`` and ``values`` by
-  always requiring dictionaries. Fix applies to ``Elsewhere`` and 
+  always requiring dictionaries. Fix applies to ``Elsewhere`` and
   ``Photosphere``. Courtesy Sebastien Guillot.
 * Gravitational mass doc typo fix.
 

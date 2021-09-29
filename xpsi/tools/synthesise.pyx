@@ -189,6 +189,7 @@ def synthesise_exposure(double exposure_time,
             if STAR[i,j] < 0.0:
                 STAR[i,j] = 0.0
 
+
         for j in range(phases.shape[0] - 1):
             BACKGROUND += background[i,j]
 
@@ -199,7 +200,10 @@ def synthesise_exposure(double exposure_time,
     free(acc)
     free(interp)
 
-    SCALE_BACKGROUND = expected_background_counts / BACKGROUND
+    if BACKGROUND == 0.0: # allow zero background
+        SCALE_BACKGROUND = 0.0
+    else:
+        SCALE_BACKGROUND = expected_background_counts / BACKGROUND
 
     cdef:
         const gsl_rng_type *T
@@ -213,11 +217,11 @@ def synthesise_exposure(double exposure_time,
     for i in range(STAR.shape[0]):
         for j in range(STAR.shape[1]):
             STAR[i,j] *= exposure_time
-            background[i,j] *= SCALE_BACKGROUND
 
-            STAR[i,j] += background[i,j]
+            STAR[i,j] += background[i,j] * SCALE_BACKGROUND
 
             SYNTHETIC[i,j] = gsl_ran_poisson(r, STAR[i,j])
+
 
     gsl_rng_free(r)
 
@@ -402,7 +406,11 @@ def synthesise_given_total_count_number(double[::1] phases,
     free(interp)
 
     SCALE_STAR = expected_star_counts / STAR
-    SCALE_BACKGROUND = expected_background_counts / BACKGROUND
+
+    if BACKGROUND == 0.0: # allow zero background
+        SCALE_BACKGROUND = 0.0
+    else:
+        SCALE_BACKGROUND = expected_background_counts / BACKGROUND
 
     print('Exposure time: %.6f [s]' % SCALE_STAR)
     print('Background normalisation: %.8e' % (SCALE_BACKGROUND/SCALE_STAR))
@@ -416,12 +424,11 @@ def synthesise_given_total_count_number(double[::1] phases,
     T = gsl_rng_default
     r = gsl_rng_alloc(T)
 
+
     for i in range(_signal.shape[0]):
         for j in range(phases.shape[0] - 1):
             _signal[i,j] *= SCALE_STAR
-            background[i,j] *= SCALE_BACKGROUND
-
-            _signal[i,j] += background[i,j]
+            _signal[i,j] += background[i,j] * SCALE_BACKGROUND
 
             SYNTHETIC[i,j] = gsl_ran_poisson(r, _signal[i,j])
 

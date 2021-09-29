@@ -901,10 +901,32 @@ def allocate_cells(size_t num_cells,
                                0,
                                Omega,
                                w)
+    #print(super_area)
+    #if super_area == 0.0:
+    #    super_area = integrateSpot(super_colat_lims[0],
+    #                               super_colat_lims[0] + 0.5*superRadius,#(super_colat_lims[1] + super_colat_lims[0])/2.0,
+    #                               R_eq,
+    #                               epsilon,
+    #                               zeta,
+    #                               superColatitude,
+    #                               superRadius,
+    #                               holeRadius,
+    #                               holeColatitude,
+    #                               holeAzimuth,
+    #                               0,
+    #                               Omega,
+    #                               w)
+    #print(super_area, sqrt(<double>num_cells * 1000.0))
+    #print(super_colat_lims[0], super_colat_lims[1])
+    #print(R_eq, epsilon, zeta, Omega)
+    #print(superColatitude, superRadius)
+    #print(holeRadius, holeColatitude, holeAzimuth)
 
     if cedeRadius == 0.0: # no ceding region
+        if super_area == 0.0: # Gaussian integral did not resolve
+            super_area = super_cellArea / 1000.0
         super_sqrt_numCell = ceil(sqrt((<double>num_cells) * super_cellArea / super_area))
-
+        #print(super_sqrt_numCell)
         if super_sqrt_numCell < min_sqrt_num_cells:
             super_sqrt_numCell = min_sqrt_num_cells
         elif super_sqrt_numCell > max_sqrt_num_cells:
@@ -930,12 +952,14 @@ def allocate_cells(size_t num_cells,
                 superColatitude = M_PI - superColatitude_cpy
             else:
                 cede_colat_lims[1] = cedeColatitude + cedeRadius
+                superColatitude = superColatitude_cpy
 
             cede_boundary_phi = M_PI
             cede_cellArea = M_2PI
         else:
             cede_colat_lims[0] = cedeColatitude - cedeRadius
             cede_colat_lims[1] = cedeColatitude + cedeRadius
+            superColatitude = superColatitude_cpy
 
             # Right-spherical triangle
             cede_boundary_phi = asin(sin(cedeRadius) / sin(cedeColatitude))
@@ -948,6 +972,11 @@ def allocate_cells(size_t num_cells,
                                           zeta,
                                           0,
                                           w)
+
+        #print(cede_colat_lims[0], cede_colat_lims[1])
+        #print(R_eq, epsilon, zeta, Omega)
+        #print(cedeColatitude, cedeRadius)
+        #print(superRadius, superColatitude, superAzimuth)
 
         cede_area = integrateSpot(cede_colat_lims[0],
                                      cede_colat_lims[1],
@@ -962,6 +991,11 @@ def allocate_cells(size_t num_cells,
                                      0,
                                      Omega,
                                      w)
+
+        if super_area == 0.0: # Gausian integral did not resolve
+            super_area = super_cellArea / 1000.0
+        if cede_area == 0.0: # Gausian integral did not resolve
+            cede_area = cede_cellArea / 1000.0
 
         if fast_super > 0.0:
             f = fast_super / (fast_super + fast_cede)
@@ -979,7 +1013,9 @@ def allocate_cells(size_t num_cells,
             super_numCell = 0.0
             cede_numCell = <double>num_cells
 
+        #print(super_numCell, super_cellArea, super_area)
         super_sqrt_numCell = ceil(sqrt(super_numCell * super_cellArea / super_area))
+        #print(cede_numCell, cede_cellArea, cede_area)
         cede_sqrt_numCell = ceil(sqrt(cede_numCell * cede_cellArea / cede_area))
 
         if super_sqrt_numCell < min_sqrt_num_cells:
