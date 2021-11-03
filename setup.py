@@ -200,7 +200,9 @@ if __name__ == '__main__':
     extensions = []
 
     for mod in modnames:
-        extensions.append(EXTENSION(mod))
+        ex = EXTENSION(mod)
+        ex.cython_directives = {'language_level': "3"} #all are Python-3
+        extensions.append(ex)
 
     setup(
         name = 'xpsi',

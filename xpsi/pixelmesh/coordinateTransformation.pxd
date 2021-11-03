@@ -1,5 +1,5 @@
-from globalRayMap cimport RAY_MAP
-from geometricConfiguration cimport _GEOM
+from .globalRayMap cimport RAY_MAP
+from .geometricConfiguration cimport _GEOM
 #from focusRayMap cimport FOCUS_RAY_MAP
 
 cdef void BOYERLINDQUIST_2_SPHERICAL(RAY_MAP *const MAP,

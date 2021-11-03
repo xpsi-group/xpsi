@@ -4,8 +4,6 @@
 #cython: wraparound=False
 #cython: embedsignature=True
 
-from __future__ import print_function
-
 import numpy as np
 cimport numpy as np
 from libc.stdlib cimport malloc, free
