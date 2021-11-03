@@ -1,5 +1,3 @@
-from __future__ import division
-
 from ._global_imports import *
 
 try:
@@ -245,7 +243,7 @@ class PulsePlot(SignalPlot):
 
         yield
 
-    def next(self):
+    def __next__(self):
         """ Update posterior expected signals given the updated signal object.
 
         Plots signals if :mod:`fgivenx` is not used, otherwise returns

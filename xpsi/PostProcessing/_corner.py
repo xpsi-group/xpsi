@@ -1,5 +1,3 @@
-from __future__ import division, print_function
-
 from scipy.special import logsumexp
 
 from ._global_imports import *
@@ -523,7 +521,7 @@ class CornerPlotter(PostProcessor):
         if scale_attrs is None:
             scale_attrs = {}
 
-        for key, value in scale_attrs.iteritems():
+        for key, value in scale_attrs.items():
             if hasattr(plotter.settings, key):
                 if isinstance(value, float) or isinstance(value, int):
                     setattr(plotter.settings, key,
@@ -1014,7 +1012,7 @@ class CornerPlotter(PostProcessor):
                   'Added crosshairs')
     def _add_crosshairs(plotter, truths):
         """ Add parameter crosshairs to triangle plot. """
-        spine = next(plotter.subplots[0,0].spines.itervalues())
+        spine = next(plotter.subplots[0,0].spines.values())
         lw = spine.get_linewidth()
         for i, truth in enumerate(truths):
             if truth is not None:
@@ -1049,7 +1047,7 @@ class CornerPlotter(PostProcessor):
                 ax.tick_params(which='minor', colors='black', length=minor_length)
                 ax.xaxis.set_tick_params(which='both', width=lw)
                 ax.yaxis.set_tick_params(which='both', width=lw)
-                for spine in ax.spines.itervalues():
+                for spine in ax.spines.values():
                     spine.set_linewidth(lw)
 
     def _set_line_and_contour_args(self, lw=1.0, alpha=1.0, **kwargs):

@@ -1,5 +1,3 @@
-from __future__ import division, print_function
-
 __all__ = ["make_verbose",
            "verbose",
            "fragile",

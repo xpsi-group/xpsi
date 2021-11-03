@@ -1,5 +1,3 @@
-from __future__ import division, print_function
-
 from ._global_imports import *
 
 class Metadata(object):
@@ -57,10 +55,10 @@ class Metadata(object):
         if kde_settings is not None:
             self.kde_settings = kde_settings
 
-        if truths is not None and None not in truths.itervalues():
+        if truths is not None and None not in truths.values():
             self.truths = truths
         else:
-            self._truths = dict(zip(self.names, [None] * len(self.names)))
+            self._truths = dict(list(zip(self.names, [None] * len(self.names))))
 
     @property
     def ID(self):

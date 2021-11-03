@@ -1,5 +1,3 @@
-from __future__ import division
-
 from ._global_imports import *
 
 from ._signalplot import SignalPlot
@@ -96,7 +94,7 @@ class ResidualPlot(SignalPlot):
         for i in range(self._num_samples):
             wrapped(None, thetas[i,:])
 
-    def next(self):
+    def __next__(self):
         """ Update posterior expected model given the updated signal.
 
         .. note::
