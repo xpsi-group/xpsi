@@ -1,7 +1,4 @@
-from __future__ import division, print_function
-
 from .global_imports import *
-from . import global_imports
 
 from .ParameterSubspace import ParameterSubspace
 

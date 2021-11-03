@@ -1,16 +1,12 @@
 """ Class for managing likelihood function evaluation.
 
 """
-
-from __future__ import division, print_function
-
 __all__ = ["Likelihood"]
 
 from . import _rank
 from . import make_verbose
 
 from .global_imports import *
-from . import global_imports
 
 from .Star import Star
 from .Signal import Signal, LikelihoodError, construct_energy_array

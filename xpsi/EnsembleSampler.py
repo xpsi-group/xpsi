@@ -1,7 +1,5 @@
-from __future__ import division, print_function
 
 from .global_imports import *
-from . import global_imports
 
 from . import _verbose
 
@@ -176,7 +174,7 @@ class EnsembleSampler(_EnsembleSampler):
         else:
             raise PriorError
 
-        moments = map(list, zip(*moments))
+        moments = list(map(list, zip(*moments)))
 
         def helper(p):
             """ Check inclusion in prior support. """

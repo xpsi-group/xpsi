@@ -3,7 +3,6 @@
 An open-source package for neutron star astrostatistics.
 
 """
-from __future__ import print_function
 __version__ = "0.7.8"
 __author__ = "Thomas E. Riley"
 
@@ -121,7 +120,7 @@ if not __XPSI_SETUP__:
             _append = ('.' if msg[-1] not in _ends else '')
             print('Warning: ' + msg + _append)
 
-    import global_imports
+    from . import global_imports
 
     try:
         import rayXpanda
@@ -129,10 +128,10 @@ if not __XPSI_SETUP__:
         __rayXpanda_installed__ = False
     else:
         __rayXpanda_installed__ = True
-        from cellmesh import set_rayXpanda_deflection_limit
+        from .cellmesh import set_rayXpanda_deflection_limit
         set_rayXpanda_deflection_limit(global_imports._pi/2.0)
 
-    from tools import set_phase_interpolant, set_energy_interpolant
+    from .tools import set_phase_interpolant, set_energy_interpolant
     set_phase_interpolant('Akima')
     set_energy_interpolant('Steffen')
 

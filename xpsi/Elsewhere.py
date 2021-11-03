@@ -1,7 +1,7 @@
 from __future__ import division, print_function
 
 from .global_imports import *
-from . import global_imports
+#from . import global_imports
 
 from .cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed_cellMesh
 from .cellmesh.rays import compute_rays as _compute_rays

@@ -1,9 +1,6 @@
-from __future__ import division, print_function
-
 __all__ = ["Signal", "LikelihoodError"]
 
 from .global_imports import *
-from . import global_imports
 
 from .Data import Data
 from .Instrument import Instrument, ChannelError

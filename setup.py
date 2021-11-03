@@ -36,18 +36,18 @@ if __name__ == '__main__':
             print('GNU Scientific Library cannot be located.')
             raise
         else:
-            print('GSL version: ' + gsl_version)
+            print(f'GSL version: {gsl_version}')
             libraries = ['gsl','gslcblas','m'] # default BLAS interface for gsl
-            library_dirs = [gsl_prefix + '/lib']
+            library_dirs = [str(gsl_prefix) + '/lib']
             _src_dir = os.path.dirname(os.path.abspath(__file__))
-            include_dirs = [gsl_prefix + '/include',
+            include_dirs = [str(gsl_prefix) + '/include',
                             numpy.get_include(),
                             join(_src_dir, 'xpsi/include')]
 
             # point to shared library at compile time so runtime resolution
             # is not affected by environment variables, but is determined
             # by the binary itself
-            extra_link_args = ['-Wl,-rpath,%s'%(gsl_prefix+'/lib')]
+            extra_link_args = ['-Wl,-rpath,%s'%(str(gsl_prefix)+'/lib')]
 
         # try to get the rayXpanda library:
         # please modify these compilation steps it does not work for your

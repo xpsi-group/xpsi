@@ -1,9 +1,6 @@
-from __future__ import division, print_function
-
 __all__ = ["Posterior"]
 
 from .global_imports import *
-from . import global_imports
 
 from .Likelihood import Likelihood
 from .Signal import LikelihoodError

@@ -1,18 +1,15 @@
-from __future__ import division, print_function
-
 __all__ = ["Prior"]
 
 from . import _comm, _size, _rank # of MPI.COMM_WORLD
 
 from .global_imports import *
-from . import global_imports
 
 from . import make_verbose
 
 from abc import ABCMeta, abstractmethod
 from .ParameterSubspace import ParameterSubspace
 
-class Prior(ParameterSubspace):
+class Prior(ParameterSubspace, metaclass=ABCMeta):
     """ The joint prior distribution of parameters (including hyperparameters).
 
     Methods to both evaluate the distribution (required by MCMC) and
@@ -39,8 +36,6 @@ class Prior(ParameterSubspace):
         distribution), or iterables of hyperparameters.
 
     """
-    __metaclass__ = ABCMeta
-
     __derived_names__ = None
 
     __draws_from_support__ = 5
@@ -199,7 +194,7 @@ class Prior(ParameterSubspace):
             p[idx] = math.cos(p[idx])
 
         # used ordered names and values if this method is bound
-        ref = dict(zip(self.parameters.names, p))
+        ref = dict(list(zip(self.parameters.names, p)))
 
         raise NotImplementedError('Define a transformation.')
 

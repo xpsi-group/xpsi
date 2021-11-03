@@ -1,7 +1,4 @@
-from __future__ import division, print_function
-
 from .global_imports import *
-from . import global_imports
 
 from .cellmesh.mesh_tools import allocate_cells as _allocate_cells
 from .cellmesh.mesh import construct_spot_cellMesh as _construct_spot_cellMesh

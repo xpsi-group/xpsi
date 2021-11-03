@@ -1,7 +1,4 @@
-from __future__ import division, print_function
-
 from .global_imports import *
-from . import global_imports
 
 from . import make_verbose
 
@@ -13,7 +10,7 @@ from abc import ABCMeta, abstractmethod
 class StrictBoundsError(xpsiError):
     """ Raised if the set parameter value lies beyond strict bounds. """
 
-class Derive(object):
+class Derive(object, metaclass=ABCMeta):
     """ Helper class to bind to parameter instances as a method.
 
     This is a powerful abstract base class for customisting how derived
@@ -111,8 +108,6 @@ class Derive(object):
         ref_2.ref = primary
 
     """
-
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def __init__(self, refs):

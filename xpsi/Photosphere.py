@@ -1,7 +1,4 @@
-from __future__ import division, print_function
-
 from .global_imports import *
-from . import global_imports
 from . import _warning, make_verbose, verbose
 
 from os.path import join as _join
@@ -2008,4 +2005,4 @@ def _veneer(x, y, axes, lw=1.0, length=8, log=(False, False)):
 
     axes.tick_params(which='major', colors='black', length=length, width=lw)
     axes.tick_params(which='minor', colors='black', length=int(length/2), width=lw)
-    plt.setp(axes.spines.values(), linewidth=lw, color='black')
+    plt.setp(list(axes.spines.values()), linewidth=lw, color='black')
