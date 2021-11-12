@@ -171,7 +171,7 @@ class Parameter(object):
             if not isinstance(value, Derive):
                 raise TypeError('It is recommended to subclass the prototype '
                                 'abstract base class ``Derive``.')
-            self.evaluate = MethodType(value, self, Parameter)
+            self.evaluate = MethodType(value, self)
             self.derived = True
         else:
             self.value = value
@@ -259,8 +259,8 @@ class Parameter(object):
     @doc.setter
     def doc(self, doc):
         if isinstance(doc, _six.string_types):
-            lines = [string.strip(line) for line in doc.splitlines()]
-            doc = string.join([line for line in lines if line], '\n')
+            lines = [line.strip() for line in doc.splitlines()]
+            doc = "\n".join([line for line in lines if line])
             if doc[-1] != '.': doc += '.'
             self.__doc__ =  doc
         elif doc is not None:
