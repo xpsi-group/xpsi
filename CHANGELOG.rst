@@ -33,6 +33,52 @@ Attribution
 ^^^^^^^^^^^
 
 
+[v0.7.9] - 2021-26-11
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* New program that automates generation of model modules for common usage
+  patterns, in particular the NICER modelling workflow. The program may be
+  located at ``xpsi/module_generator.py`` and executed as
+  ``python module_generator.py -h`` to see the usage help.
+
+
+Fixed
+^^^^^
+
+* The :class:`~.Background` call method body template and fixed the
+  :class:`~.Signal` class to access the correct property of the background
+  instance.
+
+* Documentation URLs to reference the organisation repository. (D.H.)
+
+
+Added
+^^^^^
+
+* Functionality to the :class:`~.Data` class method for event handling so that
+  it can load events from file when the energy in eV is given.
+
+* Optional maximum energy to use for ray-tracing simulations. Useful if there
+  is a background component such as a powerlaw that is jointly modelled with
+  higher-energy event data using a subset of instruments.
+
+* A phase-shift parameter for each :class:`~.Signal` instance. If there are
+  two or more phase-resolved data-sets, there may be a need to have a phase-
+  shifting parameter for each signal. For phase-summed data sets, the phase-
+  shift can be arbitrarily fixed. Phase-shifts can be derived from other
+  phase-shifts, and one signal's phase-shift can always be fixed as zero and
+  thus locked to the phase shifts of the hot regions.
+
+
+Attribution
+^^^^^^^^^^^
+
+* Daniela Huppenkothen (D.H.).
+
+
 [v0.7.8] - 2021-22-09
 ~~~~~~~~~~~~~~~~~~~~~
 

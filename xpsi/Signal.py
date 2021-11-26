@@ -15,6 +15,7 @@ from .tools.energy_interpolator import energy_interpolator
 from .tools.phase_integrator import phase_integrator
 
 from abc import abstractmethod
+from .Parameter import Parameter
 from .ParameterSubspace import ParameterSubspace
 
 class LikelihoodError(xpsiError):
@@ -58,12 +59,12 @@ class Signal(ParameterSubspace):
 
     :param bool cache:
         Cache intermediary signals during likelihood evalation? When performing
-        post-processing, this needs to be activated for full functionality
-        of the :mod:`~.xpsi.PostProcessing` module. For likelihood
-        function evaluation during sampling, caching should be deactivated
-        because it is not used. It might be useful to activate caching also
-        when preparing a model for a sampling application, to check the
-        likelihood function works as intended.
+        post-processing, this needs to be activated for full functionality of
+        the :mod:`~.xpsi.PostProcessing` module. For likelihood function
+        evaluation during sampling, caching should be deactivated because it is
+        not used. It might be useful to activate caching also when preparing a
+        model for a sampling application, to check the likelihood function
+        works as intended.
 
     :param bool store:
         Deprecated. You can use this or ``cache``, which has the same effect.
@@ -76,6 +77,8 @@ class Signal(ParameterSubspace):
                  interstellar = None,
                  photosphere_prefix = None,
                  cache = False,
+                 bounds = None,
+                 values = None,
                  *args,
                  **kwargs):
 
@@ -120,6 +123,30 @@ class Signal(ParameterSubspace):
         if not isinstance(cache, bool):
             raise TypeError('Activate or deactivate caching with a boolean.')
         self._cache = cache
+
+        if bounds is None: bounds = {}
+        if values is None: values = {}
+
+        doc = """
+        The phase shift for the signal, a periodic parameter [cycles].
+        """
+        phase_bounds = bounds.get('phase_shift', None)
+        phase_value = values.get('phase_shift', 0.0 if phase_bounds is None else None)
+        if phase_value is None:
+            if not phase_bounds or None in phase_bounds:
+                raise ValueError('Phase-shift bounds must be specified.')
+            elif _np.array([not _np.isfinite(b) for b in phase_bounds]).any():
+                raise ValueError('Phase-shift bounds must be finite.')
+            elif not (0.0 <= (phase_bounds[1] - phase_bounds[0]) <= 1.0):
+                raise ValueError('Phase bounds must be separated by '
+                                 'a maximum of one cycle.')
+
+        phase_shift = Parameter('phase_shift',
+                                strict_bounds = (-_np.infty, _np.infty),
+                                bounds = phase_bounds,
+                                doc = doc,
+                                symbol = r'$\phi$',
+                                value = phase_value)
 
         # merge the subspaces; order unimportant
         super(Signal, self).__init__(self._instrument,
@@ -310,7 +337,7 @@ class Signal(ParameterSubspace):
                     raise
 
                 self._background.registered_background = \
-                                self._instrument(self._background.background,
+                                self._instrument(self._background.incident_background,
                                                  self._input_interval_range,
                                                  self._data.index_range)
 
@@ -467,7 +494,8 @@ class Signal(ParameterSubspace):
 
     @property
     def shifts(self):
-        return self._shifts
+        """ Returns the hot region phase plus the instrument phase-shift."""
+        return self._shifts + self['phase_shift']
 
     @shifts.setter
     def shifts(self, obj):
@@ -595,7 +623,7 @@ class Signal(ParameterSubspace):
         raise NotImplementedError('Cannot synthesise data.')
 
 
-def construct_energy_array(num_energies, signals):
+def construct_energy_array(num_energies, signals, max_energy=None):
         """ Construct an array of photon energies for integration.
 
         :param int num_energies:
@@ -644,7 +672,24 @@ def construct_energy_array(num_energies, signals):
             del MAX
 
         # find global limits
-        MAX = ordered[0].energy_edges[-1]
+        _signal_max = ordered[0].energy_edges[-1]
+        if max_energy is not None and max_energy < _signal_max:
+            MAX = max_energy
+
+            # respect maximum energy setting
+            _coverage_gaps = []
+            for _coverage_gap in coverage_gaps:
+
+                if _coverage_gap[0] < MAX <= _coverage_gap[1]:
+                     MAX = _coverage_gap[0]
+
+                if MAX > _coverage_gap[1]:
+                    _coverage_gaps.append(_coverage_gap)
+
+            coverage_gaps = _coverage_gaps
+        else:
+            MAX = _signal_max
+
         for signal in ordered:
             try:
                 MIN
@@ -656,6 +701,10 @@ def construct_energy_array(num_energies, signals):
                 MIN = E
 
         interval = _np.log10(MAX) - _np.log10(MIN)
+
+        # account for gaps to conserve total number of energies requested
+        for _coverage_gap in coverage_gaps:
+            interval -= ( _coverage_gap[1] - _coverage_gap[0] )
 
         energies = _np.array([])
 

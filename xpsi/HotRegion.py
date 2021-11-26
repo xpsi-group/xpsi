@@ -288,6 +288,9 @@ class HotRegion(ParameterSubspace):
                 raise ValueError('Phase-shift bounds must be specified.')
             elif _np.array([not _np.isfinite(b) for b in phase_bounds]).any():
                 raise ValueError('Phase-shift bounds must be finite.')
+            elif not (0.0 <= (phase_bounds[1] - phase_bounds[0]) <= 1.0):
+                raise ValueError('Phase bounds must be separated by '
+                                 'a maximum of one cycle.')
 
         phase_shift = Parameter('phase_shift',
                                 strict_bounds = (-_np.infty, _np.infty),
