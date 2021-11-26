@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Signal &mdash; xpsi 0.7.8 documentation</title>
+  <title>xpsi.Signal &mdash; xpsi 0.7.9 documentation</title>
   
 
   
@@ -226,6 +226,7 @@
 <span class="kn">from</span> <span class="nn">.tools.phase_integrator</span> <span class="kn">import</span> <span class="n">phase_integrator</span>
 
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">.Parameter</span> <span class="kn">import</span> <span class="n">Parameter</span>
 <span class="kn">from</span> <span class="nn">.ParameterSubspace</span> <span class="kn">import</span> <span class="n">ParameterSubspace</span>
 
 <div class="viewcode-block" id="LikelihoodError"><a class="viewcode-back" href="../../signal.html#xpsi.Signal.LikelihoodError">[docs]</a><span class="k">class</span> <span class="nc">LikelihoodError</span><span class="p">(</span><span class="n">xpsiError</span><span class="p">):</span>
@@ -269,12 +270,12 @@
 
 <span class="sd">    :param bool cache:</span>
 <span class="sd">        Cache intermediary signals during likelihood evalation? When performing</span>
-<span class="sd">        post-processing, this needs to be activated for full functionality</span>
-<span class="sd">        of the :mod:`~.xpsi.PostProcessing` module. For likelihood</span>
-<span class="sd">        function evaluation during sampling, caching should be deactivated</span>
-<span class="sd">        because it is not used. It might be useful to activate caching also</span>
-<span class="sd">        when preparing a model for a sampling application, to check the</span>
-<span class="sd">        likelihood function works as intended.</span>
+<span class="sd">        post-processing, this needs to be activated for full functionality of</span>
+<span class="sd">        the :mod:`~.xpsi.PostProcessing` module. For likelihood function</span>
+<span class="sd">        evaluation during sampling, caching should be deactivated because it is</span>
+<span class="sd">        not used. It might be useful to activate caching also when preparing a</span>
+<span class="sd">        model for a sampling application, to check the likelihood function</span>
+<span class="sd">        works as intended.</span>
 
 <span class="sd">    :param bool store:</span>
 <span class="sd">        Deprecated. You can use this or ``cache``, which has the same effect.</span>
@@ -287,6 +288,8 @@
                  <span class="n">interstellar</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">photosphere_prefix</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">cache</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">values</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
@@ -331,6 +334,30 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cache</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Activate or deactivate caching with a boolean.&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="n">cache</span>
+
+        <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        The phase shift for the signal, a periodic parameter [cycles].</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">phase_bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">phase_value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">phase_bounds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">phase_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">phase_bounds</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be specified.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be finite.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">phase_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">phase_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase bounds must be separated by &#39;</span>
+                                 <span class="s1">&#39;a maximum of one cycle.&#39;</span><span class="p">)</span>
+
+        <span class="n">phase_shift</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span>
+                                <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">),</span>
+                                <span class="n">bounds</span> <span class="o">=</span> <span class="n">phase_bounds</span><span class="p">,</span>
+                                <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">,</span>
+                                <span class="n">symbol</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\phi$&#39;</span><span class="p">,</span>
+                                <span class="n">value</span> <span class="o">=</span> <span class="n">phase_value</span><span class="p">)</span>
 
         <span class="c1"># merge the subspaces; order unimportant</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Signal</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">,</span>
@@ -521,7 +548,7 @@
                     <span class="k">raise</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">registered_background</span> <span class="o">=</span> \
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">background</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_instrument</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_background</span><span class="o">.</span><span class="n">incident_background</span><span class="p">,</span>
                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_input_interval_range</span><span class="p">,</span>
                                                  <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">index_range</span><span class="p">)</span></div>
 
@@ -678,7 +705,8 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shifts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span>
+        <span class="sd">&quot;&quot;&quot; Returns the hot region phase plus the instrument phase-shift.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shifts</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">]</span>
 
     <span class="nd">@shifts</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">shifts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
@@ -806,7 +834,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Cannot synthesise data.&#39;</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="construct_energy_array"><a class="viewcode-back" href="../../signal.html#xpsi.Signal.construct_energy_array">[docs]</a><span class="k">def</span> <span class="nf">construct_energy_array</span><span class="p">(</span><span class="n">num_energies</span><span class="p">,</span> <span class="n">signals</span><span class="p">):</span>
+<div class="viewcode-block" id="construct_energy_array"><a class="viewcode-back" href="../../signal.html#xpsi.Signal.construct_energy_array">[docs]</a><span class="k">def</span> <span class="nf">construct_energy_array</span><span class="p">(</span><span class="n">num_energies</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span> <span class="n">max_energy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Construct an array of photon energies for integration.</span>
 
 <span class="sd">        :param int num_energies:</span>
@@ -855,7 +883,24 @@
             <span class="k">del</span> <span class="n">MAX</span>
 
         <span class="c1"># find global limits</span>
-        <span class="n">MAX</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">_signal_max</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">energy_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">max_energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_energy</span> <span class="o">&lt;</span> <span class="n">_signal_max</span><span class="p">:</span>
+            <span class="n">MAX</span> <span class="o">=</span> <span class="n">max_energy</span>
+
+            <span class="c1"># respect maximum energy setting</span>
+            <span class="n">_coverage_gaps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_coverage_gap</span> <span class="ow">in</span> <span class="n">coverage_gaps</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">MAX</span> <span class="o">&lt;=</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                     <span class="n">MAX</span> <span class="o">=</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">MAX</span> <span class="o">&gt;</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">_coverage_gaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_coverage_gap</span><span class="p">)</span>
+
+            <span class="n">coverage_gaps</span> <span class="o">=</span> <span class="n">_coverage_gaps</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">MAX</span> <span class="o">=</span> <span class="n">_signal_max</span>
+
         <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">ordered</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">MIN</span>
@@ -867,6 +912,10 @@
                 <span class="n">MIN</span> <span class="o">=</span> <span class="n">E</span>
 
         <span class="n">interval</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">MAX</span><span class="p">)</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">MIN</span><span class="p">)</span>
+
+        <span class="c1"># account for gaps to conserve total number of energies requested</span>
+        <span class="k">for</span> <span class="n">_coverage_gap</span> <span class="ow">in</span> <span class="n">coverage_gaps</span><span class="p">:</span>
+            <span class="n">interval</span> <span class="o">-=</span> <span class="p">(</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">_coverage_gap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
 
         <span class="n">energies</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
 

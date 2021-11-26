@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Data &mdash; xpsi 0.7.8 documentation</title>
+  <title>xpsi.Data &mdash; xpsi 0.7.9 documentation</title>
   
 
   
@@ -419,9 +419,12 @@
                   <span class="s1">&#39;Events loaded and binned&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">phase_bin__event_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span>
                               <span class="n">channel_column</span><span class="p">,</span>
-                              <span class="n">phase_column</span><span class="p">,</span>
+                              <span class="n">phase_column</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">phase_averaged</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                               <span class="n">phase_shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                              <span class="n">channel_edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                               <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                              <span class="n">eV</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                               <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int</span><span class="p">,</span>
                               <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Load a phase-folded event list and bin the events in phase.</span>
@@ -431,7 +434,7 @@
 <span class="sd">            column contains phases on the unit interval, and the second</span>
 <span class="sd">            column contains the channel number.</span>
 
-<span class="sd">        :param list channels:</span>
+<span class="sd">        :param ndarray[n] channels:</span>
 <span class="sd">            An (ordered) subset of instrument channels. It is advisable that</span>
 <span class="sd">            these channels are a contiguous subset of instrument channels, but</span>
 <span class="sd">            this not a strict requirement if you are comfortable with the</span>
@@ -450,13 +453,23 @@
 <span class="sd">        :param int phase_column:</span>
 <span class="sd">            The column in the loaded file containing event phases.</span>
 
+<span class="sd">        :param bool phase_averaged:</span>
+<span class="sd">            Is the event data phase averaged?</span>
+
 <span class="sd">        :param int channel_column:</span>
 <span class="sd">            The column in the loaded file containing event channels.</span>
+
+<span class="sd">        :param ndarray[n+1] channel_edges:</span>
+<span class="sd">            The nominal energy edges of the instrument channels, assumed to</span>
+<span class="sd">            be contiguous if binning event energies in channel number.</span>
 
 <span class="sd">        :param int skiprows:</span>
 <span class="sd">            The number of top rows to skip when loading the events from file.</span>
 <span class="sd">            The top row of couple of rows will typically be reserved for</span>
 <span class="sd">            column headers.</span>
+
+<span class="sd">        :param bool eV:</span>
+<span class="sd">            Are event energies in eV, instead of channel number?</span>
 
 <span class="sd">        :param type dtype:</span>
 <span class="sd">            The type of the count data. Sensible options are ``numpy.int`` (the</span>
@@ -474,18 +487,33 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">phases</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">events</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_column</span><span class="p">]</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
-                <span class="n">_temp</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">phase_column</span><span class="p">]</span> <span class="o">+</span> <span class="n">phase_shift</span>
-                <span class="n">_temp</span> <span class="o">-=</span> <span class="n">_np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">_temp</span><span class="p">)</span>
-
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_temp</span> <span class="o">&lt;=</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
-                        <span class="n">data</span><span class="p">[</span><span class="n">channels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_column</span><span class="p">])),</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">_channel</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">eV</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">channel_edges</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">channel_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">channel_column</span><span class="p">]</span><span class="o">/</span><span class="mf">1.0e3</span> <span class="o">&lt;</span> <span class="n">channel_edges</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">_channel</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
                         <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_channel</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">channel_column</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">_channel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_channel</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">phase_averaged</span><span class="p">:</span>
+                    <span class="n">_temp</span> <span class="o">=</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">phase_column</span><span class="p">]</span> <span class="o">+</span> <span class="n">phase_shift</span>
+                    <span class="n">_temp</span> <span class="o">-=</span> <span class="n">_np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">_temp</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">_temp</span> <span class="o">&lt;=</span> <span class="n">phases</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="n">data</span><span class="p">[</span><span class="n">channels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">channel_column</span><span class="p">])),</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">channels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">_channel</span><span class="p">)),</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">yield</span> <span class="s1">&#39;Number of events constituting data set: </span><span class="si">%i</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-        <span class="k">yield</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phases</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">yield</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">phases</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">bin__event_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">phase_bin__event_list</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -64,7 +64,7 @@ advisory workflow.
 
 .. code-block:: bash
 
-    git clone https://github.com/ThomasEdwardRiley/xpsi.git <path/to/xpsi>
+    git clone https://github.com/xpsi-group/xpsi.git <path/to/xpsi>
 
 * You will be on the ``master`` branch by default; this branch by default tracks
   the official (or central) ``origin/master`` branch. Moreover, ``master``
@@ -201,7 +201,7 @@ Most feature development by the X-PSI team is conducted on private platforms
 including a private development repository .
 
 The X-PSI team works with respect to a private centralised repository
-``xpsi_dev`` and pushes releases to a public GitHub repository. These veryy
+``xpsi_dev`` and pushes releases to a public GitHub repository. These very
 online documentation pages are only built and pushed to GitHub to be hosted,
 usually by a designated X-PSI team member responsible for this process.
 Commits directly on GitHub via pull requests (e.g., patches) are fetched and
@@ -231,8 +231,8 @@ such as:
     (xpsi) [15:24:19][xpsi]$ git remote -v
     DEV     https://ThomasEdwardRiley@bitbucket.org/ThomasEdwardRiley/xpsi_dev.git (fetch)
     DEV     https://ThomasEdwardRiley@bitbucket.org/ThomasEdwardRiley/xpsi_dev.git (push)
-    origin  https://github.com/ThomasEdwardRiley/xpsi.git (fetch)
-    origin  https://github.com/ThomasEdwardRiley/xpsi.git (push)
+    origin  https://github.com/xpsi-group/xpsi.git (fetch)
+    origin  https://github.com/xpsi-group/xpsi.git (push)
 
 If you have forked repositories (your own forks or those of other community
 members for collaborative purposes) these would also be remotes of the local

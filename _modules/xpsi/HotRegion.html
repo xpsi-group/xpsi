@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.HotRegion &mdash; xpsi 0.7.8 documentation</title>
+  <title>xpsi.HotRegion &mdash; xpsi 0.7.9 documentation</title>
   
 
   
@@ -499,6 +499,9 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be specified.&#39;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">phase_bounds</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase-shift bounds must be finite.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">phase_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">phase_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Phase bounds must be separated by &#39;</span>
+                                 <span class="s1">&#39;a maximum of one cycle.&#39;</span><span class="p">)</span>
 
         <span class="n">phase_shift</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">,</span>
                                 <span class="n">strict_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">infty</span><span class="p">),</span>

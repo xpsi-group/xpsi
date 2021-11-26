@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data &mdash; xpsi 0.7.8 documentation</title>
+  <title>Data &mdash; xpsi 0.7.9 documentation</title>
   
 
   
@@ -347,7 +347,7 @@ the <code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="classmethod">
 <dt id="xpsi.Data.Data.phase_bin__event_list">
-<em class="property">classmethod </em><code class="descname">phase_bin__event_list</code><span class="sig-paren">(</span><em>path</em>, <em>channels</em>, <em>phases</em>, <em>channel_column</em>, <em>phase_column</em>, <em>phase_shift=0.0</em>, <em>skiprows=1</em>, <em>dtype=&lt;type 'int'&gt;</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Data.html#Data.phase_bin__event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Data.Data.phase_bin__event_list" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">phase_bin__event_list</code><span class="sig-paren">(</span><em>path</em>, <em>channels</em>, <em>phases</em>, <em>channel_column</em>, <em>phase_column=None</em>, <em>phase_averaged=False</em>, <em>phase_shift=0.0</em>, <em>channel_edges=None</em>, <em>skiprows=1</em>, <em>eV=False</em>, <em>dtype=&lt;type 'int'&gt;</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Data.html#Data.phase_bin__event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Data.Data.phase_bin__event_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a phase-folded event list and bin the events in phase.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -357,7 +357,7 @@ the <code class="xref py py-obj docutils literal notranslate"><span class="pre">
 <li><strong>path</strong> (<em>str</em>) – Path to event list file containing two columns, where the first
 column contains phases on the unit interval, and the second
 column contains the channel number.</li>
-<li><strong>channels</strong> (<em>list</em>) – An (ordered) subset of instrument channels. It is advisable that
+<li><strong>channels</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – An (ordered) subset of instrument channels. It is advisable that
 these channels are a contiguous subset of instrument channels, but
 this not a strict requirement if you are comfortable with the
 handling the instrument response matrix and count number matrix to
@@ -368,10 +368,14 @@ respectively.</li>
 <li><strong>phase_shift</strong> (<em>float</em>) – A phase-shift in cycles to be applied when binning the events in
 phase.</li>
 <li><strong>phase_column</strong> (<em>int</em>) – The column in the loaded file containing event phases.</li>
+<li><strong>phase_averaged</strong> (<em>bool</em>) – Is the event data phase averaged?</li>
 <li><strong>channel_column</strong> (<em>int</em>) – The column in the loaded file containing event channels.</li>
+<li><strong>channel_edges</strong> (<em>ndarray</em><em>[</em><em>n+1</em><em>]</em>) – The nominal energy edges of the instrument channels, assumed to
+be contiguous if binning event energies in channel number.</li>
 <li><strong>skiprows</strong> (<em>int</em>) – The number of top rows to skip when loading the events from file.
 The top row of couple of rows will typically be reserved for
 column headers.</li>
+<li><strong>eV</strong> (<em>bool</em>) – Are event energies in eV, instead of channel number?</li>
 <li><strong>dtype</strong> (<em>type</em>) – The type of the count data. Sensible options are <code class="docutils literal notranslate"><span class="pre">numpy.int</span></code> (the
 default) or a <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.21)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> floating point type. The choice here
 only matters when executing custom likelihood evaluation code, which

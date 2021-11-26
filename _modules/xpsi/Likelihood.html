@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>xpsi.Likelihood &mdash; xpsi 0.7.8 documentation</title>
+  <title>xpsi.Likelihood &mdash; xpsi 0.7.9 documentation</title>
   
 
   
@@ -283,13 +283,22 @@
 <span class="sd">        new parameter values are set externally, e.g., in a prior object</span>
 <span class="sd">        when inverse sampling the prior for nested sampling.</span>
 
+<span class="sd">    :param obj prior:</span>
+<span class="sd">        Instance of subclass of :class:`~.Prior.Prior`.</span>
+
+<span class="sd">    :param float max_energy:</span>
+<span class="sd">        Optional maximum of energy set for signal computation. If no maximum</span>
+<span class="sd">        is requested (the default), then the maximum is equal to the maximum</span>
+<span class="sd">        energy from the loaded instrument response models.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">star</span><span class="p">,</span> <span class="n">signals</span><span class="p">,</span>
                  <span class="n">num_energies</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
                  <span class="n">fast_rel_num_energies</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
                  <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">llzero</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0e90</span><span class="p">,</span>
                  <span class="n">externally_updated</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                 <span class="n">prior</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+                 <span class="n">prior</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">max_energy</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">star</span> <span class="o">=</span> <span class="n">star</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">signals</span> <span class="o">=</span> <span class="n">signals</span>
@@ -312,9 +321,12 @@
                 <span class="k">pass</span> <span class="c1"># quietly assume one photosphere object</span>
 
             <span class="n">energies</span> <span class="o">=</span> <span class="n">construct_energy_array</span><span class="p">(</span><span class="n">num_energies</span><span class="p">,</span>
-                                              <span class="nb">list</span><span class="p">(</span><span class="n">signals</span><span class="p">))</span> <span class="c1"># make a copy</span>
+                                              <span class="nb">list</span><span class="p">(</span><span class="n">signals</span><span class="p">),</span>
+                                              <span class="n">max_energy</span><span class="p">)</span>
             <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span> <span class="n">fast_rel_num_energies</span> <span class="o">*</span> <span class="n">num_energies</span> <span class="p">)</span>
-            <span class="n">fast_energies</span> <span class="o">=</span> <span class="n">construct_energy_array</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">signals</span><span class="p">))</span>
+            <span class="n">fast_energies</span> <span class="o">=</span> <span class="n">construct_energy_array</span><span class="p">(</span><span class="n">num</span><span class="p">,</span>
+                                                   <span class="nb">list</span><span class="p">(</span><span class="n">signals</span><span class="p">),</span>
+                                                   <span class="n">max_energy</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
                 <span class="n">signal</span><span class="o">.</span><span class="n">energies</span> <span class="o">=</span> <span class="n">energies</span>
