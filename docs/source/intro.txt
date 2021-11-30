@@ -110,7 +110,7 @@ as a software acknowledgement, e.g.:
 
 .. code-block:: latex
 
-    X-PSI (\url{https://github.com/ThomasEdwardRiley/xpsi}, \citet{xpsi})
+    X-PSI (\url{https://github.com/xpsi-group/xpsi.git}, \citet{xpsi})
 
     @MISC{xpsi,
         author = {{Riley}, Thomas Edward},

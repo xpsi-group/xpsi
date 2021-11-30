@@ -59,6 +59,7 @@ def energy_interpolator(size_t N_Ts,
         int mode
         size_t i, j, T
         double *cpy
+        double max_energy = energies[energies.shape[0] - 1]
 
         double **_signal = <double**> malloc(sizeof(double*) * N_Ts)
         gsl_interp **interp = <gsl_interp**> malloc(sizeof(gsl_interp*) * N_Ts)
@@ -97,6 +98,10 @@ def energy_interpolator(size_t N_Ts,
         gsl_interp_init(interp[T], &(energies[0]), cpy, energies.shape[0])
 
         for j in range(new_energies.shape[0]):
+
+            if new_energies[j] > max_energy: # extrapolate by setting to zero
+                continue
+
             interp_signal[i,j] = gsl_interp_eval(interp[T],
                                                &(energies[0]),
                                                cpy,

@@ -57,6 +57,8 @@ def energy_integrator(size_t N_Ts,
         signed int ii
         size_t i, j, T
         double *cpy
+        double upper_energy
+        double max_energy = energies[energies.shape[0] - 1]
 
         double **_signal = <double**> malloc(sizeof(double*) * N_Ts)
         gsl_interp **interp = <gsl_interp**> malloc(sizeof(gsl_interp*) * N_Ts)
@@ -81,18 +83,25 @@ def energy_integrator(size_t N_Ts,
         cpy = _signal[T]
 
         for j in range(energies.shape[0]):
-            cpy[j] =  pow(10.0, energies[j]) * signal[j,i] * log(10.0)
+            cpy[j] = pow(10.0, energies[j]) * signal[j,i] * log(10.0)
 
         gsl_interp_accel_reset(acc[T])
         gsl_interp_init(interp[T], &(energies[0]), cpy, energies.shape[0])
 
         for j in range(energy_edges.shape[0] - 1):
+            if energy_edges[j + 1] > max_energy:
+                upper_energy = max_energy
+            else:
+                upper_energy = energy_edges[j + 1]
             binned_signal[i,j] = gsl_interp_eval_integ(interp[T],
                                                        &(energies[0]),
                                                        cpy,
                                                        energy_edges[j],
-                                                       energy_edges[j + 1],
+                                                       upper_energy,
                                                        acc[T])
+            if energy_edges[j + 1] > max_energy:
+                break
+
     for T in range(N_Ts):
         gsl_interp_accel_free(acc[T])
         gsl_interp_free(interp[T])

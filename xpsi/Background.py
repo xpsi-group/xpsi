@@ -33,7 +33,7 @@ class Background(ParameterSubspace):
 
         """
         # do some stuff and set:
-        # self.background = ...
+        # self.incident_background = ...
 
     @property
     def incident_background(self):
