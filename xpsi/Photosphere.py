@@ -304,10 +304,12 @@ class Photosphere(ParameterSubspace):
             Number of ``OpenMP`` threads to spawn for signal integration.
 
         :param bool stokes:
-            If activated, a full Stokes vector is computed and stored in signal_stokes.
+            If activated, a full Stokes vector is computed and stored in signal, signalQ, and signalU.
 
         """
         if self._everywhere is not None:
+            if stokes:
+                raise NotImplementedError('Stokes option for everywhere not implmented yet.')      
             spectrum = self._everywhere.integrate(self._spacetime,
                                                    energies,
                                                    threads,
@@ -318,6 +320,8 @@ class Photosphere(ParameterSubspace):
                 self._signal = ((spectrum,),)
         else:
             if self._elsewhere is not None:
+                if stokes:
+                    raise NotImplementedError('Stokes option for elsewhere not implmented yet.')  
                 spectrum = self._elsewhere.integrate(self._spacetime,
                                                      energies,
                                                      threads,
@@ -325,19 +329,23 @@ class Photosphere(ParameterSubspace):
 
             if self._hot is not None:
                 if stokes:
-                    self._signal_stokes = self._hot.integrate_stokes(self._spacetime,
+                    self._signal, self._signalQ, self._signalU  = self._hot.integrate_stokes(self._spacetime,
                                                    energies,
                                                    threads,
                                                    self._hot_atmosphere,
                                                    self._elsewhere_atmosphere)
+                    if not isinstance(self._signal[0], tuple):
+                        self._signal = (self._signal,)
+                    if not isinstance(self._signalQ[0], tuple):
+                        self._signalQ = (self._signalQ,)
+                    if not isinstance(self._signal[0], tuple):
+                        self._signalU = (self._signalU,)
                 else:
                     self._signal = self._hot.integrate(self._spacetime,
                                                    energies,
                                                    threads,
                                                    self._hot_atmosphere,
                                                    self._elsewhere_atmosphere)
-
-
                     if not isinstance(self._signal[0], tuple):
                         self._signal = (self._signal,)
 
@@ -349,7 +357,7 @@ class Photosphere(ParameterSubspace):
 
     @property
     def signal(self):
-        """ Get the stored signal.
+        """ Get the stored signal (Stokes I).
 
         :returns:
             A tuple of tuples of *ndarray[m,n]*.
@@ -361,14 +369,13 @@ class Photosphere(ParameterSubspace):
 
         """
         return self._signal
-
-
+        
     @property
-    def signal_stokes(self):
-        """ Get the stored signal.
+    def signalQ(self):
+        """ Get the stored Stokes Q signal.
 
-        :returns: 
-            A tuple of tuples of *ndarray[m,n]* for I, Q, and U separately.
+        :returns:
+            A tuple of tuples of *ndarray[m,n]*.
             Here :math:`m` is the number of energies, and
             :math:`n` is the number of phases. Units are photon/s/keV; the
             distance is a fast parameter so the areal units are not yet
@@ -376,8 +383,22 @@ class Photosphere(ParameterSubspace):
             time-invariant, then :math:`n=1`.
 
         """
-        return self._signal_stokes
+        return self._signalQ
+        
+    @property
+    def signalU(self):
+        """ Get the stored Stokes U signal.
 
+        :returns:
+            A tuple of tuples of *ndarray[m,n]*.
+            Here :math:`m` is the number of energies, and
+            :math:`n` is the number of phases. Units are photon/s/keV; the
+            distance is a fast parameter so the areal units are not yet
+            factored in. If the signal is a spectrum because the signal is
+            time-invariant, then :math:`n=1`.
+
+        """
+        return self._signalU
 
     @property
     def global_variables(self):

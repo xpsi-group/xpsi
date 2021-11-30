@@ -148,10 +148,15 @@ class HotRegions(ParameterSubspace):
             energies = [energies] * len(self)
 
         signals = []
+        signalsQ = []
+        signalsU = []
         for obj, E in zip(self._objects, energies):
-            signals.append(obj.integrate_stokes(st, E,
+            sigs = obj.integrate_stokes(st, E,
                                          threads,
                                          hot_atmosphere,
-                                         elsewhere_atmosphere))
+                                         elsewhere_atmosphere)
+            signals.append(sigs[0])
+            signalsQ.append(sigs[1])
+            signalsU.append(sigs[2])
 
-        return tuple(signals)
+        return tuple(signals), tuple(signalsQ), tuple(signalsU)

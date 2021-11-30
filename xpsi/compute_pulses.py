@@ -154,6 +154,13 @@ class CustomPhotosphere(xpsi.Photosphere):
                           self['s__super_radius'],
                           self.hot.objects[1]['s__super_temperature']])
 
+
+#bounds=dict(elsewhere_temperature = (5., 6.5))
+#elsewhere = xpsi.Elsewhere(bounds=bounds,
+#               values={}, 
+#               sqrt_num_cells=512,
+#               num_rays=512)
+
 photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
@@ -202,7 +209,9 @@ p = [1.4,
      6.2,
      0.025,
      math.pi - 1.0,
-     0.2]
+     0.2,
+     #5.5, #T_elsewhere
+     ]
 if ceding:
 	p = [1.4, #mass
 	     12.0, #radius
@@ -312,34 +321,38 @@ def veneer(x, y, axes, lw=1.0, length=8):
     axes.tick_params(which='minor', colors='black', length=int(length/2), width=lw)
     plt.setp(axes.spines.values(), linewidth=lw, color='black')
 
-def plot_pulse(stokes=False):
+def plot_pulse(stokes="I"):
     """ Plot hot region signals before telescope operation. """
     fig = plt.figure(figsize=(7,7))
     ax = fig.add_subplot(111)
 
     ax.set_ylabel('Signal [arbitrary normalisation]')
     ax.set_xlabel('Phase [cycles]')
-
-
-    if stokes:
-        temp = np.sum(photosphere.signal_stokes[0][0], axis=0) #[][0] for I [][1] for Q and [][2] for U
-        #temp = photosphere.signal[0][0][nene-1,:] 
-        ax.plot(hot.phases_in_cycles[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
-        temp = np.sum(photosphere.signal_stokes[1][0], axis=0)
-        ax.plot(hot.phases_in_cycles[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)
+    
+    if stokes=="I":    
+        temp1 = np.sum(photosphere.signal[0][0], axis=0)
+        temp2 = np.sum(photosphere.signal[1][0], axis=0) 
+    elif stokes=="Q":    
+        temp1 = np.sum(photosphere.signalQ[0][0], axis=0)
+        temp2 = np.sum(photosphere.signalQ[1][0], axis=0) 
+    elif stokes=="U":    
+        temp1 = np.sum(photosphere.signalU[0][0], axis=0)
+        temp2 = np.sum(photosphere.signalU[1][0], axis=0) 
     else:
-        temp = np.sum(photosphere.signal[0][0], axis=0)
-        #temp = photosphere.signal[0][0][nene-1,:] 
-        ax.plot(hot.phases_in_cycles[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
-        temp = np.sum(photosphere.signal[1][0], axis=0)
-        ax.plot(hot.phases_in_cycles[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)
+         print("ERROR: Stokes option must be 'I', 'Q', or 'U'")
+         exit()              
+                
+    ax.plot(hot.phases_in_cycles[0], temp1/np.max(temp1), 'o-', color='k', lw=0.5, markersize=2)
+    ax.plot(hot.phases_in_cycles[1], temp2/np.max(temp2), 'o-', color='r', lw=0.5, markersize=2)       
+        
 
     veneer((0.05,0.2), (0.05,0.2), ax)
-    fig.savefig("figs/pulse_profileX.pdf")
+    fig.savefig("figs/pulse_profile"+stokes+"X.pdf")
 
 nene = 281 #128
 
-def save_pulse(PulsName): #To be continued ...
+#NOTE: The following function is outdated, since signal_stokes should be replaced with signal,signalQ,signalU etc.
+def save_pulse(PulsName): 
     """Save the pulse profile in a file. """
     #print("F(E) = ",photosphere.signal[0][0][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
     #print("F(T) = ", photosphere.signal[0][0][0,:], len(photosphere.signal[0][0][0,:]))
@@ -410,6 +423,7 @@ import time
 
 primary.image_order_limit = 1
 
+print("Photosphere integrate going to start:")
 
 start = time.time()
 photosphere.integrate(energies, threads=1, stokes=True) # the number of OpenMP threads to use
@@ -421,11 +435,31 @@ print("Time spent in integration:",end - start)
 #print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
 
 #_ = plot_pulse()
-#print("Light curve finished,")
-#print(photosphere.signal[0][0])
+print("Light curve finished,")
+print("Stokes (primary, superceding):")
+print(photosphere.signal[0][0])
+print(photosphere.signalQ[0][0])
+print(photosphere.signalU[0][0])
+print("Stokes (secondary, superceding):")
+print(photosphere.signal[1][0])
+print(photosphere.signalQ[1][0])
+print(photosphere.signalU[1][0])
+
+if ceding:
+	print("Stokes (primary, ceding):")
+	print(photosphere.signal[0][1])
+	print(photosphere.signalQ[0][1])
+	print(photosphere.signalU[0][1])
+	print("Stokes (secondary,  ceding):")
+	print(photosphere.signal[1][1])
+	print(photosphere.signalQ[1][1])
+	print(photosphere.signalU[1][1])
 
 
-plot_pulse(stokes=True)
+plot_pulse(stokes="I")
+plot_pulse(stokes="Q")
+plot_pulse(stokes="U")
+
 #save_pulse("pulses/pulse_f800r20")
 #save_pulse("pulses/pulse_io2")
 #save_pulse("pulses/pulse7i_rho10f600m27_Tc_io1")
