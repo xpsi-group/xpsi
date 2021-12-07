@@ -139,6 +139,7 @@ class Photosphere(ParameterSubspace):
 
         self._hot = hot
         self._hot_atmosphere = ()
+        self._hot_atmosphere_Q = ()
         self._elsewhere = elsewhere
         self._everywhere = everywhere
 
@@ -199,6 +200,47 @@ class Photosphere(ParameterSubspace):
     def hot_atmosphere(self, path):
         """ Implement if required. """
         raise NotImplementedError('Implement setter if required.')
+
+
+    @property
+    def hot_atmosphere_Q(self):
+        """ Get the numerical atmosphere Stokes Q buffers for hot regions if used.
+
+        To preload a numerical atmosphere into a buffer, subclass and
+        overwrite the setter. The underscore attribute set by the setter
+        must be an :math:`n`-tuple whose :math:`n^{th}` element is an
+        :math:`(n-1)`-dimensional array flattened into a one-dimensional
+        :class:`numpy.ndarray`. The first :math:`n-1`
+        elements of the :math:`n`-tuple must each be an ordered one-dimensional
+        :class:`numpy.ndarray` of parameter values for the purpose of
+        multi-dimensional interpolation in the :math:`n^{th}` buffer. The
+        first :math:`n-1` elements must be ordered to match the index
+        arithmetic applied to the :math:`n^{th}` buffer. An example would be
+        ``self._hot_atmosphere_Q = (logT, logg, mu, logE, buf)``, where:
+        ``logT`` is a logarithm of local comoving effective temperature;
+        ``logg`` is a logarithm of effective surface gravity;
+        ``mu`` is the cosine of the angle from the local surface normal;
+        ``logE`` is a logarithm of the photon energy; and
+        ``buf`` is a one-dimensional buffer of intensities of size given by
+        the product of sizes of the first :math:`n-1` tuple elements.
+
+        It is highly recommended that buffer preloading is used, instead
+        of loading from disk in the customisable radiation field extension
+        module, to avoid reading from disk for every signal
+        (likelihood) evaluation. This can be a non-negligible waste of compute
+        resources. By preloading in Python, the memory is allocated and
+        references to that memory are not in general deleted until a sampling
+        script exits and the kernel stops. The likelihood callback accesses
+        the same memory upon each call without I/O.
+
+        """
+        return self._hot_atmosphere_Q
+
+    @hot_atmosphere_Q.setter
+    def hot_atmosphere_Q(self, path):
+        """ Implement if required. """
+        raise NotImplementedError('Implement setter if required.')
+
 
     @property
     def elsewhere_atmosphere(self):
@@ -333,6 +375,7 @@ class Photosphere(ParameterSubspace):
                                                    energies,
                                                    threads,
                                                    self._hot_atmosphere,
+                                                   self._hot_atmosphere_Q,
                                                    self._elsewhere_atmosphere)
                     if not isinstance(self._signal[0], tuple):
                         self._signal = (self._signal,)

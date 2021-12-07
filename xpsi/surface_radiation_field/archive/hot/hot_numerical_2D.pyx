@@ -52,9 +52,9 @@ cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded) nogil:
     cdef DATA *D = <DATA*> malloc(sizeof(DATA))
     D.p = preloaded
 
-    D.p.BLOCKS[0] = 64
-    D.p.BLOCKS[1] = 16
-    D.p.BLOCKS[2] = 4
+    D.p.BLOCKS[0] = 4 #64
+    #D.p.BLOCKS[1] = 16
+    #D.p.BLOCKS[2] = 4
 
     cdef size_t T, i, j, k, l
 
@@ -73,11 +73,18 @@ cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded) nogil:
         D.acc.INTENSITY_CACHE[T] = <double*> malloc(256 * sizeof(double))
         D.acc.VEC_CACHE[T] = <double*> malloc(D.p.ndims * sizeof(double))
         for i in range(D.p.ndims):
+        
+            #printf("\nDimension: %d \n", <int>i)        
             D.acc.BN[T][i] = 0
             D.acc.VEC_CACHE[T][i] = D.p.params[i][1]
             D.acc.node_vals[T][2*i] = D.p.params[i][1]
             D.acc.node_vals[T][2*i + 1] = D.p.params[i][2]
 
+            #printf("\nParam0: %f \n", D.p.params[i][0])            
+            #printf("\nParam1: %f \n", D.p.params[i][1])
+            #printf("\nParam2: %f \n", D.p.params[i][2])                                    
+            #printf("\nParam3: %f \n", D.p.params[i][3])
+            
             j = 4*i
 
             D.acc.SPACE[T][j] = 1.0 / (D.p.params[i][0] - D.p.params[i][1])
@@ -117,15 +124,14 @@ cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded) nogil:
     for T in range(numThreads):
         for i in range(4):
             for j in range(4):
-                for k in range(4):
-                    for l in range(4):
-                        address = D.p.I + (D.acc.BN[T][0] + i) * D.p.S[0]
-                        address += (D.acc.BN[T][1] + j) * D.p.S[1]
-                        address += (D.acc.BN[T][2] + k) * D.p.S[2]
-                        address += D.acc.BN[T][3] + l
-                        D.acc.INTENSITY_CACHE[T][i * D.p.BLOCKS[0] + j * D.p.BLOCKS[1] + k * D.p.BLOCKS[2] + l] = address[0]
+                
+                address = D.p.I + (D.acc.BN[T][0] + i) * D.p.S[0]
+                address += D.acc.BN[T][1] + j
+
+                D.acc.INTENSITY_CACHE[T][i * D.p.BLOCKS[0] + j] = address[0]
 
     # Cast for generalised usage in integration routines
+    #printf("\nDimensions: %d \n", <int>D.p.ndims)
     return <void*> D
 
 
@@ -196,14 +202,20 @@ cdef double eval_hot(size_t THREAD,
         int update_baseNode[4]
         int CACHE = 0
 
-    vec[0] = VEC[0]
-    vec[1] = VEC[1]
-    vec[2] = mu
-    vec[3] = log10(E / E_eff)
+    #printf("\nVEC[0]: %f \n", VEC[0])
+
+    #vec[0] = VEC[0]
+    #vec[1] = VEC[1]
+    #vec[2] = mu
+    #vec[3] = log10(E / E_eff)
+    vec[0] = mu
+    vec[1] = log10(E)    
+    
 
     while i < D.p.ndims:
         # if parallel == 31:
         #     printf("\nDimension: %d", <int>i)
+        #printf("\nDimensionI: %d \n", <int>i)
         update_baseNode[i] = 0
         if vec[i] < node_vals[2*i] and BN[i] != 0:
             # if parallel == 31:
@@ -305,25 +317,23 @@ cdef double eval_hot(size_t THREAD,
 
     cdef size_t j, k, l, INDEX, II, JJ, KK
     cdef double *address = NULL
+    #printf("\nvec[0]: %f \n", vec[0])
+    #printf("\nvec[1]: %f \n", vec[1])            
     # Combinatorics over nodes of hypercube; weight cgs intensities
     for i in range(4):
         II = i * D.p.BLOCKS[0]
         for j in range(4):
-            JJ = j * D.p.BLOCKS[1]
-            for k in range(4):
-                KK = k * D.p.BLOCKS[2]
-                for l in range(4):
-                    address = D.p.I + (BN[0] + i) * D.p.S[0]
-                    address += (BN[1] + j) * D.p.S[1]
-                    address += (BN[2] + k) * D.p.S[2]
-                    address += BN[3] + l
-
-                    temp = DIFF[i] * DIFF[4 + j] * DIFF[8 + k] * DIFF[12 + l]
-                    temp *= SPACE[i] * SPACE[4 + j] * SPACE[8 + k] * SPACE[12 + l]
-                    INDEX = II + JJ + KK + l
-                    if CACHE == 1:
-                        I_CACHE[INDEX] = address[0]
-                    I += temp * I_CACHE[INDEX]
+            
+            address = D.p.I + (BN[0] + i) * D.p.S[0]
+            address += BN[1] + j
+            
+            temp = DIFF[i] * DIFF[4 + j] 
+            temp *= SPACE[i] * SPACE[4 + j] 
+            INDEX = II + j
+                        
+            if CACHE == 1:
+                I_CACHE[INDEX] = address[0]
+            I += temp * I_CACHE[INDEX]
 
     #if gsl_isnan(I) == 1:
         #printf("\nIntensity: NaN; Index [%d,%d,%d,%d] ",
@@ -332,10 +342,8 @@ cdef double eval_hot(size_t THREAD,
     #printf("\nBase-nodes [%d,%d,%d,%d] ",
                 #<int>BN[0], <int>BN[1], <int>BN[2], <int>BN[3])
 
-    if I < 0.0:
-        return 0.0
-
-    return I * pow(10.0, 3.0 * vec[0])
+    #printf("\nI: %f \n", I)
+    return I #* pow(10.0, 3.0 * vec[0])
 
 
 cdef double eval_hot_norm() nogil:
@@ -359,9 +367,12 @@ cdef double eval_hot_I(size_t THREAD,
     # VEC = variables such as temperature, effective gravity, ...
     # data = numerical model data required for intensity evaluation
 
-    cdef double temp = k_B_over_keV * pow(10.0, VEC[0])
+    cdef double I = eval_hot(THREAD,E,mu,VEC,data)
 
-    return E * E * E / ( exp(E / temp) - 1.0 )*(0.421+0.868*mu)    
+    if I < 0.0:
+        return 0.0
+
+    return I 
     
     
 cdef double eval_hot_Q(size_t THREAD,
@@ -375,8 +386,5 @@ cdef double eval_hot_Q(size_t THREAD,
     # VEC = variables such as temperature, effective gravity, ...
     # data = numerical model data required for intensity evaluation
 
-    cdef double I_E
-    I_E = eval_hot_I(THREAD,E,mu,VEC,data)
-    cdef double PD = 0.1171*(mu - 1.)/(1. + 3.582*mu)
-    return PD*I_E
+    return eval_hot(THREAD,E,mu,VEC,data)   
 

@@ -1156,7 +1156,7 @@ class HotRegion(ParameterSubspace):
         return (super_pulse[1],)
 
     def integrate_stokes(self, st, energies, threads,
-                  hot_atmosphere, elsewhere_atmosphere):
+                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere):
         """ Integrate Stokes parameters over the photospheric radiation field.
 
         Calls the CellMesh Stokes integrators, with or without exploitation of
@@ -1220,7 +1220,8 @@ class HotRegion(ParameterSubspace):
                                        super_energies,
                                        leaves,
                                        phases,
-                                       hot_atmosphere,
+                                       hot_atmosphere_I,
+                                       hot_atmosphere_Q,                                       
                                        elsewhere_atmosphere,
                                        self._image_order_limit)
             super_pulse = all_pulses[0], all_pulses[1] #success and flux
@@ -1249,7 +1250,8 @@ class HotRegion(ParameterSubspace):
                                        super_energies,
                                        leaves,
                                        phases,
-                                       hot_atmosphere,
+                                       hot_atmosphere_I,
+                                       hot_atmosphere_Q, 
                                        elsewhere_atmosphere,
                                        self._image_order_limit)
             super_pulse = all_pulses[0], all_pulses[1] #success and flux
@@ -1284,7 +1286,8 @@ class HotRegion(ParameterSubspace):
                                        cede_energies,
                                        leaves,
                                        phases,
-                                       hot_atmosphere,
+                                       hot_atmosphere_I,
+                                       hot_atmosphere_Q, 
                                        elsewhere_atmosphere,
                                        self._image_order_limit)
             cede_pulse = all_pulses[0], all_pulses[1] #success and flux

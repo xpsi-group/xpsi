@@ -70,25 +70,9 @@ cdef double eval_hot_norm() nogil:
     # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
     return erg * Planck_dist_const
-
-
-
-cdef double eval_hot_PD(size_t THREAD,
-                     double E,
-                     double mu,
-                     const double *const VEC,
-                     void *const data) nogil:
-    # Arguments:
-    # E = photon energy in keV
-    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
-    # VEC = variables such as temperature, effective gravity, ...
-    # data = numerical model data required for intensity evaluation
-
-    cdef double PD = 0.1171*(mu - 1.)/(1. + 3.582*mu)
-
-    return PD
-
-cdef double eval_hot_bbeam(size_t THREAD,
+    
+    
+cdef double eval_hot_I(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -101,6 +85,26 @@ cdef double eval_hot_bbeam(size_t THREAD,
 
     cdef double temp = k_B_over_keV * pow(10.0, VEC[0])
 
-    return E * E * E / ( exp(E / temp) - 1.0 )*(0.421+0.868*mu)
+    return E * E * E / ( exp(E / temp) - 1.0 )*(0.421+0.868*mu)    
+    
+    
+cdef double eval_hot_Q(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
+    cdef double I_E
+    I_E = eval_hot_I(THREAD,E,mu,VEC,data)
+    cdef double PD = 0.1171*(mu - 1.)/(1. + 3.582*mu)
+    return PD*I_E
+
+    
+    
 
 

@@ -34,8 +34,8 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
 from xpsi.surface_radiation_field.hot cimport (init_hot,
                                                eval_hot,
                                                eval_hot_norm,
-                                               eval_hot_PD,
-                                               eval_hot_bbeam,
+                                               eval_hot_I,
+                                               eval_hot_Q,
                                                free_hot)
 
 from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
@@ -69,7 +69,8 @@ def integrate(size_t numThreads,
               double[::1] energies,
               double[::1] leaves,
               double[::1] phases,
-              hot_atmosphere,
+              hot_atmosphere_I,
+              hot_atmosphere_Q,
               elsewhere_atmosphere,
               image_order_limit = None):
 
@@ -125,7 +126,7 @@ def integrate(size_t numThreads,
         double mu # NRF and then CRF emission angle w.r.t surface normal; TP
         double E_prime # Photon energy in the CRF, given an energy at infinity; TP
         double I_E # Radiant and or spectral intensity in the CRF; TP
-        double PD # Polarization degree in the CRF; TP
+        double Q_E # Stokes Q in the CRF; TP
         double Q_obs # Stokes Q in the observer frame; TP
         double U_obs # Stokes Q in the observer frame; TP
         double sin_chi_0, cos_chi_0, chi_0, chi_1, chi_prime, chi
@@ -243,18 +244,28 @@ def integrate(size_t numThreads,
         leaf_lim = N_L / 2
     else:
         leaf_lim = (N_L + 1)/2
-
+        
     # initialise the source radiation field
-    cdef _preloaded *hot_preloaded = NULL
+    cdef _preloaded *hot_preloaded_I = NULL
+    cdef _preloaded *hot_preloaded_Q = NULL
     cdef _preloaded *ext_preloaded = NULL
-    cdef void *hot_data = NULL
+    cdef void *hot_data_I = NULL
+    cdef void *hot_data_Q = NULL
     cdef void *ext_data = NULL
 
-    if hot_atmosphere:
-        hot_preloaded = init_preload(hot_atmosphere)
-        hot_data = init_hot(N_T, hot_preloaded)
+    if hot_atmosphere_I:
+        hot_preloaded_I = init_preload(hot_atmosphere_I)
+        hot_data_I = init_hot(N_T, hot_preloaded_I)
     else:
-        hot_data = init_hot(N_T, NULL)
+        hot_data_I = init_hot(N_T, NULL)
+        
+    if hot_atmosphere_Q:
+        hot_preloaded_Q = init_preload(hot_atmosphere_Q)
+        hot_data_Q = init_hot(N_T, hot_preloaded_Q)
+    else:
+        hot_data_Q = init_hot(N_T, NULL)
+        
+        
 
     cdef double[:,:,::1] correction
     cdef int perform_correction
@@ -631,19 +642,21 @@ def integrate(size_t numThreads,
 
                                     for p in range(N_E):
                                         E_prime = energies[p] / __Z
-                                        I_E = eval_hot_bbeam(T,
+                                        I_E = eval_hot_I(T,
                                                        E_prime,
                                                        __ABB,
                                                        &(srcCellParams[i,j,0]),
-                                                       hot_data)
+                                                       hot_data_I)
 
                                         I_E = I_E * eval_hot_norm()
 
-                                        PD = eval_hot_PD(T,
+                                        Q_E = eval_hot_Q(T,
                                                    E_prime,
                                                    __ABB,
                                                    &(srcCellParams[i,j,0]),
-                                                   hot_data)
+                                                   hot_data_Q)
+                                                   
+                                        Q_E = Q_E * eval_hot_norm()                                                   
 
                                         if perform_correction == 1:
                                             correction_I_E = eval_elsewhere(T,
@@ -654,8 +667,8 @@ def integrate(size_t numThreads,
 
                                             correction_I_E = correction_I_E * eval_elsewhere_norm()
 
-                                        Q_obs = PD*I_E*cos_2chi
-                                        U_obs = PD*I_E*sin_2chi
+                                        Q_obs = Q_E*cos_2chi
+                                        U_obs = Q_E*sin_2chi
 
                                         privateFlux[T,k,p] += cellArea[i,j] * (I_E - correction_I_E) * __GEOM
                                         privateFluxQ[T,k,p] += cellArea[i,j] * Q_obs*__GEOM
@@ -725,10 +738,15 @@ def integrate(size_t numThreads,
     free(InvisFlag)
     free(InvisStep)
 
-    if hot_atmosphere:
-        free_preload(hot_preloaded)
+    if hot_atmosphere_I:
+        free_preload(hot_preloaded_I)
 
-    free_hot(N_T, hot_data)
+    free_hot(N_T, hot_data_I)
+    
+    if hot_atmosphere_Q:
+        free_preload(hot_preloaded_Q)
+
+    free_hot(N_T, hot_data_Q)
 
     if perform_correction == 1:
         if elsewhere_atmosphere:

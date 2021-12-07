@@ -84,6 +84,8 @@ from .preload cimport (_preloaded,
 
 from .hot cimport (init_hot,
                    eval_hot,
+                   eval_hot_I,
+                   eval_hot_Q,
                    eval_hot_norm,
                    free_hot)
 
@@ -118,6 +120,7 @@ def intensity(double[::1] energies,
               double[::1] mu,
               double[:,::1] local_variables,
               atmosphere = None,
+              int stokesQ = 0,
               extension = 'hot',
               size_t numTHREADS = 1):
     """ Evaluate the photon specific intensity using an extension module.
@@ -189,6 +192,8 @@ def intensity(double[::1] energies,
         init_ptr = init_hot
         free_ptr = free_hot
         eval_ptr = eval_hot
+        eval_ptr_I = eval_hot_I
+        eval_ptr_Q = eval_hot_Q
         norm_ptr = eval_hot_norm
     elif extension == 'elsewhere':
         init_ptr = init_elsewhere
@@ -222,7 +227,15 @@ def intensity(double[::1] energies,
         T = threadid()
         i = <size_t> ii
 
-        intensities[i] = eval_ptr(T,
+        if stokesQ == 1:
+            intensities[i] = eval_ptr_Q(T,
+                                  energies[i],
+                                  mu[i],
+                                  &(local_variables[i,0]),
+                                  data)
+        else:
+
+            intensities[i] = eval_ptr_I(T,
                                   energies[i],
                                   mu[i],
                                   &(local_variables[i,0]),

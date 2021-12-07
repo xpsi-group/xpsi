@@ -141,6 +141,92 @@ print(secondary['super_temperature'])
 class CustomPhotosphere(xpsi.Photosphere):
     """ Implement method for imaging."""
 
+
+    #Original atmosphere setter for NSX (fully-ionized H):        
+    #@xpsi.Photosphere.hot_atmosphere.setter
+    #def hot_atmosphere(self, path):
+    #    NSX = np.loadtxt(path, dtype=np.double)
+    #    logT = np.zeros(35)
+    #    logg = np.zeros(14)
+    #    mu = np.zeros(67)
+    #    logE = np.zeros(166)
+
+    #    reorder_buf = np.zeros((35,14,67,166))
+
+    #    index = 0
+    #    for i in range(reorder_buf.shape[0]):
+    #        for j in range(reorder_buf.shape[1]):
+    #            for k in range(reorder_buf.shape[3]):
+    #               for l in range(reorder_buf.shape[2]):
+    #                    logT[i] = NSX[index,3]
+    #                    logg[j] = NSX[index,4]
+    #                    logE[k] = NSX[index,0]
+    #                    mu[reorder_buf.shape[2] - l - 1] = NSX[index,1]
+    #                    reorder_buf[i,j,reorder_buf.shape[2] - l - 1,k] = 10.0**(NSX[index,2])
+    #                    index += 1
+
+    #    buf = np.zeros(np.prod(reorder_buf.shape))
+
+    #    bufdex = 0
+    #    for i in range(reorder_buf.shape[0]):
+    #        for j in range(reorder_buf.shape[1]):
+    #            for k in range(reorder_buf.shape[2]):
+    #               for l in range(reorder_buf.shape[3]):
+    #                    buf[bufdex] = reorder_buf[i,j,k,l]; bufdex += 1
+
+    #    self._hot_atmosphere = (logT, logg, mu, logE, buf)
+
+    @xpsi.Photosphere.hot_atmosphere.setter    
+    def hot_atmosphere(self, path):
+        size=(22,281)
+        NSX = np.loadtxt(path, dtype=np.double)
+        _mu = np.zeros(size[0]) 
+        logE = np.zeros(size[1])    
+
+        reorder_buf = np.zeros(size)
+
+        index = 0
+        for k in range(reorder_buf.shape[1]):
+            for l in range(reorder_buf.shape[0]):            
+                logE[k] = NSX[index,0]
+                _mu[reorder_buf.shape[0] - l - 1] = NSX[index,1]            
+                reorder_buf[reorder_buf.shape[0] - l - 1,k] = 10.0**(NSX[index,2])                                
+                index += 1
+
+        buf = np.zeros(np.prod(reorder_buf.shape))
+
+        bufdex = 0
+        for k in range(reorder_buf.shape[0]):
+            for l in range(reorder_buf.shape[1]):            
+                buf[bufdex] = reorder_buf[k,l]; bufdex += 1
+        self._hot_atmosphere = (_mu, logE, buf)
+        
+    @xpsi.Photosphere.hot_atmosphere_Q.setter    
+    def hot_atmosphere_Q(self, path):
+        size=(22,281)
+        NSX = np.loadtxt(path, dtype=np.double)
+        _mu = np.zeros(size[0]) 
+        logE = np.zeros(size[1])    
+
+        reorder_buf = np.zeros(size)
+
+        index = 0
+        for k in range(reorder_buf.shape[1]):
+            for l in range(reorder_buf.shape[0]):            
+                logE[k] = NSX[index,0]
+                _mu[reorder_buf.shape[0] - l - 1] = NSX[index,1] 
+                Qsign = NSX[index,3]           
+                reorder_buf[reorder_buf.shape[0] - l - 1,k] = Qsign*10.0**(NSX[index,2])                                
+                index += 1
+
+        buf = np.zeros(np.prod(reorder_buf.shape))
+
+        bufdex = 0
+        for k in range(reorder_buf.shape[0]):
+            for l in range(reorder_buf.shape[1]):            
+                buf[bufdex] = reorder_buf[k,l]; bufdex += 1
+        self._hot_atmosphere_Q  = (_mu, logE, buf)
+
     @property
     def global_variables(self):
         """ This method is needed if we also want to ivoke the image-plane signal simulator. """
@@ -165,9 +251,11 @@ photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 
-
-
-
+numerical_atmos = False #True
+if numerical_atmos:
+	#photosphere.hot_atmosphere = "/home/tuomo/xpsi/serena/1stJOB_J0437_NICERxXMM_2alpha_DIST/1stJOB_J0437_NICERxXMM_2alpha_DIST/model_data/nsx_H_v200804.out"
+	photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thomI_corr2.txt"
+	photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thomQ_corr2.txt"
 
 print(photosphere['mode_frequency'] == spacetime['frequency'])
 
@@ -436,24 +524,28 @@ print("Time spent in integration:",end - start)
 
 #_ = plot_pulse()
 print("Light curve finished,")
+
+
+print("Bolometric profiles for I, Q, and U:")
 print("Stokes (primary, superceding):")
-print(photosphere.signal[0][0])
-print(photosphere.signalQ[0][0])
-print(photosphere.signalU[0][0])
+print(np.sum(photosphere.signal[0][0], axis=0))
+print(np.sum(photosphere.signalQ[0][0], axis=0))
+print(np.sum(photosphere.signalU[0][0], axis=0))
 print("Stokes (secondary, superceding):")
-print(photosphere.signal[1][0])
-print(photosphere.signalQ[1][0])
-print(photosphere.signalU[1][0])
+print(np.sum(photosphere.signal[1][0], axis=0))
+print(np.sum(photosphere.signalQ[1][0], axis=0))
+print(np.sum(photosphere.signalU[1][0], axis=0))
+print()
 
 if ceding:
 	print("Stokes (primary, ceding):")
-	print(photosphere.signal[0][1])
-	print(photosphere.signalQ[0][1])
-	print(photosphere.signalU[0][1])
-	print("Stokes (secondary,  ceding):")
-	print(photosphere.signal[1][1])
-	print(photosphere.signalQ[1][1])
-	print(photosphere.signalU[1][1])
+	print(np.sum(photosphere.signal[0][1], axis=0))
+	print(np.sum(photosphere.signalQ[0][1], axis=0))
+	print(np.sum(photosphere.signalU[0][1], axis=0))
+	print("Stokes (secondary, ceding):")
+	print(np.sum(photosphere.signal[1][1], axis=0))
+	print(np.sum(photosphere.signalQ[1][1], axis=0))
+	print(np.sum(photosphere.signalU[1][1], axis=0))
 
 
 plot_pulse(stokes="I")

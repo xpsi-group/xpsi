@@ -6,13 +6,13 @@ cdef double eval_hot(size_t THREAD,
                      const double *const VEC,
                      void *const data) nogil
 
-cdef double eval_hot_PD(size_t THREAD,
+cdef double eval_hot_I(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
                      void *const data) nogil
 
-cdef double eval_hot_bbeam(size_t THREAD,
+cdef double eval_hot_Q(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
