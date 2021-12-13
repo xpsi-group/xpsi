@@ -78,7 +78,7 @@ class Likelihood(ParameterSubspace):
     :param float max_energy:
         Optional maximum of energy set for signal computation. If no maximum
         is requested (the default), then the maximum is equal to the maximum
-        energy from the loaded instrument response models.
+        energy from the loaded instrument response models.      
 
     """
     def __init__(self, star, signals,
@@ -87,7 +87,8 @@ class Likelihood(ParameterSubspace):
                  threads = 1, llzero = -1.0e90,
                  externally_updated = False,
                  prior = None,
-                 max_energy = None):
+                 max_energy = None,
+                 stokes = "I"):
 
         self.star = star
         self.signals = signals
@@ -136,7 +137,7 @@ class Likelihood(ParameterSubspace):
             self.prior = prior
 
         # merge subspaces
-        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]))
+        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]))        
 
     @property
     def threads(self):
@@ -327,7 +328,7 @@ class Likelihood(ParameterSubspace):
                     else:
                         energies = signals[0].energies
 
-                    photosphere.integrate(energies, self.threads)
+                    photosphere.integrate(energies, self.threads, stokes=True) #TBD: ADD stokes option to Likelihood class.
                 except xpsiError as e:
                     try:
                         prefix = ' prefix ' + photosphere.prefix
@@ -349,12 +350,30 @@ class Likelihood(ParameterSubspace):
         for signals, photosphere in zip(self._signals, self._star.photospheres):
             for signal in signals:
                 if star_updated or signal.needs_update:
-                    signal.register(tuple(
-                                     tuple(self._divide(component,
-                                                    self._star.spacetime.d_sq)
-                                           for component in hot_region)
-                                     for hot_region in photosphere.signal),
-                               fast_mode=fast_mode, threads=self.threads)
+                    if signal.isI:
+		            signal.register(tuple(
+		                             tuple(self._divide(component,
+		                                            self._star.spacetime.d_sq)
+		                                   for component in hot_region)
+		                             for hot_region in photosphere.signal),
+		                       fast_mode=fast_mode, threads=self.threads)
+		    elif signal.isQ:
+		            signal.register(tuple(
+		                             tuple(self._divide(component,
+		                                            self._star.spacetime.d_sq)
+		                                   for component in hot_region)
+		                             for hot_region in photosphere.signalQ),
+		                       fast_mode=fast_mode, threads=self.threads)
+		    elif signal.isU:
+		            signal.register(tuple(
+		                             tuple(self._divide(component,
+		                                            self._star.spacetime.d_sq)
+		                                   for component in hot_region)
+		                             for hot_region in photosphere.signalU),
+		                       fast_mode=fast_mode, threads=self.threads)
+		    else:
+		        raise TypeError('Signal type must be either I, Q, or U.')
+		                       
                     reregistered = True
                 else:
                     reregistered = False

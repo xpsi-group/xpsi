@@ -235,7 +235,7 @@ class CustomSignal(xpsi.Signal):
                 self._support[:,0] = 0.0
 
     def __call__(self, *args, **kwargs):
-        self.loglikelihood, self.expected_counts, self.background_signal, extra_element = \
+        self.loglikelihood, self.expected_counts, self.background_signal, self.background_signal_given_support = \
                 eval_marginal_likelihood(self._data.exposure_time,
                                           self._data.phases,
                                           self._data.counts,
@@ -252,6 +252,7 @@ class CustomSignal(xpsi.Signal):
                                           kwargs.get('llzero'),
                                           allow_negative=(False, False))
 
+signals = [[],]
 
 signal = CustomSignal(data = data,
                         instrument = NICER,
@@ -262,7 +263,39 @@ signal = CustomSignal(data = data,
                         epsrel = 1.0e-8,
                         epsilon = 1.0e-3,
                         sigmas = 10.0,
-                        support = None)
+                        support = None,
+                        stokes="I")
+
+signals[0].append(signal)
+
+signalQ = CustomSignal(data = data,
+                        instrument = NICER,
+                        background = None,
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        stokes="Q")
+
+signals[0].append(signalQ)                        
+                        
+signalU = CustomSignal(data = data,
+                        instrument = NICER,
+                        background = None,
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        stokes="U")                        
+signals[0].append(signalU)                        
+                        
+
 
 
 spacetime = xpsi.Spacetime.fixed_spin(300.0)
@@ -370,7 +403,12 @@ photosphere['mode_frequency'] == spacetime['frequency']
 
 star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
 
-likelihood = xpsi.Likelihood(star = star, signals = signal,
+#likelihood = xpsi.Likelihood(star = star, signals = signal,
+#                             num_energies=128,
+#                             threads=1,
+#                             externally_updated=False)
+
+likelihood = xpsi.Likelihood(star = star, signals = signals,
                              num_energies=128,
                              threads=1,
                              externally_updated=False)
@@ -417,11 +455,15 @@ likelihood.clear_cache()
 t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
-likelihood.check(None, [-26713.6136777], 1.0e-6, #stokes=True,
+likelihood.check(None, [ -8.01408041e+04], 1.0e-6, #stokes=True,
                  physical_points=[p])
 print('time = %.3f s' % (time.time() - t))
 
 print("likelihood.params=",likelihood.params)
+
+
+#For a synthetic NICER signal: -2.67136137e+04 #-26713.6136777
+#For 3 synthetic NICER signals : -8.01408041e+04
 
 
 #TypeError: __call__() got an unexpected keyword argument 'stokes' !!!

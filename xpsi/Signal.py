@@ -68,6 +68,9 @@ class Signal(ParameterSubspace):
 
     :param bool store:
         Deprecated. You can use this or ``cache``, which has the same effect.
+        
+    :param str stokes:
+        Give I, Q, or U.         
 
     """
     def __init__(self,
@@ -79,9 +82,25 @@ class Signal(ParameterSubspace):
                  cache = False,
                  bounds = None,
                  values = None,
+                 stokes = "I",
                  *args,
                  **kwargs):
 
+        if stokes == "I":
+            self._isI = True
+            self._isQ = False
+            self._isU = False
+        elif stokes == "Q":
+            self._isI = False
+            self._isQ = True
+            self._isU = False
+        elif stokes == "U":
+            self._isI = False
+            self._isQ = False
+            self._isU = True
+        else:
+             raise TypeError('param stokes for likelihood must be either "I", "Q", or "U".')
+             
         if not isinstance(data, Data):
             raise TypeError('Invalid type for a data object.')
         else:
@@ -154,6 +173,37 @@ class Signal(ParameterSubspace):
                                      self._interstellar,
                                      *args, **kwargs)
 
+
+    @property
+    def isI(self):
+        """ ... """
+        return self._isI
+        
+    @isI.setter
+    def isI(self, b):
+        """ ... """
+        self._isI = b
+        
+    @property
+    def isQ(self):
+        """ ... """
+        return self._isQ
+        
+    @isQ.setter
+    def isQ(self, b):
+        """ ... """
+        self._isQ = b
+        
+    @property
+    def isU(self):
+        """ ... """
+        return self._isU
+        
+    @isU.setter
+    def isU(self, b):
+        """ ... """
+        self._isU = b 
+        
     @property
     def background(self):
         """ Get the instance of :class:`~.Background.Background`."""
