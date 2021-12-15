@@ -188,6 +188,83 @@ if plot_response_and_data:
 from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
 from xpsi.likelihoods.default_background_marginalisation import precomputation
 
+#from xpsi.likelihoods._poisson_likelihood_given_background_IQU import poisson_likelihood_given_background
+from xpsi.likelihoods._poisson_likelihood_given_background import poisson_likelihood_given_background
+
+class CustomSignal_poisson(xpsi.Signal):
+    """
+
+    A custom calculation of the logarithm of the likelihood.
+    We extend the :class:`~xpsi.Signal.Signal` class to make it callable.
+    We overwrite the body of the __call__ method. The docstring for the
+    abstract method is copied.
+
+    """
+
+    def __init__(self, workspace_intervals = 1000, epsabs = 0, epsrel = 1.0e-8,
+                 epsilon = 1.0e-3, sigmas = 10.0, support = None, **kwargs):
+        """ Perform precomputation.
+
+        :params ndarray[m,2] support:
+            Prior support bounds for background count rate variables in the
+            :math:`m` instrument channels, where the lower bounds must be zero
+            or positive, and the upper bounds must be positive and greater than
+            the lower bound. Alternatively, setting the an upper bounds as
+            negative means the prior support is unbounded and the flat prior
+            density functions per channel are improper. If ``None``, the lower-
+            bound of the support for each channel is zero but the prior is
+            unbounded.
+
+        """
+
+        super(CustomSignal_poisson, self).__init__(**kwargs)
+
+        self._workspace_intervals = workspace_intervals
+        self._epsabs = epsabs
+        self._epsrel = epsrel
+        self._epsilon = epsilon
+        self._sigmas = sigmas
+
+        if support is not None:
+            self._support = support
+        else:
+            self._support = -1.0 * np.ones((self._data.counts.shape[0],2))
+            self._support[:,0] = 0.0
+
+    def __call__(self, *args, **kwargs):
+        if self.isI:
+            #TBD: Think if using 
+            # 1) default_background_marginalization in I, modified poisson_likelihood_given_background in Q and U
+            # 2) default_background_marginalization in I, modified default_background_marginalization in Q and U
+            # 3) poisson_likelihood_given_background in I, modified poisson_likelihood_given_background in Q and U
+            #Modification in Q&U needed to allow negative values...
+            
+            print("background I:", self._background.registered_background) #self._background)
+            self.loglikelihood, self.expected_counts = \
+                poisson_likelihood_given_background(self._data.exposure_time,
+                                          self._data.phases,
+                                          self._data.counts,
+                                          self._signals,
+                                          self._phases,
+                                          self._shifts,
+                                          background = self._background.registered_background, #self._background,
+                                          allow_negative=(False, False))
+                                          
+        else: #For Q and U use possibly different likelihood evualuation function:
+            print("background Q or U:", self._background.registered_background) #self._background)
+            self.loglikelihood, self.expected_counts = \
+                poisson_likelihood_given_background(self._data.exposure_time,
+                                          self._data.phases,
+                                          self._data.counts,
+                                          self._signals,
+                                          self._phases,
+                                          self._shifts,
+                                          background = self._background.registered_background, #self._background,
+                                          allow_negative=(False, False))                                       
+                                          
+                                                                                    
+
+
 class CustomSignal(xpsi.Signal):
     """
 
@@ -252,11 +329,48 @@ class CustomSignal(xpsi.Signal):
                                           kwargs.get('llzero'),
                                           allow_negative=(False, False))
 
+class CustomBackground(xpsi.Background):
+    """ The background injected to generate synthetic data. """
+
+    def __init__(self, bounds=None, value=None):
+
+        # first the parameters that are fundemental to this class
+        doc = """
+        Powerlaw spectral index.
+        """
+        index = xpsi.Parameter('powerlaw_index',
+                                strict_bounds = (-3.0, -1.01),
+                                bounds = bounds,
+                                doc = doc,
+                                symbol = r'$\Gamma$',
+                                value = value)
+
+        super(CustomBackground, self).__init__(index)
+
+    def __call__(self, energy_edges, phases):
+        """ Evaluate the incident background field. """
+
+        G = self['powerlaw_index']
+
+        temp = np.zeros((energy_edges.shape[0] - 1, phases.shape[0]))
+
+        temp[:,0] = (energy_edges[1:]**(G + 1.0) - energy_edges[:-1]**(G + 1.0)) / (G + 1.0)
+
+        for i in range(phases.shape[0]):
+            temp[:,i] = temp[:,0] #*0.0 if want to have zero bkg
+
+        #self.background = temp
+        self.incident_background = temp
+
+#background = CustomBackground(bounds=(None, None)) # use strict bounds, but do not fix/derive
+
+background = CustomBackground(value=-2.0)
+
 signals = [[],]
 
-signal = CustomSignal(data = data,
+signal = CustomSignal_poisson(data = data,
                         instrument = NICER,
-                        background = None,
+                        background = background,
                         interstellar = None,
                         workspace_intervals = 1000,
                         cache = True,
@@ -268,9 +382,9 @@ signal = CustomSignal(data = data,
 
 signals[0].append(signal)
 
-signalQ = CustomSignal(data = data,
+signalQ = CustomSignal_poisson(data = data,
                         instrument = NICER,
-                        background = None,
+                        background = background, #None,
                         interstellar = None,
                         workspace_intervals = 1000,
                         cache = True,
@@ -282,9 +396,9 @@ signalQ = CustomSignal(data = data,
 
 signals[0].append(signalQ)                        
                         
-signalU = CustomSignal(data = data,
+signalU = CustomSignal_poisson(data = data,
                         instrument = NICER,
-                        background = None,
+                        background = background, #None,
                         interstellar = None,
                         workspace_intervals = 1000,
                         cache = True,
@@ -455,7 +569,7 @@ likelihood.clear_cache()
 t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
-likelihood.check(None, [ -8.01408041e+04], 1.0e-6, #stokes=True,
+likelihood.check(None, [ -9.75133213e+09], 1.0e-6, #stokes=True,
                  physical_points=[p])
 print('time = %.3f s' % (time.time() - t))
 
@@ -464,7 +578,15 @@ print("likelihood.params=",likelihood.params)
 
 #For a synthetic NICER signal: -2.67136137e+04 #-26713.6136777
 #For 3 synthetic NICER signals : -8.01408041e+04
+#For 3 Stokes signals convolved with NICER response: -2.78202535e+05
+#As above but with poisson likelihood given fixed background: -9.75133213e+09 (negative Q and U not yet allowed)
 
+print("signal I (primary):")
+print(signals[0][0].signals[0])
+print("signal Q (primary):")
+print(signals[0][1].signals[0])
+print("signal U (primary):")
+print(signals[0][2].signals[0])
 
 #TypeError: __call__() got an unexpected keyword argument 'stokes' !!!
 
@@ -505,6 +627,50 @@ print("likelihood.params=",likelihood.params)
 
 
 
+def plot_pulse_stokes():
+    """ Plot hot region signals before and after telescope operation. """
+    fig = plt.figure(figsize=(7,7))
+    ax = fig.add_subplot(111)
+
+    ax.set_ylabel('Signal [arbitrary normalisation]')
+    ax.set_xlabel('Phase [cycles]')
+
+    temp = np.sum(signals[0][0].signals[0], axis=0)
+    ax.plot(signals[0][0].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
+    temp = np.sum(signals[0][0].signals[1], axis=0)
+    ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+
+    veneer((0.05,0.2), (0.05,0.2), ax)
+    fig.savefig("figs/signalsIX.pdf")
+    
+    fig = plt.figure(figsize=(7,7))
+    ax = fig.add_subplot(111)
+
+    ax.set_ylabel('Signal [arbitrary normalisation]')
+    ax.set_xlabel('Phase [cycles]')
+
+    temp = np.sum(signals[0][1].signals[0], axis=0)
+    ax.plot(signals[0][1].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
+    temp = np.sum(signals[0][1].signals[1], axis=0)
+    ax.plot(signals[0][1].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+
+    veneer((0.05,0.2), (0.05,0.2), ax)
+    fig.savefig("figs/signalsQX.pdf")
+    
+    fig = plt.figure(figsize=(7,7))
+    ax = fig.add_subplot(111)
+
+    ax.set_ylabel('Signal [arbitrary normalisation]')
+    ax.set_xlabel('Phase [cycles]')
+
+    temp = np.sum(signals[0][2].signals[0], axis=0)
+    ax.plot(signals[0][2].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
+    temp = np.sum(signals[0][2].signals[1], axis=0)
+    ax.plot(signals[0][2].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+
+    veneer((0.05,0.2), (0.05,0.2), ax)
+    fig.savefig("figs/signalsUX.pdf")       
+    
 def plot_pulse():
     """ Plot hot region signals before and after telescope operation. """
     fig = plt.figure(figsize=(7,7))
@@ -528,7 +694,7 @@ def plot_pulse():
 
 
 likelihood(p, reinitialise=False)
-#_ = plot_pulse()
+_ = plot_pulse_stokes()
 
 #The rest of the modelling examples and emcmc are still only in the notebook version.
 #Let's still test multinest here:
@@ -731,7 +897,7 @@ p = [1.4,
 # let's require that checks pass before starting to sample
 check_kwargs = dict(hypercube_points = None,
                     physical_points = p, # externally_updated preserved
-                    loglikelihood_call_vals = [-26713.613677], # from above
+                    loglikelihood_call_vals = [-9.75133213e+09], #[-2.78202535e+05], #[-26713.613677], # from above
                     rtol_loglike = 1.0e-6) # choose a tolerance
 
 # note that mutual refs are already stored in the likelihood and prior
