@@ -179,6 +179,7 @@ if __name__ == '__main__':
                 'xpsi.tools.__init__',
                 'xpsi.likelihoods.default_background_marginalisation',
                 'xpsi.likelihoods._poisson_likelihood_given_background',
+                'xpsi.likelihoods._poisson_likelihood_given_background_IQU',                
                 'xpsi.surface_radiation_field.__init__',
                 'xpsi.surface_radiation_field.preload',
                 'xpsi.surface_radiation_field.hot',

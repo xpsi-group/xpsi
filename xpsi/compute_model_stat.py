@@ -16,7 +16,7 @@ import xpsi
 
 from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
 
-
+np.random.seed(10)
 
 #Then we can use that data:
 
@@ -188,8 +188,8 @@ if plot_response_and_data:
 from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
 from xpsi.likelihoods.default_background_marginalisation import precomputation
 
-#from xpsi.likelihoods._poisson_likelihood_given_background_IQU import poisson_likelihood_given_background
-from xpsi.likelihoods._poisson_likelihood_given_background import poisson_likelihood_given_background
+from xpsi.likelihoods._poisson_likelihood_given_background_IQU import poisson_likelihood_given_background
+#from xpsi.likelihoods._poisson_likelihood_given_background import poisson_likelihood_given_background
 
 class CustomSignal_poisson(xpsi.Signal):
     """
@@ -239,7 +239,7 @@ class CustomSignal_poisson(xpsi.Signal):
             # 3) poisson_likelihood_given_background in I, modified poisson_likelihood_given_background in Q and U
             #Modification in Q&U needed to allow negative values...
             
-            print("background I:", self._background.registered_background) #self._background)
+            print("background I:", self._background.registered_background)
             self.loglikelihood, self.expected_counts = \
                 poisson_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
@@ -252,6 +252,7 @@ class CustomSignal_poisson(xpsi.Signal):
                                           
         else: #For Q and U use possibly different likelihood evualuation function:
             print("background Q or U:", self._background.registered_background) #self._background)
+            #If want to test fit Q/I and U/I, consider normalizing them here before calling likelihood function....
             self.loglikelihood, self.expected_counts = \
                 poisson_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
@@ -259,8 +260,11 @@ class CustomSignal_poisson(xpsi.Signal):
                                           self._signals,
                                           self._phases,
                                           self._shifts,
-                                          background = self._background.registered_background, #self._background,
-                                          allow_negative=(False, False))                                       
+                                          background = self._background.registered_background, 
+                                          allow_negative=(True, True)) #Setting these True is causing a likelihood error!  
+            #print("Hello")
+            #print(self.loglikelihood)
+            #exit()                                                                   
                                           
                                                                                     
 
@@ -357,7 +361,7 @@ class CustomBackground(xpsi.Background):
         temp[:,0] = (energy_edges[1:]**(G + 1.0) - energy_edges[:-1]**(G + 1.0)) / (G + 1.0)
 
         for i in range(phases.shape[0]):
-            temp[:,i] = temp[:,0] #*0.0 if want to have zero bkg
+            temp[:,i] = temp[:,0]*0.0 #*0.0 if want to have zero bkg
 
         #self.background = temp
         self.incident_background = temp
@@ -569,7 +573,7 @@ likelihood.clear_cache()
 t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
-likelihood.check(None, [ -9.75133213e+09], 1.0e-6, #stokes=True,
+likelihood.check(None, [ -7.94188579e+89], 1.0e-6, #stokes=True,
                  physical_points=[p])
 print('time = %.3f s' % (time.time() - t))
 
@@ -580,13 +584,15 @@ print("likelihood.params=",likelihood.params)
 #For 3 synthetic NICER signals : -8.01408041e+04
 #For 3 Stokes signals convolved with NICER response: -2.78202535e+05
 #As above but with poisson likelihood given fixed background: -9.75133213e+09 (negative Q and U not yet allowed)
+   #As above but background=0.0 
+   #As above but with default likelihood for I (and poisson for Q and U): -6.49958273e+09
 
-print("signal I (primary):")
-print(signals[0][0].signals[0])
-print("signal Q (primary):")
-print(signals[0][1].signals[0])
-print("signal U (primary):")
-print(signals[0][2].signals[0])
+#print("signal I (primary):")
+#print(signals[0][0].signals[0])
+#print("signal Q (primary):")
+#print(signals[0][1].signals[0])
+#print("signal U (primary):")
+#print(signals[0][2].signals[0])
 
 #TypeError: __call__() got an unexpected keyword argument 'stokes' !!!
 
@@ -639,6 +645,15 @@ def plot_pulse_stokes():
     ax.plot(signals[0][0].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
     temp = np.sum(signals[0][0].signals[1], axis=0)
     ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+    
+    temp = np.sum(photosphere.signal[0][0], axis=0)
+    ax.plot(signal.phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+    temp = np.sum(photosphere.signal[1][0], axis=0)
+    ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
+
+    temp = np.sum(signals[0][0].expected_counts, axis=0)
+    data_phases = np.linspace(0.0, 1.0, 33)
+    ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
 
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsIX.pdf")
@@ -653,7 +668,16 @@ def plot_pulse_stokes():
     ax.plot(signals[0][1].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
     temp = np.sum(signals[0][1].signals[1], axis=0)
     ax.plot(signals[0][1].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
-
+    
+    temp = np.sum(photosphere.signalQ[0][0], axis=0)
+    ax.plot(signal.phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+    temp = np.sum(photosphere.signalQ[1][0], axis=0)
+    ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)     
+    
+    temp = np.sum(signals[0][1].expected_counts, axis=0)
+    data_phases = np.linspace(0.0, 1.0, 33)
+    ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
+        
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsQX.pdf")
     
@@ -667,6 +691,16 @@ def plot_pulse_stokes():
     ax.plot(signals[0][2].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
     temp = np.sum(signals[0][2].signals[1], axis=0)
     ax.plot(signals[0][2].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+    
+    temp = np.sum(photosphere.signalU[0][0], axis=0)
+    ax.plot(signal.phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+    temp = np.sum(photosphere.signalU[1][0], axis=0)
+    ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)     
+
+    temp = np.sum(signals[0][2].expected_counts, axis=0)
+    data_phases = np.linspace(0.0, 1.0, 33)
+    ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
+
 
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsUX.pdf")       
