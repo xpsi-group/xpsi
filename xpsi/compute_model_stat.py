@@ -188,7 +188,8 @@ if plot_response_and_data:
 from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
 from xpsi.likelihoods.default_background_marginalisation import precomputation
 
-from xpsi.likelihoods._poisson_likelihood_given_background_IQU import poisson_likelihood_given_background
+from xpsi.likelihoods._gaussian_likelihood_given_background_IQU import gaussian_likelihood_given_background
+#from xpsi.likelihoods._poisson_likelihood_given_background_IQU import poisson_likelihood_given_background
 #from xpsi.likelihoods._poisson_likelihood_given_background import poisson_likelihood_given_background
 
 class CustomSignal_poisson(xpsi.Signal):
@@ -232,6 +233,8 @@ class CustomSignal_poisson(xpsi.Signal):
             self._support[:,0] = 0.0
 
     def __call__(self, *args, **kwargs):
+    	errors = self._data.counts * 0.1
+    	#TBD: Add a method to read this as self._errors ...
         if self.isI:
             #TBD: Think if using 
             # 1) default_background_marginalization in I, modified poisson_likelihood_given_background in Q and U
@@ -241,9 +244,10 @@ class CustomSignal_poisson(xpsi.Signal):
             
             print("background I:", self._background.registered_background)
             self.loglikelihood, self.expected_counts = \
-                poisson_likelihood_given_background(self._data.exposure_time,
+                gaussian_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
                                           self._data.counts,
+                                          errors,
                                           self._signals,
                                           self._phases,
                                           self._shifts,
@@ -251,12 +255,15 @@ class CustomSignal_poisson(xpsi.Signal):
                                           allow_negative=(False, False))
                                           
         else: #For Q and U use possibly different likelihood evualuation function:
-            print("background Q or U:", self._background.registered_background) #self._background)
+            print("background Q or U:", self._background.registered_background)
+            #print("self._signals",len(self._signals[1][0,:]))
+            #exit()
             #If want to test fit Q/I and U/I, consider normalizing them here before calling likelihood function....
             self.loglikelihood, self.expected_counts = \
-                poisson_likelihood_given_background(self._data.exposure_time,
+                gaussian_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
                                           self._data.counts,
+                                          errors,
                                           self._signals,
                                           self._phases,
                                           self._shifts,
@@ -573,7 +580,7 @@ likelihood.clear_cache()
 t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
-likelihood.check(None, [ -7.94188579e+89], 1.0e-6, #stokes=True,
+likelihood.check(None, [-6.94509688e+05], 1.0e-6, #stokes=True,
                  physical_points=[p])
 print('time = %.3f s' % (time.time() - t))
 
@@ -583,9 +590,11 @@ print("likelihood.params=",likelihood.params)
 #For a synthetic NICER signal: -2.67136137e+04 #-26713.6136777
 #For 3 synthetic NICER signals : -8.01408041e+04
 #For 3 Stokes signals convolved with NICER response: -2.78202535e+05
-#As above but with poisson likelihood given fixed background: -9.75133213e+09 (negative Q and U not yet allowed)
-   #As above but background=0.0 
-   #As above but with default likelihood for I (and poisson for Q and U): -6.49958273e+09
+#1) As above but with poisson likelihood given fixed background: -9.75133213e+09 (negative Q and U not yet allowed)
+   #a) As above but background=0.0, negative Q and U enabled in likelihood fit: 2.49114467e+07 
+   #b) As above but with default likelihood for I (and poisson for Q and U): -6.49958273e+09
+#As 1a) but gaussian likelihood for all I, Q, and U: -6.94509688e+05
+
 
 #print("signal I (primary):")
 #print(signals[0][0].signals[0])
@@ -931,7 +940,7 @@ p = [1.4,
 # let's require that checks pass before starting to sample
 check_kwargs = dict(hypercube_points = None,
                     physical_points = p, # externally_updated preserved
-                    loglikelihood_call_vals = [-9.75133213e+09], #[-2.78202535e+05], #[-26713.613677], # from above
+                    loglikelihood_call_vals = [-6.94509688e+05], #[-2.78202535e+05], #[-26713.613677], # from above
                     rtol_loglike = 1.0e-6) # choose a tolerance
 
 # note that mutual refs are already stored in the likelihood and prior

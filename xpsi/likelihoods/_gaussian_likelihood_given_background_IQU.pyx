@@ -8,7 +8,7 @@ from __future__ import division
 
 import numpy as np
 cimport numpy as np
-from libc.math cimport pow, log, floor, fabs
+from libc.math cimport pow, log, floor, fabs, pi
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 
@@ -29,15 +29,16 @@ ctypedef np.uint8_t uint8
 
 from ..tools cimport _get_phase_interpolant, gsl_interp_type
 
-def poisson_likelihood_given_background(double exposure_time,
+def gaussian_likelihood_given_background(double exposure_time,
                                         double[::1] phases,
                                         double[:,::1] counts,
+                                        double[:,::1] errors,
                                         components,
                                         component_phases,
                                         phase_shifts,
                                         double[:,::1] background,
                                         allow_negative = False):
-    """ Evaluate the Poisson likelihood.
+    """ Evaluate the Gaussian likelihood.
 
     The count rate is integrated over phase intervals.
 
@@ -197,21 +198,32 @@ def poisson_likelihood_given_background(double exposure_time,
     free(interp)
 
     cdef:
-        double LOGLIKE = 0.0, EXPEC = 0.0
+        double LOGLIKE = 0.0, EXPEC = 0.0, sigma_tot2 = 1.0
         double n = <double>(phases.shape[0] - 1)
 
     for i in range(STAR.shape[0]):
         for j in range(STAR.shape[1]):
-            if STAR[i,j] > 0.0:
-                EXPEC = (STAR[i,j] + background[i,j]/n) * exposure_time
-                LOGLIKE -= EXPEC
-                LOGLIKE += counts[i,j] * log(EXPEC)
-            else:   #WARNING: This is really not the correct way, and seems not to even produce negative log-likelihoods!
-                EXPEC = fabs(STAR[i,j] + background[i,j]/n) * exposure_time
-                LOGLIKE -= EXPEC
-                LOGLIKE += fabs(counts[i,j]) * log(EXPEC)
-
+            sigma_tot2 = pow(errors[i,j],2.0)
+            norm = 0.5 * log(2.0*pi*sigma_tot2)
+            LOGLIKE -= ((STAR[i,j] + background[i,j]/n) * exposure_time-counts[i,j])**2/(2.0*sigma_tot2)-norm
             STAR[i,j] += background[i,j]/n
             STAR[i,j] *= exposure_time
+
+
+
+	#loglik = 0.0
+	#sigma_tot2 = error**2+error_intr**2 #+error_calib**2 ...
+	#for t in range(NPhadat):
+	#	if(abs(error[t])<1e-10):
+	#		loglik = loglik
+	#	else:
+	#		if(use_intr_sigma):
+	#			norm = 0.5*np.log(2.0*np.pi*sigma_tot2[t]) 
+	#			loglik = loglik - (model[t]-data[t])**2/(2.0*sigma_tot2[t])-norm
+	#		else:
+	#			loglik = loglik - (model[t]-data[t])**2/(2.0*error[t]**2)
+	##print(loglik)
+	#return loglik
+
 
     return (LOGLIKE, np.asarray(STAR, order='C', dtype=np.double))
