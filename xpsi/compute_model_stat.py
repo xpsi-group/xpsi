@@ -16,6 +16,9 @@ import xpsi
 
 from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
 
+class namespace():
+    pass
+
 np.random.seed(10)
 
 #Then we can use that data:
@@ -26,8 +29,106 @@ settings = dict(counts = np.loadtxt('../docs/source/data/new_synthetic_realisati
                 phases=np.linspace(0.0, 1.0, 33),
                 first=0, last=180,
                 exposure_time=984307.6661)
+                
+counts = np.loadtxt('../docs/source/data/new_synthetic_realisation.dat', dtype=np.double)
+#print(counts.shape[0],counts.shape[1])
 
 data = xpsi.Data(**settings)
+
+
+
+IXPE_du1_I = namespace()
+IXPE_du1_Q = namespace()
+IXPE_du1_U = namespace()
+
+IXPE_du2_I = namespace()
+IXPE_du2_Q = namespace()
+IXPE_du2_U = namespace()
+
+IXPE_du3_I = namespace()
+IXPE_du3_Q = namespace()
+IXPE_du3_U = namespace()
+
+minCH_IXPE = 0
+maxCH_IXPE = 1
+exposure_time_IXPE = 1.0
+
+
+from ixpe_read import readData_pcube
+fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du1"
+phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, keVdat = readData_pcube(fname)
+
+IXPE_du1_I.data = xpsi.Data(Idat,
+                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=maxCH_IXPE-minCH_IXPE-1,
+                       exposure_time=exposure_time_IXPE)
+
+IXPE_du1_Q.data = xpsi.Data(qn,
+                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=maxCH_IXPE-minCH_IXPE-1,
+                       exposure_time=exposure_time_IXPE)
+                       
+IXPE_du1_U.data = xpsi.Data(un,
+                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=maxCH_IXPE-minCH_IXPE-1,
+                       exposure_time=exposure_time_IXPE)                                              
+
+fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du2"
+phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, keVdat = readData_pcube(fname)
+
+#print(Idat.shape[0],Idat.shape[1])
+#exit()
+
+IXPE_du2_I.data = xpsi.Data(Idat,
+                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=maxCH_IXPE-minCH_IXPE-1,
+                       exposure_time=exposure_time_IXPE)
+
+IXPE_du2_Q.data = xpsi.Data(qn,
+                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=maxCH_IXPE-minCH_IXPE-1,
+                       exposure_time=exposure_time_IXPE)
+                       
+IXPE_du2_U.data = xpsi.Data(un,
+                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=maxCH_IXPE-minCH_IXPE-1,
+                       exposure_time=exposure_time_IXPE)  
+                       
+fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du3"
+phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, keVdat = readData_pcube(fname)
+
+IXPE_du3_I.data = xpsi.Data(Idat,
+                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=maxCH_IXPE-minCH_IXPE-1,
+                       exposure_time=exposure_time_IXPE)
+
+IXPE_du3_Q.data = xpsi.Data(qn,
+                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=maxCH_IXPE-minCH_IXPE-1,
+                       exposure_time=exposure_time_IXPE)
+                       
+IXPE_du3_U.data = xpsi.Data(un,
+                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=maxCH_IXPE-minCH_IXPE-1,
+                       exposure_time=exposure_time_IXPE)  
 
 rcParams['text.usetex'] = False
 rcParams['font.size'] = 14.0
@@ -93,6 +194,49 @@ def plot_one_pulse(pulse, x, label=r'Counts', cmap=cm.magma, vmin=None, vmax=Non
     fig.savefig("figs/dataX.pdf")
 
 
+from ixpe_read import read_response_IXPE
+
+class CustomInstrument_stokes(xpsi.Instrument):
+    """ A model of the NICER telescope response. """
+
+    def __call__(self, signal, *args):
+        """ Overwrite base just to show it is possible.
+
+        We loaded only a submatrix of the total instrument response
+        matrix into memory, so here we can simplify the method in the
+        base class.
+
+        """
+        matrix = self.construct_matrix()
+
+        self._folded_signal = np.dot(matrix, signal)
+
+        return self._folded_signal
+
+    @classmethod
+    def from_response_files(cls, MRF, RMF, max_input, max_channel, min_input=0, min_channel=0,
+                            channel_edges=None):
+        """ Constructor which converts response files into :class:`numpy.ndarray`s.
+        :param str MRF: Path to MRF which is compatible with
+                                :...
+        :param str RMF: Path to RMF which is compatible with
+                                :...
+        :param str channel_edges: Optional path to edges which is compatible with
+                                  :func:`numpy.loadtxt`.
+        """
+        if min_input != 0:
+            min_input = int(min_input)
+        max_input = int(max_input)
+        try:
+            matrix, edges, channels, channel_edgesT = read_response_IXPE(MRF,RMF,min_input,max_input,min_channel,max_channel)
+            if channel_edges:
+                channel_edgesT = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
+        except:
+            print('A file could not be loaded.')
+            raise
+        return cls(matrix, edges, channels, channel_edgesT)
+
+
 
 class CustomInstrument(xpsi.Instrument):
     """ A model of the NICER telescope response. """
@@ -155,6 +299,36 @@ NICER = CustomInstrument.from_response_files(ARF = '../examples/model_data/nicer
                                              max_input = 500,
                                              min_input = 0,
                                              channel_edges = '../examples/model_data/nicer_v1.01_rmf_energymap.txt')
+
+
+#mrf = "essentially the product of the effective area times the modulation factor, and is meant to be used to fit polarimetric models in XSPEC"
+                             
+                                             
+IXPE_du1 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/bcf/mrf/ixpemcdu1stdcutv006.mrf',
+                                             RMF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/cpf/rmf/ixpemcdu1stdcutv006.rmf',
+                                             max_input = 175,
+                                             max_channel = 200,
+                                             min_input = 75,
+                                             min_channel = 100,
+                                             channel_edges = None)
+                                             
+IXPE_du2 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/bcf/mrf/ixpemcdu2stdcutv006.mrf',
+                                             RMF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/cpf/rmf/ixpemcdu2stdcutv006.rmf',
+                                             max_input = 175,
+                                             max_channel = 200,
+                                             min_input = 75,
+                                             min_channel = 100,
+                                             channel_edges = None)
+                                             
+IXPE_du2 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/bcf/mrf/ixpemcdu3stdcutv006.mrf',
+                                             RMF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/cpf/rmf/ixpemcdu3stdcutv006.rmf',
+                                             max_input = 175,
+                                             max_channel = 200,
+                                             min_input = 75,
+                                             min_channel = 100,
+                                             channel_edges = None)
+                                             
+
 plot_response_and_data=False
 if plot_response_and_data:
 	fig = plt.figure(figsize = (14,7))
@@ -379,8 +553,8 @@ background = CustomBackground(value=-2.0)
 
 signals = [[],]
 
-signal = CustomSignal_poisson(data = data,
-                        instrument = NICER,
+signal = CustomSignal_poisson(data = IXPE_du1_I.data, #data,
+                        instrument = IXPE_du1, #NICER,
                         background = background,
                         interstellar = None,
                         workspace_intervals = 1000,
@@ -393,8 +567,8 @@ signal = CustomSignal_poisson(data = data,
 
 signals[0].append(signal)
 
-signalQ = CustomSignal_poisson(data = data,
-                        instrument = NICER,
+signalQ = CustomSignal_poisson(data = IXPE_du1_Q.data, #data,
+                        instrument = IXPE_du1, #NICER,
                         background = background, #None,
                         interstellar = None,
                         workspace_intervals = 1000,
@@ -407,8 +581,8 @@ signalQ = CustomSignal_poisson(data = data,
 
 signals[0].append(signalQ)                        
                         
-signalU = CustomSignal_poisson(data = data,
-                        instrument = NICER,
+signalU = CustomSignal_poisson(data = IXPE_du1_U.data, #data,
+                        instrument = IXPE_du1, #NICER,
                         background = background, #None,
                         interstellar = None,
                         workspace_intervals = 1000,
