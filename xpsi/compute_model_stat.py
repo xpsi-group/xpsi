@@ -320,7 +320,7 @@ IXPE_du2 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcsl
                                              min_channel = 100,
                                              channel_edges = None)
                                              
-IXPE_du2 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/bcf/mrf/ixpemcdu3stdcutv006.mrf',
+IXPE_du3 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/bcf/mrf/ixpemcdu3stdcutv006.mrf',
                                              RMF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/cpf/rmf/ixpemcdu3stdcutv006.rmf',
                                              max_input = 175,
                                              max_channel = 200,
@@ -754,7 +754,7 @@ likelihood.clear_cache()
 t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
-likelihood.check(None, [-6.94509688e+05], 1.0e-6, #stokes=True,
+likelihood.check(None, [-1.37016697e+03], 1.0e-6, #stokes=True,
                  physical_points=[p])
 print('time = %.3f s' % (time.time() - t))
 
@@ -768,6 +768,8 @@ print("likelihood.params=",likelihood.params)
    #a) As above but background=0.0, negative Q and U enabled in likelihood fit: 2.49114467e+07 
    #b) As above but with default likelihood for I (and poisson for Q and U): -6.49958273e+09
 #As 1a) but gaussian likelihood for all I, Q, and U: -6.94509688e+05
+
+#Fory synthetic IXPE_du1 data with re-binned response (and using non-matching parameter values): -1.37016697e+03
 
 
 #print("signal I (primary):")
@@ -824,6 +826,9 @@ def plot_pulse_stokes():
     ax.set_ylabel('Signal [arbitrary normalisation]')
     ax.set_xlabel('Phase [cycles]')
 
+    print("photosphere.signalI:")
+    print(np.sum(photosphere.signal[0][0], axis=0))
+
     temp = np.sum(signals[0][0].signals[0], axis=0)
     ax.plot(signals[0][0].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
     temp = np.sum(signals[0][0].signals[1], axis=0)
@@ -835,8 +840,9 @@ def plot_pulse_stokes():
     ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
 
     temp = np.sum(signals[0][0].expected_counts, axis=0)
-    data_phases = np.linspace(0.0, 1.0, 33)
-    ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
+    data_phases = np.linspace(0.0, 1.0, 10) #(0.0, 1.0, 33)
+    #ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
+    ax.plot(data_phases[0:9], temp/np.max(temp), '--', color='k', lw=0.5)    
 
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsIX.pdf")
@@ -858,8 +864,8 @@ def plot_pulse_stokes():
     ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)     
     
     temp = np.sum(signals[0][1].expected_counts, axis=0)
-    data_phases = np.linspace(0.0, 1.0, 33)
-    ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
+    data_phases = np.linspace(0.0, 1.0, 10)
+    ax.plot(data_phases[0:9], temp/np.max(temp), '--', color='k', lw=0.5)
         
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsQX.pdf")
@@ -881,8 +887,8 @@ def plot_pulse_stokes():
     ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)     
 
     temp = np.sum(signals[0][2].expected_counts, axis=0)
-    data_phases = np.linspace(0.0, 1.0, 33)
-    ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
+    data_phases = np.linspace(0.0, 1.0, 10)
+    ax.plot(data_phases[0:9], temp/np.max(temp), '--', color='k', lw=0.5)
 
 
     veneer((0.05,0.2), (0.05,0.2), ax)
@@ -1114,7 +1120,7 @@ p = [1.4,
 # let's require that checks pass before starting to sample
 check_kwargs = dict(hypercube_points = None,
                     physical_points = p, # externally_updated preserved
-                    loglikelihood_call_vals = [-6.94509688e+05], #[-2.78202535e+05], #[-26713.613677], # from above
+                    loglikelihood_call_vals = [-1.37016697e+03], #[-2.78202535e+05], #[-26713.613677], # from above
                     rtol_loglike = 1.0e-6) # choose a tolerance
 
 # note that mutual refs are already stored in the likelihood and prior

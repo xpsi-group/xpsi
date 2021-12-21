@@ -114,7 +114,26 @@ def read_response_IXPE(MRF,RMF,min_input,max_input,min_channel,max_channel):
 	#print(channel_edges)
 
 	channels = np.arange(min_channel,max_channel)
+	
+	#Re-bin channels if necessary for the data product:
+	rebin = True
+	pcube = True
+	if rebin:
+		if pcube:
+			#Assuming Nchan = 1
+			channels = np.array([0])
+			channel_edges = np.array([4.0,8.0])
+			matrix_rb = np.zeros((1,len(matrix_cut[0,:])))
+			#Calculating just the average here
+			for ich in range(0,max_channel-min_channel):
+				matrix_rb[0,:] += matrix_cut[ich,:]
+			matrix_rb[0,:] = matrix_rb[0,:]/(max_channel-min_channel)
+			matrix_cut = matrix_rb	
+		else:
+			print("Other re-binning options to be implemented.")
+			exit()	
 
+	print("matrix_cut=",matrix_cut, len(matrix_cut[0,:]), len(matrix_cut[:,0]))
 	return matrix_cut, edges, channels, channel_edges
 	
 	
