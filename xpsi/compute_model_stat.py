@@ -328,7 +328,7 @@ IXPE_du3 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcsl
                                              min_channel = 100,
                                              channel_edges = None)
                                              
-
+#TBD: Update and check this plot for IXPE and Stokes parameters
 plot_response_and_data=False
 if plot_response_and_data:
 	fig = plt.figure(figsize = (14,7))
@@ -416,7 +416,7 @@ class CustomSignal_poisson(xpsi.Signal):
             # 3) poisson_likelihood_given_background in I, modified poisson_likelihood_given_background in Q and U
             #Modification in Q&U needed to allow negative values...
             
-            print("background I:", self._background.registered_background)
+            #print("background I:", self._background.registered_background)
             self.loglikelihood, self.expected_counts = \
                 gaussian_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
@@ -429,7 +429,7 @@ class CustomSignal_poisson(xpsi.Signal):
                                           allow_negative=(False, False))
                                           
         else: #For Q and U use possibly different likelihood evualuation function:
-            print("background Q or U:", self._background.registered_background)
+            #print("background Q or U:", self._background.registered_background)
             #print("self._signals",len(self._signals[1][0,:]))
             #exit()
             #If want to test fit Q/I and U/I, consider normalizing them here before calling likelihood function....
@@ -442,10 +442,7 @@ class CustomSignal_poisson(xpsi.Signal):
                                           self._phases,
                                           self._shifts,
                                           background = self._background.registered_background, 
-                                          allow_negative=(True, True)) #Setting these True is causing a likelihood error!  
-            #print("Hello")
-            #print(self.loglikelihood)
-            #exit()                                                                   
+                                          allow_negative=(True, True)) #Setting these True is causing a likelihood error!                                                                   
                                           
                                                                                     
 
@@ -702,11 +699,6 @@ photosphere['mode_frequency'] == spacetime['frequency']
 
 star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
 
-#likelihood = xpsi.Likelihood(star = star, signals = signal,
-#                             num_energies=128,
-#                             threads=1,
-#                             externally_updated=False)
-
 likelihood = xpsi.Likelihood(star = star, signals = signals,
                              num_energies=128,
                              threads=1,
@@ -854,18 +846,22 @@ def plot_pulse_stokes():
     ax.set_xlabel('Phase [cycles]')
 
     temp = np.sum(signals[0][1].signals[0], axis=0)
-    ax.plot(signals[0][1].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
+    ax.plot(signals[0][1].phases[0], temp/np.max(abs(temp)), '-', color='k', lw=0.5)
+    Q1s = temp/np.max(temp)
     temp = np.sum(signals[0][1].signals[1], axis=0)
-    ax.plot(signals[0][1].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+    ax.plot(signals[0][1].phases[1], temp/np.max(abs(temp)), '-', color='r', lw=0.5)
+    Q2s = temp/np.max(temp)
     
     temp = np.sum(photosphere.signalQ[0][0], axis=0)
-    ax.plot(signal.phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+    ax.plot(signal.phases[0], temp/np.max(abs(temp)), 'o-', color='k', lw=0.5, markersize=2)
+    Q1p = temp/np.max(temp)
     temp = np.sum(photosphere.signalQ[1][0], axis=0)
-    ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)     
+    ax.plot(signal.phases[1], temp/np.max(abs(temp)), 'o-', color='r', lw=0.5, markersize=2)   
+    Q2p = temp/np.max(temp)
     
     temp = np.sum(signals[0][1].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
-    ax.plot(data_phases[0:9], temp/np.max(temp), '--', color='k', lw=0.5)
+    ax.plot(data_phases[0:9], temp/np.max(abs(temp)), '--', color='k', lw=0.5)
         
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsQX.pdf")
@@ -877,19 +873,22 @@ def plot_pulse_stokes():
     ax.set_xlabel('Phase [cycles]')
 
     temp = np.sum(signals[0][2].signals[0], axis=0)
-    ax.plot(signals[0][2].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
+    ax.plot(signals[0][2].phases[0], temp/np.max(abs(temp)), '-', color='k', lw=0.5)
+    U1s = temp/np.max(temp)
     temp = np.sum(signals[0][2].signals[1], axis=0)
-    ax.plot(signals[0][2].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+    ax.plot(signals[0][2].phases[1], temp/np.max(abs(temp)), '-', color='r', lw=0.5)
+    U2s = temp/np.max(temp)
     
     temp = np.sum(photosphere.signalU[0][0], axis=0)
-    ax.plot(signal.phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+    ax.plot(signal.phases[0], temp/np.max(abs(temp)), 'o-', color='k', lw=0.5, markersize=2)
+    U1p = temp/np.max(temp)
     temp = np.sum(photosphere.signalU[1][0], axis=0)
-    ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)     
+    ax.plot(signal.phases[1], temp/np.max(abs(temp)), 'o-', color='r', lw=0.5, markersize=2) 
+    U2p = temp/np.max(temp) 
 
     temp = np.sum(signals[0][2].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
-    ax.plot(data_phases[0:9], temp/np.max(temp), '--', color='k', lw=0.5)
-
+    ax.plot(data_phases[0:9], temp/np.max(abs(temp)), '--', color='k', lw=0.5)
 
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsUX.pdf")       
@@ -918,9 +917,6 @@ def plot_pulse():
 
 likelihood(p, reinitialise=False)
 _ = plot_pulse_stokes()
-
-#The rest of the modelling examples and emcmc are still only in the notebook version.
-#Let's still test multinest here:
 
 from scipy.stats import truncnorm
 class CustomPrior(xpsi.Prior):
