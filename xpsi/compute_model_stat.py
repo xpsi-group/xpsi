@@ -56,7 +56,7 @@ exposure_time_IXPE = 1.0
 
 from ixpe_read import readData_pcube
 fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du1"
-phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, keVdat = readData_pcube(fname)
+phase_IXPE, Idat, qn, un, Iderr_du1, qnerr_du1, unerr_du1, keVdat = readData_pcube(fname)
 
 IXPE_du1_I.data = xpsi.Data(Idat,
                        channels=np.arange(minCH_IXPE, maxCH_IXPE),
@@ -80,7 +80,7 @@ IXPE_du1_U.data = xpsi.Data(un,
                        exposure_time=exposure_time_IXPE)                                              
 
 fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du2"
-phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, keVdat = readData_pcube(fname)
+phase_IXPE, Idat, qn, un, Iderr_du2, qnerr_du2, unerr_du2, keVdat = readData_pcube(fname)
 
 #print(Idat.shape[0],Idat.shape[1])
 #exit()
@@ -107,7 +107,7 @@ IXPE_du2_U.data = xpsi.Data(un,
                        exposure_time=exposure_time_IXPE)  
                        
 fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du3"
-phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, keVdat = readData_pcube(fname)
+phase_IXPE, Idat, qn, un, Iderr_du3, qnerr_du3, unerr_du3, keVdat = readData_pcube(fname)
 
 IXPE_du3_I.data = xpsi.Data(Idat,
                        channels=np.arange(minCH_IXPE, maxCH_IXPE),
@@ -157,41 +157,28 @@ def veneer(x, y, axes, lw=1.0, length=8):
     axes.tick_params(which='minor', colors='black', length=int(length/2), width=lw)
     plt.setp(axes.spines.values(), linewidth=lw, color='black')
 
-def plot_one_pulse(pulse, x, label=r'Counts', cmap=cm.magma, vmin=None, vmax=None):
+def plot_one_pulse_stokes(pulse, x, label=r'Counts', cmap=cm.magma, vmin=None, vmax=None, sname="X",dchan=data.channels,errs=[0]):
     """ Plot a pulse resolved over a single rotational cycle. """
 
     fig = plt.figure(figsize = (7,7))
 
     gs = gridspec.GridSpec(1, 2, width_ratios=[50,1])
     ax = plt.subplot(gs[0])
-    ax_cb = plt.subplot(gs[1])
-
-    profile = ax.pcolormesh(x,
-                             data.channels,
-                             pulse,
-                             vmin = vmin,
-                             vmax = vmax,
-                             cmap = cmap,
-                             linewidth = 0,
-                             rasterized = True)
-
-    profile.set_edgecolor('face')
+    if errs[0][0]==0:
+    	ax.plot(x, pulse[0]/np.max(pulse[0]), '-', color='k', lw=0.5) 
+    	#ax.plot(x, pulse[0], '-', color='k', lw=0.5)
+    else:
+    	ax.errorbar(x, pulse[0], yerr=errs[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)
 
     ax.set_xlim([0.0, 1.0])
-    ax.set_yscale('log')
-    ax.set_ylabel(r'Channel')
+    ax.set_ylabel(r'Normalized counts')
+    ax.set_ylabel(r'Counts')    
     ax.set_xlabel(r'Phase')
-
-    cb = plt.colorbar(profile,
-                      cax = ax_cb)
-
-    cb.set_label(label=label, labelpad=25)
-    cb.solids.set_edgecolor('face')
 
     veneer((0.05, 0.2), (None, None), ax)
 
-    plt.subplots_adjust(wspace = 0.025)
-    fig.savefig("figs/dataX.pdf")
+    #plt.subplots_adjust(wspace = 0.025)
+    fig.savefig("figs/data"+sname+".pdf")
 
 
 from ixpe_read import read_response_IXPE
@@ -328,35 +315,89 @@ IXPE_du3 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcsl
                                              min_channel = 100,
                                              channel_edges = None)
                                              
-#TBD: Update and check this plot for IXPE and Stokes parameters
 plot_response_and_data=False
 if plot_response_and_data:
-	fig = plt.figure(figsize = (14,7))
 
-	ax = fig.add_subplot(111)
-	veneer((25, 100), (10, 50), ax)
+	all_idus = ["1","2","3"]
+	all_dus = [IXPE_du1,IXPE_du2,IXPE_du3]
+	
+	for idu in range(len(all_dus)):
+		fig = plt.figure(figsize = (14,7))
 
-	_ = ax.imshow(NICER.matrix,
-		      cmap = cm.viridis,
-		      rasterized = True)
+		ax = fig.add_subplot(111)
 
-	ax.set_ylabel('Channel $-\;20$')
-	_ = ax.set_xlabel('Energy interval')
-	fig.savefig("figs/responseX.pdf")
+		_ = ax.imshow(all_dus[idu].matrix,
+			      cmap = cm.viridis,
+			      rasterized = True)
 
-	fig = plt.figure(figsize = (7,7))
+		ax.set_ylabel('Channel')
+		_ = ax.set_xlabel('Energy interval')
+		fig.savefig("figs/response_IXPE_du"+all_idus[idu]+"_X.pdf")
 
-	ax = fig.add_subplot(111)
-	veneer((0.1, 0.5), (50,250), ax)
+		fig = plt.figure(figsize = (7,7))
 
-	ax.plot((NICER.energy_edges[:-1] + NICER.energy_edges[1:])/2.0, np.sum(NICER.matrix, axis=0), 'k-')
+		ax = fig.add_subplot(111)
 
-	ax.set_ylabel('Effective area [cm$^{-2}$]')
-	_ = ax.set_xlabel('Energy [keV]')
+		ax.plot((all_dus[idu].energy_edges[:-1] + all_dus[idu].energy_edges[1:])/2.0, np.sum(all_dus[idu].matrix, axis=0), 'k-')
 
-	fig.savefig("figs/eff_areaX.pdf")
+		ax.set_ylabel('Effective area [cm$^{-2}$]')
+		_ = ax.set_xlabel('Energy [keV]')
 
-	plot_one_pulse(data.counts, data.phases)
+		fig.savefig("figs/eff_area_IXPE_du"+all_idus[idu]+"_X.pdf")					
+
+		stokes_set = ["I","Q","U"]
+		for ist in range(len(stokes_set)):
+			if stokes_set[ist] == "I":
+				if all_idus[idu] == "1":
+					counts = IXPE_du1_I.data.counts
+					phases = IXPE_du1_I.data.phases
+					channels = IXPE_du1_I.data.channels
+					errs = Iderr_du1
+				elif all_idus[idu] == "2":
+					counts = IXPE_du2_I.data.counts
+					phases = IXPE_du2_I.data.phases
+					channels = IXPE_du2_I.data.channels
+					errs = Iderr_du2
+				elif all_idus[idu] == "3":
+					counts = IXPE_du3_I.data.counts
+					phases = IXPE_du3_I.data.phases
+					channels = IXPE_du3_I.data.channels
+					errs = Iderr_du3
+			if stokes_set[ist] == "Q":
+				if all_idus[idu] == "1":
+					counts = IXPE_du1_Q.data.counts
+					phases = IXPE_du1_Q.data.phases
+					channels = IXPE_du1_Q.data.channels
+					errs = qnerr_du1
+				elif all_idus[idu] == "2":
+					counts = IXPE_du2_Q.data.counts
+					phases = IXPE_du2_Q.data.phases
+					channels = IXPE_du2_Q.data.channels
+					errs = qnerr_du2
+				elif all_idus[idu] == "3":
+					counts = IXPE_du3_Q.data.counts
+					phases = IXPE_du3_Q.data.phases
+					channels = IXPE_du3_Q.data.channels
+					errs = qnerr_du3
+			if stokes_set[ist] == "U":
+				if all_idus[idu] == "1":
+					counts = IXPE_du1_U.data.counts
+					phases = IXPE_du1_U.data.phases
+					channels = IXPE_du1_U.data.channels
+					errs = unerr_du1
+				elif all_idus[idu] == "2":
+					counts = IXPE_du2_U.data.counts
+					phases = IXPE_du2_U.data.phases
+					channels = IXPE_du2_U.data.channels
+					errs = unerr_du2
+				elif all_idus[idu] == "3":
+					counts = IXPE_du3_U.data.counts
+					phases = IXPE_du3_U.data.phases
+					channels = IXPE_du3_U.data.channels
+					errs = unerr_du3
+		
+		
+			plot_one_pulse_stokes(counts,phases,sname="_IXPE_du"+all_idus[idu]+"_"+stokes_set[ist]+"X",dchan=channels,errs=errs)
 
 
 from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
@@ -416,7 +457,6 @@ class CustomSignal_poisson(xpsi.Signal):
             # 3) poisson_likelihood_given_background in I, modified poisson_likelihood_given_background in Q and U
             #Modification in Q&U needed to allow negative values...
             
-            #print("background I:", self._background.registered_background)
             self.loglikelihood, self.expected_counts = \
                 gaussian_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
@@ -442,7 +482,7 @@ class CustomSignal_poisson(xpsi.Signal):
                                           self._phases,
                                           self._shifts,
                                           background = self._background.registered_background, 
-                                          allow_negative=(True, True)) #Setting these True is causing a likelihood error!                                                                   
+                                          allow_negative=(True, True))                                                                   
                                           
                                                                                     
 
@@ -595,8 +635,7 @@ signals[0].append(signalU)
 
 
 spacetime = xpsi.Spacetime.fixed_spin(300.0)
-#for p in spacetime:
-#    print(p)
+
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 mass = (1.0, 3.0),                       # mass
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
@@ -818,50 +857,87 @@ def plot_pulse_stokes():
     ax.set_ylabel('Signal [arbitrary normalisation]')
     ax.set_xlabel('Phase [cycles]')
 
-    print("photosphere.signalI:")
-    print(np.sum(photosphere.signal[0][0], axis=0))
+    #print("photosphere.signalI:")
+    #print(np.sum(photosphere.signal[0][0], axis=0))
 
     temp = np.sum(signals[0][0].signals[0], axis=0)
+    I1s = temp
     ax.plot(signals[0][0].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
     temp = np.sum(signals[0][0].signals[1], axis=0)
+    I2s = temp
     ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
     
     temp = np.sum(photosphere.signal[0][0], axis=0)
+    I1p = temp
     ax.plot(signal.phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
     temp = np.sum(photosphere.signal[1][0], axis=0)
+    I2p = temp
     ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
 
     temp = np.sum(signals[0][0].expected_counts, axis=0)
+    Iexpect = temp
     data_phases = np.linspace(0.0, 1.0, 10) #(0.0, 1.0, 33)
     #ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
     ax.plot(data_phases[0:9], temp/np.max(temp), '--', color='k', lw=0.5)    
 
-    veneer((0.05,0.2), (0.05,0.2), ax)
+    ax.errorbar(IXPE_du1_I.data.phases, IXPE_du1_I.data.counts[0]/(np.max(IXPE_du1_I.data.counts[0])), yerr=Iderr_du1[0]/(np.max(IXPE_du1_I.data.counts[0])), xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)
+
+    #veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsIX.pdf")
     
     fig = plt.figure(figsize=(7,7))
     ax = fig.add_subplot(111)
 
-    ax.set_ylabel('Signal [arbitrary normalisation]')
+    ax.set_ylabel('Q/I')
     ax.set_xlabel('Phase [cycles]')
 
-    temp = np.sum(signals[0][1].signals[0], axis=0)
-    ax.plot(signals[0][1].phases[0], temp/np.max(abs(temp)), '-', color='k', lw=0.5)
-    Q1s = temp/np.max(temp)
-    temp = np.sum(signals[0][1].signals[1], axis=0)
-    ax.plot(signals[0][1].phases[1], temp/np.max(abs(temp)), '-', color='r', lw=0.5)
-    Q2s = temp/np.max(temp)
+    Q1s = np.sum(signals[0][1].signals[0], axis=0)
+    Q1sn = np.copy(Q1s)
+    for ip in range(len(Q1sn)):
+    	if(I1s[ip] > 1e-10):
+    		Q1sn[ip] = Q1s[ip]/I1s[ip]
+    	else:
+    		Q1sn[ip] = 0.0
+    ax.plot(signals[0][1].phases[0], Q1sn, '-', color='k', lw=0.5)
     
-    temp = np.sum(photosphere.signalQ[0][0], axis=0)
-    ax.plot(signal.phases[0], temp/np.max(abs(temp)), 'o-', color='k', lw=0.5, markersize=2)
-    Q1p = temp/np.max(temp)
-    temp = np.sum(photosphere.signalQ[1][0], axis=0)
-    ax.plot(signal.phases[1], temp/np.max(abs(temp)), 'o-', color='r', lw=0.5, markersize=2)   
-    Q2p = temp/np.max(temp)
+    Q2s = np.sum(signals[0][1].signals[1], axis=0)    
+    Q2sn = np.copy(Q2s)
+    for ip in range(len(Q2sn)):
+    	if(I2s[ip] > 1e-10):
+    		Q2sn[ip] = Q2s[ip]/I2s[ip]
+    	else:
+    		Q2sn[ip] = 0.0
+    ax.plot(signals[0][1].phases[1], Q2sn, '-', color='r', lw=0.5)
     
-    temp = np.sum(signals[0][1].expected_counts, axis=0)
+    Q1p = np.sum(photosphere.signalQ[0][0], axis=0)
+    Q1pn = np.copy(Q1p)
+    for ip in range(len(Q1pn)):
+    	if(I1p[ip] > 1e-10):
+    		Q1pn[ip] = Q1p[ip]/I1p[ip]
+    	else:
+    		Q1pn[ip] = 0.0
+    ax.plot(signalQ.phases[0], Q1pn, 'o-', color='k', lw=0.5, markersize=2)
+    
+    Q2p = np.sum(photosphere.signalQ[1][0], axis=0)
+    Q2pn = np.copy(Q2p)
+    for ip in range(len(Q1pn)):
+    	if(I2p[ip] > 1e-10):
+    		Q2pn[ip] = Q2p[ip]/I2p[ip]
+    	else:
+    		Q2pn[ip] = 0.0
+    ax.plot(signalQ.phases[1], Q2pn, 'o-', color='r', lw=0.5, markersize=2)   
+    
+    Qexpect = np.sum(signals[0][1].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
-    ax.plot(data_phases[0:9], temp/np.max(abs(temp)), '--', color='k', lw=0.5)
+    Qexpectn = np.copy(Qexpect)
+    for ip in range(len(Qexpectn)):
+    	if(Iexpect[ip] > 1e-50):
+    		Qexpectn[ip] = Qexpect[ip]/Iexpect[ip]
+    	else:
+    		Qexpectn[ip] = 0.0 
+    ax.plot(data_phases[0:9], Qexpectn, '--', color='k', lw=0.5)
+        
+    ax.errorbar(IXPE_du1_Q.data.phases, IXPE_du1_Q.data.counts[0], yerr=qnerr_du1[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)       
         
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsQX.pdf")
@@ -869,26 +945,56 @@ def plot_pulse_stokes():
     fig = plt.figure(figsize=(7,7))
     ax = fig.add_subplot(111)
 
-    ax.set_ylabel('Signal [arbitrary normalisation]')
+    ax.set_ylabel('U/I')
     ax.set_xlabel('Phase [cycles]')
 
-    temp = np.sum(signals[0][2].signals[0], axis=0)
-    ax.plot(signals[0][2].phases[0], temp/np.max(abs(temp)), '-', color='k', lw=0.5)
-    U1s = temp/np.max(temp)
-    temp = np.sum(signals[0][2].signals[1], axis=0)
-    ax.plot(signals[0][2].phases[1], temp/np.max(abs(temp)), '-', color='r', lw=0.5)
-    U2s = temp/np.max(temp)
+    U1s = np.sum(signals[0][1].signals[0], axis=0)
+    U1sn = np.copy(U1s)
+    for ip in range(len(U1sn)):
+    	if(I1s[ip] > 1e-10):
+    		U1sn[ip] = U1s[ip]/I1s[ip]
+    	else:
+    		U1sn[ip] = 0.0
+    ax.plot(signals[0][1].phases[0], U1sn, '-', color='k', lw=0.5)
     
-    temp = np.sum(photosphere.signalU[0][0], axis=0)
-    ax.plot(signal.phases[0], temp/np.max(abs(temp)), 'o-', color='k', lw=0.5, markersize=2)
-    U1p = temp/np.max(temp)
-    temp = np.sum(photosphere.signalU[1][0], axis=0)
-    ax.plot(signal.phases[1], temp/np.max(abs(temp)), 'o-', color='r', lw=0.5, markersize=2) 
-    U2p = temp/np.max(temp) 
-
-    temp = np.sum(signals[0][2].expected_counts, axis=0)
+    U2s = np.sum(signals[0][1].signals[1], axis=0)    
+    U2sn = np.copy(U2s)
+    for ip in range(len(U2sn)):
+    	if(I2s[ip] > 1e-10):
+    		U2sn[ip] = U2s[ip]/I2s[ip]
+    	else:
+    		U2sn[ip] = 0.0
+    ax.plot(signals[0][1].phases[1], U2sn, '-', color='r', lw=0.5)
+    
+    U1p = np.sum(photosphere.signalU[0][0], axis=0)
+    U1pn = np.copy(U1p)
+    for ip in range(len(U1pn)):
+    	if(I1p[ip] > 1e-10):
+    		U1pn[ip] = U1p[ip]/I1p[ip]
+    	else:
+    		U1pn[ip] = 0.0
+    ax.plot(signalU.phases[0], U1pn, 'o-', color='k', lw=0.5, markersize=2)
+    
+    U2p = np.sum(photosphere.signalU[1][0], axis=0)
+    U2pn = np.copy(U2p)
+    for ip in range(len(U1pn)):
+    	if(I2p[ip] > 1e-10):
+    		U2pn[ip] = U2p[ip]/I2p[ip]
+    	else:
+    		U2pn[ip] = 0.0
+    ax.plot(signalU.phases[1], U2pn, 'o-', color='r', lw=0.5, markersize=2)   
+    
+    Uexpect = np.sum(signals[0][1].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
-    ax.plot(data_phases[0:9], temp/np.max(abs(temp)), '--', color='k', lw=0.5)
+    Uexpectn = np.copy(Uexpect)
+    for ip in range(len(Uexpectn)):
+    	if(Iexpect[ip] > 1e-10):
+    		Uexpectn[ip] = Uexpect[ip]/Iexpect[ip]
+    	else:
+    		Uexpectn[ip] = 0.0 
+    ax.plot(data_phases[0:9], Uexpectn, '--', color='k', lw=0.5)
+
+    ax.errorbar(IXPE_du1_U.data.phases, IXPE_du1_U.data.counts[0], yerr=unerr_du1[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)  
 
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsUX.pdf")       
