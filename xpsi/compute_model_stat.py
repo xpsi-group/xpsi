@@ -716,7 +716,7 @@ h = hot.objects[0]
 hot['p__super_temperature'] = 6.0 # equivalent to ``primary['super_temperature'] = 6.0``
 #secondary['super_temperature']
 
-class CustomPhotosphere(xpsi.Photosphere):
+class CustomPhotosphereBB(xpsi.Photosphere):
     """ Implement method for imaging."""
 
     @property
@@ -731,7 +731,85 @@ class CustomPhotosphere(xpsi.Photosphere):
                           self['s__super_radius'],
                           self.hot.objects[1]['s__super_temperature']])
 
-photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
+class CustomPhotosphere(xpsi.Photosphere):
+    """ Implement method for imaging."""
+
+    @xpsi.Photosphere.hot_atmosphere.setter    
+    def hot_atmosphere(self, path):
+        size=(22,281)
+        NSX = np.loadtxt(path, dtype=np.double)
+        _mu = np.zeros(size[0]) 
+        logE = np.zeros(size[1])    
+
+        reorder_buf = np.zeros(size)
+
+        index = 0
+        for k in range(reorder_buf.shape[1]):
+            for l in range(reorder_buf.shape[0]):            
+                logE[k] = NSX[index,0]
+                _mu[reorder_buf.shape[0] - l - 1] = NSX[index,1]            
+                reorder_buf[reorder_buf.shape[0] - l - 1,k] = 10.0**(NSX[index,2])                                
+                index += 1
+
+        buf = np.zeros(np.prod(reorder_buf.shape))
+
+        bufdex = 0
+        for k in range(reorder_buf.shape[0]):
+            for l in range(reorder_buf.shape[1]):            
+                buf[bufdex] = reorder_buf[k,l]; bufdex += 1
+        self._hot_atmosphere = (_mu, logE, buf)
+        
+    @xpsi.Photosphere.hot_atmosphere_Q.setter    
+    def hot_atmosphere_Q(self, path):
+        size=(22,281)
+        NSX = np.loadtxt(path, dtype=np.double)
+        _mu = np.zeros(size[0]) 
+        logE = np.zeros(size[1])    
+
+        reorder_buf = np.zeros(size)
+
+        index = 0
+        for k in range(reorder_buf.shape[1]):
+            for l in range(reorder_buf.shape[0]):            
+                logE[k] = NSX[index,0]
+                _mu[reorder_buf.shape[0] - l - 1] = NSX[index,1] 
+                Qsign = NSX[index,3]           
+                reorder_buf[reorder_buf.shape[0] - l - 1,k] = Qsign*10.0**(NSX[index,2])                                
+                index += 1
+
+        buf = np.zeros(np.prod(reorder_buf.shape))
+
+        bufdex = 0
+        for k in range(reorder_buf.shape[0]):
+            for l in range(reorder_buf.shape[1]):            
+                buf[bufdex] = reorder_buf[k,l]; bufdex += 1
+        self._hot_atmosphere_Q  = (_mu, logE, buf)
+
+    @property
+    def global_variables(self):
+        """ This method is needed if we also want to ivoke the image-plane signal simulator. """
+
+        return np.array([self['p__super_colatitude'],
+                          self['p__phase_shift'] * _2pi,
+                          self['p__super_radius'],
+                          self['p__super_temperature'],
+                          self['s__super_colatitude'],
+                          (self['s__phase_shift'] + 0.5) * _2pi,
+                          self['s__super_radius'],
+                          self.hot.objects[1]['s__super_temperature']])
+
+
+numerical_atmos = True
+
+if numerical_atmos:
+    photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
+                                values=dict(mode_frequency = spacetime['frequency']))
+    photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thomI_corr2.txt"
+    photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thomQ_corr2.txt"
+
+else:
+
+    photosphere = CustomPhotosphereBB(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 photosphere['mode_frequency'] == spacetime['frequency']
@@ -785,7 +863,10 @@ likelihood.clear_cache()
 t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
-likelihood.check(None, [-1.37016697e+03], 1.0e-6, #stokes=True,
+
+true_logl = -1.35961526e+03
+
+likelihood.check(None, [true_logl], 1.0e-6,
                  physical_points=[p])
 print('time = %.3f s' % (time.time() - t))
 
@@ -801,7 +882,7 @@ print("likelihood.params=",likelihood.params)
 #As 1a) but gaussian likelihood for all I, Q, and U: -6.94509688e+05
 
 #Fory synthetic IXPE_du1 data with re-binned response (and using non-matching parameter values): -1.37016697e+03
-
+#As above but for numerical atmosphere: -1.35961526e+03
 
 #print("signal I (primary):")
 #print(signals[0][0].signals[0])
@@ -809,44 +890,6 @@ print("likelihood.params=",likelihood.params)
 #print(signals[0][1].signals[0])
 #print("signal U (primary):")
 #print(signals[0][2].signals[0])
-
-#TypeError: __call__() got an unexpected keyword argument 'stokes' !!!
-
-#exit()
-
-# > xpsi.set_phase_interpolant('Akima')
-# Checking likelihood and prior evaluation before commencing sampling...
-# Cannot import ``allclose`` function from NumPy.
-# Using fallback implementation...
-# Checking closeness of likelihood arrays:
-# -2.67136012e+04 | -2.67136137e+04 .....
-# Closeness evaluated.
-# Log-likelihood value checks passed on root process.
-# Checks passed.
-# time = 0.571 s
-
-# > xpsi.set_phase_interpolant('Steffen')
-# Checking likelihood and prior evaluation before commencing sampling...
-# Cannot import ``allclose`` function from NumPy.
-# Using fallback implementation...
-# Checking closeness of likelihood arrays:
-# -2.67136140e+04 | -2.67136137e+04 .....
-# Closeness evaluated.
-# Log-likelihood value checks passed on root process.
-# Checks passed.
-# time = 0.581 s
-
-# > xpsi.set_phase_interpolant('Cubic')
-# Checking likelihood and prior evaluation before commencing sampling...
-# Cannot import ``allclose`` function from NumPy.
-# Using fallback implementation...
-# Checking closeness of likelihood arrays:
-# -2.67135656e+04 | -2.67136137e+04 .....
-# Closeness evaluated.
-# Log-likelihood value checks passed on root process.
-# Checks passed. (increasing the tolerance to 1e-5)
-# time = 0.720 s (consistently slower)
-
 
 
 def plot_pulse_stokes():
@@ -972,7 +1015,7 @@ def plot_pulse_stokes():
     	if(I1p[ip] > 1e-10):
     		U1pn[ip] = U1p[ip]/I1p[ip]
     	else:
-    		U1pn[ip] = 0.0
+    		U1pn[ip] = 0.0  		
     ax.plot(signalU.phases[0], U1pn, 'o-', color='k', lw=0.5, markersize=2)
     
     U2p = np.sum(photosphere.signalU[1][0], axis=0)
@@ -1222,7 +1265,7 @@ p = [1.4,
 # let's require that checks pass before starting to sample
 check_kwargs = dict(hypercube_points = None,
                     physical_points = p, # externally_updated preserved
-                    loglikelihood_call_vals = [-1.37016697e+03], #[-2.78202535e+05], #[-26713.613677], # from above
+                    loglikelihood_call_vals = [true_logl], 
                     rtol_loglike = 1.0e-6) # choose a tolerance
 
 # note that mutual refs are already stored in the likelihood and prior
