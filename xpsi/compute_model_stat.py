@@ -448,6 +448,12 @@ class CustomSignal_poisson(xpsi.Signal):
             self._support[:,0] = 0.0
 
     def __call__(self, *args, **kwargs):
+        if two_spots:
+            anegI = (False, False)
+            anegQU = (True, True)
+        else:
+            anegI = (False)
+            anegQU = (True)
     	errors = self._data.counts * 0.1
     	#TBD: Add a method to read this as self._errors ...
         if self.isI:
@@ -466,7 +472,7 @@ class CustomSignal_poisson(xpsi.Signal):
                                           self._phases,
                                           self._shifts,
                                           background = self._background.registered_background, #self._background,
-                                          allow_negative=(False, False))
+                                          allow_negative=anegI)
                                           
         else: #For Q and U use possibly different likelihood evualuation function:
             #print("background Q or U:", self._background.registered_background)
@@ -482,7 +488,7 @@ class CustomSignal_poisson(xpsi.Signal):
                                           self._phases,
                                           self._shifts,
                                           background = self._background.registered_background, 
-                                          allow_negative=(True, True))                                                                   
+                                          allow_negative=anegQU)                                                                   
                                           
                                                                                     
 
@@ -634,19 +640,32 @@ signals[0].append(signalU)
 
 
 
-spacetime = xpsi.Spacetime.fixed_spin(300.0)
+#spacetime = xpsi.Spacetime.fixed_spin(300.0)
+#bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
+#                mass = (1.0, 3.0),                       # mass
+#                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
+#                cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
+#values = dict(frequency=300.0)
 
-bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
-                mass = (1.0, 3.0),                       # mass
-                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
-                cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
+bounds = dict(cos_inclination = (0.0, 1.0))# (Earth) inclination to rotation axis
+values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
 
-spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
+spacetime = xpsi.Spacetime(bounds=bounds, values=values)
 
+#bounds = dict(super_colatitude = (None, None),
+#              super_radius = (None, None),
+#              phase_shift = (-0.25, 0.75),
+#              super_temperature = (None, None))
+#values={}
+              
 bounds = dict(super_colatitude = (None, None),
-              super_radius = (None, None),
-              phase_shift = (-0.25, 0.75),
-              super_temperature = (None, None))
+              phase_shift = (-0.25, 0.75))
+
+deg2rad = np.pi/180.0
+tempkeV = 1.0
+tempK = np.log10(tempkeV*11604525.00617)
+print("tempK=",tempK)
+values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
 
 ceding=False #True
 
@@ -662,7 +681,7 @@ if ceding:
 
 # a simple circular, simply-connected spot
 primary = xpsi.HotRegion(bounds=bounds,
-                            values={}, # no initial values and no derived/fixed
+                            values=values, 
                             symmetry=True,
                             omit=False,
                             cede=ceding, #True, #False,
@@ -692,29 +711,32 @@ class derive(xpsi.Derive):
         global primary # unnecessary, but for clarity
         return primary['super_temperature'] - 0.2
 
-bounds['super_temperature'] = None # declare fixed/derived variable
+two_spots = False
 
-secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
-                              values={'super_temperature': derive()}, # create a callable value
-                              symmetry=True,
-                              omit=False,
-                              cede=ceding, #True, #False,
-                              concentric=False,
-                              sqrt_num_cells=32,
-                              min_sqrt_num_cells=10,
-                              max_sqrt_num_cells=100,
-                              num_leaves=100,
-                              num_rays=200,
-                              is_antiphased=True,
-                              prefix='s') # unique prefix needed because >1 instance
+if two_spots:
+    #bounds['super_temperature'] = None # declare fixed/derived variable
+    bounds = dict(super_colatitude = (None, None), phase_shift = (-0.25, 0.75))
+    secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
+	                      #values={'super_temperature': derive()}, # create a callable value
+	                      values={'super_radius': 1.0*deg2rad,'super_temperature': derive()},
+	                      symmetry=True,
+	                      omit=False,
+	                      cede=ceding, #True, #False,
+	                      concentric=False,
+	                      sqrt_num_cells=32,
+	                      min_sqrt_num_cells=10,
+	                      max_sqrt_num_cells=100,
+	                      num_leaves=100,
+	                      num_rays=200,
+	                      is_antiphased=True,
+	                      prefix='s') # unique prefix needed because >1 instance
 
-from xpsi import HotRegions
-hot = HotRegions((primary, secondary))
-h = hot.objects[0]
-#h.names
-#h.get_param('phase_shift')
-hot['p__super_temperature'] = 6.0 # equivalent to ``primary['super_temperature'] = 6.0``
-#secondary['super_temperature']
+    from xpsi import HotRegions
+    hot = HotRegions((primary, secondary))
+    #hot['p__super_temperature'] = 6.0 # equivalent to ``primary['super_temperature'] = 6.0``
+else:
+    hot = primary
+
 
 class CustomPhotosphereBB(xpsi.Photosphere):
     """ Implement method for imaging."""
@@ -823,17 +845,29 @@ likelihood = xpsi.Likelihood(star = star, signals = signals,
 
 xpsi.set_phase_interpolant('Akima')
 
-p = [1.4,
-     12.5,
-     0.2,
-     math.cos(1.25),
-     0.0,
-     1.0,
-     0.075,
-     6.2,
-     0.025,
-     math.pi - 1.0,
-     0.2]
+#p = [1.4,
+#     12.5,
+#     0.2,
+#     math.cos(1.25),
+#     0.0,
+#     1.0,
+#     0.075,
+#     6.2,
+#     0.025,
+#     math.pi - 1.0,
+#     0.2]
+     
+#For fast geometry simulation using polarimetry
+if two_spots:
+    p = [math.cos(60.0*deg2rad),
+        0.0,
+        20.0*deg2rad,
+        0.0,
+        20.0*deg2rad]
+else:
+    p = [math.cos(60.0*deg2rad),
+        0.0,
+        20.0*deg2rad]   
 
 print(star)
 
@@ -864,7 +898,7 @@ t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
 
-true_logl = -1.35961526e+03
+true_logl = -1.37016303e+03
 
 likelihood.check(None, [true_logl], 1.0e-6,
                  physical_points=[p])
@@ -881,8 +915,10 @@ print("likelihood.params=",likelihood.params)
    #b) As above but with default likelihood for I (and poisson for Q and U): -6.49958273e+09
 #As 1a) but gaussian likelihood for all I, Q, and U: -6.94509688e+05
 
-#Fory synthetic IXPE_du1 data with re-binned response (and using non-matching parameter values): -1.37016697e+03
+#For synthetic IXPE_du1 data with re-binned response (and using non-matching parameter values): -1.37016697e+03
 #As above but for numerical atmosphere: -1.35961526e+03
+#As above but with matching parameter values (1 hot spot): -1.37016466e+03 , or assuming 2 spots: -1.37016303e+03
+
 
 #print("signal I (primary):")
 #print(signals[0][0].signals[0])
@@ -906,16 +942,18 @@ def plot_pulse_stokes():
     temp = np.sum(signals[0][0].signals[0], axis=0)
     I1s = temp
     ax.plot(signals[0][0].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
-    temp = np.sum(signals[0][0].signals[1], axis=0)
-    I2s = temp
-    ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+    if two_spots:
+        temp = np.sum(signals[0][0].signals[1], axis=0)    
+        I2s = temp
+        ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
     
     temp = np.sum(photosphere.signal[0][0], axis=0)
     I1p = temp
     ax.plot(signal.phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
-    temp = np.sum(photosphere.signal[1][0], axis=0)
-    I2p = temp
-    ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
+    if two_spots:
+        temp = np.sum(photosphere.signal[1][0], axis=0)    
+        I2p = temp
+        ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
 
     temp = np.sum(signals[0][0].expected_counts, axis=0)
     Iexpect = temp
@@ -943,14 +981,15 @@ def plot_pulse_stokes():
     		Q1sn[ip] = 0.0
     ax.plot(signals[0][1].phases[0], Q1sn, '-', color='k', lw=0.5)
     
-    Q2s = np.sum(signals[0][1].signals[1], axis=0)    
-    Q2sn = np.copy(Q2s)
-    for ip in range(len(Q2sn)):
-    	if(I2s[ip] > 1e-10):
-    		Q2sn[ip] = Q2s[ip]/I2s[ip]
-    	else:
-    		Q2sn[ip] = 0.0
-    ax.plot(signals[0][1].phases[1], Q2sn, '-', color='r', lw=0.5)
+    if two_spots:
+        Q2s = np.sum(signals[0][1].signals[1], axis=0)    
+        Q2sn = np.copy(Q2s)
+        for ip in range(len(Q2sn)):
+            if(I2s[ip] > 1e-10):
+                Q2sn[ip] = Q2s[ip]/I2s[ip]
+            else:
+                Q2sn[ip] = 0.0
+        ax.plot(signals[0][1].phases[1], Q2sn, '-', color='r', lw=0.5)
     
     Q1p = np.sum(photosphere.signalQ[0][0], axis=0)
     Q1pn = np.copy(Q1p)
@@ -961,14 +1000,15 @@ def plot_pulse_stokes():
     		Q1pn[ip] = 0.0
     ax.plot(signalQ.phases[0], Q1pn, 'o-', color='k', lw=0.5, markersize=2)
     
-    Q2p = np.sum(photosphere.signalQ[1][0], axis=0)
-    Q2pn = np.copy(Q2p)
-    for ip in range(len(Q1pn)):
-    	if(I2p[ip] > 1e-10):
-    		Q2pn[ip] = Q2p[ip]/I2p[ip]
-    	else:
-    		Q2pn[ip] = 0.0
-    ax.plot(signalQ.phases[1], Q2pn, 'o-', color='r', lw=0.5, markersize=2)   
+    if two_spots:
+        Q2p = np.sum(photosphere.signalQ[1][0], axis=0)
+        Q2pn = np.copy(Q2p)
+        for ip in range(len(Q1pn)):
+            if(I2p[ip] > 1e-10):
+                Q2pn[ip] = Q2p[ip]/I2p[ip]
+            else:
+                Q2pn[ip] = 0.0
+        ax.plot(signalQ.phases[1], Q2pn, 'o-', color='r', lw=0.5, markersize=2)   
     
     Qexpect = np.sum(signals[0][1].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
@@ -991,23 +1031,24 @@ def plot_pulse_stokes():
     ax.set_ylabel('U/I')
     ax.set_xlabel('Phase [cycles]')
 
-    U1s = np.sum(signals[0][1].signals[0], axis=0)
+    U1s = np.sum(signals[0][2].signals[0], axis=0)
     U1sn = np.copy(U1s)
     for ip in range(len(U1sn)):
     	if(I1s[ip] > 1e-10):
     		U1sn[ip] = U1s[ip]/I1s[ip]
     	else:
     		U1sn[ip] = 0.0
-    ax.plot(signals[0][1].phases[0], U1sn, '-', color='k', lw=0.5)
-    
-    U2s = np.sum(signals[0][1].signals[1], axis=0)    
-    U2sn = np.copy(U2s)
-    for ip in range(len(U2sn)):
-    	if(I2s[ip] > 1e-10):
-    		U2sn[ip] = U2s[ip]/I2s[ip]
-    	else:
-    		U2sn[ip] = 0.0
-    ax.plot(signals[0][1].phases[1], U2sn, '-', color='r', lw=0.5)
+    ax.plot(signals[0][2].phases[0], U1sn, '-', color='k', lw=0.5)
+
+    if two_spots:
+        U2s = np.sum(signals[0][2].signals[1], axis=0)    
+        U2sn = np.copy(U2s)
+        for ip in range(len(U2sn)):
+            if(I2s[ip] > 1e-10):
+                U2sn[ip] = U2s[ip]/I2s[ip]
+            else:
+                U2sn[ip] = 0.0
+        ax.plot(signals[0][2].phases[1], U2sn, '-', color='r', lw=0.5)
     
     U1p = np.sum(photosphere.signalU[0][0], axis=0)
     U1pn = np.copy(U1p)
@@ -1018,16 +1059,17 @@ def plot_pulse_stokes():
     		U1pn[ip] = 0.0  		
     ax.plot(signalU.phases[0], U1pn, 'o-', color='k', lw=0.5, markersize=2)
     
-    U2p = np.sum(photosphere.signalU[1][0], axis=0)
-    U2pn = np.copy(U2p)
-    for ip in range(len(U1pn)):
-    	if(I2p[ip] > 1e-10):
-    		U2pn[ip] = U2p[ip]/I2p[ip]
-    	else:
-    		U2pn[ip] = 0.0
-    ax.plot(signalU.phases[1], U2pn, 'o-', color='r', lw=0.5, markersize=2)   
+    if two_spots:
+        U2p = np.sum(photosphere.signalU[1][0], axis=0)
+        U2pn = np.copy(U2p)
+        for ip in range(len(U1pn)):
+    	    if(I2p[ip] > 1e-10):
+                U2pn[ip] = U2p[ip]/I2p[ip]
+            else:
+                U2pn[ip] = 0.0
+        ax.plot(signalU.phases[1], U2pn, 'o-', color='r', lw=0.5, markersize=2)   
     
-    Uexpect = np.sum(signals[0][1].expected_counts, axis=0)
+    Uexpect = np.sum(signals[0][2].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
     Uexpectn = np.copy(Uexpect)
     for ip in range(len(Uexpectn)):
@@ -1109,9 +1151,9 @@ class CustomPrior(xpsi.Prior):
         if not np.isfinite(temp):
             return temp
 
-        # based on contemporary EOS theory
-        if not self.parameters['radius'] <= 16.0:
-            return -np.inf
+        ## based on contemporary EOS theory
+        #if not self.parameters['radius'] <= 16.0:
+        #    return -np.inf
 
         ref = self.parameters.star.spacetime # shortcut
 
@@ -1137,19 +1179,17 @@ class CustomPrior(xpsi.Prior):
         ref = self.parameters # redefine shortcut
 
         # enforce order in hot region colatitude
-        if ref['p__super_colatitude'] > ref['s__super_colatitude']:
-            return -np.inf
-
-        phi = (ref['p__phase_shift'] - 0.5 - ref['s__phase_shift']) * _2pi
-
-        ang_sep = xpsi.HotRegion.psi(ref['s__super_colatitude'],
+        if two_spots:
+            if ref['p__super_colatitude'] > ref['s__super_colatitude']:
+                return -np.inf
+            phi = (ref['p__phase_shift'] - 0.5 - ref['s__phase_shift']) * _2pi
+            ang_sep = xpsi.HotRegion.psi(ref['s__super_colatitude'],
                                      phi,
                                      ref['p__super_colatitude'])
-
-        # hot regions cannot overlap
-        if ang_sep < ref['p__super_radius'] + ref['s__super_radius']:
-            return -np.inf
-
+            # hot regions cannot overlap
+            #Works only if super_radius is a free parameter... TBD: What do if not?
+            #if ang_sep < ref['p__super_radius'] + ref['s__super_radius']:
+            #    return -np.inf
         return 0.0
 
     def inverse_sample(self, hypercube=None):
@@ -1165,8 +1205,8 @@ class CustomPrior(xpsi.Prior):
 
         ref = self.parameters # shortcut
 
-        idx = ref.index('distance')
-        ref['distance'] = truncnorm.ppf(hypercube[idx], -2.0, 7.0, loc=0.3, scale=0.1)
+        #idx = ref.index('distance')
+        #ref['distance'] = truncnorm.ppf(hypercube[idx], -2.0, 7.0, loc=0.3, scale=0.1)
 
         # flat priors in cosine of hot region centre colatitudes (isotropy)
         # support modified by no-overlap rejection condition
@@ -1175,10 +1215,11 @@ class CustomPrior(xpsi.Prior):
         a = math.cos(a); b = math.cos(b)
         ref['p__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
 
-        idx = ref.index('s__super_colatitude')
-        a, b = ref.get_param('s__super_colatitude').bounds
-        a = math.cos(a); b = math.cos(b)
-        ref['s__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
+        if two_spots:
+            idx = ref.index('s__super_colatitude')
+            a, b = ref.get_param('s__super_colatitude').bounds
+            a = math.cos(a); b = math.cos(b)
+            ref['s__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
 
         # restore proper cache
         for parameter, cache in zip(ref, to_cache):
@@ -1224,7 +1265,8 @@ likelihood.prior = prior
 
 wrapped_params = [0]*len(likelihood)
 wrapped_params[likelihood.index('p__phase_shift')] = 1
-wrapped_params[likelihood.index('s__phase_shift')] = 1
+if two_spots:
+    wrapped_params[likelihood.index('s__phase_shift')] = 1
 
 runtime_params = {'resume': False,
                   'importance_nested_sampling': False,
@@ -1249,18 +1291,6 @@ likelihood.clear_cache()
 
 # inform source code that parameter objects updated when inverse sampling
 likelihood.externally_updated = True
-
-p = [1.4,
-     12.5,
-     0.2,
-     math.cos(1.25),
-     0.0,
-     1.0,
-     0.075,
-     6.2,
-     0.025,
-     math.pi - 1.0,
-     0.2]
 
 # let's require that checks pass before starting to sample
 check_kwargs = dict(hypercube_points = None,
