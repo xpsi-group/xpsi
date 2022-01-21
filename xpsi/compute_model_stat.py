@@ -79,6 +79,9 @@ IXPE_du1_U.data = xpsi.Data(un,
                        last=maxCH_IXPE-minCH_IXPE-1,
                        exposure_time=exposure_time_IXPE)                                              
 
+#Consider also defining this errors property in a CustomData or directly in Data.py
+IXPE_du1_I.data.errors, IXPE_du1_Q.data.errors, IXPE_du1_U.data.errors = Iderr_du1, qnerr_du1, unerr_du1
+
 fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du2"
 phase_IXPE, Idat, qn, un, Iderr_du2, qnerr_du2, unerr_du2, keVdat = readData_pcube(fname)
 
@@ -105,6 +108,8 @@ IXPE_du2_U.data = xpsi.Data(un,
                        first=0,
                        last=maxCH_IXPE-minCH_IXPE-1,
                        exposure_time=exposure_time_IXPE)  
+
+IXPE_du2_I.data.errors, IXPE_du2_Q.data.errors, IXPE_du2_U.data.errors = Iderr_du2, qnerr_du2, unerr_du2
                        
 fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du3"
 phase_IXPE, Idat, qn, un, Iderr_du3, qnerr_du3, unerr_du3, keVdat = readData_pcube(fname)
@@ -129,6 +134,8 @@ IXPE_du3_U.data = xpsi.Data(un,
                        first=0,
                        last=maxCH_IXPE-minCH_IXPE-1,
                        exposure_time=exposure_time_IXPE)  
+
+IXPE_du3_I.data.errors, IXPE_du3_Q.data.errors, IXPE_du3_U.data.errors = Iderr_du3, qnerr_du3, unerr_du3
 
 rcParams['text.usetex'] = False
 rcParams['font.size'] = 14.0
@@ -455,36 +462,33 @@ class CustomSignal_poisson(xpsi.Signal):
             anegI = (False)
             anegQU = (True)
     	errors = self._data.counts * 0.1
-    	#TBD: Add a method to read this as self._errors ...
         if self.isI:
-            #TBD: Think if using 
-            # 1) default_background_marginalization in I, modified poisson_likelihood_given_background in Q and U
-            # 2) default_background_marginalization in I, modified default_background_marginalization in Q and U
-            # 3) poisson_likelihood_given_background in I, modified poisson_likelihood_given_background in Q and U
-            #Modification in Q&U needed to allow negative values...
+             
+            self.loglikelihood, self.expected_counts = \
+                gaussian_likelihood_given_background(self._data.exposure_time,
+                                          self._data.phases,
+                                          self._data.counts,
+                                          errors, #self._data.errors,
+                                          self._signals,
+                                          self._phases,
+                                          self._shifts,
+                                          background = self._background.registered_background,
+                                          allow_negative=anegI)
+                                          
+        else: #For Q and U use possibly different likelihood evaluation function:
+            #TBD: Convert signal to Q/I and U/I before calling likelihood function
+            #(since data and errors are currently in that form)
+            #signal_ffit = self._signals/ ..... ?
+            
+            signal_ffit = self._signals
+            
             
             self.loglikelihood, self.expected_counts = \
                 gaussian_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
                                           self._data.counts,
-                                          errors,
-                                          self._signals,
-                                          self._phases,
-                                          self._shifts,
-                                          background = self._background.registered_background, #self._background,
-                                          allow_negative=anegI)
-                                          
-        else: #For Q and U use possibly different likelihood evualuation function:
-            #print("background Q or U:", self._background.registered_background)
-            #print("self._signals",len(self._signals[1][0,:]))
-            #exit()
-            #If want to test fit Q/I and U/I, consider normalizing them here before calling likelihood function....
-            self.loglikelihood, self.expected_counts = \
-                gaussian_likelihood_given_background(self._data.exposure_time,
-                                          self._data.phases,
-                                          self._data.counts,
-                                          errors,
-                                          self._signals,
+                                          errors, #self._data.errors,
+                                          signal_ffit,
                                           self._phases,
                                           self._shifts,
                                           background = self._background.registered_background, 
@@ -596,7 +600,12 @@ background = CustomBackground(value=-2.0)
 
 signals = [[],]
 
-signal = CustomSignal_poisson(data = IXPE_du1_I.data, #data,
+include_I = True
+
+#TBD: Initialize signals in a loop to avoid repetition.
+
+if include_I:
+    signal_du1 = CustomSignal_poisson(data = IXPE_du1_I.data, #data,
                         instrument = IXPE_du1, #NICER,
                         background = background,
                         interstellar = None,
@@ -607,12 +616,11 @@ signal = CustomSignal_poisson(data = IXPE_du1_I.data, #data,
                         sigmas = 10.0,
                         support = None,
                         stokes="I")
+    signals[0].append(signal_du1)
 
-signals[0].append(signal)
-
-signalQ = CustomSignal_poisson(data = IXPE_du1_Q.data, #data,
-                        instrument = IXPE_du1, #NICER,
-                        background = background, #None,
+signalQ_du1 = CustomSignal_poisson(data = IXPE_du1_Q.data, 
+                        instrument = IXPE_du1, 
+                        background = background, 
                         interstellar = None,
                         workspace_intervals = 1000,
                         cache = True,
@@ -622,11 +630,11 @@ signalQ = CustomSignal_poisson(data = IXPE_du1_Q.data, #data,
                         support = None,
                         stokes="Q")
 
-signals[0].append(signalQ)                        
+signals[0].append(signalQ_du1)                        
                         
-signalU = CustomSignal_poisson(data = IXPE_du1_U.data, #data,
-                        instrument = IXPE_du1, #NICER,
-                        background = background, #None,
+signalU_du1 = CustomSignal_poisson(data = IXPE_du1_U.data, 
+                        instrument = IXPE_du1, 
+                        background = background, 
                         interstellar = None,
                         workspace_intervals = 1000,
                         cache = True,
@@ -635,8 +643,92 @@ signalU = CustomSignal_poisson(data = IXPE_du1_U.data, #data,
                         sigmas = 10.0,
                         support = None,
                         stokes="U")                        
-signals[0].append(signalU)                        
+signals[0].append(signalU_du1)                        
                         
+
+if include_I:
+    signal_du2 = CustomSignal_poisson(data = IXPE_du2_I.data, 
+                        instrument = IXPE_du2, 
+                        background = background,
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        stokes="I")
+    signals[0].append(signal_du2)
+
+signalQ_du2 = CustomSignal_poisson(data = IXPE_du2_Q.data, 
+                        instrument = IXPE_du2, 
+                        background = background, 
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        stokes="Q")
+
+signals[0].append(signalQ_du2)                        
+                        
+signalU_du2 = CustomSignal_poisson(data = IXPE_du2_U.data, 
+                        instrument = IXPE_du2, 
+                        background = background, 
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        stokes="U")                        
+signals[0].append(signalU_du2) 
+
+
+if include_I:
+    signal_du3 = CustomSignal_poisson(data = IXPE_du3_I.data, 
+                        instrument = IXPE_du3, 
+                        background = background,
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        stokes="I")
+    signals[0].append(signal_du3)
+
+signalQ_du3 = CustomSignal_poisson(data = IXPE_du3_Q.data, 
+                        instrument = IXPE_du3, 
+                        background = background, 
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        stokes="Q")
+
+signals[0].append(signalQ_du3)                        
+                        
+signalU_du3 = CustomSignal_poisson(data = IXPE_du3_U.data, 
+                        instrument = IXPE_du3, 
+                        background = background, 
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        stokes="U")                        
+signals[0].append(signalU_du3) 
+
 
 
 
@@ -898,7 +990,7 @@ t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
 
-true_logl = -1.37016303e+03
+true_logl = -4.11344901e+03
 
 likelihood.check(None, [true_logl], 1.0e-6,
                  physical_points=[p])
@@ -917,8 +1009,8 @@ print("likelihood.params=",likelihood.params)
 
 #For synthetic IXPE_du1 data with re-binned response (and using non-matching parameter values): -1.37016697e+03
 #As above but for numerical atmosphere: -1.35961526e+03
-#As above but with matching parameter values (1 hot spot): -1.37016466e+03 , or assuming 2 spots: -1.37016303e+03
-
+#As above but with matching parameter values (1 hot spot): -1.37016381e+03 , or assuming 2 spots: -1.37016303e+03
+#As above (1-spot), but with all dus included (and still with artificial errors): -4.11344901e+03
 
 #print("signal I (primary):")
 #print(signals[0][0].signals[0])
@@ -949,11 +1041,11 @@ def plot_pulse_stokes():
     
     temp = np.sum(photosphere.signal[0][0], axis=0)
     I1p = temp
-    ax.plot(signal.phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+    ax.plot(signals[0][0].phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
     if two_spots:
         temp = np.sum(photosphere.signal[1][0], axis=0)    
         I2p = temp
-        ax.plot(signal.phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
+        ax.plot(signals[0][0].phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
 
     temp = np.sum(signals[0][0].expected_counts, axis=0)
     Iexpect = temp
@@ -961,7 +1053,7 @@ def plot_pulse_stokes():
     #ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
     ax.plot(data_phases[0:9], temp/np.max(temp), '--', color='k', lw=0.5)    
 
-    ax.errorbar(IXPE_du1_I.data.phases, IXPE_du1_I.data.counts[0]/(np.max(IXPE_du1_I.data.counts[0])), yerr=Iderr_du1[0]/(np.max(IXPE_du1_I.data.counts[0])), xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)
+    ax.errorbar(IXPE_du1_I.data.phases, IXPE_du1_I.data.counts[0]/(np.max(IXPE_du1_I.data.counts[0])), yerr=IXPE_du1_I.data.errors[0]/(np.max(IXPE_du1_I.data.counts[0])), xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)
 
     #veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsIX.pdf")
@@ -998,7 +1090,7 @@ def plot_pulse_stokes():
     		Q1pn[ip] = Q1p[ip]/I1p[ip]
     	else:
     		Q1pn[ip] = 0.0
-    ax.plot(signalQ.phases[0], Q1pn, 'o-', color='k', lw=0.5, markersize=2)
+    ax.plot(signalQ_du1.phases[0], Q1pn, 'o-', color='k', lw=0.5, markersize=2)
     
     if two_spots:
         Q2p = np.sum(photosphere.signalQ[1][0], axis=0)
@@ -1008,7 +1100,7 @@ def plot_pulse_stokes():
                 Q2pn[ip] = Q2p[ip]/I2p[ip]
             else:
                 Q2pn[ip] = 0.0
-        ax.plot(signalQ.phases[1], Q2pn, 'o-', color='r', lw=0.5, markersize=2)   
+        ax.plot(signalQ_du1.phases[1], Q2pn, 'o-', color='r', lw=0.5, markersize=2)   
     
     Qexpect = np.sum(signals[0][1].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
@@ -1020,7 +1112,7 @@ def plot_pulse_stokes():
     		Qexpectn[ip] = 0.0 
     ax.plot(data_phases[0:9], Qexpectn, '--', color='k', lw=0.5)
         
-    ax.errorbar(IXPE_du1_Q.data.phases, IXPE_du1_Q.data.counts[0], yerr=qnerr_du1[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)       
+    ax.errorbar(IXPE_du1_Q.data.phases, IXPE_du1_Q.data.counts[0], yerr=IXPE_du1_Q.data.errors[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)       
         
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsQX.pdf")
@@ -1057,7 +1149,7 @@ def plot_pulse_stokes():
     		U1pn[ip] = U1p[ip]/I1p[ip]
     	else:
     		U1pn[ip] = 0.0  		
-    ax.plot(signalU.phases[0], U1pn, 'o-', color='k', lw=0.5, markersize=2)
+    ax.plot(signalU_du1.phases[0], U1pn, 'o-', color='k', lw=0.5, markersize=2)
     
     if two_spots:
         U2p = np.sum(photosphere.signalU[1][0], axis=0)
@@ -1067,7 +1159,7 @@ def plot_pulse_stokes():
                 U2pn[ip] = U2p[ip]/I2p[ip]
             else:
                 U2pn[ip] = 0.0
-        ax.plot(signalU.phases[1], U2pn, 'o-', color='r', lw=0.5, markersize=2)   
+        ax.plot(signalU_du1.phases[1], U2pn, 'o-', color='r', lw=0.5, markersize=2)   
     
     Uexpect = np.sum(signals[0][2].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
@@ -1079,7 +1171,7 @@ def plot_pulse_stokes():
     		Uexpectn[ip] = 0.0 
     ax.plot(data_phases[0:9], Uexpectn, '--', color='k', lw=0.5)
 
-    ax.errorbar(IXPE_du1_U.data.phases, IXPE_du1_U.data.counts[0], yerr=unerr_du1[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)  
+    ax.errorbar(IXPE_du1_U.data.phases, IXPE_du1_U.data.counts[0], yerr=IXPE_du1_U.data.errors[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)  
 
     veneer((0.05,0.2), (0.05,0.2), ax)
     fig.savefig("figs/signalsUX.pdf")       
