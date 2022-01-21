@@ -381,7 +381,7 @@ class Photosphere(ParameterSubspace):
                         self._signal = (self._signal,)
                     if not isinstance(self._signalQ[0], tuple):
                         self._signalQ = (self._signalQ,)
-                    if not isinstance(self._signal[0], tuple):
+                    if not isinstance(self._signalU[0], tuple):
                         self._signalU = (self._signalU,)
                 else:
                     self._signal = self._hot.integrate(self._spacetime,
