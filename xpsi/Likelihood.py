@@ -379,7 +379,6 @@ class Likelihood(ParameterSubspace):
 		                             for hot_region in photosphere.signalQ),
 		                       fast_mode=fast_mode, threads=self.threads)
 		            Qsignal = signal.signals 
-		            #Register also I for obtaining Q/I           
 		            signal.register(tuple(
 		                             tuple(self._divide(component,
 		                                            self._star.spacetime.d_sq)
@@ -387,13 +386,8 @@ class Likelihood(ParameterSubspace):
 		                             for hot_region in photosphere.signal),
 		                       fast_mode=fast_mode, threads=self.threads)
 		            Isignal = signal.signals
-		            print("Q: ", Qsignal)
-		            print("I: ", Isignal)
                             for ihot in range(len(photosphere.signalQ)):
-                                #Check here if Isignal is zero ...
-		                signal._signals[ihot] = Qsignal[ihot]/Isignal[ihot]
-		            print("signal.signals = ", signal.signals)
-		                      		                       
+		                signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Qsignal[ihot]/Isignal[ihot])
 		    elif signal.isUn:
 		            signal.register(tuple(
 		                             tuple(self._divide(component,
@@ -409,12 +403,8 @@ class Likelihood(ParameterSubspace):
 		                             for hot_region in photosphere.signal),
 		                       fast_mode=fast_mode, threads=self.threads)
 		            Isignal = signal.signals
-		            print("U: ", Usignal)
-		            print("I: ", Isignal)
                             for ihot in range(len(photosphere.signalU)):
-                                #Check here if Isignal is zero ...
-		                signal._signals[ihot] = Usignal[ihot]/Isignal[ihot]
-		            print("signal.signals = ", signal.signals)	                       	                       
+                                signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Usignal[ihot]/Isignal[ihot])
 		    else:
 		        raise TypeError('Signal type must be either I, Q, U, Qn, or Un.')
 		                       

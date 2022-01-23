@@ -410,9 +410,12 @@ if plot_response_and_data:
 from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
 from xpsi.likelihoods.default_background_marginalisation import precomputation
 
+from xpsi.likelihoods._gaussian_likelihood_QnUn import gaussian_likelihood_QnUn
 from xpsi.likelihoods._gaussian_likelihood_given_background_IQU import gaussian_likelihood_given_background
 #from xpsi.likelihoods._poisson_likelihood_given_background_IQU import poisson_likelihood_given_background
 #from xpsi.likelihoods._poisson_likelihood_given_background import poisson_likelihood_given_background
+
+from scipy.interpolate import interp1d
 
 class CustomSignal_poisson(xpsi.Signal):
     """
@@ -463,36 +466,43 @@ class CustomSignal_poisson(xpsi.Signal):
             anegQU = (True)
     	#errors = self._data.counts * 0.1
         if self.isI:
-            print("Should call this at the moment.") 
             self.loglikelihood, self.expected_counts = \
                 gaussian_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
                                           self._data.counts,
-                                          self._data.errors, #errors, #self._data.errors,
+                                          self._data.errors, #errors, 
                                           self._signals,
                                           self._phases,
                                           self._shifts,
                                           background = self._background.registered_background,
                                           allow_negative=anegI)
                                           
-        else: #For Q and U use possibly different likelihood evaluation function:
-            #TBD: Convert signal to Q/I and U/I before calling likelihood function
-            #(since data and errors are currently in that form)
-            #signal_ffit = self._signals/ ..... ?
-            
-            signal_ffit = self._signals
-            
-            
+        else: #For Q and U use possibly different likelihood evaluation function:            
+            #Note: Signal can be in Qn or Un form if defined so when creating Signal object. 
+            #In that case: Make sure to have exposure time to 1, background zero, and only 1 hot spot:
+            #And also convert signal first to data phase points:
+            #(This version is still only for the most simple case)
+            sig1 = self._signals[0][0]
+            fsig = interp1d(self._phases[0], sig1, kind='linear')
+            signal_dphase = fsig(self._data.phases)
+	
             self.loglikelihood, self.expected_counts = \
-                gaussian_likelihood_given_background(self._data.exposure_time,
-                                          self._data.phases,
+                gaussian_likelihood_QnUn(self._data.phases,
                                           self._data.counts,
-                                          self._data.errors, #errors, #self._data.errors,
-                                          signal_ffit,
-                                          self._phases,
-                                          self._shifts,
-                                          background = self._background.registered_background, 
-                                          allow_negative=anegQU)                                                                   
+                                          self._data.errors, #errors, 
+                                          signal_dphase) 
+                                         
+            #This for non-normalized Q and U:                              
+            #self.loglikelihood, self.expected_counts = \
+            #    gaussian_likelihood_given_background(self._data.exposure_time,
+            #                              self._data.phases,
+            #                              self._data.counts,
+            #                              self._data.errors,
+            #                              self._signals,
+            #                              self._phases,
+            #                              self._shifts,
+            #                              background = self._background.registered_background, 
+             #                            allow_negative=anegQU)
                                           
                                                                                     
 
@@ -670,7 +680,7 @@ signalQ_du2 = CustomSignal_poisson(data = IXPE_du2_Q.data,
                         epsilon = 1.0e-3,
                         sigmas = 10.0,
                         support = None,
-                        stokes="Q")
+                        stokes="Qn")
 
 signals[0].append(signalQ_du2)                        
                         
@@ -684,7 +694,7 @@ signalU_du2 = CustomSignal_poisson(data = IXPE_du2_U.data,
                         epsilon = 1.0e-3,
                         sigmas = 10.0,
                         support = None,
-                        stokes="U")                        
+                        stokes="Un")                        
 signals[0].append(signalU_du2) 
 
 
@@ -712,7 +722,7 @@ signalQ_du3 = CustomSignal_poisson(data = IXPE_du3_Q.data,
                         epsilon = 1.0e-3,
                         sigmas = 10.0,
                         support = None,
-                        stokes="Q")
+                        stokes="Qn")
 
 signals[0].append(signalQ_du3)                        
                         
@@ -726,23 +736,23 @@ signalU_du3 = CustomSignal_poisson(data = IXPE_du3_U.data,
                         epsilon = 1.0e-3,
                         sigmas = 10.0,
                         support = None,
-                        stokes="U")                        
+                        stokes="Un")                        
 signals[0].append(signalU_du3) 
 
 
 
 #This used still for testing with ceding=True
-spacetime = xpsi.Spacetime.fixed_spin(300.0)
-bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
-                mass = (1.0, 3.0),                       # mass
-                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
-                cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
-values = dict(frequency=300.0)
+#spacetime = xpsi.Spacetime.fixed_spin(300.0)
+#bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
+#                mass = (1.0, 3.0),                       # mass
+#                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
+#                cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
+#values = dict(frequency=300.0)
 
 #For IXPE fitting with 1-spot
-#bounds = dict(cos_inclination = (0.0, 1.0))# (Earth) inclination to rotation axis
-#values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
-#spacetime = xpsi.Spacetime(bounds=bounds, values=values)
+bounds = dict(cos_inclination = (0.0, 1.0))# (Earth) inclination to rotation axis
+values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
+spacetime = xpsi.Spacetime(bounds=bounds, values=values)
 
 #bounds = dict(super_colatitude = (None, None),
 #              super_radius = (None, None),
@@ -759,7 +769,7 @@ tempK = np.log10(tempkeV*11604525.00617)
 print("tempK=",tempK)
 values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
 
-ceding=True
+ceding=False
 
 if ceding:
 	bounds = dict(super_colatitude=(None,None),
@@ -804,14 +814,14 @@ class derive(xpsi.Derive):
         global primary # unnecessary, but for clarity
         return primary['super_temperature'] - 0.2
 
-two_spots = True #False
+two_spots = False
 
 if two_spots:
-    bounds['super_temperature'] = None # declare fixed/derived variable #this for ceding
-    #bounds = dict(super_colatitude = (None, None), phase_shift = (-0.25, 0.75))
+    #bounds['super_temperature'] = None #this for ceding
+    bounds = dict(super_colatitude = (None, None), phase_shift = (-0.25, 0.75))
     secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
-	                      values={'super_temperature': derive()}, # create a callable value #for ceding
-	                      #values={'super_radius': 1.0*deg2rad,'super_temperature': derive()},
+	                      #values={'super_temperature': derive()}, #for ceding
+	                      values={'super_radius': 1.0*deg2rad,'super_temperature': derive()},
 	                      symmetry=True,
 	                      omit=False,
 	                      cede=ceding,
@@ -991,7 +1001,7 @@ t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
 
-true_logl = -4.11344901e+03
+true_logl = -3.57891991e+02
 
 likelihood.check(None, [true_logl], 1.0e-6,
                  physical_points=[p])
@@ -1012,6 +1022,9 @@ print("likelihood.params=",likelihood.params)
 #As above but for numerical atmosphere: -1.35961526e+03
 #As above but with matching parameter values (1 hot spot): -1.37016381e+03 , or assuming 2 spots: -1.37016303e+03
 #As above (1-spot), but with all dus included (and still with artificial errors): -4.11344901e+03
+#As above but with real errors for Qn and Un (I not included): -3.68253210e+02 
+#As above but I included: -2.23483917e+10
+#As above but without I and a corrected likelihood fit or normalized Q and U: -3.57891991e+02
 
 #print("signal I (primary):")
 #print(signals[0][0].signals[0])
@@ -1066,22 +1079,23 @@ def plot_pulse_stokes():
     ax.set_xlabel('Phase [cycles]')
 
     Q1s = np.sum(signals[0][1].signals[0], axis=0)
-    Q1sn = np.copy(Q1s)
-    for ip in range(len(Q1sn)):
-    	if(I1s[ip] > 1e-10):
-    		Q1sn[ip] = Q1s[ip]/I1s[ip]
-    	else:
-    		Q1sn[ip] = 0.0
+    Q1sn = np.copy(Q1s) 
+    #Normalized now already in Signal.py depending on the Signal type definition
+    #for ip in range(len(Q1sn)):
+    #	if(I1s[ip] > 1e-10):
+    #		Q1sn[ip] = Q1s[ip]/I1s[ip]
+    #	else:
+    #		Q1sn[ip] = 0.0
     ax.plot(signals[0][1].phases[0], Q1sn, '-', color='k', lw=0.5)
     
     if two_spots:
         Q2s = np.sum(signals[0][1].signals[1], axis=0)    
         Q2sn = np.copy(Q2s)
-        for ip in range(len(Q2sn)):
-            if(I2s[ip] > 1e-10):
-                Q2sn[ip] = Q2s[ip]/I2s[ip]
-            else:
-                Q2sn[ip] = 0.0
+        #for ip in range(len(Q2sn)):
+        #    if(I2s[ip] > 1e-10):
+        #        Q2sn[ip] = Q2s[ip]/I2s[ip]
+        #    else:
+        #        Q2sn[ip] = 0.0
         ax.plot(signals[0][1].phases[1], Q2sn, '-', color='r', lw=0.5)
     
     Q1p = np.sum(photosphere.signalQ[0][0], axis=0)
@@ -1103,15 +1117,16 @@ def plot_pulse_stokes():
                 Q2pn[ip] = 0.0
         ax.plot(signalQ_du1.phases[1], Q2pn, 'o-', color='r', lw=0.5, markersize=2)   
     
-    Qexpect = np.sum(signals[0][1].expected_counts, axis=0)
+    Qexpect = signals[0][1].expected_counts #np.sum(signals[0][1].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
     Qexpectn = np.copy(Qexpect)
-    for ip in range(len(Qexpectn)):
-    	if(Iexpect[ip] > 1e-50):
-    		Qexpectn[ip] = Qexpect[ip]/Iexpect[ip]
-    	else:
-    		Qexpectn[ip] = 0.0 
-    ax.plot(data_phases[0:9], Qexpectn, '--', color='k', lw=0.5)
+    #for ip in range(len(Qexpectn)):
+    #	if(Iexpect[ip] > 1e-50):
+    #		Qexpectn[ip] = Qexpect[ip]/Iexpect[ip]
+    #	else:
+    #		Qexpectn[ip] = 0.0 
+    #ax.plot(data_phases[0:9], Qexpectn, '--', color='k', lw=0.5)
+    ax.plot(IXPE_du1_Q.data.phases, Qexpectn, '--', color='k', lw=0.5)    
         
     ax.errorbar(IXPE_du1_Q.data.phases, IXPE_du1_Q.data.counts[0], yerr=IXPE_du1_Q.data.errors[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)       
         
@@ -1126,21 +1141,21 @@ def plot_pulse_stokes():
 
     U1s = np.sum(signals[0][2].signals[0], axis=0)
     U1sn = np.copy(U1s)
-    for ip in range(len(U1sn)):
-    	if(I1s[ip] > 1e-10):
-    		U1sn[ip] = U1s[ip]/I1s[ip]
-    	else:
-    		U1sn[ip] = 0.0
+    #for ip in range(len(U1sn)):
+    #	if(I1s[ip] > 1e-10):
+    #		U1sn[ip] = U1s[ip]/I1s[ip]
+    #	else:
+    #		U1sn[ip] = 0.0
     ax.plot(signals[0][2].phases[0], U1sn, '-', color='k', lw=0.5)
 
     if two_spots:
         U2s = np.sum(signals[0][2].signals[1], axis=0)    
         U2sn = np.copy(U2s)
-        for ip in range(len(U2sn)):
-            if(I2s[ip] > 1e-10):
-                U2sn[ip] = U2s[ip]/I2s[ip]
-            else:
-                U2sn[ip] = 0.0
+        #for ip in range(len(U2sn)):
+        #    if(I2s[ip] > 1e-10):
+        #        U2sn[ip] = U2s[ip]/I2s[ip]
+        #    else:
+        #        U2sn[ip] = 0.0
         ax.plot(signals[0][2].phases[1], U2sn, '-', color='r', lw=0.5)
     
     U1p = np.sum(photosphere.signalU[0][0], axis=0)
@@ -1162,15 +1177,18 @@ def plot_pulse_stokes():
                 U2pn[ip] = 0.0
         ax.plot(signalU_du1.phases[1], U2pn, 'o-', color='r', lw=0.5, markersize=2)   
     
-    Uexpect = np.sum(signals[0][2].expected_counts, axis=0)
+    Uexpect = signals[0][2].expected_counts #np.sum(signals[0][2].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
     Uexpectn = np.copy(Uexpect)
-    for ip in range(len(Uexpectn)):
-    	if(Iexpect[ip] > 1e-10):
-    		Uexpectn[ip] = Uexpect[ip]/Iexpect[ip]
-    	else:
-    		Uexpectn[ip] = 0.0 
-    ax.plot(data_phases[0:9], Uexpectn, '--', color='k', lw=0.5)
+    #for ip in range(len(Uexpectn)):
+    #	if(Iexpect[ip] > 1e-10):
+    #		Uexpectn[ip] = Uexpect[ip]/Iexpect[ip]
+    #	else:
+    #		Uexpectn[ip] = 0.0 
+    #ax.plot(data_phases[0:9], Uexpectn, '--', color='k', lw=0.5)
+    print(IXPE_du1_U.data.phases)
+    print(Uexpectn)
+    ax.plot(IXPE_du1_U.data.phases, Uexpectn, '--', color='k', lw=0.5)    
 
     ax.errorbar(IXPE_du1_U.data.phases, IXPE_du1_U.data.counts[0], yerr=IXPE_du1_U.data.errors[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)  
 
@@ -1200,7 +1218,10 @@ def plot_pulse():
 
 
 likelihood(p, reinitialise=False)
-_ = plot_pulse_stokes()
+
+#plotting works correctly only if including I at the moment.
+if include_I:
+    _ = plot_pulse_stokes()
 
 from scipy.stats import truncnorm
 class CustomPrior(xpsi.Prior):
