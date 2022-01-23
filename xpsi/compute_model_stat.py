@@ -461,14 +461,14 @@ class CustomSignal_poisson(xpsi.Signal):
         else:
             anegI = (False)
             anegQU = (True)
-    	errors = self._data.counts * 0.1
+    	#errors = self._data.counts * 0.1
         if self.isI:
-             
+            print("Should call this at the moment.") 
             self.loglikelihood, self.expected_counts = \
                 gaussian_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
                                           self._data.counts,
-                                          errors, #self._data.errors,
+                                          self._data.errors, #errors, #self._data.errors,
                                           self._signals,
                                           self._phases,
                                           self._shifts,
@@ -487,7 +487,7 @@ class CustomSignal_poisson(xpsi.Signal):
                 gaussian_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
                                           self._data.counts,
-                                          errors, #self._data.errors,
+                                          self._data.errors, #errors, #self._data.errors,
                                           signal_ffit,
                                           self._phases,
                                           self._shifts,
@@ -600,7 +600,7 @@ background = CustomBackground(value=-2.0)
 
 signals = [[],]
 
-include_I = True
+include_I = False #True
 
 #TBD: Initialize signals in a loop to avoid repetition.
 
@@ -628,7 +628,7 @@ signalQ_du1 = CustomSignal_poisson(data = IXPE_du1_Q.data,
                         epsilon = 1.0e-3,
                         sigmas = 10.0,
                         support = None,
-                        stokes="Q")
+                        stokes="Qn")
 
 signals[0].append(signalQ_du1)                        
                         
@@ -642,7 +642,7 @@ signalU_du1 = CustomSignal_poisson(data = IXPE_du1_U.data,
                         epsilon = 1.0e-3,
                         sigmas = 10.0,
                         support = None,
-                        stokes="U")                        
+                        stokes="Un")                        
 signals[0].append(signalU_du1)                        
                         
 
@@ -731,18 +731,18 @@ signals[0].append(signalU_du3)
 
 
 
+#This used still for testing with ceding=True
+spacetime = xpsi.Spacetime.fixed_spin(300.0)
+bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
+                mass = (1.0, 3.0),                       # mass
+                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
+                cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
+values = dict(frequency=300.0)
 
-#spacetime = xpsi.Spacetime.fixed_spin(300.0)
-#bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
-#                mass = (1.0, 3.0),                       # mass
-#                radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
-#                cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
-#values = dict(frequency=300.0)
-
-bounds = dict(cos_inclination = (0.0, 1.0))# (Earth) inclination to rotation axis
-values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
-
-spacetime = xpsi.Spacetime(bounds=bounds, values=values)
+#For IXPE fitting with 1-spot
+#bounds = dict(cos_inclination = (0.0, 1.0))# (Earth) inclination to rotation axis
+#values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
+#spacetime = xpsi.Spacetime(bounds=bounds, values=values)
 
 #bounds = dict(super_colatitude = (None, None),
 #              super_radius = (None, None),
@@ -759,7 +759,7 @@ tempK = np.log10(tempkeV*11604525.00617)
 print("tempK=",tempK)
 values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
 
-ceding=False #True
+ceding=True
 
 if ceding:
 	bounds = dict(super_colatitude=(None,None),
@@ -770,13 +770,14 @@ if ceding:
 		      cede_radius = (None, None),
 		      cede_azimuth = (None, None),
 		      cede_temperature = (None, None))
+	values={}	      
 
 # a simple circular, simply-connected spot
 primary = xpsi.HotRegion(bounds=bounds,
                             values=values, 
                             symmetry=True,
                             omit=False,
-                            cede=ceding, #True, #False,
+                            cede=ceding,
                             concentric=False,
                             sqrt_num_cells=32,
                             min_sqrt_num_cells=10,
@@ -803,17 +804,17 @@ class derive(xpsi.Derive):
         global primary # unnecessary, but for clarity
         return primary['super_temperature'] - 0.2
 
-two_spots = False
+two_spots = True #False
 
 if two_spots:
-    #bounds['super_temperature'] = None # declare fixed/derived variable
-    bounds = dict(super_colatitude = (None, None), phase_shift = (-0.25, 0.75))
+    bounds['super_temperature'] = None # declare fixed/derived variable #this for ceding
+    #bounds = dict(super_colatitude = (None, None), phase_shift = (-0.25, 0.75))
     secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
-	                      #values={'super_temperature': derive()}, # create a callable value
-	                      values={'super_radius': 1.0*deg2rad,'super_temperature': derive()},
+	                      values={'super_temperature': derive()}, # create a callable value #for ceding
+	                      #values={'super_radius': 1.0*deg2rad,'super_temperature': derive()},
 	                      symmetry=True,
 	                      omit=False,
-	                      cede=ceding, #True, #False,
+	                      cede=ceding,
 	                      concentric=False,
 	                      sqrt_num_cells=32,
 	                      min_sqrt_num_cells=10,

@@ -86,20 +86,25 @@ class Signal(ParameterSubspace):
                  *args,
                  **kwargs):
 
+        self._isI = False
+        self._isQ = False
+        self._isU = False
+        self._isQn = False
+        self._isUn = False        
+
         if stokes == "I":
             self._isI = True
-            self._isQ = False
-            self._isU = False
         elif stokes == "Q":
-            self._isI = False
             self._isQ = True
-            self._isU = False
         elif stokes == "U":
-            self._isI = False
-            self._isQ = False
             self._isU = True
+        elif stokes == "Qn":
+            self._isQn = True
+        elif stokes == "Un":
+            self._isUn = True            
+            
         else:
-             raise TypeError('param stokes for likelihood must be either "I", "Q", or "U".')
+             raise TypeError('param stokes for likelihood must be either "I", "Q", "U", "Qn", or "Un".')
              
         if not isinstance(data, Data):
             raise TypeError('Invalid type for a data object.')
@@ -203,6 +208,27 @@ class Signal(ParameterSubspace):
     def isU(self, b):
         """ ... """
         self._isU = b 
+        
+    @property
+    def isQn(self):
+        """ ... """
+        return self._isQn
+        
+    @isQn.setter
+    def isQn(self, b):
+        """ ... """
+        self._isQn = b
+        
+    @property
+    def isUn(self):
+        """ ... """
+        return self._isUn
+        
+    @isUn.setter
+    def isUn(self, b):
+        """ ... """
+        self._isUn = b         
+        
         
     @property
     def background(self):
