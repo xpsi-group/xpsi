@@ -152,6 +152,7 @@ class Signal(ParameterSubspace):
         super(Signal, self).__init__(self._instrument,
                                      self._background,
                                      self._interstellar,
+                                     phase_shift,
                                      *args, **kwargs)
 
     @property
@@ -292,7 +293,7 @@ class Signal(ParameterSubspace):
                         try:
                             signal += component
                         except TypeError:
-                            signal = component
+                            signal = component.copy()
                     # cache total hot region signal
                     self.incident_specific_flux_signals = signal
 
