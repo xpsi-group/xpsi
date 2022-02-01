@@ -2475,6 +2475,7 @@ parser.add_argument('--{0}-energy-independent-effective-area-scaling-factor-prio
 
 def add_cede_temperature_prior(i):
     global args
+    global module
 
     if 'DT' in args.hot_region_model[i]:
         module += (
