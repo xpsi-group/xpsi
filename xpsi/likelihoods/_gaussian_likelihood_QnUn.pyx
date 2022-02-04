@@ -59,22 +59,8 @@ def gaussian_likelihood_QnUn(double[::1] phases,
         for j in range(counts.shape[1]):
             sigma_tot2 = pow(errors[i,j],2.0)
             norm = 0.5 * log(2.0*pi*sigma_tot2)
-            LOGLIKE -= ((star[i])-counts[i,j])**2/(2.0*sigma_tot2)-norm
-
-
-	#loglik = 0.0
-	#sigma_tot2 = error**2+error_intr**2 #+error_calib**2 ...
-	#for t in range(NPhadat):
-	#	if(abs(error[t])<1e-10):
-	#		loglik = loglik
-	#	else:
-	#		if(use_intr_sigma):
-	#			norm = 0.5*np.log(2.0*np.pi*sigma_tot2[t]) 
-	#			loglik = loglik - (model[t]-data[t])**2/(2.0*sigma_tot2[t])-norm
-	#		else:
-	#			loglik = loglik - (model[t]-data[t])**2/(2.0*error[t]**2)
-	##print(loglik)
-	#return loglik
+            LOGLIKE -= ((star[j])-counts[i,j])**2/(2.0*sigma_tot2)-norm
+            #printf("\nLOGLIKE, star, counts, err: %f, %f, %f, %f\n", ((star[j])-counts[i,j])**2/(2.0*sigma_tot2)-norm, star[j],counts[i,j],errors[i,j])            
 
 
     return (LOGLIKE, np.asarray(star, order='C', dtype=np.double))

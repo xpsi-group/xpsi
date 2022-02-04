@@ -24,16 +24,19 @@ np.random.seed(10)
 #Then we can use that data:
 
 #settings = dict(counts = np.loadtxt('../examples/data_my/new_synthetic_realisation.dat', dtype=np.double),
-settings = dict(counts = np.loadtxt('../docs/source/data/new_synthetic_realisation.dat', dtype=np.double),
+#settings = dict(counts = np.loadtxt('../docs/source/data/new_synthetic_realisation.dat', dtype=np.double),
+settings = dict(counts = np.loadtxt('/home/tuomo/xpsi/xpsi_dev/docs/source/data/new_synthetic_realisation.dat', dtype=np.double),
                 channels=np.arange(20,201),
                 phases=np.linspace(0.0, 1.0, 33),
                 first=0, last=180,
                 exposure_time=984307.6661)
                 
-counts = np.loadtxt('../docs/source/data/new_synthetic_realisation.dat', dtype=np.double)
+#counts = np.loadtxt('../docs/source/data/new_synthetic_realisation.dat', dtype=np.double)
+counts = np.loadtxt('/home/tuomo/xpsi/xpsi_dev/docs/source/data/new_synthetic_realisation.dat', dtype=np.double)
 #print(counts.shape[0],counts.shape[1])
 
 data = xpsi.Data(**settings)
+
 
 
 
@@ -288,11 +291,11 @@ class CustomInstrument(xpsi.Instrument):
 
         return cls(matrix, edges, channels, channel_edges[20:202,-2])
 
-NICER = CustomInstrument.from_response_files(ARF = '../examples/model_data/nicer_v1.01_arf.txt',
-                                             RMF = '../examples/model_data/nicer_v1.01_rmf_matrix.txt',
-                                             max_input = 500,
-                                             min_input = 0,
-                                             channel_edges = '../examples/model_data/nicer_v1.01_rmf_energymap.txt')
+#NICER = CustomInstrument.from_response_files(ARF = '../examples/model_data/nicer_v1.01_arf.txt',
+#                                             RMF = '../examples/model_data/nicer_v1.01_rmf_matrix.txt',
+#                                             max_input = 500,
+#                                             min_input = 0,
+#                                             channel_edges = '../examples/model_data/nicer_v1.01_rmf_energymap.txt')
 
 
 #mrf = "essentially the product of the effective area times the modulation factor, and is meant to be used to fit polarimetric models in XSPEC"
@@ -641,103 +644,107 @@ signalQ_du1 = CustomSignal_poisson(data = IXPE_du1_Q.data,
                         stokes="Qn")
 
 signals[0].append(signalQ_du1)                        
-                        
-signalU_du1 = CustomSignal_poisson(data = IXPE_du1_U.data, 
-                        instrument = IXPE_du1, 
-                        background = background, 
-                        interstellar = None,
-                        workspace_intervals = 1000,
-                        cache = True,
-                        epsrel = 1.0e-8,
-                        epsilon = 1.0e-3,
-                        sigmas = 10.0,
-                        support = None,
-                        stokes="Un")                        
-signals[0].append(signalU_du1)                        
-                        
+ 
+skip_rest = False
 
-if include_I:
-    signal_du2 = CustomSignal_poisson(data = IXPE_du2_I.data, 
-                        instrument = IXPE_du2, 
-                        background = background,
-                        interstellar = None,
-                        workspace_intervals = 1000,
-                        cache = True,
-                        epsrel = 1.0e-8,
-                        epsilon = 1.0e-3,
-                        sigmas = 10.0,
-                        support = None,
-                        stokes="I")
-    signals[0].append(signal_du2)
+if not skip_rest: 
+		                
+	signalU_du1 = CustomSignal_poisson(data = IXPE_du1_U.data, 
+		                instrument = IXPE_du1, 
+		                background = background, 
+		                interstellar = None,
+		                workspace_intervals = 1000,
+		                cache = True,
+		                epsrel = 1.0e-8,
+		                epsilon = 1.0e-3,
+		                sigmas = 10.0,
+		                support = None,
+		                stokes="Un")                        
+	signals[0].append(signalU_du1)                        
+		                
 
-signalQ_du2 = CustomSignal_poisson(data = IXPE_du2_Q.data, 
-                        instrument = IXPE_du2, 
-                        background = background, 
-                        interstellar = None,
-                        workspace_intervals = 1000,
-                        cache = True,
-                        epsrel = 1.0e-8,
-                        epsilon = 1.0e-3,
-                        sigmas = 10.0,
-                        support = None,
-                        stokes="Qn")
+	if include_I:
+	    signal_du2 = CustomSignal_poisson(data = IXPE_du2_I.data, 
+		                instrument = IXPE_du2, 
+		                background = background,
+		                interstellar = None,
+		                workspace_intervals = 1000,
+		                cache = True,
+		                epsrel = 1.0e-8,
+		                epsilon = 1.0e-3,
+		                sigmas = 10.0,
+		                support = None,
+		                stokes="I")
+	    signals[0].append(signal_du2)
 
-signals[0].append(signalQ_du2)                        
-                        
-signalU_du2 = CustomSignal_poisson(data = IXPE_du2_U.data, 
-                        instrument = IXPE_du2, 
-                        background = background, 
-                        interstellar = None,
-                        workspace_intervals = 1000,
-                        cache = True,
-                        epsrel = 1.0e-8,
-                        epsilon = 1.0e-3,
-                        sigmas = 10.0,
-                        support = None,
-                        stokes="Un")                        
-signals[0].append(signalU_du2) 
+	signalQ_du2 = CustomSignal_poisson(data = IXPE_du2_Q.data, 
+		                instrument = IXPE_du2, 
+		                background = background, 
+		                interstellar = None,
+		                workspace_intervals = 1000,
+		                cache = True,
+		                epsrel = 1.0e-8,
+		                epsilon = 1.0e-3,
+		                sigmas = 10.0,
+		                support = None,
+		                stokes="Qn")
+
+	signals[0].append(signalQ_du2)                        
+		                
+	signalU_du2 = CustomSignal_poisson(data = IXPE_du2_U.data, 
+		                instrument = IXPE_du2, 
+		                background = background, 
+		                interstellar = None,
+		                workspace_intervals = 1000,
+		                cache = True,
+		                epsrel = 1.0e-8,
+		                epsilon = 1.0e-3,
+		                sigmas = 10.0,
+		                support = None,
+		                stokes="Un")                        
+	signals[0].append(signalU_du2) 
 
 
-if include_I:
-    signal_du3 = CustomSignal_poisson(data = IXPE_du3_I.data, 
-                        instrument = IXPE_du3, 
-                        background = background,
-                        interstellar = None,
-                        workspace_intervals = 1000,
-                        cache = True,
-                        epsrel = 1.0e-8,
-                        epsilon = 1.0e-3,
-                        sigmas = 10.0,
-                        support = None,
-                        stokes="I")
-    signals[0].append(signal_du3)
+	if include_I:
+	    signal_du3 = CustomSignal_poisson(data = IXPE_du3_I.data, 
+		                instrument = IXPE_du3, 
+		                background = background,
+		                interstellar = None,
+		                workspace_intervals = 1000,
+		                cache = True,
+		                epsrel = 1.0e-8,
+		                epsilon = 1.0e-3,
+		                sigmas = 10.0,
+		                support = None,
+		                stokes="I")
+	    signals[0].append(signal_du3)
 
-signalQ_du3 = CustomSignal_poisson(data = IXPE_du3_Q.data, 
-                        instrument = IXPE_du3, 
-                        background = background, 
-                        interstellar = None,
-                        workspace_intervals = 1000,
-                        cache = True,
-                        epsrel = 1.0e-8,
-                        epsilon = 1.0e-3,
-                        sigmas = 10.0,
-                        support = None,
-                        stokes="Qn")
+	signalQ_du3 = CustomSignal_poisson(data = IXPE_du3_Q.data, 
+		                instrument = IXPE_du3, 
+		                background = background, 
+		                interstellar = None,
+		                workspace_intervals = 1000,
+		                cache = True,
+		                epsrel = 1.0e-8,
+		                epsilon = 1.0e-3,
+		                sigmas = 10.0,
+		                support = None,
+		                stokes="Qn")
 
-signals[0].append(signalQ_du3)                        
-                        
-signalU_du3 = CustomSignal_poisson(data = IXPE_du3_U.data, 
-                        instrument = IXPE_du3, 
-                        background = background, 
-                        interstellar = None,
-                        workspace_intervals = 1000,
-                        cache = True,
-                        epsrel = 1.0e-8,
-                        epsilon = 1.0e-3,
-                        sigmas = 10.0,
-                        support = None,
-                        stokes="Un")                        
-signals[0].append(signalU_du3) 
+	signals[0].append(signalQ_du3)                        
+		                
+	signalU_du3 = CustomSignal_poisson(data = IXPE_du3_U.data, 
+		                instrument = IXPE_du3, 
+		                background = background, 
+		                interstellar = None,
+		                workspace_intervals = 1000,
+		                cache = True,
+		                epsrel = 1.0e-8,
+		                epsilon = 1.0e-3,
+		                sigmas = 10.0,
+		                support = None,
+		                stokes="Un")                        
+	signals[0].append(signalU_du3) 
 
 
 
@@ -970,7 +977,10 @@ if two_spots:
 else:
     p = [math.cos(60.0*deg2rad),
         0.0,
-        20.0*deg2rad]   
+        20.0*deg2rad]
+
+    #pmaxL = [0.58450219, 0.70448103, 0.0056285 ] 
+    #p = pmaxL 
 
 print(star)
 
@@ -1001,7 +1011,7 @@ t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
 
-true_logl = -3.57891991e+02
+true_logl = -2.78330361e+02
 
 likelihood.check(None, [true_logl], 1.0e-6,
                  physical_points=[p])
@@ -1025,6 +1035,10 @@ print("likelihood.params=",likelihood.params)
 #As above but with real errors for Qn and Un (I not included): -3.68253210e+02 
 #As above but I included: -2.23483917e+10
 #As above but without I and a corrected likelihood fit or normalized Q and U: -3.57891991e+02
+#As above but the maxL from fitting with 1000 live points: -3.32611150e+02 (or with I included: -2.23483917e+10 )
+#maxL only from Q from du1: -7.10196587e+01, same for correct_vector: -7.69526115e+01
+#After correction: -7.05020287e+01 and -4.58872728e+01
+#After correction for all Qn and Un with all dus: -2.78330361e+02
 
 #print("signal I (primary):")
 #print(signals[0][0].signals[0])
@@ -1351,26 +1365,26 @@ class CustomPrior(xpsi.Prior):
         # used ordered names and values
         ref = dict(zip(self.parameters.names, p))
 
-        # compactness ratio M/R_eq
-        p += [gravradius(ref['mass']) / ref['radius']]
+        ## compactness ratio M/R_eq
+        #p += [gravradius(ref['mass']) / ref['radius']]
 
         # phase separation between hot regions
         # first some temporary variables:
-        if ref['p__phase_shift'] < 0.0:
-            temp_p = ref['p__phase_shift'] + 1.0
-        else:
-            temp_p = ref['p__phase_shift']
+        #if ref['p__phase_shift'] < 0.0:
+        #    temp_p = ref['p__phase_shift'] + 1.0
+        #else:
+        #    temp_p = ref['p__phase_shift']
 
-        temp_s = 0.5 + ref['s__phase_shift']
+        #temp_s = 0.5 + ref['s__phase_shift']
 
-        if temp_s > 1.0:
-            temp_s = temp_s - 1.0
+        #if temp_s > 1.0:
+        #    temp_s = temp_s - 1.0
 
-        # now append:
-        if temp_s >= temp_p:
-            p += [temp_s - temp_p]
-        else:
-            p += [1.0 - temp_p + temp_s]
+        ## now append:
+        #if temp_s >= temp_p:
+        #    p += [temp_s - temp_p]
+        #else:
+        #    p += [1.0 - temp_p + temp_s]
 
         return p
 
@@ -1388,12 +1402,12 @@ runtime_params = {'resume': False,
                   'n_clustering_params': None,
                   'outputfiles_basename': './run/run', # make ./run directory manually
                   'n_iter_before_update': 50,
-                  'n_live_points': 100,
+                  'n_live_points': 800, #100,
                   'sampling_efficiency': 0.8,
                   'const_efficiency_mode': False,
                   'wrapped_params': wrapped_params,
                   'evidence_tolerance': 0.5,
-                  'max_iter': 1000, # manual termination condition for short test
+                  'max_iter': -1, #1000, # manual termination condition for short test
                   'verbose': True}
 
 for h in hot.objects:
