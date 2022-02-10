@@ -33,6 +33,48 @@ Attribution
 ^^^^^^^^^^^
 
 
+[v0.7.10] - 2021-10-02
+~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Since version 0.7.9, several bugs have been fixed. For example, fixing the double counting of the second component of a dual temperature region when caching turned on. Also, documentation and example scripts have been updated.
+
+
+Fixed
+^^^^^
+
+* Bug in ``xpsi/Signal.py`` when looping over dual temperature components while using caching (D.C., T.S, S.V.). 
+
+* Bug in ``xpsi/Signal.py`` merging the new phase-shift parameter to the parameter subspace (T.S. & D.C.).
+
+* Missing global argument added in ``xpsi/module_generator.py`` (D.C.).
+
+* Documentation and example scripts updated and fixed to work with newest X-PSI versions (S.G.).
+
+* Bug in ``xpsi/PostProcessing/_corner.py`` not showing true values correctly in corner plots for simulated data (T.S. & Y.K.).
+
+* Corrected the link to the documentation pages when importing X-PSI (D.C. & T.S.).
+
+Added
+^^^^^
+
+Changed
+^^^^^^^
+
+Deprecated
+^^^^^^^^^^
+
+Removed
+^^^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+* Devarshi Choudhury (D.C.), Tuomo Salmi (T.S.), Serena Vinciguerra (S.V.), Sebastien Guillot (S.G.), and Yves Kini (Y.K.)
+
+
 [v0.7.9] - 2021-26-11
 ~~~~~~~~~~~~~~~~~~~~~
 
