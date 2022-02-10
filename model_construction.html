@@ -1,23 +1,31 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Modeling &mdash; xpsi 0.7.9 documentation</title>
+  <title>Modeling &mdash; xpsi 0.7.10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
 
   
   
-  
+
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,10 +40,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Instrument synergy" href="multiple_instruments.html" />
@@ -80,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -189,6 +194,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -223,18 +229,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Modeling</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/model_construction.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -253,16 +261,16 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
     background: none;
     border: none;
     padding: 0 0;
@@ -271,13 +279,13 @@ div.nboutput div[class*=highlight] pre {
 }
 
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -285,92 +293,91 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
+div.nbinput.container div.prompt pre {
     color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
+div.nboutput.container div.prompt pre {
     color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
     min-width: 5ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
+    padding-top: 0.3rem;
+    padding-right: 0.3rem;
     text-align: right;
     flex: 0;
 }
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
+div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
     background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
 /* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput div.math p {
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -414,6 +421,27 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 0.3rem;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
 /* Some additional styling taken form the Jupyter notebook CSS */
 div.rendered_html table {
   border: none;
@@ -451,13 +479,13 @@ div.rendered_html tbody tr:hover {
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
@@ -1033,7 +1061,7 @@ subset) can be written in terms of a set of <em>single</em> count-rate pulses.</
                 <span class="bp">self</span><span class="o">.</span><span class="n">_support</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loglikelihood</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_signal</span> <span class="o">=</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">loglikelihood</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_signal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_given_support</span> <span class="o">=</span> \
                 <span class="n">eval_marginal_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span>
@@ -1158,10 +1186,10 @@ Cosine of Earth inclination to rotation axis.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>xpsi.Spacetime.Spacetime
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+xpsi.Spacetime.Spacetime
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
@@ -1319,10 +1347,10 @@ appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</s
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>xpsi.HotRegion.HotRegion
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+xpsi.HotRegion.HotRegion
+</pre></div></div>
 </div>
 <p>The names can also be found as class attributes as follows:</p>
 <div class="nbinput docutils container">
@@ -1338,13 +1366,13 @@ appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</s
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[&#39;super_colatitude&#39;,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;super_colatitude&#39;,
  &#39;super_radius&#39;,
  &#39;phase_shift&#39;,
  &#39;super_temperature (if no custom specification)&#39;]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>The condition <em>if no custom specification</em> means that this name is required if we do not supply custom parameters for the radiation field in the superseding member of the hot region. If we supply custom parameters, we also need to subclass <code class="docutils literal notranslate"><span class="pre">xpsi.HotRegion</span></code> and overwrite the <code class="docutils literal notranslate"><span class="pre">__compute_cellParamVecs</span></code> method to handle our parameters.</p>
 <div class="nbinput docutils container">
@@ -1360,16 +1388,16 @@ appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</s
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[&#39;omit_colatitude&#39;,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;omit_colatitude&#39;,
  &#39;omit_radius&#39;,
  &#39;omit_azimuth&#39;,
  &#39;cede_colatitude&#39;,
  &#39;cede_radius&#39;,
  &#39;cede_azimuth&#39;,
  &#39;cede_temperature&#39;]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>For the purpose of illustration, we <em>tie</em> the temperatures of the hot regions together: <em>this is where the model deviates from the examples directory as alluded to in the preamble of this tutorial</em>. There is more than one way to achieve this, but we will use the most powerful approach.</p>
 <div class="nbinput docutils container">
@@ -1432,10 +1460,10 @@ Creating parameter:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>xpsi.Parameter.Derive
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+xpsi.Parameter.Derive
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
@@ -1525,8 +1553,9 @@ colatitude of the centre of the superseding region. The azimuths are <em>relativ
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
 p__super_colatitude: The colatitude of the centre of the superseding region [radians].
@@ -1543,8 +1572,7 @@ p__omit_colatitude: The colatitude of the centre of the omission region [radians
 p__omit_radius: The angular radius of the (circular) omission region [radians].
 p__omit_azimuth: The azimuth of the centre of the omission region relative to the
 centre of the superseding region [radians].
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
@@ -1559,8 +1587,9 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
 s__super_colatitude: The colatitude of the centre of the superseding region [radians].
@@ -1577,8 +1606,7 @@ s__omit_colatitude: The colatitude of the centre of the omission region [radians
 s__omit_radius: The angular radius of the (circular) omission region [radians].
 s__omit_azimuth: The azimuth of the centre of the omission region relative to the
 centre of the superseding region [radians].
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>A list of names, with the prefix, can also be accessed as follows:</p>
 <div class="nbinput docutils container">
@@ -1595,8 +1623,9 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[&#39;p__phase_shift&#39;,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;p__phase_shift&#39;,
  &#39;p__super_colatitude&#39;,
  &#39;p__super_radius&#39;,
  &#39;p__super_temperature&#39;,
@@ -1606,8 +1635,7 @@ centre of the superseding region [radians].
  &#39;p__omit_colatitude&#39;,
  &#39;p__omit_radius&#39;,
  &#39;p__omit_azimuth&#39;]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
@@ -1622,10 +1650,10 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>&#39;p&#39;
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;p&#39;
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
@@ -1640,10 +1668,10 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>The phase of the hot region, a periodic parameter [cycles]
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The phase of the hot region, a periodic parameter [cycles]
+</pre></div></div>
 </div>
 <p>Let’s set a value for the temperature of the primary hot region:</p>
 <div class="nbinput nblast docutils container">
@@ -1669,10 +1697,10 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>5.8
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+5.8
+</pre></div></div>
 </div>
 <p>No value was set explicitly for this secondary temperature: it is looked up dynamically from that of the primary hot region.</p>
 <p>Note that the following access will <em>not</em> work:</p>
@@ -1743,10 +1771,10 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
 </div>
 <p>Note that generally the <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code> instance must have a prefix that matches a prefix given to a <code class="docutils literal notranslate"><span class="pre">Signal</span></code> instance to ensure the user achieves what they intend for likelihood evaluation; when the model defines multiple data subsets and thus multiple <a class="reference internal" href="signal.html#xpsi.Signal.Signal"><span class="std std-ref">Signal</span></a> instances, tagging the objects in this manner is a safety guard (in particular against inadvertently wasting compute resources sampling a distribution conditional on an unintended model). If there is
 one <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code> and one <code class="docutils literal notranslate"><span class="pre">Signal</span></code> object, the prefixes can simply be none because there is no potential ambiguity.</p>
@@ -1779,8 +1807,9 @@ meaning an axisymmetric surface local-comoving-frame radiation field is assumed.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 mass: Gravitational mass [solar masses].
 radius: Coordinate equatorial radius [km].
@@ -1793,8 +1822,7 @@ p__super_temperature: log10(superseding region effective temperature [K]).
 s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
 s__super_colatitude: The colatitude of the centre of the superseding region [radians].
 s__super_radius: The angular radius of the (circular) superseding region [radians].
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>Note that only the free parameters are merged into a subspace higher in the object hierarchy. The reason for this is that there is not a clear and common pattern (at present) for accessing fixed/derived variables outside of the primary subspace to which they belong. If you try hard enough, of course, you can still get at them.</p>
 </div>
@@ -1829,8 +1857,9 @@ to evaluate the likelihood.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 mass: Gravitational mass [solar masses].
 radius: Coordinate equatorial radius [km].
@@ -1843,8 +1872,7 @@ p__super_temperature: log10(superseding region effective temperature [K]).
 s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
 s__super_colatitude: The colatitude of the centre of the superseding region [radians].
 s__super_radius: The angular radius of the (circular) superseding region [radians].
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
@@ -1859,10 +1887,10 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>11
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+11
+</pre></div></div>
 </div>
 <p><strong>Note that if you want to modify the definition of the model parameter space you should restart the process of constructing a</strong> <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> <strong>object, instead of manipulating existing objects, for ultimate safety.</strong> (You can also restart the kernel although if this is required it is a bug.)</p>
 <p>Let’s call the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object with the true model parameter values that we injected to generate the synthetic data rendered above, omitting background parameters. Note that you can switch the phase interpolant invoked from GSL by:</p>
@@ -1967,10 +1995,10 @@ time = 0.590 s
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>6.0
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+6.0
+</pre></div></div>
 </div>
 <p>External sampling software will interact with a <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object in this way. That is, it will pass some ordered container of parameter values: a vector. However, this vector will be ignored if the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> instance is told it can safely assume all parameters have been updated <em>externally</em>, meaning before the call is placed to <code class="docutils literal notranslate"><span class="pre">likelihood.__call__()</span></code>. This external update will typically happen during <em>nested sampling</em> when a call is placed to a <code class="docutils literal notranslate"><span class="pre">prior</span></code> object to inverse sample
 from the joint prior distribution. Our <code class="docutils literal notranslate"><span class="pre">prior</span></code> object can interact with our <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object outside of a sampling process, and thus we can encapsulate a reference to the parameter space in the <code class="docutils literal notranslate"><span class="pre">prior</span></code> instance and simply update the parameter values using easier handles (via <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> magic) to conclude an inverse sampled procedure.</p>
@@ -2253,10 +2281,10 @@ by the solid curves without markers.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>False
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+False
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
@@ -2295,10 +2323,10 @@ by the solid curves without markers.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>1
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1
+</pre></div></div>
 </div>
 <p>Given that we are not currently using the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object as a callback function passed to posterior sampling software (which parallelises efficiently using MPI), we can safely spawn additional OpenMP threads for signal integration; if likelihood evaluations are parallelised in an MPI environment on the other hand, one risks <em>losing</em> efficiency by spawning OpenMP threads for likelihood evaluation.</p>
 <p>For objects that derive from <code class="docutils literal notranslate"><span class="pre">ParameterSubspace</span></code> we can get the current parameter vector in several ways:</p>
@@ -2315,8 +2343,9 @@ by the solid curves without markers.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[1.4,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1.4,
  12.5,
  0.2,
  0.5403023058681398,
@@ -2327,8 +2356,7 @@ by the solid curves without markers.</p>
  0.025,
  2.141592653589793,
  0.2]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
@@ -2343,10 +2371,10 @@ by the solid curves without markers.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">Likelihood</span></code> subclass overrides the <code class="docutils literal notranslate"><span class="pre">__call__</span></code> dunder, however, so we have to access it in the following ways:</p>
 <div class="nbinput docutils container">
@@ -2362,10 +2390,10 @@ by the solid curves without markers.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
 </div>
 <p>Note that we did not define any other parameters other than those associated with the <code class="docutils literal notranslate"><span class="pre">star</span></code>, and thus:</p>
 <div class="nbinput docutils container">
@@ -2381,10 +2409,10 @@ by the solid curves without markers.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
 </div>
 <p>Finally, let’s play with some geometric parameters:</p>
 <div class="nbinput docutils container">
@@ -2631,10 +2659,10 @@ by the solid curves without markers.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>11
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+11
+</pre></div></div>
 </div>
 <p>We can now construct and instantiate a callable <code class="docutils literal notranslate"><span class="pre">prior</span></code> object, pass it to the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object, which stores a mutual reference to itself in <code class="docutils literal notranslate"><span class="pre">prior</span></code>. Note that if you have hyperparameters defined in the parameter subspace of <code class="docutils literal notranslate"><span class="pre">prior</span></code>, the prior needs to be passed upon instantiation of the <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> object so that the hyperparameters get merged into the global parameter space; this is not demonstrated in this tutorial.</p>
 <div class="nbinput docutils container">
@@ -2703,10 +2731,10 @@ No parameters supplied... empty subspace created.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>0.0
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.0
+</pre></div></div>
 </div>
 <p>We also defined a transform method:</p>
 <div class="nbinput docutils container">
@@ -2722,8 +2750,9 @@ No parameters supplied... empty subspace created.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[1.4,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1.4,
  12.5,
  0.2,
  0.5403023058681398,
@@ -2736,8 +2765,7 @@ No parameters supplied... empty subspace created.
  0.2,
  0.16538201343999998,
  0.525]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>The penultimate entry is the compactness ratio M/R_eq, which should have a familar magnitude. The last entry is the phase separation in cycles.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">prior.inverse_sample()</span></code> method is required by <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> to uniformly sample from the prior distribution and transform it into a posterior distribution. Let’s call the method, passing a vector of pseudorandom numbers drawn when each is drawn from a uniform distribution on the interval <span class="math notranslate nohighlight">\([0,1)\)</span>:</p>
@@ -2754,8 +2782,9 @@ No parameters supplied... empty subspace created.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[2.3341954824001987,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[2.3341954824001987,
  10.60195054536041,
  0.27819953864231406,
  0.042268943830421346,
@@ -2766,8 +2795,7 @@ No parameters supplied... empty subspace created.
  0.6039657445287777,
  2.008663413095534,
  0.4223272254536369]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>In principle, inverse sampling from the prior can be used to initialise the ensemble of walkers evolved by <a class="reference external" href="http://emcee.readthedocs.io/en/latest/">emcee</a>.</p>
 </div>
@@ -3577,8 +3605,9 @@ env: GSL_RNG_SEED=0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[92]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 mass: Gravitational mass [solar masses].
 radius: Coordinate equatorial radius [km].
@@ -3592,8 +3621,7 @@ s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
 s__super_colatitude: The colatitude of the centre of the superseding region [radians].
 s__super_radius: The angular radius of the (circular) superseding region [radians].
 NICER__powerlaw_index: Powerlaw spectral index.
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[93]:
@@ -3662,10 +3690,10 @@ Background normalisation: 1.89132777e-05
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[95]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
 </div>
 <p>The output should be <code class="docutils literal notranslate"><span class="pre">False</span></code> if there is no difference in the expectations of the Poisson-distribution random variables, as was the case for <code class="docutils literal notranslate"><span class="pre">xpsi.__version__</span> <span class="pre">&lt;=</span> <span class="pre">v0.5</span></code>. Now however, because of slight tweaks to the signal integrators, small differences manifest, especially when hot region visibility gets truncated at the stellar limb. The major cause of this difference is because we swap to the Akima Periodic splines phase interpolants from GSL. Previously we invoked the non-periodic Steffen
 spline interpolants (the important feature for comparison being that minima and maxima in the interpolant can only occur at spline nodes), also from GSL. The aim in doing this is to increase accuracy near the signal maxima and minima, whilst potentially sacrificing some accuracy when interpolating a curve that is truncated at zero due to a radiating element going out of visibility, or in the context of an extended radiating region, that region going fully out of visibility.</p>
@@ -3892,10 +3920,10 @@ Background normalisation: 1.89127971e-05
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[107]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>False
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+False
+</pre></div></div>
 </div>
 </div>
 </div>
@@ -3910,29 +3938,29 @@ Background normalisation: 1.89127971e-05
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="multiple_instruments.html" class="btn btn-neutral float-right" title="Instrument synergy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="acknowledgements.html" class="btn btn-neutral float-left" title="Acknowledgements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="multiple_instruments.html" class="btn btn-neutral float-right" title="Instrument synergy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="acknowledgements.html" class="btn btn-neutral float-left" title="Acknowledgements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
+        &#169; Copyright 2019, 2020, 2021 Thomas E. Riley.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -3940,7 +3968,6 @@ Background normalisation: 1.89127971e-05
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

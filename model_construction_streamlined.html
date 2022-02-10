@@ -1,23 +1,31 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Modeling (without statistics) &mdash; xpsi 0.7.9 documentation</title>
+  <title>Modeling (without statistics) &mdash; xpsi 0.7.10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
 
   
   
-  
+
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,10 +40,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Multiple imaging" href="multiple_imaging.html" />
@@ -80,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -164,6 +169,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -198,18 +204,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Modeling (without statistics)</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/model_construction_streamlined.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -228,16 +236,16 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
     background: none;
     border: none;
     padding: 0 0;
@@ -246,13 +254,13 @@ div.nboutput div[class*=highlight] pre {
 }
 
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -260,92 +268,91 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
+div.nbinput.container div.prompt pre {
     color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
+div.nboutput.container div.prompt pre {
     color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
     min-width: 5ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
+    padding-top: 0.3rem;
+    padding-right: 0.3rem;
     text-align: right;
     flex: 0;
 }
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
+div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
     background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
 /* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput div.math p {
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -389,6 +396,27 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 0.3rem;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
 /* Some additional styling taken form the Jupyter notebook CSS */
 div.rendered_html table {
   border: none;
@@ -426,13 +454,13 @@ div.rendered_html tbody tr:hover {
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
@@ -593,10 +621,10 @@ Cosine of Earth inclination to rotation axis.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>xpsi.Spacetime.Spacetime
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+xpsi.Spacetime.Spacetime
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -764,10 +792,10 @@ appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</s
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>xpsi.HotRegion.HotRegion
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+xpsi.HotRegion.HotRegion
+</pre></div></div>
 </div>
 <p>The names can also be found as class attributes as follows (refer to the <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion"><span class="std std-ref">HotRegion</span></a> class docstring and <a class="reference internal" href="applications.html"><span class="doc">Riley et al.&nbsp;(2019)</span></a> for the meaning of <em>super</em>):</p>
 <div class="nbinput docutils container">
@@ -783,13 +811,13 @@ appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</s
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[&#39;super_colatitude&#39;,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;super_colatitude&#39;,
  &#39;super_radius&#39;,
  &#39;phase_shift&#39;,
  &#39;super_temperature (if no custom specification)&#39;]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>The condition <em>if no custom specification</em> means that this name is required if we do not supply custom parameters for the radiation field in the superseding member of the hot region. If we supply custom parameters, we also need to subclass <code class="docutils literal notranslate"><span class="pre">xpsi.HotRegion</span></code> and overwrite the <code class="docutils literal notranslate"><span class="pre">__compute_cellParamVecs</span></code> method to handle our parameters.</p>
 <div class="nbinput docutils container">
@@ -805,16 +833,16 @@ appropriate <code class="docutils literal notranslate"><span class="pre">.pxd</s
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[&#39;omit_colatitude&#39;,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;omit_colatitude&#39;,
  &#39;omit_radius&#39;,
  &#39;omit_azimuth&#39;,
  &#39;cede_colatitude&#39;,
  &#39;cede_radius&#39;,
  &#39;cede_azimuth&#39;,
  &#39;cede_temperature&#39;]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>For the purpose of illustration, we <em>tie</em> the temperatures of the hot regions together. There is more than one way to achieve this, but we will use the most powerful approach.</p>
 <div class="nbinput docutils container">
@@ -886,10 +914,10 @@ Creating parameter:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>xpsi.Parameter.Derive
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+xpsi.Parameter.Derive
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -988,8 +1016,9 @@ colatitude of the centre of the superseding region. The azimuths are <em>relativ
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 p__phase_shift: The phase of the hot region, a periodic parameter [cycles].
 p__super_colatitude: The colatitude of the centre of the superseding region [radians].
@@ -1006,8 +1035,7 @@ p__omit_colatitude: The colatitude of the centre of the omission region [radians
 p__omit_radius: The angular radius of the (circular) omission region [radians].
 p__omit_azimuth: The azimuth of the centre of the omission region relative to the
 centre of the superseding region [radians].
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
@@ -1022,8 +1050,9 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
 s__super_colatitude: The colatitude of the centre of the superseding region [radians].
@@ -1040,8 +1069,7 @@ s__omit_colatitude: The colatitude of the centre of the omission region [radians
 s__omit_radius: The angular radius of the (circular) omission region [radians].
 s__omit_azimuth: The azimuth of the centre of the omission region relative to the
 centre of the superseding region [radians].
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>A list of names, with the prefix, can also be accessed as follows:</p>
 <div class="nbinput docutils container">
@@ -1058,8 +1086,9 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[&#39;p__phase_shift&#39;,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;p__phase_shift&#39;,
  &#39;p__super_colatitude&#39;,
  &#39;p__super_radius&#39;,
  &#39;p__super_temperature&#39;,
@@ -1069,8 +1098,7 @@ centre of the superseding region [radians].
  &#39;p__omit_colatitude&#39;,
  &#39;p__omit_radius&#39;,
  &#39;p__omit_azimuth&#39;]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -1085,10 +1113,10 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>&#39;p&#39;
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;p&#39;
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
@@ -1103,10 +1131,10 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>The phase of the hot region, a periodic parameter [cycles]
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The phase of the hot region, a periodic parameter [cycles]
+</pre></div></div>
 </div>
 <p>Let’s set a value for the temperature of the primary hot region:</p>
 <div class="nbinput nblast docutils container">
@@ -1132,10 +1160,10 @@ centre of the superseding region [radians].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>5.8
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+5.8
+</pre></div></div>
 </div>
 <p>No value was set explicitly for this secondary temperature: it is looked up dynamically from that of the primary hot region.</p>
 <p>Note that the following access will <em>not</em> work:</p>
@@ -1209,10 +1237,10 @@ photosphere that is assumed to generate the pulsed signal [Hz].
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
 </div>
 <p>We do not model the surface radiation field <em>elsewhere</em>, and we thus leave the <code class="docutils literal notranslate"><span class="pre">elsewhere</span></code> keyword as <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default). <em>Elsewhere</em> means on the surface, exterior to radiating hot regions that are typically expected to span a smaller angular extent; in the current version, the radiation from <em>elsewhere</em>, if explicitly computed is assumed to be time-invariant supposing the hot regions were not present. To account for radiation from <em>elsewhere</em>, a time-invariant signal is first computed,
 meaning an axisymmetric surface local-comoving-frame radiation field is assumed. The time-dependent signals from the hot regions are then computed, and modified by subtracting the specific intensity that would otherwise be generated by the surface local-comoving-frame radiation field from <em>elsewhere</em> (i.e., in place of the hot regions).</p>
@@ -1243,8 +1271,9 @@ meaning an axisymmetric surface local-comoving-frame radiation field is assumed.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 mass: Gravitational mass [solar masses].
 radius: Coordinate equatorial radius [km].
@@ -1257,8 +1286,7 @@ p__super_temperature: log10(superseding region effective temperature [K]).
 s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
 s__super_colatitude: The colatitude of the centre of the superseding region [radians].
 s__super_radius: The angular radius of the (circular) superseding region [radians].
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>Note that only the free parameters are merged into a subspace higher in the object hierarchy. The reason for this is that there is not a clear and common pattern (at present) for accessing fixed/derived variables outside of the primary subspace to which they belong. If you try hard enough, of course, you can still get at them.</p>
 <div class="nbinput docutils container">
@@ -1274,10 +1302,10 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>11
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+11
+</pre></div></div>
 </div>
 <p>Let’s specify a parameter vector to the <code class="docutils literal notranslate"><span class="pre">star</span></code> subspace with the true model parameter values that we injected to generate the synthetic data rendered above:</p>
 <div class="nbinput nblast docutils container">
@@ -1315,8 +1343,9 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[Gravitational mass [solar masses] = 1.400e+00,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[Gravitational mass [solar masses] = 1.400e+00,
  Coordinate equatorial radius [km] = 1.250e+01,
  Earth distance [kpc] = 2.000e-01,
  Cosine of Earth inclination to rotation axis = 3.153e-01,
@@ -1327,8 +1356,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
  The phase of the hot region, a periodic parameter [cycles] = 2.500e-02,
  The colatitude of the centre of the superseding region [radians] = 2.142e+00,
  The angular radius of the (circular) superseding region [radians] = 2.000e-01]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>If the secondary temperature was free, we would extend the vector <code class="docutils literal notranslate"><span class="pre">p</span></code> by one element, passing the injected value of <code class="docutils literal notranslate"><span class="pre">6.0</span></code>:</p>
 <div class="nbinput docutils container">
@@ -1344,10 +1372,10 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>6.0
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+6.0
+</pre></div></div>
 </div>
 </div>
 <div class="section" id="Inspecting-functionality">
@@ -1662,8 +1690,9 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[1.4,
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1.4,
  12.5,
  0.2,
  0.5403023058681398,
@@ -1674,8 +1703,7 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
  0.025,
  2.141592653589793,
  0.2]
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
@@ -1690,10 +1718,10 @@ s__super_radius: The angular radius of the (circular) superseding region [radian
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
 </div>
 <p>Finally, let’s play with some geometric parameters:</p>
 <div class="nbinput docutils container">
@@ -2002,29 +2030,29 @@ Star imaged.
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="multiple_imaging.html" class="btn btn-neutral float-right" title="Multiple imaging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="surface_radiation_field_checking_tools_tutorial.html" class="btn btn-neutral float-left" title="Surface radiation field tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="multiple_imaging.html" class="btn btn-neutral float-right" title="Multiple imaging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="surface_radiation_field_checking_tools_tutorial.html" class="btn btn-neutral float-left" title="Surface radiation field tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
+        &#169; Copyright 2019, 2020, 2021 Thomas E. Riley.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -2032,7 +2060,6 @@ Star imaged.
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

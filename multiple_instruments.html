@@ -1,23 +1,31 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Instrument synergy &mdash; xpsi 0.7.9 documentation</title>
+  <title>Instrument synergy &mdash; xpsi 0.7.10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
 
   
   
-  
+
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,10 +40,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Hot region complexity" href="hotregion_complexity.html" />
@@ -80,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -168,6 +173,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -202,18 +208,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Instrument synergy</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/multiple_instruments.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -232,16 +240,16 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
     background: none;
     border: none;
     padding: 0 0;
@@ -250,13 +258,13 @@ div.nboutput div[class*=highlight] pre {
 }
 
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -264,92 +272,91 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
+div.nbinput.container div.prompt pre {
     color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
+div.nboutput.container div.prompt pre {
     color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
     min-width: 5ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
+    padding-top: 0.3rem;
+    padding-right: 0.3rem;
     text-align: right;
     flex: 0;
 }
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
+div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
     background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
 /* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput div.math p {
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -393,6 +400,27 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 0.3rem;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
 /* Some additional styling taken form the Jupyter notebook CSS */
 div.rendered_html table {
   border: none;
@@ -430,13 +458,13 @@ div.rendered_html tbody tr:hover {
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
@@ -916,7 +944,7 @@ No parameters supplied... empty subspace created.
         <span class="bp">self</span><span class="o">.</span><span class="n">_support</span> <span class="o">=</span> <span class="n">obj</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loglikelihood</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_signal</span> <span class="o">=</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">loglikelihood</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_signal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_given_support</span> <span class="o">=</span> \
                 <span class="n">eval_marginal_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">phases</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">counts</span><span class="p">,</span>
@@ -1280,10 +1308,10 @@ ll = -29322.44228096; time = 0.576
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-26713.601245249793
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-26713.601245249793
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
@@ -1298,10 +1326,10 @@ ll = -29322.44228096; time = 0.576
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-2608.8410357102134
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-2608.8410357102134
+</pre></div></div>
 </div>
 <p>Let’s fabricate some rough prior information as the constrained support of the background parameters for XMM:</p>
 <div class="nbinput nblast docutils container">
@@ -1348,10 +1376,10 @@ ll = -29322.44228096; time = 0.576
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-2610.1216087603784
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-2610.1216087603784
+</pre></div></div>
 </div>
 <p>The background-marginalised likelihood function has the following form. Subscripts N denote NICER, whilst subscripts X denote XMM.</p>
 <div class="math notranslate nohighlight">
@@ -1449,10 +1477,10 @@ simplifying approximation to the probability of the background data <span class=
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-391383.38618038653
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-391383.38618038653
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
@@ -1467,10 +1495,10 @@ simplifying approximation to the probability of the background data <span class=
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>-321117.01604620664
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-321117.01604620664
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
@@ -1795,8 +1823,9 @@ env: GSL_RNG_SEED=0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 mass: Gravitational mass [solar masses].
 radius: Coordinate equatorial radius [km].
@@ -1810,8 +1839,7 @@ s__phase_shift: The phase of the hot region, a periodic parameter [cycles].
 s__super_colatitude: The colatitude of the centre of the superseding region [radians].
 s__super_radius: The angular radius of the (circular) superseding region [radians].
 powerlaw_index: Powerlaw spectral index.
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
@@ -1891,10 +1919,10 @@ Background normalisation: 2.21412629e-04
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[97]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[98]:
@@ -1910,10 +1938,10 @@ Background normalisation: 2.21412629e-04
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[98]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
 </div>
 <p>As discussed in the <code class="docutils literal notranslate"><span class="pre">Modeling</span></code> tutorial, with <code class="docutils literal notranslate"><span class="pre">xpsi.__version__</span></code> of <code class="docutils literal notranslate"><span class="pre">v0.6</span></code>, the same RNG seed does not yield the same (<span class="math notranslate nohighlight">\(\pm1\)</span>) count numbers, despite the small fractional difference between Poisson random variable expectations, for reasons that are unclear at present.</p>
 <div class="nbinput nblast docutils container">
@@ -1996,29 +2024,29 @@ Background normalisation: 2.21412629e-04
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hotregion_complexity.html" class="btn btn-neutral float-right" title="Hot region complexity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="model_construction.html" class="btn btn-neutral float-left" title="Modeling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="hotregion_complexity.html" class="btn btn-neutral float-right" title="Hot region complexity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="model_construction.html" class="btn btn-neutral float-left" title="Modeling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
+        &#169; Copyright 2019, 2020, 2021 Thomas E. Riley.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -2026,7 +2054,6 @@ Background normalisation: 2.21412629e-04
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

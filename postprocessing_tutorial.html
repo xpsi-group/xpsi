@@ -1,23 +1,31 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Post-processing &mdash; xpsi 0.7.9 documentation</title>
+  <title>Post-processing &mdash; xpsi 0.7.10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
 
   
   
-  
+
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,10 +40,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Example script and modules" href="example_script.html" />
@@ -80,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -163,6 +168,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -197,18 +203,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Post-processing</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/postprocessing_tutorial.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -227,16 +235,16 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
     background: none;
     border: none;
     padding: 0 0;
@@ -245,13 +253,13 @@ div.nboutput div[class*=highlight] pre {
 }
 
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -259,92 +267,91 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
+div.nbinput.container div.prompt pre {
     color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
+div.nboutput.container div.prompt pre {
     color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
     min-width: 5ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
+    padding-top: 0.3rem;
+    padding-right: 0.3rem;
     text-align: right;
     flex: 0;
 }
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
+div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
     background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
 /* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput div.math p {
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -388,6 +395,27 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 0.3rem;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
 /* Some additional styling taken form the Jupyter notebook CSS */
 div.rendered_html table {
   border: none;
@@ -425,13 +453,13 @@ div.rendered_html tbody tr:hover {
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
@@ -544,8 +572,9 @@ from ST_PST_modules import main as ST_PST
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 mass: Gravitational mass [solar masses].
 radius: Coordinate equatorial radius [km].
@@ -563,8 +592,7 @@ alpha: alpha.
 beta: beta.
 gamma: gamma.
 column_density: Units of 10^20 cm^-2.
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>We want to invoke the post-processing module. First we need to load run sets, including metadata:</p>
 <div class="nbinput nblast docutils container">
@@ -651,8 +679,9 @@ column_density: Units of 10^20 cm^-2.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>Free parameters
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Free parameters
 ---------------
 mass: Gravitational mass [solar masses].
 radius: Coordinate equatorial radius [km].
@@ -674,8 +703,7 @@ alpha: alpha.
 beta: beta.
 gamma: gamma.
 column_density: Units of 10^20 cm^-2.
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -1820,11 +1848,11 @@ Run set curated.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>{&#39;ST+PST.ST+PST&#39;: [-36367.19516498342, -36366.65975840585, -36366.03664145086],
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;ST+PST.ST+PST&#39;: [-36367.19516498342, -36366.65975840585, -36366.03664145086],
  &#39;ST-U.run 1&#39;: [-36378.113585862426, -36377.557340195526, -36376.99624703233]}
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 <p>We can estimate the global KL-divergence and simulate the error for each model:</p>
 <div class="nbinput docutils container">
@@ -1840,11 +1868,11 @@ Run set curated.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>{&#39;ST+PST.ST+PST&#39;: [68.10142802456878, 68.93373033859666, 69.87495962878252],
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;ST+PST.ST+PST&#39;: [68.10142802456878, 68.93373033859666, 69.87495962878252],
  &#39;ST-U.run 1&#39;: [62.85009300482493, 63.63732652113097, 64.46479567041214]}
-</pre></div>
-</div>
+</pre></div></div>
 </div>
 </div>
 <div class="section" id="Conditional-posterior-signal-plotting">
@@ -2914,29 +2942,29 @@ Plotted signals for posterior checking.
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="example_script.html" class="btn btn-neutral float-right" title="Example script and modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="multiple_imaging.html" class="btn btn-neutral float-left" title="Multiple imaging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="example_script.html" class="btn btn-neutral float-right" title="Example script and modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="multiple_imaging.html" class="btn btn-neutral float-left" title="Multiple imaging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, 2020, 2021 Thomas E. Riley
+        &#169; Copyright 2019, 2020, 2021 Thomas E. Riley.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -2944,7 +2972,6 @@ Plotted signals for posterior checking.
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
