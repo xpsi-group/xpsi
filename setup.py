@@ -209,7 +209,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.7.9',
+        version = '0.7.10',
         author = 'Thomas Edward Riley',
         author_email = 't.e.riley@uva.nl; t.riley.phd@gmail.com',
         url = 'https://github.com/ThomasEdwardRiley/xpsi',
