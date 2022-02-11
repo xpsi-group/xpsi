@@ -58,8 +58,13 @@ exposure_time_IXPE = 1.0
 
 
 from ixpe_read import readData_pcube
+from ixpe_read import readData_pcube_combined
+
 fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du1"
-phase_IXPE, Idat, qn, un, Iderr_du1, qnerr_du1, unerr_du1, keVdat = readData_pcube(fname)
+fname_alldu = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct"
+#phase_IXPE, Idat, qn, un, Iderr_du1, qnerr_du1, unerr_du1, keVdat = readData_pcube(fname)
+phase_IXPE, Idat, qn, un, Iderr_du1, qnerr_du1, unerr_du1, keVdat = readData_pcube_combined(fname_alldu)
+
 
 IXPE_du1_I.data = xpsi.Data(Idat,
                        channels=np.arange(minCH_IXPE, maxCH_IXPE),
@@ -85,60 +90,64 @@ IXPE_du1_U.data = xpsi.Data(un,
 #Consider also defining this errors property in a CustomData or directly in Data.py
 IXPE_du1_I.data.errors, IXPE_du1_Q.data.errors, IXPE_du1_U.data.errors = Iderr_du1, qnerr_du1, unerr_du1
 
-fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du2"
-phase_IXPE, Idat, qn, un, Iderr_du2, qnerr_du2, unerr_du2, keVdat = readData_pcube(fname)
 
-#print(Idat.shape[0],Idat.shape[1])
-#exit()
+skip_rest = True #False
 
-IXPE_du2_I.data = xpsi.Data(Idat,
-                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
-                       phases=phase_IXPE,
-                       first=0,
-                       last=maxCH_IXPE-minCH_IXPE-1,
-                       exposure_time=exposure_time_IXPE)
+if not skip_rest:
+	fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du2"
+	phase_IXPE, Idat, qn, un, Iderr_du2, qnerr_du2, unerr_du2, keVdat = readData_pcube(fname)
 
-IXPE_du2_Q.data = xpsi.Data(qn,
-                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
-                       phases=phase_IXPE,
-                       first=0,
-                       last=maxCH_IXPE-minCH_IXPE-1,
-                       exposure_time=exposure_time_IXPE)
-                       
-IXPE_du2_U.data = xpsi.Data(un,
-                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
-                       phases=phase_IXPE,
-                       first=0,
-                       last=maxCH_IXPE-minCH_IXPE-1,
-                       exposure_time=exposure_time_IXPE)  
+	#print(Idat.shape[0],Idat.shape[1])
+	#exit()
 
-IXPE_du2_I.data.errors, IXPE_du2_Q.data.errors, IXPE_du2_U.data.errors = Iderr_du2, qnerr_du2, unerr_du2
-                       
-fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du3"
-phase_IXPE, Idat, qn, un, Iderr_du3, qnerr_du3, unerr_du3, keVdat = readData_pcube(fname)
+	IXPE_du2_I.data = xpsi.Data(Idat,
+		               channels=np.arange(minCH_IXPE, maxCH_IXPE),
+		               phases=phase_IXPE,
+		               first=0,
+		               last=maxCH_IXPE-minCH_IXPE-1,
+		               exposure_time=exposure_time_IXPE)
 
-IXPE_du3_I.data = xpsi.Data(Idat,
-                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
-                       phases=phase_IXPE,
-                       first=0,
-                       last=maxCH_IXPE-minCH_IXPE-1,
-                       exposure_time=exposure_time_IXPE)
+	IXPE_du2_Q.data = xpsi.Data(qn,
+		               channels=np.arange(minCH_IXPE, maxCH_IXPE),
+		               phases=phase_IXPE,
+		               first=0,
+		               last=maxCH_IXPE-minCH_IXPE-1,
+		               exposure_time=exposure_time_IXPE)
+		               
+	IXPE_du2_U.data = xpsi.Data(un,
+		               channels=np.arange(minCH_IXPE, maxCH_IXPE),
+		               phases=phase_IXPE,
+		               first=0,
+		               last=maxCH_IXPE-minCH_IXPE-1,
+		               exposure_time=exposure_time_IXPE)  
 
-IXPE_du3_Q.data = xpsi.Data(qn,
-                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
-                       phases=phase_IXPE,
-                       first=0,
-                       last=maxCH_IXPE-minCH_IXPE-1,
-                       exposure_time=exposure_time_IXPE)
-                       
-IXPE_du3_U.data = xpsi.Data(un,
-                       channels=np.arange(minCH_IXPE, maxCH_IXPE),
-                       phases=phase_IXPE,
-                       first=0,
-                       last=maxCH_IXPE-minCH_IXPE-1,
-                       exposure_time=exposure_time_IXPE)  
+	IXPE_du2_I.data.errors, IXPE_du2_Q.data.errors, IXPE_du2_U.data.errors = Iderr_du2, qnerr_du2, unerr_du2
+		               
+	fname = "/home/tuomo/polcslab/X-PATAP/x-patap/ad_new_simulations/toy_amsp_hotspot_direct_du3"
+	phase_IXPE, Idat, qn, un, Iderr_du3, qnerr_du3, unerr_du3, keVdat = readData_pcube(fname)
 
-IXPE_du3_I.data.errors, IXPE_du3_Q.data.errors, IXPE_du3_U.data.errors = Iderr_du3, qnerr_du3, unerr_du3
+	IXPE_du3_I.data = xpsi.Data(Idat,
+		               channels=np.arange(minCH_IXPE, maxCH_IXPE),
+		               phases=phase_IXPE,
+		               first=0,
+		               last=maxCH_IXPE-minCH_IXPE-1,
+		               exposure_time=exposure_time_IXPE)
+
+	IXPE_du3_Q.data = xpsi.Data(qn,
+		               channels=np.arange(minCH_IXPE, maxCH_IXPE),
+		               phases=phase_IXPE,
+		               first=0,
+		               last=maxCH_IXPE-minCH_IXPE-1,
+		               exposure_time=exposure_time_IXPE)
+		               
+	IXPE_du3_U.data = xpsi.Data(un,
+		               channels=np.arange(minCH_IXPE, maxCH_IXPE),
+		               phases=phase_IXPE,
+		               first=0,
+		               last=maxCH_IXPE-minCH_IXPE-1,
+		               exposure_time=exposure_time_IXPE)  
+
+	IXPE_du3_I.data.errors, IXPE_du3_Q.data.errors, IXPE_du3_U.data.errors = Iderr_du3, qnerr_du3, unerr_du3
 
 rcParams['text.usetex'] = False
 rcParams['font.size'] = 14.0
@@ -643,24 +652,22 @@ signalQ_du1 = CustomSignal_poisson(data = IXPE_du1_Q.data,
                         support = None,
                         stokes="Qn")
 
-signals[0].append(signalQ_du1)                        
- 
-skip_rest = False
+signals[0].append(signalQ_du1)    
 
-if not skip_rest: 
-		                
-	signalU_du1 = CustomSignal_poisson(data = IXPE_du1_U.data, 
-		                instrument = IXPE_du1, 
-		                background = background, 
-		                interstellar = None,
-		                workspace_intervals = 1000,
-		                cache = True,
-		                epsrel = 1.0e-8,
-		                epsilon = 1.0e-3,
-		                sigmas = 10.0,
-		                support = None,
-		                stokes="Un")                        
-	signals[0].append(signalU_du1)                        
+signalU_du1 = CustomSignal_poisson(data = IXPE_du1_U.data, 
+	                instrument = IXPE_du1, 
+	                background = background, 
+	                interstellar = None,
+	                workspace_intervals = 1000,
+	                cache = True,
+	                epsrel = 1.0e-8,
+	                epsilon = 1.0e-3,
+	                sigmas = 10.0,
+	                support = None,
+	                stokes="Un")                        
+signals[0].append(signalU_du1)                    
+
+if not skip_rest:                        
 		                
 
 	if include_I:
@@ -771,7 +778,7 @@ bounds = dict(super_colatitude = (None, None),
               phase_shift = (-0.25, 0.75))
 
 deg2rad = np.pi/180.0
-tempkeV = 1.0
+tempkeV = 1.0219978 #1.0
 tempK = np.log10(tempkeV*11604525.00617)
 print("tempK=",tempK)
 values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
@@ -1011,7 +1018,7 @@ t = time.time()
 # source code changes since model was applied, so let's be a
 # bit lenient when checking the likelihood function
 
-true_logl = -2.78330361e+02
+true_logl = -1.08165212e+02
 
 likelihood.check(None, [true_logl], 1.0e-6,
                  physical_points=[p])
@@ -1039,6 +1046,8 @@ print("likelihood.params=",likelihood.params)
 #maxL only from Q from du1: -7.10196587e+01, same for correct_vector: -7.69526115e+01
 #After correction: -7.05020287e+01 and -4.58872728e+01
 #After correction for all Qn and Un with all dus: -2.78330361e+02
+#As above but using combined IXPE data and du1 response: -1.08165212e+02 (and if including I: -6.70449678e+10)
+#As above du2 -1.08166910e+02 and with du3 -1.08165956e+02 (not including I)
 
 #print("signal I (primary):")
 #print(signals[0][0].signals[0])
@@ -1050,41 +1059,46 @@ print("likelihood.params=",likelihood.params)
 
 def plot_pulse_stokes():
     """ Plot hot region signals before and after telescope operation. """
-    fig = plt.figure(figsize=(7,7))
-    ax = fig.add_subplot(111)
-
-    ax.set_ylabel('Signal [arbitrary normalisation]')
-    ax.set_xlabel('Phase [cycles]')
-
-    #print("photosphere.signalI:")
-    #print(np.sum(photosphere.signal[0][0], axis=0))
-
-    temp = np.sum(signals[0][0].signals[0], axis=0)
-    I1s = temp
-    ax.plot(signals[0][0].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
-    if two_spots:
-        temp = np.sum(signals[0][0].signals[1], axis=0)    
-        I2s = temp
-        ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
     
     temp = np.sum(photosphere.signal[0][0], axis=0)
-    I1p = temp
-    ax.plot(signals[0][0].phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
-    if two_spots:
-        temp = np.sum(photosphere.signal[1][0], axis=0)    
-        I2p = temp
-        ax.plot(signals[0][0].phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
+    I1p = temp    
+    
+    if include_I:
+	    fig = plt.figure(figsize=(7,7))
+	    ax = fig.add_subplot(111)
 
-    temp = np.sum(signals[0][0].expected_counts, axis=0)
-    Iexpect = temp
-    data_phases = np.linspace(0.0, 1.0, 10) #(0.0, 1.0, 33)
-    #ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
-    ax.plot(data_phases[0:9], temp/np.max(temp), '--', color='k', lw=0.5)    
+	    ax.set_ylabel('Signal [arbitrary normalisation]')
+	    ax.set_xlabel('Phase [cycles]')
 
-    ax.errorbar(IXPE_du1_I.data.phases, IXPE_du1_I.data.counts[0]/(np.max(IXPE_du1_I.data.counts[0])), yerr=IXPE_du1_I.data.errors[0]/(np.max(IXPE_du1_I.data.counts[0])), xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)
+	    #print("photosphere.signalI:")
+	    #print(np.sum(photosphere.signal[0][0], axis=0))
 
-    #veneer((0.05,0.2), (0.05,0.2), ax)
-    fig.savefig("figs/signalsIX.pdf")
+	    temp = np.sum(signals[0][0].signals[0], axis=0)
+	    I1s = temp
+	    ax.plot(signals[0][0].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
+	    if two_spots:
+		temp = np.sum(signals[0][0].signals[1], axis=0)    
+		I2s = temp
+		ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+	    
+	    temp = np.sum(photosphere.signal[0][0], axis=0)
+	    I1p = temp
+	    ax.plot(signals[0][0].phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+	    if two_spots:
+		temp = np.sum(photosphere.signal[1][0], axis=0)    
+		I2p = temp
+		ax.plot(signals[0][0].phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
+
+	    temp = np.sum(signals[0][0].expected_counts, axis=0)
+	    Iexpect = temp
+	    data_phases = np.linspace(0.0, 1.0, 10) #(0.0, 1.0, 10) #(0.0, 1.0, 33)
+	    #ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
+	    ax.plot(data_phases[0:9], Iexpect/np.max(Iexpect), '--', color='k', lw=0.5)    
+
+	    ax.errorbar(IXPE_du1_I.data.phases, IXPE_du1_I.data.counts[0]/(np.max(IXPE_du1_I.data.counts[0])), yerr=IXPE_du1_I.data.errors[0]/(np.max(IXPE_du1_I.data.counts[0])), xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)
+
+	    #veneer((0.05,0.2), (0.05,0.2), ax)
+	    fig.savefig("figs/signalsIX.pdf")
     
     fig = plt.figure(figsize=(7,7))
     ax = fig.add_subplot(111)
@@ -1092,7 +1106,11 @@ def plot_pulse_stokes():
     ax.set_ylabel('Q/I')
     ax.set_xlabel('Phase [cycles]')
 
-    Q1s = np.sum(signals[0][1].signals[0], axis=0)
+    if include_I:
+    	ist=1
+    else:
+        ist=0
+    Q1s = np.sum(signals[0][ist].signals[0], axis=0)
     Q1sn = np.copy(Q1s) 
     #Normalized now already in Signal.py depending on the Signal type definition
     #for ip in range(len(Q1sn)):
@@ -1100,17 +1118,17 @@ def plot_pulse_stokes():
     #		Q1sn[ip] = Q1s[ip]/I1s[ip]
     #	else:
     #		Q1sn[ip] = 0.0
-    ax.plot(signals[0][1].phases[0], Q1sn, '-', color='k', lw=0.5)
+    ax.plot(signals[0][ist].phases[0], Q1sn, '-', color='k', lw=0.5)
     
     if two_spots:
-        Q2s = np.sum(signals[0][1].signals[1], axis=0)    
+        Q2s = np.sum(signals[0][ist].signals[1], axis=0)    
         Q2sn = np.copy(Q2s)
         #for ip in range(len(Q2sn)):
         #    if(I2s[ip] > 1e-10):
         #        Q2sn[ip] = Q2s[ip]/I2s[ip]
         #    else:
         #        Q2sn[ip] = 0.0
-        ax.plot(signals[0][1].phases[1], Q2sn, '-', color='r', lw=0.5)
+        ax.plot(signals[0][ist].phases[1], Q2sn, '-', color='r', lw=0.5)
     
     Q1p = np.sum(photosphere.signalQ[0][0], axis=0)
     Q1pn = np.copy(Q1p)
@@ -1131,7 +1149,7 @@ def plot_pulse_stokes():
                 Q2pn[ip] = 0.0
         ax.plot(signalQ_du1.phases[1], Q2pn, 'o-', color='r', lw=0.5, markersize=2)   
     
-    Qexpect = signals[0][1].expected_counts #np.sum(signals[0][1].expected_counts, axis=0)
+    Qexpect = signals[0][ist].expected_counts
     data_phases = np.linspace(0.0, 1.0, 10)
     Qexpectn = np.copy(Qexpect)
     #for ip in range(len(Qexpectn)):
@@ -1144,7 +1162,8 @@ def plot_pulse_stokes():
         
     ax.errorbar(IXPE_du1_Q.data.phases, IXPE_du1_Q.data.counts[0], yerr=IXPE_du1_Q.data.errors[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)       
         
-    veneer((0.05,0.2), (0.05,0.2), ax)
+    #veneer((0.05,0.2), (0.05,0.2), ax)
+    ax.set_ylim(-0.08,0.02)
     fig.savefig("figs/signalsQX.pdf")
     
     fig = plt.figure(figsize=(7,7))
@@ -1153,24 +1172,24 @@ def plot_pulse_stokes():
     ax.set_ylabel('U/I')
     ax.set_xlabel('Phase [cycles]')
 
-    U1s = np.sum(signals[0][2].signals[0], axis=0)
+    U1s = np.sum(signals[0][ist+1].signals[0], axis=0)
     U1sn = np.copy(U1s)
     #for ip in range(len(U1sn)):
     #	if(I1s[ip] > 1e-10):
     #		U1sn[ip] = U1s[ip]/I1s[ip]
     #	else:
     #		U1sn[ip] = 0.0
-    ax.plot(signals[0][2].phases[0], U1sn, '-', color='k', lw=0.5)
+    ax.plot(signals[0][ist+1].phases[0], U1sn, '-', color='k', lw=0.5)
 
     if two_spots:
-        U2s = np.sum(signals[0][2].signals[1], axis=0)    
+        U2s = np.sum(signals[0][ist+1].signals[1], axis=0)    
         U2sn = np.copy(U2s)
         #for ip in range(len(U2sn)):
         #    if(I2s[ip] > 1e-10):
         #        U2sn[ip] = U2s[ip]/I2s[ip]
         #    else:
         #        U2sn[ip] = 0.0
-        ax.plot(signals[0][2].phases[1], U2sn, '-', color='r', lw=0.5)
+        ax.plot(signals[0][ist+1].phases[1], U2sn, '-', color='r', lw=0.5)
     
     U1p = np.sum(photosphere.signalU[0][0], axis=0)
     U1pn = np.copy(U1p)
@@ -1191,7 +1210,7 @@ def plot_pulse_stokes():
                 U2pn[ip] = 0.0
         ax.plot(signalU_du1.phases[1], U2pn, 'o-', color='r', lw=0.5, markersize=2)   
     
-    Uexpect = signals[0][2].expected_counts #np.sum(signals[0][2].expected_counts, axis=0)
+    Uexpect = signals[0][ist+1].expected_counts #np.sum(signals[0][2].expected_counts, axis=0)
     data_phases = np.linspace(0.0, 1.0, 10)
     Uexpectn = np.copy(Uexpect)
     #for ip in range(len(Uexpectn)):
@@ -1206,7 +1225,8 @@ def plot_pulse_stokes():
 
     ax.errorbar(IXPE_du1_U.data.phases, IXPE_du1_U.data.counts[0], yerr=IXPE_du1_U.data.errors[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)  
 
-    veneer((0.05,0.2), (0.05,0.2), ax)
+    #veneer((0.05,0.2), (0.05,0.2), ax)
+    ax.set_ylim(-0.04,0.05)   
     fig.savefig("figs/signalsUX.pdf")       
     
 def plot_pulse():
@@ -1234,8 +1254,8 @@ def plot_pulse():
 likelihood(p, reinitialise=False)
 
 #plotting works correctly only if including I at the moment.
-if include_I:
-    _ = plot_pulse_stokes()
+#if include_I:
+_ = plot_pulse_stokes()
 
 from scipy.stats import truncnorm
 class CustomPrior(xpsi.Prior):
@@ -1417,18 +1437,19 @@ likelihood.threads = 3
 likelihood.reinitialise()
 likelihood.clear_cache()
 
-# inform source code that parameter objects updated when inverse sampling
-likelihood.externally_updated = True
+if __name__ == '__main__': # sample from the posterior
+    # inform source code that parameter objects updated when inverse sampling
+    likelihood.externally_updated = True
 
-# let's require that checks pass before starting to sample
-check_kwargs = dict(hypercube_points = None,
+    # let's require that checks pass before starting to sample
+    check_kwargs = dict(hypercube_points = None,
                     physical_points = p, # externally_updated preserved
                     loglikelihood_call_vals = [true_logl], 
                     rtol_loglike = 1.0e-6) # choose a tolerance
 
-# note that mutual refs are already stored in the likelihood and prior
-# objects to facilitate communication externally of the sampling process
-xpsi.Sample.nested(likelihood, prior, check_kwargs, **runtime_params)
+    # note that mutual refs are already stored in the likelihood and prior
+    # objects to facilitate communication externally of the sampling process
+    xpsi.Sample.nested(likelihood, prior, check_kwargs, **runtime_params)
 
 
 
