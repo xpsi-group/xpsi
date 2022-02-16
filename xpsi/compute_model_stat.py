@@ -985,8 +985,7 @@ else:
     p = [math.cos(60.0*deg2rad),
         0.0,
         20.0*deg2rad]
-
-    #pmaxL = [0.58450219, 0.70448103, 0.0056285 ] 
+    pmaxL = [0.53979588066914197, 0.0382707326272626602, 0.313082096977971847] #[0.58450219, 0.70448103, 0.0056285 ] 
     #p = pmaxL 
 
 print(star)
@@ -1048,6 +1047,8 @@ print("likelihood.params=",likelihood.params)
 #After correction for all Qn and Un with all dus: -2.78330361e+02
 #As above but using combined IXPE data and du1 response: -1.08165212e+02 (and if including I: -6.70449678e+10)
 #As above du2 -1.08166910e+02 and with du3 -1.08165956e+02 (not including I)
+#With best-L of combined du fit (du1 response): -1.02963147e+02
+
 
 #print("signal I (primary):")
 #print(signals[0][0].signals[0])
@@ -1057,7 +1058,7 @@ print("likelihood.params=",likelihood.params)
 #print(signals[0][2].signals[0])
 
 
-def plot_pulse_stokes():
+def plot_pulse_stokes(phasepol=None,qnpol=None,unpol=None):
     """ Plot hot region signals before and after telescope operation. """
     
     temp = np.sum(photosphere.signal[0][0], axis=0)
@@ -1158,9 +1159,13 @@ def plot_pulse_stokes():
     #	else:
     #		Qexpectn[ip] = 0.0 
     #ax.plot(data_phases[0:9], Qexpectn, '--', color='k', lw=0.5)
+       
     ax.plot(IXPE_du1_Q.data.phases, Qexpectn, '--', color='k', lw=0.5)    
         
     ax.errorbar(IXPE_du1_Q.data.phases, IXPE_du1_Q.data.counts[0], yerr=IXPE_du1_Q.data.errors[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)       
+      
+    if (phasepol is not None and qnpol is not None):
+    	ax.plot(phasepol,qnpol,'--',color='red')      
         
     #veneer((0.05,0.2), (0.05,0.2), ax)
     ax.set_ylim(-0.08,0.02)
@@ -1225,6 +1230,9 @@ def plot_pulse_stokes():
 
     ax.errorbar(IXPE_du1_U.data.phases, IXPE_du1_U.data.counts[0], yerr=IXPE_du1_U.data.errors[0], xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)  
 
+    if (phasepol is not None and unpol is not None):
+    	ax.plot(phasepol,unpol,'--',color='red')
+
     #veneer((0.05,0.2), (0.05,0.2), ax)
     ax.set_ylim(-0.04,0.05)   
     fig.savefig("figs/signalsUX.pdf")       
@@ -1253,9 +1261,75 @@ def plot_pulse():
 
 likelihood(p, reinitialise=False)
 
+
+#using the same vector, calculate the signal in X-PATAP:
+########################################################
+import sys
+sys.path.append("/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/")
+from polpulse import compf
+
+from numpy import logspace, zeros, fromfile, linspace
+from numpy import pi, exp, log, sqrt, sin, cos, arccos, arctan2
+NEnergy = 50 
+NPhase = 150
+x_l, x_u = -3.7 , -1.2 # lower and upper bounds of the log_10 energy span 
+evere=.5109989e6 # electron volts in elecron rest energy 
+IntEnergy = logspace(x_l,x_u,NEnergy), log(1e1)*(x_u-x_l)/(NEnergy-1.) 
+x,x_weight=IntEnergy #energies
+phase =linspace(0,1,num=NPhase,endpoint=True,retstep=False) #input phase points
+energy_keV = x*evere/1e3 # input energies in keV
+
+mass= 1.4
+rad = 12.0
+incl = 60.0
+theta = 20.0
+rho = 1.0
+pol = 0.0
+Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,atmos_path="/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thom/")
+print(len(Flux),len(Flux[:,0,0]),len(Flux[0,:,0]),len(Flux[0,0,:]))
+#flux_I = Flux[0:len(Flux):3*NEnergy]
+#flux_Q = Flux[1:len(Flux):3*NEnergy]
+#flux_U = Flux[2:len(Flux):3*NEnergy]
+flux_I = Flux[:,:,0]
+flux_Q = Flux[:,:,1]
+flux_U = Flux[:,:,2]
+
+print(flux_I.shape)
+
+flux_Ibol = np.zeros((NPhase))
+flux_Qbol = np.zeros((NPhase))
+flux_Ubol = np.zeros((NPhase))
+
+def find_idx(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
+emin = 2.0
+emax = 8.0
+
+for e in range(find_idx(energy_keV,emin),find_idx(energy_keV,emax)):
+	flux_Ibol = flux_Ibol + (flux_I[:,e]+flux_I[:,e+1])*(energy_keV[e+1]-energy_keV[e])
+	flux_Qbol = flux_Qbol + (flux_Q[:,e]+flux_Q[:,e+1])*(energy_keV[e+1]-energy_keV[e])
+	flux_Ubol = flux_Ubol + (flux_U[:,e]+flux_U[:,e+1])*(energy_keV[e+1]-energy_keV[e])		
+flux_Ibol = 1/2*flux_Ibol
+flux_Qbol = 1/2*flux_Qbol
+flux_Ubol = 1/2*flux_Ubol		
+#for iene in range(0,NEnergy):
+#	flux_Ibol =+ flux_I[:,iene]
+#	flux_Qbol =+ flux_Q[:,iene]
+#	flux_Ubol =+ flux_U[:,iene]
+
+#print("phase:",phase)	
+qnpol = flux_Qbol/flux_Ibol
+unpol = flux_Ubol/flux_Ibol
+print("qn:",qnpol)
+print("un:",unpol)
+#quit()
+###############################################################
+
 #plotting works correctly only if including I at the moment.
 #if include_I:
-_ = plot_pulse_stokes()
+_ = plot_pulse_stokes(phasepol=phase,qnpol=qnpol,unpol=unpol)
 
 from scipy.stats import truncnorm
 class CustomPrior(xpsi.Prior):
