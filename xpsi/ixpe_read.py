@@ -207,6 +207,7 @@ def read_response_IXPE(MRF,RMF,min_input,max_input,min_channel,max_channel):
 
 	#print(edges)
 	#print(channel_edges)
+        #exit()
 
 	channels = np.arange(min_channel,max_channel)
 	
@@ -217,7 +218,7 @@ def read_response_IXPE(MRF,RMF,min_input,max_input,min_channel,max_channel):
 		if pcube:
 			#Assuming Nchan = 1
 			channels = np.array([0])
-			channel_edges = np.array([4.0,8.0])
+			channel_edges = np.array([2.0,8.0])#([4.0,8.0])
 			matrix_rb = np.zeros((1,len(matrix_cut[0,:])))
 			#Calculating just the average here
 			for ich in range(0,max_channel-min_channel):
