@@ -1515,7 +1515,9 @@ except ValueError:
                                          last=len({0}.instrument.channels) - 1,
                                          exposure_time=args.{0}_exposure_time)
 
-    np.savetxt(args.{0}_count_matrix_path, {0}.data.counts)
+    np.savetxt(args.{0}_event_path.replace('.txt','_converted_to_counts.txt'), {0}.data.counts)
+    print('Counts file saved as: '+args.{0}_event_path.replace('.txt','_converted_to_counts.txt'))
+    print('Update configuration file to take in counts file to save computation time.')
 else:
     if counts.ndim == 1:
         counts = counts.reshape(-1,1)
