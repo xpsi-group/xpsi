@@ -625,7 +625,7 @@ class CornerPlotter(PostProcessor):
             self._veneer_spines_ticks(plotter, **kwargs)
         if crosshairs:
             # only for topmost posterior
-            self._add_crosshairs(plotter, self.subset_to_plot[0].truths)
+            self._add_crosshairs(plotter, self.subset_to_plot[0].truth_vector)
         if credible_interval_1d: # include nestcheck estimator bootstrap error
             self._add_credible_interval(plotter,
                                         self.subset[0],

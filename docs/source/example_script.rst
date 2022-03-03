@@ -293,29 +293,14 @@ Instrument
         Currently tailored to the NICER light-curve SWG model specification.
 
         """
-        def __init__(self, ratio, channel_edges, *args):
+        def __init__(self, *args):
             """ Set channel edges attribute. """
             super(CustomInstrument, self).__init__(*args)
 
-            self._ratio = ratio
-            self._channel_edges = channel_edges
-
-            self._modified = self.matrix.copy()
-            for i in range(self._modified.shape[0]):
-                self._modified[i,:] *= self._ratio[i]
-
-        @property
-        def channel_edges(self):
-            """ Get the channel edges. """
-            return self._channel_edges
-
         def construct_matrix(self):
             """ Implement response matrix parameterisation. """
-            matrix = self['alpha']*self['beta']*self._modified
-            matrix += (1.0 - self['beta'])*self['gamma']*self.matrix
-
+            matrix = self['alpha']*self.matrix
             matrix[matrix < 0.0] = 0.0
-
             return matrix
 
         def __call__(self, signal, *args):
@@ -330,7 +315,7 @@ Instrument
         @classmethod
         def from_SWG(cls,
                      bounds, values,
-                     ARF, RMF, ratio,
+                     ARF, RMF,
                      max_input, min_input=0,
                      channel_edges=None):
             """ Constructor which converts files into :class:`numpy.ndarray`s.
@@ -341,15 +326,12 @@ Instrument
             :param str RMF: Path to RMF which is compatible with
                                     :func:`numpy.loadtxt`.
 
-            :param str ratio: Path to channel-by-channel ratio file.
-
             :param str channel_edges: Optional path to edges which is compatible with
                                     :func:`numpy.loadtxt`.
 
             """
             ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
             RMF = np.loadtxt(RMF, dtype=np.double, skiprows=3, usecols=-1)
-            ratio = np.loadtxt(ratio, dtype=np.double, skiprows=3)[:,2]
 
             if channel_edges:
                 channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)
@@ -375,9 +357,6 @@ Instrument
 
             channels = np.arange(25, 300)
 
-            ratios = ratio[:275]
-            ratios[:10] = ratio[10]
-
             alpha = Parameter('alpha',
                               strict_bounds = (0.0,2.0),
                               bounds = bounds.get('alpha', None),
@@ -385,22 +364,8 @@ Instrument
                               symbol = r'$\alpha$',
                               value = values.get('alpha', None))
 
-            beta = Parameter('beta',
-                              strict_bounds = (0.0,1.0),
-                              bounds = bounds.get('beta', None),
-                              doc = 'beta',
-                              symbol = r'$\beta$',
-                              value = values.get('beta', None))
 
-            gamma = Parameter('gamma',
-                              strict_bounds = (0.0,2.0),
-                              bounds = bounds.get('gamma', None),
-                              doc = 'gamma',
-                              symbol = r'$\gamma$',
-                              value = values.get('gamma', None))
-
-            return cls(ratios, channel_edges[25:301, -2],
-                       RSP, edges, channels, alpha, beta, gamma)
+            return cls(RSP, edges, channels, channel_edges[25:301, -2], alpha)
 
 Interstellar
 ^^^^^^^^^^^^
@@ -531,7 +496,7 @@ Signal
         def __call__(self, phase_shifts, *args, **kwargs):
             self.shifts = np.array(phase_shifts)
 
-            self.loglikelihood, self.expected_counts, self.background_signal = \
+            self.loglikelihood, self.expected_counts, self.background_signal, self.background_given_support = \
                     eval_marginal_likelihood(self._data.exposure_time,
                                               self._data.phases,
                                               self._data.counts,
