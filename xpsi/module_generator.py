@@ -1500,7 +1500,7 @@ bounds = dict({2} = parse_bounds(args.{0}_{2}_bounds,
 
 try:
     counts = np.loadtxt(args.{0}_count_matrix_path, dtype=np.double)
-except IOError:
+except ValueError:
     {0}.data = xpsi.Data.bin__event_list(args.{0}_event_path,
                                          channels={0}.instrument.channels,
                                          phases=np.linspace(0.0, 1.0, args.{0}_number_phase_bins + 1),
