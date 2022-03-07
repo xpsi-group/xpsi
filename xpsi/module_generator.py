@@ -3294,7 +3294,7 @@ module += (
 
 module += (
 '''
-    def transform(self, p):
+    def transform(self, p, **kargs):
         """ A transformation for post-processing. """
 
         p = list(p) # copy
