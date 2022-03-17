@@ -33,7 +33,7 @@ Attribution
 ^^^^^^^^^^^
 
 
-[v0.7.10] - 2021-10-02
+[v0.7.10] - 2022-02-10
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -75,7 +75,7 @@ Attribution
 * Devarshi Choudhury (D.C.), Tuomo Salmi (T.S.), Serena Vinciguerra (S.V.), Sebastien Guillot (S.G.), and Yves Kini (Y.K.)
 
 
-[v0.7.9] - 2021-26-11
+[v0.7.9] - 2021-11-26
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -121,7 +121,7 @@ Attribution
 * Daniela Huppenkothen (D.H.).
 
 
-[v0.7.8] - 2021-22-09
+[v0.7.8] - 2021-09-22
 ~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
