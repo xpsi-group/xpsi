@@ -254,8 +254,8 @@ photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
 numerical_atmos = False #True
 if numerical_atmos:
 	#photosphere.hot_atmosphere = "/home/tuomo/xpsi/serena/1stJOB_J0437_NICERxXMM_2alpha_DIST/1stJOB_J0437_NICERxXMM_2alpha_DIST/model_data/nsx_H_v200804.out"
-	photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thomI_corr2.txt"
-	photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thomQ_corr2.txt"
+	photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_corr2.txt"
+	photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_corr2.txt"
 
 print(photosphere['mode_frequency'] == spacetime['frequency'])
 
@@ -442,33 +442,9 @@ nene = 281 #128
 #NOTE: The following function is outdated, since signal_stokes should be replaced with signal,signalQ,signalU etc.
 def save_pulse(PulsName): 
     """Save the pulse profile in a file. """
-    #print("F(E) = ",photosphere.signal[0][0][:,0], len(photosphere.signal[0][0][:,0])) #np.shape
-    #print("F(T) = ", photosphere.signal[0][0][0,:], len(photosphere.signal[0][0][0,:]))
-    #print("F(E) = ",photosphere.signal[0][0][:,50], len(photosphere.signal[0][0][:,50])) #np.shape
-    #print("F(E) = ", photosphere.signal[1][0][:,50], len(photosphere.signal[1][0][:,50]))
-
-    #print("F(E) = ",photosphere.signal[0][1][:,50], len(photosphere.signal[0][1][:,50])) #np.shape
-    #print("F(E) = ", photosphere.signal[1][1][:,50], len(photosphere.signal[1][1][:,50]))
-    #exit()
-
-    #print(np.shape(photosphere.signal_stokes))
-    #print("F(E) = ",photosphere.signal_stokes[0][1][:,0], len(photosphere.signal_stokes[0][0][:,0])) #np.shape
-    #print("F(T) = ", photosphere.signal_stokes[0][1][0,:], len(photosphere.signal_stokes[0][0][0,:]))
-    #print("F(E) = ",photosphere.signal_stokes[0][2][:,0], len(photosphere.signal_stokes[0][0][:,0])) #np.shape
-    #print("F(T) = ", photosphere.signal_stokes[1][0][0,:], len(photosphere.signal_stokes[0][0][0,:]))
-    #print("F(E) = ",photosphere.signal_stokes[0][5][:,0], len(photosphere.signal_stokes[0][0][:,0])) #np.shape
-    #print("F(T) = ", photosphere.signal_stokes[1][3][0,:], len(photosphere.signal_stokes[0][0][0,:]))
-
-    #print(photosphere.signal)
-
-    #pulse1 = np.sum(photosphere.signal[0][0], axis=0)
-    #pulse1 = photosphere.signal[0][0][nene-1,:] #pulse in one energy bin
-    #pulse1 = photosphere.signal_stokes[0][0][nene-1,:]
-    #pulseQ = photosphere.signal_stokes[0][1][nene-1,:] 
-    #pulseU = photosphere.signal_stokes[0][2][nene-1,:] 
-    pulse1 = photosphere.signal_stokes[0][0][118,:]
-    pulseQ = photosphere.signal_stokes[0][1][118,:] 
-    pulseU = photosphere.signal_stokes[0][2][118,:] 
+    pulse1 = photosphere.signal[0][0][118,:]
+    pulseQ = photosphere.signalQ[0][0][118,:] 
+    pulseU = photosphere.signalU[0][0][118,:] 
 
 
 

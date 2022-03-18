@@ -312,25 +312,25 @@ class CustomInstrument(xpsi.Instrument):
                                              
 IXPE_du1 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/bcf/mrf/ixpemcdu1stdcutv006.mrf',
                                              RMF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/cpf/rmf/ixpemcdu1stdcutv006.rmf',
-                                             max_input = 175,
+                                             max_input = 275, #175, #275, #175,
                                              max_channel = 200,
-                                             min_input = 25, #25 for 2 keV, 75 for 4 keV
+                                             min_input = 0, #25, #25 for 2 keV, 75 for 4 keV
                                              min_channel = 50, #50 for 2 keV, 100 for 4 keV
                                              channel_edges = None)
                                              
 IXPE_du2 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/bcf/mrf/ixpemcdu2stdcutv006.mrf',
                                              RMF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/cpf/rmf/ixpemcdu2stdcutv006.rmf',
-                                             max_input = 175,
+                                             max_input = 275, #175,
                                              max_channel = 200,
-                                             min_input = 25, #75,
+                                             min_input = 0, #25, #75,
                                              min_channel = 50, #100,
                                              channel_edges = None)
                                              
 IXPE_du3 = CustomInstrument_stokes.from_response_files(MRF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/bcf/mrf/ixpemcdu3stdcutv006.mrf',
                                              RMF = '/home/tuomo/polcslab/ixpe_sim/ixpeobssim_official/ixpeobssim/ixpeobssim/caldb/cpf/rmf/ixpemcdu3stdcutv006.rmf',
-                                             max_input = 175,
+                                             max_input = 275, #175,
                                              max_channel = 200,
-                                             min_input = 25, #75,
+                                             min_input = 0, #25, #75,
                                              min_channel = 50, #100,
                                              channel_edges = None)
                                              
@@ -765,7 +765,10 @@ if not skip_rest:
 
 #For IXPE fitting with 1-spot
 bounds = dict(cos_inclination = (0.0, 1.0))# (Earth) inclination to rotation axis
-values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
+values =  dict(frequency = 600.0,mass=1.4,radius=12.0,distance= 1.0)
+#values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
+#values =  dict(frequency = 1.0,mass=1.4,radius=12.0,distance= 1.0)
+#values =  dict(frequency = 1.0,mass=0.01,radius=12.0,distance= 1.0)
 spacetime = xpsi.Spacetime(bounds=bounds, values=values)
 
 #bounds = dict(super_colatitude = (None, None),
@@ -781,7 +784,8 @@ deg2rad = np.pi/180.0
 tempkeV = 1.0219978 #1.0
 tempK = np.log10(tempkeV*11604525.00617)
 print("tempK=",tempK)
-values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
+#values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
+values = {'super_radius': 10.0*deg2rad,'super_temperature': tempK}              
 
 ceding=False
 
@@ -806,7 +810,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                             sqrt_num_cells=32,
                             min_sqrt_num_cells=10,
                             max_sqrt_num_cells=64,
-                            num_leaves=100,
+                            num_leaves=121,#100,
                             num_rays=200,
                             prefix='p') # unique prefix needed because >1 instance
 
@@ -938,13 +942,17 @@ class CustomPhotosphere(xpsi.Photosphere):
                           self.hot.objects[1]['s__super_temperature']])
 
 
-numerical_atmos = True
+numerical_atmos = False #True
 
 if numerical_atmos:
     photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
-    photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thomI_corr2.txt"
-    photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thomQ_corr2.txt"
+    #photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_corr2.txt"
+    #photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_corr2.txt"
+    photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_burstI.txt"
+    photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_burstQ.txt"  
+    #photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_s21.txt"
+    #photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_s21.txt"           
 
 else:
 
@@ -985,6 +993,9 @@ else:
     p = [math.cos(60.0*deg2rad),
         0.0,
         20.0*deg2rad]
+    p = [math.cos(40.0*deg2rad),
+        0.0,
+        60.0*deg2rad]        
     pmaxL = [0.53979588066914197, 0.0382707326272626602, 0.313082096977971847] #[0.58450219, 0.70448103, 0.0056285 ] 
     #p = pmaxL 
 
@@ -1058,10 +1069,14 @@ print("likelihood.params=",likelihood.params)
 #print(signals[0][2].signals[0])
 
 
-def plot_pulse_stokes(phasepol=None,qnpol=None,unpol=None,inpol=None):
+def plot_pulse_stokes(phasepol=None,qnpol=None,unpol=None,inpol=None,psind0=0,psind=127):
     """ Plot hot region signals before and after telescope operation. """
     
-    temp = photosphere.signal[0][0][100,:] #np.sum(photosphere.signal[0][0], axis=0)
+    phot_sig_cut = photosphere.signal[0][0][psind0:psind,:]
+    photQ_sig_cut = photosphere.signalQ[0][0][psind0:psind,:]
+    photU_sig_cut = photosphere.signalU[0][0][psind0:psind,:]
+            
+    temp = np.sum(phot_sig_cut, axis=0) #np.sum(photosphere.signal[0][0], axis=0) #photosphere.signal[0][0][psind,:] 
     I1p = temp    
     print("Energies used in X-PSI:",signals[0][0].energies)
     #exit()
@@ -1084,8 +1099,9 @@ def plot_pulse_stokes(phasepol=None,qnpol=None,unpol=None,inpol=None):
 		I2s = temp
 		ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
 	    
-	    temp = photosphere.signal[0][0][100,:]#np.sum(photosphere.signal[0][0], axis=0)
+	    temp = np.sum(phot_sig_cut, axis=0) #photosphere.signal[0][0][psind,:]
 	    I1p = temp
+	    #print("I1p:",I1p)
 	    ax.plot(signals[0][0].phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
 	    if two_spots:
 		temp = np.sum(photosphere.signal[1][0], axis=0)    
@@ -1101,7 +1117,7 @@ def plot_pulse_stokes(phasepol=None,qnpol=None,unpol=None,inpol=None):
 	    ax.errorbar(IXPE_du1_I.data.phases, IXPE_du1_I.data.counts[0]/(np.max(IXPE_du1_I.data.counts[0])), yerr=IXPE_du1_I.data.errors[0]/(np.max(IXPE_du1_I.data.counts[0])), xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)
 
 	    if (phasepol is not None and inpol is not None):
-	    	ax.plot(phasepol,inpol,'--',color='red') 
+	    	ax.plot(phasepol,inpol,'--',color='red')
 	    #veneer((0.05,0.2), (0.05,0.2), ax)
 	    fig.savefig("figs/signalsIX.pdf")
     
@@ -1135,7 +1151,7 @@ def plot_pulse_stokes(phasepol=None,qnpol=None,unpol=None,inpol=None):
         #        Q2sn[ip] = 0.0
         ax.plot(signals[0][ist].phases[1], Q2sn, '-', color='r', lw=0.5)
     
-    Q1p = photosphere.signalQ[0][0][100,:] #np.sum(photosphere.signalQ[0][0], axis=0)
+    Q1p = np.sum(photQ_sig_cut, axis=0) #photosphere.signalQ[0][0][psind,:] #
     #Q1p = 0.0
     #I1p = 0.0
     #for e in range(0,len(signals[0][0].energies)-1):
@@ -1208,7 +1224,7 @@ def plot_pulse_stokes(phasepol=None,qnpol=None,unpol=None,inpol=None):
         #        U2sn[ip] = 0.0
         ax.plot(signals[0][ist+1].phases[1], U2sn, '-', color='r', lw=0.5)
     
-    U1p = photosphere.signalU[0][0][100,:]#np.sum(photosphere.signalU[0][0], axis=0)
+    U1p = np.sum(photU_sig_cut, axis=0) #photosphere.signalU[0][0][psind,:]#
     U1pn = np.copy(U1p)
     for ip in range(len(U1pn)):
     	if(I1p[ip] > 1e-10):
@@ -1274,6 +1290,29 @@ def plot_pulse():
 likelihood(p, reinitialise=False)
 
 
+def find_idx(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
+    
+def save_pulse(PulsName): 
+    """Save the pulse profile in a file. """ 
+    eind = find_idx(signals[0][0].energies,4.94)
+    pulse1 = photosphere.signal[0][0][eind,:]
+    pulseQ = photosphere.signalQ[0][0][eind,:] 
+    pulseU = photosphere.signalU[0][0][eind,:] 
+    phase1 = signals[0][0].phases[0]
+    outF = open(PulsName + '_F.bin','w')
+    outf = open(PulsName + '_p.bin','w')
+    outQ = open(PulsName + '_Q.bin','w') 
+    outU = open(PulsName + '_U.bin','w')       
+    pulse1.tofile(outF,format="%e") 
+    phase1.tofile(outf,format="%e")
+    pulseQ.tofile(outQ,format="%e") 
+    pulseU.tofile(outU,format="%e") 
+
+#save_pulse("pulses/pulse_test_18032022")
+
 #using the same vector, calculate the signal in X-PATAP:
 ########################################################
 import sys
@@ -1294,16 +1333,16 @@ from polpulse_call_xpsi import compf
 energy_keV = signals[0][0].energies
 phase = signals[0][0].phases[0]
 
-print("energies and phases used by polpulse:")
-print(energy_keV)
-print(phase)
+#print("energies and phases used by polpulse:")
+#print(energy_keV)
+#print(phase)
 #exit()
 
-mass= 1.4
+mass= 1.4 #0.01
 rad = 12.0
-incl = 60.0
-theta = 20.0
-rho = 1.0
+incl = 40.0 #60.0
+theta = 60.0 #20.0
+rho = 10.0 #1.0
 pol = 0.0
 Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,atmos_path="/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thom/")
 print(len(Flux),len(Flux[:,0,0]),len(Flux[0,:,0]),len(Flux[0,0,:]))
@@ -1318,10 +1357,7 @@ flux_Ibol = np.zeros((len(phase)))
 flux_Qbol = np.zeros((len(phase)))
 flux_Ubol = np.zeros((len(phase)))
 
-def find_idx(array, value):
-    array = np.asarray(array)
-    idx = (np.abs(array - value)).argmin()
-    return idx
+
 emin = 2.0
 emax = 8.0
 
@@ -1333,30 +1369,57 @@ emax = 8.0
 #flux_Ibol = 1/2*flux_Ibol
 #flux_Qbol = 1/2*flux_Qbol
 #flux_Ubol = 1/2*flux_Ubol
+	
+#Or if checking with a single energy:
+#print(find_idx(energy_keV,5.95789686))
+#flux_Ibol = flux_I[:,find_idx(energy_keV,5.95789686)]#corresponds to index 100 in X-PSI ene grid
+#flux_Qbol = flux_Q[:,find_idx(energy_keV,5.95789686)]
+#flux_Ubol = flux_U[:,find_idx(energy_keV,5.95789686)]
+
+
+#psind = 127
+psind0 = find_idx(energy_keV,5.0)
+psind = find_idx(energy_keV,5.1)
+#print('psind=',psind)
+#flux_Ibol = flux_I[:,psind]
+#flux_Qbol = flux_Q[:,psind]
+#flux_Ubol = flux_U[:,psind]
+
+print("psind0:",psind0)
+print("psind:",psind)
+#exit()
 
 #Or if integrating as in X-PSI:
-#for e in range(0,len(energy_keV)):
+#for e in range(psind0,psind):
 #	flux_Ibol = flux_Ibol + flux_I[:,e]
 #	flux_Qbol = flux_Qbol + flux_Q[:,e]
 #	flux_Ubol = flux_Ubol + flux_U[:,e]
 	
-#Or if checking with a single energy:
-flux_Ibol = flux_I[:,100]
-flux_Qbol = flux_Q[:,100]
-flux_Ubol = flux_U[:,100]	
+flux_Ic = flux_I[:,psind0:psind]
+flux_Qc = flux_Q[:,psind0:psind]
+flux_Uc = flux_U[:,psind0:psind]
 
-#print("phase:",phase)	
+flux_Ibol = np.sum(flux_Ic, axis=1)
+flux_Qbol = np.sum(flux_Qc, axis=1)
+flux_Ubol = np.sum(flux_Uc, axis=1)
+	
 qnpol = flux_Qbol/flux_Ibol
 unpol = flux_Ubol/flux_Ibol
-inpol = flux_Ibol/max(flux_Ibol)
+inpol = flux_Ibol/max(flux_Ibol) #min(flux_Ibol) 
 print("qn:",qnpol)
 print("un:",unpol)
 #quit()
 ###############################################################
 
-#plotting works correctly only if including I at the moment.
-#if include_I:
-_ = plot_pulse_stokes(phasepol=phase,qnpol=qnpol,unpol=unpol,inpol=inpol)
+
+
+
+
+from plot_residuals import plot_pulse_resid
+
+_ = plot_pulse_resid(photosphere,signals,phasepol=phase,qnpol=qnpol,unpol=unpol,inpol=inpol,psind0=psind0,psind=psind)
+
+_ = plot_pulse_stokes(phasepol=phase,qnpol=qnpol,unpol=unpol,inpol=inpol,psind0=psind0,psind=psind)
 
 from scipy.stats import truncnorm
 class CustomPrior(xpsi.Prior):
