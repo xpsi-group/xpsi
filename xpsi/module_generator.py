@@ -3099,7 +3099,7 @@ if (   'CST' in args.hot_region_model
         return x * np.log(self.b_zeta/self.a_zeta)
 
     def _II_super_smaller(self, x):
-        return x - a_xi - x*np.log(x/self.b_zeta)
+        return x - self.a_zeta - x*np.log(x/self.b_zeta)
 
     def _scalar_super_smaller_radius_mass(self, x):
         if x >= self.a_zeta:
