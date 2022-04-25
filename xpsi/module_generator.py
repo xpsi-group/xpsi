@@ -2563,7 +2563,7 @@ if (   'CST' in args.hot_region_model
     module += (
     '''
         self.a_f = 0.001
-        self.b_f = 2.0
+        self.b_f = 1.0
         self.a_zeta = 0.001
         self.b_zeta = math.pi/2.0 - self.a_zeta
 
