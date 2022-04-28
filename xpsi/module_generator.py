@@ -2763,7 +2763,7 @@ if len(args.hot_region_model) == 2 and not args.antipodal_reflection_symmetry:
         elif args.hot_region_model[1 - _DT_idx] in ['CST', 'EST']:
             module += (
             '''
-        if self._overlap(ref, '{0}', '{1}', 'cede', 'cede', {2:.1f}, {3:.1f}):
+        if self._overlap(ref, '{0}', '{1}', 'cede', 'super', {2:.1f}, {3:.1f}):
             if not self._overlap(ref, '{0}', '{1}', 'cede', 'omit', {2:.1f}, {3:.1f}, superset='{1}'):
                 return -np.inf
             '''.format(args.prefix[_DT_idx],
@@ -2812,11 +2812,11 @@ if len(args.hot_region_model) == 2 and not args.antipodal_reflection_symmetry:
         elif args.hot_region_model[1 - _PDT_idx] in ['CST', 'EST']:
             module += (
             '''
-        if self._overlap(ref, '{0}', '{1}', 'super', 'cede', {2:.1f}, {3:.1f}):
+        if self._overlap(ref, '{0}', '{1}', 'super', 'super', {2:.1f}, {3:.1f}):
             if not self._overlap(ref, '{0}', '{1}', 'super', 'omit', {2:.1f}, {3:.1f}, superset='{1}'):
                 return -np.inf
 
-        if self._overlap(ref, '{0}', '{1}', 'cede', 'cede', {2:.1f}, {3:.1f}):
+        if self._overlap(ref, '{0}', '{1}', 'cede', 'super', {2:.1f}, {3:.1f}):
             if not self._overlap(ref, '{0}', '{1}', 'cede', 'omit', {2:.1f}, {3:.1f}, superset='{1}'):
                 return -np.inf
             '''.format(args.prefix[_PDT_idx],
