@@ -11,7 +11,7 @@ Spectrum={
       2:'Burst',
       1:'simplThomson', 
       0:'FromFile'
-}[2] 
+}[1] 
 
 oblateness='AlGendy'
 
