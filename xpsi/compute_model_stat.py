@@ -765,8 +765,8 @@ if not skip_rest:
 
 #For IXPE fitting with 1-spot
 bounds = dict(cos_inclination = (0.0, 1.0))# (Earth) inclination to rotation axis
-values =  dict(frequency = 600.0,mass=1.4,radius=12.0,distance= 1.0)
-#values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
+#values =  dict(frequency = 600.0,mass=1.4,radius=12.0,distance= 1.0)
+values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
 #values =  dict(frequency = 1.0,mass=1.4,radius=12.0,distance= 1.0)
 #values =  dict(frequency = 1.0,mass=0.01,radius=12.0,distance= 1.0)
 spacetime = xpsi.Spacetime(bounds=bounds, values=values)
@@ -784,8 +784,8 @@ deg2rad = np.pi/180.0
 tempkeV = 1.0219978 #1.0
 tempK = np.log10(tempkeV*11604525.00617)
 print("tempK=",tempK)
-#values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
-values = {'super_radius': 10.0*deg2rad,'super_temperature': tempK}              
+values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
+#values = {'super_radius': 10.0*deg2rad,'super_temperature': tempK}              
 
 ceding=False
 
@@ -947,12 +947,12 @@ numerical_atmos = True
 if numerical_atmos:
     photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
-    photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_corr2.txt"
-    photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_corr2.txt"
+    #photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_corr2.txt"
+    #photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_corr2.txt"
     #photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_burstI.txt"
     #photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_burstQ.txt"  
-    #photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_s21.txt"
-    #photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_s21.txt"           
+    photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_s21.txt"
+    photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_s21.txt"           
 
 else:
 
@@ -974,9 +974,9 @@ else:
     p = [math.cos(60.0*deg2rad),
         0.0,
         20.0*deg2rad]
-    p = [math.cos(40.0*deg2rad),
-        0.0,
-        60.0*deg2rad]        
+    #p = [math.cos(40.0*deg2rad),
+    #    0.0,
+    #    60.0*deg2rad]        
     pmaxL = [0.53979588066914197, 0.0382707326272626602, 0.313082096977971847] #[0.58450219, 0.70448103, 0.0056285 ] 
     #p = pmaxL 
 
@@ -1020,7 +1020,7 @@ photosphere.integrate(energy_keV, threads=1, stokes=True)
 
 #Saving the pulse corresponding accurately to that from x-patap/CompSlab
 #save_pulse("pulses/pulse_test_25052022_X") #if numerical_atmos=False (burst atmosphere)
-save_pulse("pulses/pulse_test_26052022_thom_corr2X") #if numerical_atmos=True (Thomson atmosphere)
+save_pulse("pulses/pulse_ps21_thom_s21X") #if numerical_atmos=True (Thomson atmosphere)
 #exit()
 
 likelihood = xpsi.Likelihood(star = star, signals = signals,
@@ -1342,13 +1342,13 @@ from polpulse_call_xpsi import compf
 
 mass= 1.4 #0.01
 rad = 12.0
-incl = 40.0 #60.0
-theta = 60.0 #20.0
-rho = 10.0 #1.0
+incl = 60.0 #40.0 #60.0
+theta = 20.0 #60.0 #20.0
+rho = 1.0 #10.0 #1.0
 pol = 0.0
 #Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,atmos_path="/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thom/")
 #Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_rho10f600_Tc_281_pshift_match_X',savePulse=True,atmos_path="atmos_thom/")
-Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_thom_s21_rho10f600_Tc_281_pshift_match_X',savePulse=True,atmos_path="atmos_thom/")
+Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_thom_s21lr_rho1f401_Tc_281_pshift_match_X',savePulse=True,atmos_path="atmos_thom/")
 print(len(Flux),len(Flux[:,0,0]),len(Flux[0,:,0]),len(Flux[0,0,:]))
 exit()
 

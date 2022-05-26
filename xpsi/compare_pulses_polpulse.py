@@ -90,14 +90,14 @@ for ish in range(1,-1,-1): #(0,2):#len(shapes)):
 		#PulsName='../../../polcslab/ixpe_sim/pulse_model/pulse_comparison_file_old_laptop/pulse_comp_xpsi'
 		#PulsName='pulses/xpatap_rho10f600_Tc_'
 		#PulsName='pulses/xpatap_rho10f600_Tc_281_pshift_match_'
-		PulsName='pulses/xpatap_thom_s21_rho10f600_Tc_281_pshift_match_'
+		PulsName='pulses/xpatap_thom_s21lr_rho1f401_Tc_281_pshift_match_'
 		#PulsName='../../../polcslab/CompSlab/res/xpsi_comp/rho10_sp1_f600_burst_pshift_match_'
 		NPhase = 150 #121 #150
 	if(ish == 1):
 	        #PulsName='../../../polcslab/CompSlab/pOS_pulses/lbb_rho10_sp1_f600_obl_burst2_dt'
 		#pversion = '_test_25052022' #'7i_rho10f600_Tc'
 		#pversion = '_test_26052022_thom_corr2'
-		pversion = '_test_26052022_thom_s21'
+		pversion = '_ps21_thom_s21'
 	        PulsName='pulses/pulse'+pversion #'pulses_lenovo/pulse'+pversion #pulses/pulse'+pversion#'pulses_lenovo/pulse'+pversion
 		NPhase = 121 #100
 	computePulse= True
