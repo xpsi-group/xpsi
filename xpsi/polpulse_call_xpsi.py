@@ -1,10 +1,10 @@
 #!/usr/bin/python
 #This is the main program to calculate polarized pulse profiles (to be run with driver.py or to be called by the sampling method in newmc.py).
 #Set SavePulse=True if want to save the output in a file
-#This version uses simplThomson atmosphere model as in Salmi+ 2021, and reads the precomputed models from (a) file(s).
+#This version has an option to use simplThomson atmosphere model as in Salmi+ 2021, or reading precomputed models.
 #This code is based on cs_ts2_func.py found in https://github.com/thjsal/CompSlab 
 #and originally on cs.py found in https://github.com/belliavesha/CompSlab (developed by Vladislav Loktev).
-#Small differences in implemenation and computation accuracy may exist between the different versions of the code.
+#Small differences in implemention and computation accuracy may exist between the different versions of the code.
 
 
 Spectrum={
@@ -245,11 +245,13 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 			else:
 				pdstr="1171"
 			#AtmName_angdep = '../../../CompSlab/res/ixpe_spec_final/tau10_te01/grid_res_pbi_NN_no0/atmos_thom_p'+pdstr   
-			AtmName_angdep = atmos_path+'atmos_thom_n0_p'+pdstr+'_corrPlanck' #angdep from file not including zero scattered photons
+			#AtmName_angdep = atmos_path+'atmos_thom_n0_p'+pdstr+'_corrPlanck' #angdep from file not including zero scattered photons
+			AtmName_angdep = atmos_path+'atmos_thom_n0_p'+pdstr    #angdep from file not including zero scattered photons			
 			mudep_thom = angledep_thom(mu,NZenith,x[e],e,AtmName_angdep)
 			for d in range(NZenith):
-				Intensity[e,d,0]=photar_sp1[e]*mudep_n0[d]+photar_sp2[e]*mudep_thom[d]
-				Intensity[e,d,1]=Intensity[e,d,0]*poldegfromfile(x,e,d,atmos_path+'atmos_thom_y0_p'+pdstr+'_corrPlanck') #PD from model including also zeroth scattering
+				Intensity[e,d,0]=photar_sp1[e-1]*mudep_n0[d]+photar_sp2[e-1]*mudep_thom[d]
+				#Intensity[e,d,1]=Intensity[e,d,0]*poldegfromfile(x,e,d,atmos_path+'atmos_thom_y0_p'+pdstr+'_corrPlanck') #PD from model including also zeroth scattering
+				Intensity[e,d,1]=Intensity[e,d,0]*poldegfromfile(x,e,d,atmos_path+'atmos_thom_y0_p'+pdstr) #PD from model including also zeroth scattering
 
 		#AtmName = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thom_csformat_from_callxpsi"
 		#outI = open(AtmName+'I.bin','w')
