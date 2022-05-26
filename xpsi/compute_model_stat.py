@@ -947,10 +947,10 @@ numerical_atmos = False #True
 if numerical_atmos:
     photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
-    #photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_corr2.txt"
-    #photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_corr2.txt"
-    photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_burstI.txt"
-    photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_burstQ.txt"  
+    photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_corr2.txt"
+    photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_corr2.txt"
+    #photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_burstI.txt"
+    #photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_burstQ.txt"  
     #photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_s21.txt"
     #photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_s21.txt"           
 
@@ -963,25 +963,6 @@ photosphere['mode_frequency'] == spacetime['frequency']
 
 star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
 
-likelihood = xpsi.Likelihood(star = star, signals = signals,
-                             num_energies=128,
-                             threads=1,
-                             externally_updated=False)
-
-xpsi.set_phase_interpolant('Akima')
-
-#p = [1.4,
-#     12.5,
-#     0.2,
-#     math.cos(1.25),
-#     0.0,
-#     1.0,
-#     0.075,
-#     6.2,
-#     0.025,
-#     math.pi - 1.0,
-#     0.2]
-     
 #For fast geometry simulation using polarimetry
 if two_spots:
     p = [math.cos(60.0*deg2rad),
@@ -998,6 +979,57 @@ else:
         60.0*deg2rad]        
     pmaxL = [0.53979588066914197, 0.0382707326272626602, 0.313082096977971847] #[0.58450219, 0.70448103, 0.0056285 ] 
     #p = pmaxL 
+
+star(p)
+
+def find_idx(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
+    
+def save_pulse(PulsName): 
+    """Save the pulse profile in a file. """ 
+    eind = 118 #find_idx(signals[0][0].energies,4.94)
+    pulse1 = photosphere.signal[0][0][eind,:]
+    pulseQ = photosphere.signalQ[0][0][eind,:] 
+    pulseU = photosphere.signalU[0][0][eind,:] 
+    phase1 = hot.phases_in_cycles #signals[0][0].phases[0]
+    outF = open(PulsName + '_F.bin','w')
+    outf = open(PulsName + '_p.bin','w')
+    outQ = open(PulsName + '_Q.bin','w') 
+    outU = open(PulsName + '_U.bin','w')       
+    pulse1.tofile(outF,format="%e") 
+    phase1.tofile(outf,format="%e")
+    pulseQ.tofile(outQ,format="%e") 
+    pulseU.tofile(outU,format="%e") 
+
+
+from numpy import logspace, zeros, fromfile, linspace
+from numpy import pi, exp, log, sqrt, sin, cos, arccos, arctan2
+NEnergy = 281 #50 
+NPhase = 150
+x_l, x_u = -3.7 , 0.3 #-1.2 # lower and upper bounds of the log_10 energy span 
+evere=.5109989e6 # electron volts in elecron rest energy 
+IntEnergy = logspace(x_l,x_u,NEnergy), log(1e1)*(x_u-x_l)/(NEnergy-1.) 
+x,x_weight=IntEnergy #energies
+phase =linspace(0,1,num=NPhase,endpoint=True,retstep=False) #input phase points
+energy_keV = x*evere/1e3  # # input energies in keV
+
+star.update()  
+photosphere.integrate(energy_keV, threads=1, stokes=True) 
+
+#Saving the pulse corresponding accurately to that from x-patap/CompSlab
+save_pulse("pulses/pulse_test_25052022_X") #if numerical_atmos=False (burst atmosphere)
+#save_pulse("pulses/pulse_test_26052022_thom_corr2X") #if numerical_atmos=True (Thomson atmosphere)
+#exit()
+
+likelihood = xpsi.Likelihood(star = star, signals = signals,
+                             num_energies=128,
+                             threads=1,
+                             externally_updated=False)
+
+xpsi.set_phase_interpolant('Akima')
+     
 
 print(star)
 
@@ -1289,50 +1321,20 @@ def plot_pulse():
 
 likelihood(p, reinitialise=False)
 
-
-def find_idx(array, value):
-    array = np.asarray(array)
-    idx = (np.abs(array - value)).argmin()
-    return idx
-    
-def save_pulse(PulsName): 
-    """Save the pulse profile in a file. """ 
-    eind = find_idx(signals[0][0].energies,4.94)
-    pulse1 = photosphere.signal[0][0][eind,:]
-    pulseQ = photosphere.signalQ[0][0][eind,:] 
-    pulseU = photosphere.signalU[0][0][eind,:] 
-    phase1 = signals[0][0].phases[0]
-    outF = open(PulsName + '_F.bin','w')
-    outf = open(PulsName + '_p.bin','w')
-    outQ = open(PulsName + '_Q.bin','w') 
-    outU = open(PulsName + '_U.bin','w')       
-    pulse1.tofile(outF,format="%e") 
-    phase1.tofile(outf,format="%e")
-    pulseQ.tofile(outQ,format="%e") 
-    pulseU.tofile(outU,format="%e") 
-
-#save_pulse("pulses/pulse_test_18032022")
-
 #using the same vector, calculate the signal in X-PATAP:
 ########################################################
-import sys
-sys.path.append("/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/")
+#import sys
+#sys.path.append("/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/")
 from polpulse_call_xpsi import compf
 
-#from numpy import logspace, zeros, fromfile, linspace
-#from numpy import pi, exp, log, sqrt, sin, cos, arccos, arctan2
-#NEnergy = 281 #50 
-#NPhase = 150
-#x_l, x_u = -3.7 , 0.3 #-1.2 # lower and upper bounds of the log_10 energy span 
-#evere=.5109989e6 # electron volts in elecron rest energy 
-#IntEnergy = logspace(x_l,x_u,NEnergy), log(1e1)*(x_u-x_l)/(NEnergy-1.) 
-#x,x_weight=IntEnergy #energies
-#phase =linspace(0,1,num=NPhase,endpoint=True,retstep=False) #input phase points
-#energy_keV = x*evere/1e3  # # input energies in keV
 #Or the grid used in X-PSI:
-energy_keV = signals[0][0].energies
-phase = signals[0][0].phases[0]
+#energy_keV = signals[0][0].energies
+#phase = signals[0][0].phases[0]
 
+#print(len(energy_keV))
+#print(len(phase))
+#print(find_idx(signals[0][0].energies,4.94))
+#exit()
 #print("energies and phases used by polpulse:")
 #print(energy_keV)
 #print(phase)
@@ -1344,8 +1346,11 @@ incl = 40.0 #60.0
 theta = 60.0 #20.0
 rho = 10.0 #1.0
 pol = 0.0
-Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,atmos_path="/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thom/")
+#Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,atmos_path="/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thom/")
+Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_rho10f600_Tc_281_pshift_match_X',savePulse=False,atmos_path="atmos_thom/")
+#Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_thom_rho10f600_Tc_281_pshift_match_X',savePulse=False,atmos_path="atmos_thom/")
 print(len(Flux),len(Flux[:,0,0]),len(Flux[0,:,0]),len(Flux[0,0,:]))
+exit()
 
 flux_I = Flux[:,:,0]
 flux_Q = Flux[:,:,1]
