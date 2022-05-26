@@ -942,7 +942,7 @@ class CustomPhotosphere(xpsi.Photosphere):
                           self.hot.objects[1]['s__super_temperature']])
 
 
-numerical_atmos = True
+numerical_atmos = False #True
 
 if numerical_atmos:
     photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
@@ -1019,8 +1019,8 @@ star.update()
 photosphere.integrate(energy_keV, threads=1, stokes=True) 
 
 #Saving the pulse corresponding accurately to that from x-patap/CompSlab
-#save_pulse("pulses/pulse_test_25052022_X") #if numerical_atmos=False (burst atmosphere)
-save_pulse("pulses/pulse_test_26052022_thom_corr2X") #if numerical_atmos=True (Thomson atmosphere)
+save_pulse("pulses/pulse_test_25052022_X") #if numerical_atmos=False (burst atmosphere)
+#save_pulse("pulses/pulse_test_26052022_thom_corr2X") #if numerical_atmos=True (Thomson atmosphere)
 #exit()
 
 likelihood = xpsi.Likelihood(star = star, signals = signals,
@@ -1347,8 +1347,8 @@ theta = 60.0 #20.0
 rho = 10.0 #1.0
 pol = 0.0
 #Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,atmos_path="/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thom/")
-#Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_rho10f600_Tc_281_pshift_match_X',savePulse=False,atmos_path="atmos_thom/")
-Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_thom_rho10f600_Tc_281_pshift_match_X',savePulse=False,atmos_path="atmos_thom/")
+Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_rho10f600_Tc_281_pshift_match_X',savePulse=False,atmos_path="atmos_thom/")
+#Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_thom_rho10f600_Tc_281_pshift_match_X',savePulse=False,atmos_path="atmos_thom/")
 print(len(Flux),len(Flux[:,0,0]),len(Flux[0,:,0]),len(Flux[0,0,:]))
 exit()
 
@@ -1619,6 +1619,7 @@ if __name__ == '__main__': # sample from the posterior
     # note that mutual refs are already stored in the likelihood and prior
     # objects to facilitate communication externally of the sampling process
     xpsi.Sample.nested(likelihood, prior, check_kwargs, **runtime_params)
+
 
 
 
