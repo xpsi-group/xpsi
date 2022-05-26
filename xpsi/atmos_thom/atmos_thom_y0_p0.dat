@@ -1,0 +1,9 @@
+Thomson
+1.0 = total depth tau_T
+-3.7 0.3 = log_10 energy span from to
+0.1 = dimensionless electron gas temperature in m_ec^2
+0.002 = dimensionless initial bb photons temperature in m_ec^2
+23 = Number of scatterings computed
+22 = NMu, NZenith=2 NMu, number of points in mu grid
+281 = NEnergy, number of points in x grid
+7 10 100 = NGamma NAzimuth NDepth parameters
