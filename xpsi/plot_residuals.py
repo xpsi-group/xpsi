@@ -111,10 +111,10 @@ def plot_pulse_resid(photosphere,signals,phasepol=None,qnpol=None,unpol=None,inp
             if(phase_arc[ipha+1] > phase_arc[ipha]):    
                 ax.plot(phase_arc[ipha:ipha+2],pulse_arcQ[ipha:ipha+2],'--',color='blue',dashes=[2,2])    	
     ax2 = fig.add_subplot(212)
-    #ax2.plot(phasepol,(qnpol-Q1pn)/qnpol,'--',color='red')        
-    ax2.plot(phasepol,(qnpol-Q1pn),'--',color='red')
-    #ax2.set_ylabel('Residuals [%]')        
-    ax2.set_ylabel('Residuals [arbitrary]')        
+    ax2.plot(phasepol,(qnpol-Q1pn)/qnpol,'--',color='red')        
+    #ax2.plot(phasepol,(qnpol-Q1pn),'--',color='red')
+    ax2.set_ylabel('Residuals [%]')        
+    #ax2.set_ylabel('Residuals [arbitrary]')        
     ax2.set_xlabel('Phase [cycles]')
     fig.savefig("figs/signalsQ_residX.pdf",bbox_inches='tight')   
     
@@ -137,10 +137,10 @@ def plot_pulse_resid(photosphere,signals,phasepol=None,qnpol=None,unpol=None,inp
             if(phase_arc[ipha+1] > phase_arc[ipha]):    
                 ax.plot(phase_arc[ipha:ipha+2],pulse_arcU[ipha:ipha+2],'--',color='blue',dashes=[2,2])         	
     ax2 = fig.add_subplot(212)
-    #ax2.plot(phasepol,(unpol-U1pn)/unpol,'--',color='red')    
-    ax2.plot(phasepol,(unpol-U1pn),'--',color='red') 
-    #ax2.set_ylabel('Residuals [%]')               
-    ax2.set_ylabel('Residuals [arbitrary]')    
+    ax2.plot(phasepol,(unpol-U1pn)/unpol,'--',color='red')    
+    #ax2.plot(phasepol,(unpol-U1pn),'--',color='red') 
+    ax2.set_ylabel('Residuals [%]')               
+    #ax2.set_ylabel('Residuals [arbitrary]')    
     ax2.set_xlabel('Phase [cycles]')
     fig.savefig("figs/signalsU_residX.pdf",bbox_inches='tight')      
      

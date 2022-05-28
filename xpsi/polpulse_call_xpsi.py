@@ -11,7 +11,7 @@ Spectrum={
       2:'Burst',
       1:'simplThomson', 
       0:'FromFile'
-}[1] 
+}[2]#[1] 
 
 oblateness='AlGendy'
 
@@ -318,7 +318,7 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 	NPhase = len(ph)
 
 	phase_obs=zeros(NPhi)
-	nu=401.0#1.0#100 #600 # star rotation frequency in Hz
+	nu=600.0 #401.0#1.0#100 #600 # star rotation frequency in Hz
 	#M=1.4 # star mass in solar masses
 	M=mass #input param
 	R_g=M*2.95325 # gravitational Schwarzschild radius #TS: Made this more accurate
@@ -326,8 +326,8 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 	R_e=eqrad #input param
 
 	#Increase the resolution for the following when considering large spots!:
-	NRho=4 #40 #4 #4 #20 #4 #40 #4#40#20#4#2#8
-	NVarphi=2 #40 #2 #6 #20 #2 #40 #2#40#20#6#4
+	NRho=40 #4 #4 #20 #4 #40 #4#40#20#4#2#8
+	NVarphi=40 #2 #6 #20 #2 #40 #2#40#20#6#4
 
 	# IntVarphi = linspace(0,2*pi,num=NVarphi,endpoint=False,retstep=True)
 	IntVarphi = leggauss(NVarphi)
@@ -666,7 +666,7 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 			dphase1=phase0-phase1
 			dphase2=phase2-phase0
 			dphase=phase2-phase1
-			Flux[t-1]+=(Flux_obs[t2]*dphase1+Flux_obs[t1]*dphase2)/dphase 
+			Flux[t]+=(Flux_obs[t2]*dphase1+Flux_obs[t1]*dphase2)/dphase 
 			#TS: changed here t to t-1 to match the phaseshift with fortran or X-PSI results
 
 	if savePulse:
