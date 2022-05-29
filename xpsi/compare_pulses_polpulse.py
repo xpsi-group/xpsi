@@ -24,9 +24,33 @@ G=13275412528e1 # G*M_sol in km^3/s^2
 c=299792458e-3 # speed of light in km/s
 
 NEnergy = 281 #128 #281 # 50# 101 # number of energy points (x)
-x_l, x_u = -3.7 , .3 # lower and upper bounds of the log_10 energy span
-IntEnergy = logspace(x_l,x_u,NEnergy), log(1e1)*(x_u-x_l)/(NEnergy-1.) # sample points and weights for integrations over the spectrum computing sorce function
+x_l, x_u = -3.7 , .3 
+IntEnergy = logspace(x_l,x_u,NEnergy), log(1e1)*(x_u-x_l)/(NEnergy-1.)
 x_ene,x_weight=IntEnergy
+energy_keV = x_ene*evere/1e3
+#energy_keV = [ 1.,          1.01975887,  1.03990815,  1.06045555,  1.08140895,  1.10277637,
+#  1.12456598,  1.14678613,  1.16944532,  1.19255224,  1.21611572,  1.24014479,
+#  1.26464864,  1.28963666,  1.31511842,  1.34110367,  1.36760236,  1.39462463,
+#  1.42218084,  1.45028152,  1.47893744,  1.50815956,  1.53795909,  1.56834742,
+#  1.59933618,  1.63093725,  1.66316273,  1.69602494,  1.72953647,  1.76371015,
+#  1.79855906,  1.83409655,  1.87033622,  1.90729194,  1.94497787,  1.98340843,
+#  2.02259833,  2.06256258,  2.10331648,  2.14487563,  2.18725594,  2.23047364,
+#  2.27454527,  2.31948771,  2.36531816,  2.41205416,  2.45971362,  2.50831477,
+#  2.55787623,  2.60841697,  2.65995633,  2.71251405,  2.76611025,  2.82076546,
+#  2.87650059,  2.93333698,  2.99129639,  3.05040102,  3.11067348,  3.17213687,
+#  3.2348147,   3.29873097,  3.36391015,  3.43037721,  3.49815757,  3.5672772,
+#  3.63776256,  3.70964062,  3.78293892,  3.8576855 ,  3.93390899,  4.01163858,
+#  4.09090401,  4.17173564,  4.2541644,   4.33822187,  4.42394022,  4.51135226,
+#  4.60049147,  4.69139197,  4.78408856,  4.87861672,  4.97501266,  5.07331327,
+#  5.17355619,  5.2757798,   5.38002323,  5.48632639,  5.59472998,  5.70527551,
+#  5.81800528,  5.93296247,  6.05019109,  6.16973601,  6.291643,    6.41595873,
+#  6.54273081,  6.67200775,  6.80383906,  6.93827521,  7.07536767,  7.21516891,
+#  7.35773247,  7.50311293,  7.65136594,  7.80254826,  7.95671777,  8.11393349,
+#  8.27425562,  8.43774553,  8.60446582,  8.77448032,  8.9478541,   9.12465356,
+#  9.30494637,  9.48880157,  9.67628953,  9.86748204, 10.06245231, 10.26127496,
+# 10.46402612, 10.67078342, 10.88162601, 11.0966346,  11.31589153, 11.53948072,
+# 11.76748778, 12.        ]
+
 
 
 figA = figure(figsize=(14,30), dpi=300)
@@ -90,22 +114,23 @@ for ish in range(1,-1,-1): #(0,2):#len(shapes)):
 		#PulsName='../../../polcslab/ixpe_sim/pulse_model/pulse_comparison_file_old_laptop/pulse_comp_xpsi'
 		#PulsName='pulses/xpatap_rho10f600_Tc_'
 		#PulsName='pulses/xpatap_rho10f600_Tc_281_pshift_match_'
-		PulsName='pulses/xpatap_thom_s21lr_rho1f401_Tc_281_pshift_match_'
+		PulsName='pulses/all_E_281/xpatap_ps21_thom_s21'
 		#PulsName='../../../polcslab/CompSlab/res/xpsi_comp/rho10_sp1_f600_burst_pshift_match_'
 		NPhase = 150 #121 #150
 	if(ish == 1):
 	        #PulsName='../../../polcslab/CompSlab/pOS_pulses/lbb_rho10_sp1_f600_obl_burst2_dt'
 		#pversion = '_test_25052022' #'7i_rho10f600_Tc'
 		#pversion = '_test_26052022_thom_corr2'
-		pversion = '_ps21_thom_s21'
-	        PulsName='pulses/pulse'+pversion #'pulses_lenovo/pulse'+pversion #pulses/pulse'+pversion#'pulses_lenovo/pulse'+pversion
-		NPhase = 121 #100
+		pversion = 'xpsi_ps21_thom_s21'
+	        PulsName='pulses/all_E_281/'+pversion #'pulses_lenovo/pulse'+pversion #pulses/pulse'+pversion#'pulses_lenovo/pulse'+pversion
+		NPhase = 150 #121 #100
 	computePulse= True
 	plotAtm=not True
 	plotPulse=True
 	mod=True
 
 	print(PulsName)
+	eind = 80 #118 #95
 
 	if(ish==0):
 		inFlux = open(PulsName+'FF.bin')
@@ -113,8 +138,9 @@ for ish in range(1,-1,-1): #(0,2):#len(shapes)):
 		Flux1 = fromfile(inFlux)
 		fluxlcurve0 = Flux1[0:len(Flux1):3*NEnergy] #light curve with lowest E
 		fluxspec0 = Flux1[0:3*NEnergy:3] #spectrum at phase=0
-		ene = 118 #82 #118#166#140#166#140 #The chosen energy index
+		ene = eind #82 #118 #82 #118#166#140#166#140 #The chosen energy index
 		#print("The chosen energy (keV): ", x_ene[ene]*evere/1e3)
+		print("The chosen energy (keV): ", energy_keV[ene])
 		fluxlcurve_Iene = Flux1[0+ene*3:len(Flux1):3*NEnergy]
 		fluxlcurve_Qene = Flux1[1+ene*3:len(Flux1):3*NEnergy]
 		fluxlcurve_Uene = Flux1[2+ene*3:len(Flux1):3*NEnergy]
@@ -127,10 +153,10 @@ for ish in range(1,-1,-1): #(0,2):#len(shapes)):
 		#	fluxlcurve_Qene =+ Flux1[1+iene*3:len(Flux1):3*NEnergy]
 		#	fluxlcurve_Uene =+ Flux1[2+iene*3:len(Flux1):3*NEnergy]
 	else:
-		inFlux = open(PulsName+'_F.bin')
-		inphi = open(PulsName+'_p.bin')
-		inQ = open(PulsName+'_Q.bin')
-		inU = open(PulsName+'_U.bin')
+		inFlux = open(PulsName+'_F'+str(eind)+'.bin')
+		inphi = open(PulsName+'_p'+str(eind)+'.bin')
+		inQ = open(PulsName+'_Q'+str(eind)+'.bin')
+		inU = open(PulsName+'_U'+str(eind)+'.bin')
 
 		Flux1 = fromfile(inFlux)
 		FluxQ = fromfile(inQ)
@@ -157,8 +183,9 @@ for ish in range(1,-1,-1): #(0,2):#len(shapes)):
 	U=zeros(NPhase)#+1)
 	for t in range(NPhase):#+1):
 		if(ish==0):
-			I[t],Q[t],U[t]=fluxlcurve_Iene[t-1],fluxlcurve_Qene[t-1],fluxlcurve_Uene[t-1] 
-			#print("Q=",Q[t])
+			#I[t],Q[t],U[t]=fluxlcurve_Iene[t-1],fluxlcurve_Qene[t-1],fluxlcurve_Uene[t-1]
+			#Or when t-1 not used in polpulse (did not test though): 
+			I[t],Q[t],U[t]=fluxlcurve_Iene[t],fluxlcurve_Qene[t],fluxlcurve_Uene[t]
 		else:
 			I[t],Q[t],U[t]=Flux1[t],FluxQ[t],FluxU[t]
 
@@ -383,7 +410,7 @@ if(plot_PA_residuals):
 	norm = 1.0#abs(np.max(PA_acm0)-np.min(PA_acm0))
 
 	res_PA = (PA_acm0-PA0_VP04_interp(phase_acm0))/norm
-	print(res_PA)
+	#print(res_PA)
 	plotAd.plot(phase_acm0[abs(res_PA) < 5.0],res_PA[abs(res_PA) < 5.0],"-",markersize=5,color="black")#"red")
 
 	print("sum_PA_err=",sum(res_PA[abs(res_PA)<5.0]))

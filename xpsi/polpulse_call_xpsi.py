@@ -11,7 +11,7 @@ Spectrum={
       2:'Burst',
       1:'simplThomson', 
       0:'FromFile'
-}[2]#[1] 
+}[1] 
 
 oblateness='AlGendy'
 
@@ -318,7 +318,7 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 	NPhase = len(ph)
 
 	phase_obs=zeros(NPhi)
-	nu=600.0 #401.0#1.0#100 #600 # star rotation frequency in Hz
+	nu=401.0#1.0#100 #600 # star rotation frequency in Hz
 	#M=1.4 # star mass in solar masses
 	M=mass #input param
 	R_g=M*2.95325 # gravitational Schwarzschild radius #TS: Made this more accurate

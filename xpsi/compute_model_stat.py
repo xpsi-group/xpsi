@@ -765,8 +765,8 @@ if not skip_rest:
 
 #For IXPE fitting with 1-spot
 bounds = dict(cos_inclination = (0.0, 1.0))# (Earth) inclination to rotation axis
-values =  dict(frequency = 600.0,mass=1.4,radius=12.0,distance= 1.0)
-#values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
+#values =  dict(frequency = 600.0,mass=1.4,radius=12.0,distance= 1.0)
+values =  dict(frequency = 401.0,mass=1.4,radius=12.0,distance= 1.0)
 #values =  dict(frequency = 1.0,mass=1.4,radius=12.0,distance= 1.0)
 #values =  dict(frequency = 1.0,mass=0.01,radius=12.0,distance= 1.0)
 spacetime = xpsi.Spacetime(bounds=bounds, values=values)
@@ -784,8 +784,8 @@ deg2rad = np.pi/180.0
 tempkeV = 1.0219978 #1.0
 tempK = np.log10(tempkeV*11604525.00617)
 print("tempK=",tempK)
-#values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
-values = {'super_radius': 10.0*deg2rad,'super_temperature': tempK}              
+values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
+#values = {'super_radius': 10.0*deg2rad,'super_temperature': tempK}              
 
 ceding=False
 
@@ -942,7 +942,7 @@ class CustomPhotosphere(xpsi.Photosphere):
                           self.hot.objects[1]['s__super_temperature']])
 
 
-numerical_atmos = False #True
+numerical_atmos = True
 
 if numerical_atmos:
     photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
@@ -971,12 +971,12 @@ if two_spots:
         0.0,
         20.0*deg2rad]
 else:
-    #p = [math.cos(60.0*deg2rad),
-    #    0.0,
-    #    20.0*deg2rad]
-    p = [math.cos(40.0*deg2rad),
+    p = [math.cos(60.0*deg2rad),
         0.0,
-        60.0*deg2rad]        
+        20.0*deg2rad]
+    #p = [math.cos(40.0*deg2rad),
+    #    0.0,
+    #    60.0*deg2rad]        
     pmaxL = [0.53979588066914197, 0.0382707326272626602, 0.313082096977971847] #[0.58450219, 0.70448103, 0.0056285 ] 
     #p = pmaxL 
 
@@ -987,17 +987,17 @@ def find_idx(array, value):
     idx = (np.abs(array - value)).argmin()
     return idx
     
-def save_pulse(PulsName): 
+def save_pulse(PulsName,eind=118): 
     """Save the pulse profile in a file. """ 
-    eind = 118 #find_idx(signals[0][0].energies,4.94)
+    #eind = 118 #find_idx(signals[0][0].energies,4.94)
     pulse1 = photosphere.signal[0][0][eind,:]
     pulseQ = photosphere.signalQ[0][0][eind,:] 
     pulseU = photosphere.signalU[0][0][eind,:] 
     phase1 = hot.phases_in_cycles #signals[0][0].phases[0]
-    outF = open(PulsName + '_F.bin','w')
-    outf = open(PulsName + '_p.bin','w')
-    outQ = open(PulsName + '_Q.bin','w') 
-    outU = open(PulsName + '_U.bin','w')       
+    outF = open(PulsName + '_F'+str(eind)+'.bin','w')
+    outf = open(PulsName + '_p'+str(eind)+'.bin','w')
+    outQ = open(PulsName + '_Q'+str(eind)+'.bin','w') 
+    outU = open(PulsName + '_U'+str(eind)+'.bin','w')       
     pulse1.tofile(outF,format="%e") 
     phase1.tofile(outf,format="%e")
     pulseQ.tofile(outQ,format="%e") 
@@ -1015,12 +1015,14 @@ x,x_weight=IntEnergy #energies
 phase =linspace(0,1,num=NPhase,endpoint=True,retstep=False) #input phase points
 energy_keV = x*evere/1e3  # # input energies in keV
 
-#star.update()  
-#photosphere.integrate(energy_keV, threads=1, stokes=True) 
+star.update()  
+photosphere.integrate(energy_keV, threads=1, stokes=True) 
 #Saving the pulse corresponding accurately to that from x-patap/CompSlab
 #save_pulse("pulses/pulse_test_25052022_X") #if numerical_atmos=False (burst atmosphere)
 #save_pulse("pulses/pulse_ps21_thom_s21X") #if numerical_atmos=True (Thomson atmosphere)
 #exit()
+for ie in range(len(energy_keV)):
+	save_pulse("pulses/all_E_281/xpsi_ps21_thom_s21X",ie) 
 
 likelihood = xpsi.Likelihood(star = star, signals = signals,
                              num_energies=128,#281,#128,
@@ -1334,20 +1336,24 @@ from polpulse_call_xpsi import compf
 #print(len(phase))
 #print(find_idx(signals[0][0].energies,4.94))
 #exit()
-#print("energies and phases used by polpulse:")
-#print(energy_keV)
-#print(phase)
+print("energies and phases used by polpulse:")
+print(energy_keV)
+print(phase)
 #exit()
+
+#Save pulses for X-PSI
+#for ie in range(len(energy_keV)):
+#	save_pulse("pulses/all_E/xpsi_ps21_thom_s21X",ie) 
 
 mass= 1.4 #0.01
 rad = 12.0
-incl = 40.0 #60.0
-theta = 60.0 #20.0
-rho = 10.0 #1.0
+incl = 60.0
+theta = 20.0
+rho = 1.0
 pol = 0.0
 #Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,atmos_path="/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thom/")
 #Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_rho10f600_Tc_281_pshift_match_X',savePulse=True,atmos_path="atmos_thom/")
-Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_test_X',savePulse=False,atmos_path="atmos_thom/")
+Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/all_E_281/xpatap_ps21_thom_s21X',savePulse=True,atmos_path="atmos_thom/")
 print(len(Flux),len(Flux[:,0,0]),len(Flux[0,:,0]),len(Flux[0,0,:]))
 #exit()
 
@@ -1383,22 +1389,24 @@ emax = 8.0
 
 
 #psind = 127
-psind0 = find_idx(energy_keV,4.94)#5.0)
-psind = psind0+1 #find_idx(energy_keV,5.1)
-#print('psind=',psind)
-#flux_Ibol = flux_I[:,psind]
-#flux_Qbol = flux_Q[:,psind]
-#flux_Ubol = flux_U[:,psind]
+#psind0 = find_idx(energy_keV,4.94)#5.0)
+#psind = psind0+1 #find_idx(energy_keV,5.1)
+psind0 = find_idx(energy_keV,2.0)
+psind = find_idx(energy_keV,8.0)
 
 print("psind0:",psind0)
 print("psind:",psind)
-#exit()
+
 #photosphere.integrate(energy_keV, threads=1, stokes=True)
 #star.update() 
 print("x-psi energies:",signals[0][0].energies)
 print("x-patap energies:",energy_keV)
-psind0_xpsi = find_idx(signals[0][0].energies,4.94)
-psind_xpsi = psind0_xpsi+1
+
+#psind0_xpsi = find_idx(signals[0][0].energies,4.94)
+#psind_xpsi = psind0_xpsi+1
+psind0_xpsi = find_idx(signals[0][0].energies,2.0)
+psind_xpsi = find_idx(signals[0][0].energies,8.0)
+
 print("psind0_xpsi:",psind0_xpsi)
 print("psind_xpsi:",psind_xpsi)
 
@@ -1432,7 +1440,7 @@ from plot_residuals import plot_pulse_resid
 
 _ = plot_pulse_resid(photosphere,signals,phasepol=phase,qnpol=qnpol,unpol=unpol,inpol=inpol,psind0=psind0_xpsi,psind=psind_xpsi)
 
-_ = plot_pulse_stokes(phasepol=phase,qnpol=qnpol,unpol=unpol,inpol=inpol,psind0=psind0,psind=psind)
+_ = plot_pulse_stokes(phasepol=phase,qnpol=qnpol,unpol=unpol,inpol=inpol,psind0=psind0_xpsi,psind=psind_xpsi)
 
 from scipy.stats import truncnorm
 class CustomPrior(xpsi.Prior):
