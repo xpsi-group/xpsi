@@ -1013,7 +1013,30 @@ evere=.5109989e6 # electron volts in elecron rest energy
 IntEnergy = logspace(x_l,x_u,NEnergy), log(1e1)*(x_u-x_l)/(NEnergy-1.) 
 x,x_weight=IntEnergy #energies
 phase =linspace(0,1,num=NPhase,endpoint=True,retstep=False) #input phase points
-energy_keV = x*evere/1e3  # # input energies in keV
+#energy_keV = x*evere/1e3  # # input energies in keV
+energy_keV = np.array([ 1.,          1.01975887,  1.03990815,  1.06045555,  1.08140895,  1.10277637,
+  1.12456598,  1.14678613,  1.16944532,  1.19255224,  1.21611572,  1.24014479,
+  1.26464864,  1.28963666,  1.31511842,  1.34110367,  1.36760236,  1.39462463,
+  1.42218084,  1.45028152,  1.47893744,  1.50815956,  1.53795909,  1.56834742,
+  1.59933618,  1.63093725,  1.66316273,  1.69602494,  1.72953647,  1.76371015,
+  1.79855906,  1.83409655,  1.87033622,  1.90729194,  1.94497787,  1.98340843,
+  2.02259833,  2.06256258,  2.10331648,  2.14487563,  2.18725594,  2.23047364,
+  2.27454527,  2.31948771,  2.36531816,  2.41205416,  2.45971362,  2.50831477,
+  2.55787623,  2.60841697,  2.65995633,  2.71251405,  2.76611025,  2.82076546,
+  2.87650059,  2.93333698,  2.99129639,  3.05040102,  3.11067348,  3.17213687,
+  3.2348147,   3.29873097,  3.36391015,  3.43037721,  3.49815757,  3.5672772,
+  3.63776256,  3.70964062,  3.78293892,  3.8576855 ,  3.93390899,  4.01163858,
+  4.09090401,  4.17173564,  4.2541644,   4.33822187,  4.42394022,  4.51135226,
+  4.60049147,  4.69139197,  4.78408856,  4.87861672,  4.97501266,  5.07331327,
+  5.17355619,  5.2757798,   5.38002323,  5.48632639,  5.59472998,  5.70527551,
+  5.81800528,  5.93296247,  6.05019109,  6.16973601,  6.291643,    6.41595873,
+  6.54273081,  6.67200775,  6.80383906,  6.93827521,  7.07536767,  7.21516891,
+  7.35773247,  7.50311293,  7.65136594,  7.80254826,  7.95671777,  8.11393349,
+  8.27425562,  8.43774553,  8.60446582,  8.77448032,  8.9478541,   9.12465356,
+  9.30494637,  9.48880157,  9.67628953,  9.86748204, 10.06245231, 10.26127496,
+ 10.46402612, 10.67078342, 10.88162601, 11.0966346,  11.31589153, 11.53948072,
+ 11.76748778, 12.        ])
+
 
 star.update()  
 photosphere.integrate(energy_keV, threads=1, stokes=True) 
@@ -1022,7 +1045,7 @@ photosphere.integrate(energy_keV, threads=1, stokes=True)
 #save_pulse("pulses/pulse_ps21_thom_s21X") #if numerical_atmos=True (Thomson atmosphere)
 #exit()
 for ie in range(len(energy_keV)):
-	save_pulse("pulses/all_E_281/xpsi_ps21_thom_s21X",ie) 
+	save_pulse("pulses/all_E_128b/xpsi_ps21_thom_s21X",ie) 
 
 likelihood = xpsi.Likelihood(star = star, signals = signals,
                              num_energies=128,#281,#128,
@@ -1342,8 +1365,9 @@ print(phase)
 #exit()
 
 #Save pulses for X-PSI
-#for ie in range(len(energy_keV)):
-#	save_pulse("pulses/all_E/xpsi_ps21_thom_s21X",ie) 
+for ie in range(len(energy_keV)):
+	save_pulse("pulses/all_E_128a/xpsi_ps21_thom_s21X",ie) 
+
 
 mass= 1.4 #0.01
 rad = 12.0
@@ -1353,7 +1377,7 @@ rho = 1.0
 pol = 0.0
 #Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,atmos_path="/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thom/")
 #Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_rho10f600_Tc_281_pshift_match_X',savePulse=True,atmos_path="atmos_thom/")
-Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/all_E_281/xpatap_ps21_thom_s21X',savePulse=True,atmos_path="atmos_thom/")
+Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/all_E_128a/xpatap_ps21_thom_s21X',savePulse=True,atmos_path="atmos_thom/")
 print(len(Flux),len(Flux[:,0,0]),len(Flux[0,:,0]),len(Flux[0,0,:]))
 #exit()
 
