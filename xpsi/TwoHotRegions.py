@@ -1,8 +1,8 @@
-from .global_imports import *
+from xpsi.global_imports import *
 
-from .Parameter import Parameter
+#from .Parameter import Parameter
 
-from .HotRegion import HotRegion, PulseError
+from xpsi.HotRegion import HotRegion, PulseError
 
 class TwoHotRegions(HotRegion):
     """ Two photospheric hot regions, related via antipodal reflection symmetry.

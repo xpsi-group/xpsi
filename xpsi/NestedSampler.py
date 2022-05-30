@@ -1,9 +1,9 @@
 from .global_imports import *
 
-from . import make_verbose, _verbose
+from xpsi import make_verbose, _verbose
 
-from .Likelihood import Likelihood
-from .Prior import Prior
+from xpsi.Likelihood import Likelihood
+from xpsi.Prior import Prior
 
 try:
     import pymultinest

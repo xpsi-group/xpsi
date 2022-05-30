@@ -1,11 +1,11 @@
 
-from .global_imports import *
+from xpsi.global_imports import *
 
-from .cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed_cellMesh
-from .cellmesh.rays import compute_rays as _compute_rays
+from xpsi.cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed_cellMesh
+from xpsi.cellmesh.rays import compute_rays as _compute_rays
 
-from .Parameter import Parameter
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class RayError(xpsiError):
     """ Raised if a problem was encountered during ray integration. """
@@ -181,13 +181,13 @@ class Everywhere(ParameterSubspace):
         # find the required integrator
         if invariant: # can we safely assume azimuthal invariance?
             self._time_invariant = True
-            from .cellmesh.integrator_for_time_invariance import integrate as _integrator
+            from xpsi.cellmesh.integrator_for_time_invariance import integrate as _integrator
         else: # more general purpose
             self._time_invariant = False
             if not self._integrator_toggle:
-                from .cellmesh.integrator import integrate as _integrator
+                from xpsi.cellmesh.integrator import integrate as _integrator
             else:
-                from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+                from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
         self._integrator = _integrator
 
     @property
@@ -248,7 +248,7 @@ class Everywhere(ParameterSubspace):
             return self._rayXpanda_defl_lim
         except AttributeError:
             try:
-                from .cellmesh import __rayXpanda_defl_lim__
+                from xpsi.cellmesh import __rayXpanda_defl_lim__
             except ImportError:
                 return None
             else:

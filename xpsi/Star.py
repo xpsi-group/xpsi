@@ -1,9 +1,9 @@
-from .global_imports import *
+#from .global_imports import *
 
-from .ParameterSubspace import ParameterSubspace
+from xpsi.ParameterSubspace import ParameterSubspace
 
-from .Spacetime import Spacetime
-from .Photosphere import Photosphere
+from xpsi.Spacetime import Spacetime
+from xpsi.Photosphere import Photosphere
 
 class Star(ParameterSubspace):
     """ Instances of :class:`Star` represent model stars.

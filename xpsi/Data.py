@@ -1,11 +1,10 @@
 
 __all__ = ["Data"]
 
-from .global_imports import *
-from . import global_imports
-from . import make_verbose
+from xpsi.global_imports import *
+from xpsi.__init__ import make_verbose
 
-from .Instrument import ChannelError
+from xpsi.Instrument import ChannelError
 
 class Data(object):
     """ A container for event data.

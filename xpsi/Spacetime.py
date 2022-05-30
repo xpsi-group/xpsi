@@ -1,9 +1,9 @@
-from .global_imports import *
+from xpsi.global_imports import *
 
-from . import make_verbose
+from xpsi import make_verbose
 
-from .Parameter import Parameter
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class Spacetime(ParameterSubspace):
     """ The ambient Schwarzschild spacetime and Earth coordinates.

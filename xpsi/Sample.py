@@ -1,9 +1,9 @@
 __all__ = ["nested", "ensemble"]
 
-from .global_imports import *
-from . import global_imports
-from . import _comm, _rank, _size, make_verbose
-from . import Likelihood
+from xpsi.global_imports import *
+#from xpsi import global_imports
+from xpsi import _comm, _rank, _size, make_verbose
+from xpsi import Likelihood
 
 posterior = None
 
@@ -52,7 +52,7 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
                           prior,
                           **kwargs)
 
-    if MPI or global_imports._size > 1:
+    if MPI or _size > 1:
         try:
             from schwimmbad import MPIPool
         except ImportError:

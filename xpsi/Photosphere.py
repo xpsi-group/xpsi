@@ -1,19 +1,19 @@
-from .global_imports import *
-from . import _warning, make_verbose, verbose
+from xpsi.global_imports import *
+from xpsi import _warning, make_verbose, verbose
 
 from os.path import join as _join
 
-from .Spacetime import Spacetime
-from .HotRegion import HotRegion
-from .Elsewhere import Elsewhere
-from .Everywhere import Everywhere
+from xpsi.Spacetime import Spacetime
+from xpsi.HotRegion import HotRegion
+from xpsi.Elsewhere import Elsewhere
+from xpsi.Everywhere import Everywhere
 
-from .Parameter import Parameter
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.ParameterSubspace import ParameterSubspace
 
-from .pixelmesh.integrator import integrate as _integrate
-from .tools.energy_integrator import energy_integrator
-from .tools.phase_integrator import phase_integrator
+from xpsi.pixelmesh.integrator import integrate as _integrate
+from xpsi.tools.energy_integrator import energy_integrator
+from xpsi.tools.phase_integrator import phase_integrator
 
 try:
     _mpl

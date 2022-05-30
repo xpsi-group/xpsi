@@ -31,7 +31,7 @@ def test_inv_gravradius_runs():
 
 def test_inv_gravradius_computes_correct_values():
     radius_sun = 2.95e3 / gi._km
-    mass = gi.inv_gravradius(radius_sun) / 2.0
+    mass = gi.inv_gravradius(radius_sun) / 2.0 # strange factor of 2
 
     assert np.isclose(mass, 1.0, rtol=0.002)
 
@@ -41,6 +41,6 @@ def test_inv_gravradius_jupiter():
     m_jupiter = 1.90e27
     mass_ratio = m_jupiter / 1.99e30
 
-    mass = gi.inv_gravradius(radius_sun) / 2.0
+    mass = gi.inv_gravradius(radius_sun) / 2.0 # strange factor of 2
 
     assert np.isclose(mass, mass_ratio, rtol=1e-3)

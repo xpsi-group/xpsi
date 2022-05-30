@@ -3,19 +3,19 @@
 """
 __all__ = ["Likelihood"]
 
-from . import _rank
-from . import make_verbose
+from xpsi.__init__ import _rank
+from xpsi.__init__ import make_verbose
 
-from .global_imports import *
+from xpsi.global_imports import *
 
-from .Star import Star
-from .Signal import Signal, LikelihoodError, construct_energy_array
-from .Background import Background
-from .Prior import Prior
-from .ParameterSubspace import ParameterSubspace
-from . import HotRegion
-from . import TwoHotRegions
-from . import Elsewhere
+from xpsi.Star import Star
+from xpsi.Signal import Signal, LikelihoodError, construct_energy_array
+#from xpsi.Background import Background
+from xpsi.Prior import Prior
+from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi import HotRegion
+#from xpsi import TwoHotRegions
+from xpsi import Elsewhere
 
 class Likelihood(ParameterSubspace):
     """ A container for all objects related to likelihood evaluation.

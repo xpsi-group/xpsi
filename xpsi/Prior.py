@@ -1,13 +1,13 @@
 __all__ = ["Prior"]
 
-from . import _comm, _size, _rank # of MPI.COMM_WORLD
+from xpsi import _comm, _size, _rank # of MPI.COMM_WORLD
 
-from .global_imports import *
+from xpsi.global_imports import *
 
-from . import make_verbose
+from xpsi import make_verbose
 
 from abc import ABCMeta, abstractmethod
-from .ParameterSubspace import ParameterSubspace
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class Prior(ParameterSubspace, metaclass=ABCMeta):
     """ The joint prior distribution of parameters (including hyperparameters).

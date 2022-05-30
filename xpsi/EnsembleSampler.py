@@ -1,10 +1,10 @@
 
-from .global_imports import *
+from xpsi.global_imports import *
 
-from . import _verbose
+from xpsi.__init__ import _verbose
 
-from matplotlib import pyplot as plt
-from matplotlib import rcParams
+#from matplotlib import pyplot as plt
+#from matplotlib import rcParams
 
 try:
     import emcee
@@ -17,10 +17,10 @@ else:
     if _verbose:
         print('Imported emcee version: %s' % emcee.__version__)
 
-from .Parameter import StrictBoundsError
-from .ParameterSubspace import ParameterSubspace
-from .Prior import Prior
-from .Posterior import Posterior, PriorError
+from xpsi.Parameter import StrictBoundsError
+from xpsi.ParameterSubspace import ParameterSubspace
+#from .Prior import Prior
+from xpsi.Posterior import Posterior, PriorError
 
 class EnsembleSampler(_EnsembleSampler):
     """ Derives from `emcee`_'s :class:`~emcee.EnsembleSampler`.

@@ -121,7 +121,7 @@ if not __XPSI_SETUP__:
             _append = ('.' if msg[-1] not in _ends else '')
             print('Warning: ' + msg + _append)
 
-    from . import global_imports
+    from xpsi import global_imports
 
     try:
         import rayXpanda
@@ -132,36 +132,36 @@ if not __XPSI_SETUP__:
         from .cellmesh import set_rayXpanda_deflection_limit
         set_rayXpanda_deflection_limit(global_imports._pi/2.0)
 
-    from .tools import set_phase_interpolant, set_energy_interpolant
+    from xpsi.tools import set_phase_interpolant, set_energy_interpolant
     set_phase_interpolant('Akima')
     set_energy_interpolant('Steffen')
 
-    from .Parameter import Parameter, Derive
-    from .ParameterSubspace import ParameterSubspace
+    from xpsi.Parameter import Parameter, Derive
+    from xpsi.ParameterSubspace import ParameterSubspace
 
-    from .Likelihood import Likelihood
-    from .Data import Data
-    from .Instrument import Instrument
-    from .Signal import Signal
+    from xpsi.Likelihood import Likelihood
+    from xpsi.Data import Data
+    from xpsi.Instrument import Instrument
+    from xpsi.Signal import Signal
 
-    from .Star import Star
-    from .Spacetime import Spacetime
-    from .Photosphere import Photosphere
-    from .HotRegion import HotRegion
-    from .TwoHotRegions import TwoHotRegions
-    from .HotRegions import HotRegions
-    from .Elsewhere import Elsewhere
-    from .Everywhere import Everywhere
+    from xpsi.Star import Star
+    from xpsi.Spacetime import Spacetime
+    from xpsi.Photosphere import Photosphere
+    from xpsi.HotRegion import HotRegion
+    from xpsi.TwoHotRegions import TwoHotRegions
+    from xpsi.HotRegions import HotRegions
+    from xpsi.Elsewhere import Elsewhere
+    from xpsi.Everywhere import Everywhere
 
-    from .Background import Background
-    from .Interstellar import Interstellar
+    from xpsi.Background import Background
+    from xpsi.Interstellar import Interstellar
 
-    from .Sample import nested
-    from .Prior import Prior
+    from xpsi.Sample import nested
+    from xpsi.Prior import Prior
 
     if global_imports._size == 1:
         try:
-            from .PostProcessing import *
+            from xpsi.PostProcessing import *
         except ImportError:
             pass
 

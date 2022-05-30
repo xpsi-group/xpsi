@@ -1,8 +1,8 @@
-from .global_imports import *
+#from .global_imports import *
 
-from .ParameterSubspace import ParameterSubspace
+from xpsi.ParameterSubspace import ParameterSubspace
 
-from .HotRegion import HotRegion
+from xpsi.HotRegion import HotRegion
 
 class HotRegions(ParameterSubspace):
     """ Two or more photospheric hot regions, where the hot regions are objects.

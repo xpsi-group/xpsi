@@ -1,11 +1,11 @@
 """ Abstract parameter subspace :math:`\mathbb{R}^{d}`. """
 
-from .global_imports import *
-from . import make_verbose
+from xpsi.global_imports import *
+from xpsi import make_verbose
 
 from abc import ABCMeta
 
-from .Parameter import Parameter
+from xpsi.Parameter import Parameter
 
 class ParameterSubspace(object, metaclass=ABCMeta):
     """ Ordered parameter subspace.
