@@ -68,13 +68,22 @@ class Likelihood(ParameterSubspace):
         new parameter values are set externally, e.g., in a prior object
         when inverse sampling the prior for nested sampling.
 
+    :param obj prior:
+        Instance of subclass of :class:`~.Prior.Prior`.
+
+    :param float max_energy:
+        Optional maximum of energy set for signal computation. If no maximum
+        is requested (the default), then the maximum is equal to the maximum
+        energy from the loaded instrument response models.
+
     """
     def __init__(self, star, signals,
                  num_energies = 128,
                  fast_rel_num_energies = 0.25,
                  threads = 1, llzero = -1.0e90,
                  externally_updated = False,
-                 prior = None):
+                 prior = None,
+                 max_energy = None):
 
         self.star = star
         self.signals = signals
@@ -97,9 +106,12 @@ class Likelihood(ParameterSubspace):
                 pass # quietly assume one photosphere object
 
             energies = construct_energy_array(num_energies,
-                                              list(signals)) # make a copy
+                                              list(signals),
+                                              max_energy)
             num = int( fast_rel_num_energies * num_energies )
-            fast_energies = construct_energy_array(num, list(signals))
+            fast_energies = construct_energy_array(num,
+                                                   list(signals),
+                                                   max_energy)
 
             for signal in signals:
                 signal.energies = energies

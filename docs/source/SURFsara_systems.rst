@@ -171,7 +171,7 @@ To prepare X-PSI from ``$HOME``:
 
 .. code-block:: bash
 
-    git clone https://github.com/ThomasEdwardRiley/xpsi.git
+    git clone https://github.com/xpsi-group/xpsi.git
     cd xpsi
     LDSHARED="icc -shared" CC=icc python setup.py install --user
 
@@ -341,7 +341,7 @@ Finally, we need the Python interface to MultiNest, GSL, and X-PSI, all starting
 
 .. code-block:: bash
 
-    cd; git clone https://github.com/ThomasEdwardRiley/xpsi.git
+    cd; git clone https://github.com/xpsi-group/xpsi.git
     cd xpsi
     LDSHARED="icc -shared" CC=icc python setup.py install --user    
 

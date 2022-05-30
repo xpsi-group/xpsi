@@ -207,9 +207,12 @@ class Data(object):
                   'Events loaded and binned')
     def phase_bin__event_list(cls, path, channels, phases,
                               channel_column,
-                              phase_column,
+                              phase_column=None,
+                              phase_averaged=False,
                               phase_shift=0.0,
+                              channel_edges=None,
                               skiprows=1,
+                              eV=False,
                               dtype=_np.int,
                               *args, **kwargs):
         """ Load a phase-folded event list and bin the events in phase.
@@ -219,7 +222,7 @@ class Data(object):
             column contains phases on the unit interval, and the second
             column contains the channel number.
 
-        :param list channels:
+        :param ndarray[n] channels:
             An (ordered) subset of instrument channels. It is advisable that
             these channels are a contiguous subset of instrument channels, but
             this not a strict requirement if you are comfortable with the
@@ -238,13 +241,23 @@ class Data(object):
         :param int phase_column:
             The column in the loaded file containing event phases.
 
+        :param bool phase_averaged:
+            Is the event data phase averaged?
+
         :param int channel_column:
             The column in the loaded file containing event channels.
+
+        :param ndarray[n+1] channel_edges:
+            The nominal energy edges of the instrument channels, assumed to
+            be contiguous if binning event energies in channel number.
 
         :param int skiprows:
             The number of top rows to skip when loading the events from file.
             The top row of couple of rows will typically be reserved for
             column headers.
+
+        :param bool eV:
+            Are event energies in eV, instead of channel number?
 
         :param type dtype:
             The type of the count data. Sensible options are ``numpy.int`` (the
@@ -262,15 +275,30 @@ class Data(object):
         data = _np.zeros((len(channels), len(phases)-1), dtype=dtype)
 
         for i in range(events.shape[0]):
-            if events[i,channel_column] in channels:
-                _temp = events[i,phase_column] + phase_shift
-                _temp -= _np.floor(_temp)
-
-                for j in range(phases.shape[0]-1):
-                    if phases[j] <= _temp <= phases[j+1]:
-                        data[channels.index(int(events[i,channel_column])),j] += 1
+            _channel = None
+            if eV:
+                for j in range(len(channel_edges) - 1):
+                    if channel_edges[j] <= events[i, channel_column]/1.0e3 < channel_edges[j+1]:
+                        _channel = channels[j]
                         break
+            else:
+                _channel = events[i, channel_column]
+
+            if _channel is not None and _channel in channels:
+                if not phase_averaged:
+                    _temp = events[i,phase_column] + phase_shift
+                    _temp -= _np.floor(_temp)
+                    for j in range(phases.shape[0] - 1):
+                        if phases[j] <= _temp <= phases[j+1]:
+                            data[channels.index(int(events[i,channel_column])),j] += 1
+                            break
+                else:
+                    data[channels.index(int(_channel)), 0] += 1
 
         yield 'Number of events constituting data set: %i.' % _np.sum(data)
 
         yield cls(data, channels, _np.array(phases), *args, **kwargs)
+
+    @classmethod
+    def bin__event_list(cls, *args, **kwargs):
+        return cls.phase_bin__event_list(*args, **kwargs)

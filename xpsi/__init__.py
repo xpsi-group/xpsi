@@ -3,6 +3,7 @@
 An open-source package for neutron star astrostatistics.
 
 """
+from __future__ import print_function
 __version__ = "0.7.8"
 __author__ = "Thomas E. Riley"
 
@@ -105,7 +106,7 @@ if not __XPSI_SETUP__:
     if _verbose:
         vstring = "Version: %s" % __version__
         name = "X-PSI: X-ray Pulse Simulation and Inference"
-        rtds = "https://thomasedwardriley.github.io/xpsi/"
+        rtds = "https://xpsi-group.github.io/xpsi"
         print("/=============================================\\")
         print("| " + name + " |")
         print("|---------------------------------------------|")

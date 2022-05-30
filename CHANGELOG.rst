@@ -33,7 +33,95 @@ Attribution
 ^^^^^^^^^^^
 
 
-[v0.7.8] - 2021-22-09
+[v0.7.10] - 2022-02-10
+~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Since version 0.7.9, several bugs have been fixed. For example, fixing the double counting of the second component of a dual temperature region when caching turned on. Also, documentation and example scripts have been updated.
+
+
+Fixed
+^^^^^
+
+* Bug in ``xpsi/Signal.py`` when looping over dual temperature components while using caching (D.C., T.S, S.V.). 
+
+* Bug in ``xpsi/Signal.py`` merging the new phase-shift parameter to the parameter subspace (T.S. & D.C.).
+
+* Missing global argument added in ``xpsi/module_generator.py`` (D.C.).
+
+* Documentation and example scripts updated and fixed to work with newest X-PSI versions (S.G.).
+
+* Bug in ``xpsi/PostProcessing/_corner.py`` not showing true values correctly in corner plots for simulated data (T.S. & Y.K.).
+
+* Corrected the link to the documentation pages when importing X-PSI (D.C. & T.S.).
+
+Added
+^^^^^
+
+Changed
+^^^^^^^
+
+Deprecated
+^^^^^^^^^^
+
+Removed
+^^^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+* Devarshi Choudhury (D.C.), Tuomo Salmi (T.S.), Serena Vinciguerra (S.V.), Sebastien Guillot (S.G.), and Yves Kini (Y.K.)
+
+
+[v0.7.9] - 2021-11-26
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* New program that automates generation of model modules for common usage
+  patterns, in particular the NICER modelling workflow. The program may be
+  located at ``xpsi/module_generator.py`` and executed as
+  ``python module_generator.py -h`` to see the usage help.
+
+
+Fixed
+^^^^^
+
+* The :class:`~.Background` call method body template and fixed the
+  :class:`~.Signal` class to access the correct property of the background
+  instance.
+
+* Documentation URLs to reference the organisation repository. (D.H.)
+
+
+Added
+^^^^^
+
+* Functionality to the :class:`~.Data` class method for event handling so that
+  it can load events from file when the energy in eV is given.
+
+* Optional maximum energy to use for ray-tracing simulations. Useful if there
+  is a background component such as a powerlaw that is jointly modelled with
+  higher-energy event data using a subset of instruments.
+
+* A phase-shift parameter for each :class:`~.Signal` instance. If there are
+  two or more phase-resolved data-sets, there may be a need to have a phase-
+  shifting parameter for each signal. For phase-summed data sets, the phase-
+  shift can be arbitrarily fixed. Phase-shifts can be derived from other
+  phase-shifts, and one signal's phase-shift can always be fixed as zero and
+  thus locked to the phase shifts of the hot regions.
+
+
+Attribution
+^^^^^^^^^^^
+
+* Daniela Huppenkothen (D.H.).
+
+
+[v0.7.8] - 2021-09-22
 ~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
