@@ -159,6 +159,14 @@ class EnsembleSampler(_EnsembleSampler):
         """
         if moments is not None:
             try:
+                if isinstance(moments, zip):
+                    moments = list(moments)
+                #print("moments: " + str(moments))
+                #print("type(moments): " + str(type(moments)))
+                #print("len(moments): " + str(len(moments)))
+                #print("ndims: " + str(self._ndims))
+                #for m in moments:
+                #    print(len(m))
                 assert isinstance(moments, list)
                 assert len(moments) == self._ndims
                 for m in moments:
