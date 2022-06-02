@@ -1,5 +1,3 @@
-from __future__ import division, print_function
-
 from xpsi.global_imports import *
 
 from xpsi.cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed_cellMesh

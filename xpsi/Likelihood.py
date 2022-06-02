@@ -10,11 +10,9 @@ from xpsi.global_imports import *
 
 from xpsi.Star import Star
 from xpsi.Signal import Signal, LikelihoodError, construct_energy_array
-#from xpsi.Background import Background
 from xpsi.Prior import Prior
 from xpsi.ParameterSubspace import ParameterSubspace
 from xpsi import HotRegion
-#from xpsi import TwoHotRegions
 from xpsi import Elsewhere
 
 class Likelihood(ParameterSubspace):

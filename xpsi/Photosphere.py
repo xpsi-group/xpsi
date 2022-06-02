@@ -1,6 +1,6 @@
 from xpsi.global_imports import *
 from xpsi import _warning, _verbose
-from xpsi.utils import  make_verbose
+from xpsi.utils import  make_verbose, verbose
 
 from os.path import join as _join
 
@@ -1409,6 +1409,7 @@ class Photosphere(ParameterSubspace):
                 else:
                     num_frames = len(energies)
         elif panel_layout is None:
+            print("panel_indices: " + str(panel_indices))
             x = int(_m.ceil(_m.sqrt(len(panel_indices))))
             if x * (x - 1) >= len(panel_indices):
                 panel_layout = (x, x - 1)
@@ -1618,6 +1619,7 @@ class Photosphere(ParameterSubspace):
                         for j in range(images.shape[2]):
                             integrated[i,:,j] = _integrated[:,j]
 
+                    print("integrated: " + str(integrated))
                     images = integrated
 
             if normalise_each_panel:
@@ -1634,6 +1636,7 @@ class Photosphere(ParameterSubspace):
                             print("j: " + str(j))
                             print("images.shape: " + str(images))
                             print("(images[:,j,:] > 0.0): " + str((images[:,j,:] > 0.0)))
+                            print("(sum(images[:,j,:] > 0.0)): " + str(_np.sum((images[:,j,:] > 0.0))))
 
                             MIN = _np.min(images[:,j,:][images[:,j,:] > 0.0])
                             MAX = _np.max(images[:,j,:])
