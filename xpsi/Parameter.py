@@ -1,6 +1,6 @@
 from xpsi.global_imports import *
 
-from xpsi import make_verbose
+from xpsi.utils import make_verbose
 
 import string
 

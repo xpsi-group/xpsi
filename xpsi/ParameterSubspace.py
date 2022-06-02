@@ -1,7 +1,7 @@
 """ Abstract parameter subspace :math:`\mathbb{R}^{d}`. """
 
 from xpsi.global_imports import *
-from xpsi import make_verbose
+from xpsi.utils import make_verbose
 
 from abc import ABCMeta
 

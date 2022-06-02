@@ -1,7 +1,5 @@
 from xpsi.global_imports import *
 
-#from .Parameter import Parameter
-
 from xpsi.HotRegion import HotRegion, PulseError
 
 class TwoHotRegions(HotRegion):

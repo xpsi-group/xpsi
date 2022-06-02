@@ -1,8 +1,8 @@
 __all__ = ["nested", "ensemble"]
 
 from xpsi.global_imports import *
-#from xpsi import global_imports
-from xpsi import _comm, _rank, _size, make_verbose
+from xpsi import _comm, _rank, _size
+from xpsi.utils import make_verbose
 from xpsi import Likelihood
 
 posterior = None

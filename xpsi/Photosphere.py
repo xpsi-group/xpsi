@@ -1,5 +1,6 @@
 from xpsi.global_imports import *
-from xpsi import _warning, make_verbose, verbose
+from xpsi import _warning, _verbose
+from xpsi.utils import  make_verbose
 
 from os.path import join as _join
 
@@ -1630,6 +1631,10 @@ class Photosphere(ParameterSubspace):
                         for j in range(images.shape[1]): # at each energy
                             # find extreme intensities over discrete set of image
                             # phases and sky directions
+                            print("j: " + str(j))
+                            print("images.shape: " + str(images))
+                            print("(images[:,j,:] > 0.0): " + str((images[:,j,:] > 0.0)))
+
                             MIN = _np.min(images[:,j,:][images[:,j,:] > 0.0])
                             MAX = _np.max(images[:,j,:])
                             levels.append(_np.linspace(MIN, MAX, num_levels))

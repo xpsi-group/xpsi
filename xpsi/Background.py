@@ -2,7 +2,6 @@
 __all__ = ["Background", "BackgroundError"]
 
 from xpsi.global_imports import *
-#from . import global_imports
 
 from abc import abstractmethod
 from xpsi.ParameterSubspace import ParameterSubspace

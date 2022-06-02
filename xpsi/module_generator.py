@@ -3,8 +3,6 @@ from __future__ import division, print_function
 import os
 import sys
 
-import six
-
 import xpsi
 
 def write(filename, module):

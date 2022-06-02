@@ -1,6 +1,7 @@
 from .global_imports import *
 
-from xpsi import make_verbose, _verbose
+from xpsi.__init__ import _verbose
+from xpsi.utils import make_verbose
 
 from xpsi.Likelihood import Likelihood
 from xpsi.Prior import Prior

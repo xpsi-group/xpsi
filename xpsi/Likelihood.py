@@ -3,8 +3,8 @@
 """
 __all__ = ["Likelihood"]
 
-from xpsi.__init__ import _rank
-from xpsi.__init__ import make_verbose
+from xpsi import _rank
+from xpsi.utils import make_verbose
 
 from xpsi.global_imports import *
 
