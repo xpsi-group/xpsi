@@ -1549,7 +1549,7 @@ elif args.{0}_background_path:
         if support[i,1] == 0.0:
             for j in range(i, support.shape[0]):
                 if support[j,1] > 0.0:
-                    support[i,0] = support[j,1]
+                    support[i,1] = support[j,1]
                     break
 
     support *= ({0}.data.exposure_time / args.{0}_background_exposure_time) * float(eval(args.{0}_background_scaling_factor)) # exposure ratio * scaling
