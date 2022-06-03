@@ -1409,7 +1409,6 @@ class Photosphere(ParameterSubspace):
                 else:
                     num_frames = len(energies)
         elif panel_layout is None:
-            print("panel_indices: " + str(panel_indices))
             x = int(_m.ceil(_m.sqrt(len(panel_indices))))
             if x * (x - 1) >= len(panel_indices):
                 panel_layout = (x, x - 1)
@@ -1619,7 +1618,6 @@ class Photosphere(ParameterSubspace):
                         for j in range(images.shape[2]):
                             integrated[i,:,j] = _integrated[:,j]
 
-                    print("integrated: " + str(integrated))
                     images = integrated
 
             if normalise_each_panel:
@@ -1633,11 +1631,6 @@ class Photosphere(ParameterSubspace):
                         for j in range(images.shape[1]): # at each energy
                             # find extreme intensities over discrete set of image
                             # phases and sky directions
-                            print("j: " + str(j))
-                            print("images.shape: " + str(images))
-                            print("(images[:,j,:] > 0.0): " + str((images[:,j,:] > 0.0)))
-                            print("(sum(images[:,j,:] > 0.0)): " + str(_np.sum((images[:,j,:] > 0.0))))
-
                             MIN = _np.min(images[:,j,:][images[:,j,:] > 0.0])
                             MAX = _np.max(images[:,j,:])
                             levels.append(_np.linspace(MIN, MAX, num_levels))
