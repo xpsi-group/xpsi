@@ -202,6 +202,9 @@ if __name__ == '__main__':
     for mod in modnames:
         extensions.append(EXTENSION(mod))
 
+    for e in extensions:
+        e.cython_directives = {'language_level': "3"}
+
     setup(
         name = 'xpsi',
         version = '0.7.10',
