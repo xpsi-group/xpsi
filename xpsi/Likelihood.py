@@ -500,7 +500,7 @@ class Likelihood(ParameterSubspace):
         """
         print("Anyone here?")
         try:
-            from _np import allclose
+            from numpy import allclose
             print("allclose is fine")
         except ImportError:
             yield 'Cannot import ``allclose`` function from NumPy.'
