@@ -30,17 +30,17 @@ if __name__ == '__main__':
             raise
 
         try:
-            gsl_version = sub.check_output(['gsl-config','--version'])[:-1]
-            gsl_prefix = sub.check_output(['gsl-config','--prefix'])[:-1]
+            gsl_version = sub.check_output(['gsl-config','--version'])[:-1].decode("UTF-8")
+            gsl_prefix = sub.check_output(['gsl-config','--prefix'])[:-1].decode("UTF-8")
         except Exception:
             print('GNU Scientific Library cannot be located.')
             raise
         else:
-            print(f'GSL version: {gsl_version}')
+            print('GSL version: ' + gsl_version)
             libraries = ['gsl','gslcblas','m'] # default BLAS interface for gsl
-            library_dirs = [str(gsl_prefix) + '/lib']
+            library_dirs = [gsl_prefix + '/lib']
             _src_dir = os.path.dirname(os.path.abspath(__file__))
-            include_dirs = [str(gsl_prefix) + '/include',
+            include_dirs = [gsl_prefix + '/include',
                             numpy.get_include(),
                             join(_src_dir, 'xpsi/include')]
 
@@ -200,9 +200,7 @@ if __name__ == '__main__':
     extensions = []
 
     for mod in modnames:
-        ex = EXTENSION(mod)
-        ex.cython_directives = {'language_level': "3"} #all are Python-3
-        extensions.append(ex)
+        extensions.append(EXTENSION(mod))
 
     setup(
         name = 'xpsi',
