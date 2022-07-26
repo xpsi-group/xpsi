@@ -498,7 +498,6 @@ class Likelihood(ParameterSubspace):
             The ``hypercube_points``, if not ``None``, will be ignored.
 
         """
-        print("Anyone here?")
         try:
             from numpy import allclose
             print("allclose is fine")
@@ -527,7 +526,7 @@ class Likelihood(ParameterSubspace):
 
             try:
                 if physical_points.ndim > 2:
-                    raise AttributeError
+                    raise AttributeError("Dimension of physical_points is > 2")
 
                 elif physical_points.ndim == 1:
                     print("reshaping physical_points")
@@ -549,6 +548,7 @@ class Likelihood(ParameterSubspace):
             self.externally_updated = False
 
             print("len(physical_points: " + str(len(physical_points)))
+            print("physical_points: " + str(physical_points))
 
             for point in physical_points:
                 print(point)
