@@ -310,7 +310,6 @@ class Likelihood(ParameterSubspace):
                 elif isinstance(e, Elsewhere.RayError):
                     print('Warning: Elsewhere.RayError raised.')
 
-                print('Parameter vector: ', super(Likelihood,self).__call__())
 
                 return self.random_near_llzero
 
@@ -500,7 +499,6 @@ class Likelihood(ParameterSubspace):
         """
         try:
             from numpy import allclose
-            print("allclose is fine")
         except ImportError:
             yield 'Cannot import ``allclose`` function from NumPy.'
             yield 'Using fallback implementation'
@@ -514,14 +512,11 @@ class Likelihood(ParameterSubspace):
                 yield ~((_np.abs(a - b) > atol + rtol*_np.abs(b)).any())
                 #raise NotImplementedError('Implement a fallback.')
 
-        print("Making some arrays")
         lls = []
         lps = [] if logprior_call_vals is not None else None
 
-        print("lps: " + str(lps))
 
         if physical_points is not None:
-            print('physical_points is not none')
             physical_points = _np.array(physical_points)
 
             try:
@@ -529,7 +524,6 @@ class Likelihood(ParameterSubspace):
                     raise AttributeError("Dimension of physical_points is > 2")
 
                 elif physical_points.ndim == 1:
-                    print("reshaping physical_points")
                     physical_points = physical_points.reshape(1,len(physical_points))
 
             except AttributeError as e:
@@ -541,14 +535,9 @@ class Likelihood(ParameterSubspace):
                 raise IndexError('Vector size does not match number of '
                                  'free parameters of likelihood function.')
 
-            print("Let's get out _cached")
             _cached = self.externally_updated
 
-            print("got it!")
             self.externally_updated = False
-
-            print("len(physical_points: " + str(len(physical_points)))
-            print("physical_points: " + str(physical_points))
 
             for point in physical_points:
                 print(point)
@@ -558,7 +547,6 @@ class Likelihood(ParameterSubspace):
 
             self.externally_updated = _cached
         else:
-            print("Eh. Physical_points is none, so something, something hypercube_points")
             hypercube_points = _np.array(hypercube_points)
 
             try:
@@ -566,7 +554,6 @@ class Likelihood(ParameterSubspace):
                     raise AttributeError
 
                 elif hypercube_points.ndim == 1:
-                    print("reshaping hypercube_points")
                     hypercube_points = hypercube_points.reshape(1,len(hypercube_points))
 
             except AttributeError as e:
@@ -600,7 +587,6 @@ class Likelihood(ParameterSubspace):
                                  '%i' % _rank)
 
         if lps is not None:
-            print("lps is not None, so we're doing some more stuff")
             try:
                 proceed = allclose(_np.array(lps),
                                    _np.array(logprior_call_vals),
