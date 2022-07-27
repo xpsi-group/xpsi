@@ -49,9 +49,9 @@ please do.
 
 """
 try:
-    from ._global_imports import * # access, e.g., random_seed global
+    from xpsi.PostProcessing._global_imports import * # access, e.g., random_seed global
 except ImportError:
-    from .. import _warning
+    from xpsi import _warning
     _warning('Cannot use PostProcessing module.')
     raise
     __all__ = []
@@ -67,6 +67,7 @@ else:
     from ._residual import ResidualPlot
     from ._pulse import PulsePlot
     from ._spectrum import SpectrumPlot
+    from ._backends import NestedBackend
 
     def _precision(x):
         """ A solution adapted from Stack Overflow.

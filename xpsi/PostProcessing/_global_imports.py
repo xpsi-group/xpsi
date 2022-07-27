@@ -33,8 +33,9 @@ __all__ = ["make_verbose",
 
 from abc import ABCMeta, abstractmethod
 
-from ..global_imports import *
-from .. import make_verbose, verbose, fragile, _warning, _verbose
+from xpsi.global_imports import *
+from xpsi import _warning, _verbose
+from xpsi.utils import make_verbose, verbose, fragile
 
 import wrapt
 
