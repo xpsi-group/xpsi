@@ -10,6 +10,7 @@ import numpy as np
 cimport numpy as np
 from libc.stdlib cimport malloc, free
 from libc.math cimport exp, pow, log, sqrt, fabs, floor
+import time
 
 from GSL cimport (gsl_interp,
                    gsl_interp_alloc,
@@ -22,6 +23,7 @@ from GSL cimport (gsl_interp,
                    gsl_interp_accel_free,
                    gsl_interp_accel_reset,
                    gsl_rng,
+                   gsl_rng_set,
                    gsl_rng_alloc,
                    gsl_rng_type,
                    gsl_rng_env_setup,
@@ -213,6 +215,7 @@ def synthesise_exposure(double exposure_time,
 
     T = gsl_rng_default
     r = gsl_rng_alloc(T)
+    gsl_rng_set(r, time.time()); 
 
     for i in range(STAR.shape[0]):
         for j in range(STAR.shape[1]):
@@ -222,7 +225,7 @@ def synthesise_exposure(double exposure_time,
 
             SYNTHETIC[i,j] = gsl_ran_poisson(r, STAR[i,j])
 
-
+    print(SYNTHETIC)
     gsl_rng_free(r)
 
     return (np.asarray(STAR, order='C', dtype=np.double),
@@ -424,6 +427,7 @@ def synthesise_given_total_count_number(double[::1] phases,
     T = gsl_rng_default
     r = gsl_rng_alloc(T)
 
+    gsl_rng_set(r, time.time());
 
     for i in range(_signal.shape[0]):
         for j in range(phases.shape[0] - 1):
