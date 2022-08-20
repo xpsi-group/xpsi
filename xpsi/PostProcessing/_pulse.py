@@ -471,7 +471,7 @@ class PulsePlot(SignalPlot):
         for component, shift, phases in zip(ref.signals, ref.shifts, ref.phases):
             temp = interp(self._phases,
                           phases,
-                          eomponent,
+                          component,
                           shift)
 
             try:
