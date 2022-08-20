@@ -625,7 +625,7 @@ class CornerPlotter(PostProcessor):
             self._veneer_spines_ticks(plotter, **kwargs)
         if crosshairs:
             # only for topmost posterior
-            self._add_crosshairs(plotter, self.subset_to_plot[0].truth_vector)
+            self._add_crosshairs(plotter, self.params.names, self.subset_to_plot[0].truths)
         if credible_interval_1d: # include nestcheck estimator bootstrap error
             self._add_credible_interval(plotter,
                                         self.subset[0],
@@ -1012,19 +1012,20 @@ class CornerPlotter(PostProcessor):
     @staticmethod
     @make_verbose('Adding parameter truth crosshairs',
                   'Added crosshairs')
-    def _add_crosshairs(plotter, truths):
+    def _add_crosshairs(plotter, names, truths):
         """ Add parameter crosshairs to triangle plot. """
         spine = next(plotter.subplots[0,0].spines.itervalues())
         lw = spine.get_linewidth()
-        for i, truth in enumerate(truths):
-            if truth is not None:
+        for i, name in enumerate(names):
+            true_val = truths[name]
+            if true_val is not None:
                 for ax in plotter.subplots[:,i]:
                     if ax is not None:
-                        ax.axvline(truth, color='black', ls='-', lw=lw)
+                        ax.axvline(true_val, color='black', ls='-', lw=lw)
                 if i > 0:
                     for ax in plotter.subplots[i,:i]:
                         if ax is not None:
-                            ax.axhline(truth, color='black', ls='-', lw=lw)
+                            ax.axhline(true_val, color='black', ls='-', lw=lw)
 
     @staticmethod
     @make_verbose('Veneering spines and axis ticks',
