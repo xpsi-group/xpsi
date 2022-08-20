@@ -625,7 +625,7 @@ class SpectrumPlot(SignalPlot):
                                        _np.log10(self._energies)).reshape(-1)
 
             if self._show_attenuated:
-                ref.interstellar(self.energies, temp)
+                ref.interstellar(self._energies, temp)
 
             try:
                 total += temp
@@ -700,7 +700,7 @@ class SpectrumPlot(SignalPlot):
 
     def _add_true_registered_signals(self):
         """ Render ground truth registered (component) signals. """
-        ref = self._signals
+        ref = self._signal#s
 
         total = None
         for component, phases in zip(ref.signals, ref.phases):
@@ -712,7 +712,7 @@ class SpectrumPlot(SignalPlot):
             try:
                 total += temp
             except TypeError:
-                toral = temp
+                total = temp
 
             if self._plot_components:
                 self._add_registered_spectrum(self._ax_registered_1d,
