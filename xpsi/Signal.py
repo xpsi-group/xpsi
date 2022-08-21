@@ -93,6 +93,11 @@ class Signal(ParameterSubspace):
             self._instrument = instrument
 
         a, b = data.index_range
+        if (len(data.channels) != len(instrument.channels[a:b])):
+            raise ChannelError( 'Size of the channel array declared for event data '
+                                'does not match the size of the channel array declared'
+                                ' for the loaded instrument response (sub)matrix.')
+
         if (data.channels != instrument.channels[a:b]).any():
             raise ChannelError('Channel array declared for event data does not '
                                'match channel array declared for the loaded '
