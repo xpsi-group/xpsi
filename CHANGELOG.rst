@@ -32,6 +32,63 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
+[v0.7.11] - 2022-08-22
+~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Since version 0.7.10, a few bugs have been fixed in the module generator, error handling and postprocessing. Also, new error/warning messages are given if trying to use wrong atmosphere extension. In addition, some improvements have also been added to the postprocessing (possibility to e.g. save and read the drawn priors to produce corner plots much faster), without mentioning them in the documentation yet.
+
+
+Fixed
+^^^^^
+
+* Bug in ``xpsi/EnsembleSampler.py`` when initializing walkers. Need to use "self._prior" instead of "prior" (Y.K.).
+
+* Bug (typo) in ``xpsi/PostProcessing/_pulse.py`` when plotting the true signal. Need to use "component" instead of "eomponent" (G.L.).
+
+* Several bugs (typos) in ``xpsi/PostProcessing/_spectrum.py`` when plotting the true signal (T.S., G.L.).
+
+* Issues with ``xpsi/PostProcessing/_corner.py`` not being able to plot the cross hairs for true parameter values in the corner plot if only a subset of model parameters chosen for the figure (T.S., Y.K.).
+
+* Error handling in ``xpsi/Signal.py`` when the number of event data channels does not match the number of the instrument data channels (S.G.).
+
+* Fixed reference to incident_background in the modeling tutorial (B.D.).
+
+* Several bug fixes in ``xpsi/module_generator.py`` (D.C.).
+
+Added
+^^^^^
+
+* Added a warning message in the blackbody atmosphere extension  ``xpsi/surface_radiation_field/hot.pyx`` if providing numerical atmosphere data (T.S.).
+
+* Added an error message in the numerical atmosphere extension  ``xpsi/surface_radiation_field/archive/hot/numerical.pyx`` before a segmentation fault error caused by not loading the numerical atmosphere data (T.S.).
+
+* Added a warning when trying to synthetize data in ``xpsi/Likelihood.py`` with input parameters outside of the defined prior bounds, finishing without errors but with no data produced (Y.K. & T.S.).
+
+* Added option for the user to set the line colors for different runs in ``xpsi/PostProcessing/_corner.py`` using kwargs (T.S.).
+
+* Added possibility to save and read the previously drawn prior samples in ``xpsi/PostProcessing/_corner.py`` using "force_draw" kwargs (T.S.).
+
+* Added possibility to plot the priors only for the first run in ``xpsi/PostProcessing/_corner.py`` using "priors_identical" kwargs, if known that priors are the same for all runs (T.S.).
+
+* Saved credible intervals in numerical format that can be accessed after plotting the corner plot (see "val_cred" in ``xpsi/PostProcessing/_corner.py`` and ``xpsi/PostProcessing/_postprocessor.py``) (Y.K., T.S.).
+
+Changed
+^^^^^^^
+
+Deprecated
+^^^^^^^^^^
+
+Removed
+^^^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+* Tuomo Salmi (T.S.), Yves Kini (Y.K.), Devarshi Choudhury (D.C.), Bas Dorsman (B.D.), Gwénaël Loyer (G.L.), and Sebastien Guillot (S.G.)
+
 
 [v0.7.10] - 2022-02-10
 ~~~~~~~~~~~~~~~~~~~~~~

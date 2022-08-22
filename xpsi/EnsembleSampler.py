@@ -141,9 +141,9 @@ class EnsembleSampler(_EnsembleSampler):
             except (AssertionError, PriorError):
                 print('Attempting to initialise the walker positions via '
                       'inverse sampling...')
-                self._p0 = prior.draw(nwalkers)[0]
+                self._p0 = self._prior.draw(nwalkers)[0]
                 for i in range(nwalkers):
-                    if not _np.isfinite(prior(self._p0[i,:])):
+                    if not _np.isfinite(self._prior(self._p0[i,:])):
                         raise PriorError('Failed to initialise walkers.')
                 print('Walker positions successfully initialised via inverse '
                       'sampling.')

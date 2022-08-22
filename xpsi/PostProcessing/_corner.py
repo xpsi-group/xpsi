@@ -1,4 +1,5 @@
 from __future__ import division, print_function
+import numpy as np_
 
 from scipy.special import logsumexp
 
@@ -35,6 +36,8 @@ class CornerPlotter(PostProcessor):
     """ Plot marginal posterior densities and estimators.
 
     """
+
+
     @fix_random_seed
     @make_verbose('Executing posterior density estimation',
                   'Posterior density estimation complete')
@@ -473,6 +476,7 @@ class CornerPlotter(PostProcessor):
             used instead, this automation does not occur.
 
         """
+        self.val_cred = []
         try:
             for run in self.subset_to_plot:
                 if not isinstance(run, NestedBackend):
@@ -543,7 +547,6 @@ class CornerPlotter(PostProcessor):
             diag1d_kwargs['label_right'] = label_right
         if isinstance(no_ytick, bool):
             diag1d_kwargs['no_ytick'] = no_ytick
-
         plotter.triangle_plot(getdist_bcknds,
                                legend_labels = legend_labels,
                                params = self.params.names,
@@ -614,18 +617,37 @@ class CornerPlotter(PostProcessor):
         if prior_density:
             # only report KL divergence for topmost posterior,
             # but plot the priors if available for the other posteriors
+            
+            if "priors_identical" in kwargs:
+                priors_identical = kwargs.get("priors_identical")
+            else:
+                priors_identical = False
+
+            if "force_draw" in kwargs:
+                force_draw = kwargs.get("force_draw")
+            else:
+                force_draw = [True for i in range(len(self.subset))]
+                                
             for i, posterior in enumerate(self.subset):
+            
+                force_draw_i = force_draw[i]
+                
                 self._add_prior_density(plotter, posterior,
                             ndraws, normalize,
                             KL_divergence = KL_divergence if i == 0 else False,
                             KL_base = KL_base,
                             bootstrap = bootstrap,
-                            n_simulate = kwargs.get('n_simulate'))
+                            n_simulate = kwargs.get('n_simulate'),
+                            force_draw = force_draw_i)
+                            
+                if (i==0 and priors_identical):
+                    break
+                    
         if veneer:
             self._veneer_spines_ticks(plotter, **kwargs)
         if crosshairs:
             # only for topmost posterior
-            self._add_crosshairs(plotter, self.subset_to_plot[0].truth_vector)
+            self._add_crosshairs(plotter, self.params.names, self.subset_to_plot[0].truths)
         if credible_interval_1d: # include nestcheck estimator bootstrap error
             self._add_credible_interval(plotter,
                                         self.subset[0],
@@ -645,7 +667,8 @@ class CornerPlotter(PostProcessor):
     def _add_prior_density(self, plotter, posterior,
                            ndraws, normalize,
                            KL_divergence, KL_base,
-                           bootstrap, n_simulate):
+                           bootstrap, n_simulate, 
+                           force_draw):
         """ Crudely estimate the prior density.
 
         Kullback-Leibler divergence estimated in bits for a combined run or
@@ -653,6 +676,9 @@ class CornerPlotter(PostProcessor):
 
         """
         run = posterior.subset_to_plot[0]
+        
+        
+        #self.samples[posterior.ID]=samples
 
         yield 'Plotting prior for posterior %s...' % posterior.ID
 
@@ -667,7 +693,16 @@ class CornerPlotter(PostProcessor):
         elif not callable(l.prior.draw):
             return
 
-        samples, _ = l.prior.draw(ndraws, transform=True)
+        if force_draw:
+            samples, _ = l.prior.draw(ndraws, transform=True)
+        else:
+            samples_npy = "prior_samples_"+posterior.ID+".npy"
+            try:
+                samples = _np.load(samples_npy)
+                print("Not drawing samples from the joint prior. Reading them from a pre-computed table instead.")
+            except:       
+                 samples, _ = l.prior.draw(ndraws, transform=True)
+                 _np.save(samples_npy,samples)
 
         color, lw = (run.contours[key] for key in ('color', 'lw'))
 
@@ -826,6 +861,7 @@ class CornerPlotter(PostProcessor):
         quantiles = [0.159, 0.5, 0.841] if sixtyeight else ([0.05,0.5,0.95] if ninety else [0.025, 0.5, 0.975])
 
         def format_CI(name, cred, summary, additional=2, sscript=False):
+
             if len(cred.shape) > 1:
                 _qs = (cred[1,1],
                        cred[1,1] - cred[0,1],
@@ -847,7 +883,9 @@ class CornerPlotter(PostProcessor):
                 stats += (('%s_{-%s}^{+%s}$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
             else:
                 stats += (('%s/-%s/+%s$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
-
+            
+            self.val_cred.append([np_.float(_f % _qs[0]),np_.float(_f % _qs[1]),np_.float(_f % _qs[2])])
+            
             return stats
 
         if bootstrap:
@@ -866,6 +904,7 @@ class CornerPlotter(PostProcessor):
                     return cred
 
                 cred = calculate_intervals(quantiles)
+
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
                 ax.axvspan(cred[0,0], cred[0,2], alpha=0.5,
@@ -1007,24 +1046,26 @@ class CornerPlotter(PostProcessor):
                         yield format_CI(self.params.names[i],
                                         calculate_intervals([0.05, 0.5, 0.95]),
                                         90)
+        self.val_cred=np_.stack(self.val_cred,axis=0)        
         yield None
 
     @staticmethod
     @make_verbose('Adding parameter truth crosshairs',
                   'Added crosshairs')
-    def _add_crosshairs(plotter, truths):
+    def _add_crosshairs(plotter, names, truths):
         """ Add parameter crosshairs to triangle plot. """
         spine = next(plotter.subplots[0,0].spines.itervalues())
         lw = spine.get_linewidth()
-        for i, truth in enumerate(truths):
-            if truth is not None:
+        for i, name in enumerate(names):
+            true_val = truths[name]
+            if true_val is not None:
                 for ax in plotter.subplots[:,i]:
                     if ax is not None:
-                        ax.axvline(truth, color='black', ls='-', lw=lw)
+                        ax.axvline(true_val, color='black', ls='-', lw=lw)
                 if i > 0:
                     for ax in plotter.subplots[i,:i]:
                         if ax is not None:
-                            ax.axhline(truth, color='black', ls='-', lw=lw)
+                            ax.axhline(true_val, color='black', ls='-', lw=lw)
 
     @staticmethod
     @make_verbose('Veneering spines and axis ticks',
@@ -1061,6 +1102,8 @@ class CornerPlotter(PostProcessor):
 
         nestcheck_colors = ['darkred', 'darkblue', 'darkgrey', 'darkgreen',
                             'darkorange']
+        if 'line_colors' in kwargs:
+            nestcheck_colors = kwargs.get("line_colors")
 
         for run, color in zip(self.subset_to_plot,
                               nestcheck_colors[:len(self.subset_to_plot)]):

@@ -49,6 +49,9 @@ cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded) nogil:
     # the user's responsibility to manage.
     # Return NULL if dynamic memory is not required for the model
 
+    if preloaded == NULL :
+        printf("ERROR: The numerical atmosphere data were not preloaded, which are required by this extension.\n")
+    
     cdef DATA *D = <DATA*> malloc(sizeof(DATA))
     D.p = preloaded
 
