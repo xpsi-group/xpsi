@@ -65,6 +65,7 @@ implicitly), and (optionally) direct application to their research.
 * Anna Bilous
 * Tuomo Salmi
 * Yves Kini
+* Bas Dorsman
 * Emma van der Wateren
 * Bob de Witte
 
