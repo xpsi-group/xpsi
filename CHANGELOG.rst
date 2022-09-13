@@ -32,6 +32,38 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
+[v0.7.12] - 2022-09-13
+~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Since version 0.7.11. a few changes have been made.
+
+
+Fixed
+^^^^^
+
+* Numerical problem in  ``xpsi/cellmesh/rays.pyx`` for certain paramaters causing sporadic warnings in later computation. This is prevented by allowing small rounding errors when checking if sin_alpha parameter is unity, and in case NaNs still occur, replacing them with zero (T.S.).
+
+Added
+^^^^^
+
+Changed
+^^^^^^^
+
+Deprecated
+^^^^^^^^^^
+
+Removed
+^^^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+* Tuomo Salmi (T.S.)
+
+
 [v0.7.11] - 2022-08-22
 ~~~~~~~~~~~~~~~~~~~~~~
 

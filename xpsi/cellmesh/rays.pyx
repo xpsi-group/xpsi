@@ -9,9 +9,10 @@ import numpy as np
 cimport numpy as np
 cimport cython
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, cos, asin, acos, log, atan, NAN, pow
+from libc.math cimport M_PI, sqrt, cos, asin, acos, log, atan, NAN, pow, fabs
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
+from libcpp cimport bool
 import xpsi
 
 from GSL cimport (gsl_function,
@@ -72,6 +73,12 @@ cdef double _get_rayXpanda_defl_lim() except *:
         xpsi.cellmesh._check_rayXpanda_defl_lim(__rayXpanda_defl_lim__)
         return <double>__rayXpanda_defl_lim__
 
+cdef bint compare_double(double x, double y, double epsilon = 1.0e-12) nogil:
+    if(fabs(x - y) < epsilon):
+        return True
+    else:
+        return False
+
 cdef void link_rayXpanda(bint *use_rayXpanda, double *rayXpanda_defl_lim) except *:
     cdef double _flag, _throwaway
     use_rayXpanda[0] = 1
@@ -126,7 +133,6 @@ cdef double b_phsph_over_r_s = 3.0 * sqrt(3.0) / 2.0
 cdef double inDef(double x, void *params) nogil:
 
     cdef double r_c_over_r_s = (<double*> params)[0]
-
     return 1.0 / sqrt(2.0 - x * x - (1.0 - x * x) * (1.0 - x * x) / (r_c_over_r_s - 1.0))
 
 cdef double inLag(double x, void *params) nogil:
@@ -215,7 +221,7 @@ cdef void rayIntegrator(size_t thread,
         f_outDef.function = &inDef
         f_outLag.function = &inLag
 
-        if sin_alpha == 1.0:
+        if compare_double(sin_alpha,1.0):
             r_c_over_r_s = 1.0 / r_s_over_R
             w_R = 0.0
         else:
@@ -226,6 +232,9 @@ cdef void rayIntegrator(size_t thread,
 
         f_outDef.params = &inParams
         f_outLag.params = &inParams
+
+        if gsl_isnan(w_R):
+            w_R = 0.0
 
         status = gsl_integration_qag(&f_outDef, w_R, 1.0,
                                      0, 1.0E-12, 100, GSL_INTEG_GAUSS61, w,
@@ -393,7 +402,6 @@ def compute_rays(size_t N_T,
             else:
                 if terminate_thread[T] == 0:
                     rayIntegrator(T, w[T], cos_alpha[i,j], r_s, r_s_over_R[i], rayParams)
-
                     if j == 0 and gsl_isnan(rayParams[4*T]) == 1:
                         terminate_thread[T] = ERROR
                     elif (j == N_R - 1 and
