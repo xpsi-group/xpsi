@@ -230,11 +230,13 @@ def eval_marginal_likelihood(double exposure_time,
         is restricted.
 
     :returns:
-        A tuple ``(double, 2D ndarray, 1D ndarray)``. The first element is
+        A tuple ``(double, 2D ndarray, 1D ndarray, 1D ndarray)``. The first element is
         the logarithm of the marginal likelihood. The second element is the
         expected count numbers in joint phase-channel intervals from the star
-        (the target source). The last element is the vector of background
+        (the target source). The third element is the vector of background
         count numbers that are estimated to maximise the conditional
+        likelihood function, one per channel. The last element is the vector of background
+        count numbers, within the given support, that are estimated to maximise the conditional
         likelihood function, one per channel.
 
     """
