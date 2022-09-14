@@ -32,7 +32,7 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
-[v0.7.12] - 2022-09-14
+[pre-v0.7.12] - 2022-09-15
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -50,7 +50,12 @@ Fixed
 
 Added
 ^^^^^
+
 * Added more information and warnings about about switching between the blackbody and numerical atmosphere extensions in the documentation for Installation, Surface radiation field tools and (FA)Q pages. Added also a links to the Zenodo publication of Riley+2021 from where the numerical atmosphere data can be obtained (T.S.).
+
+* Added a new kwargs ("prior_samples_fnames") used in ``xpsi/PostProcessing/_corner.py`` to allow user to set the name of file from where the prior samples are read/saved (T.S.).
+
+* Added comments about the new kwargs (introduced already in version 0.7.11) in the function descriptions used in ``xpsi/PostProcessing/_corner.py`` visible also for the documentation (T.S.).
 
 Changed
 ^^^^^^^

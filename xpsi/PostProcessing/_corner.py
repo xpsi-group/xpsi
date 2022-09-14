@@ -145,10 +145,11 @@ class CornerPlotter(PostProcessor):
         :param kwargs:
             Keyword arguments for the :meth:`_plot_density_with_error` and
             :meth:`_plot_triangle` methods. Keyword arguments for line
-            properties (width and alpha) for :mod:`getdist` contours and density
+            properties (width, color, and alpha) for :mod:`getdist` contours and density
             distributions. If ``bootstrap and not separate_plots`` then
             the density distribution linewidth is set to zero if not
-            explicitly specified with kwarg ``lw_1d``.
+            explicitly specified with kwarg ``lw_1d``. 
+            In addition, keyword arguments for avoiding unnecessary re-drawing of prior samples (``force_draw``, ``prior_samples_fnames`` and ``priors_identical``).
 
         """
         self.set_subset(IDs, combine, combine_all,
@@ -468,6 +469,9 @@ class CornerPlotter(PostProcessor):
               :meth:`getdist.GetDistPlotter.triangle_plot`
             * settings for :mod:`getdist` posterior lower-triangle plotting, applied
               to a :class:`getdist.plots.GetDistPlotSettings` instance
+            * setting for not drawing prior samples but reading them from a file instead or saving them in a file if no such already exists ``force_draw = [False,]``
+            * setting for choosing a non-default file name to be used if samples are not re-drawn: ``prior_samples_fnames=["name.npy",]``
+            * setting for plotting the priors only for one of the runs if they are known to be identical: ``priors_identical=True``
 
         .. note::
 
@@ -617,6 +621,7 @@ class CornerPlotter(PostProcessor):
         if prior_density:
             # only report KL divergence for topmost posterior,
             # but plot the priors if available for the other posteriors
+            # if priors known to be identical, plot them only once.
             
             if "priors_identical" in kwargs:
                 priors_identical = kwargs.get("priors_identical")
@@ -632,13 +637,18 @@ class CornerPlotter(PostProcessor):
             
                 force_draw_i = force_draw[i]
                 
+                if "prior_samples_fnames" in kwargs:
+                    prior_samples_fname = kwargs.get("prior_samples_fnames")[i]
+                else:
+                    prior_samples_fname = "prior_samples_"+posterior.ID+".npy"
                 self._add_prior_density(plotter, posterior,
                             ndraws, normalize,
                             KL_divergence = KL_divergence if i == 0 else False,
                             KL_base = KL_base,
                             bootstrap = bootstrap,
                             n_simulate = kwargs.get('n_simulate'),
-                            force_draw = force_draw_i)
+                            force_draw = force_draw_i,
+                            prior_samples_fname=prior_samples_fname)
                             
                 if (i==0 and priors_identical):
                     break
@@ -668,7 +678,8 @@ class CornerPlotter(PostProcessor):
                            ndraws, normalize,
                            KL_divergence, KL_base,
                            bootstrap, n_simulate, 
-                           force_draw):
+                           force_draw,
+                           prior_samples_fname):
         """ Crudely estimate the prior density.
 
         Kullback-Leibler divergence estimated in bits for a combined run or
@@ -696,10 +707,10 @@ class CornerPlotter(PostProcessor):
         if force_draw:
             samples, _ = l.prior.draw(ndraws, transform=True)
         else:
-            samples_npy = "prior_samples_"+posterior.ID+".npy"
+            samples_npy = prior_samples_fname
             try:
                 samples = _np.load(samples_npy)
-                print("Not drawing samples from the joint prior. Reading them from a pre-computed table instead.")
+                print("Not drawing samples from the joint prior. Reading them instead from a pre-computed table:",prior_samples_fname)
             except:       
                  samples, _ = l.prior.draw(ndraws, transform=True)
                  _np.save(samples_npy,samples)
@@ -1094,9 +1105,9 @@ class CornerPlotter(PostProcessor):
                     spine.set_linewidth(lw)
 
     def _set_line_and_contour_args(self, lw=1.0, alpha=1.0, **kwargs):
-        """ Match the :mod:`nestcheck` color scheme.
+        """ Match the :mod:`nestcheck` color scheme or let the user decide colors using kwargs.
 
-        Always assigns reds to a combined run if it is found to exist.
+        Always assigns reds (or the first user-defined color) to a combined run if it is found to exist.
 
         """
 
