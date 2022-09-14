@@ -32,13 +32,13 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
-[v0.7.12] - 2022-09-13
+[v0.7.12] - 2022-09-14
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* Since version 0.7.11. a few changes have been made.
+* Since version 0.7.11. a few changes have been made including updates to the documentation and the handling of numerical problems in ray tracing. The latter fix can potentially have a small effect on the calculated pulse profiles and likelihood values for some parameter vectors, but according to the testing that effect is very minor. 
 
 
 Fixed
@@ -46,8 +46,11 @@ Fixed
 
 * Numerical problem in  ``xpsi/cellmesh/rays.pyx`` for certain paramaters causing sporadic warnings in later computation. This is prevented by allowing small rounding errors when checking if sin_alpha parameter is unity, and in case NaNs still occur, replacing them with zero (T.S.).
 
+* Comment about returned variables updated to include the best-fitting background limited by the support in ``xpsi/likelihoods/default_background_marginalisation.pyx`` (T.S.).
+
 Added
 ^^^^^
+* Added more information and warnings about about switching between the blackbody and numerical atmosphere extensions in the documentation for Installation, Surface radiation field tools and (FA)Q pages. Added also a links to the Zenodo publication of Riley+2021 from where the numerical atmosphere data can be obtained (T.S.).
 
 Changed
 ^^^^^^^
