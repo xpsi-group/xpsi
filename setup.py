@@ -204,10 +204,10 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.7.11',
+        version = '0.7.12',
         author = 'Thomas Edward Riley',
         author_email = 't.e.riley@uva.nl; t.riley.phd@gmail.com',
-        url = 'https://github.com/ThomasEdwardRiley/xpsi',
+        url = 'https://github.com/xpsi-group/xpsi',
         license = 'MIT',
         description = """X-PSI: An open-source package for
                          neutron star X-ray Pulse Simulation and Inference.""",

@@ -32,13 +32,13 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
-[pre-v0.7.12] - 2022-09-15
+[v0.7.12] - 2022-09-15
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* Since version 0.7.11. a few changes have been made including updates to the documentation and the handling of numerical problems in ray tracing. The latter fix can potentially have a small effect on the calculated pulse profiles and likelihood values for some parameter vectors, but according to the testing that effect is very minor at most.
+* Since version 0.7.11. a few changes have been made including updates to the documentation and the handling of numerical problems in ray tracing. The latter fix can potentially have a small effect on the calculated pulse profiles and likelihood values for some parameter vectors, but according to testing that effect is very minor at most.
 
 
 Fixed
