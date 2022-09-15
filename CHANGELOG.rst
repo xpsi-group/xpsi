@@ -33,12 +33,12 @@ Attribution
 ^^^^^^^^^^^
 
 [pre-v0.7.12] - 2022-09-15
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* Since version 0.7.11. a few changes have been made including updates to the documentation and the handling of numerical problems in ray tracing. The latter fix can potentially have a small effect on the calculated pulse profiles and likelihood values for some parameter vectors, but according to the testing that effect is very minor. 
+* Since version 0.7.11. a few changes have been made including updates to the documentation and the handling of numerical problems in ray tracing. The latter fix can potentially have a small effect on the calculated pulse profiles and likelihood values for some parameter vectors, but according to the testing that effect is very minor at most.
 
 
 Fixed
@@ -60,6 +60,8 @@ Added
 * Added comments about the new kwargs (introduced already in version 0.7.11) in the function descriptions used in ``xpsi/PostProcessing/_corner.py`` visible also for the documentation (T.S.).
 
 * Added an option to force update ``xpsi/Star.py`` to avoid errors, for example, when all paremeters are fixed and X-PSI thinks otherwise that updating can be skipped (T.S., D.C., Y.K.).
+
+* Added options allowing the user to truly force update the likelihood in ``xpsi/Likelihood.py`` and avoid errors caused by the automatic need-update-checks not working for all the possible cases. Added also an error message suggesting to use those options if the usual "AttributeError: 'CustomSignal' object has no attribute '_loglikelihood'" would be encountered (T.S.).
 
 Changed
 ^^^^^^^
