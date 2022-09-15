@@ -48,6 +48,8 @@ Fixed
 
 * Comment about returned variables updated to include the best-fitting background limited by the support in ``xpsi/likelihoods/default_background_marginalisation.pyx`` (T.S.).
 
+* The photosphere object validity check in ``xpsi/Star.py`` which incorrectly failed if all photosphere parameters were fixed (D.C., Y.K., T.S.).
+
 Added
 ^^^^^
 
@@ -56,6 +58,8 @@ Added
 * Added a new kwargs ("prior_samples_fnames") used in ``xpsi/PostProcessing/_corner.py`` to allow user to set the name of file from where the prior samples are read/saved (T.S.).
 
 * Added comments about the new kwargs (introduced already in version 0.7.11) in the function descriptions used in ``xpsi/PostProcessing/_corner.py`` visible also for the documentation (T.S.).
+
+* Added an option to force update ``xpsi/Star.py`` to avoid errors, for example, when all paremeters are fixed and X-PSI thinks otherwise that updating can be skipped (T.S., D.C., Y.K.).
 
 Changed
 ^^^^^^^
@@ -69,7 +73,7 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
-* Tuomo Salmi (T.S.)
+* Tuomo Salmi (T.S.), Devarshi Choudhury (D.C.), and Yves Kini (Y.K.)
 
 
 [v0.7.11] - 2022-08-22
