@@ -32,6 +32,52 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
+[v0.7.12] - 2022-09-15
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Since version 0.7.11. a few changes have been made including updates to the documentation and the handling of numerical problems in ray tracing. The latter fix can potentially have a small effect on the calculated pulse profiles and likelihood values for some parameter vectors, but according to testing that effect is very minor at most.
+
+
+Fixed
+^^^^^
+
+* Numerical problem in  ``xpsi/cellmesh/rays.pyx`` for certain paramaters causing sporadic warnings in later computation. This is prevented by allowing small rounding errors when checking if sin_alpha parameter is unity, and in case NaNs still occur, replacing them with zero (T.S.).
+
+* Comment about returned variables updated to include the best-fitting background limited by the support in ``xpsi/likelihoods/default_background_marginalisation.pyx`` (T.S.).
+
+* The photosphere object validity check in ``xpsi/Star.py`` which incorrectly failed if all photosphere parameters were fixed (D.C., Y.K., T.S.).
+
+Added
+^^^^^
+
+* Added more information and warnings about about switching between the blackbody and numerical atmosphere extensions in the documentation for Installation, Surface radiation field tools and (FA)Q pages. Added also a links to the Zenodo publication of Riley+2021 from where the numerical atmosphere data can be obtained (T.S.).
+
+* Added a new kwargs ("prior_samples_fnames") used in ``xpsi/PostProcessing/_corner.py`` to allow user to set the name of file from where the prior samples are read/saved (T.S.).
+
+* Added comments about the new kwargs (introduced already in version 0.7.11) in the function descriptions used in ``xpsi/PostProcessing/_corner.py`` visible also for the documentation (T.S.).
+
+* Added an option to force update ``xpsi/Star.py`` to avoid errors, for example, when all paremeters are fixed and X-PSI thinks otherwise that updating can be skipped (T.S., D.C., Y.K.).
+
+* Added options allowing the user to truly force update the likelihood in ``xpsi/Likelihood.py`` and avoid errors caused by the automatic need-update-checks not working for all the possible cases. Added also an error message suggesting to use those options if the usual "AttributeError: 'CustomSignal' object has no attribute '_loglikelihood'" would be encountered (T.S.).
+
+Changed
+^^^^^^^
+
+Deprecated
+^^^^^^^^^^
+
+Removed
+^^^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+* Tuomo Salmi (T.S.), Devarshi Choudhury (D.C.), and Yves Kini (Y.K.)
+
+
 [v0.7.11] - 2022-08-22
 ~~~~~~~~~~~~~~~~~~~~~~
 
