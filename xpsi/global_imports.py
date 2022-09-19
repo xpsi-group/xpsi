@@ -82,7 +82,7 @@ _k_B = 1.38064852e-23
 
 def gravradius(M):
     """ Get the gravitational radius in km given gravitational mass in Solar masses. """
-    return M * _GM / _km
+    return 2.0 * M * _GM / _km
 
 def inv_gravradius(R):
     """ Get the gravitational mass in solar masses given gravitational radius in km. """
