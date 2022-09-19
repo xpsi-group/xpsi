@@ -125,6 +125,9 @@ The following Python packages are required for nested sampling:
     personal machine to gain experience on application to inexpensive test
     problems. Below we offer `from source`__ instructions.
 
+Running the tests requires:
+* `Pytest <http://pytest.org>`_
+
 The following Python packages are required for full functionality of the
 post-processing module:
 
