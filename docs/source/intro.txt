@@ -548,7 +548,7 @@ PyPI). To install X-PSI from source, and to install dependencies, see the
     These documentation pages are being rapidly updated during development.
 
     These pages were generated from a local development build.
-    The pages often reference ``v0.1`` that is tagged on the ``master``
+    The pages often reference ``v0.1`` that is tagged on the ``main``
     branch of the repo, but that version is not explicitly documented.
 
 The tutorials and examples in these documentation pages however, use
@@ -566,6 +566,6 @@ regarding large files.
 
 Other examples may be found on path ``xpsi/examples``. Note, however, that these
 examples used ``v0.1`` of X-PSI, which can be checked out via the tag on the
-``master`` branch. Eventually, example files will be archived with Zenodo
+``main`` branch. Eventually, example files will be archived with Zenodo
 to accompany a JOSS paper. Moreover, the examples require cluster usage and will
 have to be updated for release of the first major version of X-PSI.
