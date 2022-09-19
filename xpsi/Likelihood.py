@@ -288,14 +288,13 @@ class Likelihood(ParameterSubspace):
         else:
             return None
 
-    def _driver(self, fast_mode=False, synthesise=False, **kwargs):
+    def _driver(self, fast_mode=False, synthesise=False, force_update=False, **kwargs):
         """ Main likelihood evaluation driver routine. """
 
         self._star.activate_fast_mode(fast_mode)
 
         star_updated = False
-
-        if self._star.needs_update: # ignore fast parameters in this version
+        if self._star.needs_update or force_update: # ignore fast parameters in this version
             try:
                 if fast_mode or not self._do_fast:
                     fast_total_counts = None
@@ -303,7 +302,7 @@ class Likelihood(ParameterSubspace):
                     fast_total_counts = tuple(signal.fast_total_counts for\
                                                         signal in self._signals)
 
-                self._star.update(fast_total_counts, self.threads)
+                self._star.update(fast_total_counts, self.threads,force_update=force_update)
             except xpsiError as e:
                 if isinstance(e, HotRegion.RayError):
                     print('Warning: HotRegion.RayError raised.')
@@ -424,7 +423,7 @@ class Likelihood(ParameterSubspace):
                 raise TypeError('Parameter values have not been updated.')
             super(Likelihood, self).__call__(p) # update free parameters
 
-        if self.needs_update:
+        if self.needs_update or force:
             try:
                 logprior = self._prior(p) # pass vector just in case wanted
             except AttributeError:
@@ -438,17 +437,17 @@ class Likelihood(ParameterSubspace):
             if self._do_fast:
                 # perform a low-resolution precomputation to direct cell
                 # allocation
-                x = self._driver(fast_mode=True)
+                x = self._driver(fast_mode=True,force_update=force)
                 if not isinstance(x, bool):
                     super(Likelihood, self).__call__(self.cached) # restore
                     return x
                 elif x:
-                    x = self._driver()
+                    x = self._driver(force_update=force)
                     if not isinstance(x, bool):
                         super(Likelihood, self).__call__(self.cached) # restore
                         return x
             else:
-                x = self._driver()
+                x = self._driver(force_update=force)
                 if not isinstance(x, bool):
                     super(Likelihood, self).__call__(self.cached) # restore
                     return x
@@ -459,7 +458,11 @@ class Likelihood(ParameterSubspace):
         loglikelihood = 0.0
         for signals in self._signals:
             for signal in signals:
-                loglikelihood += signal.loglikelihood
+                try:
+                    loglikelihood += signal.loglikelihood
+                except AttributeError as e:
+                    print("ERROR: It looks like X-PSI falsely thought that the signal does not need to be updated and thus skipped an essential part of the calculation. If not sampling, please use ``force=True`` or ``force_update=True`` option for the likelihood evaluation, or if sampling please set ``likelihood.externally_updated = True``")
+                    raise
 
         if loglikelihood <= self.llzero:
             return self.random_near_llzero
@@ -479,7 +482,8 @@ class Likelihood(ParameterSubspace):
               logprior_call_vals=None,
               rtol_logprior=None,
               atol_logprior=None,
-              physical_points=None):
+              physical_points=None,
+              force_update=False):
         """ Perform checks on the likelihood evaluator and the prior density.
 
         Can be called from :func:`~.Sample.nested` to execute a check before
@@ -495,6 +499,11 @@ class Likelihood(ParameterSubspace):
             A set of ``n`` points in the physical parameter space, where
             ``m`` is dimensionality (``self.num_params``) of the sampling space.
             The ``hypercube_points``, if not ``None``, will be ignored.
+
+        :param optional[bool] force_update:
+            Force everything to be re-calculated regardless of what was computed before.
+            This can be used to prevent errors in cases when the automatic check 
+            for update need is not working as intended.
 
         """
         try:
@@ -540,8 +549,7 @@ class Likelihood(ParameterSubspace):
             self.externally_updated = False
 
             for point in physical_points:
-                print(point)
-                lls.append(self.__call__(point))
+                lls.append(self.__call__(point,force=force_update))
                 if lps is not None:
                     lps.append(self._prior(point))
 
@@ -567,7 +575,7 @@ class Likelihood(ParameterSubspace):
 
             for point in hypercube_points:
                 phys_point = self._prior.inverse_sample(point)
-                lls.append(self.__call__(phys_point))
+                lls.append(self.__call__(phys_point,force=force_update))
                 if lps is not None:
                     lps.append(self._prior(phys_point))
 
@@ -615,7 +623,7 @@ class Likelihood(ParameterSubspace):
         :param dict kwargs:
             Keyword arguments propagated to custom signal synthesis methods.
             Examples of such arguments include exposure times or
-            required total count numbers (see example notebooks0.
+            required total count numbers (see example notebooks).
 
         """
         if reinitialise: # for safety if settings have been changed
@@ -629,13 +637,15 @@ class Likelihood(ParameterSubspace):
                 raise TypeError('Parameter values have not been updated.')
             super(Likelihood, self).__call__(p) # update free parameters
 
-        if self.needs_update:
+        if self.needs_update or force:
             try:
                 logprior = self._prior(p) # pass vector just in case wanted
             except AttributeError:
                 pass
             else:
                 if not _np.isfinite(logprior):
+                    print('At least one of the parameter values is not within the defined bounds.\n \
+                    No synthetic data will be produced.')
                     # we need to restore due to premature return
                     super(Likelihood, self).__call__(self.cached)
                     return None
@@ -643,17 +653,17 @@ class Likelihood(ParameterSubspace):
             if self._do_fast:
                 # perform a low-resolution precomputation to direct cell
                 # allocation
-                x = self._driver(fast_mode=True)
+                x = self._driver(fast_mode=True,force_update=force)
                 if not isinstance(x, bool):
                     super(Likelihood, self).__call__(self.cached) # restore
                     return None
                 elif x:
-                    x = self._driver(synthesise=True, **kwargs)
+                    x = self._driver(synthesise=True,force_update=force, **kwargs)
                     if not isinstance(x, bool):
                         super(Likelihood, self).__call__(self.cached) # restore
                         return None
             else:
-                x = self._driver(synthesise=True, **kwargs)
+                x = self._driver(synthesise=True,force_update=force, **kwargs)
                 if not isinstance(x, bool):
                     super(Likelihood, self).__call__(self.cached) # restore
                     return None

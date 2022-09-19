@@ -63,6 +63,8 @@ class PostProcessor(object):
     def __init__(self, posteriors):
         self.posteriors = posteriors
 
+        self.val_cred=[]
+	self.samples={}
     @property
     def posteriors(self):
         """ Get the posteriors. """

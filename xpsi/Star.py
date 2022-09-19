@@ -25,17 +25,22 @@ class Star(ParameterSubspace):
         self._spacetime = spacetime
 
         try:
-            for photosphere in photospheres:
-                assert isinstance(photosphere, Photosphere)
+            assert isinstance(photospheres, list)
         except AssertionError:
             try:
                 assert isinstance(photospheres, Photosphere)
             except AssertionError:
-                raise TypeError('Invalid type for a photosphere object.')
+                raise TypeError('Invalid type for a photosphere object')
             else:
                 self._photospheres = [photospheres]
         else:
-            self._photospheres = photospheres
+            try:
+                for photosphere in photospheres:
+                    assert isinstance(photosphere, Photosphere)
+            except AssertionError:
+                raise TypeError('Invalid type for a photosphere object')
+            else:
+                self._photospheres = photospheres
 
         # checks passed, so store reference between objects
         for photosphere in self._photospheres:
@@ -64,7 +69,7 @@ class Star(ParameterSubspace):
         except AttributeError:
             pass # no hot regions to worry about
 
-    def update(self, fast_counts=None, threads=1):
+    def update(self, fast_counts=None, threads=1, force_update=False):
         """ Update the star.
 
         :param tuple fast_counts:
@@ -79,6 +84,9 @@ class Star(ParameterSubspace):
             Number of ``OpenMP`` threads to spawn for embedding
             photosphere objects in the ambient spacetime.
 
+        :param bool force_update:
+            Setting to force update even if both the photosphere and spacetime say they do not need updating.
+
         """
 
         if fast_counts is None:
@@ -87,5 +95,5 @@ class Star(ParameterSubspace):
         # Iteratively embed each photosphere (that needs to be updated)
         # in the ambient spacetime
         for photosphere, fast_count in zip(self._photospheres, fast_counts):
-            if photosphere.needs_update or self._spacetime.needs_update:
+            if photosphere.needs_update or self._spacetime.needs_update or force_update:
                 photosphere.embed(fast_count, threads)
