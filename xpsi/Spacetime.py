@@ -39,6 +39,10 @@ class Spacetime(ParameterSubspace):
 
     def __init__(self, bounds, values):
 
+
+        if not isinstance(bounds, dict) or not isinstance(values, dict):
+             raise TypeError("Both bounds and values need to be dictionaries.")
+
         f = Parameter('frequency',
                       strict_bounds = (0.0, 800.0),
                       bounds = bounds.get('frequency', None),
