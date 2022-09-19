@@ -66,10 +66,10 @@ advisory workflow.
 
     git clone https://github.com/xpsi-group/xpsi.git <path/to/xpsi>
 
-* You will be on the ``master`` branch by default; this branch by default tracks
-  the official (or central) ``origin/master`` branch. Moreover, ``master``
-  is merely to act as an image of ``origin/master``, meaning that official
-  upstream commits can always be applied to ``master`` via a fast-foward merge.
+* You will be on the ``main`` branch by default; this branch by default tracks
+  the official (or central) ``origin/main`` branch. Moreover, ``main``
+  is merely to act as an image of ``origin/main``, meaning that official
+  upstream commits can always be applied to ``main`` via a fast-foward merge.
 
 * Checkout a local branch for your work, which we'll assume is some patch, but
   could be a feature or otherwise:
@@ -85,24 +85,24 @@ advisory workflow.
     git commit -m 'patch something'
 
 * Check to see if any there are any new upstream commits, which would mean
-  that ``patch/fix_something`` and ``origin/master`` have diverged:
+  that ``patch/fix_something`` and ``origin/main`` have diverged:
 
 .. code-block:: bash
 
-    git fetch origin master:master
+    git fetch origin main:main
 
 * If the branches have diverged, you can either rebase ``patch/fix_something``
-  on ``master`` or merge ``master`` into ``patch/fix_something``, in either
+  on ``main`` or merge ``main`` into ``patch/fix_something``, in either
   case resolving any conflicts:
 
 .. code-block:: bash
 
-    git rebase master <or> git merge master
+    git rebase main <or> git merge main
 
 * Note that if you have already pushed ``patch/fix_something`` to a remote
   repository you own (such as a fork of ``xpsi``; see below), and especially
   if this is accessible by others (e.g., via  submitted pull request), you
-  should only consider merging ``master`` into ``patch/fix_something`` in
+  should only consider merging ``main`` into ``patch/fix_something`` in
   order to preserve the branch history.
 
 * After integrating upstream changes, you might decide to continue working
@@ -132,7 +132,7 @@ advisory workflow.
     git push -u fork
 
 * Now you can submit a pull request, using the GitHub GUI, from
-  ``fork/patch/fix_something`` to ``xpsi/master``. Please reference any open
+  ``fork/patch/fix_something`` to ``xpsi/main``. Please reference any open
   issues that are to be closed or are relevant to the proposed changes.
 
 * You can update the pull-request topic branch by pushing additional commits
@@ -171,7 +171,7 @@ advisory workflow.
 
 * If you are ready to start development on a distinct patch or feature that is
   not conditional on your open pull requests being merged, then you can apply
-  the workflow above by branching (again) off of an up-to-date ``master``.
+  the workflow above by branching (again) off of an up-to-date ``main``.
   If your work *is* conditional on your open pull requests, you are free to
   continue your development by commiting to the relevant topic branch (or
   according to some other branching scheme). However, there is a risk that more
@@ -181,11 +181,11 @@ advisory workflow.
   work may nevertheless remain useful in your own applications even if it is
   never all merged into the central repository. If the pull request is merged
   after your continuation, and the plan is submit a future pull request, you
-  will have to merge in the ``xpsi/master`` branch before opening another
+  will have to merge in the ``xpsi/main`` branch before opening another
   pull request so that the merge conflicts that were already resolved are not
   raised again.
 
-* The above workflow also applies to remote branches other than ``master`` that
+* The above workflow also applies to remote branches other than ``main`` that
   might exist in the ``xpsi`` repository that you wish to contribute to, but
   this should be a less common pattern.
 
@@ -211,13 +211,13 @@ Otherwise, the workflow with respect to the BitBucket repository is very similar
 to the GitHub workflow. Development work is commited to branches which
 are then merged into the ``xpsi_dev/dev`` branch directly (for those with
 write permissions) or by pull request. In this context ``xpsi_dev/dev`` takes
-the role of the ``xpsi/master`` branch on GitHub described above.
+the role of the ``xpsi/main`` branch on GitHub described above.
 
 When the ``xpsi_dev`` branch is considered feature-complete for a release, it
-will be merged into ``xpsi_dev/master`` directly, or via a release branch.
-Then, ``xpsi_dev/master`` will be published to ``xpsi/master`` via a fast-foward
-merge. Alternatively, a local merge of ``xpsi/master`` and
-``xpsi_dev/master`` might be needed, which is subsequently pushed to both
+will be merged into ``xpsi_dev/main`` directly, or via a release branch.
+Then, ``xpsi_dev/main`` will be published to ``xpsi/main`` via a fast-foward
+merge. Alternatively, a local merge of ``xpsi/main`` and
+``xpsi_dev/main`` might be needed, which is subsequently pushed to both
 ``xpsi`` and ``xpsi_dev``. The definitive release commit will be tagged and the
 tags pushed to both repositories.
 
@@ -236,8 +236,8 @@ such as:
 
 If you have forked repositories (your own forks or those of other community
 members for collaborative purposes) these would also be remotes of the local
-repository and would be listed here. A local ``master`` branch would track
-either ``xpsi_dev/master`` or ``xpsi/master``. A local ``dev`` branch would
+repository and would be listed here. A local ``main`` branch would track
+either ``xpsi_dev/main`` or ``xpsi/main``. A local ``dev`` branch would
 track ``xpsi_dev/dev``. All other branches checked out from some upstream
 source, be it an ``xpsi_dev`` or ``xpsi`` branch, or a branch from another
 community member's fork, will track those remote branches. Branches that you
