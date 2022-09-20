@@ -76,29 +76,6 @@ class Spacetime(ParameterSubspace):
 
         super(Spacetime, self).__init__(f, M, R, D, cosi)
 
-    @classmethod
-    @make_verbose('Configuring default bounds with fixed spin',
-                  'Spacetime configured')
-    def fixed_spin(cls, frequency):
-        """
-        :param float frequency:
-            The fixed coordinate spin frequency in Hz.
-
-        .. note::
-
-            The degeneracy due to equatorially-reflection symmetric physics
-            is eliminated here by declaring prior support for Earth inclination
-            from northern rotation pole to equatorial plane.
-
-        """
-
-        bounds = dict(mass = (1.0, 3.0),
-                      radius = (gravradius(1.0), 16.0),
-                      distance = (0.05, 2.0),
-                      cos_inclination = (0.0, 1.0))
-
-        return cls(bounds, dict(frequency = frequency))
-
     @property
     def M(self):
         """ Get the (rotationally deformed) gravitational mass in SI. """
