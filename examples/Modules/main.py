@@ -15,14 +15,19 @@ from CustomPrior import CustomPrior
 
 
 # Data
-data = xpsi.Data(np.loadtxt("../Data/xpsi_good_realisation.dat", dtype=np.double),
+if __name__ == '__main__':
+    data_path = "../Data/xpsi_good_realisation.dat"
+else:
+    data_path = "./Data/xpsi_good_realisation.dat"
+
+data = xpsi.Data(np.loadtxt(data_path, dtype=np.double),
                      channels=np.arange(10,301),
                      phases=np.linspace(0.0, 1.0, 33),
                      first=0,
                      last=290,
                      exposure_time=1000.0)
 
-# # Intrument settings
+# # Instrument settings
 
 channel_number=np.arange(0,1501)    # The channel nnumber
 energy_low=np.arange(0,15.01, 0.01) # Lower bounds of each channel
@@ -100,7 +105,7 @@ hot_spot = xpsi.HotRegion(bounds=bounds,
                                 prefix='hot')
 
 
-# # Phostosphere
+# # Photosphere
 photosphere = CustomPhotosphere(hot = hot_spot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
@@ -120,7 +125,7 @@ likelihood = xpsi.Likelihood(star = star, signals = signal,
                              externally_updated = True,
                              prior = prior)
 
-# Crutial step, if the likelihood   check fails, then something went terrible wrong :)
+# Crucial step, if the likelihood check fails, then something went terrible wrong :)
 p=[1.4,10,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.8]
 
 likelihood.check(None, [-47881.27817666349], 1.0e-5, physical_points=[p])
@@ -136,7 +141,7 @@ if __name__ == '__main__':
                       'importance_nested_sampling': False,
                       'multimodal': False,
                       'n_clustering_params': None,
-                      'outputfiles_basename': '../Outputs/ST_live_1000_eff_0.3_seed0',
+                      'outputfiles_basename': '../Outputs/ST_live_1000_eff_0.3_seed0_v2',
                       'n_iter_before_update': 100,
                       'n_live_points': 1000,
                       'sampling_efficiency': 0.3,
