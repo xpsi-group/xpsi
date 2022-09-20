@@ -325,20 +325,17 @@ compilation in the ``setup.py`` script.
 
 .. note::
 
-   The default X-PSI is installed with an analytical blackbody atmosphere extension. If you want to use a numerical atmosphere extension instead, please overwrite the following files and (re-)install:
+   The default X-PSI is installed with an analytical blackbody surface emission model extension. If you want to use alternative models for the surface radiation field, you will need to (re-)install / (re-)compile XPSI with the appropriate flags:
 
    .. code-block:: bash
 
-      cp xpsi/surface_radiation_field/archive/hot/numerical.pyx xpsi/surface_radiation_field/hot.pyx
-      cp xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx xpsi/surface_radiation_field/elsewhere.pyx
-      CC=<path/to/compiler/executable> python setup.py install [--user]
+      CC=<path/to/compiler/executable> python setup.py --help
+      CC=<path/to/compiler/executable> python setup.py install [--NumHot] [--NumElse] [--user]
 
-   It is also possible to use different extensions for the hot and elsewhere (rest of the star) regions. You can change back to the blackbody atmosphere with:
+   This will install the numerical atmosphere for the hot regions and/or for the rest of the surface (`elsewhere`). To (re-) install the default blackbody surface emission model, run the command again without the flags:
 
    .. code-block:: bash
 
-      cp xpsi/surface_radiation_field/archive/hot/blackbody.pyx xpsi/surface_radiation_field/hot.pyx
-      cp xpsi/surface_radiation_field/archive/elsewhere/blackbody.pyx xpsi/surface_radiation_field/elsewhere.pyx
       CC=<path/to/compiler/executable> python setup.py install [--user]
 
 
