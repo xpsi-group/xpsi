@@ -3,7 +3,7 @@
 HPC systems
 ================
 
-The information provided below is for users who intend to work on High-Performance Computing (HPC) systems. The installation instructions are system-specific. X-PSI has been used on a few different systems and the information may also be translated to other systems by users looking for guidance.
+The information provided in this page is for users who intend to work on High-Performance Computing (HPC) systems. These installation instructions are system-specific. X-PSI has already been used on different systems, for some of which, we provide the instructions below. This information may also be translated to other systems by users looking for guidance.
 
 
 Snellius (SURF)
@@ -42,6 +42,30 @@ Prepare python environment:
 
     module load Python/2.7.18-GCCcore-10.3.0-bare
 
+We will now install the various python packages we require. We use the module
+``/sw/arch/Centos8/EB_production/2021/modulefiles/lang/Python/2.7.18-GCCcore-10.3.0-bare.lua`` and its ``pip`` package manager to install packages
+locally in ``$HOME/.local/lib/python2.7/site-packages/`` if they are not
+installed globally or are outdated.
+
+Note that the python packages must be installed before pointing to intel compilers on Snellius to avoid child process reliability issues if using threads.
+`matplotlib` can be optionally installed for plotting purposes and is not necessary for modelling and inferencing.
+
+.. code-block:: bash
+
+    pip install --user Cython==0.29.24
+    pip install --user wrapt
+
+    pip install --user scipy
+    pip install --user numpy
+    pip install --user matplotlib
+    pip install --upgrade --user setuptools
+
+Set `PYTHONPATH`:
+
+.. code-block:: bash
+
+    export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
+
 Point to Intel compilers:
 
 .. code-block:: bash
@@ -50,40 +74,13 @@ Point to Intel compilers:
     export CC=icc
     export CXX=icpc
 
-When compiling, use the ``-ax`` flag to select instruction sets that target
-Intel Broadwell/Haswell processors on batch nodes via auto-dispatch.
-The ``-x`` instruction set is for sneaky testing purposes on the login node.
-Below we write these flags arguments explicitly where required.
+Below we explicitly specify flag arguments to select intel instruction sets that are compatible with the AMD processors present in Snellius.
 
-The default ``cmake`` module should be sufficient:
+Load ``cmake`` module:
 
 .. code-block:: bash
 
-    module load cmake
-
-Prepare Python environment:
-
-.. code-block:: bash
-
-    module load python/2.7.9
-
-We will now install the various python packages we require. We use the module
-``/sara/sw/python-2.7.9/`` and its ``pip`` package manager to install packages
-locally in ``$HOME/.local/lib/python2.7/site-packages/`` if they are not
-installed globally or are outdated.
-
-.. code-block:: bash
-
-    pip install --user Cython==0.27.3
-    pip install --user wrap
-    pip install --user tools
-
-We set the library and python paths:
-
-.. code-block:: bash
-
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
-    export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
+    module load CMake/3.20.1-GCCcore-10.3.0
 
 To prepare MPI from ``$HOME``:
 
@@ -102,28 +99,76 @@ To test on the login node:
 
 Do you see ranks 0 through 7 reporting for duty?
 
+.. note::
+
+    If faced with an error message ``Can't locate Switch.pm ...``, the `Switch` module can be loaded using the `CPAN` package manager as:
+
+    .. code-block:: bash
+
+        cpan
+
+    Follow the default instructions for the interactive cpan questions.
+
+    .. code-block:: bash
+
+        cpan[1]> install Switch
+        cpan[2]> exit
+
+.. note::
+
+    If MPI raises a warning about missing hydra process manager, run the following code-block:
+
+    .. code-block:: bash
+
+        unset I_MPI_PMI_LIBRARY
+        export I_MPI_JOB_RESPECT_PROCESS_PLACEMENT=0
+
+
 To prepare `MultiNest <https://github.com/farhanferoz/MultiNest>`_ from
 ``$HOME``:
 
 .. code-block:: bash
 
     git clone https://github.com/farhanferoz/MultiNest.git ~/multinest
-    cd ~/multinest/MultiNest_v3.11_CMake/multinest
+    cd ~/multinest/MultiNest_v3.12_CMake/multinest
     mkdir build
     cd build
-    cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" ..
-    make
+    cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" ..; make
     ls ../lib/
 
 Use the last command to check for the presence of shared objects.
+
+.. note::
+
+    The Intel compilers on Snellius run into issues with Intel Math Kernal Library (MKL) due to static linkage. These issues can be solved by setting the appropriate paths to the environment variable for the pre-load libs:
+
+    .. code-block:: bash
+
+        export LD_PRELOAD=/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_def.so.1:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_avx2.so.1:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_core.so:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_lp64.so:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_thread.so:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/compiler/2021.2.0/linux/compiler/lib/intel64_lin/libiomp5.so
+
+    Further details on MKL issues can be found in this `thread <https://community.intel.com/t5/Intel-oneAPI-Math-Kernel-Library/mkl-fails-to-load/m-p/1155538>`_
+
+We also need to the set the environment variable for library path to point at MultiNest:
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
 
 Now you need the Python interface to MultiNest, starting from ``$HOME``:
 
 .. code-block:: bash
 
-    git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
-    cd pymultinest
+    git clone https://github.com/JohannesBuchner/PyMultiNest.git ~/pymultinest
+    cd ~/pymultinest
     python setup.py install --user
+
+To test the installation of MultiNest and PyMultiNest on the login node:
+
+.. code-block:: bash
+
+    mpiexec -n 2 python pymultinest_demo.py
+
+Do you obtain parameter values and evidences?
 
 .. note::
 
@@ -132,38 +177,12 @@ Now you need the Python interface to MultiNest, starting from ``$HOME``:
     packages ``emcee`` and ``schwimmbad``. We assume the user can infer how to
     do this using the information above and on the :ref:`install` page.
 
-To build and install `GSL <https://www.gnu.org/software/gsl/>`_ from ``$HOME``:
+Next, we need to load `GSL <https://www.gnu.org/software/gsl/>`_ and set the `PATH` environment variable:
 
 .. code-block:: bash
 
-    wget -v http://mirror.koddos.net/gnu/gsl/http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
-    tar -xvf gsl-latest.tar.gz
-    mkdir gsl-latest/build
-    cd gsl-latest/build
-    ./configure FC=ifort CC=icc CFLAGS='-O3 -xAVX -axCORE-AVX2 -mieee-fp -funroll-loops' --prefix=$HOME/gsl
-    make
-
-Optionally ``make check`` can be executed next, but should fail on linear
-algebra (linalg) checks because precision checks designed for GNU compiler
-collection, not Intel. Now:
-
-.. code-block:: bash
-
-    make install
-
-You can check the prefix (which should be ``$HOME/gsl``) and version of GSL
-on your path:
-
-.. code-block:: bash
-
-    gsl-config --version
-    gsl-config --prefix
-
-Note that if you need to restart installation for some reason, first execute:
-
-.. code-block:: bash
-
-    make clean; make distclean
+    module load GSL/2.7-GCC-10.3.0
+    export PATH=/sw/arch/Centos8/EB_production/2021/software/GSL/2.7-GCC-10.3.0:$PATH
 
 To prepare X-PSI from ``$HOME``:
 
@@ -181,6 +200,11 @@ cflags for compilation of the X-PSI extensions. Because the library location
 will not change for runtime, we state the runtime linking instructions at
 compilation in the ``setup.py`` script.
 
+.. note::
+
+    Since Snellius uses AMD processors and the Intel instruction sets are internally translated, the installation proceeds while repeating `automatic CPU dispatch` and `icc` warnings.
+    These warnings are safe to ignore. However, as they get printed, it takes longer for the installation and can exceed the idle time on the login node, resulting in a `broken pipe`. In this case, it would be preferable to direct the output of the installation into an output file, and if required use a `nohup` or similar command.
+
 If you ever need to reinstall, first clean to recompile C files:
 
 .. code-block:: bash
@@ -189,10 +213,10 @@ If you ever need to reinstall, first clean to recompile C files:
 
 .. note::
 
-    We will not use the :mod:`~xpsi.PostProcessing` module, but instead
-    ``scp`` output files to a local system to perform plotting.
+    We typically do not used the :mod:`~xpsi.PostProcessing` module, but instead
+    ``rsync`` output files to a local system to perform plotting.
     This circumvents any potential backend problems and permits straightforward
-    use of IPython for interactive plotting. See also the :ref:`install` page.
+    use of IPython for interactive plotting. However, if one wishes to use it on a HPC, it would require installation of `GetDist` and `Nestcheck`. See :ref:`install` page for relevant details.
 
 Environment variables
 ^^^^^^^^^^^^^^^^^^^^^
@@ -206,14 +230,14 @@ Set runtime linking path for MultiNest:
 
 .. code-block:: bash
 
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/Multinest_v3.11_CMake/multinest/lib
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
 
 We want to ensure that your locally installed Python packages take
 precedence over globally installed packages:
 
 .. code-block:: bash
 
-    export PYTHONPATH=$HOME/.local.lib/python2.7/site-packages/:$PYTHONPATH
+    export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
 
 If you are to perform small tests on login nodes in your login shell, these
 environment variables need to be exported in your ``.bash_profile`` script, or
