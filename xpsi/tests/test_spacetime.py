@@ -203,3 +203,38 @@ class TestSpacetimeProperties(object):
         st._epsilon = epsilon_val
 
         assert st.epsilon == epsilon_val
+
+    def test_a_setter(self):
+        st = Spacetime(self.bounds, self.values)
+        aval = 42
+        st.a = aval
+
+        assert st._a == aval
+
+    def test_a_deleter(self):
+        st = Spacetime(self.bounds, self.values)
+        aval = 42
+        st.a = aval
+
+        assert st._a == aval
+        del st.a
+        with pytest.raises(AttributeError):
+            st._a
+
+    def test_q_setter(self):
+        st = Spacetime(self.bounds, self.values)
+        qval = 42
+        st.q = qval
+
+        assert st._q == qval
+
+    def test_q_deleter(self):
+        st = Spacetime(self.bounds, self.values)
+        qval = 42
+        st.q = qval
+        
+        assert st._q == qval
+        del st.q
+        with pytest.raises(AttributeError):
+            st._q
+ 
