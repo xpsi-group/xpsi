@@ -274,7 +274,70 @@ CALMIP
 ------
 
 
+`CALMIP <https://www.calmip.univ-toulouse.fr>`_ is the supercomputer of `Université Fédérale de Toulouse <https://www.univ-toulouse.fr>`_
 
-.. todo::
+Installation
+^^^^^^^^^^^^
 
-    Things here.
+In your ``$HOME`` file system, from the login node, start by loading the necessary modules:
+
+.. code-block:: bash
+
+    module purge
+    module load python/2.7.14
+    module load cmake
+    module load intel/18.2.199
+    module load intelmpi/18.2
+    module load gsl/2.5-icc
+
+Then, install/update the required python packages:
+
+.. code-block:: bash
+
+    pip install emcee==3.0.2  —user
+    pip install --upgrade numpy --user
+    pip install --upgrade Cython --user
+    pip install schwimmbad —user
+
+
+Install MPI4PY in your ``$HOME``:
+
+.. code-block:: bash
+
+    wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
+    tar -xvf mpi4py-3.0.0.tar.gz
+    cd mpi4py-3.0.0
+    python setup.py install --user
+
+Download the MultiNest package in your ``$HOME``:
+
+.. code-block:: bash
+
+    git clone https://github.com/farhanferoz/MultiNest.git ~/multinest
+    cd ~/multinest/MultiNest_v3.11_CMake/multinest
+    mkdir build
+    cd build
+
+
+Compile MultiNest in your ``$HOME``, following recommendation from CALMIP support:
+
+.. code-block:: bash
+
+    cmake -DCMAKE_INSTALL_PREFIX=~/multiNest \
+            -DCMAKE_{C,CXX}_FLAGS="-O3 -xCORE-AVX512 -mkl" \
+            -DCMAKE_Fortran_FLAGS="-O3 -xCORE-AVX512 -mkl" \
+            -DCMAKE_C_COMPILER=mpiicc    \
+            -DCMAKE_CXX_COMPILER=mpiicpc \
+            -DCMAKE_Fortran_COMPILER=mpiifort  ..
+    make
+
+Set up your library paths:
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multiNest/MultiNest_v3.12_CMake/multinest/lib
+    export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
+    export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
+
+
+Note that the ``module`` commands, and the library path ``commands`` above will have to be added in your SBATCH script (see :ref:`example_script`) to execute a run.
