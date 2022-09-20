@@ -332,7 +332,7 @@ compilation in the ``setup.py`` script.
       CC=<path/to/compiler/executable> python setup.py --help
       CC=<path/to/compiler/executable> python setup.py install [--NumHot] [--NumElse] [--user]
 
-   This will install the numerical atmosphere for the hot regions and/or for the rest of the surface (`elsewhere`). To (re-) install the default blackbody surface emission model, run the command again without the flags:
+   This will install the numerical atmosphere for the hot regions and/or for the rest of the surface (``elsewhere``). To (re-) install the default blackbody surface emission model, run the command again without the flags:
 
    .. code-block:: bash
 
