@@ -215,8 +215,7 @@ class Instrument(ParameterSubspace):
             try:
                 energy_edges = _np.array(energy_edges)
             except TypeError:
-                raise EdgesError('Energy edges must be in a one-dimensional '
-                                 'array.')
+                raise EdgesError('Energy edges must be in a one-dimensional array of positive increasing values.')
 
         try:
             assert energy_edges.ndim == 1
@@ -224,8 +223,8 @@ class Instrument(ParameterSubspace):
             assert energy_edges.shape[0] == self._matrix.shape[1] + 1
             assert not (energy_edges[1:] <= energy_edges[:-1]).any()
         except AssertionError:
-            raise EdgesError('Energy edges must be in a one-dimensional '
-                             'array, and must be postive and increasing.')
+            raise EdgesError('Energy edges must be in a one-dimensional array of positive increasing values, with a '
+                             'length equal to the length of the response matrix + 1.')
 
         self._energy_edges = energy_edges
 
