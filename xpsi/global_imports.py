@@ -60,7 +60,7 @@ if _size == 1: # else assume production run usage on HPC system
     except ImportError:
         print('Warning: could not import a matplotlib library.')
         print('         X-PSI Inference runs should still work.')
-        print('         Matpotlib is only necessary for the PostProcessing module.')
+        print('         Matpotlib is necessary for the PostProcessing module and producing sky maps.')
         _mpl = None
 else:
     _mpl = None
