@@ -175,7 +175,7 @@ Do you obtain parameter values and evidences?
     We assumed above that nested sampling with `MultiNest`_ is desired. If
     ensemble-MCMC with ``emcee`` is desired, you need to install the Python
     packages ``emcee`` and ``schwimmbad``. We assume the user can infer how to
-    do this using the information above and on the :ref:`install` page.
+    do this using the information above and on the :ref:`install` page, or using the instructions provided for :ref:`_CALMIP` below.
 
 Next, we need to load `GSL <https://www.gnu.org/software/gsl/>`_ and set the `PATH` environment variable:
 
@@ -291,9 +291,18 @@ For an example job script, refer to :ref:`example_script`.
 Lisa (SURF)
 -----------
 
+`Lisa <https://servicedesk.surf.nl/wiki/display/WIKI/Lisa>`_ follows the exact installation instructions as that of Snellius, except for the paths provided
+to the environment variable for the pre-load libs, which is as follows:
+
+.. code-block:: bash
+
+    export LD_PRELOAD=/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_def.so.1:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_avx2.so.1:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_core.so:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_lp64.so:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_thread.so:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/compiler/2021.2.0/linux/compiler/lib/intel64_lin/libiomp5.so
+
+
 Helios (API)
 ------------
 
+.. _CALMIP:
 CALMIP
 ------
 
@@ -318,10 +327,10 @@ Then, install/update the required python packages:
 
 .. code-block:: bash
 
-    pip install emcee==3.0.2  —user
+    pip install emcee==3.0.2  --user
     pip install --upgrade numpy --user
     pip install --upgrade Cython --user
-    pip install schwimmbad —user
+    pip install schwimmbad --user
 
 
 Install MPI4PY in your ``$HOME``:
