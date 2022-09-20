@@ -10,7 +10,7 @@
    overview
    FAQ
    applications
-   SURFsara_systems
+   HPC_systems
 
 .. toctree::
    :maxdepth: 1
