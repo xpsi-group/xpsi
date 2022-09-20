@@ -1,23 +1,15 @@
 .. _surfsystems:
 
-SURFsara systems
+HPC systems
 ================
 
-The information provided below is intended for users who intend to work on the
-SURFsara systems Cartesius and/or Lisa. These specific systems are typically
-used by members of the Anton Pannekoek Institute for Astronomy, where X-PSI
-was first developed. However, this information may also be translated to
-other systems by users looking for guidance.
+The information provided below is for users who intend to work on High-Performance Computing (HPC) systems. The installation instructions are system-specific. X-PSI has been used on a few different systems and the information may also be translated to other systems by users looking for guidance.
 
-The X-PSI project is yet to develop a catalogue of tips/guidelines/instructions
-for different types of systems or specific systems. Such information should be
-gained to some degree as the package is applied by users.
 
-Cartesius
----------
+Snellius (SURF)
+-------------------
 
-`Cartesius <https://userinfo.surfsara.nl/systems/cartesius>`_ is the Dutch National
-Supercomputer.
+`Snellius <https://servicedesk.surf.nl/wiki/display/WIKI/Snellius>`_ is the Dutch National Supercomputer.
 
 Installation
 ^^^^^^^^^^^^
@@ -32,17 +24,23 @@ and move anything else to some archive in ``$HOME``. Clean ``.bashrc`` and
 ``LD_PRELOAD``, ``RUN_PATH``, ``PATH``, and ``PYTHONPATH``. Then logout and
 log back in order to get a clean environment.
 
-Modify clean environment with Intel toolchain information:
+To be additionally safe, run:
+.. code-block:: bash
+
+    module purge
+
+Load environment module and modify clean environment with Intel toolchain information:
 
 .. code-block:: bash
 
-    module load intel/2017b
+    module load 2021
+    module load intel/2021a
 
-Load the module environment:
+Prepare python environment:
 
 .. code-block:: bash
 
-    module load pre2019
+    module load Python/2.7.18-GCCcore-10.3.0-bare
 
 Point to Intel compilers:
 
@@ -80,10 +78,10 @@ installed globally or are outdated.
     pip install --user wrap
     pip install --user tools
 
-We set the library and python paths: 
+We set the library and python paths:
 
 .. code-block:: bash
-    
+
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
     export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
 
@@ -266,124 +264,16 @@ Batch usage
 
 For an example job script, refer to :ref:`example_script`.
 
+Lisa (SURF)
+-----------
 
-Lisa
-----
+Helios (API)
+------------
 
-The following are the instructions for the
-`Lisa <https://userinfo.surfsara.nl/systems/lisa>`_ Cluster, that mostly correspond to those 
-of Cartesius instructions given above but with few exceptions.
- 
-After cleaning your home file system of existing versions of dependencies (as explained for Cartesius), we need to make the environment with Intel toolchain information:
+CALMIP
+------
 
-.. code-block:: bash
 
-    module load 2019
-    module load intel/2019b
-    
-The default ``cmake`` module can be obtained from:
-
-.. code-block:: bash
-
-    module load Cmake
-
-To prepare the correct Python environment:
-
-.. code-block:: bash
-
-    module load Python/2.7.15-intel-2019b
-
-Next, we need to use ``pip`` to install packages
-locally in ``$HOME/.local/lib/python2.7/site-packages/``:
-
-.. code-block:: bash
-
-    pip install --user Cython==0.28; pip install --user wrapt
-    
-To prepare MPI and MultiNest from ``$HOME``:
-
-.. code-block:: bash
-
-    wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
-    tar -xvf mpi4py-3.0.0.tar.gz
-    cd mpi4py-3.0.0
-    python setup.py install --user
-    
-.. code-block:: bash
-    
-    git clone https://github.com/farhanferoz/MultiNest.git ~/multinest
-    cd ~/multinest/MultiNest_v3.12_CMake/multinest
-    mkdir build
-    cd build
-    cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" ..
-    make   
-
-In case of having problems, the ``-xAVX`` and ``-axCORE-AVX2`` compiler flags can be omitted. 
-
-Finally, we need the Python interface to MultiNest, GSL, and X-PSI, all starting from ``$HOME``:
-
-.. code-block:: bash
-
-    cd; git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
-    cd pymultinest
-    python setup.py install --user    
-
-.. code-block:: bash
-
-    cd; wget -v http://mirror.koddos.net/gnu/gsl/http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
-    tar -xvf gsl-latest.tar.gz
-    cd gsl-2.6
-    mkdir build; cd build
-    ../configure CC=icc CFLAGS='-O3 -xAVX -axCORE-AVX2 -mieee-fp -funroll-loops' --prefix=$HOME/gsl
-    make
-    make install
-    export PATH=$HOME/gsl/bin:$PATH
-
-.. code-block:: bash
-
-    cd; git clone https://github.com/xpsi-group/xpsi.git
-    cd xpsi
-    LDSHARED="icc -shared" CC=icc python setup.py install --user    
-
-The success of different installation steps can be checked as described in the Cartesius instructions, as well as the instructions for possible re-installations. 
-
-The structure of the Lisa filesystem for batch jobs is different to Cartesius. Here is given an example job: 
-
-.. code-block:: bash
-
-   #!/bin/bash
-   #SBATCH -N 4
-   #SBATCH --tasks-per-node=8
-   #SBATCH -t 3-00:00:00
-   #SBATCH -p normal
-   #SBATCH --job-name=run1
-
-   echo start of job in directory $SLURM_SUBMIT_DIR
-   echo number of nodes is $SLURM_JOB_NUM_NODES
-   echo the allocated nodes are:
-   echo $SLURM_JOB_NODELIST
-
-   module load 2019
-   module load intel/2019b
-   module load Python/2.7.15-intel-2019b
-
-   cp -r $HOME/NICER_analyses/J0030_ST_PST $TMPDIR
-
-   cd $TMPDIR/J0030_ST_PST
-
-   export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
-
-   export OMP_NUM_THREADS=1
-   export OPENBLAS_NUM_THREADS=1
-   export GOTO_NUM_THREADS=1
-   export MKL_NUM_THREADS=1
-   export LD_LIBRARY_PATH=$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/:$LD_LIBRARY_PATH
-   export PATH=$HOME/gsl/bin:$PATH
-
-   srun python main_run1.py > out_run1 2> err_run1
-
-   cp run1* out_run1 err_run1 $HOME/NICER_analyses/J0030_ST_PST/.
-   #end of job file
 
 .. todo::
 
