@@ -127,7 +127,7 @@ class Instrument(ParameterSubspace):
             assert (matrix >= 0.0).all()
         except AssertionError:
             raise ResponseError('Input matrix must be a two-dimensional '
-                                'ndarray awith elements that are zero '
+                                'ndarray with elements that are zero '
                                 'or positive.')
         try:
             for i in range(matrix.shape[0]):
@@ -262,8 +262,7 @@ class Instrument(ParameterSubspace):
             try:
                 channel_edges = _np.array(channel_edges)
             except TypeError:
-                raise EdgesError('Channel edges must be in a one-dimensional '
-                                 'array')
+                raise EdgesError('Channel edges must be in a one-dimensional array of positive increasing values.')
 
         try:
             assert channel_edges.ndim == 1
@@ -271,8 +270,8 @@ class Instrument(ParameterSubspace):
             assert channel_edges.shape[0] == self._matrix.shape[0] + 1
             assert not (channel_edges[1:] <= channel_edges[:-1]).any()
         except AssertionError:
-            raise EdgesError('Channel edges must be in a one-dimensional '
-                             'array, and must be postive and increasing.')
+            raise EdgesError('Channel edges must be in a one-dimensional array of positive increasing values, with a '
+                             'length equal to the length of the response matrix + 1.')
 
         self._channel_edges = channel_edges
 
@@ -288,28 +287,26 @@ class Instrument(ParameterSubspace):
     @channels.setter
     @make_verbose('Setting channels for loaded instrument response (sub)matrix',
                   'Channels set')
-    def channels(self, array):
-        if not isinstance(array, _np.ndarray):
+    def channels(self, channel_array):
+        if not isinstance(channel_array, _np.ndarray):
             try:
-                array = _np.array(array)
+                channel_array = _np.array(channel_array)
             except TypeError:
-                raise ChannelError('Channel numbers must be in a '
-                                   'one-dimensional array, and must all be '
-                                   'positive integers including zero.')
+                raise ChannelError('Channel numbers must be in a one-dimensional array of positive integers'
+                                   '(including zero).')
 
         try:
-            assert array.ndim == 1
-            assert (array >= 0).all()
-            assert array.shape[0] == self._matrix.shape[0]
+            assert channel_array.ndim == 1
+            assert (channel_array >= 0).all()
+            assert channel_array.shape[0] == self._matrix.shape[0]
         except AssertionError:
-            raise ChannelError('Channel numbers must be in a '
-                               'one-dimensional array, and must all be '
-                               'positive integers including zero.')
+            raise ChannelError('Channel numbers must be in a one-dimensional array of positive integers'
+                               '(including zero).')
 
-        if (array[1:] - array[:-1] != 1).any():
-            yield ('Warning: Channel numbers do not uniformly increment by one.'
-                   '\n         Please check for correctness.')
+        if (channel_array[1:] - channel_array[:-1] != 1).any():
+            yield ('Warning: Channel numbers do not uniformly increment by one.\n'
+                   '         Please check for correctness.')
 
-        self._channels = array
+        self._channels = channel_array
 
         yield
