@@ -4,9 +4,11 @@
 Start here
 ==========
 
-**This page provides an overview of the available tutorials.**
+All tutorials listed below may be found as Jupyter notebooks under ``docs/source/``. We encourage running these yourself as you go through the tutorials as a means of practice. Any external data files needed such as instrument response files and numerical atmosphere data are available on `Zenodo <https://doi.org/10.5281/zenodo.7094145>`_.
 
-:doc:`Modeling<Modeling>`
+**Overview of the available tutorials.**
+
+:doc:`Modeling<Modeling>` is an in-depth tutorial that first covers the structure of X-PSI followed by basic usage of X-PSI. Basic usage includes constructing your first model (e.g. instrument, star, and atmosphere) and running nested sampling.
 
 :doc:`Instrument synergy<Instrument synergy>`
 
