@@ -34,7 +34,7 @@ class Interstellar(ParameterSubspace):
             An array of energies in keV at which attenuation factors need to
             be applied to the corresponding elements of the signal array.
 
-        :param ndarray[m[,n]] energies:
+        :param ndarray[m[,n]] signal:
             A signal array to be attenuated, where the second dimension
             (columns) is optional and generally represents time (phase). The
             number of rows must be equal to the number of energies.
