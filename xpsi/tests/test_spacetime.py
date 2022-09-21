@@ -34,11 +34,11 @@ class TestSpacetimeInit(object):
     def test_spacetime_class_initializes(self):
         st = Spacetime(self.bounds, self.values)
 
-    def test_spacetime_breaks_with_values_missin(self):
+    def test_spacetime_breaks_with_bounds_missing(self):
         with pytest.raises(TypeError):
             st = Spacetime(self.values)
 
-    def test_spacetime_breaks_with_bounds_missing(self):
+    def test_spacetime_breaks_with_values_missing(self):
         with pytest.raises(TypeError):
             st = Spacetime(self.bounds)
 
@@ -204,14 +204,7 @@ class TestSpacetimeProperties(object):
 
         assert st.epsilon == epsilon_val
 
-    def test_a_setter(self):
-        st = Spacetime(self.bounds, self.values)
-        aval = 42
-        st.a = aval
-
-        assert st._a == aval
-
-    def test_a_deleter(self):
+    def test_a_setter_deleter(self):
         st = Spacetime(self.bounds, self.values)
         aval = 42
         st.a = aval
@@ -221,14 +214,7 @@ class TestSpacetimeProperties(object):
         with pytest.raises(AttributeError):
             st._a
 
-    def test_q_setter(self):
-        st = Spacetime(self.bounds, self.values)
-        qval = 42
-        st.q = qval
-
-        assert st._q == qval
-
-    def test_q_deleter(self):
+    def test_q_setter_deleter(self):
         st = Spacetime(self.bounds, self.values)
         qval = 42
         st.q = qval
