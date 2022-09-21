@@ -162,12 +162,12 @@ If X-PSI is installed using the ``python --user`` approach, we can use the follo
    srun -n $SLURM_JOB_NUM_NODES --ntasks-per-node=1 cp -r $HOME/NICER_analyses/data/* /hddstore/$USER/data/
    sleep 1
 
-   mpiexec -n 252 -mca btl_tcp_if_include ib0 python $JOB_DIR/main.py @$JOB_DIR/config.ini > out1 2> err1
+   mpiexec -n 252 -mca btl_tcp_if_include ib0 python $JOB_DIR/main_run1.py @$JOB_DIR/config.ini > out1 2> err1
    sleep 1
 
    #Move your output from scratch to storage space.
    mkdir -p /zfs/helios/filer0/$USER/
-   cp -r $OUTPUT_FOLDER/* /zfs/helios/filer0/tsalmi/J0740_GAMMA/STU_NICER_hr/
+   cp -r $OUTPUT_FOLDER/* /zfs/helios/filer0/$USER/
 
    #Clean the scratch automatically here.
    #But remember to remove manually in each node, if the main program ends by crashing.
