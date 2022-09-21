@@ -1,4 +1,4 @@
-.. _surfsystems:
+.. _hpcsystems:
 
 HPC systems
 ================
@@ -287,7 +287,7 @@ compiler and linked against MKL.
 Batch usage
 ^^^^^^^^^^^
 
-For an example job script, refer to :ref:`example_script`.
+For an example job script, refer to :ref:`example_job`.
 
 Lisa (SURF)
 -----------
@@ -303,14 +303,17 @@ to the environment variable for the pre-load libs, which is as follows:
 Helios (API)
 ------------
 
-The installation procedure for Helios is still being optimized, but here we show two possible approaches (using either conda environment or python environment setup by the user):
+Helios is a cluster of the Anton Pannekoek Institute for Astronomy. 
+Here we present two possible approaches to install X-PSI. 
+We can use either a conda environment or install locally in the user home directory (using ``python --user``).
+However, note that using the conda environment is safer if there ever will be need for conflicting auxiliary installations for the user in the cluster:
 
 Helios (using conda)
 ^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
-   git clone https://github.com/ThomasEdwardRiley/xpsi.git
+   git clone https://github.com/xpsi-group/xpsi.git
    cd xpsi
    module load anaconda2/2019-10
    conda env create -f basic_environment.yml
@@ -380,7 +383,7 @@ If installed using conda environment, we can use the following type of job scrip
    
    #end of job file
    
-Helios (using python)
+Helios (using ``python --user``)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
@@ -428,11 +431,11 @@ Helios (using python)
    
 .. code-block:: bash
     
-   cd; git clone https://github.com/ThomasEdwardRiley/xpsi.git 
+   cd; git clone https://github.com/xpsi-group/xpsi.git 
    cd xpsi;        
    CC=gcc python setup.py install --user
 
-If installed using python environment, we can use the following type of job script:
+If installed using ``python --user``, we can use the following type of job script:
 
 .. code-block:: bash
 
@@ -555,4 +558,4 @@ Set up your library paths:
     export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
 
 
-Note that the ``module`` commands, and the library path ``commands`` above will have to be added in your SBATCH script (see :ref:`example_script`) to execute a run.
+Note that the ``module`` commands, and the library path ``commands`` above will have to be added in your SBATCH script (see :ref:`example_job`) to execute a run.
