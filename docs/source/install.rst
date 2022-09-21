@@ -93,7 +93,7 @@ to add *conda-forge* package channel.
     you are free to set up alternative environment. For installation on a
     high-performance system, instructions on this page, which tailor to a
     self-administered machine, are either not applicable or do not target
-    performance. We direct the reader to the :ref:`surfsystems` page for
+    performance. We direct the reader to the :ref:`hpcsystems` page for
     guidance.
 
 To duplicate from file:

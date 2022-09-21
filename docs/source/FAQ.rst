@@ -22,7 +22,7 @@ in a context where performance matters.
 
 If you want to test the binaries on a login node, note that you can
 compile with multiple instruction sets for auto-dispatch using the ``-x`` and
-``-ax`` flags. See the :ref:`surfsystems` page for examples.
+``-ax`` flags. See the :ref:`hpcsystems` page for examples.
 
 .. rubric:: What atmosphere extension should I use?
 
@@ -67,6 +67,6 @@ in :ref:`R19`, hereafter R19).
 
 Disk storage required is indeed small: up to :math:`\mathcal{O}(100)` Mbytes for
 applications thus far (e.g., R19). There is a variant of MultiNest nested sampling
-that is much more memory and disk intensive, but we do not use it.  This is 
-because importance nested sampling is not compatible with the alternative options 
+that is much more memory and disk intensive, but we do not use it.  This is
+because importance nested sampling is not compatible with the alternative options
 (read: hacks) for prior implementation (see `Riley, PhD thesis <https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a>`_).
