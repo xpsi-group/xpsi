@@ -176,7 +176,7 @@ Do you obtain parameter values and evidences?
     We assumed above that nested sampling with `MultiNest`_ is desired. If
     ensemble-MCMC with ``emcee`` is desired, you need to install the Python
     packages ``emcee`` and ``schwimmbad``. We assume the user can infer how to
-    do this using the information above and on the :ref:`install` page, or using the instructions provided for the CALMIP instructions below.
+    do this using the information above and on the :ref:`install` page, or using the instructions provided for the :ref:`CALMIPsystem` instructions below.
 
 Next, we need to load `GSL <https://www.gnu.org/software/gsl/>`_ and set the `PATH` environment variable:
 
@@ -405,6 +405,8 @@ Helios (using ``python --user``)
    cd xpsi;        
    CC=gcc python setup.py install --user
 
+
+.. _CALMIPsystem:
 
 CALMIP
 ------
