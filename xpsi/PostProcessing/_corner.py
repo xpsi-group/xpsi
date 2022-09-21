@@ -148,7 +148,7 @@ class CornerPlotter(PostProcessor):
             properties (width, color, and alpha) for :mod:`getdist` contours and density
             distributions. If ``bootstrap and not separate_plots`` then
             the density distribution linewidth is set to zero if not
-            explicitly specified with kwarg ``lw_1d``.
+            explicitly specified with kwarg ``lw_1d``. 
             In addition, keyword arguments for avoiding unnecessary re-drawing of prior samples (``force_draw``, ``prior_samples_fnames`` and ``priors_identical``).
 
         """
@@ -622,7 +622,7 @@ class CornerPlotter(PostProcessor):
             # only report KL divergence for topmost posterior,
             # but plot the priors if available for the other posteriors
             # if priors known to be identical, plot them only once.
-
+            
             if "priors_identical" in kwargs:
                 priors_identical = kwargs.get("priors_identical")
             else:
@@ -632,11 +632,11 @@ class CornerPlotter(PostProcessor):
                 force_draw = kwargs.get("force_draw")
             else:
                 force_draw = [True for i in range(len(self.subset))]
-
+                                
             for i, posterior in enumerate(self.subset):
-
+            
                 force_draw_i = force_draw[i]
-
+                
                 if "prior_samples_fnames" in kwargs:
                     prior_samples_fname = kwargs.get("prior_samples_fnames")[i]
                 else:
@@ -649,10 +649,10 @@ class CornerPlotter(PostProcessor):
                             n_simulate = kwargs.get('n_simulate'),
                             force_draw = force_draw_i,
                             prior_samples_fname=prior_samples_fname)
-
+                            
                 if (i==0 and priors_identical):
                     break
-
+                    
         if veneer:
             self._veneer_spines_ticks(plotter, **kwargs)
         if crosshairs:
@@ -677,7 +677,7 @@ class CornerPlotter(PostProcessor):
     def _add_prior_density(self, plotter, posterior,
                            ndraws, normalize,
                            KL_divergence, KL_base,
-                           bootstrap, n_simulate,
+                           bootstrap, n_simulate, 
                            force_draw,
                            prior_samples_fname):
         """ Crudely estimate the prior density.
@@ -687,8 +687,8 @@ class CornerPlotter(PostProcessor):
 
         """
         run = posterior.subset_to_plot[0]
-
-
+        
+        
         #self.samples[posterior.ID]=samples
 
         yield 'Plotting prior for posterior %s...' % posterior.ID
@@ -711,7 +711,7 @@ class CornerPlotter(PostProcessor):
             try:
                 samples = _np.load(samples_npy)
                 print("Not drawing samples from the joint prior. Reading them instead from a pre-computed table:",prior_samples_fname)
-            except:
+            except:       
                  samples, _ = l.prior.draw(ndraws, transform=True)
                  _np.save(samples_npy,samples)
 
@@ -894,9 +894,9 @@ class CornerPlotter(PostProcessor):
                 stats += (('%s_{-%s}^{+%s}$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
             else:
                 stats += (('%s/-%s/+%s$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
-
+            
             self.val_cred.append([np_.float(_f % _qs[0]),np_.float(_f % _qs[1]),np_.float(_f % _qs[2])])
-
+            
             return stats
 
         if bootstrap:
@@ -1057,7 +1057,7 @@ class CornerPlotter(PostProcessor):
                         yield format_CI(self.params.names[i],
                                         calculate_intervals([0.05, 0.5, 0.95]),
                                         90)
-        self.val_cred=np_.stack(self.val_cred,axis=0)
+        self.val_cred=np_.stack(self.val_cred,axis=0)        
         yield None
 
     @staticmethod
