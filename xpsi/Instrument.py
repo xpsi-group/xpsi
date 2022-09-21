@@ -126,16 +126,16 @@ class Instrument(ParameterSubspace):
             assert matrix.shape[0] <= matrix.shape[1]
             assert (matrix >= 0.0).all()
         except AssertionError:
-            raise ResponseError('Input matrix must be a two-dimensional '
-                                'ndarray with elements that are zero '
-                                'or positive.')
+            raise ResponseError('Input matrix must be a two-dimensional ndarray, with number of channel intervals'
+                                '(dimension 0) smaller than the number of energy intervals (dimension 1),'
+                                ' and with all matrix elements that are zero or positive.')
         try:
             for i in range(matrix.shape[0]):
                 assert matrix[i,:].any()
             for j in range(matrix.shape[1]):
                 assert matrix[:,j].any()
         except AssertionError:
-            raise ResponseError('Each row and column must contain at least '
+            raise ResponseError('Each row and column of the matrix must contain at least '
                                 'one positive number.')
         self._matrix = matrix
 
