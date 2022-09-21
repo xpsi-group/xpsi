@@ -14,7 +14,7 @@ where ``main.py`` is of course the script name, and where for a machine with
 four physical cores, we spawn as many MPI processes.
 
 .. note:: Make sure to set OpenMP environment variables appropriately
-          (see, e.g., :ref:`surfsystems`) to avoid hybrid parallelisation by
+          (see, e.g., :ref:`hpcsystems`) to avoid hybrid parallelisation by
           libraries linked to NumPy and GSL, for instance.
 
 The optional ``-m`` argument is to run the module :mod:`mpi4py` as main, which
