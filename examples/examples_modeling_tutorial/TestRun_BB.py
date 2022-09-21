@@ -6,7 +6,7 @@ The model and synthetic data are based on those shown in the Modelling tutorial 
 Prequisities: 
 Before running the script, add the NICER instrument files to the model_data subdirectory: 
 nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt 
-(found from https://doi.org/10.5281/zenodo.7094145).
+(found from https://doi.org/10.5281/zenodo.7094144).
 
 TBD: Add/Mention this script in the "Example script and modules" page in the documention.
 '''
@@ -104,7 +104,7 @@ try:
                                              channel_edges = 'model_data/nicer_v1.01_rmf_energymap.txt')
 except:
     print("ERROR: You might miss one of the following files (check Modeling tutorial or the link below how to find them): \n model_data/nicer_v1.01_arf.tx, model_data/nicer_v1.01_rmf_matrix.txt, model_data/nicer_v1.01_rmf_energymap.txt")
-    print("The files are found from here: https://doi.org/10.5281/zenodo.7094145")
+    print("The files are found from here: https://doi.org/10.5281/zenodo.7094144")
     exit()
 
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
