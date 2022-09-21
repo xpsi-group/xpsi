@@ -487,6 +487,10 @@ class CornerPlotter(PostProcessor):
         """
         #self.val_cred = []
         self.credible_interval_1d_all_show=credible_interval_1d_all_show
+
+        if credible_interval_1d_all_show:
+            KL_divergence=False
+            
         try:
             for run in self.subset_to_plot:
                 if not isinstance(run, NestedBackend):
