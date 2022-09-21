@@ -6,7 +6,6 @@ from scipy.special import logsumexp
 from ._global_imports import *
 
 from . import _precision
-from collections import OrderedDict
 
 from getdist.plots import getSubplotPlotter
 from getdist.mcsamples import MCSamples
@@ -372,7 +371,6 @@ class CornerPlotter(PostProcessor):
                        label_right = True,
                        no_ytick = False,
                        credible_interval_1d = True,
-                       credible_interval_1d_all_show = False,
                        annotate_credible_interval = True,
                        annotate_xy=(0.025,0.915),
                        sixtyeight = True,
@@ -448,9 +446,6 @@ class CornerPlotter(PostProcessor):
             realisations. The interval between the two bands is generally much
             wider and is shaded lighter.
 
-        :param bool credible_interval_1d_all_show:
-            Show the 1D marginal credible intervals for all the runs IDs.
-
         :param bool annotate_credible_interval:
             Annotate each on-diagonal panel with numeric credible interval
             as median +/- distance to symmetric quantiles. Each quantile,
@@ -485,10 +480,7 @@ class CornerPlotter(PostProcessor):
             used instead, this automation does not occur.
 
         """
-
-        self.credible_interval_1d_all_show=credible_interval_1d_all_show
-        if credible_interval_1d_all_show:
-            KL_divergence = False
+        self.val_cred = []
         try:
             for run in self.subset_to_plot:
                 if not isinstance(run, NestedBackend):
@@ -666,47 +658,16 @@ class CornerPlotter(PostProcessor):
         if crosshairs:
             # only for topmost posterior
             self._add_crosshairs(plotter, self.params.names, self.subset_to_plot[0].truths)
-
-
-        self.credible_intervals=OrderedDict()
-
-        if credible_interval_1d_all_show:
-            for r in range(len(self.subset_to_plot)):
-
-                id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
-                self.r=r
-                self.val_cred = []
-                self.run = self.subset[0].subset_to_plot[r]
-
-                self._add_credible_interval(plotter,
-                                            self.subset[0],
-                                            bootstrap=bootstrap,
-                                            n_simulate=kwargs.get('n_simulate'),
-                                            annotate=annotate_credible_interval,
-                                            annotate_xy=annotate_xy,
-                                            sixtyeight=sixtyeight,
-                                            ninety=ninety,
-                                            compute_all_intervals=compute_all_intervals)
-
-                self.credible_intervals[id]=self.val_cred
-        else:
-                id=self.get_attr("parent_ID")[0]+"_"+self.get_attr("ID")[0]
-                self.r=0
-                self.val_cred = []
-                self.run = self.subset[0].subset_to_plot[0]
-
-                self._add_credible_interval(plotter,
-                                            self.subset[0],
-                                            bootstrap=bootstrap,
-                                            n_simulate=kwargs.get('n_simulate'),
-                                            annotate=annotate_credible_interval,
-                                            annotate_xy=annotate_xy,
-                                            sixtyeight=sixtyeight,
-                                            ninety=ninety,
-                                            compute_all_intervals=compute_all_intervals)
-
-                self.credible_intervals[id]=self.val_cred
-
+        if credible_interval_1d: # include nestcheck estimator bootstrap error
+            self._add_credible_interval(plotter,
+                                        self.subset[0],
+                                        bootstrap=bootstrap,
+                                        n_simulate=kwargs.get('n_simulate'),
+                                        annotate=annotate_credible_interval,
+                                        annotate_xy=annotate_xy,
+                                        sixtyeight=sixtyeight,
+                                        ninety=ninety,
+                                        compute_all_intervals=compute_all_intervals)
 
         self._plotter = plotter
         return plotter
@@ -893,7 +854,7 @@ class CornerPlotter(PostProcessor):
         """
         diag = [plotter.subplots[i,i] for i in range(plotter.subplots.shape[0])]
 
-        run = self.run #posterior.subset_to_plot[0]
+        run = posterior.subset_to_plot[0]
 
         yield 'Plotting credible regions for posterior %s...' % posterior.ID
 
@@ -934,7 +895,7 @@ class CornerPlotter(PostProcessor):
             else:
                 stats += (('%s/-%s/+%s$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
 
-            self.val_cred.append([np_.float(_f % _qs[0]),-np_.float(_f % _qs[1]),+np_.float(_f % _qs[2])])
+            self.val_cred.append([np_.float(_f % _qs[0]),np_.float(_f % _qs[1]),np_.float(_f % _qs[2])])
 
             return stats
 
@@ -996,21 +957,8 @@ class CornerPlotter(PostProcessor):
                     else:
                         fontsize = plotter.settings.lab_fontsize
 
-
-                    if self.credible_interval_1d_all_show:
-                        x_0,_=ax.get_xlim()
-                        y_0,y_1=ax.get_ylim()
-                        y_pos = y_1+0.11*(self.r+1)*(y_1-y_0)
-                        ax.text(x_0, y_pos, title,
-                                    color = color,
-                                    #ha="center",
-                                    alpha =1.,
-                                    fontsize=fontsize)
-
-                    else:
-                        ax.set_title(title, color=color,
-                                     fontsize=fontsize)
-
+                    ax.set_title(title, color=color,
+                                 fontsize=fontsize)
 
                 if compute_all_intervals:
                     yield format_CI(self.params.names[i],
@@ -1055,14 +1003,12 @@ class CornerPlotter(PostProcessor):
                 cred = calculate_intervals(quantiles)
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
-                if self.r==0:
-                    ax.axvspan(cred[0], cred[2], alpha=0.25,
-                               facecolor=color,
-                               edgecolor=color,
-                               linewidth=0,
-                               rasterized=True,
-                               zorder=zorder)
-
+                ax.axvspan(cred[0], cred[2], alpha=0.25,
+                           facecolor=color,
+                           edgecolor=color,
+                           linewidth=0,
+                           rasterized=True,
+                           zorder=zorder)
 
                 if annotate:
                     stats = format_CI('', # parameter name not needed on plot
@@ -1082,20 +1028,8 @@ class CornerPlotter(PostProcessor):
                     else:
                         fontsize = plotter.settings.lab_fontsize
 
-                    if self.credible_interval_1d_all_show:
-                        x_0,_=ax.get_xlim()
-                        y_0,y_1=ax.get_ylim()
-                        y_pos = y_1+0.11*(self.r+1)*(y_1-y_0)
-                        ax.text(x_0, y_pos, title,
-                                    color = color,
-                                    #ha="center",
-                                    alpha =1.,
-                                    fontsize=fontsize)
-
-                    else:
-                        ax.set_title(title, color=color,
-                                     fontsize=fontsize)
-
+                    ax.set_title(title, color=color,
+                                 fontsize=fontsize)
 
                 if compute_all_intervals:
                     yield format_CI(self.params.names[i],
@@ -1123,8 +1057,6 @@ class CornerPlotter(PostProcessor):
                         yield format_CI(self.params.names[i],
                                         calculate_intervals([0.05, 0.5, 0.95]),
                                         90)
-
-
         self.val_cred=np_.stack(self.val_cred,axis=0)
         yield None
 
@@ -1178,12 +1110,11 @@ class CornerPlotter(PostProcessor):
         Always assigns reds (or the first user-defined color) to a combined run if it is found to exist.
 
         """
-        # Color blind friendly
-        nestcheck_colors = ['darkred',"darkblue", "darkorange", "darkgreen",'deeppink', 'maroon',
-                            'indigo','dimgrey', 'olive']
+
+        nestcheck_colors = ['darkred', 'darkblue', 'darkgrey', 'darkgreen',
+                            'darkorange']
         if 'line_colors' in kwargs:
             nestcheck_colors = kwargs.get("line_colors")
-
 
         for run, color in zip(self.subset_to_plot,
                               nestcheck_colors[:len(self.subset_to_plot)]):
