@@ -224,7 +224,7 @@ class Instrument(ParameterSubspace):
             assert not (energy_edges[1:] <= energy_edges[:-1]).any()
         except AssertionError:
             raise EdgesError('Energy edges must be in a one-dimensional array of positive increasing values, with a '
-                             'length equal to the length of the response matrix + 1.')
+                             'length equal to number of energy intervals in the matrix + 1.')
 
         self._energy_edges = energy_edges
 
@@ -271,7 +271,7 @@ class Instrument(ParameterSubspace):
             assert not (channel_edges[1:] <= channel_edges[:-1]).any()
         except AssertionError:
             raise EdgesError('Channel edges must be in a one-dimensional array of positive increasing values, with a '
-                             'length equal to the length of the response matrix + 1.')
+                             'length equal to the number of channel intervals in the matrix + 1.')
 
         self._channel_edges = channel_edges
 
