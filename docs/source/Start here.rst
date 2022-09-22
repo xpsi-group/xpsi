@@ -18,11 +18,11 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 * :doc:`Surface radiation field tools<Surface radiation field tools>` demonstrates the usage of the default (blackbody) and an alternative (atmosphere interpolated from precomputed data) surface radiation field module to compute photon specific intensities. It also shows how to do beaming pattern and spectrum plots for the radiation fields.
 
-* :doc:`Modeling (without statistics)<Modeling (without statistics)>` is similar to:doc:`Modeling<Modeling>` but omits any statistical inference and adds various plots of signals. This is a useful tutorial if you are only interested to use X-PSI to create synthetic data.
+* :doc:`Modeling (without statistics)<Modeling (without statistics)>` is similar to :doc:`Modeling<Modeling>` but omits any statistical inference and adds various plots of signals. This is a useful tutorial if you are only interested to use X-PSI to create synthetic data.
 
 * :doc:`Multiple imaging<Multiple imaging>` is an exercise in image validation by using different integrators (largely following :doc:`Global surface emission<Global surface emission>`) and additionally using another integrator module: rayXpanda, which is capable of computing higher order lensing. In the process of this comparison, this is also provides examples of generating multiple image figures.
 
-* :doc:`Post-processing<Post-processing>` is under construction.
+* The post-processing tutorial is under construction.
 
 * :doc:`Example script and modules<Example script and modules>` is an (advanced) example script for nested sampling from :ref:`R19`. It employs custom photosphere, instrument, interstellar, signal, and prior.
 
