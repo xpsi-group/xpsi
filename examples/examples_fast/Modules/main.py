@@ -20,7 +20,13 @@ if __name__ == '__main__':
 else:
     data_path = "./Data/xpsi_good_realisation.dat"
 
-data = xpsi.Data(np.loadtxt(data_path, dtype=np.double),
+try:
+    data_loaded = np.loadtxt(data_path, dtype=np.double)
+except:
+    print("Loading the data assuming the notebook was run for documentation pages")
+    data_loaded = np.loadtxt('../../examples/examples_fast/Data_cp/xpsi_good_realisation.dat', dtype=np.double)
+
+data = xpsi.Data(data_loaded,
                      channels=np.arange(10,301),
                      phases=np.linspace(0.0, 1.0, 33),
                      first=0,
@@ -137,18 +143,19 @@ if __name__ == '__main__':
     wrapped_params = [0] * len(likelihood)
     wrapped_params[likelihood.index('hot__phase_shift')] = 1
 
+    #The original (more accurate) run settings shown as commented.
     runtime_params = {'resume': False,
                       'importance_nested_sampling': False,
                       'multimodal': False,
                       'n_clustering_params': None,
                       'outputfiles_basename': '../Outputs/ST_live_1000_eff_0.3_seed0_v2',
-                      'n_iter_before_update': 100,
-                      'n_live_points': 1000,
+                      'n_iter_before_update': 50, #100,
+                      'n_live_points': 50, #1000,
                       'sampling_efficiency': 0.3,
                       'const_efficiency_mode': False,
                       'wrapped_params': wrapped_params,
                       'evidence_tolerance': 0.1,
-                      'max_iter': -1,
+                      'max_iter': 100, #-1,
                       'seed' : 0, # Fixing the seed
                       'verbose': True}
 

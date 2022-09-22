@@ -1,14 +1,12 @@
 '''
 Test script to check that X-PSI installation is working (with the default blackbody atmosphere extension).
-The run is succesful if it passes the likelihood check (in ~ 1 minute) and sampling finishes without errors (in ~ 0.5 hour).
+The run is succesful if it passes the likelihood check (in ~ 1 minute) and sampling finishes without errors (in ~ 5 min).
 The model and synthetic data are based on those shown in the Modelling tutorial notebook.
 
 Prequisities:
 Before running the script, add the NICER instrument files to the model_data subdirectory:
 nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt
 (found from https://doi.org/10.5281/zenodo.7094144).
-
-
 '''
 
 from __future__ import print_function, division
@@ -484,7 +482,7 @@ runtime_params = {'resume': False,
                   'wrapped_params': wrapped_params,
                   'evidence_tolerance': 0.5,
                   'seed': 7,
-                  'max_iter': 200,# manual termination condition for short test
+                  'max_iter': 100,# manual termination condition for short test
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
