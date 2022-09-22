@@ -34,7 +34,7 @@
    surface_radiation_field_checking_tools_tutorial
    model_construction_streamlined
    multiple_imaging
-   postprocessing_tutorial
+   postprocessing_tutorial_simple
    example_script
    example_job
 
