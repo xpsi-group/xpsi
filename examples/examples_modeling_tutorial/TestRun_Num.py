@@ -75,12 +75,24 @@ class CustomInstrument(xpsi.Instrument):
 
         try:
             ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
-            RMF = np.loadtxt(RMF, dtype=np.double)
-            if channel_edges:
-                channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
         except:
-            print('A file could not be loaded.')
-            raise
+            print("ERROR: You miss the following file:", ARF)
+            print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+            exit()
+            
+        try:
+            RMF = np.loadtxt(RMF, dtype=np.double)
+        except:
+            print("ERROR: You miss the following file:", RMF)
+            print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+            exit()
+        if channel_edges:
+            try:
+                channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
+            except:
+                print("ERROR: You miss the following file:", channel_edges)
+                print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+                exit()
 
         matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
 
@@ -95,16 +107,12 @@ class CustomInstrument(xpsi.Instrument):
 
         return cls(matrix, edges, channels, channel_edges[20:202,-2])
 
-try:
-    NICER = CustomInstrument.from_response_files(ARF = 'model_data/nicer_v1.01_arf.txt',
-                                             RMF = 'model_data/nicer_v1.01_rmf_matrix.txt',
-                                             max_input = 500,
-                                             min_input = 0,
-                                             channel_edges = 'model_data/nicer_v1.01_rmf_energymap.txt')
-except:
-    print("ERROR: You might miss one of the following files (check Modeling tutorial or the link below how to find them): \n model_data/nicer_v1.01_arf.tx, model_data/nicer_v1.01_rmf_matrix.txt, model_data/nicer_v1.01_rmf_energymap.txt")
-    print("The files are found from here: https://doi.org/10.5281/zenodo.7094144")
-    exit()
+
+NICER = CustomInstrument.from_response_files(ARF = 'model_data/nicer_v1.01_arf.txt',
+                                     RMF = 'model_data/nicer_v1.01_rmf_matrix.txt',
+                                     max_input = 500,
+                                     min_input = 0,
+                                     channel_edges = 'model_data/nicer_v1.01_rmf_energymap.txt')
 
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 mass = (1.0, 3.0),                       # mass
@@ -178,7 +186,12 @@ class CustomPhotosphere_num(xpsi.Photosphere):
 
     @xpsi.Photosphere.hot_atmosphere.setter
     def hot_atmosphere_old(self, path):
-        NSX = np.loadtxt(path, dtype=np.double)
+        try:
+            NSX = np.loadtxt(path, dtype=np.double)
+        except:
+            print("ERROR: You miss the following file:", path)
+            print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+            exit()
         logT = np.zeros(35)
         logg = np.zeros(14)
         mu = np.zeros(67)
@@ -217,7 +230,12 @@ class CustomPhotosphere_num(xpsi.Photosphere):
         try:
             NSX = np.load(path_npy)
         except:
-            NSX = np.loadtxt(path, dtype=np.double)
+            try:
+                NSX = np.loadtxt(path, dtype=np.double)
+            except:
+                print("ERROR: You miss the following file:", path)
+                print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+                exit()
             np.save(path_npy,NSX)
 
         def reorder_23(array, size):
