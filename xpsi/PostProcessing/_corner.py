@@ -1002,7 +1002,7 @@ class CornerPlotter(PostProcessor):
                     if self.credible_interval_1d_all_show:
                         x_0,_=ax.get_xlim()
                         y_0,y_1=ax.get_ylim()
-                        y_pos = y_1+0.11*(self.r+1)*(y_1-y_0)
+                        y_pos = y_1+(0.05+0.11*(self.r))*(y_1-y_0)
                         ax.text(x_0, y_pos, title,
                                     color = color,
                                     #ha="center",
