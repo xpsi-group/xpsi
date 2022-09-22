@@ -49,8 +49,20 @@ Fixed
 Added
 ^^^^^
 
+* A modification of the ``setup.py`` with flags (``--NumHot`` and ``--NumElse``) now facilitates switching between surface emission models.
+
+* The post-processing module now shows the credible intervals of each parameters (above the 1D distribution of the corner plot) when multiple models, or multiple runs, are being loaded in the post-processed. The appropriate tutorial notebook is also provided.
+
+* Some unit tests and continuous integration
+
 Changed
 ^^^^^^^
+
+* The general documentation has been improved, reorganized and clarified.  More details are provided for the installation, locally and on HPC systems.
+
+* The messages of several possible errors have been clarified and detailed to help the user resolve them.
+
+* A small modification now allows production runs without importing matplotlib
 
 Deprecated
 ^^^^^^^^^^
@@ -58,9 +70,19 @@ Deprecated
 Removed
 ^^^^^^^
 
+* Method ``fixed_spin`` of ``spacetime.py`` module.  A spacetime with fixed spin can be created by specifying a spin frequency ``value`` and omitting the spin frequency ``bounds``
+
 Attribution
 ^^^^^^^^^^^
 
+Devarshi Choudhury,
+Bas Dorsman,
+Sebastien Guillot,
+Daniela Huppenkothen,
+Yves Kini,
+Tuomo Salmi,
+Serena Vinciguerra,
+Anna Watts
 
 [v0.7.12] - 2022-09-15
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
