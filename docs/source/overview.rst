@@ -135,13 +135,13 @@ explore hybrid parallelisation paradigms---in particular, enabling
 multithreaded computation on shared memory nodes of distributed architectures.
 
 
-Future extension of scope
--------------------------
+Direct inference of Equation of State
+-------------------------------------
 
-In future development, support for direct *interior* (Equation of State) 
-parameter estimation may be added (see `Riley et al. 2018 
+In principle, support for direct *interior* (Equation of State) 
+parameter estimation could be added (see `Riley et al. 2018 
 <https://ui.adsabs.harvard.edu/abs/2018MNRAS.478.1093R/abstract>`_).  
-This involves solving the field equations for stable stationary spacetime 
+This would involve solving the field equations for stable stationary spacetime 
 solutions and embedding the rotationally deformed stellar surface
 into an ambient Schwarzschild spacetime with the rotationally deformed
 gravitational mass monopole moment, whilst neglecting all other rotational
