@@ -26,16 +26,16 @@
    :maxdepth: 1
    :caption: Tutorials
 
-   Start here
+   Start_here
    Modeling
-   Instrument synergy
-   Hot region complexity
-   Global surface emission
-   Surface radiation field tools
-   Modeling (without statistics)
-   Multiple imaging
-   Example script and modules
-   Example job
+   Instrument_synergy
+   Hot_region_complexity
+   Global_surface_emission
+   Surface_radiation_field_tools
+   Modeling_without_statistics
+   Multiple_imaging
+   Example_script_and_modules
+   Example_job
 
 .. toctree::
    :maxdepth: 1
