@@ -131,7 +131,7 @@ class ParameterSubspace(object):
                     if name == param.name:
                         return param
 
-            raise KeyError('No parameter in subspace with matching name.')
+            raise KeyError('No parameter called \"'+ name +'\" in subspace with matching name.')
 
     def index(self, name):
         """ Get the index of a free parameter. """
@@ -218,7 +218,7 @@ class ParameterSubspace(object):
             except NameError:
                 pass
             else:
-                raise KeyError('No parameter in subspace with matching name.')
+                raise KeyError('No parameter called \"'+ key +'\" in subspace with matching name.')
         elif isinstance(key, int):
             try: # note only free parameters considered for this variant
                 [param for param in self][key].value = value

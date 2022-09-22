@@ -8,40 +8,30 @@ We outline below the workflow we use for developing X-PSI.
 Contact
 ~~~~~~~
 
-You can interact with the X-PSI :ref:`team` in the public domain on GitHub.
-We may also be contacted privately at *xpsi-team[at]googlegroups.com*.
-Private development between releases is performed in a private repository on
-BitBucket. We communicate internally in our Slack workspace, in a mixture of
-private and open channels.
+You are welcome to contact members of the X-PSI team directly if you have
+any questions about the software or its use (for the current active list see
+the :ref:`acknowledgements` page).
+To get in touch with us regarding bugs and issues the easiest way is via the 
+github `Issues <https://github.com/xpsi-group/xpsi/issues/>`_ page. 
+
+Contributing
+~~~~~~~~~~~~
 
 To contribute to this project you can do so whilst being recognised as either
 a community member or a team member. If you contribute to feature development
 publicly on GitHub, you may well be invited to be recognised as a team member in
-the :ref:`acknowledgements`, and to join the mailing group and our Slack
-workspace.
-
-Community members can request to join our Slack workspace without being
-recognised as a team member (or developing features). Community members who
-are experienced users and are willing to donate some of their time to assisting
-other X-PSI users (the potential benefits of engaging in such interaction are
-perhaps self-explanatory) may also request to join the X-PSI team without
-developing features.
+the :ref:`acknowledgements`.
 
 Past developers are recognised as team members unless they no longer wish to be.
 Aside from acknowledging your contribution, this is useful for feature
 maintenance and as a contact point for questions, if permission is granted.
 Past team members will be acknowledged as such.
 
-If you are a grant-holder and wish to base a major research project on the
+If you wish to base a major research project on the
 development and/or application of X-PSI, we invite you to discuss you (and your
 group where applicable) joining the X-PSI team in order to collaborate. If you
-find this idea interesting then please contact Anna L. Watts (contact details
-are on the :ref:`acknowledgements` page). You are entirely free to develop
-X-PSI only in the public domain on GitHub, of course, but we can likely better
-organise and execute this work by using a mixture of private and public
-platforms. If you are applying X-PSI in research as an end-user, a private
-plaform for communication is probably desirable, and we invite you to request
-access to our Slack workspace.
+find this idea interesting then please contact Anna Watts (contact details
+are on the :ref:`acknowledgements` page).
 
 
 .. _workflow:
@@ -190,60 +180,4 @@ advisory workflow.
   this should be a less common pattern.
 
 If you want to contribute a feature, you are welcome to communicate with us
-either on GitHub via issues and pull-requests, or on a private platform
-(see below).
-
-
-BitBucket repository
-^^^^^^^^^^^^^^^^^^^^
-
-Most feature development by the X-PSI team is conducted on private platforms
-including a private development repository .
-
-The X-PSI team works with respect to a private centralised repository
-``xpsi_dev`` and pushes releases to a public GitHub repository. These very
-online documentation pages are only built and pushed to GitHub to be hosted,
-usually by a designated X-PSI team member responsible for this process.
-Commits directly on GitHub via pull requests (e.g., patches) are fetched and
-merged with the on-going development work.
-
-Otherwise, the workflow with respect to the BitBucket repository is very similar
-to the GitHub workflow. Development work is commited to branches which
-are then merged into the ``xpsi_dev/dev`` branch directly (for those with
-write permissions) or by pull request. In this context ``xpsi_dev/dev`` takes
-the role of the ``xpsi/main`` branch on GitHub described above.
-
-When the ``xpsi_dev`` branch is considered feature-complete for a release, it
-will be merged into ``xpsi_dev/main`` directly, or via a release branch.
-Then, ``xpsi_dev/main`` will be published to ``xpsi/main`` via a fast-foward
-merge. Alternatively, a local merge of ``xpsi/main`` and
-``xpsi_dev/main`` might be needed, which is subsequently pushed to both
-``xpsi`` and ``xpsi_dev``. The definitive release commit will be tagged and the
-tags pushed to both repositories.
-
-X-PSI community members with access to ``xpsi_dev``, be it either with write
-or read permissions (to some subset of branches), will add ``xpsi_dev`` as a
-remote to their local repository. Checking one's remotes should yield output
-such as:
-
-.. code-block:: bash
-
-    (xpsi) [15:24:19][xpsi]$ git remote -v
-    DEV     https://ThomasEdwardRiley@bitbucket.org/ThomasEdwardRiley/xpsi_dev.git (fetch)
-    DEV     https://ThomasEdwardRiley@bitbucket.org/ThomasEdwardRiley/xpsi_dev.git (push)
-    origin  https://github.com/xpsi-group/xpsi.git (fetch)
-    origin  https://github.com/xpsi-group/xpsi.git (push)
-
-If you have forked repositories (your own forks or those of other community
-members for collaborative purposes) these would also be remotes of the local
-repository and would be listed here. A local ``main`` branch would track
-either ``xpsi_dev/main`` or ``xpsi/main``. A local ``dev`` branch would
-track ``xpsi_dev/dev``. All other branches checked out from some upstream
-source, be it an ``xpsi_dev`` or ``xpsi`` branch, or a branch from another
-community member's fork, will track those remote branches. Branches that you
-create and commit to locally will be pushed usually to your own fork for a pull
-request, unless you have write permissions to push directly to another
-repository.
-
-A useful online description of a model on which this development structure is
-based is `available <https://nvie.com/posts/a-successful-git-branching-model/>`_.
+either on GitHub via issues and pull-requests, or by contacting a team member directly. 
