@@ -8,11 +8,40 @@ The format is based on
 and this project adheres to
 `Semantic Versioning <http://semver.org/spec/v2.0.0.html>`_.
 
-[Unreleased]
+.. REMOVE THE DOTS BELOW TO UNCOMMENT
+.. ..[Unreleased]
+.. ~~~~~~~~~~~~
+
+.. Summary
+.. ^^^^^^^
+
+.. Fixed
+.. ^^^^^
+
+.. Added
+.. ^^^^^
+
+.. Changed
+.. ^^^^^^^
+
+.. Deprecated
+.. ^^^^^^^^^^
+
+.. Removed
+.. ^^^^^^^
+
+.. Attribution
+.. ^^^^^^^^^^^
+
+
+[v1.0] - 2022-09-23
 ~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
+
+* This major release contains minor bug fixes, improved error messages, as well as improved documentation and tutorials (jupyter notebooks).  This release coincided with the submission of an X-PSI article to the Journal of Open Source Software (**add link**)
+
 
 Fixed
 ^^^^^
@@ -31,6 +60,7 @@ Removed
 
 Attribution
 ^^^^^^^^^^^
+
 
 [v0.7.12] - 2022-09-15
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
