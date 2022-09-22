@@ -3,12 +3,12 @@ Test script to check that X-PSI installation is working (with the default blackb
 The run is succesful if it passes the likelihood check (in ~ 1 minute) and sampling finishes without errors (in ~ 0.5 hour).
 The model and synthetic data are based on those shown in the Modelling tutorial notebook.
 
-Prequisities: 
-Before running the script, add the NICER instrument files to the model_data subdirectory: 
-nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt 
+Prequisities:
+Before running the script, add the NICER instrument files to the model_data subdirectory:
+nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt
 (found from https://doi.org/10.5281/zenodo.7094144).
 
-TBD: Add/Mention this script in the "Example script and modules" page in the documention.
+
 '''
 
 from __future__ import print_function, division
@@ -68,7 +68,7 @@ class CustomInstrument(xpsi.Instrument):
         :param str channel_edges: Optional path to edges which is compatible with
                                   :func:`numpy.loadtxt`.
         """
-
+        link ="https://doi.org/10.5281/zenodo.7094144"
         if min_input != 0:
             min_input = int(min_input)
 
@@ -77,22 +77,19 @@ class CustomInstrument(xpsi.Instrument):
         try:
             ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
         except:
-            print("ERROR: You miss the following file:", ARF)
-            print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(ARF, link))
             exit()
-            
+
         try:
             RMF = np.loadtxt(RMF, dtype=np.double)
         except:
-            print("ERROR: You miss the following file:", RMF)
-            print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(RMF, link))
             exit()
         if channel_edges:
             try:
                 channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
             except:
-                print("ERROR: You miss the following file:", channel_edges)
-                print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+                print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(channel_edges, link))
                 exit()
 
         matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
@@ -138,7 +135,7 @@ primary = xpsi.HotRegion(bounds=bounds,
 	                    max_sqrt_num_cells=64,
 	                    num_leaves=100,
 	                    num_rays=200,
-	                    prefix='p') 		                    
+	                    prefix='p')
 
 class derive(xpsi.Derive):
     def __init__(self):
@@ -157,7 +154,7 @@ class derive(xpsi.Derive):
         # one way to get the required reference
         global primary # unnecessary, but for clarity
         return primary['super_temperature'] - 0.2
- 
+
 
 bounds['super_temperature'] = None # declare fixed/derived variable
 
@@ -165,7 +162,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
 	                      values={'super_temperature': derive()},
 	                      symmetry=True,
 	                      omit=False,
-	                      cede=False, 
+	                      cede=False,
 	                      concentric=False,
 	                      sqrt_num_cells=32,
 	                      min_sqrt_num_cells=10,
@@ -174,7 +171,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
 	                      num_rays=200,
 	                      do_fast=False,
 	                      is_antiphased=True,
-	                      prefix='s') 
+	                      prefix='s')
 
 
 from xpsi import HotRegions
@@ -196,7 +193,7 @@ class CustomPhotosphere_BB(xpsi.Photosphere):
                           (self['s__phase_shift'] + 0.5) * _2pi,
                           self['s__super_radius'],
                           self.hot.objects[1]['s__super_temperature']])
-                          
+
 photosphere = CustomPhotosphere_BB(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
@@ -207,19 +204,19 @@ star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
 
 #print("Parameters of the star:")
 #print(star.params)
-p = [1.6,
-     14.0,
-     0.2,
-     math.cos(1.25),
-     0.0,
-     1.0,
-     0.075,
-     6.2,
-     0.025,
-     math.pi - 1.0,
-     0.2
-     ]
-     
+
+p = [1.0368513939430604,
+     6.087862992320039,
+     0.26870812456714116,
+     0.39140510783272897,
+     0.04346870860640872,
+     0.8002010406881243,
+     1.1165398710637626,
+     5.865655057483478,
+     0.07360477761463673,
+     2.4602238829718432,
+     0.4277092192054918]
+
 star(p)
 star.update()
 
@@ -469,7 +466,7 @@ wrapped_params = [0]*len(likelihood)
 wrapped_params[likelihood.index('p__phase_shift')] = 1
 wrapped_params[likelihood.index('s__phase_shift')] = 1
 
-try: 
+try:
     os.makedirs("run")
 except OSError:
     if not os.path.isdir("run"):
@@ -479,7 +476,7 @@ runtime_params = {'resume': False,
                   'importance_nested_sampling': False,
                   'multimodal': False,
                   'n_clustering_params': None,
-                  'outputfiles_basename': './run/run_BB', 
+                  'outputfiles_basename': './run/run_BB',
                   'n_iter_before_update': 50,
                   'n_live_points': 50,
                   'sampling_efficiency': 0.8,
@@ -491,11 +488,10 @@ runtime_params = {'resume': False,
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
-true_logl = -3.27536126e+04
+true_logl = -116504.074
 
 #print(likelihood(p)) #Need to print this if not using force_update in the following line.
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
     xpsi.Sample.nested(likelihood, prior,**runtime_params)
-    
