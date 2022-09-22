@@ -1,4 +1,4 @@
-.. _surfsystems:
+.. _hpcsystems:
 
 HPC systems
 ================
@@ -25,6 +25,7 @@ and move anything else to some archive in ``$HOME``. Clean ``.bashrc`` and
 log back in order to get a clean environment.
 
 To be additionally safe, run:
+
 .. code-block:: bash
 
     module purge
@@ -175,7 +176,7 @@ Do you obtain parameter values and evidences?
     We assumed above that nested sampling with `MultiNest`_ is desired. If
     ensemble-MCMC with ``emcee`` is desired, you need to install the Python
     packages ``emcee`` and ``schwimmbad``. We assume the user can infer how to
-    do this using the information above and on the :ref:`install` page, or using the instructions provided for :ref:`_CALMIP` below.
+    do this using the information above and on the :ref:`install` page, or using the instructions provided for the :ref:`CALMIPsystem` instructions below.
 
 Next, we need to load `GSL <https://www.gnu.org/software/gsl/>`_ and set the `PATH` environment variable:
 
@@ -286,7 +287,7 @@ compiler and linked against MKL.
 Batch usage
 ^^^^^^^^^^^
 
-For an example job script, refer to :ref:`example_script`.
+For an example job script, refer to :ref:`example_job`.
 
 Lisa (SURF)
 -----------
@@ -302,10 +303,134 @@ to the environment variable for the pre-load libs, which is as follows:
 Helios (API)
 ------------
 
-.. _CALMIP:
+Helios is a cluster of the Anton Pannekoek Institute for Astronomy. 
+Here we present two possible approaches to install X-PSI. 
+We can use either a conda environment or install locally in the user home directory using ``python --user`` (but do not mix them).
+Note, however, that using the conda environment is safer if there ever will be need for conflicting auxiliary installations for the user in the cluster:
+
+Helios (using conda)
+^^^^^^^^^^^^^^^^^^^^
+
+Let's start by loading the necessary modules and creating a conda environment:
+
+.. code-block:: bash
+
+   git clone https://github.com/xpsi-group/xpsi.git
+   cd xpsi
+   module load anaconda2/2019-10
+   conda env create -f basic_environment.yml
+   conda activate xpsi
+   
+.. code-block:: bash
+
+   module load openmpi/3.1.6
+     
+Let's then install mpi4py:
+
+.. code-block:: bash
+
+   cd; wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
+   tar zxvf mpi4py-3.0.3.tar.gz
+   cd mpi4py-3.0.3
+   python setup.py build   --mpicc=/zfs/helios/filer0/sw-astro/api/openmpi/3.1.6/bin/mpicc
+   python setup.py install
+   mpiexec -n 4 python demo/helloworld.py
+   
+Let's then install MultiNest and PyMultiNest:
+   
+.. code-block:: bash
+   
+   cd; git clone https://github.com/farhanferoz/MultiNest.git multinest
+   cd multinest/MultiNest_v3.12_CMake/multinest
+   mkdir build
+   cd build
+   CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+   make
+   
+.. code-block:: bash
+
+   cd; git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
+   cd pymultinest
+   python setup.py install   
+   
+Let's then finally install X-PSI:
+   
+.. code-block:: bash
+
+   cd; cd xpsi;        
+   CC=gcc python setup.py install 
+
+Helios (using ``python --user``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Let's start by loading the necessary modules and upgrading the setup-tools:
+
+.. code-block:: bash
+
+   module load anaconda2/python2.7.16
+   module load openmpi/3.1.6 
+   pip install --upgrade --user setuptools 
+
+Let's then install mpi4py:
+
+.. code-block:: bash
+
+   cd; wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
+   tar zxvf mpi4py-3.0.3.tar.gz
+   cd mpi4py-3.0.3
+   python setup.py install --user
+   mpiexec -n 4 python demo/helloworld.py
+
+Let's then install MultiNest and PyMultiNest:
+   
+.. code-block:: bash
+   
+   cd; git clone https://github.com/farhanferoz/MultiNest.git multinest
+   cd multinest/MultiNest_v3.12_CMake/multinest
+   mkdir build
+   cd build
+   CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+   make
+   
+.. code-block:: bash
+
+   cd; git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
+   cd pymultinest
+   python setup.py install --user
+
+Let's then install GSL (which was not needed if using the conda environment approach):
+
+.. code-block:: bash
+
+   cd; wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+   cd gsl-latest 
+   mkdir build 
+   cd build
+   ../configure CC=gcc --prefix=$HOME/gsl
+   make
+   make check
+   make install
+   make installcheck
+   make clean
+   export PATH=$HOME/gsl/bin:$PATH
+   
+Let's then finally install X-PSI:
+
+.. code-block:: bash
+    
+   cd; git clone https://github.com/xpsi-group/xpsi.git 
+   cd xpsi;        
+   CC=gcc python setup.py install --user
+
+Batch usage
+^^^^^^^^^^^
+
+For example job scripts, see Helios using conda environment or ``python --user`` in :ref:`example_job`.
+
+.. _CALMIPsystem:
+
 CALMIP
 ------
-
 
 `CALMIP <https://www.calmip.univ-toulouse.fr>`_ is the supercomputer of `Université Fédérale de Toulouse <https://www.univ-toulouse.fr>`_
 
@@ -373,4 +498,4 @@ Set up your library paths:
     export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
 
 
-Note that the ``module`` commands, and the library path ``commands`` above will have to be added in your SBATCH script (see :ref:`example_script`) to execute a run.
+Note that the ``module`` commands, and the library path ``commands`` above will have to be added in your SBATCH script (see :ref:`example_job`) to execute a run.
