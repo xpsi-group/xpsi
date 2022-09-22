@@ -1,15 +1,14 @@
 '''
 Test script to check that X-PSI installation is working (with the numerical atmosphere extension).
-The run is succesful if it passes the likelihood check (in ~ 1 minute) and sampling finishes without errors (in ~ 0.5 hour).
+The run is succesful if it passes the likelihood check (in ~ 1 minute) and sampling finishes without errors (in ~ 5 min).
 The model and synthetic data are based on those shown in the Modelling tutorial notebook.
 
 Prequisities:
 Before running the script, add the NICER instrument files to the model_data subdirectory:
 nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt, nsx_H_v200804.out
 (found from https://doi.org/10.5281/zenodo.7094144).
-
-TBD: Add/Mention this script in the "Example script and modules" page in the documention.
 '''
+
 from __future__ import print_function, division
 
 import os
@@ -558,29 +557,26 @@ runtime_params = {'resume': False,
                   'wrapped_params': wrapped_params,
                   'evidence_tolerance': 0.5,
                   'seed': 7,
-                  'max_iter': 200, # manual termination condition for short test
+                  'max_iter': 100, # manual termination condition for short test
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
-# let's do this to only first rank (if running parallel), since others can give random results when likelihoods are generally too bad.
-
-if(xpsi._rank==0):
+try:
+	true_logl = -68147.0113542
+	#print(likelihood(p))#Need to print this if not using force_update in the following line.
+	likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
+except:
+	print("Likelihood check did not pass. Checking if wrong atmosphere model installed.")
+	true_logl = -116504.074
+	#print(likelihood(p))#Need to print this if not using force_update in the following line.
 	try:
-		true_logl = -68147.0113542 #-1.15566075e+05
-		#print(likelihood(p))#Need to print this if not using force_update in the following line.
 		likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
+		print("Seems that blacbkody atmosphere extension was used instead of numerical.")
+		print("Please re-install X-PSI using numerical atmosphere extension if want to use this test run.")
 	except:
-		print("Likelihood check did not pass. Checking if wrong atmosphere model installed.")
-		true_logl = -116504.074
-		#print(likelihood(p))#Need to print this if not using force_update in the following line.
-		try:
-			likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
-			print("Seems that blacbkody atmosphere extension was used instead of numerical.")
-			print("Please re-install X-PSI using numerical atmosphere extension if want to use this test run.")
-		except:
-			print("Seems that neither of the likelihood checks passed, so something must be wrong.")
-			exit()
+		print("Seems that neither of the likelihood checks passed, so something must be wrong.")
 		exit()
+	exit()
 
 if __name__ == '__main__': # sample from the posterior
     xpsi.Sample.nested(likelihood, prior,**runtime_params)
