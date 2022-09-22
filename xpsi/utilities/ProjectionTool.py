@@ -628,3 +628,5 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         else:
             raise RuntimeError('Please provide POVname to save file with.')
         plt.savefig(FigName, dpi=300, bbox_inches='tight')
+    
+    return ax
