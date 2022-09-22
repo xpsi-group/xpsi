@@ -305,11 +305,13 @@ Helios (API)
 
 Helios is a cluster of the Anton Pannekoek Institute for Astronomy. 
 Here we present two possible approaches to install X-PSI. 
-We can use either a conda environment or install locally in the user home directory (using ``python --user``).
-However, note that using the conda environment is safer if there ever will be need for conflicting auxiliary installations for the user in the cluster:
+We can use either a conda environment or install locally in the user home directory using ``python --user`` (but do not mix them).
+Note, however, that using the conda environment is safer if there ever will be need for conflicting auxiliary installations for the user in the cluster:
 
 Helios (using conda)
 ^^^^^^^^^^^^^^^^^^^^
+
+Let's start by loading the necessary modules and creating a conda environment:
 
 .. code-block:: bash
 
@@ -323,6 +325,7 @@ Helios (using conda)
 
    module load openmpi/3.1.6
      
+Let's then install mpi4py:
 
 .. code-block:: bash
 
@@ -332,6 +335,8 @@ Helios (using conda)
    python setup.py build   --mpicc=/zfs/helios/filer0/sw-astro/api/openmpi/3.1.6/bin/mpicc
    python setup.py install
    mpiexec -n 4 python demo/helloworld.py
+   
+Let's then install MultiNest and PyMultiNest:
    
 .. code-block:: bash
    
@@ -348,6 +353,8 @@ Helios (using conda)
    cd pymultinest
    python setup.py install   
    
+Let's then finally install X-PSI:
+   
 .. code-block:: bash
 
    cd; cd xpsi;        
@@ -356,11 +363,15 @@ Helios (using conda)
 Helios (using ``python --user``)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Let's start by loading the necessary modules and upgrading the setup-tools:
+
 .. code-block:: bash
 
    module load anaconda2/python2.7.16
    module load openmpi/3.1.6 
-   pip install --upgrade --user setuptools    
+   pip install --upgrade --user setuptools 
+
+Let's then install mpi4py:
 
 .. code-block:: bash
 
@@ -369,6 +380,8 @@ Helios (using ``python --user``)
    cd mpi4py-3.0.3
    python setup.py install --user
    mpiexec -n 4 python demo/helloworld.py
+
+Let's then install MultiNest and PyMultiNest:
    
 .. code-block:: bash
    
@@ -385,6 +398,8 @@ Helios (using ``python --user``)
    cd pymultinest
    python setup.py install --user
 
+Let's then install GSL (which was not needed if using the conda environment approach):
+
 .. code-block:: bash
 
    cd; wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
@@ -399,12 +414,18 @@ Helios (using ``python --user``)
    make clean
    export PATH=$HOME/gsl/bin:$PATH
    
+Let's then finally install X-PSI:
+
 .. code-block:: bash
     
    cd; git clone https://github.com/xpsi-group/xpsi.git 
    cd xpsi;        
    CC=gcc python setup.py install --user
 
+Batch usage
+^^^^^^^^^^^
+
+For example job scripts, see Helios using conda environment or ``python --user`` in :ref:`example_job`.
 
 .. _CALMIPsystem:
 
