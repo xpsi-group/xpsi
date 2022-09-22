@@ -30,9 +30,9 @@ problematic on a HPC system on which one is budgeted time and thus there is a
 serious risk of resource wastage from the perspective of all users of the
 system.
 
-The script below is an example like that found on the `Modeling`
+The script below is an example like that found on the :doc:`Modeling<Modeling>`
 page, but without being interleaved with verbose explanations. The model
-implemented here is more involved than shown on the `Modeling`
+implemented here is more involved than shown on the :doc:`Modeling<Modeling>`
 page, and than those defined for the example parameter
 estimation problems that can be found in the ``xpsi/examples`` directory of
 the repository.
@@ -219,10 +219,6 @@ Main
 
 We proceed to show the custom modules required for the model.
 
-.. todo::
-
-    Write more extensive inline comments for clarity, and clean up where
-    applicable.
 
 Photosphere
 ^^^^^^^^^^^
