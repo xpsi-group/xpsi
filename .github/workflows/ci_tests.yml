@@ -11,41 +11,35 @@ on:
     paths:
       - ".github/workflows/test.yaml"
 
-
 jobs:
   build-linux:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
     strategy:
+      fail-fast: false
       max-parallel: 5
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 2.7
-      uses: actions/setup-python@v3
+    - uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 2.7
-    - name: Add conda to system path
-      run: |
-        # $CONDA is an environment variable pointing to the root of the miniconda directory
-        echo $CONDA/bin >> $GITHUB_PATH
+         activate-environment: xpsipy2
+         environment-file: basic_environment.yml
+         python-version: 2.7
+         auto-activate-base: false
     - name: Set up GCC
-      #uses: egor-tensin/setup-gcc@v1
-      #with:
-      #   version: latest
-      #   platform: x64
       run: |
          sudo apt-get install -y gcc
-      shell: bash
+      shell: bash -l {0}
     - name: install gsl
       run: |
         sudo apt-get install -y libgsl-dev
-    - name: install numpy 
-      run: conda install numpy=1.16
-    - name: install scipy
-      run: conda install scipy=1.2
-    - name: install python package dependencies
-      run: |
-        conda install cython wrapt
+    #- name: install numpy 
+    #  run: conda install numpy
+    #- name: install scipy
+    #  run: conda install scipy
     - name: Lint with flake8
       run: |
         conda install flake8
@@ -56,7 +50,7 @@ jobs:
     - name: install X-PSI package
       run: |
         python setup.py install
-      shell: bash
+      shell: bash -l {0}
       env:
         CC:   gcc-10
 
