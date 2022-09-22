@@ -135,8 +135,9 @@ class Instrument(ParameterSubspace):
             for j in range(matrix.shape[1]):
                 assert matrix[:,j].any()
         except AssertionError:
-            raise ResponseError('Each row and column of the matrix must contain at least '
-                                'one positive number.')
+            raise ResponseError('Each row and column of the matrix must contain at least one positive number.'
+                                ' Try reducing the \"gap\" between the minimum input energy '
+                                'and minimum input channel.')
         self._matrix = matrix
 
     def construct_matrix(self):
