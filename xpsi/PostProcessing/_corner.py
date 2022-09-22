@@ -490,7 +490,7 @@ class CornerPlotter(PostProcessor):
 
         if credible_interval_1d_all_show:
             KL_divergence=False
-            
+
         try:
             for run in self.subset_to_plot:
                 if not isinstance(run, NestedBackend):
@@ -672,7 +672,7 @@ class CornerPlotter(PostProcessor):
 
         self.credible_intervals=OrderedDict()
 
-        if credible_interval_1d_all_show:
+        if credible_interval_1d_all_show and self.all_same(self.get_attr("parent_ID")):
             for r in range(len(self.subset_to_plot)):
 
                 id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
@@ -929,7 +929,7 @@ class CornerPlotter(PostProcessor):
 
             if name: name += ' '
 
-            stats = ('%s' % name) + ('CI$_{%i\%%} = ' % summary)
+            stats = ('%s' % name) + ('  CI$_{%i\%%} = ' % summary)
 
             if sscript:
                 stats += (('%s_{-%s}^{+%s}$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
@@ -1087,7 +1087,7 @@ class CornerPlotter(PostProcessor):
                     if self.credible_interval_1d_all_show:
                         x_0,_=ax.get_xlim()
                         y_0,y_1=ax.get_ylim()
-                        y_pos = y_1+0.11*(self.r+1)*(y_1-y_0)
+                        y_pos = y_1+(0.05+0.11*(self.r))*(y_1-y_0)
                         ax.text(x_0, y_pos, title,
                                     color = color,
                                     #ha="center",
@@ -1260,3 +1260,10 @@ class CornerPlotter(PostProcessor):
                                   simulate_weights=simulate_weights,
                                   flip_skew=flip_skew)[0] for q in quantiles]
         return _quantiles
+
+    def all_same(self,items):
+        """
+        Checking if the all the element of a list are the same
+        """
+
+        return all(x == items[0] for x in items)
