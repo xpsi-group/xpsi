@@ -136,7 +136,7 @@ class Instrument(ParameterSubspace):
                 assert matrix[:,j].any()
         except AssertionError:
             raise ResponseError('Each row and column of the matrix must contain at least one positive number.'
-                                ' Trying reducing the \"gap\" between the minimum input energy '
+                                ' Try reducing the \"gap\" between the minimum input energy '
                                 'and minimum input channel.')
         self._matrix = matrix
 
