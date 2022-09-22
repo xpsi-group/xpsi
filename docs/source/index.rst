@@ -21,6 +21,7 @@
    history
    todo
    acknowledgements
+   citation
 
 .. toctree::
    :maxdepth: 1
