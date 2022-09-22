@@ -69,8 +69,8 @@ if __name__ == '__main__':
             raise
 
         try:
-            gsl_version = sub.check_output(['gsl-config','--version'])[:-1]
-            gsl_prefix = sub.check_output(['gsl-config','--prefix'])[:-1]
+            gsl_version = str(sub.check_output(['gsl-config','--version'])[:-1])
+            gsl_prefix = str(sub.check_output(['gsl-config','--prefix'])[:-1])
         except Exception:
             print('GNU Scientific Library cannot be located.')
             raise
