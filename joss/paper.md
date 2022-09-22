@@ -8,11 +8,11 @@ authors:
     - name: Thomas E. Riley
       orcid: 0000-0001-9313-0493
       affiliation: 1
-    - name: Tuomo J. Salmi
-      orcid: 0000-0001-6356-125X
-      affiliation: 1
     - name: Devarshi Choudhury
       orcid: 0000-0002-2651-5286
+      affiliation: 1
+    - name: Tuomo Salmi
+      orcid: 0000-0001-6356-125X
       affiliation: 1
     - name: Serena Vinciguerra
       orcid: 0000 0003 3068 6974
