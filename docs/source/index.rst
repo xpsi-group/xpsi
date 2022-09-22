@@ -10,7 +10,7 @@
    overview
    FAQ
    applications
-   SURFsara_systems
+   HPC_systems
 
 .. toctree::
    :maxdepth: 1
@@ -21,6 +21,7 @@
    history
    todo
    acknowledgements
+   citation
 
 .. toctree::
    :maxdepth: 1

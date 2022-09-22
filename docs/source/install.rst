@@ -93,7 +93,7 @@ to add *conda-forge* package channel.
     you are free to set up alternative environment. For installation on a
     high-performance system, instructions on this page, which tailor to a
     self-administered machine, are either not applicable or do not target
-    performance. We direct the reader to the :ref:`surfsystems` page for
+    performance. We direct the reader to the :ref:`hpcsystems` page for
     guidance.
 
 To duplicate from file:
@@ -124,6 +124,9 @@ The following Python packages are required for nested sampling:
     high-performance system, it is advisable to install MultiNest on your
     personal machine to gain experience on application to inexpensive test
     problems. Below we offer `from source`__ instructions.
+
+Running the tests requires:
+* `Pytest <http://pytest.org>`_
 
 The following Python packages are required for full functionality of the
 post-processing module:
@@ -325,20 +328,17 @@ compilation in the ``setup.py`` script.
 
 .. note::
 
-   The default X-PSI is installed with an analytical blackbody atmosphere extension. If you want to use a numerical atmosphere extension instead, please overwrite the following files and (re-)install:
+   The default X-PSI is installed with an analytical blackbody surface emission model extension. If you want to use alternative models for the surface radiation field, you will need to (re-)install / (re-)compile XPSI with the appropriate flags:
 
    .. code-block:: bash
 
-      cp xpsi/surface_radiation_field/archive/hot/numerical.pyx xpsi/surface_radiation_field/hot.pyx
-      cp xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx xpsi/surface_radiation_field/elsewhere.pyx
-      CC=<path/to/compiler/executable> python setup.py install [--user]
+      CC=<path/to/compiler/executable> python setup.py --help
+      CC=<path/to/compiler/executable> python setup.py install [--NumHot] [--NumElse] [--user]
 
-   It is also possible to use different extensions for the hot and elsewhere (rest of the star) regions. You can change back to the blackbody atmosphere with:
+   This will install the numerical atmosphere for the hot regions and/or for the rest of the surface (``elsewhere``). To (re-) install the default blackbody surface emission model, run the command again without the flags:
 
    .. code-block:: bash
 
-      cp xpsi/surface_radiation_field/archive/hot/blackbody.pyx xpsi/surface_radiation_field/hot.pyx
-      cp xpsi/surface_radiation_field/archive/elsewhere/blackbody.pyx xpsi/surface_radiation_field/elsewhere.pyx
       CC=<path/to/compiler/executable> python setup.py install [--user]
 
 
@@ -393,6 +393,24 @@ Documentation
 
 If you wish to compile the documentation you require `Sphinx`_:
 
+To install sphinx, run the following command in the X-PSI environment:
+
+.. code-block:: bash
+
+    conda install sphinx=1.8.5
+
+You then need the relevant extensions and need to ensure versions compatible with python2.
+Make sure to run each line individually and not copy-paste the whole block into your terminal for proper installation.
+
+.. code-block:: bash
+
+    conda install -c conda-forge nbsphinx=0.5.1
+    conda install decorator=4.4.1
+    pip install sphinxcontrib-websupport==1.1.2
+    pip install sphinx_rtd_theme==0.4.3
+
+Now the documentation can be compiled using:
+
 .. code-block:: bash
 
     cd xpsi/docs; [make clean;] make html
@@ -402,12 +420,6 @@ To rebuild the documentation after a change to source code docstrings:
 .. code-block:: bash
 
     [CC=<compiler>] python setup.py install [--user]; cd docs; make clean; make html; cd ..
-
-You need the relevant extensions (such as ``nbsphinx``, which you will be
-prompted to install) and atheme such as the Sphinx `Read the Docs theme`__.
-Customisation can be made in the ``xpsi/docs/source/conf.py`` script.
-
-__ https://sphinx-rtd-theme.readthedocs.io/en/latest/
 
 The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
 notebooks for the tutorials in this documentation. The ``.html`` files can
@@ -429,7 +441,7 @@ script. Then make sure the extension modules are inside the source directory
 Tips for installing on a Mac OS
 -------------------------------
 Be mindful on the order of the programs that need to be installed.
-Install ``xcode`` or ``xcode tools``. 
+Install ``xcode`` or ``xcode tools``.
 Install ``GSL`` (see above).
 Install ``maplotlib``, ``numpy``, ``cython``, ``h5py`` and ``emcee`` using ``pip install``.
 Install  ``homebrew``:
@@ -446,31 +458,31 @@ Install ``llvm`` with homebrew, even if weird messages appear, saying llvm is al
 
 Install ``fortran`` before ``MPI``.
 If you have some troubles with specifying or using gfortran (and it "doesn’t not pass simple tests") specify in the mpif90 wrapper files the compiler as being gfortran and delete the files that were already in the build directory.
-Once ``MPI`` is installed, 
+Once ``MPI`` is installed,
 export PATH and LD_LIBRARY_PATH:
 
 .. code-block:: bash
 
-   LD_LIBRARY_PATH="/Users/<your_path>/openmpi/lib:$LD_LIBRARY_PATH" 
-   PATH=$PATH:/Users/<your_path>/mpi/bin/ 
+   LD_LIBRARY_PATH="/Users/<your_path>/openmpi/lib:$LD_LIBRARY_PATH"
+   PATH=$PATH:/Users/<your_path>/mpi/bin/
 
 Consider if to add these lines directly in your bashrc (or equivalent file for a different shell).
 
 
-Install ``X-PSI`` using: 
+Install ``X-PSI`` using:
 
 .. code-block:: bash
 
    CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user]
 
-If it gives problem, remove the ``tools`` and ``surface_radiation_field`` entires from ``setup.py`` of ``X-PSI``. 
-The line in the setup.py file would then look like: 
+If it gives problem, remove the ``tools`` and ``surface_radiation_field`` entires from ``setup.py`` of ``X-PSI``.
+The line in the setup.py file would then look like:
 
 .. code-block:: bash
 
    packages = ['xpsi', 'xpsi/PostProcessing']
 
-If you encounter any problems with permissions when installing X-PSI, use the ``--user`` option. 
+If you encounter any problems with permissions when installing X-PSI, use the ``--user`` option.
 
 For compatibility, install the ``GetDist`` and ``nestcheck`` versions:
 
@@ -510,7 +522,7 @@ Example of .bash_profile
 ------------------------
 
 .. code-block:: bash
-   
+
    # .bash_profile
    # Get the aliases and functions
    if [ -f ~/.bashrc ]; then
