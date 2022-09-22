@@ -27,11 +27,11 @@ compile with multiple instruction sets for auto-dispatch using the ``-x`` and
 
 .. rubric:: What atmosphere extension should I use?
 
-If you want to do some quick calculations and run the Modeling tutorial, you should use the default blackbody atmosphere extension. But if you want to use similar atmosphere models as in the published X-PSI applications so far, you should switch to the numerical atmosphere extension before installing X-PSI (see instructions in :ref:`install`).
+If you want to do some quick calculations and run the Modeling tutorial, you should use the default blackbody atmosphere extension. But if you want to use similar atmosphere models as in the published X-PSI applications so far, you should use to the numerical atmosphere extension when installing X-PSI (see instructions in :ref:`install`).
 
-Note that using the model scripts with an unintended atmosphere extension may lead to a segmentation fault error if trying to use numerical atmosphere without providing numerical atmosphere data. Or if using the scripts including the numerical atmosphere data with the blackbody extension, you can get unexpected results, printing though a warning that numerical atmosphere data were preloaded but not used. Examples of numerical atmosphere data, which are required by the numerical atmosphere extension, can be found e.g. in the Zenodo repository of Riley et al. 2021: `doi:10.5281/zenodo.4697625`__. Examples of how to use the numerical atmospheres are shown e.g. in Surface radiation field tools -tutorial and in :ref:`example_script`.
+Note that using the model scripts with an unintended atmosphere extension may lead to a segmentation fault error if trying to use numerical atmosphere without providing numerical atmosphere data. Or if using the scripts including the numerical atmosphere data with the blackbody extension, you can get unexpected results, printing though a warning that numerical atmosphere data were preloaded but not used. Examples of numerical atmosphere data, which are required by the numerical atmosphere extension, can be found here: `doi:10.5281/zenodo.7094144`__. Examples of how to use the numerical atmospheres are shown e.g. in Surface radiation field tools -tutorial and in :ref:`example_script`.
 
-.. _Zenodo: https://zenodo.org/record/4697625
+.. _Zenodo: https://doi.org/10.5281/zenodo.7094144
 
 __ Zenodo_
 
@@ -66,143 +66,47 @@ because importance nested sampling is not compatible with the alternative option
 Common problems and errors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- To avoid errors in post-processing, do not use standard PostProcessing scripts 
-  for runs which have not converged, and when you do the Postprocessing:
-   - make sure to change the paths in the config.ini compared to the ones used in the cluster;
-   - make sure to change the cache to cache = True in the signal definition in the main;
-   - to have the likelihood check, to be use you are using the same x-psi configuration as in the run.
+.. rubric:: How to avoid errors in post-processing?
 
--  | *AttributeError: ’NestedBackend’ object has no attribute
-     ’\ :math:`\_nc\_bcknd`\ ’* in PostProcessing for runs with
-     use\ :math:`\_`\ nestcheck=[False] (e.g. importance sampling).
-   | SOLUTION: turn bootstrap\ :math:`\_`\ estimators=False,
-     or alternatively, set use\ :math:`\_`\ nestcheck=[True].
+Do not use X-PSI PostProcessing tools for runs which have not converged yet or have not enough samples. Also, when post-processing, make sure to check the data and output file paths, use ``cache=True`` if plotting the signal, and perform a likelihood check to be sure that the imported model is the same as in the run. 
 
-- Skymap animation or average; if you see many annular images, the
-  problem is in the local\ :math:`\_`\ variable.pyx file (which should
-  have been subsituted to the archive/local/ :math:`\_`\ variables/PST\ :math:`\_`\ U.pyx)
+.. rubric:: *AttributeError: ’NestedBackend’ object has no attribute ’\ :math:`\_nc\_bcknd`\ ’*
 
-   .. container:: figure*
+Can happen in PostProcessing for runs with ``use_nestcheck=[False]`` (e.g. importance sampling). Solution is to turn ``bootstrap_estimators=False``, or alternatively, set ``use_nestcheck=[True]``.
 
-      .. image:: images/ST_PST__NICER__skymap_phase_averaged_run1.png
-         :alt: image
-         :width: 10cm
+.. rubric:: Why does my skymap show many annular images like this:
+  
+.. container:: figure*
 
+   .. image:: images/ST_PST__NICER__skymap_phase_averaged_run1.png
+      :alt: image
+      :width: 10cm
 
--  | *Traceback (most recent call last):*
-   | *File " :math:`<stdin>`", line 1, in :math:`<module>`*
-   | *File "xpsi/:math:`_{\_\_}`\ init\ :math:`_{\_\_}`.py", line 135, in <module>*
-   | *from tools import set_phase_interpolant set_energy_interpolant*
-   | *ImportError: No module named tools*
-   | SOLUTION: You are running X-PSI from its main directory ( the
-     directory where the* **setup.py** *file is). Exit that directory and
-     run it again.
+The problem is the ``xpsi/xpsi/surface_radiation_field/local_variable.pyx`` file which should be overwritten by ``xpsi/xpsi/surface_radiation_field/archive/local_variables/PST_U.pyx`` or ``xpsi/xpsi/surface_radiation_field/archive/local_variables/two_spots.pyx`` (depending on the model) and then re-install X-PSI, as explained in the Global surface emission -tutorial. 
 
--  | *transform() got an unexpected keyword argument ’\ :math:`old\_API'`*
-   | SOLUTION: Double check the **names** and **bounds** if everything
-     correct then add **\**kwargs** to the **transform** method in your
-     CustomPrior Class
+.. rubric:: *ImportError: No module named tools*
 
--  | *<path/to/run/output>dead-birth.txt not found.
-   | SOLUTION: Set use_nestcheck to* **False** *(
-     use_nestcheck=[*\ **False**\ *]*
+You are running X-PSI from its main directory (the directory where the ``setup.py`` file is). Exit that directory and run it again.
 
--  | *ImportError: libgsl.so.23: cannot open shared object file: No such
-     file or directory* after while trying to import X-PSI
-   | SOLUTION: Somthing has gone wrong but no need to reinstall
-     everything ( gsl, multinest and so on). Just clean everything ( rm
-     -r build dist \*egg\* xpsi/*/*.c) and reinstall only X-PSI.
+.. rubric:: *<path/to/run/output>dead-birth.txt not found.*
 
--  | *Invalid caching targets.*
-   | SOLUTION 1: Turn cache in Signal in main.py to **True**, if it isn’t
-     already; call the likelihood or even better the likelihood check.
-   | SOLUTION 2: Set **STU.signal.cache = True** or
-     **STU.signals[0][i].cache = True** (where i is the index of the
-     instrument e.g. i=0 for NICER in a joint NICER+XMM analysis) in your
-     postprocessing script (before signal plotting) and then re-run the
-     script (then no modifications to the main.py needed). Replace ’STU’
-     with the name of the imported model, if using different model name.
-     And remember to call the likelihood check also in this case (in the
-     postprocessing script).
+Set ``use_nestcheck=[False]`` or check that nestcheck is installed exactly as instructed in :ref:`install` (by cloning it from ``https://github.com/ThomasEdwardRiley/nestcheck.git``). 
 
--  | *Each row and column must contain at least one positive number.*
-   | PROBLEMS: there are some rows and/or column in the instrument
-     response that contain only zeros. 
-   | SOLUTION: increase the number of
-     channels or decrease the number of energy intervals.
+.. rubric:: *Invalid caching targets.*
 
--  | *kwargs["sampling_efficiency" = self.\ :math:`\
-     _`\ prior.unit_hypercube_frac TypeError: unsupported operand
-     type(s) for /=: "float" and "NoneType"*
-   | PROBLEM: Likely something need to be corrected in your CustomPrior
-     or in the way you are initiating or using it in your main. You can
-     try to debug and find the actual error by removing the error
-     handling in the end of Prior.py (where printing now just ’Cannot
-     locate method for estimating fraction.’) and re-installing X-PSI.
+Set ``cache=True`` for the signal.
 
--  | **post-processing**: PROBLEM: Invalid index (IndexError or
-     JoblibValueError):
-   | SOLUTIONS turn KL_divergence to False. Seems to be a problem for
-     the circular parameters, i.e. the phases. In this case it is always
-     possible to take the phases out.
+.. rubric:: *Each row and column must contain at least one positive number.*
 
--  | **post-processing**: PROBLEM ERROR when using KL_divergence to
-     True. Errors can arise because the bounds of one or more
-     parameter(s) are None.
-   | SOLUTION: explicitly write bound values for all parameters
-     (geometrical strict bounds can be found in HotRegion.py);
-     alternatively put KL_divergence to False.
+There are some rows and/or column in the instrument response that contain only zeros. Solution is to increase the number of channels or decrease the number of energy intervals.
 
--  | **post-processing**: PROBLEM **Warning: Using native nestcheck KDE
-     instead of GetDist KDE.** And possibly errors later in the
-     postprocessing.
-   | SOLUTION: Make sure to to install nestcheck and GetDist packages
-     using the github repositories (as instructed in the footnotes of
-     the installation tutorial) and not using pip.
+.. rubric:: *Warning: Using native nestcheck KDE instead of GetDist KDE.*
 
-Common errors and solution NICER and XMM:
-=========================================
+Make sure to to install nestcheck and GetDist packages using the corresponding github repositories as instructed in :ref:`install`.
 
--  | Error message ``from STU_NICER_XMM import main as STU``:
-   | *main.py in <module>()*
-   | *–> 420 prior = prior)*
-   | *103 energies =*
-   | *construct\ :math:`\_`\ energy\ :math:`\_`\ array(num\ :math:`\_`\ energies,*
-   | *–> 104 list(signals))*
-   | *–> 647 MAX = ordered[0].energy\ :math:`\_`\ edges[-1]*
-   | *IndexError: list index out of range*
-   | SOLUTION:
-     ``args = parser.parse``\ :math:`\_`\ ``args([’@STU_NICER``\ :math:`\_`\ ``XMM/config.ini’,’–NICER’,’–XMM’])``
+.. rubric:: *ValueError: There is more than one signal instance.*
 
--  | **PostProcessing:** *—> 13 plots = ’ST-U’: xpsi.ResidualPlot())*
-   | *–> 107 output = func(args, kwargs)*
-   | *52 if :math:`\_`\ isgeneratorfunction(func):*
-   | *—> 53 for msg in func(args, kwargs):*
-   | *54 if :math:`\_`\ verbose and not*
-   | *deactivate\ :math:`\_`\ verbosity:*
-   | *–> 162 likelihood.signal.caching\ :math:`\_`\ targets =*
-   | *caching\ :math:`\_`\ targets*
-   | *188 if len(self.\ :math:`\_`\ signals) or*
-   | *len(self.\ :math:`\_`\ signals[0]) :*
-   | *–> 189 raise ValueError(’There is more than one signal instance.’)*
-   | *190 return self.\ :math:`\_`\ signals[0][0]*
-   | *ValueError: There is more than one signal instance.*
-   | SOLUTION: ``STU.likelihood.signals = STU.likelihood.signals[0][0]``
-
--  | **KL-divergence = NaN**: KDE on prior and posterior samples results 
-     inaccurately in zero prior density where there is a posterior sample. 
-     To avoid, need more prior samples  Alternatively, you may need to check that the bounds given in
-     the postprocessing notebook/script correspond to the actual hard bounds, 
-     to make sure that no posterior samples are out of the bounds
-     (defined in the postprocessing).
-
--  | **the role of bootstrap\ :math:`\_`\ estimators** The 1D KL
-     divergence has an error, and the 1D credible interval is based on
-     distribution of credible intervals from bootstrapped realisations.
-     The ends of the credible region will have thin darker vertical
-     bands indicating their error.
-
--  **kernel or terminal dies:** check that the installed hot.pyx is
-   consistent with the atmosphere model used in the adopted xpsi model.
-
+Typically occurs when post-processing joint NICER and XMM results, if not setting ``model.likelihood.signals = model.likelihood.signals[0][0]`` (when plotting the inferred NICER signal).
+   
+   
 
