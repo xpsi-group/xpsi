@@ -3,23 +3,36 @@
 Installation
 ============
 
-.. _dev_env:
-
-Python environment
-------------------
-
-X-PSI was developed in Python 2.7, and has not yet been ported to Python 3.
-Fortunately, there are several ways to create a virtual environment with a
-different version of Python, without disrupting your Python ecosystem.
-
-Clone X-PSI:
+X-PSI is an open-source software package that is available on `GitHub
+<http://github.com/>`_ and can be cloned as:
 
 .. code-block:: bash
 
     git clone https://github.com/xpsi-group/xpsi.git </path/to/xpsi>
 
+In this page, we lay down the instructions for installing X-PSI and all the  necessary pre-requisites on your local self-administered system.
+
+.. note::
+
+    For installation on a high-performance computing system, we direct the reader to the :ref:`hpcsystems` page for guidance since the instructions on this page are either not applicable or do not target performance.
+
+.. _dev_env:
+
+Python environment
+------------------
+
+X-PSI was developed in Python 2.7, and is in the process of being ported to Python 3.
+Fortunately, there are several ways to create a virtual environment with a
+different version of Python, without disrupting your Python ecosystem.
+
+This section is divided into two subsections. We recommend that the user follow the instructions in the :ref:`basic_env` subsection to begin with. If faced with installation issues, the user may refer to the :ref:`diagnosis_env` subsection.
+
+
+
+.. _basic_env:
+
 Basic Conda environment
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
 In the source directory we provide a basic dependency file that installs
 the core Python packages required for *likelihood* functionality. These
@@ -27,12 +40,6 @@ packages are:
 
 * `NumPy <https://docs.scipy.org/doc/numpy/index.html>`_
 * `Cython <http://cython.readthedocs.io/en/latest>`_
-
-For likelihood evaluation, you also require the GNU Scientific Library
-(`GSL <https://www.gnu.org/software/gsl/>`_). We have included this in the
-Conda environment file, but we give installation
-instructions from `source`_ below; in the latter case, you can remove the
-GSL entry from the environment file prior to creation.
 
 If you want to run X-PSI in a
 `Jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_
@@ -54,15 +61,23 @@ an environment manually via
      conda create -n xpsi python=2.7
 
 and then install the core dependencies listed in `basic_environment.yml`,
-such as `NumPy`_ and `Cython`_, and also `GSL`_.
+such as `NumPy`_ and `Cython`_.
 
-Conda environment duplication
------------------------------
+All the following steps need to be performed in this newly created environment which can be activated as:
 
-In the source repository we provide a dependency file that can facilitate
+.. code-block:: bash
+
+    conda activate xpsi
+
+.. _diagnosis_env:
+
+Environment duplication for diagnosis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In the source repository we provide another dependency file that can facilitate
 exact duplication of the environment from which X-PSI ``v0.6`` was
 released. This information may be useful if trying to diagnose installation
-problems, but can only be expected to be compatible with the same platform.
+problems, but can only be expected to be compatible with the same platform. We therefore recommend users to instead try and follow the steps mentioned in the previous subsection, and use this section as more of a guidance if required.
 
 The development environment:
 
@@ -87,15 +102,6 @@ or via a package manager (Conda, pip, or a combination), via the instructions
 native to the packages. When searching for an open-source package you may need
 to add *conda-forge* package channel.
 
-.. note::
-
-    The specifications on this page regard the development environment:
-    you are free to set up alternative environment. For installation on a
-    high-performance system, instructions on this page, which tailor to a
-    self-administered machine, are either not applicable or do not target
-    performance. We direct the reader to the :ref:`hpcsystems` page for
-    guidance.
-
 To duplicate from file:
 
 .. code-block:: bash
@@ -105,14 +111,21 @@ To duplicate from file:
 Dependencies
 ------------
 
+.. note::
+
+    For installing X-PSI on a Mac OS or Windows, please look at the tips below before proceeding with the installation of the various depnedencies.
+
+Python dependencies
+^^^^^^^^^^^^^^^^^^^
+
 The following Python packages are required for nested sampling:
 
 * `PyMultiNest <https://github.com/JohannesBuchner/PyMultiNest>`_
   (the interface to the MultiNest library)
 * `mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_
   (for parallelisation)
-* `SciPy <https://docs.scipy.org/doc/scipy/reference/>`_
-  (optional core package useful for, e.g., inverse prior sampling)
+* `mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
+  (MPI-wrapped Fortran compiler for building library)
 
 .. note::
 
@@ -121,14 +134,14 @@ The following Python packages are required for nested sampling:
     and a Fortran compiler, all in order to install MultiNest. Moreover, the
     MultiNest version listed is a minor release too low to satisfy all our
     needs. Although production sampling runs need to be performed on a
-    high-performance system, it is advisable to install MultiNest on your
+    high-performance system and X-PSI can locally be installed without sampling
+    functionality, it is advisable to install MultiNest on your
     personal machine to gain experience on application to inexpensive test
     problems. Below we offer `from source`__ instructions.
 
 The following Python packages are required for full functionality of the
 post-processing module:
 
-* `Matplotlib <https://matplotlib.org/>`_
 * `GetDist <https://getdist.readthedocs.io/en/latest/>`_
   (posterior KDE corner plotting)\ [#]_
 * `h5py <http://docs.h5py.org/en/stable/>`_
@@ -170,29 +183,29 @@ ensemble-MCMC is optional.
           git clone [--single-branch] -b feature/getdist_kde \
           https://github.com/ThomasEdwardRiley/nestcheck.git
 
-.. note::
-
-    For installing X-PSI on a Mac OS, please look at the tips below before proceeding with the installation of the various depnedencies.
-
-
 __ source_
 
 .. _source:
 
 From source
------------
+^^^^^^^^^^^
 
 X-PSI has several dependencies that are not Python packages. Build and
 install guidelines are given below.
 
 GSL
-^^^
+```
 
 To obtain the latest GSL_ source code (otherwise ``v2.5`` works):
 
 .. code-block:: bash
 
    wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+
+.. note::
+
+    The next steps require an `OpenMP`_-enabled C compiler (known compatibility with ``icc``, ``gcc``, and
+    ``clang``). Most linux systems come with `GCC <https://gcc.gnu.org>`_ built-in. To find out the GCC path-executable on your system, run ``which gcc``.
 
 Untar, navigate to the build directory (e.g., ``cd gsl-latest/build``), and
 then build and install:
@@ -214,13 +227,11 @@ the prefix and version of GSL on your path:
     gsl-config --version
     gsl-config --prefix
 
-
-
 MultiNest
-^^^^^^^^^
+`````````
 
 To leverage some capabilities of sample post-processing software you require
-`MultiNest`_ ``v3.11``. To build the MultiNest library,
+`MultiNest`_ ``v3.12``. To build the MultiNest library,
 you require an MPI-wrapped Fortran compiler (e.g., ``mpifort`` from Open MPI).
 
 .. _MultiNest: https://github.com/farhanferoz/MultiNest
@@ -236,7 +247,7 @@ First clone the repository, then navigate to it and build:
 .. code-block:: bash
 
     git clone https://github.com/farhanferoz/MultiNest.git <path/to/clone>/multinest
-    cd <path/to/clone>/multinest/MultiNest_v3.11_CMake/multinest
+    cd <path/to/clone>/multinest/MultiNest_v3.12_CMake/multinest/
     mkdir build
     cd build
     CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
@@ -245,6 +256,10 @@ First clone the repository, then navigate to it and build:
 
 Use the last command to check for the presence of shared objects. There is
 *no* need to ``make install`` as suggested in the source code documentation.
+
+.. note::
+
+    If prompted about missing ``cmake`` and ``gfortran``, they can simply be installed as ``sudo apt-get install cmake gfortran``
 
 If you have not already installed mpi4py using pip (or Conda assuming a
 different environment setup to that summarised in :ref:`dev_env`), then here
@@ -297,13 +312,11 @@ The package will be installed in your Conda environment (if activated).
     and then simply follow the same installation procedure.
 
 X-PSI
-^^^^^
+-----
 
 .. _OpenMP: http://www.openmp.org
 
-To build and install from the X-PSI clone root, you require an
-`OpenMP`_-enabled C compiler (known compatibility with ``icc``, ``gcc``, and
-``clang``):
+Finally, to build and install from the X-PSI clone root, execute:
 
 .. code-block:: bash
 
@@ -416,7 +429,7 @@ To rebuild the documentation after a change to source code docstrings:
 
 .. code-block:: bash
 
-    [CC=<compiler>] python setup.py install [--user]; cd docs; make clean; make html; cd ..
+    [CC=<path/to/compiler/executable>] python setup.py install [--user]; cd docs; make clean; make html; cd ..
 
 The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
 notebooks for the tutorials in this documentation. The ``.html`` files can

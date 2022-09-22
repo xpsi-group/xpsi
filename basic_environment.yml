@@ -7,5 +7,4 @@ dependencies:
   - cython=0.28
   - matplotlib=2.2
   - scipy=1.2
-  - gsl=2.4
   - wrapt=1.11
