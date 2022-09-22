@@ -3,9 +3,9 @@ Test script to check that X-PSI installation is working (with the numerical atmo
 The run is succesful if it passes the likelihood check (in ~ 1 minute) and sampling finishes without errors (in ~ 0.5 hour).
 The model and synthetic data are based on those shown in the Modelling tutorial notebook.
 
-Prequisities: 
-Before running the script, add the NICER instrument files to the model_data subdirectory: 
-nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt, nsx_H_v200804.out 
+Prequisities:
+Before running the script, add the NICER instrument files to the model_data subdirectory:
+nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt, nsx_H_v200804.out
 (found from https://doi.org/10.5281/zenodo.7094144).
 
 TBD: Add/Mention this script in the "Example script and modules" page in the documention.
@@ -67,7 +67,7 @@ class CustomInstrument(xpsi.Instrument):
         :param str channel_edges: Optional path to edges which is compatible with
                                   :func:`numpy.loadtxt`.
         """
-
+        link ="https://doi.org/10.5281/zenodo.7094144"
         if min_input != 0:
             min_input = int(min_input)
 
@@ -76,22 +76,19 @@ class CustomInstrument(xpsi.Instrument):
         try:
             ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
         except:
-            print("ERROR: You miss the following file:", ARF)
-            print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(ARF, link))
             exit()
-            
+
         try:
             RMF = np.loadtxt(RMF, dtype=np.double)
         except:
-            print("ERROR: You miss the following file:", RMF)
-            print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(RMF, link))
             exit()
         if channel_edges:
             try:
                 channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
             except:
-                print("ERROR: You miss the following file:", channel_edges)
-                print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+                print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(channel_edges, link))
                 exit()
 
         matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
@@ -106,6 +103,7 @@ class CustomInstrument(xpsi.Instrument):
         channels = np.arange(20, 201)
 
         return cls(matrix, edges, channels, channel_edges[20:202,-2])
+
 
 
 NICER = CustomInstrument.from_response_files(ARF = 'model_data/nicer_v1.01_arf.txt',
@@ -137,7 +135,7 @@ primary = xpsi.HotRegion(bounds=bounds,
 	                    max_sqrt_num_cells=64,
 	                    num_leaves=100,
 	                    num_rays=200,
-	                    prefix='p') 		                    
+	                    prefix='p')
 
 class derive(xpsi.Derive):
     def __init__(self):
@@ -156,7 +154,7 @@ class derive(xpsi.Derive):
         # one way to get the required reference
         global primary # unnecessary, but for clarity
         return primary['super_temperature'] - 0.2
- 
+
 
 bounds['super_temperature'] = None # declare fixed/derived variable
 
@@ -164,7 +162,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
 	                      values={'super_temperature': derive()},
 	                      symmetry=True,
 	                      omit=False,
-	                      cede=False, 
+	                      cede=False,
 	                      concentric=False,
 	                      sqrt_num_cells=32,
 	                      min_sqrt_num_cells=10,
@@ -173,7 +171,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
 	                      num_rays=200,
 	                      do_fast=False,
 	                      is_antiphased=True,
-	                      prefix='s') 
+	                      prefix='s')
 
 
 from xpsi import HotRegions
@@ -198,7 +196,7 @@ class CustomPhotosphere_num(xpsi.Photosphere):
         logE = np.zeros(166)
 
         #reorder_buf = np.zeros((35,11,67,166))
-        reorder_buf = np.zeros((35,14,67,166))        
+        reorder_buf = np.zeros((35,14,67,166))
 
         index = 0
         for i in range(reorder_buf.shape[0]):
@@ -220,10 +218,10 @@ class CustomPhotosphere_num(xpsi.Photosphere):
                 for k in range(reorder_buf.shape[2]):
                    for l in range(reorder_buf.shape[3]):
                         buf[bufdex] = reorder_buf[i,j,k,l]; bufdex += 1
-                             
+
         self._hot_atmosphere = (logT, logg, mu, logE, buf)
-        
-    @xpsi.Photosphere.hot_atmosphere.setter        
+
+    @xpsi.Photosphere.hot_atmosphere.setter
     def hot_atmosphere(self,path):
         size=(35, 14, 67, 166)
         path_npy = path[0:len(path)-3]+"npy"
@@ -254,10 +252,10 @@ class CustomPhotosphere_num(xpsi.Photosphere):
 
         reorder_buf_opt=reorder_23(10**NSX[:,2].reshape(size[0],size[1],int(np.prod(size)/(size[0]*size[1]))),size)
         buf_opt=np.ravel(np.flip(reorder_buf_opt,2))
-       
+
         self._hot_atmosphere = (logT_opt, logg_opt, _mu_opt, logE_opt, buf_opt)
-        
-                                
+
+
 photosphere = CustomPhotosphere_num(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
@@ -276,19 +274,18 @@ star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
 
 print("Parameters of the star:")
 print(star.params)
-p = [1.6,
-     14.0,
-     0.2,
-     math.cos(1.25),
-     0.0,
-     1.0,
-     0.075, 
-     6.2,
-     0.025,
-     math.pi - 1.0,
-     0.2
-     ]
-     
+
+p = [1.0368513939430604,
+     6.087862992320039,
+     0.26870812456714116,
+     0.39140510783272897,
+     0.04346870860640872,
+     0.8002010406881243,
+     1.1165398710637626,
+     5.865655057483478,
+     0.07360477761463673,
+     2.4602238829718432,
+     0.4277092192054918]
 star(p)
 star.update()
 
@@ -543,7 +540,7 @@ wrapped_params = [0]*len(likelihood)
 wrapped_params[likelihood.index('p__phase_shift')] = 1
 wrapped_params[likelihood.index('s__phase_shift')] = 1
 
-try: 
+try:
     os.makedirs("run")
 except OSError:
     if not os.path.isdir("run"):
@@ -553,7 +550,7 @@ runtime_params = {'resume': False,
                   'importance_nested_sampling': False,
                   'multimodal': False,
                   'n_clustering_params': None,
-                  'outputfiles_basename': './run/run_Num', 
+                  'outputfiles_basename': './run/run_Num',
                   'n_iter_before_update': 50,
                   'n_live_points': 50,
                   'sampling_efficiency': 0.8,
@@ -563,17 +560,18 @@ runtime_params = {'resume': False,
                   'seed': 7,
                   'max_iter': 200, # manual termination condition for short test
                   'verbose': True}
-                  
+
 # let's require that checks pass before starting to sample
 # let's do this to only first rank (if running parallel), since others can give random results when likelihoods are generally too bad.
+
 if(xpsi._rank==0):
 	try:
-		true_logl = -7.94188579e+89 #-1.15566075e+05
+		true_logl = -68147.0113542 #-1.15566075e+05
 		#print(likelihood(p))#Need to print this if not using force_update in the following line.
 		likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 	except:
 		print("Likelihood check did not pass. Checking if wrong atmosphere model installed.")
-		true_logl = -3.27536126e+04
+		true_logl = -116504.074
 		#print(likelihood(p))#Need to print this if not using force_update in the following line.
 		try:
 			likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
@@ -586,5 +584,3 @@ if(xpsi._rank==0):
 
 if __name__ == '__main__': # sample from the posterior
     xpsi.Sample.nested(likelihood, prior,**runtime_params)
-
-
