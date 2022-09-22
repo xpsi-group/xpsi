@@ -336,6 +336,19 @@ C flags for compilation of the X-PSI extensions. Because the library location
 will not change for runtime, we state the runtime linking instructions at
 compilation in the ``setup.py`` script.
 
+To check whether installation proceeded correctly and the software is functioning as expected,
+execute the following:
+
+.. code-block:: bash
+
+    cd examples/examples_fast/Modules/
+    python main.py
+
+This module performs a ``likelihood check``. If the likelihood value calculated matches
+the given value, X-PSI is functioning as expected, else it will raise an error message.
+The module will then initiate sampling using MultiNest (assuming that it's installed),
+and given the settings, it should take ~15 minutes. To cancel mid-way press ``ctrl + C``.
+
 .. note::
 
    The default X-PSI is installed with an analytical blackbody surface emission model extension. If you want to use alternative models for the surface radiation field, you will need to (re-)install / (re-)compile XPSI with the appropriate flags:
