@@ -341,35 +341,6 @@ compilation in the ``setup.py`` script.
 
       CC=<path/to/compiler/executable> python setup.py install [--user]
 
-
-.. note::
-
-   To install X-PSI on Mac OS, you can use ``llvm clang`` rather than ``gcc``.
-   First install ``homebrew`` and use that to install ``llvm``:
-
-   .. code-block:: bash
-
-      /usr/bin/ruby -e
-      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-      brew install llvm
-
-   Modify your ``.profile`` file as follows:
-
-   .. code-block:: bash
-
-      export PATH=/usr/local/opt/llvm/bin:$PATH
-      export LDFLAGS="-L/usr/local/opt/llvm/lib"
-      export CPPFLAGS="-I/usr/local/opt/llvm/include"
-      export KMP_DUPLICATE_LIB_OK=TRUE
-
-   Install X-PSI using
-
-   .. code-block:: bash
-
-      CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user]
-
-
 If you ever need to reinstall, first clean to recompile the C files:
 
 .. code-block:: bash
@@ -438,13 +409,16 @@ script. Then make sure the extension modules are inside the source directory
    To build the documentation, all modules need to be imported, and the
    dependencies that are not resolved will print warning messages.
 
-Tips for installing on a Mac OS
--------------------------------
-Be mindful on the order of the programs that need to be installed.
-Install ``xcode`` or ``xcode tools``.
-Install ``GSL`` (see above).
-Install ``maplotlib``, ``numpy``, ``cython``, ``h5py`` and ``emcee`` using ``pip install``.
-Install  ``homebrew``:
+Tips for installing on Mac OS
+-----------------------------
+
+Most of the aforementioned instructions for linux are also applicable for Mac OS.
+Here we note some of the changes required.
+
+After creating the environment using the ``basic_environment.yml`` file, install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to be installed hereafter.
+Use ``pip install`` to download and install ``h5py`` and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy`` and ``cython`` if not using the ``basic_environment.yml``. You may use the file as a reference of the packages required).
+
+On Mac OS, it's preferable to use ``llvm clang`` rather than ``gcc``. In order to do so, first install  ``homebrew``:
 
 .. code-block:: bash
 
@@ -456,18 +430,22 @@ Install ``llvm`` with homebrew, even if weird messages appear, saying llvm is al
 
    brew install llvm
 
+Install ``GSL`` (see above).
+
 Install ``fortran`` before ``MPI``.
-If you have some troubles with specifying or using gfortran (and it "doesn’t not pass simple tests") specify in the mpif90 wrapper files the compiler as being gfortran and delete the files that were already in the build directory.
+If faced with issues when specifying or using gfortran (and it "does not pass simple tests") specify the compiler as being gfortran in the ``mpif90`` wrapper files and delete the files that were already in the build directory.
 Once ``MPI`` is installed,
-export PATH and LD_LIBRARY_PATH:
+export the following environment variables:
 
 .. code-block:: bash
 
-   LD_LIBRARY_PATH="/Users/<your_path>/openmpi/lib:$LD_LIBRARY_PATH"
-   PATH=$PATH:/Users/<your_path>/mpi/bin/
+   export LD_LIBRARY_PATH="/Users/<your_path>/openmpi/lib:$LD_LIBRARY_PATH"
+   export PATH=$PATH:/Users/<your_path>/mpi/bin/
+   export LDFLAGS="-L/usr/local/opt/llvm/lib"
+   export CPPFLAGS="-I/usr/local/opt/llvm/include"
+   export KMP_DUPLICATE_LIB_OK=TRUE
 
-Consider if to add these lines directly in your bashrc (or equivalent file for a different shell).
-
+Consider adding these lines directly in your bashrc (or equivalent file for a different shell e.g. zshrc).
 
 Install ``X-PSI`` using:
 
@@ -482,21 +460,19 @@ The line in the setup.py file would then look like:
 
    packages = ['xpsi', 'xpsi/PostProcessing']
 
-If you encounter any problems with permissions when installing X-PSI, use the ``--user`` option.
+If you encounter any problems with permissions when installing X-PSI, use the ``--user`` option (This will install X-PSI globally, and not just within your virtual environment).
 
-For compatibility, install the ``GetDist`` and ``nestcheck`` versions:
+For compatibility, install the specified ``fgivenx``, ``GetDist`` and ``nestcheck`` (see above).
 
-.. code-block:: bash
 
-   GetDist version: 0.3.1
-   nestcheck version: 0.2.0
+Tips for installing on Windows
+------------------------------
 
-Installing on Windows
----------------------
+.. note::
 
-X-PSI has been successfully installed and run on Windows, at least for the
-purpose of likelihood functionality, using the following user-contributed
-procedure.
+    We do not recommend installing and running X-PSI on windows. However, if you must, this section details some of the relevant procedures.
+
+X-PSI was successfully installed and run on Windows in the year 2020, at least for the purpose of likelihood functionality, using the following user-contributed procedure.
 
 .. _Ubuntu: https://www.windowscentral.com/install-windows-subsystem-linux-windows-10
 
@@ -516,38 +492,3 @@ procedure.
   post-processing functionality if you have posterior sample sets available.
 * Install Jupyter notebook using ``pip install notebook``.
 * Start the kernel with the command ``Jupyter notebook``.
-
-
-Example of .bash_profile
-------------------------
-
-.. code-block:: bash
-
-   # .bash_profile
-   # Get the aliases and functions
-   if [ -f ~/.bashrc ]; then
-       . ~/.bashrc
-   fi
-   # User specific environment and startup programs
-   PATH=$PATH:$HOME/bin
-   export PATH
-
-Example of .bashrc
-------------------
-
-.. code-block:: bash
-
-   module load pre2019
-   module load intel/2017b
-   module load cmake
-   module load python/2.7.9
-   export FC=ifort
-   export CC=icc
-   export CXX=icpc
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
-   export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
-   # Source global definitions
-   if [ -f /etc/bashrc ]; then
-       . /etc/bashrc
-   fi
-   # User specific aliases and functions
