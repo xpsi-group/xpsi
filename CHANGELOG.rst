@@ -40,7 +40,7 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* This major release contains minor bug fixes, improved error messages, as well as improved documentation and tutorials (jupyter notebooks).  This release coincided with the submission of an X-PSI article to the Journal of Open Source Software (**add link**)
+* This major release contains minor bug fixes, improved error messages, as well as improved documentation and tutorials (jupyter notebooks).  This release coincided with the submission of an X-PSI article to the `Journal of Open Source Software <https://joss.theoj.org/>`_
 
 
 Fixed
@@ -53,7 +53,9 @@ Added
 
 * The post-processing module now shows the credible intervals of each parameters (above the 1D distribution of the corner plot) when multiple models, or multiple runs, are being loaded in the post-processed. The appropriate tutorial notebook is also provided.
 
-* Some unit tests and continuous integration
+* Some unit tests and continuous integration.
+
+* A tutorial landing page and a link to a dedicated Zenodo repository for large files needed to run the tutorials. 
 
 Changed
 ^^^^^^^
@@ -62,7 +64,9 @@ Changed
 
 * The messages of several possible errors have been clarified and detailed to help the user resolve them.
 
-* A small modification now allows production runs without importing matplotlib
+* A small modification now allows production runs without importing matplotlib.
+
+* All tutorials have been updated and improved.
 
 Deprecated
 ^^^^^^^^^^

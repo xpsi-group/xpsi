@@ -243,9 +243,9 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.7.12',
-        author = 'Thomas Edward Riley',
-        author_email = 't.e.riley@uva.nl; t.riley.phd@gmail.com',
+        version = '1.0.0',
+        author = 'The X-PSI Core Team',
+        author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',
         license = 'MIT',
         description = """X-PSI: An open-source package for
