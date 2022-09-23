@@ -38,7 +38,7 @@ affiliations:
    - name: SRON Netherlands Institute for Space Research, Niels Bohrweg 4, NL-2333 CA Leiden, the Netherlands
      index: 2
    - name: Institut de Recherche en Astrophysique et Planétologie, UPS-OMP, CNRS, CNES, 9 avenue du Colonel Roche, BP 44346, F-31028 Toulouse Cedex 4, France
-    index: 3
+     index: 3
 date: 23 September 2022
 bibliography: xpsijoss.bib
 ---
@@ -88,7 +88,7 @@ neutron stars.   However the scope of these projects does not include statistica
 necessitates tractable parametrised models and a modular framework for
 constructing those models.  X-PSI provides this functionality. 
 
-#The X-PSI package and science use
+# The X-PSI package and science use
 
 X-PSI is an open-source Python package for Bayesian modeling of time- and
 energy-resolved X-ray pulsations. X-PSI provides a framework for the
@@ -109,7 +109,7 @@ specific intensity at three representative photon energies, and the bottom
 panels show instantaneous integrals over the sky maps, together with sky map
 integrals at past times normalized to the maximum at each photon energy
 (bottom-left panel) and additional photon energies (bottom-right
-panel).\label{fig:animation_snapshot}](_skymap_with_pulse_profile_and_spectrum_plot.png){width=100%}
+panel).\label{fig:animation_snapshot}](fig1.png){width=100%}
 
 X-PSI is being used by the NICER collaboration for pulse-profile modeling of X-ray emission from rotation-powered
 millisecond pulsars. Publications that have directly applied the X-PSI package thus far are
