@@ -24,8 +24,8 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 * :doc:`Post-processing<Post-processing>` is a simple exercise on how to use the main post-processing tools provided by X-PSI.
 
-* :doc:`Example script and modules<Example_script_and_modules>` is an (advanced) example script for nested sampling from :ref:`R19`. It employs custom photosphere, instrument, interstellar, signal, and prior.
+* :doc:`Example script and modules<Example_script_and_modules>` shows a couple of simple example scripts for pulse shape computation and nested sampling.
 
-* :doc:`Example job<Example_job>` contains and example job script and resume job script for computation on a cluster, also from :ref:`R19`.
+* :doc:`Example job<Example_job>` contains example job scripts for computation on clusters.
 
 
