@@ -150,12 +150,12 @@ class PostProcessor(object):
                                 'collections.OrderedDict container.')
 
         if len(self._subset) > 1:
-            if len(self._subset) > 5:
-                print('Warning: Only the first five positional posteriors '
-                      'will be plotted, with IDs'
-                      + ', '.join(str(p.ID) for p in self._subset[:5]))
+            if len(self._subset) > 9:
+                print('Warning: Only the first nine positional posteriors '
+                      'will be plotted, with IDs to prevent the plot from overcrowding'
+                      + ', '.join(str(p.ID) for p in self._subset[:9]))
 
-            for posterior in self._subset[:5]:
+            for posterior in self._subset[:9]:
                 posterior.set_subset(IDs.get(posterior.ID, None),
                                      combine = True,
                                      combine_all = combine_all,
@@ -170,19 +170,19 @@ class PostProcessor(object):
             if only_combined:
                 pass
 
-            elif len(ids) > 5 and not combine:
-                print('Warning: Only the first five positional runs '
-                      'will be plotted individually, with IDs'
-                      + ', '.join(ids[:5]))
+            elif len(ids) > 9 and not combine:
+                print('Warning: Only the first nine positional runs '
+                      'will be plotted individually, with IDs to prevent the plot from overcrowding'
+                      + ', '.join(ids[:9]))
 
-                ids = ids[:5]
+                ids = ids[:9]
 
-            elif len(ids) == 5 and combine:
-                print('Warning: Only the first four positional runs will be '
-                      'plotted individually, with IDs '
-                      + ', '.join(ids[:4]))
+            elif len(ids) == 9 and combine:
+                print('Warning: Only the first eight positional runs will be '
+                      'plotted individually, with IDs to prevent the plot from overcrowding '
+                      + ', '.join(ids[:8]))
 
-                ids = ids[:4]
+                ids = ids[:8]
 
             posterior.set_subset(ids,
                                  combine = combine,
