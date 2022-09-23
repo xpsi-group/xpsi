@@ -11,14 +11,17 @@ on:
 
 jobs:
   ci-tests:
-    runs-on: ubuntu-latest
+#    runs-on: ubuntu-latest
+    if: "!(contains(github.event.head_commit.message, '[skip ci]') || contains(github.event.head_commit.message, '[ci skip]'))"
     defaults:
       run:
         shell: bash -l {0}
     strategy:
+      matrix:
+        os: [ubuntu-latest]
       fail-fast: false
       max-parallel: 5
-
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
     - uses: conda-incubator/setup-miniconda@v2
