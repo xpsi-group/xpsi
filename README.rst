@@ -72,15 +72,11 @@ Copyright and Licensing
 All content © 2016-2022 the authors. 
 The code is distributed under the MIT license; see `LICENSE.rst <LICENSE.rst>`_ for details.
 
-
 Legacy
 ------ 
 An earlier version (pre-v0.5) of this project was named:
 A prototype open-source package for neutron star X-ray Pulsation Simulation
 and Inference.
-
-
-https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE>/badge.svg
 
 .. |Build Status Main| image:: https://github.com/xpsi-group/xpsi/workflows/CI%20Tests/badge.svg
    :target: https://github.com/xpsi-group/xpsi/actions/
