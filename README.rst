@@ -1,6 +1,5 @@
 .. _readme:
 
-| Build Status Main | Docs |
 
 X-PSI
 =====
@@ -8,6 +7,7 @@ X-PSI
 **An open-source package for neutron star**
 **\ X-ray Pulse Simulation and Inference.**
 
+|Build Status Main| |Docs| |GitHub Release|
 
 X-PSI is designed to simulate rotationally-modified (pulsed) surface 
 X-ray emission from neutron stars, taking into account relativistic 
@@ -85,4 +85,6 @@ and Inference.
    :target: https://github.com/xpsi-group/xpsi/actions/
 .. |Docs| image:: https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat
    :target: https://xpsi-group.github.io/xpsi/index.html
+.. |GitHub release| image:: https://img.shields.io/github/v/release/xpsi-group/xpsi
+   :target: https://github.com/xpsi-group/xpsi/releases/latest
 
