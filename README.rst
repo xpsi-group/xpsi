@@ -20,10 +20,12 @@ To achieve this, X-PSI couples code for likelihood functionality (simulation)
 with existing open-source software for posterior sampling (inference).
 
 It provides the following functionality:
-* 
-* 
-* 
-* 
+* Simulation of time- and energy resolved X-ray emission (pulse profiles) from the surfaces of neutron stars.
+* The facility to implement multiple models for surface patterns, atmospheres, and different instruments.
+* Couple of pulse simulation functionality to statistical sampling software to infer spacetime and geometric parameters from pulse profile data.
+* An extensive suite of post-processing software to visualize posteriors and measures of model quality.
+
+
 
 For more details on current and planned capabilities, check out the 
 `XPSI documentation <https://xpsi-group.github.io/xpsi/index.html>`_.
