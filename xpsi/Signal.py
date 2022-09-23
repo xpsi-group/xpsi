@@ -2,8 +2,6 @@ from __future__ import division, print_function
 
 __all__ = ["Signal", "LikelihoodError"]
 
-import numpy as np_
-import sys
 from .global_imports import *
 from . import global_imports
 
@@ -117,14 +115,14 @@ class Signal(ParameterSubspace):
             self._background = None
 
         if support is not None:
+
             if self._data.counts.shape[0]==support.shape[0]:
                 self._support = support
             else:
                 raise TypeError("Data spectrum and background support must the have same shape")
-                #exit()
         else:
             try :
-                self._support = -1.0 * np_.ones((self._data.counts.shape[0],2))
+                self._support = -1.0 * _np.ones((self._data.counts.shape[0],2))
                 self._support[:,0] = 0.0
             except AttributeError:
                 pass
