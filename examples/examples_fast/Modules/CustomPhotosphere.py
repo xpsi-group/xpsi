@@ -4,6 +4,7 @@ import numpy as np
 import math
 
 import xpsi
+from xpsi.global_imports import _2pi
 
 class CustomPhotosphere(xpsi.Photosphere):
     """ Implement method for imaging."""
