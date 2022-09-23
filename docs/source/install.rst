@@ -347,7 +347,7 @@ execute the following:
 This module performs a ``likelihood check``. If the likelihood value calculated matches
 the given value, X-PSI is functioning as expected, else it will raise an error message.
 The module will then initiate sampling using MultiNest (assuming that it's installed),
-and given the settings, it should take ~15 minutes. To cancel mid-way press ``ctrl + C``.
+and given the settings, it should take ~5 minutes. To cancel mid-way press ``ctrl + C``.
 
 .. note::
 
