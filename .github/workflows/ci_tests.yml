@@ -47,4 +47,20 @@ jobs:
       shell: bash -l {0}
       env:
         CC:   gcc-10
+    - name: run on macOS
+      if: startsWith(matrix.os, 'macOS')
+      run: |
+        brew install gsl
+        mamba install flake8
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        python setup.py install
+        mamba install pytest
+        pytest
+      shell: bash -l {0}
+      env:
+        CC: $(brew --prefix llvm)/bin/clang++
+        PATH: /usr/local/opt/llvm/bin:$PATH
+        LDFLAGS: "-L/usr/local/opt/llvm/lib"
+        CPPFLAGS: "-I/usr/local/opt/llvm/include"
+        KMP_DUPLICATE_LIB_OK: TRUE
 
