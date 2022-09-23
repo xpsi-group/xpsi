@@ -35,7 +35,7 @@ and this project adheres to
 
 
 [v1.0] - 2022-09-23
-~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
