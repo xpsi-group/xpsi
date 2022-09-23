@@ -24,7 +24,7 @@ try:
     data_loaded = np.loadtxt(data_path, dtype=np.double)
 except:
     print("Loading the data assuming the notebook was run for documentation pages")
-    data_loaded = np.loadtxt('../../examples/examples_fast/Data_cp/xpsi_good_realisation.dat', dtype=np.double)
+    data_loaded = np.loadtxt('../../examples/examples_fast/Data/xpsi_good_realisation.dat', dtype=np.double)
 
 data = xpsi.Data(data_loaded,
                      channels=np.arange(10,301),

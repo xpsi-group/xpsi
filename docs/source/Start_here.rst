@@ -22,7 +22,7 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 * :doc:`Multiple imaging<Multiple_imaging>` is an exercise in image validation by using different integrators (largely following :doc:`Global surface emission<Global_surface_emission>`) and additionally using another integrator module: rayXpanda, which is capable of computing higher order lensing. In the process of this comparison, this is also provides examples of generating multiple image figures.
 
-* The post-processing tutorial is under construction.
+* :doc:`Post-processing<Post-processing>` is a simple exercise on how to use the main post-processing tools provided by X-PSI.
 
 * :doc:`Example script and modules<Example_script_and_modules>` is an (advanced) example script for nested sampling from :ref:`R19`. It employs custom photosphere, instrument, interstellar, signal, and prior.
 
