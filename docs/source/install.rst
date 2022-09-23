@@ -165,8 +165,7 @@ ensemble-MCMC is optional.
 
 .. note::
 
-    That ``conda install -c conda-forge emcee`` will handle dependencies
-    recursively to the extent that MPI would be installed if you accept.
+    That ``pip install emcee==3.0.2  [--user]`` installs a version working with Python 2.
 
 .. rubric:: Footnotes
 
