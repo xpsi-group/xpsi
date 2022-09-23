@@ -38,7 +38,7 @@ affiliations:
    - name: SRON Netherlands Institute for Space Research, Niels Bohrweg 4, NL-2333 CA Leiden, the Netherlands
      index: 2
    - name: Institut de Recherche en Astrophysique et Planétologie, UPS-OMP, CNRS, CNES, 9 avenue du Colonel Roche, BP 44346, F-31028 Toulouse Cedex 4, France
-    index: 3
+     index: 3
 date: 23 September 2022
 bibliography: xpsijoss.bib
 ---
