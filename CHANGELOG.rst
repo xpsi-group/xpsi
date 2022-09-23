@@ -8,11 +8,40 @@ The format is based on
 and this project adheres to
 `Semantic Versioning <http://semver.org/spec/v2.0.0.html>`_.
 
-[Unreleased]
+.. REMOVE THE DOTS BELOW TO UNCOMMENT
+.. ..[Unreleased]
+.. ~~~~~~~~~~~~
+
+.. Summary
+.. ^^^^^^^
+
+.. Fixed
+.. ^^^^^
+
+.. Added
+.. ^^^^^
+
+.. Changed
+.. ^^^^^^^
+
+.. Deprecated
+.. ^^^^^^^^^^
+
+.. Removed
+.. ^^^^^^^
+
+.. Attribution
+.. ^^^^^^^^^^^
+
+
+[v1.0] - 2022-09-23
 ~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
+
+* This major release contains minor bug fixes, improved error messages, as well as improved documentation and tutorials (jupyter notebooks).  This release coincided with the submission of an X-PSI article to the `Journal of Open Source Software <https://joss.theoj.org/>`_
+
 
 Fixed
 ^^^^^
@@ -20,8 +49,24 @@ Fixed
 Added
 ^^^^^
 
+* A modification of the ``setup.py`` with flags (``--NumHot`` and ``--NumElse``) now facilitates switching between surface emission models.
+
+* The post-processing module now shows the credible intervals of each parameters (above the 1D distribution of the corner plot) when multiple models, or multiple runs, are being loaded in the post-processed. The appropriate tutorial notebook is also provided.
+
+* Some unit tests and continuous integration.
+
+* A tutorial landing page and a link to a dedicated Zenodo repository for large files needed to run the tutorials. 
+
 Changed
 ^^^^^^^
+
+* The general documentation has been improved, reorganized and clarified.  More details are provided for the installation, locally and on HPC systems.
+
+* The messages of several possible errors have been clarified and detailed to help the user resolve them.
+
+* A small modification now allows production runs without importing matplotlib.
+
+* All tutorials have been updated and improved.
 
 Deprecated
 ^^^^^^^^^^
@@ -29,8 +74,19 @@ Deprecated
 Removed
 ^^^^^^^
 
+* Method ``fixed_spin`` of ``spacetime.py`` module.  A spacetime with fixed spin can be created by specifying a spin frequency ``value`` and omitting the spin frequency ``bounds``
+
 Attribution
 ^^^^^^^^^^^
+
+Devarshi Choudhury,
+Bas Dorsman,
+Sebastien Guillot,
+Daniela Huppenkothen,
+Yves Kini,
+Tuomo Salmi,
+Serena Vinciguerra,
+Anna Watts
 
 [v0.7.12] - 2022-09-15
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
