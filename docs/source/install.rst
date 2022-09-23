@@ -4,7 +4,7 @@ Installation
 ============
 
 X-PSI is an open-source software package that is available on `GitHub
-<http://github.com/>`_ and can be cloned as:
+<https://github.com/xpsi-group/xpsi.git>`_ and can be cloned as:
 
 .. code-block:: bash
 
@@ -140,6 +140,7 @@ The following Python packages are required for nested sampling:
     problems. Below we offer `from source`__ instructions.
 
 Running the tests requires:
+
 * `Pytest <http://pytest.org>`_
 
 The following Python packages are required for full functionality of the
@@ -199,7 +200,7 @@ install guidelines are given below.
 GSL
 ```
 
-To obtain the latest GSL_ source code (otherwise ``v2.5`` works):
+To obtain the latest `GSL <https://www.gnu.org/software/gsl/>`_ source code (otherwise ``v2.5`` works):
 
 .. code-block:: bash
 
