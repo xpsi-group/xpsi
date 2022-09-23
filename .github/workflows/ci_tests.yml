@@ -6,25 +6,51 @@ on:
     branches:
       - "main"
   pull_request:
+  schedule:
+    - cron: '0 0 * * *'
 
-jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+env:
+  CACHE_NUMBER: 0
+
+jobs: 
+  ci-tests:
+    #runs-on: ubuntu-latest
+    if: "!(contains(github.event.head_commit.message, '[skip ci]') || contains(github.event.head_commit.message, '[ci skip]'))"
     defaults:
       run:
         shell: bash -l {0}
     strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - label: linux-64
+          - prefix: /usr/share/miniconda3/envs/my-env
       fail-fast: false
       max-parallel: 5
-
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
-    - uses: conda-incubator/setup-miniconda@v2
+    - name: Set up Mambaforge
+      uses: conda-incubator/setup-miniconda@v2
       with:
+         miniforge-variant: Mambaforge
+         miniforge-version: latest
          activate-environment: xpsipy2
          environment-file: basic_environment.yml
          python-version: 2.7
          auto-activate-base: false
+         use-mamba: true
+    - name: set cache date
+      run: echo "DATE=$(date + '%Y%m%d')" >> $GITHUB_ENV
+#    - uses: actions/cache@v2
+#      with:
+#        path: ${{ matrix.prefix }}
+#        key: ${{ matrix.label }}-conda-$${ hashFiles('basic_environment.yml') }}-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
+#      id: cache
+#    - name: update environment
+#      run: mamba env update -n xpsipy2 -f basic_environment.yml
+#      if: steps.cache.outputs.cache-hit != 'true'
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
@@ -32,13 +58,11 @@ jobs:
     - name: install gsl
       run: |
         sudo apt-get install -y libgsl-dev
-    - name: Lint with flake8
-      run: |
-        conda install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        #flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+#    - name: Lint with flake8
+#      run: |
+#        mamba install flake8
+#        # stop the build if there are Python syntax errors or undefined names
+#        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - name: install X-PSI package
       run: |
         python setup.py install
