@@ -109,7 +109,7 @@ specific intensity at three representative photon energies, and the bottom
 panels show instantaneous integrals over the sky maps, together with sky map
 integrals at past times normalized to the maximum at each photon energy
 (bottom-left panel) and additional photon energies (bottom-right
-panel).\label{fig:animation_snapshot}](_skymap_with_pulse_profile_and_spectrum_plot.png){width=100%}
+panel).\label{fig:animation_snapshot}](fig1.png){width=100%}
 
 X-PSI is being used by the NICER collaboration for pulse-profile modeling of X-ray emission from rotation-powered
 millisecond pulsars. Publications that have directly applied the X-PSI package thus far are
