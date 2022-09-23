@@ -27,16 +27,16 @@
    :maxdepth: 1
    :caption: Tutorials
 
-   model_construction
-   multiple_instruments
-   hotregion_complexity
-   global_surface_emission
-   surface_radiation_field_checking_tools_tutorial
-   model_construction_streamlined
-   multiple_imaging
-   postprocessing_tutorial
-   example_script
-   example_job
+   Start_here
+   Modeling
+   Instrument_synergy
+   Hot_region_complexity
+   Global_surface_emission
+   Surface_radiation_field_tools
+   Modeling_without_statistics
+   Multiple_imaging
+   Example_script_and_modules
+   Example_job
 
 .. toctree::
    :maxdepth: 1
