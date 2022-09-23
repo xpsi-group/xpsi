@@ -30,13 +30,13 @@ authors:
       orcid: 0000-0002-1169-7486
       affiliation: 2
     - name:  Sebastien Guillot
-       orcid: 0000-0002-6449-106X
-       affiliation: 3
+      orcid: 0000-0002-6449-106X
+      affiliation: 3
 affiliations:
    - name: Anton Pannekoek Institute for Astronomy, University of Amsterdam, Science Park 904, 1090GE Amsterdam, The Netherlands
-    index: 1
+     index: 1
    - name: SRON Netherlands Institute for Space Research, Niels Bohrweg 4, NL-2333 CA Leiden, the Netherlands
-    index: 2
+     index: 2
    - name: Institut de Recherche en Astrophysique et Planétologie, UPS-OMP, CNRS, CNES, 9 avenue du Colonel Roche, BP 44346, F-31028 Toulouse Cedex 4, France
     index: 3
 date: 23 September 2022
@@ -72,37 +72,23 @@ density and the spin frequency); the state of the surface radiation field is
 the product of a potentially long and complex stellar evolutionary history,
 especially that of the stellar magnetosphere. Such parameter estimation
 requires relativistic tracing of radiation as it propagates from surface to a
-distant telescope.
+distant telescope. Pulse-profile modelling to infer neutron star parameters
+is a major science goal for both current X-ray telescopes such as the Neutron
+Star Interior Composition ExploreR (NICER, @Gendreau2016) and future telescopes
+@Watts2019.
 
 There are a small number of open-source libraries for simulating the X-ray
 signals from rapidly spinning neutron stars and more generally from the
-vicinity of general relativistic compact objects (including black holes), but
-the scope of these projects does not include statistical modeling, which
-necessitates tractable parametrised models and a modular framework for
-constructing those models. The state-of-the-art example is the Arcmancer
+vicinity of general relativistic compact objects (including black holes).  
+An example is the Arcmancer
 library of @Pihajoki:2018, a general purpose toolbox that is wrapped by an
 updated version of the bender library of @Nattila:2016 for the purpose of
 simulating X-ray signals from hot regions on the surfaces of rapidly rotating
-neutron stars. These general purpose libraries have a wide array of
-applications and would exhibit synergy with a library for statistical modeling
-of X-ray signals registered by space telescopes. The general purpose libraries
-are for example useful for accurate simulations of realistic, general
-relativistic neutron stars. A statistical modeling library would be useful for
-distilling such state-of-the-art models down to the principal components and
-forming much more approximative models, with a small number of parameters, that
-are nevertheless sufficient to generate data that is structured like the
-observational data; using such models, one can derive probabilistic information
-that represents our knowledge of neutron star properties.
+neutron stars.   However the scope of these projects does not include statistical modeling, which
+necessitates tractable parametrised models and a modular framework for
+constructing those models.  X-PSI provides this functionality. 
 
-Likelihood information about the mass and radius of a given neutron star is
-utilized in an array of contexts. A pertinent example is post-processing of the
-likelihood into information about the equation of state of cold dense matter
-inside neutron stars. Likelihood information about the properties of a surface
-radiation field can be post-processed, for instance, into information about a
-stellar magnetosphere. Contemporary and future telescopes are taking and would
-take aim at these pulsing stars in order to derive such information: the most notable
-example is the NICER (Neutron star Interior Composition ExploreR) X-ray
-telescope, a NASA payload installed on the International Space Station [@Gendreau2016].
+#The X-PSI package and science use
 
 X-PSI is an open-source Python package for Bayesian modeling of time- and
 energy-resolved X-ray pulsations. X-PSI provides a framework for the
@@ -125,13 +111,12 @@ integrals at past times normalized to the maximum at each photon energy
 (bottom-left panel) and additional photon energies (bottom-right
 panel).\label{fig:animation_snapshot}](_skymap_with_pulse_profile_and_spectrum_plot.png){width=100%}
 
-Notably, X-PSI has and is being applied by the NICER collaboration for
-pulse-profile modeling of rotation-powered millisecond pulsars. The
-publications that have directly applied the X-PSI package thus far are
-@Riley:2019 and @Riley:2021. Many more publications have used the accompanying
+X-PSI is being used by the NICER collaboration for pulse-profile modeling of X-ray emission from rotation-powered
+millisecond pulsars. Publications that have directly applied the X-PSI package thus far are
+@Riley:2019 and @Riley:2021. Many more papers have used the accompanying
 open-source analysis pipeline and products published on Zenodo; these products
 may be accessed using the linked DOIs of @Riley:2019:Zenodo and
-@Riley:2021:Zenodo. The first of such publications were @Raaijmakers:2019 and
+@Riley:2021:Zenodo. The first were @Raaijmakers:2019 and
 @Bilous:2019, respectively on the topics of dense matter inference and
 multipolar magnetic fields.
 
@@ -142,7 +127,13 @@ user in the Python language, as is the interfacing with sampling software.
 Low-level customisation is encouraged in the extensions (either directly in
 Cython or via calls to external C libraries).  X-PSI is Unix source code
 compatible, and release versions are freely available on GitHub under the MIT
-license.
+license.  Extensive documentation, step-by-step tutorials, and reproduction
+code for existing data analyses, are available
+via the project github, along with a growing suite of unit tests.  Future plans
+include migration to Python 3, further improvements to post-processing software,
+ and the implementation of an expanded suite of atmosphere models.
+
+
 
 *Software:* Python/C language [@Python2007], GNU Scientific Library (GSL;
 @Gough:2009), NumPy [@Numpy2011], Cython [@cython2011], OpenMP [@openmp], MPI
@@ -154,9 +145,10 @@ PyMultiNest [@PyMultiNest], GetDist [@Lewis19], nestcheck
 
 # Acknowledgements
 
-The University of Amsterdam co-authors acknowledge support from ERC Starting Grant No.
-639217 CSINEUTRONSTAR and ERC Consolidator grant No. 865768 AEONS (PI:
-ALW).  SG acknowledges the support of the CNES. More detailed acknowledgements are written in the project
+All University of Amsterdam co-authors acknowledge
+support from ERC Consolidator grant No. 865768 AEONS (PI: ALW).  DH is supported by the 
+Women In Science Excel (WISE) programme of the Netherlands Organisation for 
+Scientific Research (NWO). SG acknowledges the support of the CNES. More detailed acknowledgements are written in the project
 documentation [hosted](https://xpsi-group.github.io/xpsi/acknowledgements.html)
 on GitHub.
 
