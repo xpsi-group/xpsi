@@ -88,7 +88,7 @@ neutron stars.   However the scope of these projects does not include statistica
 necessitates tractable parametrised models and a modular framework for
 constructing those models.  X-PSI provides this functionality. 
 
-#The X-PSI package and science use
+# The X-PSI package and science use
 
 X-PSI is an open-source Python package for Bayesian modeling of time- and
 energy-resolved X-ray pulsations. X-PSI provides a framework for the
