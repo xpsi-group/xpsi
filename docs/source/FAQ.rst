@@ -68,21 +68,21 @@ Common problems and errors
 
 .. rubric:: How to avoid errors in post-processing?
 
-Do not use X-PSI PostProcessing tools for runs which have not converged yet or have not enough samples. Also, when post-processing, make sure to check the data and output file paths, use ``cache=True`` if plotting the signal, and perform a likelihood check to be sure that the imported model is the same as in the run. 
+Do not use X-PSI PostProcessing tools for runs which have not converged yet or have not enough samples. Also, when post-processing, make sure to check the data and output file paths, use ``cache=True`` if plotting the signal, and perform a likelihood check to be sure that the imported model is the same as in the run.
 
 .. rubric:: *AttributeError: ’NestedBackend’ object has no attribute ’\ :math:`\_nc\_bcknd`\ ’*
 
 Can happen in PostProcessing for runs with ``use_nestcheck=[False]`` (e.g. importance sampling). Solution is to turn ``bootstrap_estimators=False``, or alternatively, set ``use_nestcheck=[True]``.
 
 .. rubric:: Why does my skymap show many annular images like this:
-  
+
 .. container:: figure*
 
-   .. image:: images/ST_PST__NICER__skymap_phase_averaged_run1.png
+   .. image:: _static/ST_PST__NICER__skymap_phase_averaged_run1.png
       :alt: image
       :width: 10cm
 
-The problem is the ``xpsi/xpsi/surface_radiation_field/local_variable.pyx`` file which should be overwritten by ``xpsi/xpsi/surface_radiation_field/archive/local_variables/PST_U.pyx`` or ``xpsi/xpsi/surface_radiation_field/archive/local_variables/two_spots.pyx`` (depending on the model) and then re-install X-PSI, as explained in the Global surface emission -tutorial. 
+The problem is the ``xpsi/xpsi/surface_radiation_field/local_variable.pyx`` file which should be overwritten by ``xpsi/xpsi/surface_radiation_field/archive/local_variables/PST_U.pyx`` or ``xpsi/xpsi/surface_radiation_field/archive/local_variables/two_spots.pyx`` (depending on the model) and then re-install X-PSI.
 
 .. rubric:: *ImportError: No module named tools*
 
@@ -90,7 +90,7 @@ You are running X-PSI from its main directory (the directory where the ``setup.p
 
 .. rubric:: *<path/to/run/output>dead-birth.txt not found.*
 
-Set ``use_nestcheck=[False]`` or check that nestcheck is installed exactly as instructed in :ref:`install` (by cloning it from ``https://github.com/ThomasEdwardRiley/nestcheck.git``). 
+Set ``use_nestcheck=[False]`` or check that nestcheck is installed exactly as instructed in :ref:`install` (by cloning it from ``https://github.com/ThomasEdwardRiley/nestcheck.git``).
 
 .. rubric:: *Invalid caching targets.*
 
@@ -107,6 +107,3 @@ Make sure to to install nestcheck and GetDist packages using the corresponding g
 .. rubric:: *ValueError: There is more than one signal instance.*
 
 Typically occurs when post-processing joint NICER and XMM results, if not setting ``model.likelihood.signals = model.likelihood.signals[0][0]`` (when plotting the inferred NICER signal).
-   
-   
-
