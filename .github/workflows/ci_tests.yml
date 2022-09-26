@@ -6,47 +6,61 @@ on:
     branches:
       - "main"
   pull_request:
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  ci-tests:
+#    runs-on: ubuntu-latest
+    if: "!(contains(github.event.head_commit.message, '[skip ci]') || contains(github.event.head_commit.message, '[ci skip]'))"
     defaults:
       run:
         shell: bash -l {0}
     strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
       fail-fast: false
       max-parallel: 5
-
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
     - uses: conda-incubator/setup-miniconda@v2
       with:
+         miniforge-variant: Mambaforge
+         miniforge-version: latest
          activate-environment: xpsipy2
          environment-file: basic_environment.yml
          python-version: 2.7
          auto-activate-base: false
-    - name: Set up GCC
+         use-mamba: true
+
+    - name: run on ubuntu
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
-         sudo apt-get install -y gcc
-      shell: bash -l {0}
-    - name: install gsl
-      run: |
+        sudo apt-get install -y gcc
         sudo apt-get install -y libgsl-dev
-    - name: Lint with flake8
-      run: |
-        conda install flake8
-        # stop the build if there are Python syntax errors or undefined names
+        mamba install flake8
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        #flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: install X-PSI package
-      run: |
         python setup.py install
+        mamba install pytest
+        pytest
       shell: bash -l {0}
       env:
         CC:   gcc-10
-
-    - name: Test with pytest
+    - name: run on macOS
+      if: startsWith(matrix.os, 'macOS')
       run: |
-        conda install pytest
+        brew install gsl
+        mamba install flake8
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        python setup.py install
+        mamba install pytest
         pytest
+      shell: bash -l {0}
+      env:
+        CC: $(brew --prefix llvm)/bin/clang++
+        PATH: /usr/local/opt/llvm/bin:$PATH
+        LDFLAGS: "-L/usr/local/opt/llvm/lib"
+        CPPFLAGS: "-I/usr/local/opt/llvm/include"
+        KMP_DUPLICATE_LIB_OK: TRUE
+
