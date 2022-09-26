@@ -74,7 +74,7 @@ signals from rapidly spinning neutron stars and more generally from the
 vicinity of general relativistic compact objects including black holes [@Nattila:2016;@Pihajoki:2018] the scope
 of these projects does not include statistical modeling, which
 necessitates tractable parametrised models and a modular framework for
-constructing those models.  X-PSI addresses this need, coupling code for likelihood                           
+constructing those models.  X-PSI addresses this need, coupling code for likelihood
 functionality (simulation) with existing open-source software for posterior sampling (inference).
 
 # The X-PSI package and science use
@@ -128,7 +128,7 @@ for Python [@mpi4py], Matplotlib [@Hunter:2007; @matplotlibv2], IPython
 [@IPython2007], Jupyter [@Kluyver:2016aa], MultiNest [@MultiNest_2009],
 PyMultiNest [@PyMultiNest], GetDist [@Lewis19], nestcheck
 [@higson2018nestcheck;@higson2018sampling;@higson2019diagnostic], fgivenx
-[@fgivenx], emcee[@emcee]. 
+[@fgivenx], emcee [@emcee]. 
 
 # Acknowledgements
 
