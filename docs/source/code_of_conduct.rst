@@ -69,11 +69,7 @@ Enforcement
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders in the X-PSI :ref:`team` responsible for
 enforcement. All complaints will be reviewed and investigated promptly and
-fairly. If contacting the X-PSI :ref:`team` is not an option, please directly
-contact Thomas E. Riley (t.e.riley[at]uva.nl) and/or
-Anna L. Watts (A.L.Watts[at]uva.nl).
-
-All community leaders are obligated to respect the privacy and security of the
+fairly.  All community leaders are obligated to respect the privacy and security of the
 reporter of any incident.
 
 Enforcement Guidelines

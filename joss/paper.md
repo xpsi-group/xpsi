@@ -39,31 +39,23 @@ affiliations:
      index: 2
    - name: Institut de Recherche en Astrophysique et Planétologie, UPS-OMP, CNRS, CNES, 9 avenue du Colonel Roche, BP 44346, F-31028 Toulouse Cedex 4, France
      index: 3
-date: 23 September 2022
+date: 26 September 2022
 bibliography: xpsijoss.bib
 ---
 
+
 # Summary
 
-Stars play host to exotic environments that cannot be simulated in terrestrial
-laboratories. The focus of this work is neutron stars, thought to be the most
-compact extended objects in the Universe. Observable radiation from a neutron
-star encodes information about fundamental physics (gravity, electromagnetism,
-and nuclear forces) and astrophysical processes (such as the state and evolution
-of a stellar magnetosphere). Neutron stars are often detected by astronomers
-because their radiative signal - in radio, X-ray and gamma-rays -  is pulsed due to bulk stellar rotation.  By modeling the physical process that generates data registered by telescopes, astronomers and astrostatisticians can make inferential statements
-about the nature of the extreme Universe.
-
+X-PSI is a software package designed to simulate rotationally-modified (pulsed) 
+surface X-ray emission from neutron stars and to perform Bayesian 
+statistical inference on real or simulated pulse profile data sets. Model parameters 
+of interest include neutron star mass and radius and the system geometry and 
+properties of the hot emitting surface regions. 
 
 # Statement of need
 
-There exist open-source libraries and packages to support a subset of the
-modeling treated in astrophysical literature. They provide frameworks,
-toolsets, model implementations, and so on. One sub-field for which there does
-not exist such an open-source project, is for the *statistical modeling* of
-X-ray signals that pulse due to rotational modulation of asymmetric emission
-from the surface of a neutron star. Pulsing X-ray signals from neutron stars
-are modeled to statistically estimate parameters such as stellar mass and
+Rotationally modulated (pulsed) X-ray signals from neutron stars
+can be modeled to statistically estimate parameters such as stellar mass and
 radius, and properties of the surface radiation field such as a map of
 temperature. The mass and radius of a neutron star are a function of the
 equation of state of internal matter (especially the dense matter in the core)
@@ -75,18 +67,15 @@ requires relativistic tracing of radiation as it propagates from surface to a
 distant telescope. Pulse-profile modelling to infer neutron star parameters
 is a major science goal for both current X-ray telescopes such as the Neutron
 Star Interior Composition ExploreR (NICER, @Gendreau2016) and future telescopes
-@Watts2019.
+[@Watts2019].
 
-There are a small number of open-source libraries for simulating the X-ray
+While there are some open-source libraries for simulating the X-ray
 signals from rapidly spinning neutron stars and more generally from the
-vicinity of general relativistic compact objects (including black holes).  
-An example is the Arcmancer
-library of @Pihajoki:2018, a general purpose toolbox that is wrapped by an
-updated version of the bender library of @Nattila:2016 for the purpose of
-simulating X-ray signals from hot regions on the surfaces of rapidly rotating
-neutron stars.   However the scope of these projects does not include statistical modeling, which
+vicinity of general relativistic compact objects including black holes [@Nattila:2016;@Pihajoki:2018] the scope
+of these projects does not include statistical modeling, which
 necessitates tractable parametrised models and a modular framework for
-constructing those models.  X-PSI provides this functionality. 
+constructing those models.  X-PSI addresses this need, coupling code for likelihood                           
+functionality (simulation) with existing open-source software for posterior sampling (inference).
 
 # The X-PSI package and science use
 
@@ -112,11 +101,9 @@ integrals at past times normalized to the maximum at each photon energy
 panel).\label{fig:animation_snapshot}](fig1.png){width=100%}
 
 X-PSI is being used by the NICER collaboration for pulse-profile modeling of X-ray emission from rotation-powered
-millisecond pulsars. Publications that have directly applied the X-PSI package thus far are
-@Riley:2019 and @Riley:2021. Many more papers have used the accompanying
-open-source analysis pipeline and products published on Zenodo; these products
-may be accessed using the linked DOIs of @Riley:2019:Zenodo and
-@Riley:2021:Zenodo. The first were @Raaijmakers:2019 and
+millisecond pulsars [@Riley:2019;@Riley:2021].  Many more papers have used the accompanying
+open-source analysis pipeline and products published on Zenodo [@Riley:2019:Zenodo;
+@Riley:2021:Zenodo]. The first were @Raaijmakers:2019 and
 @Bilous:2019, respectively on the topics of dense matter inference and
 multipolar magnetic fields.
 
@@ -129,7 +116,7 @@ Cython or via calls to external C libraries).  X-PSI is Unix source code
 compatible, and release versions are freely available on GitHub under the MIT
 license.  Extensive documentation, step-by-step tutorials, and reproduction
 code for existing data analyses, are available
-via the project github, along with a growing suite of unit tests.  Future plans
+via the GitHub repository, along with a growing suite of unit tests.  Future plans
 include migration to Python 3, further improvements to post-processing software,
  and the implementation of an expanded suite of atmosphere models.
 
@@ -141,7 +128,7 @@ for Python [@mpi4py], Matplotlib [@Hunter:2007; @matplotlibv2], IPython
 [@IPython2007], Jupyter [@Kluyver:2016aa], MultiNest [@MultiNest_2009],
 PyMultiNest [@PyMultiNest], GetDist [@Lewis19], nestcheck
 [@higson2018nestcheck;@higson2018sampling;@higson2019diagnostic], fgivenx
-[@fgivenx].
+[@fgivenx], emcee[@emcee]. 
 
 # Acknowledgements
 
@@ -149,7 +136,6 @@ All University of Amsterdam co-authors acknowledge
 support from ERC Consolidator grant No. 865768 AEONS (PI: ALW).  DH is supported by the 
 Women In Science Excel (WISE) programme of the Netherlands Organisation for 
 Scientific Research (NWO). SG acknowledges the support of the CNES. More detailed acknowledgements are written in the project
-documentation [hosted](https://xpsi-group.github.io/xpsi/acknowledgements.html)
-on GitHub.
+documentation [hosted on GitHub](https://xpsi-group.github.io/xpsi/acknowledgements.html).
 
 # References
