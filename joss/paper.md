@@ -15,7 +15,7 @@ authors:
       orcid: 0000-0001-6356-125X
       affiliation: 1
     - name: Serena Vinciguerra
-      orcid: 0000 0003 3068 6974
+      orcid: 0000-0003-3068-6974
       affiliation: 1
     - name: Yves Kini
       orcid: 0000-0002-0428-8430
