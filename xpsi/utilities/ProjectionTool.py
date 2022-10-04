@@ -123,13 +123,13 @@ def transform(thetaR,phiR,V,phi0=0.0):
         Vout = np.squeeze(np.array(Vout))
         return Vout
 
-def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase = True, SaveFlag = False, dir = "", Name = "", POVname="", extension = ".png"):
+def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase = True, SaveFlag = False, dir = "", Name = "", POVname="", extension = ".png", antipodal = False):
     """
     Vp: vector of parameters
     model: model adopted e.g. ST-U, ST-PST !PLEASE USE "-S" and not just "S" for symmetric models
     POV: Point Of View - location (for string arguments: colatitude) from which the neutron star is observed; if string can be:
         "I" -from the point of view of Earth-: in this case x and y are rotated compared
-                                           other configuration to visualise equator horizontally and Nord on top
+                                           other configuration to visualise equator horizontally and North on top
         or "P" -primary-,"S", -secondary-, SO" -secondary omission-, "SE" -secondary emission-,  "SC" -secondary cede-, or equivalently "PO", "PE", "PC", depending on the adopted model.
         A vector of three coordinates, whose squadratic sum =1, can also be used to determin the location from which the NS surface is seeing.
     ThetaDisplay: in which pole would you like to see the countours of constant colatitutde? Options are: "SP" for south pole and "NP" for north pole (where i ==0)
@@ -140,6 +140,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     POVname: If POV is something outside of the aforementioned options e.g. using a vector of 3 coordinates,
              provide POV name to save file with
     extension: extension of the file to be saved
+    antipodal: if you want to show antipodal configuration
     """
 
     Plab = 'Primary'
@@ -286,7 +287,11 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 coli = mycolors0[ind_i]
                 j = j+1
             CAall.append(coli)
-
+            
+     if antipodal:
+            
+            phiA_anti,thetaA_anti,labels_anti = SYMMETRIC(phiA_p,thetaA_p,labels_p)
+            zetaA_anti = zetaA_p
 
     cosi    = dictVp['cos_inclination']
     phi_inc = 0.0
@@ -592,7 +597,18 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         transform_plot_lines(THETAall[i],PHIall[i],VA[i],CAall[i],NO_POLE_FLAG,'-',3,LABall[i])
         tranform_plot(THETAall[i],PHIall[i],[0,0,1],10,True,'o',CAall[i], True,'Hot Region centers','Hot Region centers -Opposite Hemisphere')
 
+    if antipodal:
+        
+        for i in range(len(zetaA_anti)):
 
+            ind = np.arange(len(x2))
+            x3 = x2[ind%10 ==0]
+            Vi  = [np.cos(x3)*np.sin(zetaA_anti[i]),np.sin(x3)*np.sin(zetaA_anti[i]),np.cos(zetaA_anti[i])*np.ones(len(x3))]
+            if i ==0:
+                transform_plot_lines(thetaA_anti[i],phiA_anti[i],Vi,CAall[i],NO_POLE_FLAG,'-.',2,"Antipode of primary")
+            else:
+                transform_plot_lines(thetaA_anti[i],phiA_anti[i],Vi,CAall[i],NO_POLE_FLAG,'-.',2)
+                
     L1 = r'$\phi=0\,[cycle],\, \theta = \pi/2\,[rad]$'
     tranform_plot(np.pi*0.5,0.0,[0,0,1],5,False,'o', mycolors1[2], True,L1, '')
 
@@ -607,7 +623,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     transform_plot_lines(np.pi*0.5,0.125,MultA,mycolors1[2],NO_POLE_FLAG,'--',1)
 
     #rotating and plotting poles
-    tranform_plot(0.,0.,[0,0,1],10,False,'*',mycolors1[6], True, "Projected Nord Pole","Projected Nord Pole  -Opposite Hemisphere",mycolors1[6])
+    tranform_plot(0.,0.,[0,0,1],10,False,'*',mycolors1[6], True, "Projected North Pole","Projected North Pole  -Opposite Hemisphere",mycolors1[6])
     tranform_plot(0.,0.,[0,0,-1],25,False,'*',mycolors1[6], True, "Projected South Pole","Projected South Pole  -Opposite Hemisphere",mycolors1[6])
 
     ax.legend(fontsize = legsize,loc='upper left', bbox_to_anchor=(1, 1.))
@@ -628,5 +644,5 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         else:
             raise RuntimeError('Please provide POVname to save file with.')
         plt.savefig(FigName, dpi=300, bbox_inches='tight')
-    
+
     return ax
