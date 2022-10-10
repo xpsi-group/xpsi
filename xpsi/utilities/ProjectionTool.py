@@ -597,7 +597,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         transform_plot_lines(THETAall[i],PHIall[i],VA[i],CAall[i],NO_POLE_FLAG,'-',3,LABall[i])
         tranform_plot(THETAall[i],PHIall[i],[0,0,1],10,True,'o',CAall[i], True,'Hot Region centers','Hot Region centers -Opposite Hemisphere')
 
-    if antipodal:
+   if antipodal:
         
         for i in range(len(zetaA_anti)):
 
