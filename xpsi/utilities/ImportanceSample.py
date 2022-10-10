@@ -48,18 +48,6 @@ if not args.names:
 else:
     args.names = args.names[0].split()
 
-if not args.likelihood_change:
-    while True:
-        input_likelihood_change = raw_input('Specify if importanca sampling changes likelihood (True/False): ')
-        if input_likelihood_change.capitalize() == 'False':
-            args.likelihood_change=False
-            break
-        elif input_likelihood_change.capitalize() == 'True':
-            args.likelihood_change=True
-            break
-        else:
-            print ('Only True or False options')
-
 def check_prior_change(test):
     if not args.prior_change:
         args.prior_change = raw_input('Specify if importance sampling changes priors of model variables  (True/False): ')
@@ -74,7 +62,8 @@ def check_prior_change(test):
         return test
     else:
         print ('Only True or False options')
-  
+        args.prior_change = raw_input('Specify if importance sampling changes priors of model variables  (True/False): ')
+        
 def check_likelihood_change(test):
     if not args.likelihood_change:
         args.likelihood_change = raw_input('Specify if importance sampling changes likelihood of model variables  (True/False): ')
@@ -89,6 +78,7 @@ def check_likelihood_change(test):
         return test
     else:
         print ('Only True or False options')
+        args.likelihood_change = raw_input('Specify if importance sampling changes likelihood of model variables  (True/False): ')
         
 def check_overwrite(test):
     if not args.overwrite:
@@ -104,6 +94,7 @@ def check_overwrite(test):
         return test
     else:
         print ('Only True or False options')
+        args.overwrite = raw_input('Specify if to rewrite the output file(s)  (True/False): ')
 
 TEST = True
 while TEST:
