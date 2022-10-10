@@ -62,13 +62,13 @@ if not args.likelihood_change:
 
 def check_prior_change(test):
     if not args.prior_change:
-        input_prior_change = raw_input('Specify if importance sampling changes priors of model variables  (True/False): ')
+        args.prior_change = raw_input('Specify if importance sampling changes priors of model variables  (True/False): ')
         
-    if input_prior_change.capitalize() == 'False':
+    if args.prior_change.capitalize() == 'False':
         args.prior_change=False
         test = False
         return test
-    elif input_prior_change.capitalize() == 'True':
+    elif args.prior_change.capitalize() == 'True':
         args.prior_change=True
         test = False
         return test
@@ -77,28 +77,28 @@ def check_prior_change(test):
   
 def check_likelihood_change(test):
     if not args.likelihood_change:
-        input_likelihood_change = raw_input('Specify if importance sampling changes likelihood of model variables  (True/False): ')
+        args.likelihood_change = raw_input('Specify if importance sampling changes likelihood of model variables  (True/False): ')
         
-    if input_likelihood_change.capitalize() == 'False':
+    if args.likelihood_change.capitalize() == 'False':
         args.likelihood_change=False
         test = False
         return test
-    elif input_likelihood_change.capitalize() == 'True':
+    elif args.likelihood_change.capitalize() == 'True':
         args.likelihood_change=True
         test = False
         return test
     else:
         print ('Only True or False options')
         
- def check_overwrite(test):
+def check_overwrite(test):
     if not args.overwrite:
-        input_overwrite = raw_input('Specify if to rewrite the output file(s)  (True/False): ')
+        args.overwrite = raw_input('Specify if to rewrite the output file(s)  (True/False): ')
         
-    if input_overwrite.capitalize() == 'False':
+    if args.overwrite.capitalize() == 'False':
         args.overwrite=False
         test = False
         return test
-    elif input_overwrite.capitalize() == 'True':
+    elif args.overwrite.capitalize() == 'True':
         args.overwrite=True
         test = False
         return test
@@ -107,15 +107,15 @@ def check_likelihood_change(test):
 
 TEST = True
 while TEST:
-    TEST = check_prior_change(test)
+    TEST = check_prior_change(TEST)
     
 TEST = True
 while TEST:
-    TEST = check_likelihood_change(test)
+    TEST = check_likelihood_change(TEST)
     
 TEST = True
 while TEST:
-    TEST = check_overwrite(test)
+    TEST = check_overwrite(TEST)
 
 if not args.weight_threshold:
     args.weight_threshold = 1.0e-30
