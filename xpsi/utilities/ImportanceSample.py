@@ -18,10 +18,10 @@ parser.add_argument('--path-to-mains', type=str, help='Absolute or relative path
 parser.add_argument('--path-to-outputs', type=str, help='Absolute or relative path to output files')
 parser.add_argument('--output-root-name', type=str, help='Name of output root file, no extension')
 parser.add_argument('--names', nargs='+',help='List of names of model variables')
-parser.add_argument('--likelihood-change', type=bool, help='Importance sample for chaning likelihood')
-parser.add_argument('--prior-change', type=bool, help='Importance sample for chaning priors')
+parser.add_argument('--likelihood-change', type=str, help='Importance sample for chaning likelihood')
+parser.add_argument('--prior-change', type=str, help='Importance sample for chaning priors')
 parser.add_argument('--weight-threshold', type=float, help='Weight threshold for importance sampling')
-parser.add_argument('--overwrite', type=bool, help='Overwrite')
+parser.add_argument('--overwrite', type=str, help='Overwrite')
 
 args = parser.parse_args()
 
@@ -59,24 +59,67 @@ if not args.likelihood_change:
             break
         else:
             print ('Only True or False options')
+
+def check_prior_change(test):
+    if not args.prior_change:
+        input_prior_change = raw_input('Specify if importance sampling changes priors of model variables  (True/False): ')
         
-if not args.prior_change:
-    while True:
-        input_prior_change = raw_input('Specify if importanca sampling changes priors of model variables  (True/False): ')
-        if input_prior_change.capitalize() == 'False':
-            args.input_prior_change=False
-            break
-        elif input_prior_change.capitalize() == 'True':
-            args.input_prior_change=True
-            break
-        else:
-            print ('Only True or False options')
+    if input_prior_change.capitalize() == 'False':
+        args.prior_change=False
+        test = False
+        return test
+    elif input_prior_change.capitalize() == 'True':
+        args.prior_change=True
+        test = False
+        return test
+    else:
+        print ('Only True or False options')
+  
+def check_likelihood_change(test):
+    if not args.likelihood_change:
+        input_likelihood_change = raw_input('Specify if importance sampling changes likelihood of model variables  (True/False): ')
+        
+    if input_likelihood_change.capitalize() == 'False':
+        args.likelihood_change=False
+        test = False
+        return test
+    elif input_likelihood_change.capitalize() == 'True':
+        args.likelihood_change=True
+        test = False
+        return test
+    else:
+        print ('Only True or False options')
+        
+ def check_overwrite(test):
+    if not args.overwrite:
+        input_overwrite = raw_input('Specify if to rewrite the output file(s)  (True/False): ')
+        
+    if input_overwrite.capitalize() == 'False':
+        args.overwrite=False
+        test = False
+        return test
+    elif input_overwrite.capitalize() == 'True':
+        args.overwrite=True
+        test = False
+        return test
+    else:
+        print ('Only True or False options')
+
+TEST = True
+while TEST:
+    TEST = check_prior_change(test)
+    
+TEST = True
+while TEST:
+    TEST = check_likelihood_change(test)
+    
+TEST = True
+while TEST:
+    TEST = check_overwrite(test)
 
 if not args.weight_threshold:
     args.weight_threshold = 1.0e-30
     
-if not args.overwrite:
-    args.overwrite = True
     
 
 import sys
