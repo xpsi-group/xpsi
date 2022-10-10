@@ -2,6 +2,9 @@ from __future__ import print_function, division
 import sys
 import argparse
 
+
+print ("WARNING: Please be aware that ERRORS can arise if relative paths are use in the main.py file (to point to the config file) or in the config.ini file (to point to other files used in the analysis).")
+
 parser = argparse.ArgumentParser(
     description='''
     Main module for X-PSI Importance Sample.
