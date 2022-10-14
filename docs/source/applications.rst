@@ -11,6 +11,26 @@ papers for full details of settings and resource consumption.
 If you have used X-PSI for a project and have time to summarise it here, please
 contact the X-PSI team and/or submit a pull-request on GitHub.
 
+.. _S22:
+
+`Salmi et al. 2022 (ApJ in press)`__
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _ADS22: https://ui.adsabs.harvard.edu/abs/2022arXiv220912840S/abstract
+
+__ ADS22_
+
+`Salmi et al. (2022; hereafter S22)`__ used ``v0.7.10`` of X-PSI to model
+*NICER* observations of the rotation-powered millisecond X-ray pulsar PSR J0740+6620 using *NICER*
+background estimates.
+
+__ ADS22_
+
+See also the associated `Zenodo repository`__.
+
+.. _Zenodo22: https://doi.org/10.5281/zenodo.6827536
+__ Zenodo22_
+
 
 .. _R21:
 

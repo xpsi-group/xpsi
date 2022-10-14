@@ -67,7 +67,7 @@ make sure you take a look at the `Code of Conduct <https://xpsi-group.github.io/
 Citing XPSI
 -----------
 If you find this package useful in your research, please provide the appropriate acknowledgment 
-and citation. `Our documentation <https://xpsi-group.github.io/xpsi/index.html#citation>`_ provides 
+and citation. `Our documentation <https://xpsi-group.github.io/xpsi/citation.html>`_ provides 
 more detail, including links to appropriate papers and BibTeX entries.
 
 Copyright and Licensing
