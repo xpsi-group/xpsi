@@ -4,7 +4,7 @@
 Start here
 ==========
 
-All tutorials listed below may be found as Jupyter notebooks under ``docs/source/``. We encourage running these yourself as you go through the tutorials as a means of practice. Any external data files needed such as instrument response files and numerical atmosphere data are available on `Zenodo <https://doi.org/10.5281/zenodo.7094145>`_. These data files should be saved in ``examples/examples_modeling_tutorial/model_data/``.
+All tutorials listed below may be found as Jupyter notebooks under ``docs/source/``. We encourage running these yourself as you go through the tutorials as a means of practice. Any external data files needed such as instrument response files and numerical atmosphere data are available on `Zenodo <https://doi.org/10.5281/zenodo.7094144>`_. These data files should be saved in ``examples/examples_modeling_tutorial/model_data/``.
 
 **Overview of the available tutorials:**
 
