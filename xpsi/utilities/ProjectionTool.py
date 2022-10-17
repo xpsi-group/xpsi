@@ -290,8 +290,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             
     if antipodal:
             
-            phiA_anti,thetaA_anti,labels_anti = SYMMETRIC(phiA_p,thetaA_p,labels_p)
-            zetaA_anti = zetaA_p
+        phiA_anti,thetaA_anti,labels_anti = SYMMETRIC(phiA_p,thetaA_p,labels_p)
+        zetaA_anti = zetaA_p
 
     cosi    = dictVp['cos_inclination']
     phi_inc = 0.0
