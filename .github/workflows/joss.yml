@@ -1,8 +1,9 @@
+name: JOSS
+
 on:
   push:
     branches:
       - "main"
-  pull_request:
 
 jobs:
   paper:
