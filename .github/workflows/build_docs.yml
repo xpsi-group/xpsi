@@ -1,4 +1,4 @@
-name: CI Tests
+name: Build docs
 
 
 on:
@@ -48,7 +48,9 @@ jobs:
       env:
         CC:   gcc-10
     - name : build docs
-      run: make html
+      run: |
+        conda install sphinx 
+        make html
       working-directory: docs/
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v1
