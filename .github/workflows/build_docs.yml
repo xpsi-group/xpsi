@@ -1,0 +1,66 @@
+name: CI Tests
+
+
+on:
+  push:
+#    branches:
+#      - "main"
+  pull_request:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+         activate-environment: xpsipy2
+         environment-file: basic_environment.yml
+         python-version: 2.7
+         auto-activate-base: false
+    - name: Set up GCC
+      run: |
+         sudo apt-get install -y gcc
+      shell: bash -l {0}
+    - name: install gsl
+      run: |
+        sudo apt-get install -y libgsl-dev
+    - name: install X-PSI package
+      run: |
+        python setup.py install
+      shell: bash -l {0}
+      env:
+        CC:   gcc-10
+    - name : build docs
+      run: make html
+      working-directory: docs/
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
