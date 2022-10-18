@@ -46,11 +46,13 @@ jobs:
       shell: bash -l {0}
       env:
         CC:   gcc-10
-    - name : build docs
+    - name : install docs dependencies
       run: |
         conda install sphinx 
         conda install -c conda-forge nbsphinx
-        make html
+        pip install sphinx_rtd_theme
+    - name : build docs
+      run: make html
       working-directory: docs/
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v1
