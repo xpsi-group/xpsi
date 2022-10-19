@@ -56,9 +56,6 @@ jobs:
     - name : build docs
       run: make html
       working-directory: docs/
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v1
-      path: docs/ 
     - name: Deploy to GitHub Pages
       if: success()
       uses: crazy-max/ghaction-github-pages@v2
