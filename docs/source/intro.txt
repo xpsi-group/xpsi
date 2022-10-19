@@ -1,8 +1,8 @@
 .. _readme:
 
-*************************************************************
-X-ray Pulse Simulation and Inference (X-PSI) for cool people!
-*************************************************************
+********************************************
+X-ray Pulse Simulation and Inference (X-PSI)
+********************************************
 
 **An open-source package for neutron star**
 **\ X-ray Pulse Simulation and Inference.**
