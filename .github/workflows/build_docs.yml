@@ -18,9 +18,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
+#    defaults:
+#      run:
+#        shell: bash -l {0}
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -58,7 +58,7 @@ jobs:
       working-directory: docs/
     - name: Deploy to GitHub Pages
       if: success()
-      uses: crazy-max/ghaction-github-pages@v2
+      uses: crazy-max/ghaction-github-pages@v3
       with:
         target_branch: gh-pages
         build_dir: docs/build/html
