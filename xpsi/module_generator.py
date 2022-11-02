@@ -1421,7 +1421,7 @@ module += (
 '''
 bounds = dict(neutral_hydrogen_column_density = parse_bounds(args.neutral_hydrogen_column_density_bounds,
                                                               args.neutral_hydrogen_column_density_value))
-values = dict(neutral_hydrogen_column_density = args.neutral_hydrogen_column_density_value)
+values = dict(neutral_hydrogen_column_density = parse_value(args.neutral_hydrogen_column_density_value))
 
 interstellar = CustomInterstellar.load(args.attenuation_path,
                                        args.attenuation_energy_column,
