@@ -257,6 +257,7 @@ if __name__ == '__main__':
                     'xpsi/tools',
                     'xpsi/surface_radiation_field',
                     'xpsi/likelihoods',
+                    'xpsi/utilities',
                     'xpsi/pixelmesh'],
         install_requires = ['numpy'],
         setup_requires = ['cython'],
