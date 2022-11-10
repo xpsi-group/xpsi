@@ -142,7 +142,7 @@ class Everywhere(ParameterSubspace):
 
         if not custom: # setup default temperature parameter
             T = Parameter('temperature',
-                          strict_bounds = (3.0, 7.0), # very cold --> very hot
+                          strict_bounds = (3.0, 7.6), # very cold --> very hot
                           bounds = bounds.get('temperature', None),
                           doc = 'log10(effective temperature [K] everywhere)',
                           symbol = r'$\log_{10}(T\;[\rm{K}])$',

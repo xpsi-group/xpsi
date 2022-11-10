@@ -100,7 +100,7 @@ class Elsewhere(ParameterSubspace):
 
         if not custom: # setup default temperature parameter
             T = Parameter('elsewhere_temperature',
-                          strict_bounds = (3.0, 7.0), # very cold --> very hot
+                          strict_bounds = (3.0, 7.6), # very cold --> very hot
                           bounds = bounds.get('elsewhere_temperature', None),
                           doc = 'log10 of the effective temperature elsewhere',
                           symbol = r'$\log_{10}(T_{\rm EW}\;[\rm{K}])$',
