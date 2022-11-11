@@ -16,11 +16,7 @@ from xpsi.pixelmesh.integrator import integrate as _integrate
 from xpsi.tools.energy_integrator import energy_integrator
 from xpsi.tools.phase_integrator import phase_integrator
 
-try:
-    _mpl
-except NameError:
-    pass
-else:
+if _mpl is not None:
     import matplotlib
     from matplotlib import pyplot as plt
     from matplotlib.figure import Figure
@@ -31,6 +27,8 @@ else:
     from matplotlib import cm
     from matplotlib import animation
     import matplotlib.image as mgimg
+else:
+    pass
 
 class Photosphere(ParameterSubspace):
     """ A photosphere embedded in an ambient Schwarzschild spacetime.

@@ -1,0 +1,59 @@
+name: Build docs
+
+on:
+  push:
+    branches:
+      - main
+  release:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+         activate-environment: xpsipy2
+         environment-file: basic_environment.yml
+         python-version: 2.7
+         auto-activate-base: false
+    - name : install docs dependencies
+      run: |
+        conda install sphinx=1.8.5
+        conda install -c conda-forge nbsphinx=0.5.1
+        conda install decorator=4.4.1
+        pip install sphinxcontrib-websupport==1.1.2
+        pip install sphinx_rtd_theme==0.4.3
+    - name: Set up GCC
+      run: |
+         sudo apt-get install -y gcc
+      shell: bash -l {0}
+    - name: install gsl
+      run: |
+        sudo apt-get install -y libgsl-dev
+    - name: install X-PSI package
+      run: |
+        python setup.py install
+      shell: bash -l {0}
+      env:
+        CC:   gcc-10
+    - name : build docs
+      run: make html
+      working-directory: docs/
+    - name: Deploy to GitHub Pages
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v3
+      with:
+        target_branch: gh-pages
+        build_dir: docs/build/html
+        jekyll: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

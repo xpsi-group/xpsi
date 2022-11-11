@@ -72,6 +72,7 @@ class Signal(ParameterSubspace):
                  instrument,
                  background = None,
                  interstellar = None,
+                 support = None,
                  photosphere_prefix = None,
                  cache = False,
                  bounds = None,
@@ -110,6 +111,19 @@ class Signal(ParameterSubspace):
         else:
             self._background = None
 
+        if support is not None:
+
+            if self._data.counts.shape[0]==support.shape[0]:
+                self._support = support
+            else:
+                raise TypeError("Data spectrum and background support must the have same shape")
+        else:
+            try :
+                self._support = -1.0 * _np.ones((self._data.counts.shape[0],2))
+                self._support[:,0] = 0.0
+            except AttributeError:
+                pass
+
         if interstellar is not None:
             if not isinstance(interstellar, Interstellar):
                 raise TypeError('Invalid type for an interstellar object.')
@@ -128,6 +142,7 @@ class Signal(ParameterSubspace):
 
         if bounds is None: bounds = {}
         if values is None: values = {}
+
 
         doc = """
         The phase shift for the signal, a periodic parameter [cycles].

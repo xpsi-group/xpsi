@@ -9,9 +9,48 @@ If compiling and linking with Intel icc, with is on $PATH:
     --> LDSHARED="icc -shared" CC=icc python setup.py install [--user]
 """
 
-import os
-
 from setuptools import setup, Extension
+import os
+import argparse
+import sys
+import shutil
+
+desc = '''Options to choose the blackbody (default) or numerical atmosphere surface radiation fields 
+          for the hot region and the rest of the surface'''
+parser = argparse.ArgumentParser(description=desc)
+
+try:
+    parser.add_argument('--NumHot', type=str, help="Numerical atmosphere for the hot region(s)")
+    parser.add_argument('--NumElse', type=str, help="Numerical atmosphere for the rest of the surface")
+    # parser.add_argument('--ComptHot', type=str, help="Compton emission model for the hot region(s)")
+    # parser.add_argument('--ComptElse', type=str, help="Compton emission model for the rest of the surface")
+    if '--help' in sys.argv:
+        print(parser.print_help())
+        print('-----------------------------------------------------------------------------------')
+
+    # Copying the blackbody 'Hot' and 'Elsewhere' by default
+    shutil.copy('xpsi/surface_radiation_field/archive/hot/blackbody.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+    shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/blackbody.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
+
+    # Copying the Numerical 'Hot' and 'Elsewhere' if user selected
+    if '--NumHot' in sys.argv:
+        print("Copying numerical atmosphere for the hot region(s)")
+        shutil.copy('xpsi/surface_radiation_field/archive/hot/numerical.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+        sys.argv.remove("--NumHot")
+    if '--NumElse' in sys.argv:
+        print("Copying numerical atmosphere for the rest of the surface")
+        shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
+        sys.argv.remove("--NumElse")
+    # if '--ComptHot' in sys.argv:
+    #     print("Copying Compton emission model for the hot region(s)")
+    #     shutil.copy('xpsi/surface_radiation_field/archive/hot/compton.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+    #     sys.argv.remove("--ComptHot")
+    # if '--ComptElse' in sys.argv:
+    #     print("Copying Compton emission model for the rest of the surface")
+    #     shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/compton.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
+    #     sys.argv.remove("--ComptElse")
+except:
+    pass
 
 if __name__ == '__main__':
     import numpy
@@ -207,9 +246,9 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '0.7.12',
-        author = 'Thomas Edward Riley',
-        author_email = 't.e.riley@uva.nl; t.riley.phd@gmail.com',
+        version = '1.0.0',
+        author = 'The X-PSI Core Team',
+        author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',
         license = 'MIT',
         description = """X-PSI: An open-source package for
@@ -221,6 +260,7 @@ if __name__ == '__main__':
                     'xpsi/tools',
                     'xpsi/surface_radiation_field',
                     'xpsi/likelihoods',
+                    'xpsi/utilities',
                     'xpsi/pixelmesh'],
         install_requires = ['numpy'],
         setup_requires = ['cython'],

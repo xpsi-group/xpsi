@@ -4,8 +4,8 @@ An open-source package for neutron star astrostatistics.
 
 """
 from __future__ import print_function
-__version__ = "0.7.12"
-__author__ = "Thomas E. Riley"
+__version__ = "1.0.0"
+__author__ = "The X-PSI Core Team"
 
 try:
     __XPSI_SETUP__

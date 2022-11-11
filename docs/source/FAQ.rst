@@ -1,7 +1,8 @@
 .. _faq:
 
-(FA)Q
-=====
+FAQs and common problems
+========================
+
 
 Installation
 ^^^^^^^^^^^^
@@ -22,28 +23,18 @@ in a context where performance matters.
 
 If you want to test the binaries on a login node, note that you can
 compile with multiple instruction sets for auto-dispatch using the ``-x`` and
-``-ax`` flags. See the :ref:`surfsystems` page for examples.
+``-ax`` flags. See the :ref:`hpcsystems` page for examples.
 
 .. rubric:: What atmosphere extension should I use?
 
-If you want to do some quick calculations and run the Modeling tutorial, you should use the default blackbody atmosphere extension. But if you want to use similar atmosphere models as in the published X-PSI applications so far, you should switch to the numerical atmosphere extension before installing X-PSI (see instructions in :ref:`install`).
+If you want to do some quick calculations and run the Modeling tutorial, you should use the default blackbody atmosphere extension. But if you want to use similar atmosphere models as in the published X-PSI applications so far, you should use to the numerical atmosphere extension when installing X-PSI (see instructions in :ref:`install`).
 
-Note that using the model scripts with an unintended atmosphere extension may lead to a segmentation fault error if trying to use numerical atmosphere without providing numerical atmosphere data. Or if using the scripts including the numerical atmosphere data with the blackbody extension, you can get unexpected results, printing though a warning that numerical atmosphere data were preloaded but not used. Examples of numerical atmosphere data, which are required by the numerical atmosphere extension, can be found e.g. in the Zenodo repository of Riley et al. 2021: `doi:10.5281/zenodo.4697625`__. Examples of how to use the numerical atmospheres are shown e.g. in Surface radiation field tools -tutorial and in :ref:`example_script`.
+Note that using the model scripts with an unintended atmosphere extension may lead to a segmentation fault error if trying to use numerical atmosphere without providing numerical atmosphere data. Or if using the scripts including the numerical atmosphere data with the blackbody extension, you can get unexpected results, printing though a warning that numerical atmosphere data were preloaded but not used. Examples of numerical atmosphere data, which are required by the numerical atmosphere extension, can be found here: `doi:10.5281/zenodo.7094144`__. Examples of how to use the numerical atmospheres are shown e.g. in Surface radiation field tools -tutorial and in :ref:`example_script`.
 
-.. _Zenodo: https://zenodo.org/record/4697625
+.. _Zenodo: https://doi.org/10.5281/zenodo.7094144
 
 __ Zenodo_
 
-
-Model setup
-^^^^^^^^^^^
-
-Future questions and answers will be archived here.
-
-Batch usage
-^^^^^^^^^^^
-
-Future questions and answers will be archived here.
 
 Sampling
 ^^^^^^^^
@@ -67,6 +58,52 @@ in :ref:`R19`, hereafter R19).
 
 Disk storage required is indeed small: up to :math:`\mathcal{O}(100)` Mbytes for
 applications thus far (e.g., R19). There is a variant of MultiNest nested sampling
-that is much more memory and disk intensive, but we do not use it.  This is 
-because importance nested sampling is not compatible with the alternative options 
+that is much more memory and disk intensive, but we do not use it.  This is
+because importance nested sampling is not compatible with the alternative options
 (read: hacks) for prior implementation (see `Riley, PhD thesis <https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a>`_).
+
+
+Common problems and errors
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. rubric:: How to avoid errors in post-processing?
+
+Do not use X-PSI PostProcessing tools for runs which have not converged yet or have not enough samples. Also, when post-processing, make sure to check the data and output file paths, use ``cache=True`` if plotting the signal, and perform a likelihood check to be sure that the imported model is the same as in the run.
+
+.. rubric:: *AttributeError: ’NestedBackend’ object has no attribute ’\ :math:`\_nc\_bcknd`\ ’*
+
+Can happen in PostProcessing for runs with ``use_nestcheck=[False]`` (e.g. importance sampling). Solution is to turn ``bootstrap_estimators=False``, or alternatively, set ``use_nestcheck=[True]``.
+
+.. rubric:: Why does my skymap show many annular images like this:
+
+.. container:: figure*
+
+   .. image:: _static/ST_PST__NICER__skymap_phase_averaged_run1.png
+      :alt: image
+      :width: 10cm
+
+The problem is the ``xpsi/xpsi/surface_radiation_field/local_variable.pyx`` file which should be overwritten by ``xpsi/xpsi/surface_radiation_field/archive/local_variables/PST_U.pyx`` or ``xpsi/xpsi/surface_radiation_field/archive/local_variables/two_spots.pyx`` (depending on the model) and then re-install X-PSI.
+
+.. rubric:: *ImportError: No module named tools*
+
+You are running X-PSI from its main directory (the directory where the ``setup.py`` file is). Exit that directory and run it again.
+
+.. rubric:: *<path/to/run/output>dead-birth.txt not found.*
+
+Set ``use_nestcheck=[False]`` or check that nestcheck is installed exactly as instructed in :ref:`install` (by cloning it from ``https://github.com/ThomasEdwardRiley/nestcheck.git``).
+
+.. rubric:: *Invalid caching targets.*
+
+Set ``cache=True`` for the signal.
+
+.. rubric:: *Each row and column must contain at least one positive number.*
+
+There are some rows and/or column in the instrument response that contain only zeros. Solution is to increase the number of channels or decrease the number of energy intervals.
+
+.. rubric:: *Warning: Using native nestcheck KDE instead of GetDist KDE.*
+
+Make sure to to install nestcheck and GetDist packages using the corresponding github repositories as instructed in :ref:`install`.
+
+.. rubric:: *ValueError: There is more than one signal instance.*
+
+Typically occurs when post-processing joint NICER and XMM results, if not setting ``model.likelihood.signals = model.likelihood.signals[0][0]`` (when plotting the inferred NICER signal).

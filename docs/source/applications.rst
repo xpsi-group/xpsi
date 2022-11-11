@@ -3,11 +3,55 @@
 Applications
 ------------
 
-X-PSI was applied in the following contexts. These may be useful for rough
-performance benchmarking and planning of resource consumption.
+X-PSI was applied in the following studies, most recent listed first. 
+These may be useful for rough performance benchmarking and planning 
+of resource consumption.  For the most recent studies see the linked
+papers for full details of settings and resource consumption.
 
-If you used X-PSI for a project and have time to summarise it here, please
-contact the X-PSI team and/or submit pull-request on GitHub.
+If you have used X-PSI for a project and have time to summarise it here, please
+contact the X-PSI team and/or submit a pull-request on GitHub.
+
+.. _S22:
+
+`Salmi et al. 2022 (ApJ in press)`__
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _ADS22: https://ui.adsabs.harvard.edu/abs/2022arXiv220912840S/abstract
+
+__ ADS22_
+
+`Salmi et al. (2022; hereafter S22)`__ used ``v0.7.10`` of X-PSI to model
+*NICER* observations of the rotation-powered millisecond X-ray pulsar PSR J0740+6620 using *NICER*
+background estimates.
+
+__ ADS22_
+
+See also the associated `Zenodo repository`__.
+
+.. _Zenodo22: https://doi.org/10.5281/zenodo.6827536
+__ Zenodo22_
+
+
+.. _R21:
+
+`Riley et al. 2021 (ApJL, 918, L27)`__
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _ADS21: https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract
+
+__ ADS21_
+
+`Riley et al. (2021; hereafter R21)`__ used ``v0.7.6`` of X-PSI to model
+*NICER* observations of the rotation-powered millisecond X-ray pulsar PSR J0740+6620.
+
+__ ADS21_
+
+See also the associated `Zenodo repository`__.
+
+.. _Zenodo21: https://doi.org/10.5281/zenodo.4697624
+__ Zenodo21_
+
+
 
 .. _R19:
 
@@ -20,15 +64,18 @@ __ ADS_
 
 `Riley et al. (2019; hereafter R19)`__ used ``v0.1`` of X-PSI to model
 *NICER* observations of the rotation-powered millisecond X-ray pulsar
-J0030+0451.
+PSR J0030+0451.
 
 __ ADS_
 
 See also the associated `Zenodo repository`__.
 
-.. _Zenodo: https://zenodo.org/record/3707821#.XxXBZB1S-S4
+.. _Zenodo: https://doi.org/10.5281/zenodo.3386448
 
 __ Zenodo_
+
+Below we give details of some settings for R19.  For later papers some changes
+were made - see papers for details. 
 
 **Resource consumption**
 
@@ -65,27 +112,6 @@ receiving likelihood function evaluation requests.
 Intel compiler collection,\ [#]_ with the CORE-AVX2 instruction set, for X-PSI
 and dependencies (apart from :mod:`numpy`, which was centrally installed).
 
-
-.. _R21:
-
-`Riley et al. 2021 (ApJL in press)`__
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. _ADS21: https://ui.adsabs.harvard.edu/abs/2021arXiv210506980R/abstract
-
-__ ADS21_
-
-`Riley et al. (2021; hereafter R21)`__ used ``v0.7.6`` of X-PSI to model
-*NICER* observations of the rotation-powered millisecond X-ray pulsar
-J0740+6620.
-
-__ ADS21_
-
-See also the associated `Zenodo repository`__.
-
-.. _Zenodo21: https://zenodo.org/record/4697625
-
-__ Zenodo21_
 
 
 .. rubric:: Footnotes
