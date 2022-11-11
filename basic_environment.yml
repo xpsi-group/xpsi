@@ -2,7 +2,6 @@ name: xpsi
 channels:
   - defaults
 dependencies:
-  - python=3.10
   - numpy
   - cython
   - matplotlib
