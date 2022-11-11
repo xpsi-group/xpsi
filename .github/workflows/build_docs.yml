@@ -23,15 +23,15 @@ jobs:
       with:
          activate-environment: xpsipy2
          environment-file: basic_environment.yml
-         python-version: 2.7
+         python-version: 3.9
          auto-activate-base: false
     - name : install docs dependencies
       run: |
-        conda install sphinx=1.8.5
-        conda install -c conda-forge nbsphinx=0.5.1
-        conda install decorator=4.4.1
-        pip install sphinxcontrib-websupport==1.1.2
-        pip install sphinx_rtd_theme==0.4.3
+        conda install sphinx
+        conda install -c conda-forge nbsphinx
+        conda install decorator
+        pip install sphinxcontrib-websupport
+        pip install sphinx_rtd_theme
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
