@@ -64,7 +64,7 @@ class PostProcessor(object):
         self.posteriors = posteriors
 
         self.val_cred=[]
-	self.samples={}
+        self.samples={}
     @property
     def posteriors(self):
         """ Get the posteriors. """
