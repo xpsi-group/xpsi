@@ -21,9 +21,9 @@ jobs:
     - uses: actions/checkout@v3
     - uses: conda-incubator/setup-miniconda@v2
       with:
-         activate-environment: xpsipy2
+         activate-environment: xpsipy3
          environment-file: basic_environment.yml
-         python-version: 2.7
+         python-version: 3.10
          auto-activate-base: false
     - name: Set up GCC
       run: |
