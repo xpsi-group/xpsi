@@ -34,13 +34,13 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v1.1.0] - 2022-11-09
+[v1.1.0] - 2022-11-14
 ~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* Additional tools included in a ``xpsi/utilities`` directory for plotting hot regions on a sphere and performing importance sampling in X-PSI. Documentation for these tools is to be appended later.
+* Additional tools included in a ``xpsi/utilities`` directory for plotting hot regions on a sphere and performing importance sampling in X-PSI. Documentation for these tools is to be appended later. In addition, the internet documentation compilation was automated using GitHub actions for every merged pull request.
 
 Added
 ^^^^^
@@ -54,10 +54,13 @@ Changed
 
 * ``Setup.py`` file changed to include the new utilities directory.
 
+* Documentation is now compiled automatically using ``.github/workflows/build_docs.yml`` every time merging a pull request into the main branch.
+
 Attribution
 ^^^^^^^^^^^
 
 Serena Vinciguerra,
+Daniela Huppenkothen,
 Tuomo Salmi,
 Devarshi Choudhury
 
