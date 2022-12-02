@@ -34,6 +34,30 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v1.2.0] - 2022-12-03
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Included a new numerical atmosphere extension in a ``xpsi/surface_radiation_field/archive/hot/`` directory allowing freedom in the predicted atmospheric beaming pattern.
+
+Added
+^^^^^
+
+* ``xpsi/surface_radiation_field/archive/hot/numerical_fbeam.pyx``: New numerical atmosphere extension with additional free beaming parameters.
+
+Changed
+^^^^^^^
+
+* ``Setup.py`` file changed to include the option for installing with new atmosphere extension.
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi
+
+
 [v1.1.0] - 2022-11-14
 ~~~~~~~~~~~~~~~~~~~~~
 
