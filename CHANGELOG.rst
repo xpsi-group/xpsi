@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v1.2.0] - 2022-12-03
+[v1.2.0] - 2022-12-05
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -45,12 +45,18 @@ Summary
 Added
 ^^^^^
 
-* ``xpsi/surface_radiation_field/archive/hot/numerical_fbeam.pyx``: New numerical atmosphere extension with additional free beaming parameters.
+* ``xpsi/surface_radiation_field/archive/hot/numerical_fbeam.pyx``: New numerical atmosphere extension with additional beaming parameters.
+
+* ``examples/examples_modeling_tutorial/TestRun_NumBeam.py``: An example run using the new atmosphere extension.
+
+* ``examples/examples_modeling_tutorial/modules``: Additional modules (e.g. a CustomHotRegion) needed by the new example run.
 
 Changed
 ^^^^^^^
 
 * ``Setup.py`` file changed to include the option for installing with new atmosphere extension.
+
+* Documentation page for "Example script and modules" updated to include the new example. 
 
 Attribution
 ^^^^^^^^^^^
