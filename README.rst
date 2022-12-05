@@ -73,7 +73,7 @@ more detail, including links to appropriate papers and BibTeX entries.
 Copyright and Licensing
 -----------------------
 All content © 2016-2022 the authors. 
-The code is distributed under the MIT license; see `LICENSE.rst <LICENSE.rst>`_ for details.
+The code is distributed under the GNU General Public License v3.0; see `LICENSE.rst <LICENSE.rst>`_ for details.
 
 Legacy
 ------ 
