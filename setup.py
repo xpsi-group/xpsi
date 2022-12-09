@@ -252,7 +252,7 @@ if __name__ == '__main__':
         author = 'The X-PSI Core Team',
         author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',
-        license = 'MIT',
+        license = 'GPLv3',
         description = """X-PSI: An open-source package for
                          neutron star X-ray Pulse Simulation and Inference.""",
         long_description = open('README.rst').read(),
@@ -270,10 +270,10 @@ if __name__ == '__main__':
         include_package_data = True,
         ext_modules = extensions,
         cmdclass = cmdclass,
-        classifiers = ['Development Status :: 3 - Alpha',
+        classifiers = ['Development Status :: 5 - Production/Stable',
                        'Intended Audience :: Science/Research',
                        'Operating System :: Linux, macOS',
-                       'License :: OSI Approved :: MIT License',
+                       'License :: GPLv3',
                        'Programming Language :: Python'],
         zip_safe = False,
     )
