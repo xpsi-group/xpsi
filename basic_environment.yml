@@ -1,4 +1,4 @@
-name: xpsi
+name: xpsi_py3
 channels:
   - defaults
 dependencies:

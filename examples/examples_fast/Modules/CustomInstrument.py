@@ -5,7 +5,7 @@ import math
 
 import xpsi
 
-from xpsi import Parameter, make_verbose
+from xpsi import Parameter
 
 # Instrument Class
 
