@@ -273,7 +273,7 @@ if __name__ == '__main__':
         classifiers = ['Development Status :: 5 - Production/Stable',
                        'Intended Audience :: Science/Research',
                        'Operating System :: Linux, macOS',
-                       'License :: GPLv3',
+                       'License :: OSI Approved :: GPLv3',
                        'Programming Language :: Python'],
         zip_safe = False,
     )
