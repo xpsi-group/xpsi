@@ -29,7 +29,9 @@ jobs:
       run: |
         conda install sphinx
         conda install -c conda-forge nbsphinx
+        conda install -c conda-forge nbconvert
         conda install decorator
+        conda install h5py
         pip install sphinxcontrib-websupport
         pip install sphinx_rtd_theme
     - name: Set up GCC
