@@ -22,6 +22,7 @@ parser = argparse.ArgumentParser(description=desc)
 try:
     parser.add_argument('--NumHot', type=str, help="Numerical atmosphere for the hot region(s)")
     parser.add_argument('--NumElse', type=str, help="Numerical atmosphere for the rest of the surface")
+    parser.add_argument('--NumHotBeam', type=str, help="Numerical atmosphere for the hot region(s) including free beaming")
     # parser.add_argument('--ComptHot', type=str, help="Compton emission model for the hot region(s)")
     # parser.add_argument('--ComptElse', type=str, help="Compton emission model for the rest of the surface")
     if '--help' in sys.argv:
@@ -41,6 +42,10 @@ try:
         print("Copying numerical atmosphere for the rest of the surface")
         shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
         sys.argv.remove("--NumElse")
+    if '--NumHotBeam' in sys.argv:
+        print("Copying numerical atmosphere for the hot region(s)")
+        shutil.copy('xpsi/surface_radiation_field/archive/hot/numerical_fbeam.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+        sys.argv.remove("--NumHotBeam")
     # if '--ComptHot' in sys.argv:
     #     print("Copying Compton emission model for the hot region(s)")
     #     shutil.copy('xpsi/surface_radiation_field/archive/hot/compton.pyx', 'xpsi/surface_radiation_field/hot.pyx')
@@ -243,11 +248,11 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '1.0.0',
+        version = '1.2.0',
         author = 'The X-PSI Core Team',
         author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',
-        license = 'MIT',
+        license = 'GPLv3',
         description = """X-PSI: An open-source package for
                          neutron star X-ray Pulse Simulation and Inference.""",
         long_description = open('README.rst').read(),
@@ -265,10 +270,10 @@ if __name__ == '__main__':
         include_package_data = True,
         ext_modules = extensions,
         cmdclass = cmdclass,
-        classifiers = ['Development Status :: 3 - Alpha',
+        classifiers = ['Development Status :: 5 - Production/Stable',
                        'Intended Audience :: Science/Research',
                        'Operating System :: Linux, macOS',
-                       'License :: OSI Approved :: MIT License',
+                       'License :: OSI Approved :: GPLv3',
                        'Programming Language :: Python'],
         zip_safe = False,
     )

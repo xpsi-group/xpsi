@@ -34,8 +34,69 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v1.0] - 2022-09-26
-~~~~~~~~~~~~~~~~~~~
+[v1.2.0] - 2022-12-05
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Included a new numerical atmosphere extension in a ``xpsi/surface_radiation_field/archive/hot/`` directory allowing freedom in the predicted atmospheric beaming pattern.
+
+Added
+^^^^^
+
+* ``xpsi/surface_radiation_field/archive/hot/numerical_fbeam.pyx``: New numerical atmosphere extension with additional beaming parameters.
+
+* ``examples/examples_modeling_tutorial/TestRun_NumBeam.py``: An example run using the new atmosphere extension.
+
+* ``examples/examples_modeling_tutorial/modules``: Additional modules (e.g. a CustomHotRegion) needed by the new example run.
+
+Changed
+^^^^^^^
+
+* ``Setup.py`` file changed to include the option for installing with new atmosphere extension.
+
+* Documentation page for "Example script and modules" updated to include the new example. 
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi
+
+
+[v1.1.0] - 2022-11-14
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Additional tools included in a ``xpsi/utilities`` directory for plotting hot regions on a sphere and performing importance sampling in X-PSI. Documentation for these tools is to be appended later. In addition, the internet documentation compilation was automated using GitHub actions for every merged pull request.
+
+Added
+^^^^^
+
+* ``xpsi/utilities/ProjectionTool.py``: Tool for projecting hot regions.
+
+* ``xpsi/utilities/ImportanceSample.py``: Tool for calling X-PSI importance sampling.
+
+Changed
+^^^^^^^
+
+* ``Setup.py`` file changed to include the new utilities directory.
+
+* Documentation is now compiled automatically using ``.github/workflows/build_docs.yml`` every time merging a pull request into the main branch.
+
+Attribution
+^^^^^^^^^^^
+
+Serena Vinciguerra,
+Daniela Huppenkothen,
+Tuomo Salmi,
+Devarshi Choudhury
+
+
+[v1.0.0] - 2022-09-26
+~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
@@ -51,7 +112,7 @@ Added
 
 * A modification of the ``setup.py`` with flags (``--NumHot`` and ``--NumElse``) now facilitates switching between surface emission models.
 
-* The post-processing module now shows the credible intervals of each parameters (above the 1D distribution of the corner plot) when multiple models, or multiple runs, are being loaded in the post-processed. The appropriate tutorial notebook is also provided.
+* The post-processing module has now an option to show the credible intervals of each parameter and run (above the 1D distribution of the corner plot) when multiple runs are plotted in the same figure (but not working for multiple models yet). The appropriate tutorial notebook is also provided.
 
 * Some unit tests and continuous integration.
 
