@@ -34,6 +34,32 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[pre-v1.2.1] - 2022-12-10
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Hard upper bound for temperature increased from 7.0 to 7.6 and license information updated.
+
+Changed
+^^^^^^^
+
+* Strict bounds for temperature changed in ``xpsi/HotRegion.py``, ``xpsi/Everywhere.py``, and ``xpsi/xpsi/Elsewhere.py`` to allow analysis for hotter neutron stars.
+
+* Added mention in ``xpsi/HotRegion.py``, ``xpsi/Everywhere.py``, and ``xpsi/xpsi/Elsewhere.py`` that the user should set the parameter bounds to be within the values given in the numerical atmosphere table.
+
+* License of X-PSI was changed from MIT to GPLv3.
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi,
+Yves Kini,
+Sebastien Guillot,
+Anna Watts
+
+
 [v1.2.0] - 2022-12-05
 ~~~~~~~~~~~~~~~~~~~~~
 

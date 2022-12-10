@@ -61,7 +61,9 @@ class HotRegion(ParameterSubspace):
             * ``'name': (x, y)``
 
         where if a bound is ``None`` that bound is set equal to a strict
-        hard-coded bound.
+        hard-coded bound. We note that the bounds for parameters used in the
+        atmosphere model should be restricted (by the user) to be within the
+        tabulated values, in case a numerical atmosphere extension is used.
 
     :param dict values:
         Initial values of *free* parameters, fixed values of *fixed* parameters,
