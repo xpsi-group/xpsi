@@ -41,7 +41,9 @@ class Elsewhere(ParameterSubspace):
         of a temperature parameter. The parameter name
         ``'elsewhere_temperature'`` must be a key in the dictionary unless the
         parameter is *fixed* or *derived*. If a bound is ``None`` that bound
-        is set equal to a strict hard-coded bound.
+        is set equal to a strict hard-coded bound. We note that the bounds for
+        parameters used in the atmosphere model should be restricted (by the user)
+        to be within the tabulated values, in case a numerical atmosphere extension is used.
 
     :param dict values:
         Either the fixed value of the temperature elsewhere, a callable if the
@@ -100,7 +102,7 @@ class Elsewhere(ParameterSubspace):
 
         if not custom: # setup default temperature parameter
             T = Parameter('elsewhere_temperature',
-                          strict_bounds = (3.0, 7.0), # very cold --> very hot
+                          strict_bounds = (3.0, 7.6), # very cold --> very hot
                           bounds = bounds.get('elsewhere_temperature', None),
                           doc = 'log10 of the effective temperature elsewhere',
                           symbol = r'$\log_{10}(T_{\rm EW}\;[\rm{K}])$',

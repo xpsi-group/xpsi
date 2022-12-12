@@ -61,7 +61,9 @@ class HotRegion(ParameterSubspace):
             * ``'name': (x, y)``
 
         where if a bound is ``None`` that bound is set equal to a strict
-        hard-coded bound.
+        hard-coded bound. We note that the bounds for parameters used in the
+        atmosphere model should be restricted (by the user) to be within the
+        tabulated values, in case a numerical atmosphere extension is used.
 
     :param dict values:
         Initial values of *free* parameters, fixed values of *fixed* parameters,
@@ -438,7 +440,7 @@ class HotRegion(ParameterSubspace):
             log10(superseding region effective temperature [K])
             """
             super_temp = Parameter('super_temperature',
-                          strict_bounds = (3.0, 7.0), # very cold --> very hot
+                          strict_bounds = (3.0, 7.6), # very cold --> very hot
                           bounds = bounds.get('super_temperature', None),
                           doc = doc,
                           symbol = r'$\log_{10}(T\;[\rm{K}])$',
@@ -448,7 +450,7 @@ class HotRegion(ParameterSubspace):
                 log10(ceding region effective temperature [K])
                 """
                 cede_temp = Parameter('cede_temperature',
-                              strict_bounds = (3.0, 7.0), # same story
+                              strict_bounds = (3.0, 7.6), # same story
                               bounds = bounds.get('cede_temperature', None),
                               doc = doc,
                               symbol = r'$\log_{10}(\mathcal{T}\;[\rm{K}])$',

@@ -647,8 +647,18 @@ class Likelihood(ParameterSubspace):
                 pass
             else:
                 if not _np.isfinite(logprior):
-                    print('At least one of the parameter values is not within the defined bounds.\n \
-                    No synthetic data will be produced.')
+                    because_of_1D_bounds = False
+                    for param in self._prior.parameters:
+                        if param.bounds[0] is not None:
+                            if not param.bounds[0] <= param.value:
+                                because_of_1D_bounds = True
+                        if param.bounds[1] is not None:
+                            if not param.value <= param.bounds[1]:
+                                because_of_1D_bounds = True
+                    if because_of_1D_bounds:
+                        print("Warning: Prior check failed, because at least one of the parameters is not within the hard 1D-bounds. No synthetic data will be produced.")
+                    else:
+                        print('Warning: Prior check failed because a requirement set in CustomPrior has failed. No synthetic data will be produced.')
                     # we need to restore due to premature return
                     super(Likelihood, self).__call__(self.cached)
                     return None
