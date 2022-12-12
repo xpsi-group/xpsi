@@ -34,13 +34,13 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v1.2.1] - 2022-12-11
+[v1.2.1] - 2022-12-12
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* Hard upper bound for temperature increased from 7.0 to 7.6 and license information updated.
+* Hard upper bound for temperature increased from 7.0 to 7.6, allowed user an option to adjust when the exact likelihood calculation is skipped because of too bright signal, and license information updated.
 
 Changed
 ^^^^^^^
@@ -48,6 +48,12 @@ Changed
 * Strict bounds for temperature changed in ``xpsi/HotRegion.py``, ``xpsi/Everywhere.py``, and ``xpsi/xpsi/Elsewhere.py`` to allow analysis for hotter neutron stars.
 
 * Added mention in ``xpsi/HotRegion.py``, ``xpsi/Everywhere.py``, and ``xpsi/xpsi/Elsewhere.py`` that the user should set the parameter bounds to be within the values given in the numerical atmosphere table.
+
+* Added a new input parameter ``slim`` to ``xpsi/likelihoods/default_background_marginalisation.pyx``, which can be used to adjust when the exact likelihood calculation is skipped because of the signal being too bright compared to the data. The default value of this parameter is set to the same value as in the code before (20.0).
+
+* Made the warning in synthesise function in ``xpsi/Likelihood.py`` more accurate.
+
+* Fetched the prior to likelihood object in ``examples/examples_fast/Synthetic_data.ipynb`` to make sure prior bounds are checked when synthesising data.
 
 * License of X-PSI was changed from MIT to GPLv3.
 
