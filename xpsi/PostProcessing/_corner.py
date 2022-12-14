@@ -813,11 +813,14 @@ class CornerPlotter(PostProcessor):
                     where = w_rel > run.kde_settings.get('min_weight_ratio',
                                                          1.0e-30)
                     prior = bcknd.get1DDensity(name).Prob(x[where])
-                    p = getdist_kde(x[where], x, w_rel,
+                    try:
+                        p = getdist_kde(x[where], x, w_rel,
                                         ranges=[posterior.bounds[name]],
                                         idx=0,
                                         normalize=normalize,
                                         settings=run.kde_settings)
+                    except:
+                        p = weighted_1d_gaussian_kde(x[where], x, w_rel)
                     # Due to spline interpolation, very small densities can be
                     # negative, so manually give a small postive value which
                     # does not affect KL integral approximation
