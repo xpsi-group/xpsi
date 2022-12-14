@@ -1,3 +1,4 @@
+import numpy as np_
 from scipy.special import logsumexp
 
 from ._global_imports import *
