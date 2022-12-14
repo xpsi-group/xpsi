@@ -551,13 +551,21 @@ class CornerPlotter(PostProcessor):
         if isinstance(normalize, bool):
             diag1d_kwargs = {'normalized': normalize}
         if isinstance(no_zero, bool):
-            diag1d_kwargs['no_zero'] = no_zero
+            no_zero1 = no_zero
+        else:
+            no_zero1 = True
         if isinstance(no_ylabel, bool):
-            diag1d_kwargs['no_ylabel'] = no_ylabel
+            no_ylabel1 = no_ylabel
+        else:
+            no_ylabel1 = False
         if isinstance(label_right, bool):
-            diag1d_kwargs['label_right'] = label_right
+            label_right1 = label_right
+        else:
+            label_right1 = True
         if isinstance(no_ytick, bool):
-            diag1d_kwargs['no_ytick'] = no_ytick
+            no_ytick1 = no_ytick
+        else:
+            no_ytick1 = False
         plotter.triangle_plot(getdist_bcknds,
                                legend_labels = legend_labels,
                                params = self.params.names,
@@ -565,6 +573,10 @@ class CornerPlotter(PostProcessor):
                                legend_loc = legend_loc,
                                line_args = line_args,
                                contour_args = contour_args,
+                               no_zero = no_zero1,
+                               no_ylabel = no_ylabel1,
+                               label_right = label_right1,
+                               no_ytick = no_ytick1,
                                diag1d_kwargs = diag1d_kwargs,
                                **kwargs)
         try:
