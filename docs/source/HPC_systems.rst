@@ -141,7 +141,7 @@ Use the last command to check for the presence of shared objects.
 
 .. note::
 
-    The Intel compilers on Snellius run into issues with Intel Math Kernal Library (MKL) due to static linkage. These issues can be solved by setting the appropriate paths to the environment variable for the pre-load libs:
+    The Intel compilers on Snellius may run into issues with Intel Math Kernel Library (MKL) due to static linkage. These issues can be solved by setting the appropriate paths to the environment variable for the pre-load libs:
 
     .. code-block:: bash
 
@@ -149,7 +149,7 @@ Use the last command to check for the presence of shared objects.
 
     Further details on MKL issues can be found in this `thread <https://community.intel.com/t5/Intel-oneAPI-Math-Kernel-Library/mkl-fails-to-load/m-p/1155538>`_
 
-We also need to the set the environment variable for library path to point at MultiNest:
+We also need to set the environment variable for the library path to point at MultiNest:
 
 .. code-block:: bash
 

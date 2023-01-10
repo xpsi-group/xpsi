@@ -292,6 +292,12 @@ might be best set to somewhere between the number of physical cores and
 logical cores in your machine for test sampling applications. For a typical
 laptop that might be up to ``-n 4``.
 
+You also need to set the environment variable for the library path to point at MultiNest:
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
+
 Now you need the Python interface to MultiNest:
 
 .. code-block:: bash
