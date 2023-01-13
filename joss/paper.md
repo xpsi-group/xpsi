@@ -113,8 +113,7 @@ The numerical likelihood routines native to X-PSI are written in Cython
 user in the Python language, as is the interfacing with sampling software.
 Low-level customisation is encouraged in the extensions (either directly in
 Cython or via calls to external C libraries).  X-PSI is Unix source code
-compatible, and release versions are freely available on GitHub under the MIT
-license.  Extensive documentation, step-by-step tutorials, and reproduction
+compatible, and release versions are freely available on GitHub under the GNU General Public License.  Extensive documentation, step-by-step tutorials, and reproduction
 code for existing data analyses, are available
 via the GitHub repository, along with a growing suite of unit tests.  Future plans
 include migration to Python 3, further improvements to post-processing software,
