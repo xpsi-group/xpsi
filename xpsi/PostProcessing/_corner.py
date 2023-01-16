@@ -1148,7 +1148,7 @@ class CornerPlotter(PostProcessor):
                   'Added crosshairs')
     def _add_crosshairs(plotter, names, truths):
         """ Add parameter crosshairs to triangle plot. """
-        spine = next(plotter.subplots[0,0].spines.values())
+        spine = next(iter(plotter.subplots[0,0].spines.values()))
         lw = spine.get_linewidth()
         for i, name in enumerate(names):
             true_val = truths[name]
