@@ -180,8 +180,9 @@ class CornerPlotter(PostProcessor):
                 if ndots > maxdots:
                     dpi = int(maxdots * _dpi / ndots)
 
+            rcParams["savefig.dpi"] = dpi
             self._plotter.export(fname=root_filename+'triangle'+ext,
-                                   adir=directory, dpi=dpi)
+                                   adir=directory)
             try:
                 figs[1].savefig(_os.path.join(directory,
                                               root_filename+'fthetas_1d.pdf'),
