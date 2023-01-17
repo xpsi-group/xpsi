@@ -860,9 +860,9 @@ class CornerPlotter(PostProcessor):
                                quantiles[2] - quantiles[1]))
 
                     if not rcParams['text.usetex']:
-                        fontsize = plotter.settings.lab_fontsize - 1
+                        fontsize = plotter.settings.axes_labelsize - 1
                     else:
-                        fontsize = plotter.settings.lab_fontsize
+                        fontsize = plotter.settings.axes_labelsize
 
                     ax.set_title(interval, color=color,
                                  fontsize=fontsize)
@@ -877,9 +877,9 @@ class CornerPlotter(PostProcessor):
                     divergence = (r'$D_{\mathrm{KL}}=%.2f$' % divergence)
 
                     if not rcParams['text.usetex']:
-                        fontsize = plotter.settings.lab_fontsize - 1
+                        fontsize = plotter.settings.axes_labelsize - 1
                     else:
-                        fontsize = plotter.settings.lab_fontsize
+                        fontsize = plotter.settings.axes_labelsize
 
                     ax.set_title(divergence, color=color,
                                  fontsize=fontsize)
@@ -1008,9 +1008,9 @@ class CornerPlotter(PostProcessor):
                         title = stats
 
                     if not rcParams['text.usetex']:
-                        fontsize = plotter.settings.lab_fontsize - 1
+                        fontsize = plotter.settings.axes_labelsize - 1
                     else:
-                        fontsize = plotter.settings.lab_fontsize
+                        fontsize = plotter.settings.axes_labelsize
 
 
                     if self.credible_interval_1d_all_show:
@@ -1094,9 +1094,9 @@ class CornerPlotter(PostProcessor):
                         title = stats
 
                     if not rcParams['text.usetex']:
-                        fontsize = plotter.settings.lab_fontsize - 1
+                        fontsize = plotter.settings.axes_labelsize - 1
                     else:
-                        fontsize = plotter.settings.lab_fontsize
+                        fontsize = plotter.settings.axes_labelsize
 
                     if self.credible_interval_1d_all_show:
                         x_0,_=ax.get_xlim()
