@@ -18,7 +18,7 @@ except ImportError:
     _warning('CornerPlotter instances cannot use nestcheck functionality.')
 else:
     try:
-        from nestcheck.plots import getdist_kde
+        from ._nestcheck_modifications import getdist_kde
     except ImportError:
         try:
             from nestcheck.plots import weighted_1d_gaussian_kde
