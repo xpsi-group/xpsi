@@ -82,6 +82,11 @@ class ResidualPlot(SignalPlot):
             ax.xaxis.set_minor_locator(MultipleLocator(0.05))
             ax.set_xlim([0.0,2.0])
 
+        if "yscale" in kwargs:
+            self.yscale = kwargs.get("yscale")
+        else:
+            self.yscale = "log"
+
         plt.close()
 
     @make_verbose('ResidualPlot object iterating over samples',
@@ -176,7 +181,7 @@ class ResidualPlot(SignalPlot):
 
         self._ax_data.set_ylim([channel_edges[0],
                                 channel_edges[-1]])
-        self._ax_data.set_yscale('log')
+        self._ax_data.set_yscale(self.yscale)
 
         self._data_cb = plt.colorbar(data, cax=self._ax_data_cb,
                                      ticks=_get_default_locator(None),
@@ -224,7 +229,7 @@ class ResidualPlot(SignalPlot):
 
         self._ax_model.set_ylim([channel_edges[0],
                                  channel_edges[-1]])
-        self._ax_model.set_yscale('log')
+        self._ax_model.set_yscale(self.yscale)
 
         self._model_cb = plt.colorbar(model, cax=self._ax_model_cb,
                                       ticks=_get_default_locator(None),
@@ -275,7 +280,7 @@ class ResidualPlot(SignalPlot):
 
         self._ax_resid.set_ylim([channel_edges[0],
                                  channel_edges[-1]])
-        self._ax_resid.set_yscale('log')
+        self._ax_resid.set_yscale(self.yscale)
 
         self._resid_cb = plt.colorbar(resid, cax = self._ax_resid_cb,
                                       ticks=AutoLocator())
