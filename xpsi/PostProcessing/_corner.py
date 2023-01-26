@@ -297,22 +297,22 @@ class CornerPlotter(PostProcessor):
                      'Adding density error information to triangle plot',
                      'Added density error information'):
             fig = bs_param_dists(nestcheck_bcknds,
-                                 fthetas=_fthetas,
-                                 kde_func=kde_func,
-                                 kde_kwargs=kde_kwargs,
-                                 ftheta_lims=lims,
+                                 fthetas=_fthetas[0],
+                                 #kde_func=kde_func,
+                                 #kde_kwargs=kde_kwargs,
+                                 ftheta_lims=lims[0],
                                  nx=nx,
                                  ny=ny,
-                                 scale_ymax=scale_ymax,
+                                 #scale_ymax=scale_ymax,
                                  n_simulate=n_simulate,
-                                 simulate_weights=True,
-                                 getdist_plotter=plotter,
+                                 #simulate_weights=True,
+                                 #getdist_plotter=plotter,
                                  figsize=figsize,
-                                 lines=lines,
+                                 #lines=lines,
                                  parallel=parallel,
                                  rasterize_contours=rasterize_contours,
                                  labels=labels,
-                                 no_means=True,
+                                 #no_means=True,
                                  tqdm_kwargs=tqdm_kwargs)
 
         if fig: figs.append(fig)
@@ -331,16 +331,16 @@ class CornerPlotter(PostProcessor):
 
             fig = bs_param_dists(nestcheck_bcknds,
                                  fthetas=fthetas,
-                                 kde_func=kde_func,
-                                 kde_kwargs=kde_kwargs,
+                                 #kde_func=kde_func,
+                                 #kde_kwargs=kde_kwargs,
                                  ftheta_lims=ftheta_lims,
                                  nx=nx,
                                  ny=ny,
-                                 scale_ymax=scale_ymax,
+                                 #scale_ymax=scale_ymax,
                                  n_simulate=n_simulate,
-                                 simulate_weights=True,
+                                 #simulate_weights=True,
                                  figsize=figsize,
-                                 lines=lines,
+                                 #lines=lines,
                                  parallel=parallel,
                                  rasterize_contours=rasterize_contours,
                                  **kwargs)
@@ -845,7 +845,7 @@ class CornerPlotter(PostProcessor):
                                                      estimator_list=[KL],
                                                      cred_int=cred_int,
                                                      n_simulate=n_simulate,
-                                                     simulate_weights=True,
+                                                     #simulate_weights=True,
                                                      flip_skew=True)
                     # KL in bits
                     interval = r'$D_{\mathrm{KL}}=%.2f_{-%.2f}^{+%.2f}$' \
@@ -965,7 +965,7 @@ class CornerPlotter(PostProcessor):
                                              estimator_list=[get_estimator(p, ind)],
                                              cred_int=q,
                                              n_simulate=n_simulate,
-                                             simulate_weights=True,
+                                             #simulate_weights=True,
                                              flip_skew=True)[0]
                     return cred
 
@@ -1241,7 +1241,7 @@ class CornerPlotter(PostProcessor):
                                       estimator_list=[estimator],
                                       cred_int=q,
                                       n_simulate=n_simulate,
-                                      simulate_weights=True,
+                                      #simulate_weights=True,
                                       flip_skew=True)[0] for q in quantiles]
             return _quantiles
         else:
@@ -1271,7 +1271,7 @@ class CornerPlotter(PostProcessor):
                                   estimator_list=[logz],
                                   cred_int=q,
                                   n_simulate=n_simulate,
-                                  simulate_weights=simulate_weights,
+                                  #simulate_weights=simulate_weights,
                                   flip_skew=flip_skew)[0] for q in quantiles]
         return _quantiles
 
