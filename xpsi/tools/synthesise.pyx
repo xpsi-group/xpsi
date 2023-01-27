@@ -44,7 +44,8 @@ def synthesise_exposure(double exposure_time,
                         phase_shifts,
                         double expected_background_counts,
                         double[:,::1] background,
-                        allow_negative = False):
+                        allow_negative = False,
+                        gsl_seed=None):
     """ Synthesise Poissonian count numbers given an exposure time.
 
     :param double exposure_time:
@@ -75,6 +76,10 @@ def synthesise_exposure(double exposure_time,
         *counts*, whose shape matches the number of channels in each element
         of :obj:`components` and the number of phase intervals constructed
         from :obj:`phases`.
+
+    :param int gsl_seed:
+        Seed number for adding random noise to the data. If not specified,
+        seed is based on the clock time.
 
     :returns:
         A tuple ``(2D ndarray, 2D ndarray, double)``. The first element is
@@ -215,7 +220,11 @@ def synthesise_exposure(double exposure_time,
 
     T = gsl_rng_default
     r = gsl_rng_alloc(T)
-    gsl_rng_set(r, time.time()); 
+
+    if gsl_seed:
+        gsl_rng_set(r, gsl_seed);
+    else:
+        gsl_rng_set(r, time.time());
 
     for i in range(STAR.shape[0]):
         for j in range(STAR.shape[1]):
@@ -225,7 +234,6 @@ def synthesise_exposure(double exposure_time,
 
             SYNTHETIC[i,j] = gsl_ran_poisson(r, STAR[i,j])
 
-    print(SYNTHETIC)
     gsl_rng_free(r)
 
     return (np.asarray(STAR, order='C', dtype=np.double),
@@ -239,7 +247,8 @@ def synthesise_given_total_count_number(double[::1] phases,
                                         phase_shifts,
                                         double expected_background_counts,
                                         double[:,::1] background,
-                                        allow_negative = False):
+                                        allow_negative = False,
+                                        gsl_seed=None):
     """ Synthesise Poissonian count numbers given expected target source counts.
 
     :param double[::1] phases:
@@ -283,6 +292,10 @@ def synthesise_given_total_count_number(double[::1] phases,
         spline from GSL, such oscillations should manifest as small relative
         to those present in cubic splines, for instance, because it is
         designed to handle a rapidly changing second-order derivative.
+
+    :param int gsl_seed:
+        Seed number for adding random noise to the data. If not specified,
+        seed is based on the clock time.
 
     :returns:
         A tuple ``(2D ndarray, 2D ndarray, double, double)``. The first element
@@ -427,7 +440,10 @@ def synthesise_given_total_count_number(double[::1] phases,
     T = gsl_rng_default
     r = gsl_rng_alloc(T)
 
-    gsl_rng_set(r, time.time());
+    if gsl_seed:
+        gsl_rng_set(r, gsl_seed);
+    else:
+        gsl_rng_set(r, time.time());
 
     for i in range(_signal.shape[0]):
         for j in range(phases.shape[0] - 1):
