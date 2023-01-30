@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = sphinx-multiversion
+SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = xpsi
 SOURCEDIR     = source
 BUILDDIR      = build
