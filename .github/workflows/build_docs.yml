@@ -48,7 +48,6 @@ jobs:
       shell: bash -l {0}
       env:
         CC:   gcc-10
-    - name: generate html directorly
     - name : build docs
       run: sphinx-multiversion docs/ build/
     - name: Deploy to GitHub Pages
