@@ -69,22 +69,16 @@ html_sidebars = {
 
 # Whitelist pattern for tags (set to None to ignore all tags)
 smv_tag_whitelist = r'^.*$'
+smv_branch_whitelist = r'^.*$'
 
-# Whitelist pattern for branches (set to None to ignore all branches)
-smv_branch_whitelist = None
+#smv_branch_whitelist = r"^main$"  # build main branch, and anything relating to documentation
+smv_tag_whitelist = r'^.*$'
 
-# Whitelist pattern for remotes (set to None to use local branches only)
-smv_remote_whitelist = r'^(origin)$'
-
-# Pattern for released versions
-smv_released_pattern = r'^tags/.*$'
-
-# Format for versioned output directories inside the build directory
-smv_outputdir_format = '{ref.name}'
-
-# Determines whether remote or local git branches/tags are preferred if their output dirs conflict
-smv_prefer_remote_refs = False
-
+smv_released_pattern = r'.*tags.*'
+smv_remote_whitelist = r'^origin$'
+smv_prefer_remote_refs = True
+# Pull latest release dynamically
+smv_latest_version = version
 
 
 # The suffix(es) of source filenames.
