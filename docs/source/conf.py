@@ -70,12 +70,13 @@ html_sidebars = {
 
 smv_rebuild_tags = False
 smv_branch_whitelist = r'py3_multiversion_docs'
-#smv_branch_whitelist = r'^(?!py3_multiversion_docs).*$'
-smv_released_pattern = r'^tags/v.*$'
+#smv_released_pattern = r'^tags/v.*$'
+smv_released_pattern = None
 
-smv_tag_whitelist = r'^.*$'
+#smv_tag_whitelist = r'^.*$'
+smv_tag_whitelist = None
+
 #smv_branch_whitelist = r'^.*$'
-
 #smv_branch_whitelist = r"^main$"  # build main branch, and anything relating to documentation
 
 #smv_released_pattern = r'.*tags.*'
