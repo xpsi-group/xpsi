@@ -49,6 +49,7 @@ jobs:
       env:
         CC:   gcc-10
     - name : build docs
+      shell: bash -l {0}
       run: make versions
       working-directory: docs/
     - name: Deploy to GitHub Pages
