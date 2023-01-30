@@ -10,181 +10,104 @@ X-PSI is an open-source software package that is available on `GitHub
 
     git clone https://github.com/xpsi-group/xpsi.git </path/to/xpsi>
 
-In this page, we lay down the instructions for installing X-PSI and all the  necessary pre-requisites on your local self-administered system.
+In this page, we lay down the instructions for installing X-PSI and all the
+necessary pre-requisites on your local self-administered system.
 
 .. note::
 
-    For installation on a high-performance computing system, we direct the reader to the :ref:`hpcsystems` page for guidance since the instructions on this page are either not applicable or do not target performance.
+    For installation on a high-performance computing system, we direct the 
+    reader to the :ref:`hpcsystems` page for guidance since the instructions 
+    on this page are either not applicable or do not target performance.
 
 .. _dev_env:
 
 Python environment
 ------------------
 
-X-PSI was developed in Python 2.7, and is in the process of being ported to Python 3.
-Fortunately, there are several ways to create a virtual environment with a
-different version of Python, without disrupting your Python ecosystem.
-
-This section is divided into two subsections. We recommend that the user follow the instructions in the :ref:`basic_env` subsection to begin with. If faced with installation issues, the user may refer to the :ref:`diagnosis_env` subsection.
-
-
+X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of 
+X-PSI 2. We recommend creating a conda virtual environment with anaconda 3 as
+per instructions below so as to not disrupt your Python ecosystem.
 
 .. _basic_env:
 
-Basic Conda environment
-^^^^^^^^^^^^^^^^^^^^^^^
+Conda Environment
+^^^^^^^^^^^^^^^^^
 
-In the source directory we provide a basic dependency file that installs
-the core Python packages required for *likelihood* functionality. These
-packages are:
+In the source directory we provide a dependency file that installs
+the Python packages required for full functionality of X-PSI:
+
+.. code-block:: 
+    name: xpsi2
+    channels:
+      - defaults
+      - conda-forge
+    dependencies:
+      - numpy
+      - cython
+      - matplotlib
+      - scipy
+      - wrapt
+      - pymultinest  # nested sampling
+      - mpi4py  # nested sampling
+      - getdist  # posterior KDE corner plotting
+      - h5py  # storage of X-ray signals computed from posterior samples
+      - nestcheck  # posterior error analysis, plotting, run combination, etc.
+      - fgivenx  # conditional posterior plotting; also required by nestcheck
+
+The core packages required for likelihood functionality are:
 
 * `NumPy <https://docs.scipy.org/doc/numpy/index.html>`_
 * `Cython <http://cython.readthedocs.io/en/latest>`_
+* `Matplotlib <https://matplotlib.org/stable/index.html>`_
+* `Scipy <https://docs.scipy.org/doc//scipy/index.html>`_
+* `Wrapt <https://wrapt.readthedocs.io/en/latest/>`_
+
+Then, optional packages required for nested sampling are: 
+
+* `pyMultiNest <https://johannesbuchner.github.io/PyMultiNest/>`_
+* `mpi4py <http://cython.readthedocs.io/en/latest>`_
+
+Note that pyMultiNest expects a MultiNest, which can be installed 
+afterwards. Installation instructions for `multinest`__ are given below. 
+Finally, optional packages required for post-processing are:
+
+* `getdist <https://getdist.readthedocs.io/en/latest/>`_
+* `h5py <https://docs.h5py.org/en/stable/index.html>`_
+* `nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_
+* `fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_
 
 If you want to run X-PSI in a
-`Jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_
-notebook, you can add this as an entry (e.g., ``- jupyter=1.0``) to the
-environment file or you can install it via Conda (or pip) after environment
-creation.
+`Jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ notebook, you 
+can add this as an entry (``- jupyter``) to the environment file. If
+you want to run the functionality tests you require 
+`PyTest <https://docs.pytest.org/en/7.2.x/>`_ (``- pytest``). The
+`emcee <https://emcee.readthedocs.io/en/latest/>`_ (``- emcee``) package for
+ensemble-MCMC is also optional. Alternatively, you can install these 
+via Conda (or pip) after environment creation.
 
-To create a virtual environment from file:
+To create a virtual environment from this file:
 
 .. code-block:: bash
 
-     conda env create -f <path/to/xpsi>/basic_environment.yml
+     conda env create -f <path/to/xpsi>/environment.yml
 
 If Conda does not solve the environment dependencies, you may need to create
 an environment manually via
 
 .. code-block:: bash
 
-     conda create -n xpsi python=2.7
+     conda create -n xpsi
 
-and then install the core dependencies listed in `basic_environment.yml`,
-such as `NumPy`_ and `Cython`_.
+and then install the core dependencies listed in `environment.yml`.
 
-All the following steps need to be performed in this newly created environment which can be activated as:
+*ALL the following steps should to be performed in this newly created 
+environment* which can be activated as:
 
 .. code-block:: bash
 
     conda activate xpsi
 
-.. _diagnosis_env:
 
-Environment duplication for diagnosis
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-In the source repository we provide another dependency file that can facilitate
-exact duplication of the environment from which X-PSI ``v0.6`` was
-released. This information may be useful if trying to diagnose installation
-problems, but can only be expected to be compatible with the same platform. We therefore recommend users to instead try and follow the steps mentioned in the previous subsection, and use this section as more of a guidance if required.
-
-The development environment:
-
-    * Ubuntu 14.04
-    * Installed globally via ``apt``: GCC 4.8.4; Open MPI 1.6.5 ("ancient");
-      BLAS; LAPACK; ATLAS.
-    * `Miniconda2 <https://docs.conda.io/en/latest/miniconda.html>`_
-      (Python 2.7; 64-bit)
-    * Conda environment exported to ``xpsi/environment.yml``
-
-When inspecting the ``xpsi/environment.yml`` file, note that most of the
-entries were installed via automatic resolution of a strict dependency chain
-when core packages were specified. Also note the packages that
-were installed into a Conda environment via pip. There are a few reasons
-for these choices, but the main one is that pip is purely for Python
-packages and will not install unwanted non-Python libraries. To be clear, such
-libraries would be dependencies that could have been installed via Conda,
-if we had not already satisfied them as listed above in this instance.
-
-The Python packages below can be installed straightforwardly from source
-or via a package manager (Conda, pip, or a combination), via the instructions
-native to the packages. When searching for an open-source package you may need
-to add *conda-forge* package channel.
-
-To duplicate from file:
-
-.. code-block:: bash
-
-     conda env create -f <path/to/xpsi>/environment.yml
-
-Dependencies
-------------
-
-.. note::
-
-    For installing X-PSI on a Mac OS or Windows, please look at the tips below before proceeding with the installation of the various depnedencies.
-
-Python dependencies
-^^^^^^^^^^^^^^^^^^^
-
-The following Python packages are required for nested sampling:
-
-* `PyMultiNest <https://github.com/JohannesBuchner/PyMultiNest>`_
-  (the interface to the MultiNest library)
-* `mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_
-  (for parallelisation)
-* `mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
-  (MPI-wrapped Fortran compiler for building library)
-
-.. note::
-
-    That ``conda install -c conda-forge pymultinest`` might try to install
-    dependencies in the environment, including binaries for MPI, BLAS/LAPACK,
-    and a Fortran compiler, all in order to install MultiNest. Moreover, the
-    MultiNest version listed is a minor release too low to satisfy all our
-    needs. Although production sampling runs need to be performed on a
-    high-performance system and X-PSI can locally be installed without sampling
-    functionality, it is advisable to install MultiNest on your
-    personal machine to gain experience on application to inexpensive test
-    problems. Below we offer `from source`__ instructions.
-
-Running the tests requires:
-
-* `Pytest <http://pytest.org>`_
-
-The following Python packages are required for full functionality of the
-post-processing module:
-
-* `GetDist <https://getdist.readthedocs.io/en/latest/>`_
-  (posterior KDE corner plotting)\ [#]_
-* `h5py <http://docs.h5py.org/en/stable/>`_
-  (storage of X-ray signals computed from posterior samples; also used by
-  emcee_)
-* `nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_
-  (posterior error analysis, plotting, run combination, etc.)\ [#]_
-* `fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_
-  (conditional posterior plotting; also required by nestcheck)
-
-Note that post-processing can generally be done on a desktop computer and thus
-these packages are not necessary for running sampling processes on a
-high-performance system. If they are not installed, a warning message is
-printed or an exception is raised (by the root process if MPI world size >1).
-
-The `emcee <https://emcee.readthedocs.io/en/latest/>`_ Python package for
-ensemble-MCMC is optional.
-
-.. note::
-
-    That ``pip install emcee==3.0.2  [--user]`` installs a version working with Python 2.
-
-.. rubric:: Footnotes
-
-.. [#] The version of GetDist_ currently compatible with X-PSI, and used in
-       :ref:`R19`, is v0.3.1. It may be cloned as follows:
-
-       .. code-block:: bash
-
-          git clone [--single-branch] -b customisation \
-          https://github.com/ThomasEdwardRiley/getdist.git
-
-.. [#] The version of nestcheck_ currently compatible with X-PSI, and used in
-       :ref:`R19`, is v0.2.0. It may be cloned as follows:
-
-       .. code-block:: bash
-
-          git clone [--single-branch] -b feature/getdist_kde \
-          https://github.com/ThomasEdwardRiley/nestcheck.git
 
 __ source_
 
@@ -230,20 +153,30 @@ the prefix and version of GSL on your path:
     gsl-config --version
     gsl-config --prefix
 
+__ multinest_
+
+.. _multinest:
+
 MultiNest
 `````````
 
+Although production sampling runs need to be performed on a high-performance 
+system and X-PSI can locally be installed without sampling functionality, it is
+advisable to install MultiNest on your personal machine to gain experience on
+application to inexpensive test problems.
+
 To leverage some capabilities of sample post-processing software you require
 `MultiNest`_ ``v3.12``. To build the MultiNest library,
-you require an MPI-wrapped Fortran compiler (e.g., ``mpifort`` from Open MPI).
+you require an MPI-wrapped Fortran compiler (e.g., 
+`openmpi-mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_ from 
+Open MPI).
 
 .. _MultiNest: https://github.com/farhanferoz/MultiNest
 
 .. note::
 
     The following assumes an environment similar to that summarised in
-    the in the :ref:`dev_env` section above, specifically to emphasise where an
-    MPI compiler wrapper is required.
+    the in the :ref:`dev_env` section above.
 
 First clone the repository, then navigate to it and build:
 
@@ -264,9 +197,9 @@ Use the last command to check for the presence of shared objects. There is
 
     If prompted about missing ``cmake`` and ``gfortran``, they can simply be installed as ``sudo apt-get install cmake gfortran``
 
-If you have not already installed mpi4py using pip (or Conda assuming a
-different environment setup to that summarised in :ref:`dev_env`), then here
-is how to do it from source (e.g., on some path such as ``$HOME``):
+If you have not already installed mpi4py (e.g. through the
+environment file as listed in :ref:`dev_env`), then here is how to do it from
+source (e.g., on some path such as ``$HOME``):
 
 .. code-block:: bash
 
@@ -292,27 +225,11 @@ might be best set to somewhere between the number of physical cores and
 logical cores in your machine for test sampling applications. For a typical
 laptop that might be up to ``-n 4``.
 
-Now you need the Python interface to MultiNest:
+Now you need the Python to interface with MultiNest. For now, we recommend
+looking at: `installing MultiNest 
+<https://johannesbuchner.github.io/PyMultiNest/install.html>`.
 
-.. code-block:: bash
 
-    git clone https://github.com/JohannesBuchner/PyMultiNest.git <path/to/clone>/pymultinest
-    cd <path/to/clone>/pymultinest
-    python setup.py install [--user]
-
-The package will be installed in your Conda environment (if activated).
-
-.. note::
-
-    Here we clone the PyMultiNest repository. However, for :ref:`R19`,
-    working with X-PSI ``v0.1``, we used the repository as frozen in a *fork*.
-    To clone this version instead:
-
-    .. code-block:: bash
-
-        git clone https://github.com/ThomasEdwardRiley/PyMultiNest.git <path/to/clone>
-
-    and then simply follow the same installation procedure.
 
 X-PSI
 -----
