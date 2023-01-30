@@ -49,11 +49,8 @@ jobs:
       env:
         CC:   gcc-10
     - name: generate html directorly
-      run: mkdir html
-      working-directory: docs/
     - name : build docs
-      run: sphinx-multiversion source build
-      working-directory: docs/
+      run: sphinx-multiversion docs/ build/
     - name: Deploy to GitHub Pages
       if: success()
       uses: crazy-max/ghaction-github-pages@v3
