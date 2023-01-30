@@ -208,8 +208,6 @@ class CornerPlotter(PostProcessor):
     def _plot_density_with_error(self,
                                  plotter = None,
                                  fthetas = None,
-                                 kde_func = None,
-                                 kde_kwargs = None,
                                  **kwargs):
         """
         :param plotter:
@@ -223,14 +221,6 @@ class CornerPlotter(PostProcessor):
             functions. Additional functions are always plotted using the
             native :mod:`nestcheck` matplotlib figure; the parameter densities
             are be added to a :mod:`getdist` lower-triangle plot is supplied.
-
-        :param func kde_func:
-            Function for KDE compatible with :mod:`nestcheck.plots`. Must
-            be *weighted* KDE (Higson et al. 2018). If ``None``, uses
-            :mod:`getdist` if available, or the native KDE function otherwise.
-            If using :mod:`getdist`, the KDE settings are automatically
-            retrieved from the first run and applied to :mod:`nestcheck` and
-            :mod:`fgivenx` *for all runs*.
 
         :param kwargs:
             Keyword arguments for :func:`nestcheck.plots.bs_param_dists`.
@@ -267,23 +257,6 @@ class CornerPlotter(PostProcessor):
                 l[0] = (l[0] if l[0] > b[0] else b[0])
                 l[1] = (l[1] if l[1] < b[1] else b[1])
 
-        if kde_func is None:
-            try:
-                kde_func = getdist_kde
-            except NameError:
-                kde_func = weighted_1d_gaussian_kde
-                kde_kwargs = [None] * len(runs)
-            else:
-                normalize = kwargs.pop('normalize', False)
-                kde_kwargs = []
-                for run in runs:
-                    kde_kwargs.append(
-                            {'settings': run.kde_settings,
-                             'ranges': [run.bounds[param] for param in params],
-                             'normalize': normalize}
-                            )
-
-        lines = kwargs.pop('lines', False)
         parallel = kwargs.pop('parallel', True)
         rasterize_contours = kwargs.pop('rasterize_contours', True)
         tqdm_kwargs = kwargs.pop('tqdm_kwargs', None)
@@ -297,20 +270,14 @@ class CornerPlotter(PostProcessor):
                      'Added density error information'):
             fig = bs_param_dists(nestcheck_bcknds,
                                  fthetas=_fthetas[0],
-                                 #kde_func=kde_func,
-                                 #kde_kwargs=kde_kwargs,
                                  ftheta_lims=lims[0],
                                  nx=nx,
                                  ny=ny,
                                  n_simulate=n_simulate,
-                                 #simulate_weights=True,
-                                 #getdist_plotter=plotter,
                                  figsize=figsize,
-                                 #lines=lines,
                                  parallel=parallel,
                                  rasterize_contours=rasterize_contours,
                                  labels=labels,
-                                 #no_means=True,
                                  tqdm_kwargs=tqdm_kwargs)
 
         if fig: figs.append(fig)
@@ -320,7 +287,6 @@ class CornerPlotter(PostProcessor):
                 num_funcs = len(fthetas[0])
             else:
                 num_funcs = len(fthetas)
-            kde_kwargs['ranges'] = ftheta_lims
             figsize *= float(num_funcs)/len(params)
             if 'ftheta_labels' in kwargs:
                 kwargs = {'labels': kwargs['ftheta_labels']}
@@ -329,16 +295,11 @@ class CornerPlotter(PostProcessor):
 
             fig = bs_param_dists(nestcheck_bcknds,
                                  fthetas=fthetas,
-                                 #kde_func=kde_func,
-                                 #kde_kwargs=kde_kwargs,
                                  ftheta_lims=ftheta_lims,
                                  nx=nx,
                                  ny=ny,
-                                 #scale_ymax=scale_ymax,
                                  n_simulate=n_simulate,
-                                 #simulate_weights=True,
                                  figsize=figsize,
-                                 #lines=lines,
                                  parallel=parallel,
                                  rasterize_contours=rasterize_contours,
                                  **kwargs)
@@ -841,7 +802,6 @@ class CornerPlotter(PostProcessor):
                                                      estimator_list=[KL],
                                                      cred_int=cred_int,
                                                      n_simulate=n_simulate,
-                                                     #simulate_weights=True,
                                                      flip_skew=True)
                     # KL in bits
                     interval = r'$D_{\mathrm{KL}}=%.2f_{-%.2f}^{+%.2f}$' \
@@ -961,7 +921,6 @@ class CornerPlotter(PostProcessor):
                                              estimator_list=[get_estimator(p, ind)],
                                              cred_int=q,
                                              n_simulate=n_simulate,
-                                             #simulate_weights=True,
                                              flip_skew=True)[0]
                     return cred
 
@@ -1237,7 +1196,6 @@ class CornerPlotter(PostProcessor):
                                       estimator_list=[estimator],
                                       cred_int=q,
                                       n_simulate=n_simulate,
-                                      #simulate_weights=True,
                                       flip_skew=True)[0] for q in quantiles]
             return _quantiles
         else:
@@ -1248,7 +1206,7 @@ class CornerPlotter(PostProcessor):
             return divergence
 
     def evidence_error(self, quantiles=[0.025,0.5,0.975], n_simulate=200,
-                       simulate_weights=True, flip_skew=True, **kwargs):
+                       flip_skew=True, **kwargs):
 
         """ Estimate evidence error for nestcheck-compatible runs.
 
@@ -1267,7 +1225,6 @@ class CornerPlotter(PostProcessor):
                                   estimator_list=[logz],
                                   cred_int=q,
                                   n_simulate=n_simulate,
-                                  #simulate_weights=simulate_weights,
                                   flip_skew=flip_skew)[0] for q in quantiles]
         return _quantiles
 
