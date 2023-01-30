@@ -5,10 +5,12 @@ on:
   push:
     branches:
       - "main"
+    tags:
+      - "*"
   pull_request:
 
 jobs:
-  build-linux:
+  tests:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,6 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       max-parallel: 5
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
     - uses: actions/checkout@v3
@@ -23,7 +27,6 @@ jobs:
       with:
          activate-environment: xpsipy3
          environment-file: basic_environment.yml
-         python-version: 3.9
          auto-activate-base: false
     - name: Set up GCC
       run: |
@@ -32,14 +35,14 @@ jobs:
     - name: install gsl
       run: |
         sudo apt-get install -y libgsl-dev
-# commented out linting until Py3 version is in main branch
-#    - name: Lint with flake8
-#      run: |
-#        conda install flake8
-#        # stop the build if there are Python syntax errors or undefined names
-#        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-#        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-#        #flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+ commented out linting until Py3 version is in main branch
+    - name: Lint with flake8
+      run: |
+        conda install flake8
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: install X-PSI package
       run: |
         python setup.py install
