@@ -33,6 +33,7 @@ jobs:
         conda install decorator
         conda install h5py
         pip install sphinxcontrib-websupport
+        pip install sphinx-multiversion
         pip install sphinx_rtd_theme
     - name: Set up GCC
       run: |

@@ -43,7 +43,8 @@ extensions = ['sphinx.ext.autodoc',
                 'sphinx.ext.mathjax',
                 'sphinx.ext.githubpages',
                 'sphinx.ext.autosummary',
-                'nbsphinx']
+                'nbsphinx',
+                'sphinx_multiversion']
 
 intersphinx_mapping = {'sphinx': ('http://www.sphinx-doc.org/en/master', None),
            'numpy': ('https://docs.scipy.org/doc/numpy', None),
@@ -58,6 +59,13 @@ intersphinx_mapping = {'sphinx': ('http://www.sphinx-doc.org/en/master', None),
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+# Try to make sidebar with versions:
+html_sidebars = {
+    '**': [
+        'versioning.html',
+    ],
+}
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
