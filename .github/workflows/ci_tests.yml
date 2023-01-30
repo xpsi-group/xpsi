@@ -35,7 +35,6 @@ jobs:
     - name: install gsl
       run: |
         sudo apt-get install -y libgsl-dev
- commented out linting until Py3 version is in main branch
     - name: Lint with flake8
       run: |
         conda install flake8
