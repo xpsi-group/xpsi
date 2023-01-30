@@ -23,7 +23,7 @@ jobs:
       with:
          activate-environment: xpsipy2
          environment-file: basic_environment.yml
-         python-version: 3.9
+         python-version: 3.10
          auto-activate-base: false
     - name : install docs dependencies
       run: |
