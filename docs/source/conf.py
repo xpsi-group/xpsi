@@ -67,14 +67,17 @@ html_sidebars = {
     ],
 }
 
-# Whitelist pattern for tags (set to None to ignore all tags)
+
+smv_rebuild_tags = False
+smv_branch_whitelist = r'py3_multiversion_docs'
+smv_released_pattern = r'^tags/v.*$'
+
 smv_tag_whitelist = r'^.*$'
-smv_branch_whitelist = r'^.*$'
+#smv_branch_whitelist = r'^.*$'
 
 #smv_branch_whitelist = r"^main$"  # build main branch, and anything relating to documentation
-smv_tag_whitelist = r'^.*$'
 
-smv_released_pattern = r'.*tags.*'
+#smv_released_pattern = r'.*tags.*'
 smv_remote_whitelist = r'^origin$'
 smv_prefer_remote_refs = True
 
