@@ -73,6 +73,7 @@ html_sidebars = {
 
 #smv_remote_whitelist = r'^origin$'
 smv_prefer_remote_refs = True
+smv_outputdir_format = '{ref.commit}' 
 
 ### OTHERS
 #smv_released_pattern = r'^tags/v.*$'
