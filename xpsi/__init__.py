@@ -4,17 +4,15 @@ An open-source package for neutron star astrostatistics.
 
 """
 from __future__ import print_function
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __author__ = "The X-PSI Core Team"
 
 try:
     __XPSI_SETUP__
-    print("This worked!")
 except NameError:
     __XPSI_SETUP__ = False
 
 if not __XPSI_SETUP__:
-    print("This is not working!")
 
     try:
         from mpi4py import MPI

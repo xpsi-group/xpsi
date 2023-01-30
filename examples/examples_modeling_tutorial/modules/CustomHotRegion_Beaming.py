@@ -62,114 +62,114 @@ class CustomHotRegion(xpsi.HotRegion):
                  **kwargs):
       
 
-	doc = """
-	log10(superseding region effective temperature [K])
-	"""
-	super_temp = Parameter('super_temperature',
-		  strict_bounds = (3.0, 7.0), # very cold --> very hot
-		  bounds = bounds.get('super_temperature', None),
-		  doc = doc,
-		  symbol = r'$\log_{10}(T\;[\rm{K}])$',
-		  value = values.get('super_temperature', None))
-	if cede:
-		doc = """
-		log10(ceding region effective temperature [K])
-		"""
-		cede_temp = Parameter('cede_temperature',
-			      strict_bounds = (3.0, 7.0), # same story
-			      bounds = bounds.get('cede_temperature', None),
-			      doc = doc,
-			      symbol = r'$\log_{10}(\mathcal{T}\;[\rm{K}])$',
-			      value = values.get('cede_temperature', None))
-	else:
-		cede_temp = None
-
-            
-            
-        if not fbeam: 
-            bounds['super_abb'] = None
-            values['super_abb'] = 0.0
-            no_verb['super_abb'] = True
-            bounds['super_bbb'] = None
-            values['super_bbb'] = 0.0
-            no_verb['super_bbb'] = True
-            bounds['super_cbb'] = None
-            values['super_cbb'] = 0.0
-            no_verb['super_cbb'] = True
-            bounds['super_dbb'] = None
-            values['super_dbb'] = 0.0
-            no_verb['super_dbb'] = True            
-            
         doc = """
-        abb
+        log10(superseding region effective temperature [K])
         """
-        super_abb = Parameter('super_abb',
-                 strict_bounds = (-3.0, 3.0),
-                 bounds = bounds.get('super_abb', None),
-                 doc = doc,
-                 symbol = r'$abb$',
-                 value = values.get('super_abb', None))
-        doc = """
-        bbb
-        """
-        super_bbb = Parameter('super_bbb',
-                 strict_bounds = (-3.0, 3.0),
-                 bounds = bounds.get('super_bbb', None),
-                 doc = doc,
-                 symbol = r'$\bbb$',
-                 value = values.get('super_bbb', None))   
-        doc = """
-        cbb
-        """
-        super_cbb = Parameter('super_cbb',
-                 strict_bounds = (-3.0, 3.0),
-                 bounds = bounds.get('super_cbb', None),
-                 doc = doc,
-                 symbol = r'$\cbb$',
-                 value = values.get('super_cbb', None))  
-        doc = """
-        dbb
-        """
-        super_dbb = Parameter('super_dbb',
-                 strict_bounds = (-3.0, 3.0),
-                 bounds = bounds.get('super_dbb', None),
-                 doc = doc,
-                 symbol = r'$\dbb$',
-                 value = values.get('super_dbb', None))     
+        super_temp = Parameter('super_temperature',
+	          strict_bounds = (3.0, 7.0), # very cold --> very hot
+	          bounds = bounds.get('super_temperature', None),
+	          doc = doc,
+	          symbol = r'$\log_{10}(T\;[\rm{K}])$',
+	          value = values.get('super_temperature', None))
+        if cede:
+            doc = """
+            log10(ceding region effective temperature [K])
+            """
+            cede_temp = Parameter('cede_temperature',
+                      strict_bounds = (3.0, 7.0), # same story
+                      bounds = bounds.get('cede_temperature', None),
+                      doc = doc,
+                      symbol = r'$\log_{10}(\mathcal{T}\;[\rm{K}])$',
+                      value = values.get('cede_temperature', None))
+        else:
+            cede_temp = None
+
+                
+                
+            if not fbeam: 
+                bounds['super_abb'] = None
+                values['super_abb'] = 0.0
+                no_verb['super_abb'] = True
+                bounds['super_bbb'] = None
+                values['super_bbb'] = 0.0
+                no_verb['super_bbb'] = True
+                bounds['super_cbb'] = None
+                values['super_cbb'] = 0.0
+                no_verb['super_cbb'] = True
+                bounds['super_dbb'] = None
+                values['super_dbb'] = 0.0
+                no_verb['super_dbb'] = True            
+                
+            doc = """
+            abb
+            """
+            super_abb = Parameter('super_abb',
+                     strict_bounds = (-3.0, 3.0),
+                     bounds = bounds.get('super_abb', None),
+                     doc = doc,
+                     symbol = r'$abb$',
+                     value = values.get('super_abb', None))
+            doc = """
+            bbb
+            """
+            super_bbb = Parameter('super_bbb',
+                     strict_bounds = (-3.0, 3.0),
+                     bounds = bounds.get('super_bbb', None),
+                     doc = doc,
+                     symbol = r'$\bbb$',
+                     value = values.get('super_bbb', None))   
+            doc = """
+            cbb
+            """
+            super_cbb = Parameter('super_cbb',
+                     strict_bounds = (-3.0, 3.0),
+                     bounds = bounds.get('super_cbb', None),
+                     doc = doc,
+                     symbol = r'$\cbb$',
+                     value = values.get('super_cbb', None))  
+            doc = """
+            dbb
+            """
+            super_dbb = Parameter('super_dbb',
+                     strict_bounds = (-3.0, 3.0),
+                     bounds = bounds.get('super_dbb', None),
+                     doc = doc,
+                     symbol = r'$\dbb$',
+                     value = values.get('super_dbb', None))     
 
 
 
-	if cede:
-		custom = [super_temp,cede_temp,super_abb, super_bbb, super_cbb, super_dbb]
-	else:
-		custom = [super_temp, super_abb, super_bbb, super_cbb, super_dbb]	
+        if cede:
+            custom = [super_temp,cede_temp,super_abb, super_bbb, super_cbb, super_dbb]
+        else:
+            custom = [super_temp, super_abb, super_bbb, super_cbb, super_dbb]	
 
-        super(CustomHotRegion, self).__init__(
-                 bounds,
-                 values,
-                 symmetry = symmetry,
-                 omit = omit,
-                 cede = cede,
-                 concentric = concentric,
-                 sqrt_num_cells = sqrt_num_cells,
-                 min_sqrt_num_cells = min_sqrt_num_cells,
-                 max_sqrt_num_cells = max_sqrt_num_cells,
-                 num_rays = num_rays,
-                 num_leaves = num_leaves,
-                 num_phases = num_phases,
-                 phases = phases,
-                 do_fast = do_fast,
-                 fast_sqrt_num_cells = fast_sqrt_num_cells,
-                 fast_min_sqrt_num_cells = fast_min_sqrt_num_cells,
-                 fast_max_sqrt_num_cells = fast_max_sqrt_num_cells,
-                 fast_num_rays = fast_num_rays,
-                 fast_num_leaves = fast_num_leaves,
-                 fast_num_phases = fast_num_phases,
-                 fast_phases = fast_phases,
-                 is_antiphased = is_antiphased,
-                 custom = custom,
-                 image_order_limit = image_order_limit,
-                 **kwargs)                                         
+            super(CustomHotRegion, self).__init__(
+                     bounds,
+                     values,
+                     symmetry = symmetry,
+                     omit = omit,
+                     cede = cede,
+                     concentric = concentric,
+                     sqrt_num_cells = sqrt_num_cells,
+                     min_sqrt_num_cells = min_sqrt_num_cells,
+                     max_sqrt_num_cells = max_sqrt_num_cells,
+                     num_rays = num_rays,
+                     num_leaves = num_leaves,
+                     num_phases = num_phases,
+                     phases = phases,
+                     do_fast = do_fast,
+                     fast_sqrt_num_cells = fast_sqrt_num_cells,
+                     fast_min_sqrt_num_cells = fast_min_sqrt_num_cells,
+                     fast_max_sqrt_num_cells = fast_max_sqrt_num_cells,
+                     fast_num_rays = fast_num_rays,
+                     fast_num_leaves = fast_num_leaves,
+                     fast_num_phases = fast_num_phases,
+                     fast_phases = fast_phases,
+                     is_antiphased = is_antiphased,
+                     custom = custom,
+                     image_order_limit = image_order_limit,
+                     **kwargs)
 
     def _HotRegion__compute_cellParamVecs(self):
         """
@@ -227,8 +227,3 @@ class CustomHotRegion(xpsi.HotRegion):
                 self._cede_cellParamVecs[:,i,-1] *= self._cede_effGrav
         #print(self._super_cellParamVecs)
         #exit()
-
-  
-                                        
-                                        
-                                        
