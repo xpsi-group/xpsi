@@ -48,6 +48,9 @@ jobs:
       shell: bash -l {0}
       env:
         CC:   gcc-10
+    - name: generate html directorly
+      run: mkdir html
+      working-directory: docs/
     - name : build docs
       run: make html
       working-directory: docs/
