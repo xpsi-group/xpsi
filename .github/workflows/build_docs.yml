@@ -52,7 +52,7 @@ jobs:
       run: mkdir html
       working-directory: docs/
     - name : build docs
-      run: make html
+      run: sphinx-multiversion source build
       working-directory: docs/
     - name: Deploy to GitHub Pages
       if: success()
