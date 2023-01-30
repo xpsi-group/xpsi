@@ -77,8 +77,6 @@ smv_tag_whitelist = r'^.*$'
 smv_released_pattern = r'.*tags.*'
 smv_remote_whitelist = r'^origin$'
 smv_prefer_remote_refs = True
-# Pull latest release dynamically
-smv_latest_version = version
 
 
 # The suffix(es) of source filenames.
