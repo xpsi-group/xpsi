@@ -12,6 +12,8 @@ X-PSI is an open-source software package that is available on `GitHub
 
 In this page, we lay down the instructions for installing X-PSI and all the  necessary pre-requisites on your local self-administered system.
 
+Good luck to you!
+
 .. note::
 
     For installation on a high-performance computing system, we direct the reader to the :ref:`hpcsystems` page for guidance since the instructions on this page are either not applicable or do not target performance.
