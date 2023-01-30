@@ -22,8 +22,8 @@ html:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 versions:
-	@$(SPHINXMULTI) "$(SOURCEDIR)" $(BUILDDIR)/html/ "$(SPHINXOPTS)"
-
+	echo @$(SPHINXMULTI) "$(SOURCEDIR)" "$(BUILDDIR)" "$(SPHINXOPTS)" $(0)
+	@$(SPHINXMULTI) "$(SOURCEDIR)" "$(BUILDDIR)" "$(SPHINXOPTS)" $(0)
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
