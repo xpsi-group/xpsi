@@ -244,7 +244,6 @@ class CornerPlotter(PostProcessor):
         nestcheck_bcknds, runs = self._filter_nestcheck_compatible()
 
         nx = kwargs.pop('nx', 200); ny = kwargs.pop('ny', nx)
-        scale_ymax = kwargs.pop('scale_ymax', 1.1)
         n_simulate = kwargs.pop('n_simulate', 200)
 
         params = self.params.names
@@ -303,7 +302,6 @@ class CornerPlotter(PostProcessor):
                                  ftheta_lims=lims[0],
                                  nx=nx,
                                  ny=ny,
-                                 #scale_ymax=scale_ymax,
                                  n_simulate=n_simulate,
                                  #simulate_weights=True,
                                  #getdist_plotter=plotter,
@@ -529,8 +527,6 @@ class CornerPlotter(PostProcessor):
         setattr(plotter.settings, 'progress', True)
         setattr(plotter.settings, 'norm_prob_label', 'Probability density')
         setattr(plotter.settings, 'prob_y_ticks', True)
-        setattr(plotter.settings, 'thin_long_subplot_ticks', False)
-        setattr(plotter.settings, 'tick_prune', None)
 
         for key in kwargs.copy():
             if hasattr(plotter.settings, key):
