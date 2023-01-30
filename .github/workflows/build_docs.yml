@@ -49,7 +49,7 @@ jobs:
       env:
         CC:   gcc-10
     - name : build docs
-      run: make html
+      run: make versions
       working-directory: docs/
     - name: Deploy to GitHub Pages
       if: success()
