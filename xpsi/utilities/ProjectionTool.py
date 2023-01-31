@@ -126,7 +126,7 @@ def transform(thetaR,phiR,V,phi0=0.0):
 
 def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase = True, SaveFlag = False, dir = "", Name = "", POVname="", extension = ".png", antipodal = False):
     """
-    GOAL: printing 2D visualisation of hot spot
+    GOAL: printing 2D visualisation of hot spot(s) on a spherical surface
     ##### INPUTS #####
     Vp: vector of parameters
     model: model adopted e.g. ST-U, ST-PST !PLEASE USE "-S" and not just "S" for symmetric models
@@ -165,30 +165,99 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     except AttributeError:
         DICT_VECTOR = dictVp.names
         
+    def hotspot_check(hot_name, params, symbol_type_hot, asymFlag = False):
+        """
+        GOAL: check consistency between hot spot name and params
+        ##### INPUTS #####
+        hot_name: hot spot names according to our naming convention (P,E,C)ST/(P,E,C)DT
+        params: list of parameters
+        symbol_type_hot: "" empty for single hot spot; "p" for primary hot spot; "s" for secondary hot spot
+        asymFlag: if True it allows a "partially derived" hot spot to be described only by temperature and radius
+        ##### OUTPUTS ####
+        -
+        """
+        ### check super
+        T_name = symbol_type_hot+'__super_temperature'
+        R_name = symbol_type_hot+'__super_radius'
+        P_name = symbol_type_hot+'__phase_shift'
+        C_name = symbol_type_hot+'__super_colatitude'
+        if ((not(R_name in params) or not(T_name in params))) or (not(asymFlag) and (not(P_name in params) or not(C_name in params))):
+            #print ("here:",((not(R_name in params) or not(T_name in params))))
+            #print ("here:",(not(asymFlag) and (not(P_name in params) or not(C_name in params))))
+            #if ((not(T_name in params) and not(R_name in params))) or (not(asymFlag) and (not(P_name in params) or not(C_name in params))):
+            print ("ERROR! super properties required for \'%s\' hot spot ('p' = primary; 's' = secondary and '' for single hot spot model)"%symbol_type_hot)
+            raise IpyExit
+        elif (asymFlag and ((P_name in params) or (C_name in params))):
+            print ("WARNING! there are info for a secondary hot spot that will not being used")
+        
+        if ('DT' in hot_name):
+            ### check cede
+            T_name = symbol_type_hot+'__cede_temperature'
+            R_name = symbol_type_hot+'__cede_radius'
+            if ('C' in hot_name) and not((T_name in params) or (R_name in params)):
+                print ("ERROR! Double temperature (DT) models require the definition of cede properties")
+                raise IpyExit
+            C_name = symbol_type_hot+'__cede_colatitude'
+            A_name = symbol_type_hot+'__cede_azimuth'
+            
+            if ('C' in hot_name) and ((C_name in params) or (A_name in params)):
+                print ("WARNING! there are info for a complex geometry, but they are not being used")
+            if (('P' in hot_name) or ('E' in hot_name)) and not((C_name in params) or (C_name in params)):
+                print ("ERROR! Protruding and Eccentric models require the definition of cede colatitudes and phases")
+                raise IpyExit
+            if not(('C' in hot_name) ^ ('E' in hot_name) ^ ('P 'in hot_name)):
+                print ("ERROR! Double temperature models require the setting if concentric (C, hot spot name = CDT), eccentric (E, hot spot name = EDT), protruding (P, hot spot name = PDT)")
+                raise IpyExit
+        
+        if ('ST' in hot_name) and (('C' in hot_name) ^ ('E' in hot_name) ^ ('P 'in hot_name)):
+                R_name = symbol_type_hot+'__omit_radius'
+                if ('C' in hot_name) and not((R_name in params)):
+                    print ("ERROR! Double temperature (DT) models require the definition of cede properties")
+                    raise IpyExit
+                C_name = symbol_type_hot+'__omit_colatitude'
+                A_name = symbol_type_hot+'__omit_azimuth'
+                if ('C' in hot_name) and ((C_name in params) or (A_name in params)):
+                    print ("WARNING! there are info for a complex geometry, but they are not being used")
+                if (('P' in hot_name) or ('E' in hot_name)) and not((C_name in params) or (C_name in params)):
+                    print ("ERROR! Protruding and Eccentric models require the definition of cede colatitudes and phases")
+                    raise IpyExit
+            
+        
     def check_model_param_names():
         """
         GOAL: checking compatibility between specified model and parameters
         """
-        if not(("-U" in model) or ("-S" in model)):
-            print ("WARNING: code assumes the part of the model name before \'+\' referes to the primary and the one after to the secondary")
-        if ("D" in model) and not (any("__cede_radius" in s for s in DICT_VECTOR)):
-            print ("ERROR! Double temperature (DT) models require the definition of cede properties")
-            raise IpyExit
+        if ('+' in model) or ('-' in model):
+            print ("YOU ARE USING A 2 HOT SPOT MODEL")
+            if ('-S' in model):
+                ind = model.find('-')
+                hot_name = model[:ind]
+                hotspot_check(hot_name,DICT_VECTOR,'p')
+                
+            if ('-U' in model):
+                ind = model.find('-')
+                hot_name = model[:ind]
+                hotspot_check(hot_name,DICT_VECTOR,'p')
+                hotspot_check(hot_name,DICT_VECTOR,'s')
             
-        if (any("__cede_radius" in s for s in DICT_VECTOR)) and not("D" in model):
-            print ("WARNING! there are info for a double temperature model (DT), but they are not being used")
-            
-        if (("P" in model) or ("C" in model) or ("E" in model)) and ("ST" in model) and not (any("__omit_radius" in s for s in DICT_VECTOR)):
-            print ("ERROR! complex geometry (centric, eccentric, protruding) single temperature (ST) models require the definition of omit properties")
-        if (any("__omit_radius" in s for s in DICT_VECTOR)) and not(("P" in model) or ("C" in model) or ("E" in model)):
-            print ("WARNING! there are info for a complex geometry single temperature model (ST), but they are not being used")
-            
-        #if (not("-" in model) and ("+" in model)):
-        #
-        #    if (("C" in model) and ((any("__omit_colatitude" in s for s in DICT_VECTOR) or (any("__cede_radius" in s for s in DICT_VECTOR))):
-        #        print ("ERROR! complex geometry (centric, eccentric, protruding) single temperature (ST) models require the definition of omit properties")
-        #    if (any("__omit_radius" in s for s in DICT_VECTOR)) and not(("P" in model) or ("C" in model) or ("E" in model)):
-        #   print ("WARNING! there are info for a complex geometry single temperature model (ST), but they are not being used")
+            if ('-Ua' in model):
+                print ("  WARNING: the hot spot whose colatitude and phase are derived is assumed to be the secondary; if it is not we suggest the user to redefine the dictionary and the model as an ST-U")
+                ind = model.find('-')
+                hot_name = model[:ind]
+                hotspot_check(hot_name,DICT_VECTOR,'p')
+                hotspot_check(hot_name,DICT_VECTOR,'s', asymFlag = True)
+                
+            if ('+' in model):
+                ind = model.find('+')
+                hot_name = model[:ind]
+                hotspot_check(hot_name,DICT_VECTOR,'p')
+                hot_name_s = model[ind+1:]
+                hotspot_check(hot_name_s,DICT_VECTOR,'s')
+                
+        else:
+            print ("YOU ARE USING 1 HOT SPOT MODEL")
+            hotspot_check(model,DICT_VECTOR,'p')
+
             
         return
         
