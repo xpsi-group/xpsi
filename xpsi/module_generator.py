@@ -349,10 +349,7 @@ for _x in args.telescope[1:]:
 
 module += (
 '''
-from __future__ import print_function, division
-
 import os
-import six
 import argparse
 import re
 
@@ -864,7 +861,7 @@ parser.add_argument('--distance-value',
            _CDF_notice)
 )
 
-for _h, _m in zip(args.prefix, args.hot_region_model)[:1 if (len(args.hot_region_model) == 1 or args.antipodal_reflection_symmetry) else 2]:
+for _h, _m in list(zip(args.prefix, args.hot_region_model))[:1 if (len(args.hot_region_model) == 1 or args.antipodal_reflection_symmetry) else 2]:
     module += (
     '''
 parser.add_argument('--{0}-super-colatitude-bounds',
@@ -2003,8 +2000,6 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path, '__init__')), '')
 module = (
 '''""" Signal module for X-PSI {0} modelling of {1} {2} event data. """
 
-from __future__ import print_function, division
-
 import numpy as np
 import math
 
@@ -2077,8 +2072,6 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_signa
 
 module = (
 '''""" Photosphere module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import argparse
 import re
@@ -2346,8 +2339,6 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_photo
 
 module = (
 '''""" Prior module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import argparse
 import re
@@ -3189,7 +3180,7 @@ module += (
         except AttributeError:
             self._modded_names = [name.replace('__', '_') for name in ref.names]
 
-        for modded_name, name in zip(self._modded_names, ref.names):
+        for modded_name, name in list(zip(self._modded_names, ref.names)):
             if getattr(args, modded_name + '_prior', None) is not None:
                 idx = ref.index(name)
                 x = hypercube[idx]
@@ -3280,7 +3271,7 @@ if len(args.hot_region_model) == 2 and not args.antipodal_reflection_symmetry:
 module += (
 '''
         # restore proper cache
-        for parameter, cache in zip(self.parameters, to_cache):
+        for parameter, cache in list(zip(self.parameters, to_cache)):
             parameter.cached = cache
 
         # it is important that we return the desired vector because it is
@@ -3297,7 +3288,7 @@ module += (
         p = list(p) # copy
 
         # used ordered names and values
-        ref = dict(zip(self.parameters.names, p))
+        ref = dict(list(zip(self.parameters.names, p)))
 
         # compactness ratio M/R_eq
         p += [gravradius(ref['mass']) / ref['radius']]
@@ -3311,8 +3302,6 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_prior
 
 module = (
 '''""" Interstellar module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import numpy as np
 import math
@@ -3396,8 +3385,6 @@ _instruments += ', and {}'.format(args.instrument[-1])
 
 module = (
 '''""" Instrument module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import numpy as np
 import math
@@ -3549,8 +3536,6 @@ if not args.background_model:
 
 module = (
 '''""" Background module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import numpy as np
 import math
