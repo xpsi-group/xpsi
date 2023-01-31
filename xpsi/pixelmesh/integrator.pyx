@@ -422,10 +422,10 @@ def integrate(size_t numThreads,
         # printf("\nFraction of hot rays: %.6f", <double>(<double>NUM_HITS/<double>(NUM_MISSES + NUM_HITS)))
         if NUM_HITS < 4:
             printf("\nRadiating region poorly resolved... integrator not called.")
-        else:
-            printf("\nIntegrator called.")
-        printf("\n------------------------------------------------------------->>>")
-        printf("\n ")
+        # else:
+        #     printf("\nIntegrator called.")
+        # printf("\n------------------------------------------------------------->>>")
+        # printf("\n ")
 
     #----------------------------------------------------------------------->>>
     # >>> Free memory.
