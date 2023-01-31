@@ -1971,9 +1971,9 @@ class Photosphere(ParameterSubspace):
 
         filename = file_root + '_animated.mp4'
         yield 'Writing to disk: %s' % filename
-        ani.save(filename, writer = 'ffmpeg',
+        ani.save(filename,
                  dpi = dpi, fps = fps, bitrate = bitrate,
-                 extra_args=['-vcodec', 'libx264'])
+                 )
 
         fig.clf() # this or ax.cla() needed to free memory
         plt.close(fig)
