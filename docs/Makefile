@@ -8,6 +8,7 @@ SPHINXMULTI   = sphinx-multiversion
 SPHINXPROJ    = xpsi
 SOURCEDIR     = source
 BUILDDIR      = build
+SPHINXMULTIOPTS = -a
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -23,7 +24,7 @@ html:
 
 versions:
 	echo @$(SPHINXMULTI) "$(SOURCEDIR)" "$(BUILDDIR)" "$(SPHINXOPTS)" $(0)
-	@$(SPHINXMULTI) "$(SOURCEDIR)" "$(BUILDDIR)" "$(SPHINXOPTS)" $(0)
+	@$(SPHINXMULTI) "$(SOURCEDIR)" "$(BUILDDIR)" "$(SPHINXMULTIOPTS)" $(0)
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
