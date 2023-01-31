@@ -43,8 +43,10 @@ Folks who have used X-PSI in their research or engaged with the team during
 development and science analysis, thereby prompting fixes or
 improvements.
 
+* Matteo Bacchetti
 * Anna Bilous
 * Erik Bootsma
+* Johannes Buchner
 * Yuri Cavecchi
 * Frank Chambers
 * Alex Chen
@@ -53,6 +55,7 @@ improvements.
 * Gwénaël Loyer
 * Geert Raaijmakers
 * Paul Ray
+* Evert Rol
 * Rahul Silié
 * Emma van der Wateren
 * Bob de Witte

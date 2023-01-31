@@ -13,10 +13,10 @@ contact the X-PSI team and/or submit a pull-request on GitHub.
 
 .. _S22:
 
-`Salmi et al. 2022 (ApJ in press)`__
+`Salmi et al. 2022 (ApJ, 941 150)`__
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _ADS22: https://ui.adsabs.harvard.edu/abs/2022arXiv220912840S/abstract
+.. _ADS22: https://ui.adsabs.harvard.edu/abs/2022ApJ...941..150S/abstract
 
 __ ADS22_
 
