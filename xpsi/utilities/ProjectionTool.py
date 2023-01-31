@@ -126,6 +126,8 @@ def transform(thetaR,phiR,V,phi0=0.0):
 
 def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase = True, SaveFlag = False, dir = "", Name = "", POVname="", extension = ".png", antipodal = False):
     """
+    GOAL: printing 2D visualisation of hot spot
+    ##### INPUTS #####
     Vp: vector of parameters
     model: model adopted e.g. ST-U, ST-PST !PLEASE USE "-S" and not just "S" for symmetric models
     POV: Point Of View - location (for string arguments: colatitude) from which the neutron star is observed; if string can be:
@@ -142,6 +144,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
              provide POV name to save file with
     extension: extension of the file to be saved
     antipodal: if you want to show antipodal configuration
+    ##### OUTPUTS #####
+    returns ax (ax = fig.add_subplot(111))
     """
 
     Plab = 'Primary'
@@ -155,13 +159,42 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     nColors   = 7
     mycolors0 = [cm(xcol) for xcol in np.linspace(0,1 , nColors)]
 
+    DICT_VECTOR = []
+    try:
+        DICT_VECTOR = dictVp.keys()
+    except AttributeError:
+        DICT_VECTOR = dictVp.names
+        
+    def check_model_param_names():
+        """
+        GOAL: checking compatibility between specified model and parameters
+        """
+        if not(("-U" in model) or ("-S" in model)):
+            print ("WARNING: code assumes the part of the model name before \'+\' referes to the primary and the one after to the secondary")
+        if ("D" in model) and not (any("__cede_radius" in s for s in DICT_VECTOR)):
+            print ("ERROR! Double temperature (DT) models require the definition of cede properties")
+            raise IpyExit
+            
+        if (any("__cede_radius" in s for s in DICT_VECTOR)) and not("D" in model):
+            print ("WARNING! there are info for a double temperature model (DT), but they are not being used")
+            
+        if (("P" in model) or ("C" in model) or ("E" in model)) and ("ST" in model) and not (any("__omit_radius" in s for s in DICT_VECTOR)):
+            print ("ERROR! complex geometry (centric, eccentric, protruding) single temperature (ST) models require the definition of omit properties")
+        if (any("__omit_radius" in s for s in DICT_VECTOR)) and not(("P" in model) or ("C" in model) or ("E" in model)):
+            print ("WARNING! there are info for a complex geometry single temperature model (ST), but they are not being used")
+            
+        #if (not("-" in model) and ("+" in model)):
+        #
+        #    if (("C" in model) and ((any("__omit_colatitude" in s for s in DICT_VECTOR) or (any("__cede_radius" in s for s in DICT_VECTOR))):
+        #        print ("ERROR! complex geometry (centric, eccentric, protruding) single temperature (ST) models require the definition of omit properties")
+        #    if (any("__omit_radius" in s for s in DICT_VECTOR)) and not(("P" in model) or ("C" in model) or ("E" in model)):
+        #   print ("WARNING! there are info for a complex geometry single temperature model (ST), but they are not being used")
+            
+        return
+        
+    check_model_param_names()
 
     def fillVECTORS(HStag):
-        DICT_VECTOR = []
-        try:
-            DICT_VECTOR = dictVp.keys()
-        except AttributeError:
-            DICT_VECTOR = dictVp.names
 
         if (HStag!='p') and (HStag!='s'):
             print ("ERROR: invalid Key argument (only 'p' and 's' allowed), not ",HStag)
@@ -304,7 +337,6 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
     fig = plt.figure(figsize=(8,8))
     ax = fig.add_subplot(111)
-    ax.grid(linestyle="-.", color='grey',linewidth=0.7)
 
 
     veneer(None,None, ax)
@@ -490,7 +522,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
         if signFlag:
             sign = 'x' if out[2]>0. else symb;
-
+            if sign == symb:
+                MS = 3
         if symb and not(signFlag):
             sign = symb
 
@@ -630,6 +663,9 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     ax.legend(fontsize = legsize,loc='upper left', bbox_to_anchor=(1, 1.))
     ax.set_xlim([-1.25,1.25])
     ax.set_ylim([-1.25,1.25])
+    
+    plt.axis('off')
+    extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
 
     if SaveFlag:
         if dir:
