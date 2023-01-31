@@ -416,10 +416,10 @@ def integrate(size_t numThreads,
             for p in range(N_E):
                 integrated_flux[k,p] = 0.0
 
-        printf("\n ")
-        printf("\n------------------------------------------------------------->>>")
-        printf("\nPhase index: %d", <int>k)
-        printf("\nFraction of hot rays: %.6f", <double>(<double>NUM_HITS/<double>(NUM_MISSES + NUM_HITS)))
+        # printf("\n ")
+        # printf("\n------------------------------------------------------------->>>")
+        # printf("\nPhase index: %d", <int>k)
+        # printf("\nFraction of hot rays: %.6f", <double>(<double>NUM_HITS/<double>(NUM_MISSES + NUM_HITS)))
         if NUM_HITS < 4:
             printf("\nRadiating region poorly resolved... integrator not called.")
         else:
