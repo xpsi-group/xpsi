@@ -157,7 +157,7 @@ cdef int compute_globalRayMap(size_t numThreads,
         i = <size_t> ii
         T = threadid()
         ROOT = i * N
-        if i%10 == 0:
+        if i%100 == 0:
             printf("\nThread %d is tracing annulus #%d of rays.", <int>T, <int>i)
 
         for j in range(N):
