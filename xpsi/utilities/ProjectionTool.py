@@ -97,6 +97,9 @@ ABBl = ['PS','SC','SR','ST','OA','OC','OR','CA','CC','CR','CT']
 REF = dict(zip(ABBl,REFl))
 
 def transform(thetaR,phiR,V,phi0=0.0):
+        """
+        
+        """
         phi0 = phi0*np.pi*2.
 
         RA = [-np.sin(phi0),np.cos(phi0),0.]
@@ -129,7 +132,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     GOAL: printing 2D visualisation of hot spot(s) on a spherical surface
     ##### INPUTS #####
     Vp: vector of parameters
-    model: model adopted e.g. ST-U, ST-PST !PLEASE USE "-S" and not just "S" for symmetric models
+    model: model adopted e.g. ST-U, ST+PST !PLEASE USE "-S" and not just "S" for symmetric models. Recognised hot spot names are "ST", "PST", "CST", "EST", "PDT", "CDT", "EDT"; for two hot spot model connect each hot spot model with "+" (first for primary; second for secondary). If the two hot spots have the same name, add "-S" (if all the secondary hot spot is antipodal and its temperature and radius is the same of the primary); "-U" if the properties of the secondary spot is completely unrelated to the primary ones; "-Ua" if the secondary hot spot is antipodal to the primary but has independent "radius" and "temperature".
     POV: Point Of View - location (for string arguments: colatitude) from which the neutron star is observed; if string can be:
         "I" -from the point of view of Earth-: in this case x and y are rotated compared
                                            other configuration to visualise equator horizontally and North on top
@@ -177,28 +180,26 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         -
         """
         ### check super
-        T_name = symbol_type_hot+'__super_temperature'
-        R_name = symbol_type_hot+'__super_radius'
-        P_name = symbol_type_hot+'__phase_shift'
-        C_name = symbol_type_hot+'__super_colatitude'
+        T_name = symbol_type_hot+REF['ST']
+        R_name = symbol_type_hot+REF['SR']#'__super_radius'
+        P_name = symbol_type_hot+REF['PS']#'__phase_shift'
+        C_name = symbol_type_hot+REF['SC']#'__super_colatitude'
         if ((not(R_name in params) or not(T_name in params))) or (not(asymFlag) and (not(P_name in params) or not(C_name in params))):
-            #print ("here:",((not(R_name in params) or not(T_name in params))))
-            #print ("here:",(not(asymFlag) and (not(P_name in params) or not(C_name in params))))
-            #if ((not(T_name in params) and not(R_name in params))) or (not(asymFlag) and (not(P_name in params) or not(C_name in params))):
             print ("ERROR! super properties required for \'%s\' hot spot ('p' = primary; 's' = secondary and '' for single hot spot model)"%symbol_type_hot)
             raise IpyExit
         elif (asymFlag and ((P_name in params) or (C_name in params))):
             print ("WARNING! there are info for a secondary hot spot that will not being used")
+            
         
         if ('DT' in hot_name):
             ### check cede
-            T_name = symbol_type_hot+'__cede_temperature'
-            R_name = symbol_type_hot+'__cede_radius'
+            T_name = symbol_type_hot+REF['CT']#'__cede_temperature'
+            R_name = symbol_type_hot+REF['CR']
             if ('C' in hot_name) and not((T_name in params) or (R_name in params)):
                 print ("ERROR! Double temperature (DT) models require the definition of cede properties")
                 raise IpyExit
-            C_name = symbol_type_hot+'__cede_colatitude'
-            A_name = symbol_type_hot+'__cede_azimuth'
+            C_name = symbol_type_hot+REF['CT']#'__cede_colatitude'
+            A_name = symbol_type_hot+REF['CA']#'__cede_azimuth'
             
             if ('C' in hot_name) and ((C_name in params) or (A_name in params)):
                 print ("WARNING! there are info for a complex geometry, but they are not being used")
@@ -210,12 +211,12 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 raise IpyExit
         
         if ('ST' in hot_name) and (('C' in hot_name) ^ ('E' in hot_name) ^ ('P 'in hot_name)):
-                R_name = symbol_type_hot+'__omit_radius'
+                R_name = symbol_type_hot+REF['OR']#'__omit_radius'
                 if ('C' in hot_name) and not((R_name in params)):
                     print ("ERROR! Double temperature (DT) models require the definition of cede properties")
                     raise IpyExit
-                C_name = symbol_type_hot+'__omit_colatitude'
-                A_name = symbol_type_hot+'__omit_azimuth'
+                C_name = symbol_type_hot+REF['OC']#'__omit_colatitude'
+                A_name = symbol_type_hot+REF['OA']#'__omit_azimuth'
                 if ('C' in hot_name) and ((C_name in params) or (A_name in params)):
                     print ("WARNING! there are info for a complex geometry, but they are not being used")
                 if (('P' in hot_name) or ('E' in hot_name)) and not((C_name in params) or (C_name in params)):
@@ -227,6 +228,9 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         """
         GOAL: checking compatibility between specified model and parameters
         """
+        if ('-' in model) and (not('-S' in model) and  not('-U' in model) and not('-Ua' in model)):
+            print ("ERROR: model not recognised. If model has derived quantities and does not fall into the cathergories mentioned below: tranform your dictionary to match \"-U\" requirements. Recognised hot spot names are \"ST\", \"\PST\", \"\CST\", \"EST\", \"PDT\", \"CDT\", \"EDT\"; for two hot spot model connect each hot spot model with \"+\" (first for primary; second for secondary). If the two hot spots have the same name, add \"-S\" (if all the secondary hot spot is antipodal and its temperature and radius is the same of the primary); \"-U\" if the properties of the secondary spot is completely unrelated to the primary ones; \"-Ua\" if the secondary hot spot is antipodal to the primary but has independent radius and temperature.")
+            raise IpyExit
         if ('+' in model) or ('-' in model):
             print ("YOU ARE USING A 2 HOT SPOT MODEL")
             if ('-S' in model):
@@ -365,15 +369,15 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         TA_s = TA_p
 
         if len(TA_p)==2:
-            iii = 0 if TA_p[0]>TA_p[1] else 6
-            CAall=[mycolors0[7-iii],mycolors0[iii],mycolors0[7-iii],mycolors0[iii]]
+            iii = 1 if TA_p[0]>TA_p[1] else nColors-1
+            CAall=[mycolors0[nColors-iii],mycolors0[iii],mycolors0[nColors-iii],mycolors0[iii]]
         else:
             if len(TA_p)==len(labels_p):
-                CAall=[mycolors0[6],mycolors0[6]]
+                CAall=[mycolors0[nColors-1],mycolors0[nColors-1]]
             else:
-                CAall=[mycolors0[6],'black',mycolors0[6],'black']
+                CAall=[mycolors0[nColors-1],'black',mycolors0[nColors-1],'black']
 
-    else:
+    elif (('+' in model) or ('-' in model)):
         phiA_s,thetaA_s,zetaA_s,TA_s,labels_s = fillVECTORS('s')
         print ("phiA_s",phiA_s)
         TAall = TA_p+TA_s
@@ -390,6 +394,18 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 coli = mycolors0[ind_i]
                 j = j+1
             CAall.append(coli)
+    
+    else:
+        zetaA_s =[]
+        
+        if len(TA_p)==2:
+            iii = 1 if TA_p[0]>TA_p[1] else nColors-1
+            CAall=[mycolors0[nColors-iii],mycolors0[iii],mycolors0[nColors-iii],mycolors0[iii]]
+        else:
+            if len(TA_p)==len(labels_p):
+                CAall=[mycolors0[nColors-1],mycolors0[nColors-1]]
+            else:
+                CAall=[mycolors0[nColors-1],'black',mycolors0[nColors-1],'black']
             
     if antipodal:
             
@@ -420,12 +436,15 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
     #drawing circles from pole
     VA = []
+    print ("len(VA) I",len(VA))
     for i in range(len(zetaA_p)):
         Vi  = [np.cos(x2)*np.sin(zetaA_p[i]),np.sin(x2)*np.sin(zetaA_p[i]),np.cos(zetaA_p[i])*np.ones(len(x2))]
         VA.append(Vi)
+    print ("len(VA) II",len(VA))
     for i in range(len(zetaA_s)):
         Vi  = [np.cos(x2)*np.sin(zetaA_s[i]),np.sin(x2)*np.sin(zetaA_s[i]),np.cos(zetaA_s[i])*np.ones(len(x2))]
         VA.append(Vi)
+    print ("len(VA) III",len(VA))
 
 
 
@@ -434,8 +453,11 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
     NO_POLE_FLAG = False
 
-
+    
     allowedPOV = ["I"]
+    if not('cos_inclination' in DICT_VECTOR):
+        print ("WARNING: view from Earth is not allowed")
+        allowedPOV = []
     LABall = labels_p +labels_s
 
     flag_P = False
