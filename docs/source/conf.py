@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.abspath('../'))
 
 # If your documentation needs a minimal Sphinx version, state it here.
 # tested with v1.8.5, but compatibility with other versions unknown
-needs_sphinx = '1.8.5'
+#needs_sphinx = '1.8.'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -66,27 +66,6 @@ html_sidebars = {
         'version.html',
     ],
 }
-
-
-#smv_rebuild_tags = False
-smv_branch_whitelist = r"^main$"  # build main branch, and anything relating to documentation
-
-smv_remote_whitelist = r'^origin$'
-smv_prefer_remote_refs = True
-#smv_outputdir_format = '{ref.commit}' 
-
-### OTHERS
-
-smv_released_pattern = r'.*tags.*'
-smv_outputdir_format = '{ref.name}'
-smv_remote_whitelist = r'^origin$'
-smv_latest_version = version
-#smv_tag_whitelist = r'^.*$'
-#smv_branch_whitelist = r'^.*$'
-#smv_branch_whitelist = r"^main$"  # build main branch, and anything relating to documentation
-#smv_released_pattern = r'.*tags.*'
-
-
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -228,3 +207,22 @@ texinfo_documents = [
      author, 'X-PSI', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+# -- Options for Multiversion Buid -----------------------------------------
+#smv_rebuild_tags = False
+smv_branch_whitelist = r"^main$"  # build main branch, and anything relating to documentation
+
+smv_remote_whitelist = r'^origin$'
+smv_prefer_remote_refs = True
+#smv_outputdir_format = '{ref.commit}' 
+
+### OTHERS
+
+smv_released_pattern = r'.*tags.*'
+smv_outputdir_format = '{ref.name}'
+smv_remote_whitelist = r'^origin$'
+smv_latest_version = release
+
+
+
+
