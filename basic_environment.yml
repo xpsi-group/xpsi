@@ -1,0 +1,9 @@
+name: xpsi_py3
+channels:
+  - defaults
+dependencies:
+  - numpy
+  - cython
+  - matplotlib
+  - scipy
+  - wrapt
