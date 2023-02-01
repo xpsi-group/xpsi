@@ -23,6 +23,7 @@ The emisphere facing the observer has solid lines describing the hot spot; the e
 The centers of a hot spots on the emisphere facing the observer are tagged with crosses; the ones correspondent to the hot spots on the opposite emisphere compare to the observer are tagged with cyrcles.
 Each hot spot is first created having one of the pole as center and then rotated to the right location.
 Further rotation are the necessary to account for the point of view.
+Colors: omitting regions are marked in black; emitting regions are plotted with RdBu color map: from draker blue to dim blue, dim red and dark red going from hotter to colder emitting hot spots.
 """
 
 
