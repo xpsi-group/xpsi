@@ -19,11 +19,11 @@ import xpsi
 
 """
 The main idea of this tool it to create a 2D image showing the neutron star surface with its hot spots.
-The emisphere facing the observer has solid lines describing the hot spot; the emisphere facing opposite to the observer has dimmed colored lines compare dto what shown in the legend.
-The centers of a hot spots on the emisphere facing the observer are tagged with crosses; the ones correspondent to the hot spots on the opposite emisphere compare to the observer are tagged with cyrcles.
-Each hot spot is first created having one of the pole as center and then rotated to the right location.
-Further rotation are the necessary to account for the point of view.
-Colors: omitting regions are marked in black; emitting regions are plotted with RdBu color map: from draker blue to dim blue, dim red and dark red going from hotter to colder emitting hot spots.
+The hemisphere facing the observer has solid lines describing the hot spot; the hemisphere opposite to the observer has dimmed colored lines compare to what is shown in the legend.
+The centers of a hot spot on the hemisphere facing the observer are tagged with crosses; the ones corresponding to the hot spots on the opposite hemisphere are tagged with cycles.
+Each hot spot is created with one of the poles as the center and then rotated to the right location.
+Further rotation is necessary to account for the point of view.
+Colors: omitting regions are marked in black; emitting regions are plotted with RdBu color map: dark blue -> light blue -> dim red -> dark red, moving from hotter to colder emitting hot spots.
 """
 
 
@@ -63,8 +63,8 @@ def veneer(x, y, axes, lw=1.0, length=8):
     """
     GOAL: Make the plots a little more aesthetically pleasing. Author Thomas E. Riley
     ##### INPUTS #####
-    x: sets a x-axis tick every x[0] (x values) and a number of the x-axis tick values every x[1] (x values)
-    y: sets a y-axis tick every y[0] (y values) and a number of the y-axis tick values every y[1] (y values)
+    x: sets a x-axis tick every x[0] value, and shows the number corresponding to the x-axis tick values every x[1] value
+    y: sets a y-axis tick every y[0] value, and shows the number corresponding to the y-axis tick values every y[1] value
     axes: axes of plot
     lw: tick line width in points
     length: tick length in points
@@ -121,7 +121,7 @@ def transform(thetaR,phiR,V,phi0=0.0):
         ##### INPUTS #####
         thetaR: desired colatitude of the vector (could be hot spot center) [rad]
         phitR: desired phase of the vector (could be hot spot center) [cycles]
-        V: starting vector (could be defining the hot spot cyrcle)
+        V: starting vector (could be defining the hot spot cycle)
         phi0: phase of the point of view [cycle]
         ##### OUTPUTS #####
         Vout: rotated vector describing the hot spot
@@ -712,9 +712,9 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         symb: symbol plotted (unless signFlag is True and hot spot is visible: in that case marker is set as 'x')
         col: color of marker to plot the point of interest
         FlagLeg: True if we want to add the legend relative to the marker of interest to the plot
-        L1: label for legend if point of interest on the emisphere phasing observer
-        L2: label for legend if point of interest on the emisphere opposite to the observer
-        cL: color of marker for hot spot center in legend (only used of for this type of point different legend are used depending if the emisphere is facing or opposite to the observer)
+        L1: label for legend if point of interest on the hemisphere phasing observer
+        L2: label for legend if point of interest on the hemisphere opposite to the observer
+        cL: color of marker for hot spot center in legend (only used of for this type of point different legend are used depending if the hemisphere is facing or opposite to the observer)
         ##### OUTPUTS #####
         -
         """
@@ -727,10 +727,10 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         if NO_POLE_FLAG:
             out = transform(useT(-theta_sub),useP(-phi_sub),out,phi_sub) # changes location of point according to the desired point of view
 
-        alpha_o = 1 if out[2]>0. else alphaOH #out[2] > 0. => point plotted on the observer facing emisphere
+        alpha_o = 1 if out[2]>0. else alphaOH #out[2] > 0. => point plotted on the observer facing hemisphere
 
         if signFlag:
-            sign = 'x' if out[2]>0. else symb; #out[2] > 0. => point plotted on the observer facing emisphere
+            sign = 'x' if out[2]>0. else symb; #out[2] > 0. => point plotted on the observer facing hemisphere
             if sign == symb:
                 MS = 3
         if symb and not(signFlag):
@@ -743,7 +743,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 ax.plot([],[],sign, color = cL,markersize = MS, alpha = alpha_o,label = label_plot)
                 label_plotA.append(label_plot)
             label_plot = ''
-        # add legent for the point of interest
+        # add legend for the point of interest
         if FlagLeg and (not(L1) or not(L2)):
             label_plot = L1 if L1 else L2
         ax.plot(out[1],-out[0],sign, color = col,markersize = MS,label = label_plot, alpha = alpha_o)
@@ -821,10 +821,10 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         if NO_POLE_FLAGt:
             tryout = transform(useT(-theta_sub),useP(-phi_sub),tryout,phi_sub)
 
-        tryout_p = tryout[:,tryout[2,:] >= 0.] # find part of the hot spot contour that is located in the emisphere facing the observer
-        tryout_n = tryout[:,tryout[2,:] <  0.] # find part of the hot spot contour that is located in the emisphere opposite to the observer
+        tryout_p = tryout[:,tryout[2,:] >= 0.] # find part of the hot spot contour that is located in the hemisphere facing the observer
+        tryout_n = tryout[:,tryout[2,:] <  0.] # find part of the hot spot contour that is located in the hemisphere opposite to the observer
         
-        # Checks for numerical approximation and in case assign the very low values prosent in the array to the correct _p or _n vector (depening on when the points are) - use if all hot spot is at 1 side
+        # Corrects _p or _n vector in case of very low assigned values present in the array
         if (tryout_p[2,:].any()<1e-15) & (tryout_n[2,:].any()>1e-15):
             tryout_p = tryout[:,tryout[2,:]>np.max(tryout[2,:])]
             tryout_n = np.array(tryout)
@@ -833,9 +833,9 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             tryout_p = RotateList(tryout_p)
             tryout_n = RotateList(tryout_n)
         
-        # plot lines descring hot spot on emisphere facing the observer
+        # plot lines descring hot spot on hemisphere facing the observer
         ax.plot(tryout_p[1,:],-tryout_p[0,:], style_plot, color = color_plot, lw = lw_plot, label = LG)
-        # plot lines descring hot spot on emisphere opposite to the observer (dimmed lines)
+        # plot lines descring hot spot on hemisphere opposite to the observer (dimmed lines)
         ax.plot(tryout_n[1,:],-tryout_n[0,:], style_plot, color = color_plot, lw = lw_plot, alpha = alphaOH)
 
 
@@ -846,7 +846,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     #plot star edges:
     ax.plot(np.cos(x),np.sin(x),'-', color = 'gray', lw = 1, alpha = 0.5)
 
-    # plot cyrcle lines marking different colatitudes from Pole or origine of the 2D plot
+    # plot circle lines marking different colatitudes from Pole or origine of the 2D plot
     CIRC_A = []
     for i in range(len(yfact)):
         CIRC_i = np.array([np.sin(yfact[i])*np.cos(x),np.sin(yfact[i])*np.sin(x),np.cos(yfact[i])*np.ones(len(x))])
