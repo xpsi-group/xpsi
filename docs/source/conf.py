@@ -77,6 +77,7 @@ smv_prefer_remote_refs = True
 
 ### OTHERS
 smv_released_pattern = r'^tags/v.*$'
+smv_outputdir_format = '{ref.name}'
 #smv_tag_whitelist = r'^.*$'
 #smv_branch_whitelist = r'^.*$'
 #smv_branch_whitelist = r"^main$"  # build main branch, and anything relating to documentation
