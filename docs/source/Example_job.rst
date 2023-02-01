@@ -97,7 +97,7 @@ For Helios, we can use the following type of job script:
     srun -n $SLURM_JOB_NUM_NODES --ntasks-per-node=1 cp -r $HOME/xpsi/examples/examples_modeling_tutorial/model_data $OUTPUT_FOLDER 
     sleep 1
 
-    mpiexec -n 252 python $JOB_DIR/TestRun_BB.py > out1 2> err1
+    mpiexec -n 252 -mca btl_tcp_if_include ib0 python $JOB_DIR/TestRun_BB.py > out1 2> err1
 
     #Move your output from scratch to storage space.
     mkdir -p /zfs/helios/filer0/$USER/
