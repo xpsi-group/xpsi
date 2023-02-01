@@ -62,7 +62,7 @@ templates_path = ['_templates']
 
 # Try to make sidebar with versions:
 html_sidebars = {
-    '**': [
+    '*': [
         'version.html',
     ],
 }
