@@ -34,6 +34,8 @@
    Surface_radiation_field_tools
    Modeling_without_statistics
    Post-processing
+   Emitting_patterns_2Dprojection
+   Importance_sample
    Example_script_and_modules
    Example_job
 
