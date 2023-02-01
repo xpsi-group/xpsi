@@ -218,7 +218,8 @@ smv_prefer_remote_refs = True
 
 ### OTHERS
 
-smv_released_pattern = r'.*tags.*'
+smv_released_pattern = r'^tags/.*$'
+#smv_released_pattern = r'.*tags.*'
 smv_outputdir_format = '{ref.name}'
 smv_remote_whitelist = r'^origin$'
 smv_latest_version = release
