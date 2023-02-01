@@ -483,7 +483,8 @@ class Likelihood(ParameterSubspace):
               rtol_logprior=None,
               atol_logprior=None,
               physical_points=None,
-              force_update=False):
+              force_update=False,
+              numpy_allclose=False):
         """ Perform checks on the likelihood evaluator and the prior density.
 
         Can be called from :func:`~.Sample.nested` to execute a check before
@@ -505,21 +506,25 @@ class Likelihood(ParameterSubspace):
             This can be used to prevent errors in cases when the automatic check 
             for update need is not working as intended.
 
+        :param optional[bool] numpy_allclose:
+            Determine whether the allclose function of numpy is used when evaluating
+            the closeness of the given and calculated likelihood. By default, a fallback
+            implementation is used, which also prints the likelihood values.
+
         """
-        try:
+        if numpy_allclose:
             from numpy import allclose
-        except ImportError:
-            yield 'Cannot import ``allclose`` function from NumPy.'
-            yield 'Using fallback implementation'
+        else:
+            yield 'Not using ``allclose`` function from NumPy.'
+            yield 'Using fallback implementation instead.'
 
             @make_verbose('Checking closeness of likelihood arrays:',
                           'Closeness evaluated')
             def allclose(a, b, rtol, atol, equal_nan=None):
                 """ Fallback based on NumPy v1.17. """
                 for _a, _b in zip(a, b):
-                    yield '%.8e | %.8e .....' % (_a, _b)
+                    yield '%.10e | %.10e .....' % (_a, _b)
                 yield ~((_np.abs(a - b) > atol + rtol*_np.abs(b)).any())
-                #raise NotImplementedError('Implement a fallback.')
 
         lls = []
         lps = [] if logprior_call_vals is not None else None
