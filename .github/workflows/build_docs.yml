@@ -33,22 +33,6 @@ jobs:
         micromamba install sphinx decorator h5py
         micromamba install -c conda-forge nbsphinx nbconvert
         pip install sphinxcontrib-websupport sphinx_rtd_theme sphinx-multiversion
-#    - uses: conda-incubator/setup-miniconda@v2
-#      with:
-#         activate-environment: xpsipy3
-#         environment-file: basic_environment.yml
-#         python-version: 3.9
-#         auto-activate-base: false
-#    - name : install docs dependencies
-#      run: |
-#        conda install sphinx
-#        conda install -c conda-forge nbsphinx
-#        conda install -c conda-forge nbconvert
-#        conda install decorator
-#        conda install h5py
-#        pip install sphinxcontrib-websupport
-#        pip install sphinx-multiversion
-#        pip install sphinx_rtd_theme
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
@@ -67,6 +51,7 @@ jobs:
       run: |
         make versions
         #touch build/html/.nojekyll
+        mkdir html
         cp source/index-redirect.html build/html/index.html
         ln -srf build/html/$(git tag -l --sort=creatordate |tail -1) build/html/latest  # auto-link the latest tag
 
