@@ -121,7 +121,7 @@ def transform(thetaR,phiR,V,phi0=0.0):
         ##### INPUTS #####
         thetaR: desired colatitude of the vector (could be hot spot center) [rad]
         phitR: desired phase of the vector (could be hot spot center) [cycles]
-        V: starting vector (could be defining the hot spot cycle)
+        V: starting vector (could be defining the hot spot circle)
         phi0: phase of the point of view [cycle]
         ##### OUTPUTS #####
         Vout: rotated vector describing the hot spot
