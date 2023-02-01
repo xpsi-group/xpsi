@@ -71,12 +71,12 @@ html_sidebars = {
 #smv_rebuild_tags = False
 #smv_branch_whitelist = r'py3_multiversion_docs'
 
-#smv_remote_whitelist = r'^origin$'
+smv_remote_whitelist = r'^origin$'
 smv_prefer_remote_refs = True
-smv_outputdir_format = '{ref.commit}' 
+#smv_outputdir_format = '{ref.commit}' 
 
 ### OTHERS
-#smv_released_pattern = r'^tags/v.*$'
+smv_released_pattern = r'^tags/v.*$'
 #smv_tag_whitelist = r'^.*$'
 #smv_branch_whitelist = r'^.*$'
 #smv_branch_whitelist = r"^main$"  # build main branch, and anything relating to documentation
