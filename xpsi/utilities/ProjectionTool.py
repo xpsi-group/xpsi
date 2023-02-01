@@ -20,7 +20,7 @@ import xpsi
 """
 The main idea of this tool it to create a 2D image showing the neutron star surface with its hot spots.
 The hemisphere facing the observer has solid lines describing the hot spot; the hemisphere opposite to the observer has dimmed colored lines compare to what is shown in the legend.
-The centers of a hot spot on the hemisphere facing the observer are tagged with crosses; the ones corresponding to the hot spots on the opposite hemisphere are tagged with cycles.
+The centers of a hot spot on the hemisphere facing the observer are tagged with crosses; the ones corresponding to the hot spots on the opposite hemisphere are tagged with circles.
 Each hot spot is created with one of the poles as the center and then rotated to the right location.
 Further rotation is necessary to account for the point of view.
 Colors: omitting regions are marked in black; emitting regions are plotted with RdBu color map: dark blue -> light blue -> dim red -> dark red, moving from hotter to colder emitting hot spots.
