@@ -215,6 +215,7 @@ texinfo_documents = [
 smv_remote_whitelist = r'^origin$'
 smv_prefer_remote_refs = True
 smv_released_pattern = r'^tags/.*$'
+smv_tag_whitelist = r"^(1\.[2]\.\d+)$" 
 #smv_released_pattern = r'.*tags.*'
 smv_outputdir_format = '{ref.name}'
 smv_latest_version = release
