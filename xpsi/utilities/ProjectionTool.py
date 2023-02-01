@@ -95,7 +95,7 @@ def veneer(x, y, axes, lw=1.0, length=8):
 
     axes.tick_params(which='major', colors='black', length=length, width=lw)
     axes.tick_params(which='minor', colors='black', length=int(length/2), width=lw)
-    plt.setp(axes.spines.values(), linewidth=lw, color='black')
+    plt.setp(list(axes.spines.values()), linewidth=lw, color='black')
 
 
 REFl= [   '__phase_shift',
@@ -112,7 +112,7 @@ REFl= [   '__phase_shift',
 
 ABBl = ['PS','SC','SR','ST','OA','OC','OR','CA','CC','CR','CT']
 
-REF = dict(zip(ABBl,REFl))
+REF = dict(list(zip(ABBl,REFl)))
 
 def transform(thetaR,phiR,V,phi0=0.0):
         """
@@ -191,7 +191,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     # Define set of parameters
     DICT_VECTOR = []
     try:
-        DICT_VECTOR = dictVp.keys()
+        DICT_VECTOR = list(dictVp.keys())
     except AttributeError:
         DICT_VECTOR = dictVp.names
         
