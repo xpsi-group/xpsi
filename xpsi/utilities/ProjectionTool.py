@@ -17,6 +17,14 @@ from matplotlib import cm
 
 import xpsi
 
+"""
+The main idea of this tool it to create a 2D image showing the neutron star surface with its hot spots.
+The emisphere facing the observer has solid lines describing the hot spot; the emisphere facing opposite to the observer has dimmed colored lines compare dto what shown in the legend.
+The centers of a hot spots on the emisphere facing the observer are tagged with crosses; the ones correspondent to the hot spots on the opposite emisphere compare to the observer are tagged with cyrcles.
+Each hot spot is first created having one of the pole as center and then rotated to the right location.
+Further rotation are the necessary to account for the point of view.
+"""
+
 
 rc = {"font.family" : "serif",
       "mathtext.fontset" : "stix"}
@@ -35,12 +43,12 @@ rcParams['font.size'] = 14.0
 
 
 class IpyExit(SystemExit):
-    """Exit Exception for IPython.
-
+    """
+    Exit Exception for IPython.
     Exception temporarily redirects stderr to buffer.
     """
     def __init__(self):
-        # print("exiting")  # optionally print some message to stdout, too
+        print("exiting")  # optionally print some message to stdout, too
         # ... or do other stuff before exit
         sys.stderr = StringIO()
 
@@ -51,7 +59,17 @@ class IpyExit(SystemExit):
 
 
 def veneer(x, y, axes, lw=1.0, length=8):
-    """ Make the plots a little more aesthetically pleasing. """
+    """
+    GOAL: Make the plots a little more aesthetically pleasing. Author Thomas E. Riley
+    ##### INPUTS #####
+    x: sets a x-axis tick every x[0] (x values) and a number of the x-axis tick values every x[1] (x values)
+    y: sets a y-axis tick every y[0] (y values) and a number of the y-axis tick values every y[1] (y values)
+    axes: axes of plot
+    lw: tick line width in points
+    length: tick length in points
+    ##### OUTPUTS #####
+    -
+    """
     if x is not None:
         if x[1] is not None:
             axes.xaxis.set_major_locator(MultipleLocator(x[1]))
@@ -98,7 +116,14 @@ REF = dict(zip(ABBl,REFl))
 
 def transform(thetaR,phiR,V,phi0=0.0):
         """
-        
+        GOAL: rotate vector V to the right coordinates
+        ##### INPUTS #####
+        thetaR: desired colatitude of the vector (could be hot spot center) [rad]
+        phitR: desired phase of the vector (could be hot spot center) [cycles]
+        V: starting vector (could be defining the hot spot cyrcle)
+        phi0: phase of the point of view [cycle]
+        ##### OUTPUTS #####
+        Vout: rotated vector describing the hot spot
         """
         phi0 = phi0*np.pi*2.
 
@@ -235,9 +260,10 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         """
         GOAL: checking compatibility between specified model and parameters
         ##### INPUTS #####
+        -
         ##### OUTPUTS #####
         hot_name: name of primary hot spot (according to our naming convention)
-        hot_name_s: name of the primary hot spot (according to our naming convention)
+        hot_name_s: name of the secondary hot spot (according to our naming convention)
         """
         hot_name = ''
         hot_name_s = ''
@@ -289,7 +315,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         phiA: phases of hot spot components [cycle]
         thetaA: colatitudes of hot spot components [rad]
         zetaA: angular radii of hot spot components [rad]
-        TA: temperatures describing components of the hot spot [K]
+        TA: log10 temperatures/1K describing components of the hot spot
         labels: labels for each hot spont component
         """
 
@@ -350,7 +376,9 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         ##### CHECK if VALUES ARE SENSIBLE#####
         for phi in phiA:
             if (phi >1. or phi < -1.):
-                print ("ERROR: phases out of range (< 1 or > 1)")
+                print ("WARNING: phases out of range (< 1 or > 1)!!!")
+            if (phi >2. or phi < -2.):
+                print ("ERROR: phases out of range (< 2 or > 2)")
                 raise IpyExit
         
         for theta in thetaA:
@@ -364,8 +392,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 raise IpyExit
         
         for logT in TA:
-            if (logT > 10 or logT < 6):
-                print ("ERROR: log10 temperature radius out of range (< 10 or > 6)")
+            if (logT > 15 or logT < 3):
+                print ("ERROR: log10 temperature radius out of range (> 15 or < 3)")
                 raise IpyExit
                 
         return phiA,thetaA,zetaA,TA,labels
@@ -376,13 +404,13 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         """
         GOALS: setting phases and colatitude for antipodal configuration of seconday hot spot
         ##### INPUTS #####
-        phiA: array of phases for conponents of primary hot spot [cycle]
-        thetaA: array of colatitudes for conponents of primary hot spot [rad]
-        labels: array of labels for conponents of primary hot spot
+        phiA: array of phases for components of primary hot spot [cycle]
+        thetaA: array of colatitudes for components of primary hot spot [rad]
+        labels: array of labels for components of primary hot spot
         ##### OUTPUTS #####
-        phiA_s: array of phases for conponents of secodary (derived) hot spot [cycle]
-        thetaA_s: array of colatitudes for conponents of secondary (derived) hot spot [rad]
-        labels_s: array of labels for conponents of primary hot spot
+        phiA_s: array of phases for components of secodary (derived) hot spot [cycle]
+        thetaA_s: array of colatitudes for components of secondary (derived) hot spot [rad]
+        labels_s: array of labels for components of secondary hot spot
         """
         phiA_s = np.zeros(len(phiA))
         thetaA_s = np.zeros(len(thetaA))
@@ -495,7 +523,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     theta_sub = 0.0
     phi_sub   = 0.0
 
-    NO_POLE_FLAG = False
+    NO_POLE_FLAG = False # False when origin of 2D projection is the reference point
     
     allowedPOV = ["I"]
     if not('cos_inclination' in DICT_VECTOR):
@@ -671,48 +699,82 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     label_plotA = []
     label_plot  = ''
 
-    def tranform_plot(t,p,V,MS,signFlag,symb,col,FlagLeg=False,L1="",L2="",cL ="gray"):
+    def transform_plot(t,p,V,MS,signFlag,symb,col,FlagLeg=False,L1="",L2="",cL ="gray"):
+        """
+        GOAL: plot a specific point on the sphere (mock neutron star) surface
+        ##### INPUTS #####
+        t: target colatitude of the point of interest
+        p: target phase of the point of interest
+        V: initial origin (usually North pole - rarely South pole); shape: [x,y,z]
+        MS: marker size to plot the point of interest
+        signFlag: True if plot hot spot centers, False otherwise
+        symb: symbol plotted (unless signFlag is True and hot spot is visible: in that case marker is set as 'x')
+        col: color of marker to plot the point of interest
+        FlagLeg: True if we want to add the legend relative to the marker of interest to the plot
+        L1: label for legend if point of interest on the emisphere phasing observer
+        L2: label for legend if point of interest on the emisphere opposite to the observer
+        cL: color of marker for hot spot center in legend (only used of for this type of point different legend are used depending if the emisphere is facing or opposite to the observer)
+        ##### OUTPUTS #####
+        -
+        """
         sign       = 'x'
         label_plot = ''
+        # unless users modiefied it, useT(x) and useP(x) return x
+        # tranform function: rotate vector V (starting origin of the point of interest) to coordinate (t,p) respectively (colatitude, phase)
         out        = transform(useT(t),useP(p),V)
 
         if NO_POLE_FLAG:
-            out = transform(useT(-theta_sub),useP(-phi_sub),out,phi_sub)
+            out = transform(useT(-theta_sub),useP(-phi_sub),out,phi_sub) # changes location of point according to the desired point of view
 
-        alpha_o = 1 if out[2]>0. else alphaOH
+        alpha_o = 1 if out[2]>0. else alphaOH #out[2] > 0. => point plotted on the observer facing emisphere
 
         if signFlag:
-            sign = 'x' if out[2]>0. else symb;
+            sign = 'x' if out[2]>0. else symb; #out[2] > 0. => point plotted on the observer facing emisphere
             if sign == symb:
                 MS = 3
         if symb and not(signFlag):
             sign = symb
-
+        
+        # add legend entry for point, if not already there and if there are different legend depening on the point location (emisphere facing or opposite to the obsever)
         if FlagLeg and (L1 and L2):
             label_plot = L1 if out[2]>=0. else L2
             if not(label_plot in label_plotA):
                 ax.plot([],[],sign, color = cL,markersize = MS, alpha = alpha_o,label = label_plot)
                 label_plotA.append(label_plot)
             label_plot = ''
-
+        # add legent for the point of interest
         if FlagLeg and (not(L1) or not(L2)):
             label_plot = L1 if L1 else L2
         ax.plot(out[1],-out[0],sign, color = col,markersize = MS,label = label_plot, alpha = alpha_o)
 
 
     def RotateList(tryout):
+        """
+        GOAL: modifying input vector to avoid plotting lines unifying wrong points on the circles.
+        In practice it determines the optimal starting point of the vector to allow the lines of the hot spot to be correcly plotted.
+        ##### INPUTS #####
+        tryout: input list
+        ##### OUTPUTS #####
+        -
+        """
+        # Check if the input list has only one column
         if (np.shape(tryout)[1]==1):
             return np.array(tryout)
+            
+        # Calculate the differences between consecutive x and y values
         tryout_xD    = list(np.abs(tryout[0,1:] -  tryout[0,:-1]))
         tryout_yD    = list(np.abs(tryout[1,1:] -  tryout[1,:-1]))
+        
+        # Sort the differences
         tryout_xDord = np.sort(tryout_xD)
         tryout_yDord = np.sort(tryout_yD)
-
+        
+        # Get the index of the largest difference in x and y
         max_index_x  = tryout_xD.index(tryout_xDord[-1])
         max_index_y  = tryout_yD.index(tryout_yDord[-1])
         indexR       = -1
 
-
+        # Determine the optimal starting index of vector of interest
         if (max_index_x == max_index_y):
             indexR = max_index_x
         elif (tryout_xDord[-1] > 3.*tryout_xDord[-2]):
@@ -720,6 +782,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         elif (tryout_yDord[-1] > 3.*tryout_yDord[-2]):
             indexR = max_index_y
 
+        # defining optimal starting point in vector to avoid weird lines appearing connecting non logically consecutive (but consecutive in list) points the hot spot lines
         if indexR>=0:
             indexR = indexR+1
             nE = np.shape(tryout)[1]
@@ -737,16 +800,30 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
 
     def transform_plot_lines(TA,PA,VA,color_plot,NO_POLE_FLAGt,style_plot = '-',lw_plot = 1, LG = ""):
-
+        """
+        GOAL: plot lines defining the hot spots
+        ##### INPUTS #####
+        TA: array of colatitudes of points describing the hot pots
+        PA: array of phases of points
+        VA: initial vector
+        color_plot: color of the line
+        NO_POLE_FLAGt: flag True for specified point of view
+        style_plot: line style of hot spot to be plotted
+        lw_plot: line width of the spot to be plotted
+        LG: Legend hot spot
+        ##### OUTPUTS #####
+        -
+        """
         tryout = transform(useT(TA),useP(PA),VA)
 
 
         if NO_POLE_FLAGt:
             tryout = transform(useT(-theta_sub),useP(-phi_sub),tryout,phi_sub)
 
-        tryout_p = tryout[:,tryout[2,:] >= 0.]
-        tryout_n = tryout[:,tryout[2,:] <  0.]
-
+        tryout_p = tryout[:,tryout[2,:] >= 0.] # find part of the hot spot contour that is located in the emisphere facing the observer
+        tryout_n = tryout[:,tryout[2,:] <  0.] # find part of the hot spot contour that is located in the emisphere opposite to the observer
+        
+        # Checks for numerical approximation and in case assign the very low values prosent in the array to the correct _p or _n vector (depening on when the points are) - use if all hot spot is at 1 side
         if (tryout_p[2,:].any()<1e-15) & (tryout_n[2,:].any()>1e-15):
             tryout_p = tryout[:,tryout[2,:]>np.max(tryout[2,:])]
             tryout_n = np.array(tryout)
@@ -754,17 +831,21 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         elif (np.shape(tryout_n)[1]!=0.) and (np.shape(tryout_p)[1]!=0.):
             tryout_p = RotateList(tryout_p)
             tryout_n = RotateList(tryout_n)
-
+        
+        # plot lines descring hot spot on emisphere facing the observer
         ax.plot(tryout_p[1,:],-tryout_p[0,:], style_plot, color = color_plot, lw = lw_plot, label = LG)
+        # plot lines descring hot spot on emisphere opposite to the observer (dimmed lines)
         ax.plot(tryout_n[1,:],-tryout_n[0,:], style_plot, color = color_plot, lw = lw_plot, alpha = alphaOH)
 
 
-
+    # coordinates to span any cycle:
     x= np.linspace(0,2.*np.pi,1000)
     yfact = np.linspace(0.,np.pi*0.5,10)
+    
     #plot star edges:
     ax.plot(np.cos(x),np.sin(x),'-', color = 'gray', lw = 1, alpha = 0.5)
 
+    # plot cyrcle lines marking different colatitudes from Pole or origine of the 2D plot
     CIRC_A = []
     for i in range(len(yfact)):
         CIRC_i = np.array([np.sin(yfact[i])*np.cos(x),np.sin(yfact[i])*np.sin(x),np.cos(yfact[i])*np.ones(len(x))])
@@ -777,6 +858,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             transform_plot_lines(0.0,0.0,CIRC_i,'gray',False,'-.',0.5)
         CIRC_A.append(CIRC_i)
 
+    # plot equator
     transform_plot_lines(0.0,0.0,CIRC_A[-1],'dimgray',True,'-',2,"Equator")
 
 
@@ -789,7 +871,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
     for i in range(len(VA)):
         transform_plot_lines(THETAall[i],PHIall[i],VA[i],CAall[i],NO_POLE_FLAG,'-',3,LABall[i])
-        tranform_plot(THETAall[i],PHIall[i],[0,0,1],10,True,'o',CAall[i], True,'Hot Region centers','Hot Region centers -Opposite Hemisphere')
+        transform_plot(THETAall[i],PHIall[i],[0,0,1],10,True,'o',CAall[i], True,'Hot Region centers','Hot Region centers -Opposite Hemisphere')
 
     if antipodal:
         
@@ -804,10 +886,10 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 transform_plot_lines(thetaA_anti[i],phiA_anti[i],Vi,CAall[i],NO_POLE_FLAG,'-.',2)
                 
     L1 = r'$\phi=0\,[cycle],\, \theta = \pi/2\,[rad]$'
-    tranform_plot(np.pi*0.5,0.0,[0,0,1],5,False,'o', mycolors1[2], True,L1, '')
+    transform_plot(np.pi*0.5,0.0,[0,0,1],5,False,'o', mycolors1[2], True,L1, '')
 
     L1 = r'$\phi=0.125\,[cycle],\, \theta = \pi/2\,[rad]$'
-    tranform_plot(np.pi*0.5,0.125,[0,0,1],5,False,'D', mycolors1[2], True,L1, '')
+    transform_plot(np.pi*0.5,0.125,[0,0,1],5,False,'D', mycolors1[2], True,L1, '')
 
 
 
@@ -817,8 +899,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     transform_plot_lines(np.pi*0.5,0.125,MultA,mycolors1[2],NO_POLE_FLAG,'--',1)
 
     #rotating and plotting poles
-    tranform_plot(0.,0.,[0,0,1],10,False,'*',mycolors1[6], True, "Projected North Pole","Projected North Pole  -Opposite Hemisphere",mycolors1[6])
-    tranform_plot(0.,0.,[0,0,-1],25,False,'*',mycolors1[6], True, "Projected South Pole","Projected South Pole  -Opposite Hemisphere",mycolors1[6])
+    transform_plot(0.,0.,[0,0,1],10,False,'*',mycolors1[6], True, "Projected North Pole","Projected North Pole  -Opposite Hemisphere",mycolors1[6])
+    transform_plot(0.,0.,[0,0,-1],25,False,'*',mycolors1[6], True, "Projected South Pole","Projected South Pole  -Opposite Hemisphere",mycolors1[6])
 
     ax.legend(fontsize = legsize,loc='upper left', bbox_to_anchor=(1, 1.))
     ax.set_xlim([-1.25,1.25])
