@@ -297,7 +297,7 @@ For example job scripts, see the Helios example in :ref:`example_job`.
 .. _CALMIPsystem:
 
 CALMIP (not updated for python3 yet)
------------------
+------------------------------------
 
 `CALMIP <https://www.calmip.univ-toulouse.fr>`_ is the supercomputer of `Université Fédérale de Toulouse <https://www.univ-toulouse.fr>`_
 
