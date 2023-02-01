@@ -153,14 +153,8 @@ Do you obtain parameter values and evidences?
     packages ``emcee`` and ``schwimmbad``. We assume the user can infer how to
     do this using the information above and on the :ref:`install` page.
 
-Next, we need to load `GSL <https://www.gnu.org/software/gsl/>`_ and set the `PATH` environment variable:
-
-.. code-block:: bash
-
-    module load GSL/2.7-GCC-10.3.0
-    export PATH=/sw/arch/Centos8/EB_production/2021/software/GSL/2.7-GCC-10.3.0:$PATH
-
-To prepare X-PSI from ``$HOME``:
+For `GSL <https://www.gnu.org/software/gsl/>`_ we can use the default 2.5 version already provided in Snellius.
+Thus, to prepare X-PSI from ``$HOME``, we only need:
 
 .. code-block:: bash
 
@@ -168,8 +162,7 @@ To prepare X-PSI from ``$HOME``:
     LDSHARED="icc -shared" CC=icc python setup.py install
 
 This ensures that both the compiler and linker are Intel, otherwise gcc linker
-would be invoked. Provided the GSL ``<prefix>/bin`` is in your ``PATH``
-environment variable, the X-PSI ``setup.py`` script will automatically use the
+would be invoked. The X-PSI ``setup.py`` script will automatically use the
 ``gsl-config`` executable to link the shared libraries and give the required
 cflags for compilation of the X-PSI extensions. Because the library location
 will not change for runtime, we state the runtime linking instructions at
@@ -202,7 +195,7 @@ For an example job script, refer to :ref:`example_job`.
 Lisa (SURF)
 -----------
 
-`Lisa <https://servicedesk.surf.nl/wiki/display/WIKI/Lisa>`_ follows mostly the exact installation instructions as that of Snellius. Small differences are still to be investigated.
+`Lisa <https://servicedesk.surf.nl/wiki/display/WIKI/Lisa>`_ follows mostly the installation instructions as that of Snellius. Small differences in the installation procedure are still to be studied.
 
 Helios (API)
 ------------
