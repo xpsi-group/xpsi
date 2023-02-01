@@ -153,7 +153,7 @@ def transform(thetaR,phiR,V,phi0=0.0):
         Vout = np.squeeze(np.array(Vout))
         return Vout
 
-def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase = True, SaveFlag = False, dir = "", Name = "", POVname="", extension = ".png", antipodal = False):
+def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase = False, SaveFlag = False, dir = "", Name = "", POVname="", extension = ".png", antipodal = False):
     """
     GOAL: printing 2D visualisation of hot spot(s) on a spherical surface
     ##### INPUTS #####
