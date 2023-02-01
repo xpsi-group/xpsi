@@ -64,7 +64,12 @@ jobs:
         CC:   gcc-10
     - name : build docs
       shell: bash -l {0}
-      run: make versions
+      run: |
+        make versions
+        touch build/html/.nojekyll
+        cp docs/docsite-index-redirect.html build/html/index.html
+        ln -srf build/html/$(git tag -l --sort=creatordate |tail -1) build/html/latest  # auto-link the latest tag
+
       working-directory: docs/
     - name: Deploy to GitHub Pages
       if: success()
