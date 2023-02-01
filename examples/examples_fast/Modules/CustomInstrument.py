@@ -30,14 +30,15 @@ class CustomInstrument(xpsi.Instrument):
         return self._folded_signal
 
     @classmethod
-    def from_response_files(cls, ARF, RMF, max_input, min_input=0,channel=[1,1500],
-                            channel_edges=None):
+    def from_response_files(cls, ARF, RMF, channel_edges,max_input,
+                            min_input=0,channel=[1,1500],
+                            ):
         """ Constructor which converts response files into :class:`numpy.ndarray`s.
         :param str ARF: Path to ARF which is compatible with
                                 :func:`numpy.loadtxt`.
         :param str RMF: Path to RMF which is compatible with
                                 :func:`numpy.loadtxt`.
-        :param str channel_edges: Optional path to edges which is compatible with
+        :param str channel_edges: Path to edges which is compatible with
                                   :func:`numpy.loadtxt`.
         """
 
