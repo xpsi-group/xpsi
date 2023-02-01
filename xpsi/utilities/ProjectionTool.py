@@ -408,8 +408,6 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     TA_s = []
     labels_s =[]
 
-
-
     CAall =[]
     if '-S' in model:
 
@@ -494,13 +492,10 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         Vi  = [np.cos(x2)*np.sin(zetaA_s[i]),np.sin(x2)*np.sin(zetaA_s[i]),np.cos(zetaA_s[i])*np.ones(len(x2))]
         VA.append(Vi)
 
-
-
     theta_sub = 0.0
     phi_sub   = 0.0
 
     NO_POLE_FLAG = False
-
     
     allowedPOV = ["I"]
     if not('cos_inclination' in DICT_VECTOR):
