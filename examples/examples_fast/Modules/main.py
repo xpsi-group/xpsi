@@ -1,4 +1,4 @@
-from __future__ import print_function, division
+
 
 import numpy as np
 import math
@@ -8,10 +8,10 @@ from xpsi.global_imports import gravradius
 
 import time
 
-from CustomInstrument import CustomInstrument
-from CustomSignal import CustomSignal
-from CustomPhotosphere import CustomPhotosphere
-from CustomPrior import CustomPrior
+from .CustomInstrument import CustomInstrument
+from .CustomSignal import CustomSignal
+from .CustomPhotosphere import CustomPhotosphere
+from .CustomPrior import CustomPrior
 
 
 # Data

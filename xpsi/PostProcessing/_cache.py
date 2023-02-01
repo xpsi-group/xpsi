@@ -58,7 +58,7 @@ class _Cache(object):
 
         with self._open('r+') as f:
             g = f['data']
-            for key, value in data.items():
+            for key, value in list(data.items()):
                 if isinstance(value, tuple) or isinstance(value, list):
                     if key not in list(g.keys()):
                         shape = [f.attrs['n'], len(value)]
@@ -91,7 +91,7 @@ class _Cache(object):
 
         with self._open('r') as f:
             g = f['data']
-            for key in g.keys():
+            for key in list(g.keys()):
                 cached[key] = g[key][self.i,...]
 
         self.i += 1

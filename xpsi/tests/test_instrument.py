@@ -1,4 +1,4 @@
-from __future__ import division, print_function
+
 import numpy as np
 from xpsi.Instrument import Instrument
 from xpsi.Instrument import ResponseError

@@ -497,7 +497,7 @@ class CornerPlotter(PostProcessor):
         if scale_attrs is None:
             scale_attrs = {}
 
-        for key, value in scale_attrs.items():
+        for key, value in list(scale_attrs.items()):
             if hasattr(plotter.settings, key):
                 if isinstance(value, float) or isinstance(value, int):
                     setattr(plotter.settings, key,
@@ -553,7 +553,7 @@ class CornerPlotter(PostProcessor):
             if not condition: fragile.Break
 
             params = self.params
-            for param, l in param_plot_lims.items():
+            for param, l in list(param_plot_lims.items()):
                 j = params.names.index(param)
                 for i in range(j,len(params.names)):
                     ax = plotter.subplots[i,j]
@@ -568,7 +568,7 @@ class CornerPlotter(PostProcessor):
                     ax.yaxis.set_minor_locator(AutoMinorLocator())
 
             plotter.fig.canvas.draw() # ensure the new locators take effect
-            for param in param_plot_lims.keys():
+            for param in list(param_plot_lims.keys()):
                 j = params.names.index(param)
 
                 # deal with x-axes
@@ -1104,7 +1104,7 @@ class CornerPlotter(PostProcessor):
                   'Added crosshairs')
     def _add_crosshairs(plotter, names, truths):
         """ Add parameter crosshairs to triangle plot. """
-        spine = next(iter(plotter.subplots[0,0].spines.values()))
+        spine = next(iter(list(plotter.subplots[0,0].spines.values())))
         lw = spine.get_linewidth()
         for i, name in enumerate(names):
             true_val = truths[name]
@@ -1140,7 +1140,7 @@ class CornerPlotter(PostProcessor):
                 ax.tick_params(which='minor', colors='black', length=minor_length)
                 ax.xaxis.set_tick_params(which='both', width=lw)
                 ax.yaxis.set_tick_params(which='both', width=lw)
-                for spine in ax.spines.values():
+                for spine in list(ax.spines.values()):
                     spine.set_linewidth(lw)
 
     def _set_line_and_contour_args(self, lw=1.0, alpha=1.0, **kwargs):

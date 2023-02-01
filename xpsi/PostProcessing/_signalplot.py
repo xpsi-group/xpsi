@@ -188,7 +188,7 @@ class SignalPlot(object, metaclass=ABCMeta):
 
         # will shadow class attributes if you really do want instance-specific
         # attributes
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             key = '_' + key if key[0] != '_' else key
             try:
                 getattr(self, key)
@@ -332,7 +332,7 @@ class SignalPlot(object, metaclass=ABCMeta):
                        width=self._tick_width,
                        direction='out')
 
-        for spine in ax.spines.values():
+        for spine in list(ax.spines.values()):
             spine.set_linewidth(self._tick_width)
 
     def _add_contours(self,

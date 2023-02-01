@@ -43,7 +43,7 @@ class Metadata(object):
             self.bounds = bounds
 
         if labels is None:
-            self._labels = dict(zip(self.names, self.names))
+            self._labels = dict(list(zip(self.names, self.names)))
         else:
             self.labels = labels
 
@@ -55,7 +55,7 @@ class Metadata(object):
         if kde_settings is not None:
             self.kde_settings = kde_settings
 
-        if truths is not None and None not in truths.values():
+        if truths is not None and None not in list(truths.values()):
             self.truths = truths
         else:
             self._truths = dict(list(zip(self.names, [None] * len(self.names))))
