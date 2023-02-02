@@ -913,6 +913,7 @@ class CornerPlotter(PostProcessor):
         if bootstrap:
             for i, ax in enumerate(diag):
                 ind = posterior.get_index(self.params.names[i])
+                param_name = self.params.labels[i]
                 def calculate_intervals(quantiles):
                     cred = _np.zeros((len(quantiles), len(quantiles)), dtype=_np.double)
                     for j, p in enumerate(quantiles):
@@ -969,18 +970,30 @@ class CornerPlotter(PostProcessor):
 
 
                     if self.credible_interval_1d_all_show:
-                        x_0,_=ax.get_xlim()
-                        y_0,y_1=ax.get_ylim()
-                        y_pos = y_1+(0.05+0.11*(self.r))*(y_1-y_0)
-                        ax.text(x_0, y_pos, title,
-                                    color = color,
-                                    #ha="center",
-                                    alpha =1.,
-                                    fontsize=fontsize)
+                        x_pos = 0.5
+                        y_pos = 1.05 + 0.11 * (self.r)
+                        ax.text(x_pos, y_pos, title,
+                                color=color,
+                                horizontalalignment="center",
+                                alpha=1.,
+                                fontsize=fontsize,
+                                transform=ax.transAxes)
+                        if self.r == (len(self.subset_to_plot) - 1):
+                            y_pos = 1.05 + 0.11 * (1+self.r)
+                            title_param_name = r'${}$'.format(param_name)
+                            ax.text(x_pos, y_pos, title_param_name,
+                                    color='black',
+                                    horizontalalignment="center",
+                                    alpha=1.,
+                                    fontsize=fontsize,
+                                    transform=ax.transAxes)
 
                     else:
+                        title_param_name = r'${}$'.format(param_name)
+                        title = title_param_name.center(30) + '\n' + title.center(30)
                         ax.set_title(title, color=color,
                                      fontsize=fontsize)
+
 
 
                 if compute_all_intervals:
@@ -1013,6 +1026,7 @@ class CornerPlotter(PostProcessor):
         else:
             for i, ax in enumerate(diag):
                 ind = posterior.get_index(self.params.names[i])
+                param_name = self.params.labels[i]
                 def calculate_intervals(quantiles):
                     cred = _np.zeros(len(quantiles), dtype=_np.double)
                     for j, p in enumerate(quantiles):
@@ -1054,16 +1068,26 @@ class CornerPlotter(PostProcessor):
                         fontsize = plotter.settings.axes_labelsize
 
                     if self.credible_interval_1d_all_show:
-                        x_0,_=ax.get_xlim()
-                        y_0,y_1=ax.get_ylim()
-                        y_pos = y_1+(0.05+0.11*(self.r))*(y_1-y_0)
-                        ax.text(x_0, y_pos, title,
-                                    color = color,
-                                    #ha="center",
-                                    alpha =1.,
-                                    fontsize=fontsize)
-
+                        x_pos = 0.5
+                        y_pos = 1.05 + 0.11 * (self.r)
+                        ax.text(x_pos, y_pos, title,
+                                color=color,
+                                horizontalalignment="center",
+                                alpha=1.,
+                                fontsize=fontsize,
+                                transform=ax.transAxes)
+                        if self.r == (len(self.subset_to_plot) - 1):
+                            y_pos = 1.05 + 0.11 * (1+self.r)
+                            title_param_name = r'${}$'.format(param_name)
+                            ax.text(x_pos, y_pos, title_param_name,
+                                    color='black',
+                                    horizontalalignment="center",
+                                    alpha=1.,
+                                    fontsize=fontsize,
+                                    transform=ax.transAxes)
                     else:
+                        title_param_name = r'${}$'.format(param_name)
+                        title = title_param_name.center(30) + '\n' + title.center(30)
                         ax.set_title(title, color=color,
                                      fontsize=fontsize)
 
