@@ -989,10 +989,17 @@ class CornerPlotter(PostProcessor):
                                     transform=ax.transAxes)
 
                     else:
-                        title_param_name = r'${}$'.format(param_name)
-                        title = title_param_name.center(30) + '\n' + title.center(30)
                         ax.set_title(title, color=color,
                                      fontsize=fontsize)
+                        title_param_name = r'${}$'.format(param_name)
+                        x_pos = 0.5
+                        y_pos = 1.05 + 0.10 * (len(title.split('\n')))
+                        ax.text(x_pos, y_pos, title_param_name,
+                                color='black',
+                                horizontalalignment="center",
+                                alpha=1.,
+                                fontsize=fontsize,
+                                transform=ax.transAxes)
 
 
 
@@ -1086,10 +1093,17 @@ class CornerPlotter(PostProcessor):
                                     fontsize=fontsize,
                                     transform=ax.transAxes)
                     else:
-                        title_param_name = r'${}$'.format(param_name)
-                        title = title_param_name.center(30) + '\n' + title.center(30)
                         ax.set_title(title, color=color,
                                      fontsize=fontsize)
+                        title_param_name = r'${}$'.format(param_name)
+                        x_pos = 0.5
+                        y_pos = 1.05 + 0.10 * (len(title.split('\n')))
+                        ax.text(x_pos, y_pos, title_param_name,
+                                color='black',
+                                horizontalalignment="center",
+                                alpha=1.,
+                                fontsize=fontsize,
+                                transform=ax.transAxes)
 
 
                 if compute_all_intervals:
