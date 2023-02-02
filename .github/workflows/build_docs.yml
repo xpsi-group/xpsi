@@ -23,7 +23,6 @@ jobs:
     - name: install gsl
       run: |
         sudo apt-get install -y libgsl-dev
-
     - name: Install Python2 Conda environment with Micromamba
       uses: mamba-org/provision-with-micromamba@main
       with:
@@ -51,7 +50,6 @@ jobs:
       run : |
         mkdir docs/build/html/
         mv docs/build/html/* docs/build/html/py2/
-
     - uses: actions/checkout@v3
     - name: Install Python3 Conda environment with Micromamba
       uses: mamba-org/provision-with-micromamba@main
@@ -82,7 +80,6 @@ jobs:
         CC:   gcc-10
     - name : build docs
       run: make html
-
     - name: Deploy to GitHub Pages
       if: success()
       uses: crazy-max/ghaction-github-pages@v3
