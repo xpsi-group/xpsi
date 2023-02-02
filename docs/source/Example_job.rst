@@ -3,6 +3,10 @@
 Example job
 ===========
 
+For both jobs you will need these 
+`auxiliary files <https://zenodo.org/record/7113931>`_ inside the ``model_data/``
+directory.
+
 Snellius
 --------
 
@@ -67,9 +71,9 @@ For Helios, we can use the following type of job script:
     #SBATCH -N 2
     #SBATCH --tasks-per-node=126
     #SBATCH -t 1-00:00:00
-    #SBATCH -J run1
-    #SBATCH -o out
-    #SBATCH -e err
+    #SBATCH -J example_run
+    #SBATCH -o example_run_%j.out
+    #SBATCH -e example_run_%j.err
     #SBATCH --partition=neutron-star
     #SBATCH --mem 160000
     #SBATCH --mail-user=my_email@gmail.com
@@ -94,10 +98,10 @@ For Helios, we can use the following type of job script:
     cd $OUTPUT_FOLDER
 
     #Copy the input data to be visible for all the nodes (and make sure your paths point to hddstore):
-    srun -n $SLURM_JOB_NUM_NODES --ntasks-per-node=1 cp -r $HOME/xpsi/examples/examples_modeling_tutorial/model_data $OUTPUT_FOLDER 
+    srun -n $SLURM_JOB_NUM_NODES --ntasks-per-node=1 cp -r $JOB_DIR/model_data/ $OUTPUT_FOLDER 
     sleep 1
 
-    mpiexec -n 252 -mca btl_tcp_if_include ib0 python $JOB_DIR/TestRun_BB.py > out1 2> err1
+    mpiexec -n 252 -mca btl_tcp_if_include ib0 python $JOB_DIR/TestRun_BB.py
 
     #Move your output from scratch to storage space.
     mkdir -p /zfs/helios/filer0/$USER/
