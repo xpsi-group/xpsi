@@ -16,10 +16,44 @@ jobs:
     strategy:
       fail-fast: false
       max-parallel: 5
+    - name: Set up GCC
+      run: |
+         sudo apt-get install -y gcc
+      shell: bash -l {0}
+    - name: install gsl
+      run: |
+        sudo apt-get install -y libgsl-dev
 
-    steps:
+    - name: Install Python2 Conda environment with Micromamba
+      uses: mamba-org/provision-with-micromamba@main
+      with:
+        cache-env: true
+        cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+        environment-file: basic_environment.yml
+        environment-name: xpsipy2
+        extra-specs: |
+          python=2.7
+    - name : install docs dependencies
+      run: |
+        micromamba install sphinx=1.8.5 decorator=4.4.1 h5py 
+        micromamba install -c conda-forge nbsphinx=0.5.1 nbconvert=5.6.1
+        pip install sphinxcontrib-websupport==1.1.2 sphinx_rtd_theme==0.4.3
+    - name: install X-PSI package
+      run: |
+        python setup.py install
+      shell: bash -l {0}
+      env:
+        CC:   gcc-10
+    - name : build docs
+      run: make html
+      working-directory: docs/
+    - name : move docs
+      run : |
+        mkdir docs/build/html/
+        mv docs/build/html/* docs/build/html/py2/
+
     - uses: actions/checkout@v3
-    - name: Install Conda environment with Micromamba
+    - name: Install Python3 Conda environment with Micromamba
       uses: mamba-org/provision-with-micromamba@main
       with:
         cache-env: true
@@ -48,7 +82,7 @@ jobs:
         CC:   gcc-10
     - name : build docs
       run: make html
-      working-directory: docs/
+
     - name: Deploy to GitHub Pages
       if: success()
       uses: crazy-max/ghaction-github-pages@v3
