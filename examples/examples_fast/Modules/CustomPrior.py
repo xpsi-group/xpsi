@@ -112,7 +112,7 @@ class CustomPrior(xpsi.Prior):
         p = list(p) # copy
 
         # used ordered names and values
-        ref = dict(list(zip(self.parameters.names, p)))
+        ref = dict(zip(self.parameters.names, p))
 
         # compactness ratio M/R_eq
         p += [gravradius(ref['mass']) / ref['radius']]

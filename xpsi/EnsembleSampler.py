@@ -172,7 +172,7 @@ class EnsembleSampler(_EnsembleSampler):
         else:
             raise PriorError
 
-        moments = list(map(list, list(zip(*moments))))
+        moments = list(map(list, zip(*moments)))
 
         def helper(p):
             """ Check inclusion in prior support. """
