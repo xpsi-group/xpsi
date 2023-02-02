@@ -12,7 +12,7 @@ X-ray Pulse Simulation and Inference (X-PSI)
     **This version of X-PSI (v1.2.1 and below) is now deprecated**, 
     please migrate your code to Python3 and X-PSI v2.0 or higher. 
     You can find requirements and instructions for installing the Python3 version of the code 
-    (X-PSI v2.0 and above) at `this link <https://xpsi-group.github.io/xpsi/py2/index.html>`_.
+    (X-PSI v2.0 and above) at `this link <https://xpsi-group.github.io/xpsi/>`_.
 
 X-PSI is designed to simulate rotationally-modified (pulsed) surface X-ray
 emission from neutron stars, taking into account relativistic effects on
