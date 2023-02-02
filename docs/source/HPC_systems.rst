@@ -3,13 +3,18 @@
 HPC systems
 ================
 
-The information provided in this page is for users who intend to work on High-Performance Computing (HPC) systems. These installation instructions are system-specific. X-PSI has already been used on different systems, for some of which, we provide the instructions below. This information may also be translated to other systems by users looking for guidance.
+The information provided in this page is for users who intend to work on 
+High-Performance Computing (HPC) systems. These installation instructions are 
+system-specific. X-PSI has already been used on different systems, for some of
+which we provide the instructions below. This information may also be
+translated to other systems by users looking for guidance.
 
 
 Snellius (SURF)
 -------------------
 
-`Snellius <https://servicedesk.surf.nl/wiki/display/WIKI/Snellius>`_ is the Dutch National Supercomputer.
+`Snellius <https://servicedesk.surf.nl/wiki/display/WIKI/Snellius>`_ is the 
+Dutch National Supercomputer.
 
 Installation
 ^^^^^^^^^^^^
@@ -30,7 +35,8 @@ To be additionally safe, run:
 
     module purge
 
-Load environment module and modify clean environment with Intel toolchain information:
+Load environment module and modify clean environment with Intel toolchain
+information:
 
 .. code-block:: bash
 
@@ -47,7 +53,8 @@ Prepare a conda environment for X-PSI:
     conda env create -f basic_environment.yml
     conda init
     
-For changes to take effect, close and re-open the current shell. After that load the modules again, and activate the environment:  
+For changes to take effect, close and re-open the current shell. After that
+load the modules again, and activate the environment:  
 
 .. code-block:: bash
 
@@ -64,7 +71,8 @@ Next, we point to Intel compilers:
     export CC=icc
     export CXX=icpc
 
-Below we explicitly specify flag arguments to select intel instruction sets that are compatible with the AMD processors present in Snellius.
+Below we explicitly specify flag arguments to select intel instruction sets
+that are compatible with the AMD processors present in Snellius.
 
 Load ``cmake`` module:
 
@@ -92,7 +100,8 @@ Do you see ranks 0 through 3 reporting for duty?
 
 .. note::
 
-    If MPI raises a warning about missing hydra process manager, run the following code-block:
+    If MPI raises a warning about missing hydra process manager, run the
+    following code-block:
 
     .. code-block:: bash
 
@@ -116,7 +125,10 @@ Use the last command to check for the presence of shared objects.
 
 .. note::
 
-    In case the Intel compilers on Snellius run into issues with Intel Math Kernal Library (MKL) due to static linkage, you can solve the problem by setting the appropriate paths to the environment variable for the pre-load libs:
+    In case the Intel compilers on Snellius run into issues with Intel Math
+    Kernel Library (MKL) due to static linkage, you can solve the problem by
+    setting the appropriate paths to the environment variable for the pre-load
+    libs:
 
     .. code-block:: bash
 
@@ -124,7 +136,8 @@ Use the last command to check for the presence of shared objects.
 
     Further details on MKL issues can be found in this `thread <https://community.intel.com/t5/Intel-oneAPI-Math-Kernel-Library/mkl-fails-to-load/m-p/1155538>`_
 
-We also need to the set the environment variable for library path to point at MultiNest:
+We also need to the set the environment variable for library path to point at
+MultiNest:
 
 .. code-block:: bash
 
@@ -153,8 +166,9 @@ Do you obtain parameter values and evidences?
     packages ``emcee`` and ``schwimmbad``. We assume the user can infer how to
     do this using the information above and on the :ref:`install` page.
 
-For `GSL <https://www.gnu.org/software/gsl/>`_ we can use the default 2.5 version already provided in Snellius.
-Thus, to prepare X-PSI from ``$HOME``, we only need:
+For `GSL <https://www.gnu.org/software/gsl/>`_ we can use the default 2.5
+version already provided in Snellius. Thus, to prepare X-PSI from ``$HOME``, we
+only need:
 
 .. code-block:: bash
 
@@ -170,8 +184,13 @@ compilation in the ``setup.py`` script.
 
 .. note::
 
-    Since Snellius uses AMD processors and the Intel instruction sets are internally translated, the installation proceeds while repeating `automatic CPU dispatch` and `icc` warnings.
-    These warnings are safe to ignore. However, as they get printed, it takes longer for the installation and can exceed the idle time on the login node, resulting in a `broken pipe`. In this case, it would be preferable to direct the output of the installation into an output file, and if required use a `nohup` or similar command.
+    Since Snellius uses AMD processors and the Intel instruction sets are
+    internally translated, the installation proceeds while repeating `automatic
+    CPU dispatch` and `icc` warnings. These warnings are safe to ignore.
+    However, as they get printed, it takes longer for the installation and can
+    exceed the idle time on the login node, resulting in a `broken pipe`. In
+    this case, it would be preferable to direct the output of the installation
+    into an output file, and if required use a `nohup` or similar command.
 
 If you ever need to reinstall, first clean to recompile C files:
 
@@ -181,10 +200,12 @@ If you ever need to reinstall, first clean to recompile C files:
 
 .. note::
 
-    We typically do not used the :mod:`~xpsi.PostProcessing` module, but instead
-    ``rsync`` output files to a local system to perform plotting.
-    This circumvents any potential backend problems and permits straightforward
-    use of IPython for interactive plotting. However, if one wishes to use it on a HPC, it would require installation of `GetDist` and `Nestcheck`. See :ref:`install` page for relevant details.
+    We typically do not used the :mod:`~xpsi.PostProcessing` module, but 
+    instead ``rsync`` output files to a local system to perform plotting. This
+    circumvents any potential backend problems and permits straightforward use
+    of IPython for interactive plotting. However, if one wishes to use it on an
+    HPC, it would require installation of `GetDist` and `Nestcheck`. See 
+    :ref:`install` page for relevant details.
 
 
 Batch usage
@@ -262,10 +283,9 @@ Let's then install GSL:
 .. code-block:: bash
 
    cd; wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
-   cd gsl-latest 
-   mkdir build 
-   cd build
-   ../configure CC=gcc --prefix=$HOME/gsl
+   tar -xzvf gsl-{latest}
+   cd gsl-{latest} 
+   ./configure CC=gcc --prefix=$HOME/gsl
    make
    make check
    make install
@@ -273,7 +293,8 @@ Let's then install GSL:
    make clean
    export PATH=$HOME/gsl/bin:$PATH
 
-Let's then finally install X-PSI and test that it works:
+where ``gsl-{latest}`` should be replaced with the latest version number. Let's
+then finally install X-PSI and test that it works:
    
 .. code-block:: bash
 
