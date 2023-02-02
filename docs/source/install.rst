@@ -33,8 +33,8 @@ per instructions below so as to not disrupt your Python ecosystem.
 Conda Environment
 ^^^^^^^^^^^^^^^^^
 
-In the source directory we provide a dependency file ``environment.yml`` that
-installs the Python packages required for full functionality of X-PSI. Its
+In the source directory we provide a dependency file ``basic_environment.yml`` that
+installs the Python packages required for basic functionality of X-PSI. Its
 contents are:
 
 .. code-block:: bash
@@ -42,50 +42,27 @@ contents are:
     name: xpsi
     channels:
         - defaults
-        - conda-forge
     dependencies:
         - numpy
         - cython
         - matplotlib
         - scipy
         - wrapt
-        - pymultinest  # nested sampling
-        - mpi4py  # nested sampling
-        - getdist  # posterior KDE corner plotting
-        - h5py  # storage of X-ray signals computed from posterior samples
-        - nestcheck  # posterior error analysis, plotting, run combination, etc
-        - fgivenx  # conditional posterior plotting; also required by nestcheck
+
 
 The core packages required for likelihood functionality are
 `numpy <https://docs.scipy.org/doc/numpy/index.html>`_,
 `cython <http://cython.readthedocs.io/en/latest>`_,
 `matplotlib <https://matplotlib.org/stable/index.html>`_,
 `scipy <https://docs.scipy.org/doc//scipy/index.html>`_, and
-`wrapt <https://wrapt.readthedocs.io/en/latest/>`_. Then, optional packages 
-required for nested sampling are
-`pymultinest <https://johannesbuchner.github.io/PyMultiNest/>`_ and
-`mpi4py <http://cython.readthedocs.io/en/latest>`_. Note that pyMultiNest 
-requires MultiNest, which may be installed later (refer to :ref:`multinest` in
-this guide). Finally, optional packages required for post-processing are
-`getdist <https://getdist.readthedocs.io/en/latest/>`_,
-`h5py <https://docs.h5py.org/en/stable/index.html>`_,
-`nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_, and
-`fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_.
+`wrapt <https://wrapt.readthedocs.io/en/latest/>`_. 
 
-In addition, some optional miscellaneous packages are:
-
-#. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook.
-#. `pytest <https://docs.pytest.org/en/7.2.x/>`_ if you want to run functionality tests for X-PSI.
-#. `emcee <https://emcee.readthedocs.io/en/latest/>`_ for optional ensemble-MCMC functionality.
-
-Alternatively, you can install any of these via conda (or conda-forge) after
-environment creation.
 
 To create a virtual environment from this file:
 
 .. code-block:: bash
 
-     conda env create -f <path/to/xpsi>/environment.yml
+     conda env create -f <path/to/xpsi>/basic_environment.yml
 
 If Conda does not solve the environment dependencies, you may need to create
 an environment manually via
@@ -94,10 +71,8 @@ an environment manually via
 
      conda create -n xpsi
 
-and then install the core dependencies listed in `environment.yml`.
-
-**ALL THE FOLLOWING STEPS SHOULD BE PERFORMED IN THIS NEWLY CREATED
-ENVIRONMENT.** 
+and then install the core dependencies listed in ``basic_environment.yml`` via
+conda.
 
 Activate the environment as:
 
@@ -105,6 +80,38 @@ Activate the environment as:
 
     conda activate xpsi
 
+.. note::
+
+    **ALL THE FOLLOWING STEPS SHOULD BE PERFORMED IN THIS NEWLY CREATED
+    ENVIRONMENT.** Pay special attention to reactivate the environment if you
+    ever have to restart the kernel.
+    
+Next, install the packages
+`pymultinest <https://johannesbuchner.github.io/PyMultiNest/>`_ and
+`mpi4py <http://cython.readthedocs.io/en/latest>`_ which are required for 
+nested sampling:
+
+.. code-block:: bash
+
+    conda install -c conda-forge mpi4py pymultinest
+    
+Note that pyMultiNest requires MultiNest, which will be installed later (refer
+to :ref:`multinest` in this guide). Then, install optional packages
+`getdist <https://getdist.readthedocs.io/en/latest/>`_,
+`h5py <https://docs.h5py.org/en/stable/index.html>`_,
+`nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_, and
+`fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_ which are required for
+post-processing:
+
+.. code-block:: bash
+
+    conda install -c conda-forge getdist h5py nestcheck fgivenx
+
+In addition, some optional miscellaneous packages are:
+
+#. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook.
+#. `pytest <https://docs.pytest.org/en/7.2.x/>`_ if you want to run functionality tests for X-PSI.
+#. `emcee <https://emcee.readthedocs.io/en/latest/>`_ for optional ensemble-MCMC functionality.
 
 
 .. _nonpython:
@@ -133,20 +140,26 @@ works):
     linux systems come with `GCC <https://gcc.gnu.org>`_ built-in. To find out
     the GCC path-executable on your system, run ``which gcc``.
 
-Untar, navigate to the build directory (e.g., ``cd gsl-latest/build``), and
+Untar, navigate to the directory (e.g., ``cd gsl-latest``), and
 then build and install:
 
 .. code-block:: bash
 
-    ../configure CC=<path/to/compiler/executable> --prefix=$HOME/gsl
+    ./configure CC=<path/to/compiler/executable> --prefix=$HOME/gsl
     make
     make check
     make install
     make installcheck
     make clean
+    
+This will install the library in your ``$HOME``, as an example. Next, add GSL
+to your path by adding the following line to ``~/.bashrc``:
 
-This will install the library in your ``$HOME``, as an example. You can check
-the prefix and version of GSL on your path:
+.. code-block:: bash
+
+    export PATH=$HOME/gsl/bin:$PATH
+
+You can check the prefix and version of GSL on your path:
 
 .. code-block:: bash
 
@@ -415,7 +428,7 @@ Tips for installing on Windows
 X-PSI was successfully installed and run on Windows in the year 2020, at least
 for the purpose of likelihood functionality, using the following 
 user-contributed procedure.
-​
+
 * Clone the X-PSI repository to a directory on your Windows computer (see above).
 * Download `Ubuntu <https://www.windowscentral.com/install-windows-subsystem-linux-windows-10>`_ for Windows.
 * Install a Anaconda or Miniconda  virtual Python environment in an Ubuntu shell.
