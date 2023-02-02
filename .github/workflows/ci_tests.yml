@@ -23,11 +23,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: conda-incubator/setup-miniconda@v2
+    - name: Install Conda environment with Micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-         activate-environment: xpsipy3
-         environment-file: basic_environment.yml
-         auto-activate-base: false
+        cache-env: true
+        cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+        environment-file: basic_environment.yml
+        environment-name: xpsipy3
+    - name: mamba installs
+      run: |
+        micromamba install flake8 pytest
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
@@ -37,7 +42,6 @@ jobs:
         sudo apt-get install -y libgsl-dev
     - name: Lint with flake8
       run: |
-        conda install flake8
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
@@ -51,5 +55,4 @@ jobs:
 
     - name: Test with pytest
       run: |
-        conda install pytest
         pytest
