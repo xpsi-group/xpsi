@@ -211,6 +211,7 @@ texinfo_documents = [
 # -- Options for Multiversion Buid -----------------------------------------
 #smv_rebuild_tags = False
 #smv_branch_whitelist = r"^py3_multiversion_docs$"  # build main branch, and anything relating to documentation
+smv_branch_whitelist = r'^.*$'
 smv_tag_whitelist = r"^(1\.[2]\.\d+)$"
 smv_released_pattern = r'.*tags.*'
 smv_remote_whitelist = r'^origin$'
