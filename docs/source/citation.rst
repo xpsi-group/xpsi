@@ -40,10 +40,10 @@ Citations to these packages may be found in the software acknowledgements of bot
 JOSS paper and our :ref:`Applications` papers, and in the
 article text where the relevant software is applied. Links to the software and
 associated preprints and journal articles may be found in the bibliographies.
-Please follow the guidelines demonstrated in e.g. Riley et al. (2021)
+Please follow the guidelines demonstrated in e.g. `Riley et al. 2021 <https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract>`_
 to ensure the authors of the software receive the recognition they should.
 The dependencies often have their own citation instructions that should be
-followed first and foremost, but as an example from Riley et al. (2021). 
+followed first and foremost, but as an example from `Riley et al. 2021 <https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract>`_. 
 
 .. code-block:: latex
 
