@@ -56,14 +56,15 @@ class CustomInstrument(xpsi.Instrument):
         return self._folded_signal
 
     @classmethod
-    def from_response_files(cls, ARF, RMF, max_input, min_input=0,
-                            channel_edges=None):
+    def from_response_files(cls, ARF, RMF, channel_edges, max_input,
+                            min_input=0,
+                            ):
         """ Constructor which converts response files into :class:`numpy.ndarray`s.
         :param str ARF: Path to ARF which is compatible with
                                 :func:`numpy.loadtxt`.
         :param str RMF: Path to RMF which is compatible with
                                 :func:`numpy.loadtxt`.
-        :param str channel_edges: Optional path to edges which is compatible with
+        :param str channel_edges: Path to edges which is compatible with
                                   :func:`numpy.loadtxt`.
         """
         link ="https://doi.org/10.5281/zenodo.7094144"
@@ -83,12 +84,12 @@ class CustomInstrument(xpsi.Instrument):
         except:
             print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(RMF, link))
             exit()
-        if channel_edges:
-            try:
-                channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
-            except:
-                print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(channel_edges, link))
-                exit()
+
+        try:
+            channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
+        except:
+            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(channel_edges, link))
+            exit()
 
         matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
 
@@ -106,9 +107,9 @@ class CustomInstrument(xpsi.Instrument):
 
 NICER = CustomInstrument.from_response_files(ARF = 'model_data/nicer_v1.01_arf.txt',
                                              RMF = 'model_data/nicer_v1.01_rmf_matrix.txt',
+                                             channel_edges = 'model_data/nicer_v1.01_rmf_energymap.txt',
                                              max_input = 500,
-                                             min_input = 0,
-                                             channel_edges = 'model_data/nicer_v1.01_rmf_energymap.txt')
+                                             min_input = 0)
 
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 mass = (1.0, 3.0),                       # mass

@@ -63,10 +63,10 @@ RMF=np.diag(np.full(counter,1))
 
 Instrument = CustomInstrument.from_response_files(ARF =ARF,
                                              RMF = RMF,
+                                             channel_edges =channel_edges,
                                              max_input = 301,
                                              min_input = 10,
-                                             channel=[10,301],
-                                             channel_edges =channel_edges)
+                                             channel=[10,301])
 
 # # Signal
 signal = CustomSignal(data = data,
