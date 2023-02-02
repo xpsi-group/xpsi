@@ -19,21 +19,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: conda-incubator/setup-miniconda@v2
+    - name: Install Conda environment with Micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-         activate-environment: xpsipy2
-         environment-file: basic_environment.yml
-         python-version: 3.10
-         auto-activate-base: false
+        cache-env: true
+        cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+        environment-file: basic_environment.yml
+        environment-name: xpsipy3
+        extra-specs: |
+          python=3.10
     - name : install docs dependencies
       run: |
-        conda install sphinx
-        conda install -c conda-forge nbsphinx
-        conda install -c conda-forge nbconvert
-        conda install decorator
-        conda install h5py
-        pip install sphinxcontrib-websupport
-        pip install sphinx_rtd_theme
+        micromamba install sphinx decorator h5py
+        micromamba install -c conda-forge nbsphinx nbconvert
+        pip install sphinxcontrib-websupport sphinx_rtd_theme
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
