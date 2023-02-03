@@ -230,6 +230,8 @@ use EMCEE as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
 Note however that the post-processing turorials have only been implemented
 for the outputs of MultiNest.
 
+The package will be installed in your Conda environment (if activated).
+
 
 X-PSI
 -----
@@ -369,17 +371,17 @@ script. Then make sure the extension modules are inside the source directory
 
 Tips for installing on Mac OS
 -----------------------------
-​
+
 Most of the aforementioned instructions for linux are also applicable for Mac
 OS. Here we note some of the changes required.
-​
+
 After creating the environment using the ``environment.yml`` file, 
 install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to
 be installed hereafter. Use ``pip install`` to download and install ``h5py``
 and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy`` and ``cython`` if not
 using the ``environment.yml``. You may use the file as a reference of the
 packages required).
-​
+
 On Mac OS, it's preferable to use ``llvm clang`` rather than ``gcc``.  The
 ``homebrew`` version of ``clang`` works, but some users may face potential
 issues (see below for the MacOS native ``clang``).  To use ``homebrew`` version
@@ -442,7 +444,6 @@ You may also try to use the MacOS native version of ``clang``:
 If you encounter any problems with permissions when installing X-PSI, use the
 ``--user`` option (This will install X-PSI globally, and not just within your
 virtual environment).
-​
 
 Tips for installing on Windows
 ------------------------------

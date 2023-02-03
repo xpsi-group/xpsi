@@ -85,7 +85,7 @@ class NestedBackend(Run):
                                                 transform(samples[i,:ndims],
                                                           old_API=True)
 
-                        _np.savetxt(filerootpath + ext, transformed)
+                        _np.savetxt(filerootpath + "-" + ext, transformed)
 
                 # .stats file with same root needed, but do not need to modify
                 # the .stats file contents

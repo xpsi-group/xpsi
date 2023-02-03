@@ -18,22 +18,6 @@ jobs:
       max-parallel: 5
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-         activate-environment: xpsipy2
-         environment-file: basic_environment.yml
-         python-version: 3.9
-         auto-activate-base: false
-    - name : install docs dependencies
-      run: |
-        conda install sphinx
-        conda install -c conda-forge nbsphinx
-        conda install -c conda-forge nbconvert
-        conda install decorator
-        conda install h5py
-        pip install sphinxcontrib-websupport
-        pip install sphinx_rtd_theme
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
@@ -41,6 +25,57 @@ jobs:
     - name: install gsl
       run: |
         sudo apt-get install -y libgsl-dev
+    - name: check out X-PSI v1.2.1 
+      uses: actions/checkout@v3
+      with:
+        ref: v1.2.1
+    - name: Install Python2 Conda environment with Micromamba
+      uses: mamba-org/provision-with-micromamba@main
+      with:
+        cache-env: true
+        cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+        environment-file: basic_environment.yml
+        environment-name: xpsipy2
+        extra-specs: |
+          python=2.7
+    - name : install docs dependencies
+      run: |
+        micromamba install sphinx=1.8.5 decorator=4.4.1 h5py 
+        micromamba install -c conda-forge nbsphinx=0.5.1 nbconvert=5.6.1
+        pip install sphinxcontrib-websupport==1.1.2 sphinx_rtd_theme==0.4.3
+    - name: install X-PSI package
+      run: |
+       python setup.py install
+      shell: bash -l {0}
+      env:
+        CC:   gcc-10
+    - name : build docs
+      run: make html
+      working-directory: docs/
+    - name : move docs
+      run : |
+        mkdir ../../../../py2
+        mv build/html/* ../../../../py2/
+      working-directory: docs/
+
+    - name: check out X-PSI v1.2.1
+      uses: actions/checkout@v3
+      with:
+        ref: main
+    - name: Install Python3 Conda environment with Micromamba
+      uses: mamba-org/provision-with-micromamba@main
+      with:
+        cache-env: true
+        cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+        environment-file: basic_environment.yml
+        environment-name: xpsipy3
+        extra-specs: |
+          python=3.10
+    - name : install docs dependencies
+      run: |
+        micromamba install sphinx decorator h5py
+        micromamba install -c conda-forge nbsphinx nbconvert
+        pip install sphinxcontrib-websupport sphinx_rtd_theme
     - name: install X-PSI package
       run: |
         python setup.py install
@@ -48,8 +83,12 @@ jobs:
       env:
         CC:   gcc-10
     - name : build docs
-      run: make html
+      run: | 
+        make html
+        mkdir build/html/py2
+        mv ../../../../py2/* build/html/py2/  
       working-directory: docs/
+
     - name: Deploy to GitHub Pages
       if: success()
       uses: crazy-max/ghaction-github-pages@v3

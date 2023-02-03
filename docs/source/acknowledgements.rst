@@ -43,8 +43,10 @@ Folks who have used X-PSI in their research or engaged with the team during
 development and science analysis, thereby prompting fixes or
 improvements.
 
+* Matteo Bacchetti
 * Anna Bilous
 * Erik Bootsma
+* Johannes Buchner
 * Yuri Cavecchi
 * Frank Chambers
 * Alex Chen
@@ -53,6 +55,7 @@ improvements.
 * Gwénaël Loyer
 * Geert Raaijmakers
 * Paul Ray
+* Evert Rol
 * Rahul Silié
 * Emma van der Wateren
 * Bob de Witte
@@ -81,9 +84,10 @@ Literature
 This project is built upon the work of many researchers in many fields. For
 citations to (astro)physics and (astro)statistics literature, please see the
 technical documents pointed to in the :ref:`citation` section. Moreover, we
-point to the bibliograpy of :ref:`R19` as the first published application of
+point to the bibliograpy of `Riley et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_ as the first published application of
 the X-PSI package, and to the `ApJL Focus Issue <https://iopscience.iop.org/journal/2041-8205/page/Focus_on_NICER_Constraints_on_the_Dense_Matter_Equation_of_State>`_
-of which this article is a member.
+of which this article is a member. For other scientific papers that have used 
+X-PSI see :ref:`applications`.
 
 
 .. _funding:

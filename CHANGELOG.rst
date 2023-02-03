@@ -519,7 +519,7 @@ Added
 
 * An extension module for calculating hot region local variables from global
   variables for hot region configurations under the umbrella of the PST-U model
-  introduced in :ref:`R19`.
+  introduced in `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_.
 
 Attribution
 ^^^^^^^^^^^
@@ -981,7 +981,7 @@ Summary
   complex plotting routines can thus be developed, as demonstrated in the
   concrete classes such as :class:`xpsi.PostProcessing.PulsePlot`. The plot
   classes have been used to reproduce (with improved functionality and
-  performance) the relevant signal plots from :ref:`R19`, as demonstrated
+  performance) the relevant signal plots from `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, as demonstrated
   in the post-processing tutorial notebook and embedded in the class docstrings
   for reference.
 * Development of online documentation pages, including project organisation
