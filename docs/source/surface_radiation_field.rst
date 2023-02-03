@@ -37,7 +37,7 @@ in four dimensions.
     from GSL cimport gsl_isnan, gsl_isinf
     from libc.stdlib cimport malloc, free
 
-    from xpsi.global_imports import _keV, _k_B
+    from xpsi.global_imports import _keV, _k_B, _h_keV
 
     cdef int SUCCESS = 0
     cdef int ERROR = 1
@@ -45,6 +45,7 @@ in four dimensions.
     cdef double erg = 1.0e-7
     cdef double k_B = _k_B
     cdef double keV = _keV
+    cdef double h_keV = _h_keV
     cdef double k_B_over_keV = k_B / keV
     cdef int VERBOSE = 0
 
@@ -78,6 +79,9 @@ in four dimensions.
         # the user's responsibility to manage.
         # Return NULL if dynamic memory is not required for the model
 
+        if preloaded == NULL :
+            printf("ERROR: The numerical atmosphere data were not preloaded, which are required by this extension.\n")
+        
         cdef DATA *D = <DATA*> malloc(sizeof(DATA))
         D.p = preloaded
 
@@ -366,6 +370,7 @@ in four dimensions.
 
         return I * pow(10.0, 3.0 * vec[0])
 
+
     cdef double eval_hot_norm() nogil:
         # Source radiation field normalisation which is independent of the
         # parameters of the parametrised model -- i.e. cell properties, energy,
@@ -374,4 +379,5 @@ in four dimensions.
         # during integration.
         # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
-        return erg / 4.135667662e-18
+        return erg / h_keV
+
