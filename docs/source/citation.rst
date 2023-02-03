@@ -3,7 +3,6 @@
 Citation
 --------
 
-
 If X-PSI proves to be a useful tool for your work, please cite the project
 as a software acknowledgement, e.g.:
 
@@ -11,121 +10,40 @@ as a software acknowledgement, e.g.:
 
     X-PSI (\url{https://github.com/xpsi-group/xpsi.git}, \citet{xpsi})
 
-    @MISC{xpsi,
-        author = {{Riley}, Thomas Edward},
-        title = "{X-PSI: X-ray Pulse Simulation and Inference}",
-        keywords = {Software},
-        year = 2021,
-        month = feb,
-        eid = {ascl:2102.005},
-        pages = {ascl:2102.005},
-        archivePrefix = {ascl},
-        eprint = {2102.005},
-        adsurl = {https://ui.adsabs.harvard.edu/abs/2021ascl.soft02005R},
-        adsnote = {Provided by the SAO/NASA Astrophysics Data System}
-    }
-
-A JOSS paper has been submitted to accompany the v1.0 release, and will eventually
-be the default paper to cite.  In the mean time some of the technical notes on
-X-PSI can be found in Chapter 3 of Thomas Riley's PhD thesis, which may also
-be cited.  
+and cite the X-PSI Journal of Open Source Software (JOSS) paper:
 
 .. code-block:: latex
 
-   @phdthesis{riley19,
-       author = {{Riley}, Thomas E.},
-       title = "{Neutron star parameter estimation from a NICER perspective}",
-       school = {University of Amsterdam},
-       year = 2019,
-       address = {https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a},
-       month = 12
-   }
-
-If you wish to point to the first published applications of the X-PSI package,
-then please cite :ref:`R19` and :ref:`R21`:
-
-.. code-block:: latex
-
-    @article{riley19,
-        author = {{Riley}, T.~E. and {Watts}, A.~L.
-                                 and {Bogdanov}, S.
-                                 and {Ray}, P.~S.
-                                 and {Ludlam}, R.~M.
-                                 and {Guillot}, S.
-                                 and {Arzoumanian}, Z.
-                                 and {Baker}, C.~L.
-                                 and {Bilous}, A.~V.
-                                 and {Chakrabarty}, D.
-                                 and {Gendreau}, K.~C.
-                                 and {Harding}, A.~K.
-                                 and {Ho}, W.~C.~G.
-                                 and {Lattimer}, J.~M.
-                                 and {Morsink}, S.~M.
-                                 and {Strohmayer}, T.~E.},
-        title = "{A NICER View of PSR J0030+0451: Millisecond Pulsar Parameter Estimation}",
-        doi = {10.3847/2041-8213/ab481c},
-        journal = {\apjl},
-        month = dec,
-        year = 2019,
-        volume = 887,
-        pages = {L21}
-    }
-
-    @article{riley21,
-	author = {{Riley}, Thomas E. 	and {Watts}, Anna L. 
-					and {Ray}, Paul S. 
-					and {Bogdanov}, Slavko 
-					and {Guillot}, Sebastien 
-					and {Morsink}, Sharon M. 
-					and {Bilous}, Anna V. 
-					and {Arzoumanian}, Zaven 
-					and {Choudhury}, Devarshi 
-					and {Deneva}, Julia S. 
-					and {Gendreau}, Keith C. 
-					and {Harding}, Alice K. 
-					and {Ho}, Wynn C.~G. 
-					and {Lattimer}, James M. 
-					and {Loewenstein}, Michael 
-					and {Ludlam}, Renee M. 
-					and {Markwardt}, Craig B. 
-					and {Okajima}, Takashi 
-					and {Prescod-Weinstein}, Chanda 
-					and {Remillard}, Ronald A. 
-					and {Wolff}, Michael T. 
-					and {Fonseca}, Emmanuel 
-					and {Cromartie}, H. Thankful 
-					and {Kerr}, Matthew 
-					and {Pennucci}, Timothy T. 
-					and {Parthasarathy}, Aditya 
-					and {Ransom}, Scott 
-					and {Stairs}, Ingrid 
-					and {Guillemot}, Lucas 
-					and {Cognard}, Ismael},
-        title = "{A NICER View of the Massive Pulsar PSR J0740+6620 Informed by Radio Timing and XMM-Newton Spectroscopy}",
-        journal = {\apjl},
-        year = 2021,
-        month = sep,
-        volume = {918},
-        number = {2},
-        pages = {L27},
-        doi = {10.3847/2041-8213/ac0a81}
-    }
+	@ARTICLE{xpsi,
+       	author = {{Riley}, Thomas E. 	and {Choudhury}, Devarshi 
+				     	and {Salmi}, Tuomo 
+     					and {Vinciguerra}, Serena 
+					and {Kini}, Yves 
+					and {Dorsman}, Bas 
+					and {Watts}, Anna L. 
+					and {Huppenkothen}, D. 
+					and {Guillot}, Sebastien },
+        title = "{X-PSI: A Python package for neutron star X-ray Pulse Simulation and Inference}",
+        journal = "{Journal of Open Source Software}",
+     	keywords = {Software},
+        year = 2023,
+       	doi  = {}
+	url = {}
+	}
 
 
-This article contains a wealth of relevant information, including a number
-of schematic diagrams that might be of use. There is also an
-`ApJL Focus Issue <https://iopscience.iop.org/journal/2041-8205/page/Focus_on_NICER_Constraints_on_the_Dense_Matter_Equation_of_State>`_
-of which this article is a member.
+If you wish to cite published applications of the X-PSI package you can find a list of papers
+that have used the software via :ref:`Applications`. 
 
-Regardless of whether you cite the above articles, they critically demonstrate
-how to cite the numerous X-PSI dependencies that users of X-PSI benefit
-from. These citations may be found in the software acknowledgements and in the
+X-PSI has numerous dependencies that users also benefit from.
+Citations to these packages may be found in the software acknowledgements of both the X-PSI 
+JOSS paper and our :ref:`Applications` papers, and in the
 article text where the relevant software is applied. Links to the software and
 associated preprints and journal articles may be found in the bibliographies.
-Please follow the guidelines demonstrated in :ref:`R19` and :ref:`R21`
+Please follow the guidelines demonstrated in e.g. `Riley et al. 2021 <https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract>`_
 to ensure the authors of the software receive the recognition they should.
 The dependencies often have their own citation instructions that should be
-followed first and foremost, but as an example from :ref:`R21`. 
+followed first and foremost, but as an example from `Riley et al. 2021 <https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract>`_. 
 
 .. code-block:: latex
 
