@@ -33,6 +33,64 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
+[v2.0.0] - 2023-02-03
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* This major release migrates X-PSI from Python2 (X-PSI v1.2.1 or lower) to Python3 (, with corresponding updates and improvements to all documentation and tutorials.  
+
+Fixed
+^^^^^
+
+* Debugging projection tool
+
+Added
+^^^^^
+
+* Multi-version documentation so that users can view documentation/tutorials for either Python2 or Python3 (with warning on main page)
+* Post-processing - adding names of parameters across diagonal in corner plots
+* Extra yticks options for plotting functions in the tutorials
+* `--noopenmp` install option for Mac Users
+* Added option to fix the random seed for the synthetic data generation in Python3 version
+
+Changed
+^^^^^^^
+
+* Modified all X-PSI routines to work in Python3
+* General Documentation (Applications, Team and Acknowledgements, Citation, Future pages) updated for both Python2 and Python3 documentation branches.
+* Installation and tutorial pages modified for Python3
+* Module generator updated for Python3 and documentation added
+* Projection tool updated for Python3 and documentation added
+* Github actions modified to work in Python3
+* Github actions modified to use mamba with install commands on one line to improve speed
+* Updated references in the documentation and tutorial notebooks
+* CustomInstrument channel_edges argument now changed to mandatory in tutorial notebooks and examples
+
+Deprecated
+^^^^^^^^^^
+
+*The Python2 version of X-PSI (v1.2.1) is now considered deprecated, although documentation and tutorials are still available.
+
+Removed
+^^^^^^^
+
+* Removed requirement of FFMPEG for Animations in tutorials
+* Suppressed printf() statements from c code in tutorial notebooks
+
+Attribution
+^^^^^^^^^^^
+
+Devarshi Choudhury,
+Bas Dorsman,
+Sebastien Guillot,
+Daniela Huppenkothen,
+Yves Kini,
+Tuomo Salmi,
+Serena Vinciguerra,
+Anna Watts
+
 
 [v1.2.1] - 2022-12-12
 ~~~~~~~~~~~~~~~~~~~~~
