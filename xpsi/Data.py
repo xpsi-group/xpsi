@@ -1,12 +1,10 @@
-from __future__ import division, print_function
 
 __all__ = ["Data"]
 
-from .global_imports import *
-from . import global_imports
-from . import make_verbose
+from xpsi.global_imports import *
+from xpsi.utils import make_verbose
 
-from .Instrument import ChannelError
+from xpsi.Instrument import ChannelError
 
 class Data(object):
     """ A container for event data.

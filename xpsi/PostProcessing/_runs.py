@@ -1,5 +1,3 @@
-from __future__ import division, print_function
-
 from .. import Likelihood
 
 from ._global_imports import *

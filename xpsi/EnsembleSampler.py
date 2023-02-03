@@ -1,12 +1,6 @@
-from __future__ import division, print_function
 
-from .global_imports import *
-from . import global_imports
-
-from . import _verbose
-
-from matplotlib import pyplot as plt
-from matplotlib import rcParams
+from xpsi.global_imports import *
+from xpsi import _verbose
 
 try:
     import emcee
@@ -19,10 +13,10 @@ else:
     if _verbose:
         print('Imported emcee version: %s' % emcee.__version__)
 
-from .Parameter import StrictBoundsError
-from .ParameterSubspace import ParameterSubspace
-from .Prior import Prior
-from .Posterior import Posterior, PriorError
+from xpsi.Parameter import StrictBoundsError
+from xpsi.ParameterSubspace import ParameterSubspace
+#from .Prior import Prior
+from xpsi.Posterior import Posterior, PriorError
 
 class EnsembleSampler(_EnsembleSampler):
     """ Derives from `emcee`_'s :class:`~emcee.EnsembleSampler`.
@@ -165,6 +159,8 @@ class EnsembleSampler(_EnsembleSampler):
         """
         if moments is not None:
             try:
+                if isinstance(moments, zip):
+                    moments = list(moments)
                 assert isinstance(moments, list)
                 assert len(moments) == self._ndims
                 for m in moments:
@@ -176,7 +172,7 @@ class EnsembleSampler(_EnsembleSampler):
         else:
             raise PriorError
 
-        moments = map(list, zip(*moments))
+        moments = list(map(list, zip(*moments)))
 
         def helper(p):
             """ Check inclusion in prior support. """

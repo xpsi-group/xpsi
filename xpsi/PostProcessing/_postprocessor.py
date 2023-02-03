@@ -1,5 +1,3 @@
-from __future__ import division, print_function
-
 from ._global_imports import *
 
 from ._backends import NestedBackend
@@ -66,7 +64,7 @@ class PostProcessor(object):
         self.posteriors = posteriors
 
         self.val_cred=[]
-	self.samples={}
+        self.samples={}
     @property
     def posteriors(self):
         """ Get the posteriors. """

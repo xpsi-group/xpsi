@@ -1,10 +1,9 @@
-name: xpsi
+name: xpsi_py3
 channels:
   - defaults
 dependencies:
-  - python=2.7
-  - numpy=1.16
-  - cython=0.28
-  - matplotlib=2.2
-  - scipy=1.2
-  - wrapt=1.11
+  - numpy
+  - cython
+  - matplotlib
+  - scipy
+  - wrapt

@@ -1,16 +1,13 @@
-from __future__ import division, print_function
-
 __all__ = ["Posterior"]
 
-from .global_imports import *
-from . import global_imports
+from xpsi.global_imports import *
 
-from .Likelihood import Likelihood
-from .Signal import LikelihoodError
+from xpsi.Likelihood import Likelihood
+from xpsi.Signal import LikelihoodError
 
-from .Prior import Prior
-from .ParameterSubspace import ParameterSubspace
-from .Parameter import StrictBoundsError
+from xpsi.Prior import Prior
+from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import StrictBoundsError
 
 class PriorError(ValueError):
     """ Raised if there is a problem with the value of the log-prior. """

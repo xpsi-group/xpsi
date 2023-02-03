@@ -20,11 +20,12 @@ desc = '''Options to choose the blackbody (default) or numerical atmosphere surf
 parser = argparse.ArgumentParser(description=desc)
 
 try:
-    parser.add_argument('--NumHot', type=str, help="Numerical atmosphere for the hot region(s)")
-    parser.add_argument('--NumElse', type=str, help="Numerical atmosphere for the rest of the surface")
-    parser.add_argument('--NumHotBeam', type=str, help="Numerical atmosphere for the hot region(s) including free beaming")
-    # parser.add_argument('--ComptHot', type=str, help="Compton emission model for the hot region(s)")
-    # parser.add_argument('--ComptElse', type=str, help="Compton emission model for the rest of the surface")
+    parser.add_argument('--NumHot', help="Numerical atmosphere for the hot region(s)", default=False, action="store_true")
+    parser.add_argument('--NumElse', help="Numerical atmosphere for the rest of the surface", default=False, action="store_true")
+    parser.add_argument('--NumHotBeam',help="Numerical atmosphere for the hot region(s) including free beaming", default=False, action="store_true")
+    parser.add_argument('--noopenmp', help="Ignore the openmp install options", default=False, action="store_true")
+    # parser.add_argument('--ComptHot', help="Compton emission model for the hot region(s)", default=False, action="store_true")
+    # parser.add_argument('--ComptElse', help="Compton emission model for the rest of the surface", default=False, action="store_true")
     if '--help' in sys.argv:
         print(parser.print_help())
         print('-----------------------------------------------------------------------------------')
@@ -54,6 +55,14 @@ try:
     #     print("Copying Compton emission model for the rest of the surface")
     #     shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/compton.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
     #     sys.argv.remove("--ComptElse")
+
+    # Setting the noopenmp option from argv
+    if '--noopenmp' in sys.argv:
+        noopenmp = True
+        sys.argv.remove("--noopenmp")
+    else:
+        noopenmp = False
+
 except:
     pass
 
@@ -74,8 +83,8 @@ if __name__ == '__main__':
             raise
 
         try:
-            gsl_version = sub.check_output(['gsl-config','--version'])[:-1]
-            gsl_prefix = sub.check_output(['gsl-config','--prefix'])[:-1]
+            gsl_version = sub.check_output(['gsl-config','--version'])[:-1].decode("UTF-8")
+            gsl_prefix = sub.check_output(['gsl-config','--prefix'])[:-1].decode("UTF-8")
         except Exception:
             print('GNU Scientific Library cannot be located.')
             raise
@@ -91,7 +100,7 @@ if __name__ == '__main__':
             # point to shared library at compile time so runtime resolution
             # is not affected by environment variables, but is determined
             # by the binary itself
-            extra_link_args = ['-Wl,-rpath,%s'%(gsl_prefix+'/lib')]
+            extra_link_args = ['-Wl,-rpath,%s'%(str(gsl_prefix)+'/lib')]
 
         # try to get the rayXpanda library:
         # please modify these compilation steps it does not work for your
@@ -134,38 +143,67 @@ if __name__ == '__main__':
                                                  'xpsi/include/rayXpanda')]
 
         try:
-            if 'gcc' in os.environ['CC']:
-                extra_compile_args=['-fopenmp',
-                                    '-march=native',
-                                    '-O3',
-                                    '-funroll-loops',
-                                    '-Wno-unused-function',
-                                    '-Wno-uninitialized',
-                                    '-Wno-cpp']
-                extra_link_args.append('-fopenmp')
-            elif 'icc' in os.environ['CC']:
-                # on high-performance systems using Intel processors
-                # on compute nodes, it is usually recommended to select the
-                # instruction set (extensions) optimised for a given processor
-                extra_compile_args=['-qopenmp',
-                                    '-O3',
-                                    '-xHOST',
-                                    # alternative instruction set
-                                    '-axCORE-AVX2,AVX',
-                                    '-funroll-loops',
-                                    '-Wno-unused-function']
-                extra_link_args.append('-qopenmp')
-            elif 'clang' in os.environ['CC']:
-                extra_compile_args=['-fopenmp',
-                                    '-Wno-unused-function',
-                                    '-Wno-uninitialized',
-                                    '-Wno-#warnings',
-                                    '-Wno-error=format-security']
-                extra_link_args.append('-fopenmp')
-                # you might need these lookup paths for llvm clang on macOS
-                # or you might need to edit these paths for your compiler
-                #library_dirs.append('/usr/local/opt/llvm/lib')
-                #include_dirs.append('/usr/local/opt/llvm/include')
+            print("NOOPENMP =", noopenmp)
+            if not noopenmp :
+                if 'gcc' in os.environ['CC']:
+                    extra_compile_args=['-fopenmp',
+                                        '-march=native',
+                                        '-O3',
+                                        '-funroll-loops',
+                                        '-Wno-unused-function',
+                                        '-Wno-uninitialized',
+                                        '-Wno-cpp']
+                    extra_link_args.append('-fopenmp')
+                elif 'icc' in os.environ['CC']:
+                    # on high-performance systems using Intel processors
+                    # on compute nodes, it is usually recommended to select the
+                    # instruction set (extensions) optimised for a given processor
+                    extra_compile_args=['-qopenmp',
+                                        '-O3',
+                                        '-xHOST',
+                                        # alternative instruction set
+                                        '-axCORE-AVX2,AVX',
+                                        '-funroll-loops',
+                                        '-Wno-unused-function']
+                    extra_link_args.append('-qopenmp')
+                elif 'clang' in os.environ['CC']:
+                    extra_compile_args=['-fopenmp',
+                                        '-Wno-unused-function',
+                                        '-Wno-uninitialized',
+                                        '-Wno-#warnings',
+                                        '-Wno-error=format-security']
+                    extra_link_args.append('-fopenmp')
+                    # you might need these lookup paths for llvm clang on macOS
+                    # or you might need to edit these paths for your compiler
+                    #library_dirs.append('/usr/local/opt/llvm/lib')
+                    #include_dirs.append('/usr/local/opt/llvm/include')
+            else:
+                if 'gcc' in os.environ['CC']:
+                    extra_compile_args=['-march=native',
+                                        '-O3',
+                                        '-funroll-loops',
+                                        '-Wno-unused-function',
+                                        '-Wno-uninitialized',
+                                        '-Wno-cpp']
+                elif 'icc' in os.environ['CC']:
+                    # on high-performance systems using Intel processors
+                    # on compute nodes, it is usually recommended to select the
+                    # instruction set (extensions) optimised for a given processor
+                    extra_compile_args=['-O3',
+                                        '-xHOST',
+                                        # alternative instruction set
+                                        '-axCORE-AVX2,AVX',
+                                        '-funroll-loops',
+                                        '-Wno-unused-function']
+                elif 'clang' in os.environ['CC']:
+                    extra_compile_args=['-Wno-unused-function',
+                                        '-Wno-uninitialized',
+                                        '-Wno-#warnings',
+                                        '-Wno-error=format-security']
+                    # you might need these lookup paths for llvm clang on macOS
+                    # or you might need to edit these paths for your compiler
+                    #library_dirs.append('/usr/local/opt/llvm/lib')
+                    #include_dirs.append('/usr/local/opt/llvm/include')
         except KeyError:
             print('Export CC environment variable to "icc" or "gcc" or '
                   '"clang", or modify the setup script for your compiler.')
@@ -246,9 +284,12 @@ if __name__ == '__main__':
     for mod in modnames:
         extensions.append(EXTENSION(mod))
 
+    for e in extensions:
+        e.cython_directives = {'language_level': "3"}
+
     setup(
         name = 'xpsi',
-        version = '1.2.1',
+        version = '2.0.0',
         author = 'The X-PSI Core Team',
         author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',

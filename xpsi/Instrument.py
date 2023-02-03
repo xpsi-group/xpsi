@@ -1,13 +1,10 @@
-from __future__ import division, print_function
-
 __all__ = ["Instrument"]
 
-from .global_imports import *
-from . import global_imports
+from xpsi.global_imports import *
 
-from . import make_verbose
+from xpsi.utils import make_verbose
 
-from .ParameterSubspace import ParameterSubspace
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class ResponseError(xpsiError):
     """ Raised if there is a problem with the input response matrix. """

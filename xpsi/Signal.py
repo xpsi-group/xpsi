@@ -1,22 +1,19 @@
-from __future__ import division, print_function
-
 __all__ = ["Signal", "LikelihoodError"]
 
-from .global_imports import *
-from . import global_imports
+from xpsi.global_imports import *
 
-from .Data import Data
-from .Instrument import Instrument, ChannelError
-from .Background import Background
-from .Interstellar import Interstellar
+from xpsi.Data import Data
+from xpsi.Instrument import Instrument, ChannelError
+from xpsi.Background import Background
+from xpsi.Interstellar import Interstellar
 
-from .tools.energy_integrator import energy_integrator
-from .tools.energy_interpolator import energy_interpolator
-from .tools.phase_integrator import phase_integrator
+from xpsi.tools.energy_integrator import energy_integrator
+#from xpsi.tools.energy_interpolator import energy_interpolator
+#from xpsi.tools.phase_integrator import phase_integrator
 
 from abc import abstractmethod
-from .Parameter import Parameter
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class LikelihoodError(xpsiError):
     """ Raised if there is a problem with the value of the log-likelihood. """

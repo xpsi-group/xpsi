@@ -1,12 +1,8 @@
-from __future__ import division, print_function
 
-from .global_imports import *
-from . import global_imports
+from xpsi.ParameterSubspace import ParameterSubspace
 
-from .ParameterSubspace import ParameterSubspace
-
-from .Spacetime import Spacetime
-from .Photosphere import Photosphere
+from xpsi.Spacetime import Spacetime
+from xpsi.Photosphere import Photosphere
 
 class Star(ParameterSubspace):
     """ Instances of :class:`Star` represent model stars.

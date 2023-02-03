@@ -1,11 +1,6 @@
-from __future__ import division, print_function
+from xpsi.global_imports import *
 
-from .global_imports import *
-from . import global_imports
-
-from .Parameter import Parameter
-
-from .HotRegion import HotRegion, PulseError
+from xpsi.HotRegion import HotRegion, PulseError
 
 class TwoHotRegions(HotRegion):
     """ Two photospheric hot regions, related via antipodal reflection symmetry.

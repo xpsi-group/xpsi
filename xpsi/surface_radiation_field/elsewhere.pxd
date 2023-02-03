@@ -1,4 +1,4 @@
-from preload cimport _preloaded
+from .preload cimport _preloaded
 
 cdef double eval_elsewhere(size_t THREAD,
                            double E,

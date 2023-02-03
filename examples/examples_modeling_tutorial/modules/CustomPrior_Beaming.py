@@ -1,4 +1,4 @@
-from __future__ import print_function, division
+
 
 import numpy as np
 import math
@@ -31,7 +31,7 @@ class CustomPrior(xpsi.Prior):
         #Saving the photoshpere for beaming priors if needed:
         #self.photosphere = photosphere
         
-	super(CustomPrior, self).__init__()
+        super(CustomPrior, self).__init__()
 
     def __call__(self, p = None):
         """ Evaluate distribution at ``p``.
@@ -94,69 +94,69 @@ class CustomPrior(xpsi.Prior):
         abb = self.parameters['p__super_abb']
         bbb = self.parameters['p__super_bbb']
         try:
-		cbb = self.parameters['p__super_cbb']
-		dbb = self.parameters['p__super_dbb']
-	except:
-		cbb = 0.0
-		dbb = 0.0 
+            cbb = self.parameters['p__super_cbb']
+            dbb = self.parameters['p__super_dbb']
+        except:
+            cbb = 0.0
+            dbb = 0.0 
 		
         logg = grav[0] #grav[0] = equatorial radius, grav[1] = polar radius         
 
-	K2keV =  8.61732814974493e-08
-	if (cbb == 0.0 and dbb == 0.0):
-		Elist = np.array([1.0])
-		tempps = [6.0]
-	else:		
-		Elist = np.linspace(-1.5,2.2,num=100) #-1.3,2.0
-		tempps = [self.parameters['p__super_temperature'], self.parameters['s__super_temperature']]
+        K2keV =  8.61732814974493e-08
+        if (cbb == 0.0 and dbb == 0.0):
+            Elist = np.array([1.0])
+            tempps = [6.0]
+        else:		
+            Elist = np.linspace(-1.5,2.2,num=100) #-1.3,2.0
+            tempps = [self.parameters['p__super_temperature'], self.parameters['s__super_temperature']]
 	
-	for isp in range(0,len(tempps)):
-		Ekevp = (10**Elist)*K2keV*(10**tempps[isp])	
-		for ie in range(0,len(Ekevp)):
-			#Check first if beaming function would be negative, giving negative intensities:
-			a = bbb*(Ekevp[ie])**dbb #now named as in f(x)=ax^2+bx+c 
-			b = abb*(Ekevp[ie])**cbb
-			c = 1.0
-			dkr = b**2-4.0*a*c
-			if dkr >= 0:
-			    if abs(a) < 1e-8:
-				if abs(b) > 1e-8:                    
-				    zp_mu = -c/b
-				    if(zp_mu > 0.0 and zp_mu < 1.0):
-					return -np.inf
-			    else:
-				zp1_mu = (-b+np.sqrt(dkr))/(2.0*a)
-				zp2_mu = (-b-np.sqrt(dkr))/(2.0*a)
-				if((zp1_mu > 0.0 and zp1_mu < 1.0) or (zp2_mu > 0.0 and zp2_mu < 1.0)):
-					return -np.inf
+        for isp in range(0,len(tempps)):
+            Ekevp = (10**Elist)*K2keV*(10**tempps[isp])	
+            for ie in range(0,len(Ekevp)):
+                #Check first if beaming function would be negative, giving negative intensities:
+                a = bbb*(Ekevp[ie])**dbb #now named as in f(x)=ax^2+bx+c 
+                b = abb*(Ekevp[ie])**cbb
+                c = 1.0
+                dkr = b**2-4.0*a*c
+                if dkr >= 0:
+                    if abs(a) < 1e-8:
+                        if abs(b) > 1e-8:
+                            zp_mu = -c/b
+                            if(zp_mu > 0.0 and zp_mu < 1.0):
+                                return -np.inf
+                    else:
+                        zp1_mu = (-b+np.sqrt(dkr))/(2.0*a)
+                        zp2_mu = (-b-np.sqrt(dkr))/(2.0*a)
+                        if((zp1_mu > 0.0 and zp1_mu < 1.0) or (zp2_mu > 0.0 and zp2_mu < 1.0)):
+                            return -np.inf
 										
-			#Check also if difference compared to exact numerical is higher than we want:
-			mus = np.linspace(0.0,1.0,100)
-			#enes = np.ones(len(mus))*Ekevp[ie]
-			
-			#if using opt=3, err_max should be calculated numerically:
-			#atm = self.photosphere.hot_atmosphere
-			#opt=0
-			#local_vars = np.array([[tempps[isp], abb, bbb, cbb, dbb, opt, 0, logg]]*len(mus))
-			#H_nsx = xpsi.surface_radiation_field.intensity(enes, mus, local_vars,
-		        #                                             atmosphere=atm,
-		        #                                             extension='hot',
-		        #                                             numTHREADS=1)
-			#opt=3 #This should be the same as in CustomHotRegion.
-			#local_vars = np.array([[tempps[isp], abb, bbb, cbb, dbb, opt, 5, logg]]*len(mus))
-			#H_nsx_bf = xpsi.surface_radiation_field.intensity(enes, mus, local_vars,
-		        #                                             atmosphere=atm,
-		        #                                             extension='hot',
-		        #                                             numTHREADS=1)  
-			#err_max = max(abs(H_nsx-H_nsx_bf)/H_nsx)
-			
-                        #However, this works for opt=2:
-			anorm = 0.5/(0.5+(1.0/3.0)*abb*Ekevp[ie]**cbb+(1.0/4.0)*bbb*Ekevp[ie]**dbb)
-                        beam_func = anorm*(1.0+abb*(Ekevp[ie]**cbb)*mus+bbb*(Ekevp[ie]**dbb)*mus**2)
-			err_max = max(abs(beam_func-1.0))
-			
-			if( err_max > 0.1):
-		    		return -np.inf
+            #Check also if difference compared to exact numerical is higher than we want:
+            mus = np.linspace(0.0,1.0,100)
+            #enes = np.ones(len(mus))*Ekevp[ie]
+
+            #if using opt=3, err_max should be calculated numerically:
+            #atm = self.photosphere.hot_atmosphere
+            #opt=0
+            #local_vars = np.array([[tempps[isp], abb, bbb, cbb, dbb, opt, 0, logg]]*len(mus))
+            #H_nsx = xpsi.surface_radiation_field.intensity(enes, mus, local_vars,
+                #                                             atmosphere=atm,
+                #                                             extension='hot',
+                #                                             numTHREADS=1)
+            #opt=3 #This should be the same as in CustomHotRegion.
+            #local_vars = np.array([[tempps[isp], abb, bbb, cbb, dbb, opt, 5, logg]]*len(mus))
+            #H_nsx_bf = xpsi.surface_radiation_field.intensity(enes, mus, local_vars,
+                #                                             atmosphere=atm,
+                #                                             extension='hot',
+                #                                             numTHREADS=1)  
+            #err_max = max(abs(H_nsx-H_nsx_bf)/H_nsx)
+
+            #However, this works for opt=2:
+            anorm = 0.5/(0.5+(1.0/3.0)*abb*Ekevp[ie]**cbb+(1.0/4.0)*bbb*Ekevp[ie]**dbb)
+            beam_func = anorm*(1.0+abb*(Ekevp[ie]**cbb)*mus+bbb*(Ekevp[ie]**dbb)*mus**2)
+            err_max = max(abs(beam_func-1.0))
+
+            if( err_max > 0.1):
+                return -np.inf
         return 0.0
 
     def inverse_sample(self, hypercube=None):

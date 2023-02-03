@@ -1,9 +1,6 @@
-from __future__ import division, print_function
+from xpsi.global_imports import *
 
-from .global_imports import *
-from . import global_imports
-
-from . import make_verbose
+from xpsi.utils import make_verbose
 
 import string
 
@@ -13,7 +10,7 @@ from abc import ABCMeta, abstractmethod
 class StrictBoundsError(xpsiError):
     """ Raised if the set parameter value lies beyond strict bounds. """
 
-class Derive(object):
+class Derive(object, metaclass=ABCMeta):
     """ Helper class to bind to parameter instances as a method.
 
     This is a powerful abstract base class for customisting how derived
@@ -112,8 +109,6 @@ class Derive(object):
 
     """
 
-    __metaclass__ = ABCMeta
-
     @abstractmethod
     def __init__(self, refs):
         self.refs = refs
@@ -176,7 +171,7 @@ class Parameter(object):
             if not isinstance(value, Derive):
                 raise TypeError('It is recommended to subclass the prototype '
                                 'abstract base class ``Derive``.')
-            self.evaluate = MethodType(value, self, Parameter)
+            self.evaluate = MethodType(value, self)
             self.derived = True
         else:
             self.value = value
@@ -264,8 +259,8 @@ class Parameter(object):
     @doc.setter
     def doc(self, doc):
         if isinstance(doc, _six.string_types):
-            lines = [string.strip(line) for line in doc.splitlines()]
-            doc = string.join([line for line in lines if line], '\n')
+            lines = [line.strip() for line in doc.splitlines()]
+            doc = "\n".join([line for line in lines if line])
             if doc[-1] != '.': doc += '.'
             self.__doc__ =  doc
         elif doc is not None:

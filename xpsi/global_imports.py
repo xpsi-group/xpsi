@@ -1,6 +1,4 @@
-from __future__ import division
-
-from . import _size
+from xpsi import _size
 
 __all__ = ["_np",
            "_mpl",

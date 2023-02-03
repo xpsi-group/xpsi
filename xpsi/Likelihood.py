@@ -1,25 +1,19 @@
 """ Class for managing likelihood function evaluation.
 
 """
-
-from __future__ import division, print_function
-
 __all__ = ["Likelihood"]
 
-from . import _rank
-from . import make_verbose
+from xpsi import _rank
+from xpsi.utils import make_verbose
 
-from .global_imports import *
-from . import global_imports
+from xpsi.global_imports import *
 
-from .Star import Star
-from .Signal import Signal, LikelihoodError, construct_energy_array
-from .Background import Background
-from .Prior import Prior
-from .ParameterSubspace import ParameterSubspace
-from . import HotRegion
-from . import TwoHotRegions
-from . import Elsewhere
+from xpsi.Star import Star
+from xpsi.Signal import Signal, LikelihoodError, construct_energy_array
+from xpsi.Prior import Prior
+from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi import HotRegion
+from xpsi import Elsewhere
 
 class Likelihood(ParameterSubspace):
     """ A container for all objects related to likelihood evaluation.
@@ -315,7 +309,6 @@ class Likelihood(ParameterSubspace):
                 elif isinstance(e, Elsewhere.RayError):
                     print('Warning: Elsewhere.RayError raised.')
 
-                print('Parameter vector: ', super(Likelihood,self).__call__())
 
                 return self.random_near_llzero
 
@@ -490,7 +483,8 @@ class Likelihood(ParameterSubspace):
               rtol_logprior=None,
               atol_logprior=None,
               physical_points=None,
-              force_update=False):
+              force_update=False,
+              numpy_allclose=False):
         """ Perform checks on the likelihood evaluator and the prior density.
 
         Can be called from :func:`~.Sample.nested` to execute a check before
@@ -508,33 +502,40 @@ class Likelihood(ParameterSubspace):
             The ``hypercube_points``, if not ``None``, will be ignored.
 
         :param optional[bool] force_update:
-            Force everything to be re-calculated regardless of what was computed before. This can be used to prevent errors in cases when the automatic check for update need is not working as intended.
+            Force everything to be re-calculated regardless of what was computed before.
+            This can be used to prevent errors in cases when the automatic check 
+            for update need is not working as intended.
+
+        :param optional[bool] numpy_allclose:
+            Determine whether the allclose function of numpy is used when evaluating
+            the closeness of the given and calculated likelihood. By default, a fallback
+            implementation is used, which also prints the likelihood values.
 
         """
-        try:
-            from _np import allclose
-        except ImportError:
-            yield 'Cannot import ``allclose`` function from NumPy.'
-            yield 'Using fallback implementation'
+        if numpy_allclose:
+            from numpy import allclose
+        else:
+            yield 'Not using ``allclose`` function from NumPy.'
+            yield 'Using fallback implementation instead.'
 
             @make_verbose('Checking closeness of likelihood arrays:',
                           'Closeness evaluated')
             def allclose(a, b, rtol, atol, equal_nan=None):
                 """ Fallback based on NumPy v1.17. """
                 for _a, _b in zip(a, b):
-                    yield '%.8e | %.8e .....' % (_a, _b)
+                    yield '%.10e | %.10e .....' % (_a, _b)
                 yield ~((_np.abs(a - b) > atol + rtol*_np.abs(b)).any())
-                #raise NotImplementedError('Implement a fallback.')
 
         lls = []
         lps = [] if logprior_call_vals is not None else None
+
 
         if physical_points is not None:
             physical_points = _np.array(physical_points)
 
             try:
                 if physical_points.ndim > 2:
-                    raise AttributeError
+                    raise AttributeError("Dimension of physical_points is > 2")
 
                 elif physical_points.ndim == 1:
                     physical_points = physical_points.reshape(1,len(physical_points))
@@ -551,6 +552,7 @@ class Likelihood(ParameterSubspace):
             _cached = self.externally_updated
 
             self.externally_updated = False
+
             for point in physical_points:
                 lls.append(self.__call__(point,force=force_update))
                 if lps is not None:

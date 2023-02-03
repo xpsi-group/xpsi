@@ -1,12 +1,9 @@
-from __future__ import division, print_function
-
 __all__ = ["Interstellar"]
 
-from .global_imports import *
-from . import global_imports
+from xpsi.global_imports import *
 
 from abc import abstractmethod
-from .ParameterSubspace import ParameterSubspace
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class Interstellar(ParameterSubspace):
     """ Base class for model interstellar X-ray processes (e.g., attenuation)."""

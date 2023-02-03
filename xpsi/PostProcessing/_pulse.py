@@ -1,5 +1,3 @@
-from __future__ import division
-
 from ._global_imports import *
 
 try:
@@ -123,7 +121,8 @@ class PulsePlot(SignalPlot):
                  **kwargs):
         super(PulsePlot, self).__init__(**kwargs)
 
-        self._phases = _np.linspace(0.0, 2.0, int(num_phases))
+        self._phase_edges = _np.linspace(0.0, 2.0, int(num_phases))
+        self._phases = self._phase_edges[0:len(self._phase_edges)-1]+0.5*(self._phase_edges[1]-self._phase_edges[0])
 
         if use_fgivenx and fgivenx is None:
             raise ImportError('Install fgivenx to plot contours.')
@@ -245,7 +244,7 @@ class PulsePlot(SignalPlot):
 
         yield
 
-    def next(self):
+    def __next__(self):
         """ Update posterior expected signals given the updated signal object.
 
         Plots signals if :mod:`fgivenx` is not used, otherwise returns
@@ -442,7 +441,7 @@ class PulsePlot(SignalPlot):
         for i in range(total.shape[1]):
             total[:,i] /= Delta_E # mean specific flux in each interval
 
-        incident = self._ax.pcolormesh(self._phases,
+        incident = self._ax.pcolormesh(self._phase_edges,
                                        ref.energy_edges,
                                        total,
                                        cmap = cm.get_cmap(self._incident_cmap),
