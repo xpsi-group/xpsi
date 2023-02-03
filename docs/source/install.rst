@@ -193,7 +193,13 @@ We follow
 `this guide <https://johannesbuchner.github.io/PyMultiNest/install.html>`_ for 
 installation of MultiNest. Prerequisites for MultiNest are c and fortran 
 compilers (e.g. ``gcc``, ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
-``atlas``. Assuming these libraries are available, first clone the repository,
+``atlas``:
+
+.. code-block:: bash
+
+    sudo apt-get install cmake libblas-dev liblapack-dev libatlas-base-dev
+
+Assuming these libraries are available, first clone the repository,
 then navigate to it and build:
 
 .. code-block:: bash
