@@ -33,6 +33,65 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
+[v2.0.0] - 2023-02-03
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* This major release candidate migrates X-PSI from Python2 (X-PSI v1.2.1 or lower) to Python3 (X-PSI v2.0 and higher), with corresponding updates and improvements to all documentation and tutorials.  
+
+Fixed
+^^^^^
+
+* Debugging projection tool
+
+Added
+^^^^^
+
+* Multi-version documentation so that users can view documentation/tutorials for either Python2 or Python3 (with warning on main page)
+* Post-processing - adding names of parameters across diagonal in corner plots
+* Extra yticks options for plotting functions in the tutorials
+* `--noopenmp` install option for Mac Users
+* Added option to fix the random seed for the synthetic data generation in Python3 version
+
+Changed
+^^^^^^^
+
+* Modified all X-PSI routines to work in Python3
+* General Documentation (Applications, Team and Acknowledgements, Citation, Future pages) updated for both Python2 and Python3 documentation branches.
+* Installation and tutorial pages modified for Python3
+* Module generator updated for Python3 and documentation added
+* Projection tool updated for Python3 and documentation added
+* Github actions modified to work in Python3
+* Github actions modified to use mamba with install commands on one line to improve speed
+* Updated references in the documentation and tutorial notebooks
+* CustomInstrument channel_edges argument now changed to mandatory in tutorial notebooks and examples
+* X-PSI Postprocessing now supports up-to-date versions of Nestcheck, Getdist. 
+
+Deprecated
+^^^^^^^^^^
+
+*The Python2 version of X-PSI (v1.2.1) is now considered deprecated, although documentation and tutorials are still available.
+
+Removed
+^^^^^^^
+
+* Removed requirement of FFMPEG for Animations in tutorials
+* Suppressed printf() statements from c code in tutorial notebooks
+
+Attribution
+^^^^^^^^^^^
+
+Devarshi Choudhury,
+Bas Dorsman,
+Sebastien Guillot,
+Daniela Huppenkothen,
+Yves Kini,
+Tuomo Salmi,
+Serena Vinciguerra,
+Anna Watts
+
 
 [v1.2.1] - 2022-12-12
 ~~~~~~~~~~~~~~~~~~~~~
@@ -519,7 +578,7 @@ Added
 
 * An extension module for calculating hot region local variables from global
   variables for hot region configurations under the umbrella of the PST-U model
-  introduced in :ref:`R19`.
+  introduced in `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_.
 
 Attribution
 ^^^^^^^^^^^
@@ -981,7 +1040,7 @@ Summary
   complex plotting routines can thus be developed, as demonstrated in the
   concrete classes such as :class:`xpsi.PostProcessing.PulsePlot`. The plot
   classes have been used to reproduce (with improved functionality and
-  performance) the relevant signal plots from :ref:`R19`, as demonstrated
+  performance) the relevant signal plots from `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, as demonstrated
   in the post-processing tutorial notebook and embedded in the class docstrings
   for reference.
 * Development of online documentation pages, including project organisation

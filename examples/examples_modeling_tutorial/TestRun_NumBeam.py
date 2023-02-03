@@ -9,7 +9,7 @@ nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.t
 (found from https://doi.org/10.5281/zenodo.7094144).
 '''
 
-from __future__ import print_function, division
+
 
 import os
 import numpy as np

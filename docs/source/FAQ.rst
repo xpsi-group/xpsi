@@ -54,7 +54,7 @@ for each of the Python processes running on one node.
 That table is pointed to for access where needed from compiled modules
 (C extensions to Python): it is not loaded from disk per likelihood call.
 We provide an example custom Python class that handles this loading (as used
-in :ref:`R19`, hereafter R19).
+in `Riley et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, hereafter R19).
 
 Disk storage required is indeed small: up to :math:`\mathcal{O}(100)` Mbytes for
 applications thus far (e.g., R19). There is a variant of MultiNest nested sampling
