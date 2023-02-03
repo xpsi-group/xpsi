@@ -221,7 +221,7 @@ def synthesise_exposure(double exposure_time,
     T = gsl_rng_default
     r = gsl_rng_alloc(T)
 
-    if gsl_seed:
+    if gsl_seed is not None:
         gsl_rng_set(r, gsl_seed);
     else:
         gsl_rng_set(r, time.time());
@@ -440,7 +440,7 @@ def synthesise_given_total_count_number(double[::1] phases,
     T = gsl_rng_default
     r = gsl_rng_alloc(T)
 
-    if gsl_seed:
+    if gsl_seed is not None:
         gsl_rng_set(r, gsl_seed);
     else:
         gsl_rng_set(r, time.time());
