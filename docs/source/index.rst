@@ -1,6 +1,6 @@
 .. module:: xpsi
 
-.. include:: intro.txt
+.. include:: intro.rst
 
 .. toctree::
    :maxdepth: 1
