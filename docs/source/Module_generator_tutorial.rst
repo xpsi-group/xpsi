@@ -10,13 +10,13 @@ directory rather than in a notebook as is done in :ref:`./Modeling.ipynb`. The m
 script, which can be executed using an MPI command in a shell to exploit parallelism for resource-intensive likelihood
 evaluations.
 
-The structure of these `Main` and `Custom` modules are largely the same for most user-defined models. It's usually the
+The structure of these `Main` and `Custom` modules are largely the same for most user-defined models. It is usually the
 scope of these models (e.g. hotspot models, required data and instrument files, prior definitions, etc.) that are
-subject to change. Therefore, to simplify the process and avoid the user from having to create these modules everytime
+subject to change. Therefore, to simplify the process and avoid the user from having to create these modules every time
 for a new model, we have created the program ``module_generator`` which takes in arguments to define the scope of the
 model. Below, we provide instructions on how to use it.
 
-Create a symlink of the module generator into your project directory. You can run the help command as shown below to
+Create a symlink to the module generator in your project directory. You can run the help command as shown below to
 obtain details regarding its usage.
 
 .. code-block:: bash
@@ -320,7 +320,7 @@ It should look like this:
 
 We can modify the ``generate.ini`` file as per our need by filling up, commenting and/or removing the arguments provided.
 An example of a filled out ``generate.ini`` file is present in ``../examples/examples_module_generator`` which creates a
-`CST+PDT` hot-region model for PSR J0030+0415 using `NSX-H` atmosphere model.
+`CST+PDT` hot-region model for PSR J0030+0451 using `NSX-H` atmosphere model.
 
 The ``generate.ini`` file can then be used to create the required `Main` and `Custom` modules as follows:
 
@@ -346,7 +346,7 @@ will take in the default value specified.
     Parsing configuration file...
     --telescope=NICER
     --instrument=XTI
-    --source=PSR J0030+0415
+    --source=PSR J0030+0451
     --frequency=205
     --model=CST+PDT
     --hot-region-model=CST
