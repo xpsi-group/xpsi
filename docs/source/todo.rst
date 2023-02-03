@@ -3,16 +3,6 @@
 Future
 ------
 
-If there is a feature you would like to see that is not currently
-implemented in the package please let us know!
-
-We are currently working on the following upgrades:
-
-* Moving to Python 3 from Python 2 (next major X-PSI release)
-* Providing examples for importance sampling
-* Documenting new post-processing features and improved visualisation tools.
-* Additional features to support parameter recovery tests
-* New atmosphere extension modules
-* Support for X-ray polarimetry 
-* Automatic module generator
-
+All good things come to an end and sadly there is no future for the Python 2 variant
+of X-PSI.  Please return to the `main X-PSI page <https://xpsi-group.github.io/xpsi/>`_
+ and switch to the Python 3 (X-PSI v>2.0) variant to see what the future holds! 

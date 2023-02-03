@@ -171,7 +171,7 @@ ensemble-MCMC is optional.
 .. rubric:: Footnotes
 
 .. [#] The version of GetDist_ currently compatible with X-PSI, and used in
-       :ref:`R19`, is v0.3.1. It may be cloned as follows:
+       `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, is v0.3.1. It may be cloned as follows:
 
        .. code-block:: bash
 
@@ -179,7 +179,8 @@ ensemble-MCMC is optional.
           https://github.com/ThomasEdwardRiley/getdist.git
 
 .. [#] The version of nestcheck_ currently compatible with X-PSI, and used in
-       :ref:`R19`, is v0.2.0. It may be cloned as follows:
+       `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, is v0.2.0. 
+        It may be cloned as follows:
 
        .. code-block:: bash
 
@@ -310,7 +311,7 @@ The package will be installed in your Conda environment (if activated).
 
 .. note::
 
-    Here we clone the PyMultiNest repository. However, for :ref:`R19`,
+    Here we clone the PyMultiNest repository. However, for `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_,
     working with X-PSI ``v0.1``, we used the repository as frozen in a *fork*.
     To clone this version instead:
 
