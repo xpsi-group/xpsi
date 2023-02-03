@@ -241,7 +241,7 @@ def str_to_bool(x):
 parser.add_argument('--is-antiphased',
                     type=str_to_bool,
                     action='append',
-                    help='Specify whether the hot regions are anti-phased w.r.t to Earth.')
+                    help='Specify whether the hot regions are anti-phased w.r.t to Earth. If True, the cell mesh shifts by pi radians about the stellar rotation axis for pulse integration and therefore the hot region at phase zero is aligned with the meridian on which the observer’s antipode lies.')
 
 parser.add_argument('--prefix',
                     type=str,

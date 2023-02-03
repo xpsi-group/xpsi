@@ -134,7 +134,7 @@ class HotRegion(ParameterSubspace):
         hot region at phase zero is aligned with the meridian on which
         the observer's antipode lies. Alignment also depends on the structure
         of the hot region. As a rule, if the hot region has a superseding
-        region (*superseding* region or an *omission* region) then the centre
+        region (``super`` region or an ``omit`` region) then the centre
         of that region is the point that is *aligned* to a meridian.
 
     :param bool is_secondary:
