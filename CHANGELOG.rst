@@ -39,7 +39,7 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* This major release migrates X-PSI from Python2 (X-PSI v1.2.1 or lower) to Python3 (, with corresponding updates and improvements to all documentation and tutorials.  
+* This major release candidate migrates X-PSI from Python2 (X-PSI v1.2.1 or lower) to Python3 (X-PSI v2.0 and higher), with corresponding updates and improvements to all documentation and tutorials.  
 
 Fixed
 ^^^^^
@@ -67,6 +67,7 @@ Changed
 * Github actions modified to use mamba with install commands on one line to improve speed
 * Updated references in the documentation and tutorial notebooks
 * CustomInstrument channel_edges argument now changed to mandatory in tutorial notebooks and examples
+* X-PSI Postprocessing now supports up-to-date versions of Nestcheck, Getdist. 
 
 Deprecated
 ^^^^^^^^^^
