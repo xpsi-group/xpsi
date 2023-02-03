@@ -171,7 +171,7 @@ ensemble-MCMC is optional.
 .. rubric:: Footnotes
 
 .. [#] The version of GetDist_ currently compatible with X-PSI, and used in
-       :ref:`R19`, is v0.3.1. It may be cloned as follows:
+       `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, is v0.3.1. It may be cloned as follows:
 
        .. code-block:: bash
 
@@ -179,7 +179,8 @@ ensemble-MCMC is optional.
           https://github.com/ThomasEdwardRiley/getdist.git
 
 .. [#] The version of nestcheck_ currently compatible with X-PSI, and used in
-       :ref:`R19`, is v0.2.0. It may be cloned as follows:
+       `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, is v0.2.0. 
+        It may be cloned as follows:
 
        .. code-block:: bash
 
@@ -292,6 +293,12 @@ might be best set to somewhere between the number of physical cores and
 logical cores in your machine for test sampling applications. For a typical
 laptop that might be up to ``-n 4``.
 
+You also need to set the environment variable for the library path to point at MultiNest:
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
+
 Now you need the Python interface to MultiNest:
 
 .. code-block:: bash
@@ -304,7 +311,7 @@ The package will be installed in your Conda environment (if activated).
 
 .. note::
 
-    Here we clone the PyMultiNest repository. However, for :ref:`R19`,
+    Here we clone the PyMultiNest repository. However, for `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_,
     working with X-PSI ``v0.1``, we used the repository as frozen in a *fork*.
     To clone this version instead:
 
