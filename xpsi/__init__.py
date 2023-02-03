@@ -3,8 +3,8 @@
 An open-source package for neutron star astrostatistics.
 
 """
-from __future__ import print_function
-__version__ = "1.2.1"
+
+__version__ = "2.0.0"
 __author__ = "The X-PSI Core Team"
 
 try:
