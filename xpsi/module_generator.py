@@ -5,6 +5,11 @@ import sys
 import xpsi
 
 def write(filename, module):
+    """ Write a module to a file.
+
+    :param filename (str): Name of the file to write to.
+    :param module (str): The module to write to the file.
+    """
     with open(filename, 'w') as mod:
         _module = ''''''
         for _line in module.splitlines():
@@ -20,7 +25,13 @@ import argparse
 import re
 
 class ArgumentParserCustom(argparse.ArgumentParser):
+    """A custom implementation of argparse.ArgumentParser for handling arguments specified in a configuration file."""
     def convert_arg_line_to_args(self, arg_line):
+        """ Convert a line from a configuration file to a list of arguments.
+
+        :param arg_line (str): Line from the configuration file.
+        :return: A list of arguments.
+        """
         if (re.match(r'^[\s]*#', arg_line) or   # look for any number of whitespace characters up to a `#` character
             re.match(r'^[\s]*$', arg_line)):    # look for lines containing nothing or just whitespace
             return []
@@ -37,6 +48,9 @@ class ArgumentParserCustom(argparse.ArgumentParser):
             return [arg_line]
 
     def add_argument(self, *args, **kwargs):
+        """
+        Add an argument to the argument parser.
+        """
         if kwargs.pop('destined_for_config_file', True) and args[0] != '-h':
             _ = (args[0],
                  kwargs.get('default', None),
@@ -61,11 +75,36 @@ class ArgumentParserCustom(argparse.ArgumentParser):
         super(ArgumentParserCustom, self).add_argument(*args, **kwargs)
 
 class GenerateConfigAction(argparse.Action):
+    """ Class that generates a configuration file based on the arguments provided to argparse.
+
+    The class inherits from argparse.Action and overrides the __init__ and __call__ methods to
+    implement the configuration file generation.
+    """
     def __init__(self, option_strings, dest, **kwargs):
+        """ Initialize the class instance.
+
+        :param option_strings (list): A list of command-line option strings.
+        :param dest (str): The name of the attribute to be added to the namespace.
+        """
         super(GenerateConfigAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
 
     @staticmethod
     def _typeset(arg, default, nargs, comment_line_above, empty_lines_below, comment, inline_comment, action, newline=True):
+        """ Helper method to generate the text for a single argument in the configuration file.
+
+        :param arg (str): The name of the argument.
+        :param default (str, list): The default value for the argument.
+        :param nargs (int, str): The number of values to take as input for the argument.
+        :param comment_line_above (str): Text to place above the argument. Enter 'rule' if you just want to place a
+                                         separating line above, or enter a header text describing a group of arguments.
+        :param empty_lines_below (int): The number of empty lines to include below the argument.
+        :param comment (bool): Whether the argument should be commented out or not.
+        :param inline_comment (str): A comment to include next to the argument.
+        :param action (str): The action to be performed with the argument.
+        :param newline (bool): Whether to include a newline before the argument.
+
+        :return str: The text for the argument in the configuration file.
+        """
         entry = '\n' if newline else ''
 
         if comment_line_above is not None:
@@ -109,7 +148,15 @@ class GenerateConfigAction(argparse.Action):
         return entry
 
     def __call__(self, parser, namespace, values, option_string=None):
+        """Method that generates the configuration file.
 
+            :param parser (argparse.ArgumentParser): The ArgumentParser object.
+            :param namespace (argparse.Namespace): The Namespace object.
+            :param values (list): The values for the arguments.
+            :param option_string (str, optional): The option string for the argument.
+
+            :returns None:
+        """
         for _ in parser._config_file_args:
             try:
                 config_file
@@ -194,7 +241,7 @@ def str_to_bool(x):
 parser.add_argument('--is-antiphased',
                     type=str_to_bool,
                     action='append',
-                    help='Specify whether the hot regions are anti-phased w.r.t to Earth.')
+                    help='Specify whether the hot regions are anti-phased w.r.t to Earth. If True, the cell mesh shifts by pi radians about the stellar rotation axis for pulse integration and therefore the hot region at phase zero is aligned with the meridian on which the observer’s antipode lies.')
 
 parser.add_argument('--prefix',
                     type=str,
@@ -336,6 +383,7 @@ if args.model is None:
     if args.elsewhere_atmosphere_model is not None:
         args.model += ' + {}'.format(args.elsewhere_atmosphere_model)
 
+# Creating Main module
 module = (
 '''""" Main module for {} {} <- X-PSI {} {}"""'''.format(_telescopes,
                                                          args.source,
@@ -354,7 +402,13 @@ import argparse
 import re
 
 class ArgumentParserCustom(argparse.ArgumentParser):
+    """A custom implementation of argparse.ArgumentParser for handling arguments specified in a configuration file."""
     def convert_arg_line_to_args(self, arg_line):
+        """ Convert a line from a configuration file to a list of arguments.
+
+        :param arg_line (str): Line from the configuration file.
+        :return: A list of arguments.
+        """
         if (re.match(r'^[\s]*#', arg_line) or   # look for any number of whitespace characters up to a `#` character
             re.match(r'^[\s]*$', arg_line)):    # look for lines containing nothing or just whitespace
             return []
@@ -371,6 +425,9 @@ class ArgumentParserCustom(argparse.ArgumentParser):
             return [arg_line]
 
     def add_argument(self, *args, **kwargs):
+        """
+        Add an argument to the argument parser.
+        """
         if kwargs.pop('destined_for_config_file', True) and args[0] != '-h':
             _ = (args[0],
                  kwargs.get('default', None),
@@ -405,11 +462,36 @@ class CompileAction(argparse._StoreAction):
             setattr(namespace, self.dest, compile(values, '<string>', 'eval'))
 
 class GenerateConfigAction(argparse.Action):
+    """ Class that generates a configuration file based on the arguments provided to argparse.
+
+    The class inherits from argparse.Action and overrides the __init__ and __call__ methods to
+    implement the configuration file generation.
+    """
     def __init__(self, option_strings, dest, **kwargs):
+        """ Initialize the class instance.
+
+        :param option_strings (list): A list of command-line option strings.
+        :param dest (str): The name of the attribute to be added to the namespace.
+        """
         super(GenerateConfigAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
 
     @staticmethod
     def _typeset(arg, default, nargs, comment_line_above, empty_lines_below, comment, inline_comment, action, newline=True):
+        """ Helper method to generate the text for a single argument in the configuration file.
+
+        :param arg (str): The name of the argument.
+        :param default (str, list): The default value for the argument.
+        :param nargs (int, str): The number of values to take as input for the argument.
+        :param comment_line_above (str): Text to place above the argument. Enter 'rule' if you just want to place a
+                                         separating line above, or enter a header text describing a group of arguments.
+        :param empty_lines_below (int): The number of empty lines to include below the argument.
+        :param comment (bool): Whether the argument should be commented out or not.
+        :param inline_comment (str): A comment to include next to the argument.
+        :param action (str): The action to be performed with the argument.
+        :param newline (bool): Whether to include a newline before the argument.
+
+        :return str: The text for the argument in the configuration file.
+        """
         entry = '\\n' if newline else ''
 
         if comment_line_above is not None:
@@ -453,7 +535,15 @@ class GenerateConfigAction(argparse.Action):
         return entry
 
     def __call__(self, parser, namespace, values, option_string=None):
+        """Method that generates the configuration file.
 
+            :param parser (argparse.ArgumentParser): The ArgumentParser object.
+            :param namespace (argparse.Namespace): The Namespace object.
+            :param values (list): The values for the arguments.
+            :param option_string (str, optional): The option string for the argument.
+
+            :returns None:
+        """
         for _ in parser._config_file_args:
             try:
                 config_file
@@ -1996,7 +2086,7 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path,
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, '__init__')), '')
 
-
+# Creating Signal module
 module = (
 '''""" Signal module for X-PSI {0} modelling of {1} {2} event data. """
 
@@ -2070,6 +2160,7 @@ class CustomSignal(xpsi.Signal):
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_signal_module)), module)
 
+# Creating Photosphere module
 module = (
 '''""" Photosphere module for X-PSI {0} modelling of {1} {2} event data. """
 
@@ -2077,7 +2168,14 @@ import argparse
 import re
 
 class ArgumentParserCustom(argparse.ArgumentParser):
+    """A custom implementation of argparse.ArgumentParser for handling arguments specified in a configuration file."""
+    
     def convert_arg_line_to_args(self, arg_line):
+        """ Convert a line from a configuration file to a list of arguments.
+
+        :param arg_line (str): Line from the configuration file.
+        :return: A list of arguments.
+        """
         if (re.match(r'^[\s]*#', arg_line) or   # look for any number of whitespace characters up to a `#` character
             re.match(r'^[\s]*$', arg_line)):    # look for lines containing nothing or just whitespace
             return []
@@ -2337,6 +2435,7 @@ else:
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_photosphere_module)), module)
 
+# Creating Prior module
 module = (
 '''""" Prior module for X-PSI {0} modelling of {1} {2} event data. """
 
@@ -2344,7 +2443,14 @@ import argparse
 import re
 
 class ArgumentParserCustom(argparse.ArgumentParser):
+    """A custom implementation of argparse.ArgumentParser for handling arguments specified in a configuration file."""
+
     def convert_arg_line_to_args(self, arg_line):
+        """ Convert a line from a configuration file to a list of arguments.
+
+        :param arg_line (str): Line from the configuration file.
+        :return: A list of arguments.
+        """
         if (re.match(r'^[\s]*#', arg_line) or   # look for any number of whitespace characters up to a `#` character
             re.match(r'^[\s]*$', arg_line)):    # look for lines containing nothing or just whitespace
             return []
@@ -3299,7 +3405,7 @@ module += (
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_prior_module)), module)
 
-
+# Creating Interstellar module
 module = (
 '''""" Interstellar module for X-PSI {0} modelling of {1} {2} event data. """
 
@@ -3383,6 +3489,7 @@ for _x in args.instrument[1:-1]:
     _instruments += ', {}'.format(_x)
 _instruments += ', and {}'.format(args.instrument[-1])
 
+# Creating Instrument module
 module = (
 '''""" Instrument module for X-PSI {0} modelling of {1} {2} event data. """
 
@@ -3534,6 +3641,7 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_instr
 if not args.background_model:
     sys.exit(0)
 
+# Creating Background module
 module = (
 '''""" Background module for X-PSI {0} modelling of {1} {2} event data. """
 
