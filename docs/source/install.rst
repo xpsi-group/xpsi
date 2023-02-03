@@ -25,7 +25,7 @@ Prerequisite Python packages
 ----------------------------
 
 X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of 
-X-PSI 2. We recommend creating a conda virtual environment with anaconda3 as
+X-PSI v2.0. We recommend creating a conda virtual environment with anaconda3 as
 per instructions below so as to not disrupt your Python ecosystem.
 
 .. _basic_env:
@@ -95,8 +95,9 @@ nested sampling:
 
     conda install -c conda-forge mpi4py pymultinest
     
-Note that pyMultiNest requires MultiNest, which will be installed later (refer
-to :ref:`multinest` in this guide). Then, install optional packages
+Note that pyMultiNest is only a wrapper and requires MultiNest to run properly.
+See below for installation instructions (:ref:`multinest`).
+Then, install optional packages
 `getdist <https://getdist.readthedocs.io/en/latest/>`_,
 `h5py <https://docs.h5py.org/en/stable/index.html>`_,
 `nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_, and
@@ -217,7 +218,11 @@ It's also good to check whether this has worked. In a new kernel, try
     
 which should import without any errors. If you get ``ERROR:   Could not load
 MultiNest library "libmultinest.so"``, that means either MultiNest was not
-succesfully installed or could not be found.
+succesfully installed or could not be found.  While X-PSI will run properly,
+the nested-sampling capabilities (requiring MultiNest) will crash. The user can
+use EMCEE as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
+Note however that the post-processing turorials have only been implemented
+for the outputs of MultiNest.
 
 
 X-PSI
@@ -243,8 +248,25 @@ C flags for compilation of the X-PSI extensions. Because the library location
 will not change for runtime, we state the runtime linking instructions at
 compilation in the ``setup.py`` script.
 
-To check whether installation proceeded correctly and the software is 
-functioning as expected, execute the following:
+A quick check of the X-PSI installation can be done with ``import xpsi``, which
+should print to screen the following:
+
+.. code-block:: bash
+
+    /=============================================\
+    | X-PSI: X-ray Pulse Simulation and Inference |
+    |---------------------------------------------|
+    |                Version: 1.2.1               |
+    |---------------------------------------------|
+    |      https://xpsi-group.github.io/xpsi      |
+    \=============================================/
+
+    Imported GetDist version: 1.4
+    Imported nestcheck version: 0.2.1
+
+
+For a more complete verification of the X-PSI installation, you can execute
+the following:
 
 .. code-block:: bash
 
@@ -253,9 +275,9 @@ functioning as expected, execute the following:
 
 This module performs a ``likelihood check``. If the likelihood value calculated
 matches the given value, X-PSI is functioning as expected, else it will raise
-an error message. The module will then initiate sampling using MultiNest
-(assuming that it's installed), and given the settings, it should take ~5 
-minutes. To cancel mid-way press ``ctrl + C``.
+an error message.  The following part of this module requires a functioning
+MultiNest installation. It initiate sampling using MultiNest, and given the
+settings, it should take ~5 minutes. To cancel mid-way press ``ctrl + C``.
 
 .. note::
 
@@ -432,9 +454,4 @@ user-contributed procedure.
 * Clone the X-PSI repository to a directory on your Windows computer (see above).
 * Download `Ubuntu <https://www.windowscentral.com/install-windows-subsystem-linux-windows-10>`_ for Windows.
 * Install a Anaconda or Miniconda  virtual Python environment in an Ubuntu shell.
-* Install supporting packages ``pip install matplotlib numpy cython scipy`` followed by ``sudo apt-get install libgsl-dev``.
-* Ensure you are in the X-PSI directory and install X-PSI ``CC=gcc python setup.py install``.
-* Install any missing packages that you need, e.g., ``pip install h5py`` for post-processing functionality if you have posterior sample sets available.
-* Install Jupyter notebook using ``pip install notebook``.
-* Start the kernel with the command ``Jupyter notebook``.
-
+* Follow the instructions of this page to install all the python and non-python packages.
