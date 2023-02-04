@@ -18,12 +18,12 @@ from matplotlib import cm
 import xpsi
 
 """
-The main idea of this tool it to create a 2D image showing the neutron star surface with its hot spots.
-The hemisphere facing the observer has solid lines describing the hot spot; the hemisphere opposite to the observer has dimmed colored lines compare to what is shown in the legend.
+The main idea of this tool is to create a 2D image showing the neutron star surface with its hot spots.
+The hemisphere facing the observer has solid lines describing the hot spot; the hemisphere opposite to the observer has dimmed colored lines compared to what is shown in the legend.
 The centers of a hot spot on the hemisphere facing the observer are tagged with crosses; the ones corresponding to the hot spots on the opposite hemisphere are tagged with circles.
 Each hot spot is created with one of the poles as the center and then rotated to the right location.
 Further rotation is necessary to account for the point of view.
-Colors: omitting regions are marked in black; emitting regions are plotted with RdBu color map: dark blue -> light blue -> dim red -> dark red, moving from hotter to colder emitting hot spots.
+Colors: omitting regions are marked in black; emitting regions are plotted with RdBu colormap: dark blue -> light blue -> dim red -> dark red, moving from hotter to colder emitting hot spots.
 """
 
 
@@ -163,8 +163,8 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         "I" -from the point of view of Earth-: in this case x and y are rotated compared
                                            other configuration to visualise equator horizontally and North on top
         or "P" -primary-,"S", -secondary-, SO" -secondary omission-, "SE" -secondary emission-,  "SC" -secondary cede-, or equivalently "PO", "PE", "PC", depending on the adopted model.
-        A vector of three coordinates, whose squadratic sum =1, can also be used to determin the location from which the NS surface is seeing.
-    ThetaDisplay: in which pole would you like to see the countours of constant colatitutde? Options are: "SP" for south pole and "NP" for north pole (where i ==0)
+        A vector of three coordinates, whose quadratic sum =1, can also be used to determine the location from which the NS surface is seen.
+    ThetaDisplay: in which pole would you like to see the countours of constant colatitude? Options are: "SP" for south pole and "NP" for north pole (where i ==0)
     antiphase: is antiphase turned on for the secondary spot?
     SaveFlag: bool: do you want to save the image
     dir: directory path where to save the image
@@ -240,7 +240,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 if ('C' in hot_name):
                     print ("WARNING: ceding component is completely masked by the superseding one")
                 else:
-                    print ("WARNING: hot spot decleared ECCENTRIC, but parameters will render a PROTRUDING configuration")
+                    print ("WARNING: hot spot declared ECCENTRIC, but parameters will render a PROTRUDING configuration")
             
         elif ('ST' in hot_name) and (('C' in hot_name) ^ ('E' in hot_name) ^ ('P' in hot_name)):
             R_name = HStag+REF['OR']
@@ -253,7 +253,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 if ('C' in hot_name):
                     print ("WARNING: emitting component is completely masked by the omitting one")
                 else:
-                    print ("WARNING: hot spot decleared ECCENTRIC, but parameters will render a PROTRUDING configuration")
+                    print ("WARNING: hot spot declared ECCENTRIC, but parameters will render a PROTRUDING configuration")
                 
             if (not ('P' in hot_name) and not('E' in hot_name)) and ((C_name in params) or (A_name in params)):
                 print ("WARNING! there are info for a complex geometry, but they are not being used")
@@ -284,7 +284,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         hot_name = ''
         hot_name_s = ''
         if ('-' in model) and (not('-S' in model) and  not('-U' in model) and not('-Ua' in model)):
-            print ("ERROR: model not recognised. If model has derived quantities and does not fall into the cathergories mentioned below: tranform your dictionary to match \"-U\" requirements. Recognised hot spot names are \"ST\", \"\PST\", \"\CST\", \"EST\", \"PDT\", \"CDT\", \"EDT\"; for two hot spot model connect each hot spot model with \"+\" (first for primary; second for secondary). If the two hot spots have the same name, add \"-S\" (if all the secondary hot spot is antipodal and its temperature and radius is the same of the primary); \"-U\" if the properties of the secondary spot is completely unrelated to the primary ones; \"-Ua\" if the secondary hot spot is antipodal to the primary but has independent radius and temperature.")
+            print ("ERROR: model not recognised. If model has derived quantities and does not fall into the categories mentioned below: transform your dictionary to match \"-U\" requirements. Recognised hot spot names are \"ST\", \"\PST\", \"\CST\", \"EST\", \"PDT\", \"CDT\", \"EDT\"; for two hot spot model connect each hot spot model with \"+\" (first for primary; second for secondary). If the two hot spots have the same name, add \"-S\" (if all the secondary hot spot is antipodal and its temperature and radius is the same of the primary); \"-U\" if the properties of the secondary spot is completely unrelated to the primary ones; \"-Ua\" if the secondary hot spot is antipodal to the primary but has independent radius and temperature.")
             raise IpyExit
         if ('+' in model) or ('-' in model):
             print ("YOU ARE USING A 2 HOT SPOT MODEL")
@@ -429,7 +429,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         
         for logT in TA:
             if (logT > 15 or logT < 3):
-                print ("ERROR: log10 temperature radius out of range (> 15 or < 3)")
+                print ("ERROR: log10 temperature out of range (> 15 or < 3)")
                 raise IpyExit
                 
         return phiA,thetaA,zetaA,TA,labels
@@ -438,13 +438,13 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
     def SYMMETRIC(phiA,thetaA,labels):
         """
-        GOALS: setting phases and colatitude for antipodal configuration of seconday hot spot
+        GOALS: setting phases and colatitude for antipodal configuration of secondary hot spot
         ##### INPUTS #####
         phiA: array of phases for components of primary hot spot [cycle]
         thetaA: array of colatitudes for components of primary hot spot [rad]
         labels: array of labels for components of primary hot spot
         ##### OUTPUTS #####
-        phiA_s: array of phases for components of secodary (derived) hot spot [cycle]
+        phiA_s: array of phases for components of secondary (derived) hot spot [cycle]
         thetaA_s: array of colatitudes for components of secondary (derived) hot spot [rad]
         labels_s: array of labels for components of secondary hot spot
         """
@@ -535,7 +535,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     mycolors1 = [cm(xcol) for xcol in np.linspace(0,1 , nColors)]
 
 
-    alphaOH = 0.35 #OE=Opposite Hemisphere
+    alphaOH = 0.35 #OH=Opposite Hemisphere
 
     nr = 10
     r  = np.linspace(0,1,nr)
@@ -783,7 +783,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     def RotateList(tryout):
         """
         GOAL: modifying input vector to avoid plotting lines unifying wrong points on the circles.
-        In practice it determines the optimal starting point of the vector to allow the lines of the hot spot to be correcly plotted.
+        In practice it determines the optimal starting point of the vector to allow the lines of the hot spot to be correctly plotted.
         ##### INPUTS #####
         tryout: input list
         ##### OUTPUTS #####
