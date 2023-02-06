@@ -160,7 +160,7 @@ cdef int RK(_RAY *const RAY,
         if status == GSL_SUCCESS:
             RAY.NUMSTEPS += 1
 
-            if RAY.NUMSTEPS >= RAY.MAXSTEPS:
+            if <unsigned int> RAY.NUMSTEPS >= RAY.MAXSTEPS:
                 printf("\n\nSteps exceeded... %d", RAY.NUMSTEPS)
                 printf("\nx: %.8e; y: %.8e", X_IP, Y_IP)
                 printf("\ny[]: %.8e, %.8e, %.8e, %.8e, %.8e, %.8e",
@@ -296,7 +296,7 @@ cdef int RK(_RAY *const RAY,
                 RAY.NUM_SINGULARITY_STEPS += 1
                 #printf("\nSingularity steps: %d", RAY.NUM_SINGULARITY_STEPS)
 
-                if RAY.NUM_SINGULARITY_STEPS == RAY.MAXSTEPS:
+                if <unsigned int> RAY.NUM_SINGULARITY_STEPS == RAY.MAXSTEPS:
                     RAY.EVOLVE = 0
                     break
 

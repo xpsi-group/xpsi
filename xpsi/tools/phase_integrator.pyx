@@ -66,7 +66,7 @@ def phase_integrator(double exposure_time,
     _interpolant = _get_phase_interpolant()
 
     cdef:
-        size_t i, j
+        unsigned int i, j
         double a, b
         double _val
 

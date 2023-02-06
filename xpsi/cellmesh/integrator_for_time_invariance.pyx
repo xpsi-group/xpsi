@@ -100,7 +100,7 @@ def integrate(size_t numThreads,
     #----------------------------------------------------------------------->>>
     cdef:
         signed int ii
-        size_t i, j, e # Array indexing
+        unsigned int i, j, e # Array indexing
         size_t T # Used globally to represent thread index
         size_t N_T = numThreads # shared
         size_t N_R = numRays # shared

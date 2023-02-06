@@ -452,7 +452,7 @@ def effective_gravity(double[::1] cos_colatitude,
     cdef double[::1] gravity = np.zeros(cos_colatitude.shape[0],
                                         dtype=np.double)
 
-    cdef size_t i
+    cdef unsigned int i
 
     for i in range(gravity.shape[0]):
         gravity[i] = effectiveGravity(cos_colatitude[i],

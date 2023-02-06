@@ -93,7 +93,7 @@ def synthesise_exposure(double exposure_time,
     _interpolant = _get_phase_interpolant()
 
     cdef:
-        size_t i, j, p, num_components = len(components)
+        unsigned int i, j, p, num_components = len(components)
         double BACKGROUND, a, b
 
         double[:,::1] STAR = np.zeros((components[0].shape[0], phases.shape[0]-1),
@@ -310,7 +310,7 @@ def synthesise_given_total_count_number(double[::1] phases,
     _interpolant = _get_phase_interpolant()
 
     cdef:
-        size_t i, j, p, num_components = len(components)
+        unsigned int i, j, p, num_components = len(components)
         double STAR, BACKGROUND, a, b
 
         double[:,::1] _signal = np.zeros((components[0].shape[0], phases.shape[0]-1),

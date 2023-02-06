@@ -55,7 +55,8 @@ def energy_integrator(size_t N_Ts,
 
     cdef:
         signed int ii
-        size_t i, j, T
+        size_t i, T #j, T
+        unsigned int j
         double *cpy
         double upper_energy
         double max_energy = energies[energies.shape[0] - 1]

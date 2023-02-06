@@ -63,7 +63,7 @@ def phase_interpolator(double[::1] new_phases,
     _interpolant = _get_phase_interpolant()
 
     cdef:
-        size_t i, j
+        unsigned int i, j
         double PHASE
         double[:,::1] new_signal = np.zeros((signal.shape[0],
                                             new_phases.shape[0]),

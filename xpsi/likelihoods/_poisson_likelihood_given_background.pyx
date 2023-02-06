@@ -82,7 +82,7 @@ def poisson_likelihood_given_background(double exposure_time,
     """
 
     cdef:
-        size_t i, j, p, num_components = len(components)
+        unsigned int i, j, p, num_components = len(components)
         double a, b
 
         double[:,::1] STAR = np.zeros((components[0].shape[0], phases.shape[0]-1),
