@@ -57,7 +57,7 @@ def energy_interpolator(size_t N_Ts,
     cdef:
         signed int ii
         int mode
-        size_t i, T #j, T
+        size_t i, T
         unsigned int j
         double *cpy
         double max_energy = energies[energies.shape[0] - 1]
