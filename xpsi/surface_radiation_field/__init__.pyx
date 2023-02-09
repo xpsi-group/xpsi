@@ -177,7 +177,7 @@ def intensity(double[::1] energies,
 
     :returns:
         A 1D :class:`numpy.ndarray` of the photon specific intensities in
-        units of photons/s/keV/cm^2.
+        units of photons/s/keV/cm^2/sr.
 
     """
     cdef fptr_init init_ptr = NULL
@@ -337,7 +337,7 @@ def intensity_from_globals(double[::1] energies,
 
     :returns:
         A 1D :class:`numpy.ndarray` of the photon specific intensities in
-        units of photons/s/keV/cm^2.
+        units of photons/s/keV/cm^2/sr.
 
     """
     cdef _GEOM GEOM
