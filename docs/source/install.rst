@@ -24,6 +24,14 @@ Python environment
 X-PSI was developed in Python 2.7, and is in the process of being ported to Python 3.
 Fortunately, there are several ways to create a virtual environment with a
 different version of Python, without disrupting your Python ecosystem.
+In this page, we present the installation procedure using Python 2.7.
+To use Python 2.7 compatible X-PSI version, we need to switch from
+the main branch to a branch called python2:
+
+.. code-block:: bash
+
+    cd </path/to/xpsi>
+    git checkout python2
 
 This section is divided into two subsections. We recommend that the user follow the instructions in the :ref:`basic_env` subsection to begin with. If faced with installation issues, the user may refer to the :ref:`diagnosis_env` subsection.
 
@@ -180,7 +188,7 @@ ensemble-MCMC is optional.
 
 .. [#] The version of nestcheck_ currently compatible with X-PSI, and used in
        `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, is v0.2.0. 
-        It may be cloned as follows:
+       It may be cloned as follows:
 
        .. code-block:: bash
 
