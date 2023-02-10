@@ -3,7 +3,7 @@
 HPC systems
 ================
 
-The information provided in this page is for users who intend to work on High-Performance Computing (HPC) systems. These installation instructions are system-specific. X-PSI has already been used on different systems, for some of which, we provide the instructions below. This information may also be translated to other systems by users looking for guidance.
+The information provided in this page is for users who intend to work on High-Performance Computing (HPC) systems, and want to use the Python 2.7 version of X-PSI. These installation instructions are system-specific. X-PSI has already been used on different systems, for some of which, we provide the instructions below. This information may also be translated to other systems by users looking for guidance.
 
 
 Snellius (SURF)
@@ -191,6 +191,7 @@ To prepare X-PSI from ``$HOME``:
 
     git clone https://github.com/xpsi-group/xpsi.git
     cd xpsi
+    git checkout python2
     LDSHARED="icc -shared" CC=icc python setup.py install --user
 
 This ensures that both the compiler and linker are Intel, otherwise gcc linker
@@ -317,6 +318,7 @@ Let's start by loading the necessary modules and creating a conda environment:
 
    git clone https://github.com/xpsi-group/xpsi.git
    cd xpsi
+   git checkout python2
    module load anaconda2/2019-10
    conda env create -f basic_environment.yml
    conda activate xpsi
@@ -357,8 +359,8 @@ Let's then finally install X-PSI:
    
 .. code-block:: bash
 
-   cd; cd xpsi;        
-   CC=gcc python setup.py install 
+   cd; cd xpsi;
+   CC=gcc python setup.py install
 
 Helios (using ``python --user``)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -418,8 +420,9 @@ Let's then finally install X-PSI:
 
 .. code-block:: bash
     
-   cd; git clone https://github.com/xpsi-group/xpsi.git 
-   cd xpsi;        
+   cd; git clone https://github.com/xpsi-group/xpsi.git
+   cd xpsi
+   git checkout python2
    CC=gcc python setup.py install --user
 
 Batch usage
