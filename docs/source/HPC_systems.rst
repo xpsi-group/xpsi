@@ -356,6 +356,22 @@ Let's then install MultiNest and PyMultiNest (and checkout a version that is kno
    git checkout c8eba95
    python setup.py install   
    
+Let's then install GSL:
+
+.. code-block:: bash
+
+   cd; wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+   cd gsl-latest
+   mkdir build
+   cd build
+   ../configure CC=gcc --prefix=$HOME/gsl
+   make
+   make check
+   make install
+   make installcheck
+   make clean
+   export PATH=$HOME/gsl/bin:$PATH
+
 Let's then finally install X-PSI:
    
 .. code-block:: bash
@@ -402,13 +418,13 @@ Let's then install MultiNest and PyMultiNest (and checkout a version that is kno
    git checkout c8eba95
    python setup.py install --user
 
-Let's then install GSL (which was not needed if using the conda environment approach):
+Let's then install GSL:
 
 .. code-block:: bash
 
    cd; wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
-   cd gsl-latest 
-   mkdir build 
+   cd gsl-latest
+   mkdir build
    cd build
    ../configure CC=gcc --prefix=$HOME/gsl
    make
