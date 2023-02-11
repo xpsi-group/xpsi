@@ -3,7 +3,7 @@
 HPC systems
 ================
 
-The information provided in this page is for users who intend to work on High-Performance Computing (HPC) systems. These installation instructions are system-specific. X-PSI has already been used on different systems, for some of which, we provide the instructions below. This information may also be translated to other systems by users looking for guidance.
+The information provided in this page is for users who intend to work on High-Performance Computing (HPC) systems, and want to use the Python 2.7 version of X-PSI. These installation instructions are system-specific. X-PSI has already been used on different systems, for some of which, we provide the instructions below. This information may also be translated to other systems by users looking for guidance.
 
 
 Snellius (SURF)
@@ -163,7 +163,7 @@ Now you need the Python interface to MultiNest, starting from ``$HOME``:
     cd ~/pymultinest
     python setup.py install --user
 
-To test the installation of MultiNest and PyMultiNest on the login node:
+If want to make sure that PyMultiNest is compatible with Python 2.7 version of X-PSI, you can e.g., checkout the following PyMultiNest commit: ``git checkout c8eba95``, before running the setup.py file. To test the installation of MultiNest and PyMultiNest on the login node:
 
 .. code-block:: bash
 
@@ -191,6 +191,7 @@ To prepare X-PSI from ``$HOME``:
 
     git clone https://github.com/xpsi-group/xpsi.git
     cd xpsi
+    git checkout python2
     LDSHARED="icc -shared" CC=icc python setup.py install --user
 
 This ensures that both the compiler and linker are Intel, otherwise gcc linker
@@ -317,6 +318,7 @@ Let's start by loading the necessary modules and creating a conda environment:
 
    git clone https://github.com/xpsi-group/xpsi.git
    cd xpsi
+   git checkout python2
    module load anaconda2/2019-10
    conda env create -f basic_environment.yml
    conda activate xpsi
@@ -336,7 +338,7 @@ Let's then install mpi4py:
    python setup.py install
    mpiexec -n 4 python demo/helloworld.py
    
-Let's then install MultiNest and PyMultiNest:
+Let's then install MultiNest and PyMultiNest (and checkout a version that is known to be Python 2.7 compatible):
    
 .. code-block:: bash
    
@@ -351,14 +353,31 @@ Let's then install MultiNest and PyMultiNest:
 
    cd; git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
    cd pymultinest
+   git checkout c8eba95
    python setup.py install   
    
+Let's then install GSL:
+
+.. code-block:: bash
+
+   cd; wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+   cd gsl-latest
+   mkdir build
+   cd build
+   ../configure CC=gcc --prefix=$HOME/gsl
+   make
+   make check
+   make install
+   make installcheck
+   make clean
+   export PATH=$HOME/gsl/bin:$PATH
+
 Let's then finally install X-PSI:
    
 .. code-block:: bash
 
-   cd; cd xpsi;        
-   CC=gcc python setup.py install 
+   cd; cd xpsi;
+   CC=gcc python setup.py install
 
 Helios (using ``python --user``)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -381,7 +400,7 @@ Let's then install mpi4py:
    python setup.py install --user
    mpiexec -n 4 python demo/helloworld.py
 
-Let's then install MultiNest and PyMultiNest:
+Let's then install MultiNest and PyMultiNest (and checkout a version that is known to be Python 2.7 compatible):
    
 .. code-block:: bash
    
@@ -396,15 +415,16 @@ Let's then install MultiNest and PyMultiNest:
 
    cd; git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
    cd pymultinest
+   git checkout c8eba95
    python setup.py install --user
 
-Let's then install GSL (which was not needed if using the conda environment approach):
+Let's then install GSL:
 
 .. code-block:: bash
 
    cd; wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
-   cd gsl-latest 
-   mkdir build 
+   cd gsl-latest
+   mkdir build
    cd build
    ../configure CC=gcc --prefix=$HOME/gsl
    make
@@ -418,8 +438,9 @@ Let's then finally install X-PSI:
 
 .. code-block:: bash
     
-   cd; git clone https://github.com/xpsi-group/xpsi.git 
-   cd xpsi;        
+   cd; git clone https://github.com/xpsi-group/xpsi.git
+   cd xpsi
+   git checkout python2
    CC=gcc python setup.py install --user
 
 Batch usage
