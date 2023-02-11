@@ -126,7 +126,7 @@ Dependencies
 Python dependencies
 ^^^^^^^^^^^^^^^^^^^
 
-The following Python packages are required for nested sampling:
+The following Python packages are required for nested sampling (see below how to install PyMultiNest and mpi4py from source):
 
 * `PyMultiNest <https://github.com/JohannesBuchner/PyMultiNest>`_
   (the interface to the MultiNest library)
@@ -319,7 +319,7 @@ The package will be installed in your Conda environment (if activated).
 
 .. note::
 
-    Here we clone the PyMultiNest repository. However, for `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_,
+    Here we clone the latest PyMultiNest repository. However, to make sure that PyMultiNest is compatible with Python 2.7 version of X-PSI, you can e.g., checkout the following PyMultiNest commit: ``git checkout c8eba95``, before running the setup.py file. For `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_,
     working with X-PSI ``v0.1``, we used the repository as frozen in a *fork*.
     To clone this version instead:
 

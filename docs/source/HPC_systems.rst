@@ -163,7 +163,7 @@ Now you need the Python interface to MultiNest, starting from ``$HOME``:
     cd ~/pymultinest
     python setup.py install --user
 
-To test the installation of MultiNest and PyMultiNest on the login node:
+If want to make sure that PyMultiNest is compatible with Python 2.7 version of X-PSI, you can e.g., checkout the following PyMultiNest commit: ``git checkout c8eba95``, before running the setup.py file. To test the installation of MultiNest and PyMultiNest on the login node:
 
 .. code-block:: bash
 
@@ -338,7 +338,7 @@ Let's then install mpi4py:
    python setup.py install
    mpiexec -n 4 python demo/helloworld.py
    
-Let's then install MultiNest and PyMultiNest:
+Let's then install MultiNest and PyMultiNest (and checkout a version that is known to be Python 2.7 compatible):
    
 .. code-block:: bash
    
@@ -353,6 +353,7 @@ Let's then install MultiNest and PyMultiNest:
 
    cd; git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
    cd pymultinest
+   git checkout c8eba95
    python setup.py install   
    
 Let's then finally install X-PSI:
@@ -383,7 +384,7 @@ Let's then install mpi4py:
    python setup.py install --user
    mpiexec -n 4 python demo/helloworld.py
 
-Let's then install MultiNest and PyMultiNest:
+Let's then install MultiNest and PyMultiNest (and checkout a version that is known to be Python 2.7 compatible):
    
 .. code-block:: bash
    
@@ -398,6 +399,7 @@ Let's then install MultiNest and PyMultiNest:
 
    cd; git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
    cd pymultinest
+   git checkout c8eba95
    python setup.py install --user
 
 Let's then install GSL (which was not needed if using the conda environment approach):
