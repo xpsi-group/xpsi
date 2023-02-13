@@ -66,7 +66,7 @@ especially that of the stellar magnetosphere. Such parameter estimation
 requires relativistic tracing of radiation as it propagates from surface to a
 distant telescope. Pulse-profile modelling to infer neutron star parameters
 is a major science goal for both current X-ray telescopes such as the Neutron
-Star Interior Composition ExploreR (NICER, @Gendreau2016) and proposed future telescopes such as eXTP and STROBE-X
+Star Interior Composition ExploreR [NICER, @Gendreau2016] and proposed future telescopes such as eXTP and STROBE-X
 [@Watts2019;@Ray2019].
 
 While there are some open-source libraries for simulating the X-ray
@@ -108,8 +108,8 @@ open-source analysis pipeline and products published on Zenodo [@Riley:2019:Zeno
 multipolar magnetic fields.
 
 The numerical likelihood routines native to X-PSI are written in Cython
-[@cython2011], and are dependent on the GNU Scientific Library (GSL;
-@Gough:2009). High-level object-oriented model construction is performed by a
+[@cython2011], and are dependent on the GNU Scientific Library [GSL,
+@Gough:2009]. High-level object-oriented model construction is performed by a
 user in the Python language, as is the interfacing with sampling software.
 Low-level customisation is encouraged in the extensions, either directly in
 Cython or via calls to external C libraries.  X-PSI is Unix source code
@@ -121,8 +121,8 @@ include migration to Python 3, further improvements to post-processing software,
 
 
 
-*Software:* Python/C language [@Python2007], GNU Scientific Library (GSL;
-@Gough:2009), NumPy [@Numpy2011], Cython [@cython2011], OpenMP [@openmp], MPI
+*Software:* Python/C language [@Python2007], GNU Scientific Library [GSL,
+@Gough:2009], NumPy [@Numpy2011], Cython [@cython2011], OpenMP [@openmp], MPI
 for Python [@mpi4py], Matplotlib [@Hunter:2007; @matplotlibv2], IPython
 [@IPython2007], Jupyter [@Kluyver:2016aa], MultiNest [@MultiNest_2009],
 PyMultiNest [@PyMultiNest], GetDist [@Lewis19], nestcheck
