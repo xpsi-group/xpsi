@@ -310,7 +310,7 @@ For example job scripts, see the Helios example in :ref:`example_job`.
 
 .. _CALMIPsystem:
 
-CALMIP (not updated for python3 yet)
+CALMIP
 ------------------------------------
 
 `CALMIP <https://www.calmip.univ-toulouse.fr>`_ is the supercomputer of `Université Fédérale de Toulouse <https://www.univ-toulouse.fr>`_
@@ -323,60 +323,105 @@ In your ``$HOME`` file system, from the login node, start by loading the necessa
 .. code-block:: bash
 
     module purge
-    module load python/2.7.14
+    module load conda
     module load cmake
     module load intel/18.2.199
     module load intelmpi/18.2
     module load gsl/2.5-icc
 
-Then, install/update the required python packages:
+Then, create the conda environnnement and Install python packages with conda (or pip):
 
 .. code-block:: bash
 
-    pip install emcee==3.0.2  --user
-    pip install --upgrade numpy --user
-    pip install --upgrade Cython --user
+    conda create -n xpsi --clone base
+    conda activate xpsi
+    conda install numpy scipy matplotlib wrapt
+    conda install cython
+    conda install h5py
+    conda install -c conda-forge fgivenx
     pip install schwimmbad --user
 
-
-Install MPI4PY in your ``$HOME``:
-
-.. code-block:: bash
-
-    wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
-    tar -xvf mpi4py-3.0.0.tar.gz
-    cd mpi4py-3.0.0
-    python setup.py install --user
-
-Download the MultiNest package in your ``$HOME``:
+Point to the Intel compilers
 
 .. code-block:: bash
 
-    git clone https://github.com/farhanferoz/MultiNest.git ~/multinest
-    cd ~/multinest/MultiNest_v3.11_CMake/multinest
+    export FC=ifort
+    export CC=icc
+    export CXX=icpc
+
+Install mpi4py in your ``$HOME`` (e.g. in ``~/Softwares``):
+
+.. code-block:: bash
+
+    mkdir Softwares
+    cd Softwares
+    wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.1.4.tar.gz
+    tar zxvf mpi4py-3.1.4.tar.gz
+    cd mpi4py-3.1.4
+    python setup.py build
+    python setup.py install
+    # Test on login node:
+    mpiexec -n 4 python demo/helloworld.py
+
+
+Download and Install the MultiNest package in your ``$HOME`` (e.g. in ``~/Softwares``:
+
+.. code-block:: bash
+
+    cd ~/Softwares
+    git clone https://github.com/farhanferoz/MultiNest.git  ./MultiNest
+    cd MultiNest/MultiNest_v3.12_CMake/multinest/
     mkdir build
     cd build
+    cmake -DCMAKE_INSTALL_PREFIX=~/Softwares/MultiNest \
+                -DCMAKE_{C,CXX}_FLAGS="-O3 -xCORE-AVX512 -mkl" \
+                -DCMAKE_Fortran_FLAGS="-O3 -xCORE-AVX512 -mkl" \
+                -DCMAKE_C_COMPILER=mpiicc    \
+                -DCMAKE_CXX_COMPILER=mpiicpc \
+                -DCMAKE_Fortran_COMPILER=mpiifort  ..
+    make
 
+    ## Check that librairies have been compiled and are present
+    ls ../lib
 
-Compile MultiNest in your ``$HOME``, following recommendation from CALMIP support:
+Install pymultinest in your ``$HOME`` (e.g. in ``~/Softwares``:
 
 .. code-block:: bash
 
-    cmake -DCMAKE_INSTALL_PREFIX=~/multiNest \
-            -DCMAKE_{C,CXX}_FLAGS="-O3 -xCORE-AVX512 -mkl" \
-            -DCMAKE_Fortran_FLAGS="-O3 -xCORE-AVX512 -mkl" \
-            -DCMAKE_C_COMPILER=mpiicc    \
-            -DCMAKE_CXX_COMPILER=mpiicpc \
-            -DCMAKE_Fortran_COMPILER=mpiifort  ..
-    make
+    cd ~/Softwares
+    git clone https://github.com/JohannesBuchner/PyMultiNest.git ./pymultinest
+    cd pymultinest
+    python setup.py install
+
+    # Add MultiNest to Library Path to test PyMultiNest (action to do for every job to run)
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
+
+    # Test pymultinest
+    mpiexec -n 2 python pymultinest_demo.py
+
+
+Clone and Install XPSIin ~/Softwares/
+
+.. code-block:: bash
+
+    cd ~/Softwares
+    git clone https://github.com/xpsi-group/xpsi.git
+    cd xpsi/
+    LDSHARED="icc -shared" CC=icc python setup.py install
+
+    # Test installation
+    cd ~/
+    python -c "import xpsi"
+
+    ## Ignore the warnings about GetDist, NestCheck, CornerPlotter
+    ##  which are only for PostProcessing (not usually performed on HPC systems.
+
 
 Set up your library paths:
 
 .. code-block:: bash
 
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multiNest/MultiNest_v3.12_CMake/multinest/lib
-    export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/Softwares/MultiNest/MultiNest_v3.12_CMake/multinest/lib
     export LD_PRELOAD=$MKLROOT/lib/intel64/libmkl_core.so:$MKLROOT/lib/intel64/libmkl_sequential.so
-
 
 Note that the ``module`` commands, and the library path ``commands`` above will have to be added in your SBATCH script (see :ref:`example_job`) to execute a run.
