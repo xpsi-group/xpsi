@@ -21,7 +21,7 @@ necessary pre-requisites on your local self-administered system.
 
 .. _dev_env:
 
-Prerequisite Python packages
+Prerequisite Python Packages
 ----------------------------
 
 X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of 
@@ -86,17 +86,24 @@ Activate the environment as:
     ENVIRONMENT.** Pay special attention to reactivate the environment if you
     ever have to restart the kernel.
     
-Next, install the packages
-`pymultinest <https://johannesbuchner.github.io/PyMultiNest/>`_ and
-`mpi4py <http://cython.readthedocs.io/en/latest>`_ which are required for 
+Next, install
+`mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_ which is required for 
 nested sampling:
 
 .. code-block:: bash
 
-    conda install -c conda-forge mpi4py pymultinest
-    
-Note that pyMultiNest is only a wrapper and requires MultiNest to run properly.
-See below for installation instructions (:ref:`multinest`).
+    conda install -c conda-forge mpi4py
+
+
+We also need `PyMultiNest <https://github.com/JohannesBuchner/PyMultiNest>`_
+(the interface to the MultiNest library) for nested sampling.
+However, `conda install -c conda-forge pymultinest` might try
+to install dependencies in the environment,
+including binaries for MPI, BLAS/LAPACK, and a Fortran compiler,
+all in order to install MultiNest. Moreover, the MultiNest version
+listed is a minor release too low to satisfy all our needs.
+Thus, see the PyMultiNest instructions below.
+
 Then, install optional packages
 `getdist <https://getdist.readthedocs.io/en/latest/>`_,
 `h5py <https://docs.h5py.org/en/stable/index.html>`_,
@@ -117,11 +124,12 @@ In addition, some optional miscellaneous packages are:
 
 .. _nonpython:
 
-Prerequisite Non-Python Packages
---------------------------------
+Prerequisite Non-Python Packages and PyMultiNest
+------------------------------------------------
 
-X-PSI has several dependencies that are not Python packages. Build and
-install guidelines are given below.
+X-PSI has several dependencies that are not Python packages,
+or which are Python packages but need to be installed from source (PyMultiNest).
+Build and install guidelines are given below.
 
 GSL
 ^^^
@@ -185,9 +193,9 @@ from Open MPI).
 
 .. note::
 
-    The following assumes you have installed PyMultiNest and mpi4py. If you
+    The following assumes you have installed mpi4py. If you
     have not already installed it through the ``environment.yml`` file, you may
-    do so e.g. via ``conda install -c conda-forge pymultinest mpi4py``.
+    do so e.g. via ``conda install -c conda-forge mpi4py``.
 
 Prerequisites for MultiNest are c and fortran
 compilers (e.g. ``gcc`` and ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
@@ -210,7 +218,16 @@ then navigate to it and build:
     make
     ls ../lib/
 
-Next, you need PyMultinest to interface with MultiNest. To do so, add the
+Now you need the Python interface to MultiNest:
+
+.. code-block:: bash
+
+    git clone https://github.com/JohannesBuchner/PyMultiNest.git <path/to/clone>/pymultinest
+    cd <path/to/clone>/pymultinest
+    python setup.py install [--user]
+
+The package will be installed in your Conda environment (if activated).
+We also need PyMultinest to interface with MultiNest. To do so, add the
 following line to ``~/.bashrc``:
 
 .. code-block:: bash
@@ -230,8 +247,6 @@ the nested-sampling capabilities (requiring MultiNest) will crash. The user can
 use EMCEE as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
 Note however that the post-processing turorials have only been implemented
 for the outputs of MultiNest.
-
-The package will be installed in your Conda environment (if activated).
 
 
 X-PSI
