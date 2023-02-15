@@ -178,7 +178,7 @@ system and X-PSI can be installed locally without sampling functionality, it is
 advisable to install MultiNest on your personal machine to gain experience in
 application to inexpensive test problems. In addition, to leverage some
 capabilities of sample post-processing software you 
-`require MultiNest <https://github.com/JohannesBuchner/MultiNest>`_ ``v3.12``. 
+`require MultiNest <https://github.com/farhanferoz/MultiNest>`_ ``v3.12``.
 To build the MultiNest library, you require an MPI-wrapped Fortran compiler
 (e.g.,  `openmpi-mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
 from Open MPI).
@@ -189,11 +189,9 @@ from Open MPI).
     have not already installed it through the ``environment.yml`` file, you may
     do so e.g. via ``conda install -c conda-forge pymultinest mpi4py``.
 
-We follow
-`this guide <https://johannesbuchner.github.io/PyMultiNest/install.html>`_ for 
-installation of MultiNest. Prerequisites for MultiNest are c and fortran 
-compilers (e.g. ``gcc``, ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
-``atlas``:
+Prerequisites for MultiNest are c and fortran
+compilers (e.g. ``gcc`` and ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
+``atlas``. In case missing them, they can be installed by:
 
 .. code-block:: bash
 
@@ -204,10 +202,13 @@ then navigate to it and build:
 
 .. code-block:: bash
 
-    git clone https://github.com/JohannesBuchner/MultiNest
-    cd MultiNest/build
-    cmake ..
+    git clone https://github.com/farhanferoz/MultiNest.git <path/to/clone>/multinest
+    cd <path/to/clone>/multinest/MultiNest_v3.12_CMake/multinest/
+    mkdir build
+    cd build
+    CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
     make
+    ls ../lib/
 
 Next, you need PyMultinest to interface with MultiNest. To do so, add the
 following line to ``~/.bashrc``:
