@@ -11,7 +11,7 @@ X-PSI is an open-source software package that is available on `GitHub
     git clone https://github.com/xpsi-group/xpsi.git </path/to/xpsi>
 
 In this page, we lay down the instructions for installing X-PSI and all the
-necessary pre-requisites on your local self-administered system.
+necessary prerequisites on your local self-administered system.
 
 .. note::
 
@@ -39,7 +39,7 @@ contents are:
 
 .. code-block:: bash
 
-    name: xpsi
+    name: xpsi_py3
     channels:
         - defaults
     dependencies:
@@ -64,12 +64,12 @@ To create a virtual environment from this file:
 
      conda env create -f <path/to/xpsi>/basic_environment.yml
 
-If Conda does not solve the environment dependencies, you may need to create
+If conda does not solve the environment dependencies, you may need to create
 an environment manually via
 
 .. code-block:: bash
 
-     conda create -n xpsi
+     conda create -n xpsi_py3
 
 and then install the core dependencies listed in ``basic_environment.yml`` via
 conda.
@@ -78,7 +78,7 @@ Activate the environment as:
 
 .. code-block:: bash
 
-    conda activate xpsi
+    conda activate xpsi_py3
 
 .. note::
 
@@ -226,7 +226,8 @@ Now you need the Python interface to MultiNest:
     cd <path/to/clone>/pymultinest
     python setup.py install [--user]
 
-The package will be installed in your Conda environment (if activated).
+The package will be installed in your conda environment, if the environment is activated.
+In that case, the optional ``--user`` flag should be omitted.
 We also need PyMultinest to interface with MultiNest. To do so, add the
 following line to ``~/.bashrc``:
 
@@ -244,7 +245,7 @@ which should import without any errors. If you get ``ERROR:   Could not load
 MultiNest library "libmultinest.so"``, that means either MultiNest was not
 succesfully installed or could not be found.  While X-PSI will run properly,
 the nested-sampling capabilities (requiring MultiNest) will crash. The user can
-use EMCEE as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
+use emcee as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
 Note however that the post-processing turorials have only been implemented
 for the outputs of MultiNest.
 
@@ -259,7 +260,7 @@ Finally, to build and install from the X-PSI clone root, execute:
     CC=<path/to/compiler/executable> python setup.py install [--user]
 
 The ``--user`` flag is optional and specifies where the package is installed;
-if you want to install the package in a virtual environment, omit this flag.
+if you want to install the package in a virtual environment (as recommended), omit this flag.
 
 For ``icc``, you may need to prepend this command with
 ``LDSHARED="icc -shared"``. This ensures that both the compiler and linker
@@ -273,14 +274,14 @@ will not change for runtime, we state the runtime linking instructions at
 compilation in the ``setup.py`` script.
 
 A quick check of the X-PSI installation can be done with ``import xpsi``, which
-should print to screen the following:
+should print to screen something like the following:
 
 .. code-block:: bash
 
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 1.2.1               |
+    |                Version: 2.0.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
@@ -288,6 +289,12 @@ should print to screen the following:
     Imported GetDist version: 1.4
     Imported nestcheck version: 0.2.1
 
+
+.. note::
+
+   Importing X-PSI should not be done in the X-PSI root directory (where the ``setup.py`` file locates).
+   Otherwise, a following type of error is expected:
+   ``ImportError: cannot import name 'set_phase_interpolant' from 'xpsi.tools' (unknown location)``
 
 For a more complete verification of the X-PSI installation, you can execute
 the following:
