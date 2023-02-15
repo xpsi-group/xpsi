@@ -57,8 +57,7 @@ def energy_interpolator(size_t N_Ts,
     cdef:
         signed int ii
         int mode
-        size_t i, T
-        unsigned int j
+        size_t i, j, T
         double *cpy
         double max_energy = energies[energies.shape[0] - 1]
 
@@ -85,11 +84,11 @@ def energy_interpolator(size_t N_Ts,
         cpy = _signal[T]
 
         mode = 1
-        for j in range(energies.shape[0]):
+        for j in range(<size_t>energies.shape[0]):
             if signal[j,i] <= 0.0:
                 mode = 0
 
-        for j in range(energies.shape[0]):
+        for j in range(<size_t>energies.shape[0]):
             if mode == 1:
                 cpy[j] = log10(signal[j,i])
             else:
@@ -98,7 +97,7 @@ def energy_interpolator(size_t N_Ts,
         gsl_interp_accel_reset(acc[T])
         gsl_interp_init(interp[T], &(energies[0]), cpy, energies.shape[0])
 
-        for j in range(new_energies.shape[0]):
+        for j in range(<size_t>new_energies.shape[0]):
 
             if new_energies[j] > max_energy: # extrapolate by setting to zero
                 continue

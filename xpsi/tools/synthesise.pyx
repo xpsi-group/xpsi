@@ -93,7 +93,7 @@ def synthesise_exposure(double exposure_time,
     _interpolant = _get_phase_interpolant()
 
     cdef:
-        unsigned int i, j, p, num_components = len(components)
+        size_t i, j, p, num_components = len(components)
         double BACKGROUND, a, b
 
         double[:,::1] STAR = np.zeros((components[0].shape[0], phases.shape[0]-1),
@@ -120,7 +120,7 @@ def synthesise_exposure(double exposure_time,
             raise TypeError('An iterable is required to specify component-by-'
                             'component positivity.')
         else:
-            if len(allow_negative) != num_components:
+            if <size_t>len(allow_negative) != num_components:
                 raise ValueError('Number of allow_negative declarations does '
                                  'not match the number of components..')
 
@@ -142,7 +142,7 @@ def synthesise_exposure(double exposure_time,
     cdef double SCALE_BACKGROUND
     BACKGROUND = 0.0
 
-    for i in range(STAR.shape[0]):
+    for i in range(<size_t>STAR.shape[0]):
         for p in range(num_components):
             signal = components[p]
             signal_phase_set = component_phases[p]
@@ -156,7 +156,7 @@ def synthesise_exposure(double exposure_time,
             gsl_interp_init(interp_ptr, phases_ptr, signal_ptr,
                             signal_phase_set.shape[0])
 
-            for j in range(phases.shape[0] - 1):
+            for j in range(<size_t>phases.shape[0] - 1):
                 a = phases[j] + phase_shift
                 b = phases[j+1] + phase_shift
 
@@ -192,12 +192,12 @@ def synthesise_exposure(double exposure_time,
                     if _val > 0.0 or _allow_negative[p] == 1:
                         STAR[i,j] += _val
 
-        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+        for j in range(<size_t>phases.shape[0] - 1): # interpolant safety procedure
             if STAR[i,j] < 0.0:
                 STAR[i,j] = 0.0
 
 
-        for j in range(phases.shape[0] - 1):
+        for j in range(<size_t>phases.shape[0] - 1):
             BACKGROUND += background[i,j]
 
     for p in range(num_components):
@@ -226,8 +226,8 @@ def synthesise_exposure(double exposure_time,
     else:
         gsl_rng_set(r, time.time());
 
-    for i in range(STAR.shape[0]):
-        for j in range(STAR.shape[1]):
+    for i in range(<size_t>STAR.shape[0]):
+        for j in range(<size_t>STAR.shape[1]):
             STAR[i,j] *= exposure_time
 
             STAR[i,j] += background[i,j] * SCALE_BACKGROUND
@@ -310,7 +310,7 @@ def synthesise_given_total_count_number(double[::1] phases,
     _interpolant = _get_phase_interpolant()
 
     cdef:
-        unsigned int i, j, p, num_components = len(components)
+        size_t i, j, p, num_components = len(components)
         double STAR, BACKGROUND, a, b
 
         double[:,::1] _signal = np.zeros((components[0].shape[0], phases.shape[0]-1),
@@ -337,7 +337,7 @@ def synthesise_given_total_count_number(double[::1] phases,
             raise TypeError('An iterable is required to specify component-by-'
                             'component positivity.')
         else:
-            if len(allow_negative) != num_components:
+            if <size_t>len(allow_negative) != num_components:
                 raise ValueError('Number of allow_negative declarations does '
                                  'not match the number of components..')
 
@@ -360,8 +360,8 @@ def synthesise_given_total_count_number(double[::1] phases,
     STAR = 0.0
     BACKGROUND = 0.0
 
-    for i in range(_signal.shape[0]):
-        for p in range(num_components):
+    for i in range(<size_t>_signal.shape[0]):
+        for p in range(<size_t>num_components):
             signal = components[p]
             signal_phase_set = component_phases[p]
             phase_shift = phase_shifts[p]
@@ -374,7 +374,7 @@ def synthesise_given_total_count_number(double[::1] phases,
             gsl_interp_init(interp_ptr, phases_ptr, signal_ptr,
                             signal_phase_set.shape[0])
 
-            for j in range(phases.shape[0] - 1):
+            for j in range(<size_t>phases.shape[0] - 1):
                 a = phases[j] + phase_shift
                 b = phases[j+1] + phase_shift
 
@@ -406,11 +406,11 @@ def synthesise_given_total_count_number(double[::1] phases,
                     if _val > 0.0 or _allow_negative[p] == 1:
                         _signal[i,j] += _val
 
-        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+        for j in range(<size_t>phases.shape[0] - 1): # interpolant safety procedure
             if _signal[i,j] < 0.0:
                 _signal[i,j] = 0.0
 
-        for j in range(phases.shape[0] - 1):
+        for j in range(<size_t>phases.shape[0] - 1):
             STAR += _signal[i,j]
             BACKGROUND += background[i,j]
 
@@ -445,8 +445,8 @@ def synthesise_given_total_count_number(double[::1] phases,
     else:
         gsl_rng_set(r, time.time());
 
-    for i in range(_signal.shape[0]):
-        for j in range(phases.shape[0] - 1):
+    for i in range(<size_t>_signal.shape[0]):
+        for j in range(<size_t>phases.shape[0] - 1):
             _signal[i,j] *= SCALE_STAR
             _signal[i,j] += background[i,j] * SCALE_BACKGROUND
 

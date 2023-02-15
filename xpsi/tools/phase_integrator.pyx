@@ -66,7 +66,7 @@ def phase_integrator(double exposure_time,
     _interpolant = _get_phase_interpolant()
 
     cdef:
-        unsigned int i, j
+        size_t i, j
         double a, b
         double _val
 
@@ -78,13 +78,13 @@ def phase_integrator(double exposure_time,
 
         double *phase_ptr
         double *signal_ptr
-    for i in range(signal.shape[0]):
+    for i in range(<size_t>signal.shape[0]):
         gsl_interp_accel_reset(acc)
         phase_ptr = &(signal_phases[0])
         signal_ptr = &(signal[i,0])
         gsl_interp_init(interp, phase_ptr, signal_ptr, signal_phases.shape[0])
 
-        for j in range(phases.shape[0] - 1):
+        for j in range(<size_t>phases.shape[0] - 1):
             a = phases[j] + phase_shift
             b = phases[j+1] + phase_shift
 

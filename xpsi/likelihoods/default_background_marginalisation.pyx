@@ -53,11 +53,11 @@ def precomputation(int[:,::1] data):
     """
 
     cdef:
-        long int i, j
+        size_t i, j
         double[::1] precomp = np.zeros(data.shape[0], dtype = np.double)
 
-    for i in range(data.shape[0]):
-        for j in range(data.shape[1]):
+    for i in range(<size_t>data.shape[0]):
+        for j in range(<size_t>data.shape[1]):
             precomp[i] += gsl_sf_lnfact(<unsigned int>(data[i,j]))
 
         precomp[i] *= -1.0

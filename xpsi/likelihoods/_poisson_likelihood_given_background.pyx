@@ -82,7 +82,7 @@ def poisson_likelihood_given_background(double exposure_time,
     """
 
     cdef:
-        unsigned int i, j, p, num_components = len(components)
+        size_t i, j, p, num_components = len(components)
         double a, b
 
         double[:,::1] STAR = np.zeros((components[0].shape[0], phases.shape[0]-1),
@@ -104,7 +104,7 @@ def poisson_likelihood_given_background(double exposure_time,
             raise TypeError('An iterable is required to specify component-by-'
                             'component positivity.')
         else:
-            if len(allow_negative) != num_components:
+            if <size_t>len(allow_negative) != num_components:
                 raise ValueError('Number of allow_negative declarations does '
                                  'not match the number of components..')
 
@@ -130,7 +130,7 @@ def poisson_likelihood_given_background(double exposure_time,
     cdef gsl_interp *inter_ptr = NULL
     cdef accel *acc_ptr = NULL
 
-    for i in range(STAR.shape[0]):
+    for i in range(<size_t>STAR.shape[0]):
         for p in range(num_components):
             signal = components[p]
             signal_phase_set = component_phases[p]
@@ -144,7 +144,7 @@ def poisson_likelihood_given_background(double exposure_time,
             gsl_interp_init(interp_ptr, phases_ptr, signal_ptr,
                             signal_phase_set.shape[0])
 
-            for j in range(phases.shape[0] - 1):
+            for j in range(<size_t>phases.shape[0] - 1):
                 a = phases[j] + phase_shift
                 b = phases[j+1] + phase_shift
 
@@ -180,7 +180,7 @@ def poisson_likelihood_given_background(double exposure_time,
                     if _val > 0.0 or _allow_negative[p] == 1:
                         STAR[i,j] += _val
 
-        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+        for j in range(<size_t>phases.shape[0] - 1): # interpolant safety procedure
             if STAR[i,j] < 0.0:
                 STAR[i,j] = 0.0
 
@@ -195,8 +195,8 @@ def poisson_likelihood_given_background(double exposure_time,
         double LOGLIKE = 0.0, EXPEC = 0.0
         double n = <double>(phases.shape[0] - 1)
 
-    for i in range(STAR.shape[0]):
-        for j in range(STAR.shape[1]):
+    for i in range(<size_t>STAR.shape[0]):
+        for j in range(<size_t>STAR.shape[1]):
             EXPEC = (STAR[i,j] + background[i,j]/n) * exposure_time
             LOGLIKE -= EXPEC
             LOGLIKE += counts[i,j] * log(EXPEC)
