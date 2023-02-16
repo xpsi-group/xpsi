@@ -77,13 +77,13 @@ def phase_interpolator(double[::1] new_phases,
     cdef double *signal_ptr
     cdef double _val
 
-    for i in range(signal.shape[0]):
+    for i in range(<size_t>signal.shape[0]):
         gsl_interp_accel_reset(accel)
         phase_ptr = &phases[0]
         signal_ptr = &signal[i][0]
         gsl_interp_init(interp, phase_ptr, signal_ptr, phases.shape[0])
 
-        for j in range(new_phases.shape[0]):
+        for j in range(<size_t>new_phases.shape[0]):
             PHASE = new_phases[j] + phase_shift
             PHASE -= floor(PHASE)
 

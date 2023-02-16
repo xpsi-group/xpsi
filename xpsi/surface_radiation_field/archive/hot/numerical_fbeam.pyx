@@ -399,7 +399,7 @@ cdef double eval_hot(size_t THREAD,
         I_hot = anorm*(1.0+abb*((E)**cbb)*mu+bbb*((E)**dbb)*mu**2)*I_nsx   
     if emodel==3:          
         #integral using trapezoidal rule (consider changing to Gauss quadrature)          
-        for imu in range(int(nimu)):
+        for imu in range(<size_t> nimu):
             mu_imu = mu_imu+(1.0/nimu)
             if imu==0 or imu==nimu-1:
                     dmu = (0.5/nimu)

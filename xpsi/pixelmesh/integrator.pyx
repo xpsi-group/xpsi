@@ -365,8 +365,8 @@ def integrate(size_t numThreads,
 
                             if cache_intensities == 1:
                                 for search in range(N_CP):
-                                    if k == cache_phase_indices[search]:
-                                        if cache_counter_E < N_CE and p == cache_energy_indices[cache_counter_E]:
+                                    if k == <size_t> cache_phase_indices[search]:
+                                        if cache_counter_E < N_CE and p == <size_t> cache_energy_indices[cache_counter_E]:
                                             if single_precision_cache == 0:
                                                 IMAGE_DUB[cache_phase_indices[search], cache_counter_E, INDEX + 1] = I_E / energies[p]
                                             else:
@@ -397,8 +397,8 @@ def integrate(size_t numThreads,
 
                     if cache_intensities == 1:
                         for search in range(N_CP):
-                            if k == cache_phase_indices[search]:
-                                if cache_counter_E < N_CE and p == cache_energy_indices[cache_counter_E]:
+                            if k == <size_t> cache_phase_indices[search]:
+                                if cache_counter_E < N_CE and p == <size_t> cache_energy_indices[cache_counter_E]:
                                     if single_precision_cache == 0:
                                         IMAGE_DUB[cache_phase_indices[search], cache_counter_E, 0] = I_E / energies[p]
                                     else:
@@ -406,8 +406,8 @@ def integrate(size_t numThreads,
 
                 if cache_intensities == 1:
                     for search in range(N_CP):
-                        if k == cache_phase_indices[search]:
-                            if cache_counter_E < N_CE and p == cache_energy_indices[cache_counter_E]:
+                        if k == <size_t> cache_phase_indices[search]:
+                            if cache_counter_E < N_CE and p == <size_t> cache_energy_indices[cache_counter_E]:
                                 cache_counter_E = cache_counter_E + 1
 
                 integrated_flux[k,p] *= SEMI_MINOR * SEMI_MAJOR
