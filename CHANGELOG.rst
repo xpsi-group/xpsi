@@ -70,11 +70,13 @@ Changed
 * CustomInstrument channel_edges argument now changed to mandatory in tutorial notebooks and examples.
 * X-PSI Postprocessing now supports up-to-date versions of NestCheck and GetDist.
 * Specified the integer types to be always size_t in Cython files in those integer comparisons that raised warnings for different signedness of integers.
+* The JOSS paper has been updated to link to published version.
+* A final Python2 release of X-PSI (v1.2.2) was created in the Python2 branch to match the JOSS publication.
 
 Deprecated
 ^^^^^^^^^^
 
-* The Python2 version of X-PSI (v1.2.1) is now considered deprecated, although documentation and tutorials are still available.
+* The Python2 version of X-PSI (v1.2.2) is now considered deprecated, although documentation and tutorials are still available.
 
 Removed
 ^^^^^^^
