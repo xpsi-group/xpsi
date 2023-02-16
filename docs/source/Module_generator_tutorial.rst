@@ -5,8 +5,8 @@ Module generator tutorial
 
 To develop models in X-PSI, users are recommended to to create custom derived classes for the different X-PSI model
 components (e.g. ``Prior``, ``Photosphere``, etc.) that require further modification. Examples of such `Custom` classes
-can be found in :ref:`./Modeling.ipynb`. These classes are preferably to be written as distinct modules within a project
-directory rather than in a notebook as is done in :ref:`./Modeling.ipynb`. The modules can then be imported by a `Main`
+can be found in :doc:`Modeling<Modeling>`. These classes are preferably to be written as distinct modules within a project
+directory rather than in a notebook as is done in :doc:`Modeling<Modeling>`. The modules can then be imported by a `Main`
 script, which can be executed using an MPI command in a shell to exploit parallelism for resource-intensive likelihood
 evaluations.
 

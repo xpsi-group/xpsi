@@ -72,7 +72,7 @@ Changed
 Deprecated
 ^^^^^^^^^^
 
-*The Python2 version of X-PSI (v1.2.1) is now considered deprecated, although documentation and tutorials are still available.
+* The Python2 version of X-PSI (v1.2.1) is now considered deprecated, although documentation and tutorials are still available.
 
 Removed
 ^^^^^^^
