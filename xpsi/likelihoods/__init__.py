@@ -24,9 +24,10 @@ condition upon, an extension can operate with the expected background count
 (rate or number) signal. In lieu of such a model, one can invoke the default
 background marginalisation protocol; channel-by-channel
 background count rate variables will be numerically and rapidly marginalised
-over. See the discussion in :ref:`R19` and the X-PSI technical notes to evaluate
-whether this is appropriate for coupling with a given model for target source
-signal.
+over. See the discussion in `Riley et al. 2019
+<https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_ and the
+X-PSI technical notes to evaluate whether this is appropriate for coupling
+with a given model for target source signal.
 
 """
 

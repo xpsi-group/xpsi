@@ -1,5 +1,5 @@
 ---
-title: 'X-PSI: A Python package for neutron star X-ray Pulse Simulation and Inference'
+title: 'X-PSI: A Python package for neutron star X-ray pulse simulation and inference'
 tags:
     - Python
     - astrostatistics
@@ -46,7 +46,7 @@ bibliography: xpsijoss.bib
 
 # Summary
 
-X-PSI is a software package designed to simulate rotationally-modified (pulsed) 
+The X-ray Pulse Simulation and Inference (X-PSI) package is a software package designed to simulate rotationally-modulated 
 surface X-ray emission from neutron stars and to perform Bayesian 
 statistical inference on real or simulated pulse profile data sets. Model parameters 
 of interest include neutron star mass and radius and the system geometry and 
@@ -54,20 +54,20 @@ properties of the hot emitting surface regions.
 
 # Statement of need
 
-Rotationally modulated (pulsed) X-ray signals from neutron stars
+Pulsed X-ray signals from neutron stars
 can be modeled to statistically estimate parameters such as stellar mass and
 radius, and properties of the surface radiation field such as a map of
 temperature. The mass and radius of a neutron star are a function of the
-equation of state of internal matter (especially the dense matter in the core)
-and the formation history of the star (that determines the central energy
-density and the spin frequency); the state of the surface radiation field is
+equation of state of internal matter, especially the dense matter in the core,
+and the formation history of the star, which determines the central energy
+density and the spin frequency. The state of the surface radiation field is
 the product of a potentially long and complex stellar evolutionary history,
 especially that of the stellar magnetosphere. Such parameter estimation
 requires relativistic tracing of radiation as it propagates from surface to a
 distant telescope. Pulse-profile modelling to infer neutron star parameters
 is a major science goal for both current X-ray telescopes such as the Neutron
-Star Interior Composition ExploreR (NICER, @Gendreau2016) and future telescopes
-[@Watts2019].
+Star Interior Composition ExploreR [NICER, @Gendreau2016] and proposed future telescopes such as eXTP and STROBE-X
+[@Watts2019;@Ray2019].
 
 While there are some open-source libraries for simulating the X-ray
 signals from rapidly spinning neutron stars and more generally from the
@@ -81,13 +81,13 @@ functionality (simulation) with existing open-source software for posterior samp
 
 X-PSI is an open-source Python package for Bayesian modeling of time- and
 energy-resolved X-ray pulsations. X-PSI provides a framework for the
-implementation of custom models (likelihood and prior functions) and for
+implementation of custom models, including likelihood and prior functions, and for
 feeding those models to open-source statistical sampling software for use on
 high-performance computing systems. X-PSI supplies modules for post-processing
 posterior sample sets, and supplies tools for visualisation. For example, one
-can generate time- and energy-resolved (animated) images of model X-ray pulsars
-by tracing radiation from the stellar surface to a distant observer (such as a
-space telescope) as it propagates through spacetime; a snapshot of such an
+can generate time- and energy-resolved images and animations of model X-ray pulsars
+by tracing radiation from the stellar surface to a distant observer, such as a
+space telescope, as it propagates through spacetime; a snapshot of such an
 animation may be found in \autoref{fig:animation_snapshot}. Posterior summaries
 can be plotted of the time- and energy-domain signals that a model pulsar is
 inferred to generate, conditioned on observational data.
@@ -108,11 +108,11 @@ open-source analysis pipeline and products published on Zenodo [@Riley:2019:Zeno
 multipolar magnetic fields.
 
 The numerical likelihood routines native to X-PSI are written in Cython
-[@cython2011], and are dependent on the GNU Scientific Library (GSL;
-@Gough:2009). High-level object-oriented model construction is performed by a
+[@cython2011], and are dependent on the GNU Scientific Library [GSL,
+@Gough:2009]. High-level object-oriented model construction is performed by a
 user in the Python language, as is the interfacing with sampling software.
-Low-level customisation is encouraged in the extensions (either directly in
-Cython or via calls to external C libraries).  X-PSI is Unix source code
+Low-level customisation is encouraged in the extensions, either directly in
+Cython or via calls to external C libraries.  X-PSI is Unix source code
 compatible, and release versions are freely available on GitHub under the GNU General Public License.  Extensive documentation, step-by-step tutorials, and reproduction
 code for existing data analyses, are available
 via the GitHub repository, along with a growing suite of unit tests.  Future plans
@@ -121,8 +121,8 @@ include migration to Python 3, further improvements to post-processing software,
 
 
 
-*Software:* Python/C language [@Python2007], GNU Scientific Library (GSL;
-@Gough:2009), NumPy [@Numpy2011], Cython [@cython2011], OpenMP [@openmp], MPI
+*Software:* Python/C language [@Python2007], GNU Scientific Library [GSL,
+@Gough:2009], NumPy [@Numpy2011], Cython [@cython2011], OpenMP [@openmp], MPI
 for Python [@mpi4py], Matplotlib [@Hunter:2007; @matplotlibv2], IPython
 [@IPython2007], Jupyter [@Kluyver:2016aa], MultiNest [@MultiNest_2009],
 PyMultiNest [@PyMultiNest], GetDist [@Lewis19], nestcheck

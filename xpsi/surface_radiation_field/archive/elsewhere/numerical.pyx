@@ -8,7 +8,7 @@ from libc.stdio cimport printf, fopen, fclose, fread, FILE
 from GSL cimport gsl_isnan, gsl_isinf
 from libc.stdlib cimport malloc, free
 
-from xpsi.global_imports import _keV, _k_B
+from xpsi.global_imports import _keV, _k_B, _h_keV
 
 cdef int SUCCESS = 0
 cdef int ERROR = 1
@@ -16,6 +16,7 @@ cdef int ERROR = 1
 cdef double erg = 1.0e-7
 cdef double k_B = _k_B
 cdef double keV = _keV
+cdef double h_keV = _h_keV
 cdef double k_B_over_keV = k_B / keV
 cdef int VERBOSE = 0
 
@@ -346,5 +347,5 @@ cdef double eval_elsewhere_norm() nogil:
     # during integration.
     # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
-    return erg / 4.135667662e-18
+    return erg / h_keV
 

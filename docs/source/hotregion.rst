@@ -19,8 +19,8 @@ Representation of the ``HotRegion`` class instantiation options ``omit`` and ``c
 Representation of a ``HotRegion`` instance configuration, when ``omit`` or ``cede`` are set to ``True``. A description of these parameters is also presented below. If ``is_antiphased = True``, the parameter ``phase_shift`` is added to :math:`\pi` radians. For example, if ``phase_shift = 0``, the omission or the superseding region (respectively on the left and right side of the image) is in anti-phase with the observer meridian (i.e., its azimuth is :math:`\pi`).
 
 .. autoclass:: xpsi.HotRegion.HotRegion
-    :members: _HotRegion__construct_cellMesh, _HotRegion__compute_rays,
-              _HotRegion__compute_cellParamVecs, embed,
+    :members: __construct_cellMesh, __compute_rays,
+              __compute_cellParamVecs, embed,
               psi, integrate, num_rays, sqrt_num_cells, leaves, phases,
               set_phases, phases_in_cycles, print_settings, num_cells,
               cede, concentric

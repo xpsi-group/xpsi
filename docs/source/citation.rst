@@ -10,7 +10,7 @@ as a software acknowledgement, e.g.:
 
     X-PSI (\url{https://github.com/xpsi-group/xpsi.git}, \citet{xpsi})
 
-and cite the X-PSI Journal of Open Source Software (JOSS) paper:
+and cite the `Riley et al. (2023) X-PSI Journal of Open Source Software (JOSS) paper <https://doi.org/10.21105/joss.04977>`_
 
 .. code-block:: latex
 
@@ -23,12 +23,15 @@ and cite the X-PSI Journal of Open Source Software (JOSS) paper:
 					and {Watts}, Anna L. 
 					and {Huppenkothen}, D. 
 					and {Guillot}, Sebastien },
-        title = "{X-PSI: A Python package for neutron star X-ray Pulse Simulation and Inference}",
+        title = "{X-PSI: A Python package for neutron star X-ray pulse simulation and inference}",
         journal = "{Journal of Open Source Software}",
-     	keywords = {Software},
+	publisher = {The Open Journal},
         year = 2023,
-       	doi  = {}
-	url = {}
+	volume = {8}, 
+	number = {82}, 
+	pages = {4977},
+       	doi  = {10.21105/joss.04977},
+	url = {https://doi.org/10.21105/joss.04977}
 	}
 
 

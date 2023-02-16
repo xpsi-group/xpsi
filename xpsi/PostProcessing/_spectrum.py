@@ -39,7 +39,7 @@ class SpectrumPlot(SignalPlot):
     total (component-summed) source count-rate signals with posterior-expected
     background count-rate signals.
 
-    The following example is (improved) from :ref:`R19`:
+    The following example is (improved) from `Riley et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_:
 
     .. image:: _static/_spectrumplot.png
 
