@@ -35,7 +35,7 @@ class PulsePlot(SignalPlot):
     component signals if the ground truth (the injected signal correpsonding
     to some model parameter vector) is known.
 
-    The following example is from :ref:`R19`:
+    The following example is from `Riley et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_:
 
     .. image:: _static/_pulseplot.png
 
