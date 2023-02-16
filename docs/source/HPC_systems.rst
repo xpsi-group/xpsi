@@ -400,7 +400,7 @@ Install pymultinest in your ``$HOME`` (e.g. in ``~/Softwares``:
     mpiexec -n 2 python pymultinest_demo.py
 
 
-Clone and Install XPSIin ~/Softwares/
+Clone and Install X-PSI in ~/Softwares/
 
 .. code-block:: bash
 
@@ -414,7 +414,7 @@ Clone and Install XPSIin ~/Softwares/
     python -c "import xpsi"
 
     ## Ignore the warnings about GetDist, NestCheck, CornerPlotter
-    ##  which are only for PostProcessing (not usually performed on HPC systems.
+    ##  which are only for PostProcessing (not usually performed on HPC systems).
 
 
 Set up your library paths:
