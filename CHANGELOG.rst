@@ -33,13 +33,13 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
-[v2.0.0] - 2023-02-03
+[v2.0.0] - 2023-02-16
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* This major release candidate migrates X-PSI from Python2 (X-PSI v1.2.1 or lower) to Python3 (X-PSI v2.0 and higher), with corresponding updates and improvements to all documentation and tutorials.  
+* This major release migrates X-PSI from Python2 (X-PSI v1.2.1 or lower) to Python3 (X-PSI v2.0 and higher), with corresponding updates and improvements to all documentation and tutorials.
 
 Fixed
 ^^^^^
@@ -53,21 +53,23 @@ Added
 * Post-processing - adding names of parameters across diagonal in corner plots
 * Extra yticks options for plotting functions in the tutorials
 * `--noopenmp` install option for Mac Users
-* Added option to fix the random seed for the synthetic data generation in Python3 version
+* Added option to fix the random seed for the synthetic data generation in Python3 version.
+* Added option to plot y-axis in the residuals in a user selected scale (e.g., either log or lin).
 
 Changed
 ^^^^^^^
 
-* Modified all X-PSI routines to work in Python3
+* Modified all X-PSI routines to work in Python3.
 * General Documentation (Applications, Team and Acknowledgements, Citation, Future pages) updated for both Python2 and Python3 documentation branches.
-* Installation and tutorial pages modified for Python3
-* Module generator updated for Python3 and documentation added
-* Projection tool updated for Python3 and documentation added
-* Github actions modified to work in Python3
-* Github actions modified to use mamba with install commands on one line to improve speed
-* Updated references in the documentation and tutorial notebooks
-* CustomInstrument channel_edges argument now changed to mandatory in tutorial notebooks and examples
-* X-PSI Postprocessing now supports up-to-date versions of Nestcheck, Getdist. 
+* Installation and tutorial pages modified for Python3.
+* Module generator updated for Python3 and documentation added.
+* Projection tool updated for Python3 and documentation added.
+* Github actions modified to work in Python3.
+* Github actions modified to use mamba with install commands on one line to improve speed.
+* Updated references in the documentation and tutorial notebooks.
+* CustomInstrument channel_edges argument now changed to mandatory in tutorial notebooks and examples.
+* X-PSI Postprocessing now supports up-to-date versions of NestCheck and GetDist.
+* Specified the integer types to be always size_t in Cython files in those integer comparisons that raised warnings for different signedness of integers.
 
 Deprecated
 ^^^^^^^^^^
@@ -77,8 +79,8 @@ Deprecated
 Removed
 ^^^^^^^
 
-* Removed requirement of FFMPEG for Animations in tutorials
-* Suppressed printf() statements from c code in tutorial notebooks
+* Removed requirement of FFMPEG for Animations in tutorials.
+* Suppressed printf() statements from c code in tutorial notebooks.
 
 Attribution
 ^^^^^^^^^^^
