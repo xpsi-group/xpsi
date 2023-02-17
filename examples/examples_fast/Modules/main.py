@@ -6,6 +6,8 @@ import math
 import xpsi
 from xpsi.global_imports import gravradius
 
+np.random.seed(xpsi._rank+10)
+
 import time
 
 from CustomInstrument import CustomInstrument

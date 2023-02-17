@@ -11,7 +11,7 @@ X-PSI is an open-source software package that is available on `GitHub
     git clone https://github.com/xpsi-group/xpsi.git </path/to/xpsi>
 
 In this page, we lay down the instructions for installing X-PSI and all the
-necessary pre-requisites on your local self-administered system.
+necessary prerequisites on your local self-administered system.
 
 .. note::
 
@@ -21,7 +21,7 @@ necessary pre-requisites on your local self-administered system.
 
 .. _dev_env:
 
-Prerequisite Python packages
+Prerequisite Python Packages
 ----------------------------
 
 X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of 
@@ -39,7 +39,7 @@ contents are:
 
 .. code-block:: bash
 
-    name: xpsi
+    name: xpsi_py3
     channels:
         - defaults
     dependencies:
@@ -64,12 +64,12 @@ To create a virtual environment from this file:
 
      conda env create -f <path/to/xpsi>/basic_environment.yml
 
-If Conda does not solve the environment dependencies, you may need to create
+If conda does not solve the environment dependencies, you may need to create
 an environment manually via
 
 .. code-block:: bash
 
-     conda create -n xpsi
+     conda create -n xpsi_py3
 
 and then install the core dependencies listed in ``basic_environment.yml`` via
 conda.
@@ -78,7 +78,7 @@ Activate the environment as:
 
 .. code-block:: bash
 
-    conda activate xpsi
+    conda activate xpsi_py3
 
 .. note::
 
@@ -86,17 +86,24 @@ Activate the environment as:
     ENVIRONMENT.** Pay special attention to reactivate the environment if you
     ever have to restart the kernel.
     
-Next, install the packages
-`pymultinest <https://johannesbuchner.github.io/PyMultiNest/>`_ and
-`mpi4py <http://cython.readthedocs.io/en/latest>`_ which are required for 
+Next, install
+`mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_ which is required for 
 nested sampling:
 
 .. code-block:: bash
 
-    conda install -c conda-forge mpi4py pymultinest
-    
-Note that pyMultiNest is only a wrapper and requires MultiNest to run properly.
-See below for installation instructions (:ref:`multinest`).
+    conda install -c conda-forge mpi4py
+
+
+We also need `PyMultiNest <https://github.com/JohannesBuchner/PyMultiNest>`_
+(the interface to the MultiNest library) for nested sampling.
+However, `conda install -c conda-forge pymultinest` might try
+to install dependencies in the environment,
+including binaries for MPI, BLAS/LAPACK, and a Fortran compiler,
+all in order to install MultiNest. Moreover, the MultiNest version
+listed is a minor release too low to satisfy all our needs.
+Thus, see the PyMultiNest instructions below.
+
 Then, install optional packages
 `getdist <https://getdist.readthedocs.io/en/latest/>`_,
 `h5py <https://docs.h5py.org/en/stable/index.html>`_,
@@ -117,11 +124,12 @@ In addition, some optional miscellaneous packages are:
 
 .. _nonpython:
 
-Prerequisite Non-Python Packages
---------------------------------
+Prerequisite Non-Python Packages and PyMultiNest
+------------------------------------------------
 
-X-PSI has several dependencies that are not Python packages. Build and
-install guidelines are given below.
+X-PSI has several dependencies that are not Python packages,
+or which are Python packages but need to be installed from source (PyMultiNest).
+Build and install guidelines are given below.
 
 GSL
 ^^^
@@ -178,22 +186,20 @@ system and X-PSI can be installed locally without sampling functionality, it is
 advisable to install MultiNest on your personal machine to gain experience in
 application to inexpensive test problems. In addition, to leverage some
 capabilities of sample post-processing software you 
-`require MultiNest <https://github.com/JohannesBuchner/MultiNest>`_ ``v3.12``. 
+`require MultiNest <https://github.com/farhanferoz/MultiNest>`_ ``v3.12``.
 To build the MultiNest library, you require an MPI-wrapped Fortran compiler
 (e.g.,  `openmpi-mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
 from Open MPI).
 
 .. note::
 
-    The following assumes you have installed PyMultiNest and mpi4py. If you
+    The following assumes you have installed mpi4py. If you
     have not already installed it through the ``environment.yml`` file, you may
-    do so e.g. via ``conda install -c conda-forge pymultinest mpi4py``.
+    do so e.g. via ``conda install -c conda-forge mpi4py``.
 
-We follow
-`this guide <https://johannesbuchner.github.io/PyMultiNest/install.html>`_ for 
-installation of MultiNest. Prerequisites for MultiNest are c and fortran 
-compilers (e.g. ``gcc``, ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
-``atlas``:
+Prerequisites for MultiNest are c and fortran
+compilers (e.g. ``gcc`` and ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
+``atlas``. In case missing them, they can be installed by:
 
 .. code-block:: bash
 
@@ -204,12 +210,25 @@ then navigate to it and build:
 
 .. code-block:: bash
 
-    git clone https://github.com/JohannesBuchner/MultiNest
-    cd MultiNest/build
-    cmake ..
+    git clone https://github.com/farhanferoz/MultiNest.git <path/to/clone>/multinest
+    cd <path/to/clone>/multinest/MultiNest_v3.12_CMake/multinest/
+    mkdir build
+    cd build
+    CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
     make
+    ls ../lib/
 
-Next, you need PyMultinest to interface with MultiNest. To do so, add the
+Now you need the Python interface to MultiNest:
+
+.. code-block:: bash
+
+    git clone https://github.com/JohannesBuchner/PyMultiNest.git <path/to/clone>/pymultinest
+    cd <path/to/clone>/pymultinest
+    python setup.py install [--user]
+
+The package will be installed in your conda environment, if the environment is activated.
+In that case, the optional ``--user`` flag should be omitted.
+We also need PyMultinest to interface with MultiNest. To do so, add the
 following line to ``~/.bashrc``:
 
 .. code-block:: bash
@@ -226,11 +245,9 @@ which should import without any errors. If you get ``ERROR:   Could not load
 MultiNest library "libmultinest.so"``, that means either MultiNest was not
 succesfully installed or could not be found.  While X-PSI will run properly,
 the nested-sampling capabilities (requiring MultiNest) will crash. The user can
-use EMCEE as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
+use emcee as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
 Note however that the post-processing turorials have only been implemented
 for the outputs of MultiNest.
-
-The package will be installed in your Conda environment (if activated).
 
 
 X-PSI
@@ -243,7 +260,7 @@ Finally, to build and install from the X-PSI clone root, execute:
     CC=<path/to/compiler/executable> python setup.py install [--user]
 
 The ``--user`` flag is optional and specifies where the package is installed;
-if you want to install the package in a virtual environment, omit this flag.
+if you want to install the package in a virtual environment (as recommended), omit this flag.
 
 For ``icc``, you may need to prepend this command with
 ``LDSHARED="icc -shared"``. This ensures that both the compiler and linker
@@ -257,14 +274,14 @@ will not change for runtime, we state the runtime linking instructions at
 compilation in the ``setup.py`` script.
 
 A quick check of the X-PSI installation can be done with ``import xpsi``, which
-should print to screen the following:
+should print to screen something like the following:
 
 .. code-block:: bash
 
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 1.2.1               |
+    |                Version: 2.0.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
@@ -272,6 +289,12 @@ should print to screen the following:
     Imported GetDist version: 1.4
     Imported nestcheck version: 0.2.1
 
+
+.. note::
+
+   Importing X-PSI should not be done in the X-PSI root directory (where the ``setup.py`` file locates).
+   Otherwise, a following type of error is expected:
+   ``ImportError: cannot import name 'set_phase_interpolant' from 'xpsi.tools' (unknown location)``
 
 For a more complete verification of the X-PSI installation, you can execute
 the following:

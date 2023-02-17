@@ -8,7 +8,7 @@ from libc.stdio cimport printf, fopen, fclose, fread, FILE
 from GSL cimport gsl_isnan, gsl_isinf
 from libc.stdlib cimport malloc, free
 
-from xpsi.global_imports import _keV, _k_B
+from xpsi.global_imports import _keV, _k_B, _h_keV
 
 cdef int SUCCESS = 0
 cdef int ERROR = 1
@@ -16,6 +16,7 @@ cdef int ERROR = 1
 cdef double erg = 1.0e-7
 cdef double k_B = _k_B
 cdef double keV = _keV
+cdef double h_keV = _h_keV
 cdef double k_B_over_keV = k_B / keV
 cdef int VERBOSE = 0
 
@@ -398,7 +399,7 @@ cdef double eval_hot(size_t THREAD,
         I_hot = anorm*(1.0+abb*((E)**cbb)*mu+bbb*((E)**dbb)*mu**2)*I_nsx   
     if emodel==3:          
         #integral using trapezoidal rule (consider changing to Gauss quadrature)          
-        for imu in range(int(nimu)):
+        for imu in range(<size_t> nimu):
             mu_imu = mu_imu+(1.0/nimu)
             if imu==0 or imu==nimu-1:
                     dmu = (0.5/nimu)
@@ -429,5 +430,5 @@ cdef double eval_hot_norm() nogil:
     # during integration.
     # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
-    return erg / 4.135667662e-18
+    return erg / h_keV
 

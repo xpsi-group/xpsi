@@ -82,13 +82,13 @@ def energy_integrator(size_t N_Ts,
         T = threadid()
         cpy = _signal[T]
 
-        for j in range(energies.shape[0]):
+        for j in range(<size_t>energies.shape[0]):
             cpy[j] = pow(10.0, energies[j]) * signal[j,i] * log(10.0)
 
         gsl_interp_accel_reset(acc[T])
         gsl_interp_init(interp[T], &(energies[0]), cpy, energies.shape[0])
 
-        for j in range(energy_edges.shape[0] - 1):
+        for j in range(<size_t>energy_edges.shape[0] - 1):
             if energy_edges[j + 1] > max_energy:
                 upper_energy = max_energy
             else:

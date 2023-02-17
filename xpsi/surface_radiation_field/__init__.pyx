@@ -180,7 +180,7 @@ def intensity(double[::1] energies,
 
     :returns:
         A 1D :class:`numpy.ndarray` of the photon specific intensities in
-        units of photons/s/keV/cm^2.
+        units of photons/s/keV/cm^2/sr.
 
     """
     cdef fptr_init init_ptr = NULL
@@ -350,7 +350,7 @@ def intensity_from_globals(double[::1] energies,
 
     :returns:
         A 1D :class:`numpy.ndarray` of the photon specific intensities in
-        units of photons/s/keV/cm^2.
+        units of photons/s/keV/cm^2/sr.
 
     """
     cdef _GEOM GEOM
@@ -465,9 +465,9 @@ def effective_gravity(double[::1] cos_colatitude,
     cdef double[::1] gravity = np.zeros(cos_colatitude.shape[0],
                                         dtype=np.double)
 
-    cdef size_t i
+    cdef unsigned int i
 
-    for i in range(gravity.shape[0]):
+    for i in range(<size_t>gravity.shape[0]):
         gravity[i] = effectiveGravity(cos_colatitude[i],
                                       R_eq[i],
                                       zeta[i],

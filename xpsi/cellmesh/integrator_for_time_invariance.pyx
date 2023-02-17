@@ -164,16 +164,16 @@ def integrate(size_t numThreads,
         cos_deflection = np.zeros((deflection.shape[0],
                                    deflection.shape[1]),
                                    dtype = np.double)
-        for i in range(deflection.shape[0]):
-            for j in range(deflection.shape[1]):
+        for i in range(<size_t>deflection.shape[0]):
+            for j in range(<size_t>deflection.shape[1]):
                 cos_deflection[i,j] = cos(deflection[i, N_R - j - 1])
 
         cos_alpha_alt = np.zeros((cos_alpha.shape[0],
                                   cos_alpha.shape[1]),
                                   dtype = np.double)
 
-        for i in range(cos_alpha.shape[0]):
-            for j in range(cos_alpha.shape[1]):
+        for i in range(<size_t>cos_alpha.shape[0]):
+            for j in range(<size_t>cos_alpha.shape[1]):
                 cos_alpha_alt[i,j] = cos_alpha[i, N_R - j - 1]
 
     if image_order_limit is not None:

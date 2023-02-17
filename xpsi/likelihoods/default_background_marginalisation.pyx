@@ -56,8 +56,8 @@ def precomputation(int[:,::1] data):
         size_t i, j
         double[::1] precomp = np.zeros(data.shape[0], dtype = np.double)
 
-    for i in range(data.shape[0]):
-        for j in range(data.shape[1]):
+    for i in range(<size_t>data.shape[0]):
+        for j in range(<size_t>data.shape[1]):
             precomp[i] += gsl_sf_lnfact(<unsigned int>(data[i,j]))
 
         precomp[i] *= -1.0
@@ -79,7 +79,7 @@ ctypedef struct args:
 
 cdef double marginal_integrand(double B, void *params) nogil:
 
-    cdef int j
+    cdef size_t j
     cdef double c, x = 0.0
     cdef args *a  = <args*> params
 
@@ -99,7 +99,7 @@ cdef double marginal_integrand(double B, void *params) nogil:
 
 cdef double delta(double B, void *params) nogil:
 
-    cdef int j
+    cdef size_t j
     cdef double x = 0.0, y = 0.0
     cdef args *a  = <args*> params
 
@@ -304,7 +304,7 @@ def eval_marginal_likelihood(double exposure_time,
             raise TypeError('An iterable is required to specify component-by-'
                             'component positivity.')
         else:
-            if len(allow_negative) != num_components:
+            if <size_t> len(allow_negative) != num_components:
                 raise ValueError('Number of allow_negative declarations does '
                                  'not match the number of components..')
 
@@ -325,7 +325,7 @@ def eval_marginal_likelihood(double exposure_time,
     cdef gsl_interp *inter_ptr = NULL
     cdef accel *acc_ptr = NULL
 
-    for i in range(STAR.shape[0]):
+    for i in range(<size_t> STAR.shape[0]):
         for p in range(num_components):
             pulse = components[p]
             pulse_phase_set = component_phases[p]
@@ -339,7 +339,7 @@ def eval_marginal_likelihood(double exposure_time,
             gsl_interp_init(interp_ptr, phases_ptr, pulse_ptr,
                             pulse_phase_set.shape[0])
 
-            for j in range(phases.shape[0] - 1):
+            for j in range(<size_t> (phases.shape[0] - 1)):
                 pa = phases[j] + phase_shift
                 pb = phases[j+1] + phase_shift
 
@@ -375,13 +375,13 @@ def eval_marginal_likelihood(double exposure_time,
                     if _val > 0.0 or _allow_negative[p] == 1:
                         STAR[i,j] += _val
 
-        for j in range(phases.shape[0] - 1): # interpolant safety procedure
+        for j in range(<size_t> (phases.shape[0] - 1)): # interpolant safety procedure
             if STAR[i,j] < 0.0:
                 STAR[i,j] = 0.0
 
         av_DATA = 0.0; av_STAR = 0.0
 
-        for j in range(phases.shape[0] - 1):
+        for j in range(<size_t> (phases.shape[0] - 1)):
             STAR[i,j] *= n
             if background is not None:
                 STAR[i,j] += _background[i,j]
