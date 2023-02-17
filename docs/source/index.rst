@@ -1,6 +1,6 @@
 .. module:: xpsi
 
-.. include:: intro.txt
+.. include:: intro.rst
 
 .. toctree::
    :maxdepth: 1
@@ -10,7 +10,7 @@
    overview
    FAQ
    applications
-   SURFsara_systems
+   HPC_systems
 
 .. toctree::
    :maxdepth: 1
@@ -21,22 +21,25 @@
    history
    todo
    acknowledgements
+   citation
 
 .. toctree::
    :maxdepth: 1
    :caption: Tutorials
 
-   model_construction
-   multiple_instruments
-   hotregion_complexity
-   global_surface_emission
-   surface_radiation_field_checking_tools_tutorial
-   model_construction_streamlined
-   multiple_imaging
+   Start_here
+   Modeling
+   Instrument_synergy
+   Hot_region_complexity
+   Surface_radiation_field_tools
+   Modeling_without_statistics
    polarization
-   postprocessing_tutorial
-   example_script
-   example_job
+   Post-processing
+   Emitting_patterns_2Dprojection
+   Importance_sample
+   Module_generator_tutorial
+   Example_script_and_modules
+   Example_job
 
 .. toctree::
    :maxdepth: 1

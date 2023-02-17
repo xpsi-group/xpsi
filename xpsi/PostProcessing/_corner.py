@@ -1,10 +1,10 @@
-from __future__ import division, print_function
-
+import numpy as np_
 from scipy.special import logsumexp
 
 from ._global_imports import *
 
 from . import _precision
+from collections import OrderedDict
 
 from getdist.plots import getSubplotPlotter
 from getdist.mcsamples import MCSamples
@@ -18,7 +18,7 @@ except ImportError:
     _warning('CornerPlotter instances cannot use nestcheck functionality.')
 else:
     try:
-        from nestcheck.plots import getdist_kde
+        from ._nestcheck_modifications import getdist_kde
     except ImportError:
         try:
             from nestcheck.plots import weighted_1d_gaussian_kde
@@ -35,6 +35,8 @@ class CornerPlotter(PostProcessor):
     """ Plot marginal posterior densities and estimators.
 
     """
+
+
     @fix_random_seed
     @make_verbose('Executing posterior density estimation',
                   'Posterior density estimation complete')
@@ -142,10 +144,11 @@ class CornerPlotter(PostProcessor):
         :param kwargs:
             Keyword arguments for the :meth:`_plot_density_with_error` and
             :meth:`_plot_triangle` methods. Keyword arguments for line
-            properties (width and alpha) for :mod:`getdist` contours and density
+            properties (width, color, and alpha) for :mod:`getdist` contours and density
             distributions. If ``bootstrap and not separate_plots`` then
             the density distribution linewidth is set to zero if not
             explicitly specified with kwarg ``lw_1d``.
+            In addition, keyword arguments for avoiding unnecessary re-drawing of prior samples (``force_draw``, ``prior_samples_fnames`` and ``priors_identical``).
 
         """
         self.set_subset(IDs, combine, combine_all,
@@ -177,8 +180,9 @@ class CornerPlotter(PostProcessor):
                 if ndots > maxdots:
                     dpi = int(maxdots * _dpi / ndots)
 
+            rcParams["savefig.dpi"] = dpi
             self._plotter.export(fname=root_filename+'triangle'+ext,
-                                   adir=directory, dpi=dpi)
+                                   adir=directory)
             try:
                 figs[1].savefig(_os.path.join(directory,
                                               root_filename+'fthetas_1d.pdf'),
@@ -204,8 +208,6 @@ class CornerPlotter(PostProcessor):
     def _plot_density_with_error(self,
                                  plotter = None,
                                  fthetas = None,
-                                 kde_func = None,
-                                 kde_kwargs = None,
                                  **kwargs):
         """
         :param plotter:
@@ -220,14 +222,6 @@ class CornerPlotter(PostProcessor):
             native :mod:`nestcheck` matplotlib figure; the parameter densities
             are be added to a :mod:`getdist` lower-triangle plot is supplied.
 
-        :param func kde_func:
-            Function for KDE compatible with :mod:`nestcheck.plots`. Must
-            be *weighted* KDE (Higson et al. 2018). If ``None``, uses
-            :mod:`getdist` if available, or the native KDE function otherwise.
-            If using :mod:`getdist`, the KDE settings are automatically
-            retrieved from the first run and applied to :mod:`nestcheck` and
-            :mod:`fgivenx` *for all runs*.
-
         :param kwargs:
             Keyword arguments for :func:`nestcheck.plots.bs_param_dists`.
 
@@ -240,7 +234,6 @@ class CornerPlotter(PostProcessor):
         nestcheck_bcknds, runs = self._filter_nestcheck_compatible()
 
         nx = kwargs.pop('nx', 200); ny = kwargs.pop('ny', nx)
-        scale_ymax = kwargs.pop('scale_ymax', 1.1)
         n_simulate = kwargs.pop('n_simulate', 200)
 
         params = self.params.names
@@ -264,23 +257,6 @@ class CornerPlotter(PostProcessor):
                 l[0] = (l[0] if l[0] > b[0] else b[0])
                 l[1] = (l[1] if l[1] < b[1] else b[1])
 
-        if kde_func is None:
-            try:
-                kde_func = getdist_kde
-            except NameError:
-                kde_func = weighted_1d_gaussian_kde
-                kde_kwargs = [None] * len(runs)
-            else:
-                normalize = kwargs.pop('normalize', False)
-                kde_kwargs = []
-                for run in runs:
-                    kde_kwargs.append(
-                            {'settings': run.kde_settings,
-                             'ranges': [run.bounds[param] for param in params],
-                             'normalize': normalize}
-                            )
-
-        lines = kwargs.pop('lines', False)
         parallel = kwargs.pop('parallel', True)
         rasterize_contours = kwargs.pop('rasterize_contours', True)
         tqdm_kwargs = kwargs.pop('tqdm_kwargs', None)
@@ -293,22 +269,15 @@ class CornerPlotter(PostProcessor):
                      'Adding density error information to triangle plot',
                      'Added density error information'):
             fig = bs_param_dists(nestcheck_bcknds,
-                                 fthetas=_fthetas,
-                                 kde_func=kde_func,
-                                 kde_kwargs=kde_kwargs,
-                                 ftheta_lims=lims,
+                                 fthetas=_fthetas[0],
+                                 ftheta_lims=lims[0],
                                  nx=nx,
                                  ny=ny,
-                                 scale_ymax=scale_ymax,
                                  n_simulate=n_simulate,
-                                 simulate_weights=True,
-                                 getdist_plotter=plotter,
                                  figsize=figsize,
-                                 lines=lines,
                                  parallel=parallel,
                                  rasterize_contours=rasterize_contours,
                                  labels=labels,
-                                 no_means=True,
                                  tqdm_kwargs=tqdm_kwargs)
 
         if fig: figs.append(fig)
@@ -318,7 +287,6 @@ class CornerPlotter(PostProcessor):
                 num_funcs = len(fthetas[0])
             else:
                 num_funcs = len(fthetas)
-            kde_kwargs['ranges'] = ftheta_lims
             figsize *= float(num_funcs)/len(params)
             if 'ftheta_labels' in kwargs:
                 kwargs = {'labels': kwargs['ftheta_labels']}
@@ -327,16 +295,11 @@ class CornerPlotter(PostProcessor):
 
             fig = bs_param_dists(nestcheck_bcknds,
                                  fthetas=fthetas,
-                                 kde_func=kde_func,
-                                 kde_kwargs=kde_kwargs,
                                  ftheta_lims=ftheta_lims,
                                  nx=nx,
                                  ny=ny,
-                                 scale_ymax=scale_ymax,
                                  n_simulate=n_simulate,
-                                 simulate_weights=True,
                                  figsize=figsize,
-                                 lines=lines,
                                  parallel=parallel,
                                  rasterize_contours=rasterize_contours,
                                  **kwargs)
@@ -367,6 +330,7 @@ class CornerPlotter(PostProcessor):
                        label_right = True,
                        no_ytick = False,
                        credible_interval_1d = True,
+                       credible_interval_1d_all_show = False,
                        annotate_credible_interval = True,
                        annotate_xy=(0.025,0.915),
                        sixtyeight = True,
@@ -442,6 +406,9 @@ class CornerPlotter(PostProcessor):
             realisations. The interval between the two bands is generally much
             wider and is shaded lighter.
 
+        :param bool credible_interval_1d_all_show:
+            Show the 1D marginal credible intervals for all the runs IDs.
+
         :param bool annotate_credible_interval:
             Annotate each on-diagonal panel with numeric credible interval
             as median +/- distance to symmetric quantiles. Each quantile,
@@ -465,6 +432,9 @@ class CornerPlotter(PostProcessor):
               :meth:`getdist.GetDistPlotter.triangle_plot`
             * settings for :mod:`getdist` posterior lower-triangle plotting, applied
               to a :class:`getdist.plots.GetDistPlotSettings` instance
+            * setting for not drawing prior samples but reading them from a file instead or saving them in a file if no such already exists ``force_draw = [False,]``
+            * setting for choosing a non-default file name to be used if samples are not re-drawn: ``prior_samples_fnames=["name.npy",]``
+            * setting for plotting the priors only for one of the runs if they are known to be identical: ``priors_identical=True``
 
         .. note::
 
@@ -473,6 +443,12 @@ class CornerPlotter(PostProcessor):
             used instead, this automation does not occur.
 
         """
+        #self.val_cred = []
+        self.credible_interval_1d_all_show=credible_interval_1d_all_show
+
+        if credible_interval_1d_all_show:
+            KL_divergence=False
+
         try:
             for run in self.subset_to_plot:
                 if not isinstance(run, NestedBackend):
@@ -512,8 +488,6 @@ class CornerPlotter(PostProcessor):
         setattr(plotter.settings, 'progress', True)
         setattr(plotter.settings, 'norm_prob_label', 'Probability density')
         setattr(plotter.settings, 'prob_y_ticks', True)
-        setattr(plotter.settings, 'thin_long_subplot_ticks', False)
-        setattr(plotter.settings, 'tick_prune', None)
 
         for key in kwargs.copy():
             if hasattr(plotter.settings, key):
@@ -523,7 +497,7 @@ class CornerPlotter(PostProcessor):
         if scale_attrs is None:
             scale_attrs = {}
 
-        for key, value in scale_attrs.iteritems():
+        for key, value in scale_attrs.items():
             if hasattr(plotter.settings, key):
                 if isinstance(value, float) or isinstance(value, int):
                     setattr(plotter.settings, key,
@@ -536,14 +510,21 @@ class CornerPlotter(PostProcessor):
         if isinstance(normalize, bool):
             diag1d_kwargs = {'normalized': normalize}
         if isinstance(no_zero, bool):
-            diag1d_kwargs['no_zero'] = no_zero
+            no_zero1 = no_zero
+        else:
+            no_zero1 = True
         if isinstance(no_ylabel, bool):
-            diag1d_kwargs['no_ylabel'] = no_ylabel
+            no_ylabel1 = no_ylabel
+        else:
+            no_ylabel1 = False
         if isinstance(label_right, bool):
-            diag1d_kwargs['label_right'] = label_right
+            label_right1 = label_right
+        else:
+            label_right1 = True
         if isinstance(no_ytick, bool):
-            diag1d_kwargs['no_ytick'] = no_ytick
-
+            no_ytick1 = no_ytick
+        else:
+            no_ytick1 = False
         plotter.triangle_plot(getdist_bcknds,
                                legend_labels = legend_labels,
                                params = self.params.names,
@@ -551,6 +532,10 @@ class CornerPlotter(PostProcessor):
                                legend_loc = legend_loc,
                                line_args = line_args,
                                contour_args = contour_args,
+                               no_zero = no_zero1,
+                               no_ylabel = no_ylabel1,
+                               label_right = label_right1,
+                               no_ytick = no_ytick1,
                                diag1d_kwargs = diag1d_kwargs,
                                **kwargs)
         try:
@@ -614,28 +599,84 @@ class CornerPlotter(PostProcessor):
         if prior_density:
             # only report KL divergence for topmost posterior,
             # but plot the priors if available for the other posteriors
+            # if priors known to be identical, plot them only once.
+
+            if "priors_identical" in kwargs:
+                priors_identical = kwargs.get("priors_identical")
+            else:
+                priors_identical = False
+
+            if "force_draw" in kwargs:
+                force_draw = kwargs.get("force_draw")
+            else:
+                force_draw = [True for i in range(len(self.subset))]
+
             for i, posterior in enumerate(self.subset):
+
+                force_draw_i = force_draw[i]
+
+                if "prior_samples_fnames" in kwargs:
+                    prior_samples_fname = kwargs.get("prior_samples_fnames")[i]
+                else:
+                    prior_samples_fname = "prior_samples_"+posterior.ID+".npy"
                 self._add_prior_density(plotter, posterior,
                             ndraws, normalize,
                             KL_divergence = KL_divergence if i == 0 else False,
                             KL_base = KL_base,
                             bootstrap = bootstrap,
-                            n_simulate = kwargs.get('n_simulate'))
+                            n_simulate = kwargs.get('n_simulate'),
+                            force_draw = force_draw_i,
+                            prior_samples_fname=prior_samples_fname)
+
+                if (i==0 and priors_identical):
+                    break
+
         if veneer:
             self._veneer_spines_ticks(plotter, **kwargs)
         if crosshairs:
             # only for topmost posterior
-            self._add_crosshairs(plotter, self.subset_to_plot[0].truth_vector)
-        if credible_interval_1d: # include nestcheck estimator bootstrap error
-            self._add_credible_interval(plotter,
-                                        self.subset[0],
-                                        bootstrap=bootstrap,
-                                        n_simulate=kwargs.get('n_simulate'),
-                                        annotate=annotate_credible_interval,
-                                        annotate_xy=annotate_xy,
-                                        sixtyeight=sixtyeight,
-                                        ninety=ninety,
-                                        compute_all_intervals=compute_all_intervals)
+            self._add_crosshairs(plotter, self.params.names, self.subset_to_plot[0].truths)
+
+
+        self.credible_intervals=OrderedDict()
+
+        if credible_interval_1d_all_show and self.all_same(self.get_attr("parent_ID")):
+            for r in range(len(self.subset_to_plot)):
+
+                id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
+                self.r=r
+                self.val_cred = []
+                self.run = self.subset[0].subset_to_plot[r]
+
+                self._add_credible_interval(plotter,
+                                            self.subset[0],
+                                            bootstrap=bootstrap,
+                                            n_simulate=kwargs.get('n_simulate'),
+                                            annotate=annotate_credible_interval,
+                                            annotate_xy=annotate_xy,
+                                            sixtyeight=sixtyeight,
+                                            ninety=ninety,
+                                            compute_all_intervals=compute_all_intervals)
+
+                self.credible_intervals[id]=self.val_cred
+        else:
+                id=self.get_attr("parent_ID")[0]+"_"+self.get_attr("ID")[0]
+                self.r=0
+                self.val_cred = []
+                self.run = self.subset[0].subset_to_plot[0]
+
+                self._add_credible_interval(plotter,
+                                            self.subset[0],
+                                            bootstrap=bootstrap,
+                                            n_simulate=kwargs.get('n_simulate'),
+                                            annotate=annotate_credible_interval,
+                                            annotate_xy=annotate_xy,
+                                            sixtyeight=sixtyeight,
+                                            ninety=ninety,
+                                            compute_all_intervals=compute_all_intervals)
+
+                self.credible_intervals[id]=self.val_cred
+
 
         self._plotter = plotter
         return plotter
@@ -645,7 +686,9 @@ class CornerPlotter(PostProcessor):
     def _add_prior_density(self, plotter, posterior,
                            ndraws, normalize,
                            KL_divergence, KL_base,
-                           bootstrap, n_simulate):
+                           bootstrap, n_simulate,
+                           force_draw,
+                           prior_samples_fname):
         """ Crudely estimate the prior density.
 
         Kullback-Leibler divergence estimated in bits for a combined run or
@@ -653,6 +696,9 @@ class CornerPlotter(PostProcessor):
 
         """
         run = posterior.subset_to_plot[0]
+
+
+        #self.samples[posterior.ID]=samples
 
         yield 'Plotting prior for posterior %s...' % posterior.ID
 
@@ -667,7 +713,16 @@ class CornerPlotter(PostProcessor):
         elif not callable(l.prior.draw):
             return
 
-        samples, _ = l.prior.draw(ndraws, transform=True)
+        if force_draw:
+            samples, _ = l.prior.draw(ndraws, transform=True)
+        else:
+            samples_npy = prior_samples_fname
+            try:
+                samples = _np.load(samples_npy)
+                print("Not drawing samples from the joint prior. Reading them instead from a pre-computed table:",prior_samples_fname)
+            except:
+                 samples, _ = l.prior.draw(ndraws, transform=True)
+                 _np.save(samples_npy,samples)
 
         color, lw = (run.contours[key] for key in ('color', 'lw'))
 
@@ -717,11 +772,14 @@ class CornerPlotter(PostProcessor):
                     where = w_rel > run.kde_settings.get('min_weight_ratio',
                                                          1.0e-30)
                     prior = bcknd.get1DDensity(name).Prob(x[where])
-                    p = getdist_kde(x[where], x, w_rel,
+                    try:
+                        p = getdist_kde(x[where], x, w_rel,
                                         ranges=[posterior.bounds[name]],
                                         idx=0,
                                         normalize=normalize,
                                         settings=run.kde_settings)
+                    except:
+                        p = weighted_1d_gaussian_kde(x[where], x, w_rel)
                     # Due to spline interpolation, very small densities can be
                     # negative, so manually give a small postive value which
                     # does not affect KL integral approximation
@@ -744,7 +802,6 @@ class CornerPlotter(PostProcessor):
                                                      estimator_list=[KL],
                                                      cred_int=cred_int,
                                                      n_simulate=n_simulate,
-                                                     simulate_weights=True,
                                                      flip_skew=True)
                     # KL in bits
                     interval = r'$D_{\mathrm{KL}}=%.2f_{-%.2f}^{+%.2f}$' \
@@ -759,9 +816,9 @@ class CornerPlotter(PostProcessor):
                                quantiles[2] - quantiles[1]))
 
                     if not rcParams['text.usetex']:
-                        fontsize = plotter.settings.lab_fontsize - 1
+                        fontsize = plotter.settings.axes_labelsize - 1
                     else:
-                        fontsize = plotter.settings.lab_fontsize
+                        fontsize = plotter.settings.axes_labelsize
 
                     ax.set_title(interval, color=color,
                                  fontsize=fontsize)
@@ -776,9 +833,9 @@ class CornerPlotter(PostProcessor):
                     divergence = (r'$D_{\mathrm{KL}}=%.2f$' % divergence)
 
                     if not rcParams['text.usetex']:
-                        fontsize = plotter.settings.lab_fontsize - 1
+                        fontsize = plotter.settings.axes_labelsize - 1
                     else:
-                        fontsize = plotter.settings.lab_fontsize
+                        fontsize = plotter.settings.axes_labelsize
 
                     ax.set_title(divergence, color=color,
                                  fontsize=fontsize)
@@ -808,7 +865,7 @@ class CornerPlotter(PostProcessor):
         """
         diag = [plotter.subplots[i,i] for i in range(plotter.subplots.shape[0])]
 
-        run = posterior.subset_to_plot[0]
+        run = self.run #posterior.subset_to_plot[0]
 
         yield 'Plotting credible regions for posterior %s...' % posterior.ID
 
@@ -826,6 +883,7 @@ class CornerPlotter(PostProcessor):
         quantiles = [0.159, 0.5, 0.841] if sixtyeight else ([0.05,0.5,0.95] if ninety else [0.025, 0.5, 0.975])
 
         def format_CI(name, cred, summary, additional=2, sscript=False):
+
             if len(cred.shape) > 1:
                 _qs = (cred[1,1],
                        cred[1,1] - cred[0,1],
@@ -841,18 +899,21 @@ class CornerPlotter(PostProcessor):
 
             if name: name += ' '
 
-            stats = ('%s' % name) + ('CI$_{%i\%%} = ' % summary)
+            stats = ('%s' % name) + ('  CI$_{%i\%%} = ' % summary)
 
             if sscript:
                 stats += (('%s_{-%s}^{+%s}$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
             else:
                 stats += (('%s/-%s/+%s$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
 
+            self.val_cred.append([np_.float(_f % _qs[0]),-np_.float(_f % _qs[1]),+np_.float(_f % _qs[2])])
+
             return stats
 
         if bootstrap:
             for i, ax in enumerate(diag):
                 ind = posterior.get_index(self.params.names[i])
+                param_name = self.params.labels[i]
                 def calculate_intervals(quantiles):
                     cred = _np.zeros((len(quantiles), len(quantiles)), dtype=_np.double)
                     for j, p in enumerate(quantiles):
@@ -861,11 +922,11 @@ class CornerPlotter(PostProcessor):
                                              estimator_list=[get_estimator(p, ind)],
                                              cred_int=q,
                                              n_simulate=n_simulate,
-                                             simulate_weights=True,
                                              flip_skew=True)[0]
                     return cred
 
                 cred = calculate_intervals(quantiles)
+
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
                 ax.axvspan(cred[0,0], cred[0,2], alpha=0.5,
@@ -903,12 +964,44 @@ class CornerPlotter(PostProcessor):
                         title = stats
 
                     if not rcParams['text.usetex']:
-                        fontsize = plotter.settings.lab_fontsize - 1
+                        fontsize = plotter.settings.axes_labelsize - 1
                     else:
-                        fontsize = plotter.settings.lab_fontsize
+                        fontsize = plotter.settings.axes_labelsize
 
-                    ax.set_title(title, color=color,
-                                 fontsize=fontsize)
+
+                    if self.credible_interval_1d_all_show:
+                        x_pos = 0.5
+                        y_pos = 1.05 + 0.11 * (self.r)
+                        ax.text(x_pos, y_pos, title,
+                                color=color,
+                                horizontalalignment="center",
+                                alpha=1.,
+                                fontsize=fontsize,
+                                transform=ax.transAxes)
+                        if self.r == (len(self.subset_to_plot) - 1):
+                            y_pos = 1.05 + 0.11 * (1+self.r)
+                            title_param_name = r'${}$'.format(param_name)
+                            ax.text(x_pos, y_pos, title_param_name,
+                                    color='black',
+                                    horizontalalignment="center",
+                                    alpha=1.,
+                                    fontsize=fontsize,
+                                    transform=ax.transAxes)
+
+                    else:
+                        ax.set_title(title, color=color,
+                                     fontsize=fontsize)
+                        title_param_name = r'${}$'.format(param_name)
+                        x_pos = 0.5
+                        y_pos = 1.05 + 0.10 * (len(title.split('\n')))
+                        ax.text(x_pos, y_pos, title_param_name,
+                                color='black',
+                                horizontalalignment="center",
+                                alpha=1.,
+                                fontsize=fontsize,
+                                transform=ax.transAxes)
+
+
 
                 if compute_all_intervals:
                     yield format_CI(self.params.names[i],
@@ -940,6 +1033,7 @@ class CornerPlotter(PostProcessor):
         else:
             for i, ax in enumerate(diag):
                 ind = posterior.get_index(self.params.names[i])
+                param_name = self.params.labels[i]
                 def calculate_intervals(quantiles):
                     cred = _np.zeros(len(quantiles), dtype=_np.double)
                     for j, p in enumerate(quantiles):
@@ -953,12 +1047,14 @@ class CornerPlotter(PostProcessor):
                 cred = calculate_intervals(quantiles)
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
-                ax.axvspan(cred[0], cred[2], alpha=0.25,
-                           facecolor=color,
-                           edgecolor=color,
-                           linewidth=0,
-                           rasterized=True,
-                           zorder=zorder)
+                if self.r==0:
+                    ax.axvspan(cred[0], cred[2], alpha=0.25,
+                               facecolor=color,
+                               edgecolor=color,
+                               linewidth=0,
+                               rasterized=True,
+                               zorder=zorder)
+
 
                 if annotate:
                     stats = format_CI('', # parameter name not needed on plot
@@ -974,12 +1070,41 @@ class CornerPlotter(PostProcessor):
                         title = stats
 
                     if not rcParams['text.usetex']:
-                        fontsize = plotter.settings.lab_fontsize - 1
+                        fontsize = plotter.settings.axes_labelsize - 1
                     else:
-                        fontsize = plotter.settings.lab_fontsize
+                        fontsize = plotter.settings.axes_labelsize
 
-                    ax.set_title(title, color=color,
-                                 fontsize=fontsize)
+                    if self.credible_interval_1d_all_show:
+                        x_pos = 0.5
+                        y_pos = 1.05 + 0.11 * (self.r)
+                        ax.text(x_pos, y_pos, title,
+                                color=color,
+                                horizontalalignment="center",
+                                alpha=1.,
+                                fontsize=fontsize,
+                                transform=ax.transAxes)
+                        if self.r == (len(self.subset_to_plot) - 1):
+                            y_pos = 1.05 + 0.11 * (1+self.r)
+                            title_param_name = r'${}$'.format(param_name)
+                            ax.text(x_pos, y_pos, title_param_name,
+                                    color='black',
+                                    horizontalalignment="center",
+                                    alpha=1.,
+                                    fontsize=fontsize,
+                                    transform=ax.transAxes)
+                    else:
+                        ax.set_title(title, color=color,
+                                     fontsize=fontsize)
+                        title_param_name = r'${}$'.format(param_name)
+                        x_pos = 0.5
+                        y_pos = 1.05 + 0.10 * (len(title.split('\n')))
+                        ax.text(x_pos, y_pos, title_param_name,
+                                color='black',
+                                horizontalalignment="center",
+                                alpha=1.,
+                                fontsize=fontsize,
+                                transform=ax.transAxes)
+
 
                 if compute_all_intervals:
                     yield format_CI(self.params.names[i],
@@ -1007,24 +1132,28 @@ class CornerPlotter(PostProcessor):
                         yield format_CI(self.params.names[i],
                                         calculate_intervals([0.05, 0.5, 0.95]),
                                         90)
+
+
+        self.val_cred=np_.stack(self.val_cred,axis=0)
         yield None
 
     @staticmethod
     @make_verbose('Adding parameter truth crosshairs',
                   'Added crosshairs')
-    def _add_crosshairs(plotter, truths):
+    def _add_crosshairs(plotter, names, truths):
         """ Add parameter crosshairs to triangle plot. """
-        spine = next(plotter.subplots[0,0].spines.itervalues())
+        spine = next(iter(plotter.subplots[0,0].spines.values()))
         lw = spine.get_linewidth()
-        for i, truth in enumerate(truths):
-            if truth is not None:
+        for i, name in enumerate(names):
+            true_val = truths[name]
+            if true_val is not None:
                 for ax in plotter.subplots[:,i]:
                     if ax is not None:
-                        ax.axvline(truth, color='black', ls='-', lw=lw)
+                        ax.axvline(true_val, color='black', ls='-', lw=lw)
                 if i > 0:
                     for ax in plotter.subplots[i,:i]:
                         if ax is not None:
-                            ax.axhline(truth, color='black', ls='-', lw=lw)
+                            ax.axhline(true_val, color='black', ls='-', lw=lw)
 
     @staticmethod
     @make_verbose('Veneering spines and axis ticks',
@@ -1049,18 +1178,21 @@ class CornerPlotter(PostProcessor):
                 ax.tick_params(which='minor', colors='black', length=minor_length)
                 ax.xaxis.set_tick_params(which='both', width=lw)
                 ax.yaxis.set_tick_params(which='both', width=lw)
-                for spine in ax.spines.itervalues():
+                for spine in ax.spines.values():
                     spine.set_linewidth(lw)
 
     def _set_line_and_contour_args(self, lw=1.0, alpha=1.0, **kwargs):
-        """ Match the :mod:`nestcheck` color scheme.
+        """ Match the :mod:`nestcheck` color scheme or let the user decide colors using kwargs.
 
-        Always assigns reds to a combined run if it is found to exist.
+        Always assigns reds (or the first user-defined color) to a combined run if it is found to exist.
 
         """
+        # Color blind friendly
+        nestcheck_colors = ['darkred',"darkblue", "darkorange", "darkgreen",'deeppink', 'maroon',
+                            'indigo','dimgrey', 'olive']
+        if 'line_colors' in kwargs:
+            nestcheck_colors = kwargs.get("line_colors")
 
-        nestcheck_colors = ['darkred', 'darkblue', 'darkgrey', 'darkgreen',
-                            'darkorange']
 
         for run, color in zip(self.subset_to_plot,
                               nestcheck_colors[:len(self.subset_to_plot)]):
@@ -1102,7 +1234,6 @@ class CornerPlotter(PostProcessor):
                                       estimator_list=[estimator],
                                       cred_int=q,
                                       n_simulate=n_simulate,
-                                      simulate_weights=True,
                                       flip_skew=True)[0] for q in quantiles]
             return _quantiles
         else:
@@ -1113,7 +1244,7 @@ class CornerPlotter(PostProcessor):
             return divergence
 
     def evidence_error(self, quantiles=[0.025,0.5,0.975], n_simulate=200,
-                       simulate_weights=True, flip_skew=True, **kwargs):
+                       flip_skew=True, **kwargs):
 
         """ Estimate evidence error for nestcheck-compatible runs.
 
@@ -1132,6 +1263,12 @@ class CornerPlotter(PostProcessor):
                                   estimator_list=[logz],
                                   cred_int=q,
                                   n_simulate=n_simulate,
-                                  simulate_weights=simulate_weights,
                                   flip_skew=flip_skew)[0] for q in quantiles]
         return _quantiles
+
+    def all_same(self,items):
+        """
+        Checking if the all the element of a list are the same
+        """
+
+        return all(x == items[0] for x in items)

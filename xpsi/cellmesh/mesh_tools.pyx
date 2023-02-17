@@ -3,8 +3,6 @@
 #cython: nonecheck=False
 #cython: wraparound=False
 
-from __future__ import division, print_function
-
 from libc.math cimport M_PI, M_PI_2
 from libc.math cimport sqrt, sin, cos, tan, asin, acos, atan, fabs, exp, pow
 from libc.math cimport fmin, fmax, floor, ceil

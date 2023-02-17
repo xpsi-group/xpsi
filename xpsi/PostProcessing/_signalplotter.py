@@ -1,5 +1,3 @@
-from __future__ import division, print_function
-
 from .. import _warning
 
 try:
@@ -12,7 +10,7 @@ try:
     from tqdm.auto import trange as _range # detect if Jupyter notebook
 except ImportError:
     def _range(n, *args, **kwargs): # ignore extra (kw)args
-        return xrange(n)
+        return range(n)
 
 from ._global_imports import *
 
@@ -270,7 +268,7 @@ class SignalPlotter(PostProcessor):
 
                 # now restore the signals objects that were cached
                 cached = next(cache)
-                for key, value in cached.iteritems():
+                for key, value in cached.items():
                     try:
                         delattr(signal, key)
                     except AttributeError:

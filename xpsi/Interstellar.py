@@ -1,12 +1,9 @@
-from __future__ import division, print_function
-
 __all__ = ["Interstellar"]
 
-from .global_imports import *
-from . import global_imports
+from xpsi.global_imports import *
 
 from abc import abstractmethod
-from .ParameterSubspace import ParameterSubspace
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class Interstellar(ParameterSubspace):
     """ Base class for model interstellar X-ray processes (e.g., attenuation)."""
@@ -34,7 +31,7 @@ class Interstellar(ParameterSubspace):
             An array of energies in keV at which attenuation factors need to
             be applied to the corresponding elements of the signal array.
 
-        :param ndarray[m[,n]] energies:
+        :param ndarray[m[,n]] signal:
             A signal array to be attenuated, where the second dimension
             (columns) is optional and generally represents time (phase). The
             number of rows must be equal to the number of energies.

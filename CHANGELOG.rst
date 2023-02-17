@@ -8,17 +8,268 @@ The format is based on
 and this project adheres to
 `Semantic Versioning <http://semver.org/spec/v2.0.0.html>`_.
 
-[Unreleased]
-~~~~~~~~~~~~
+.. REMOVE THE DOTS BELOW TO UNCOMMENT
+.. ..[Unreleased]
+.. ~~~~~~~~~~~~
+
+.. Summary
+.. ^^^^^^^
+
+.. Fixed
+.. ^^^^^
+
+.. Added
+.. ^^^^^
+
+.. Changed
+.. ^^^^^^^
+
+.. Deprecated
+.. ^^^^^^^^^^
+
+.. Removed
+.. ^^^^^^^
+
+.. Attribution
+.. ^^^^^^^^^^^
+
+[v2.0.0] - 2023-02-03
+~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
+
+* This major release candidate migrates X-PSI from Python2 (X-PSI v1.2.1 or lower) to Python3 (X-PSI v2.0 and higher), with corresponding updates and improvements to all documentation and tutorials.  
+
+Fixed
+^^^^^
+
+* Debugging projection tool
+
+Added
+^^^^^
+
+* Multi-version documentation so that users can view documentation/tutorials for either Python2 or Python3 (with warning on main page)
+* Post-processing - adding names of parameters across diagonal in corner plots
+* Extra yticks options for plotting functions in the tutorials
+* `--noopenmp` install option for Mac Users
+* Added option to fix the random seed for the synthetic data generation in Python3 version
+
+Changed
+^^^^^^^
+
+* Modified all X-PSI routines to work in Python3
+* General Documentation (Applications, Team and Acknowledgements, Citation, Future pages) updated for both Python2 and Python3 documentation branches.
+* Installation and tutorial pages modified for Python3
+* Module generator updated for Python3 and documentation added
+* Projection tool updated for Python3 and documentation added
+* Github actions modified to work in Python3
+* Github actions modified to use mamba with install commands on one line to improve speed
+* Updated references in the documentation and tutorial notebooks
+* CustomInstrument channel_edges argument now changed to mandatory in tutorial notebooks and examples
+* X-PSI Postprocessing now supports up-to-date versions of Nestcheck, Getdist. 
+
+Deprecated
+^^^^^^^^^^
+
+*The Python2 version of X-PSI (v1.2.1) is now considered deprecated, although documentation and tutorials are still available.
+
+Removed
+^^^^^^^
+
+* Removed requirement of FFMPEG for Animations in tutorials
+* Suppressed printf() statements from c code in tutorial notebooks
+
+Attribution
+^^^^^^^^^^^
+
+Devarshi Choudhury,
+Bas Dorsman,
+Sebastien Guillot,
+Daniela Huppenkothen,
+Yves Kini,
+Tuomo Salmi,
+Serena Vinciguerra,
+Anna Watts
+
+
+[v1.2.1] - 2022-12-12
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Hard upper bound for temperature increased from 7.0 to 7.6, allowed user an option to adjust when the exact likelihood calculation is skipped because of too bright signal, and license information updated.
+
+Changed
+^^^^^^^
+
+* Strict bounds for temperature changed in ``xpsi/HotRegion.py``, ``xpsi/Everywhere.py``, and ``xpsi/xpsi/Elsewhere.py`` to allow analysis for hotter neutron stars.
+
+* Added mention in ``xpsi/HotRegion.py``, ``xpsi/Everywhere.py``, and ``xpsi/xpsi/Elsewhere.py`` that the user should set the parameter bounds to be within the values given in the numerical atmosphere table.
+
+* Added a new input parameter ``slim`` to ``xpsi/likelihoods/default_background_marginalisation.pyx``, which can be used to adjust when the exact likelihood calculation is skipped because of the signal being too bright compared to the data. The default value of this parameter is set to the same value as in the code before (20.0).
+
+* Made the warning in synthesise function in ``xpsi/Likelihood.py`` more accurate.
+
+* Fetched the prior to likelihood object in ``examples/examples_fast/Synthetic_data.ipynb`` to make sure prior bounds are checked when synthesising data.
+
+* License of X-PSI was changed from MIT to GPLv3.
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi,
+Yves Kini,
+Sebastien Guillot,
+Anna Watts
+
+
+[v1.2.0] - 2022-12-05
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Included a new numerical atmosphere extension in a ``xpsi/surface_radiation_field/archive/hot/`` directory allowing freedom in the predicted atmospheric beaming pattern.
+
+Added
+^^^^^
+
+* ``xpsi/surface_radiation_field/archive/hot/numerical_fbeam.pyx``: New numerical atmosphere extension with additional beaming parameters.
+
+* ``examples/examples_modeling_tutorial/TestRun_NumBeam.py``: An example run using the new atmosphere extension.
+
+* ``examples/examples_modeling_tutorial/modules``: Additional modules (e.g. a CustomHotRegion) needed by the new example run.
+
+Changed
+^^^^^^^
+
+* ``Setup.py`` file changed to include the option for installing with new atmosphere extension.
+
+* Documentation page for "Example script and modules" updated to include the new example. 
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi
+
+
+[v1.1.0] - 2022-11-14
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Additional tools included in a ``xpsi/utilities`` directory for plotting hot regions on a sphere and performing importance sampling in X-PSI. Documentation for these tools is to be appended later. In addition, the internet documentation compilation was automated using GitHub actions for every merged pull request.
+
+Added
+^^^^^
+
+* ``xpsi/utilities/ProjectionTool.py``: Tool for projecting hot regions.
+
+* ``xpsi/utilities/ImportanceSample.py``: Tool for calling X-PSI importance sampling.
+
+Changed
+^^^^^^^
+
+* ``Setup.py`` file changed to include the new utilities directory.
+
+* Documentation is now compiled automatically using ``.github/workflows/build_docs.yml`` every time merging a pull request into the main branch.
+
+Attribution
+^^^^^^^^^^^
+
+Serena Vinciguerra,
+Daniela Huppenkothen,
+Tuomo Salmi,
+Devarshi Choudhury
+
+
+[v1.0.0] - 2022-09-26
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* This major release contains minor bug fixes, improved error messages, as well as improved documentation and tutorials (jupyter notebooks).  This release coincided with the submission of an X-PSI article to the `Journal of Open Source Software <https://joss.theoj.org/>`_
+
 
 Fixed
 ^^^^^
 
 Added
 ^^^^^
+
+* A modification of the ``setup.py`` with flags (``--NumHot`` and ``--NumElse``) now facilitates switching between surface emission models.
+
+* The post-processing module has now an option to show the credible intervals of each parameter and run (above the 1D distribution of the corner plot) when multiple runs are plotted in the same figure (but not working for multiple models yet). The appropriate tutorial notebook is also provided.
+
+* Some unit tests and continuous integration.
+
+* A tutorial landing page and a link to a dedicated Zenodo repository for large files needed to run the tutorials. 
+
+Changed
+^^^^^^^
+
+* The general documentation has been improved, reorganized and clarified.  More details are provided for the installation, locally and on HPC systems.
+
+* The messages of several possible errors have been clarified and detailed to help the user resolve them.
+
+* A small modification now allows production runs without importing matplotlib.
+
+* All tutorials have been updated and improved.
+
+Deprecated
+^^^^^^^^^^
+
+Removed
+^^^^^^^
+
+* Method ``fixed_spin`` of ``spacetime.py`` module.  A spacetime with fixed spin can be created by specifying a spin frequency ``value`` and omitting the spin frequency ``bounds``
+
+Attribution
+^^^^^^^^^^^
+
+Devarshi Choudhury,
+Bas Dorsman,
+Sebastien Guillot,
+Daniela Huppenkothen,
+Yves Kini,
+Tuomo Salmi,
+Serena Vinciguerra,
+Anna Watts
+
+[v0.7.12] - 2022-09-15
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Since version 0.7.11. a few changes have been made including updates to the documentation and the handling of numerical problems in ray tracing. The latter fix can potentially have a small effect on the calculated pulse profiles and likelihood values for some parameter vectors, but according to testing that effect is very minor at most.
+
+
+Fixed
+^^^^^
+
+* Numerical problem in  ``xpsi/cellmesh/rays.pyx`` for certain paramaters causing sporadic warnings in later computation. This is prevented by allowing small rounding errors when checking if sin_alpha parameter is unity, and in case NaNs still occur, replacing them with zero (T.S.).
+
+* Comment about returned variables updated to include the best-fitting background limited by the support in ``xpsi/likelihoods/default_background_marginalisation.pyx`` (T.S.).
+
+* The photosphere object validity check in ``xpsi/Star.py`` which incorrectly failed if all photosphere parameters were fixed (D.C., Y.K., T.S.).
+
+Added
+^^^^^
+
+* Added more information and warnings about about switching between the blackbody and numerical atmosphere extensions in the documentation for Installation, Surface radiation field tools and (FA)Q pages. Added also a links to the Zenodo publication of Riley+2021 from where the numerical atmosphere data can be obtained (T.S.).
+
+* Added a new kwargs ("prior_samples_fnames") used in ``xpsi/PostProcessing/_corner.py`` to allow user to set the name of file from where the prior samples are read/saved (T.S.).
+
+* Added comments about the new kwargs (introduced already in version 0.7.11) in the function descriptions used in ``xpsi/PostProcessing/_corner.py`` visible also for the documentation (T.S.).
+
+* Added an option to force update ``xpsi/Star.py`` to avoid errors, for example, when all paremeters are fixed and X-PSI thinks otherwise that updating can be skipped (T.S., D.C., Y.K.).
+
+* Added options allowing the user to truly force update the likelihood in ``xpsi/Likelihood.py`` and avoid errors caused by the automatic need-update-checks not working for all the possible cases. Added also an error message suggesting to use those options if the usual "AttributeError: 'CustomSignal' object has no attribute '_loglikelihood'" would be encountered (T.S.).
 
 Changed
 ^^^^^^^
@@ -32,8 +283,68 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
+* Tuomo Salmi (T.S.), Devarshi Choudhury (D.C.), and Yves Kini (Y.K.)
 
-[v0.7.10] - 2021-10-02
+
+[v0.7.11] - 2022-08-22
+~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Since version 0.7.10, a few bugs have been fixed in the module generator, error handling and postprocessing. Also, new error/warning messages are given if trying to use wrong atmosphere extension. In addition, some improvements have also been added to the postprocessing (possibility to e.g. save and read the drawn priors to produce corner plots much faster), without mentioning them in the documentation yet.
+
+
+Fixed
+^^^^^
+
+* Bug in ``xpsi/EnsembleSampler.py`` when initializing walkers. Need to use "self._prior" instead of "prior" (Y.K.).
+
+* Bug (typo) in ``xpsi/PostProcessing/_pulse.py`` when plotting the true signal. Need to use "component" instead of "eomponent" (G.L.).
+
+* Several bugs (typos) in ``xpsi/PostProcessing/_spectrum.py`` when plotting the true signal (T.S., G.L.).
+
+* Issues with ``xpsi/PostProcessing/_corner.py`` not being able to plot the cross hairs for true parameter values in the corner plot if only a subset of model parameters chosen for the figure (T.S., Y.K.).
+
+* Error handling in ``xpsi/Signal.py`` when the number of event data channels does not match the number of the instrument data channels (S.G.).
+
+* Fixed reference to incident_background in the modeling tutorial (B.D.).
+
+* Several bug fixes in ``xpsi/module_generator.py`` (D.C.).
+
+Added
+^^^^^
+
+* Added a warning message in the blackbody atmosphere extension  ``xpsi/surface_radiation_field/hot.pyx`` if providing numerical atmosphere data (T.S.).
+
+* Added an error message in the numerical atmosphere extension  ``xpsi/surface_radiation_field/archive/hot/numerical.pyx`` before a segmentation fault error caused by not loading the numerical atmosphere data (T.S.).
+
+* Added a warning when trying to synthetize data in ``xpsi/Likelihood.py`` with input parameters outside of the defined prior bounds, finishing without errors but with no data produced (Y.K. & T.S.).
+
+* Added option for the user to set the line colors for different runs in ``xpsi/PostProcessing/_corner.py`` using kwargs (T.S.).
+
+* Added possibility to save and read the previously drawn prior samples in ``xpsi/PostProcessing/_corner.py`` using "force_draw" kwargs (T.S.).
+
+* Added possibility to plot the priors only for the first run in ``xpsi/PostProcessing/_corner.py`` using "priors_identical" kwargs, if known that priors are the same for all runs (T.S.).
+
+* Saved credible intervals in numerical format that can be accessed after plotting the corner plot (see "val_cred" in ``xpsi/PostProcessing/_corner.py`` and ``xpsi/PostProcessing/_postprocessor.py``) (Y.K., T.S.).
+
+Changed
+^^^^^^^
+
+Deprecated
+^^^^^^^^^^
+
+Removed
+^^^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+* Tuomo Salmi (T.S.), Yves Kini (Y.K.), Devarshi Choudhury (D.C.), Bas Dorsman (B.D.), Gwénaël Loyer (G.L.), and Sebastien Guillot (S.G.)
+
+
+[v0.7.10] - 2022-02-10
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -75,7 +386,7 @@ Attribution
 * Devarshi Choudhury (D.C.), Tuomo Salmi (T.S.), Serena Vinciguerra (S.V.), Sebastien Guillot (S.G.), and Yves Kini (Y.K.)
 
 
-[v0.7.9] - 2021-26-11
+[v0.7.9] - 2021-11-26
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -121,7 +432,7 @@ Attribution
 * Daniela Huppenkothen (D.H.).
 
 
-[v0.7.8] - 2021-22-09
+[v0.7.8] - 2021-09-22
 ~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
@@ -267,7 +578,7 @@ Added
 
 * An extension module for calculating hot region local variables from global
   variables for hot region configurations under the umbrella of the PST-U model
-  introduced in :ref:`R19`.
+  introduced in `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_.
 
 Attribution
 ^^^^^^^^^^^
@@ -729,7 +1040,7 @@ Summary
   complex plotting routines can thus be developed, as demonstrated in the
   concrete classes such as :class:`xpsi.PostProcessing.PulsePlot`. The plot
   classes have been used to reproduce (with improved functionality and
-  performance) the relevant signal plots from :ref:`R19`, as demonstrated
+  performance) the relevant signal plots from `Riley et al. (2019) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_, as demonstrated
   in the post-processing tutorial notebook and embedded in the class docstrings
   for reference.
 * Development of online documentation pages, including project organisation

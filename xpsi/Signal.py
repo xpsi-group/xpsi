@@ -1,22 +1,19 @@
-from __future__ import division, print_function
-
 __all__ = ["Signal", "LikelihoodError"]
 
-from .global_imports import *
-from . import global_imports
+from xpsi.global_imports import *
 
-from .Data import Data
-from .Instrument import Instrument, ChannelError
-from .Background import Background
-from .Interstellar import Interstellar
+from xpsi.Data import Data
+from xpsi.Instrument import Instrument, ChannelError
+from xpsi.Background import Background
+from xpsi.Interstellar import Interstellar
 
-from .tools.energy_integrator import energy_integrator
-from .tools.energy_interpolator import energy_interpolator
-from .tools.phase_integrator import phase_integrator
+from xpsi.tools.energy_integrator import energy_integrator
+#from xpsi.tools.energy_interpolator import energy_interpolator
+#from xpsi.tools.phase_integrator import phase_integrator
 
 from abc import abstractmethod
-from .Parameter import Parameter
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class LikelihoodError(xpsiError):
     """ Raised if there is a problem with the value of the log-likelihood. """
@@ -78,6 +75,7 @@ class Signal(ParameterSubspace):
                  instrument,
                  background = None,
                  interstellar = None,
+                 support = None,
                  photosphere_prefix = None,
                  cache = False,
                  bounds = None,
@@ -117,6 +115,11 @@ class Signal(ParameterSubspace):
             self._instrument = instrument
 
         a, b = data.index_range
+        if (len(data.channels) != len(instrument.channels[a:b])):
+            raise ChannelError( 'Size of the channel array declared for event data '
+                                'does not match the size of the channel array declared'
+                                ' for the loaded instrument response (sub)matrix.')
+
         if (data.channels != instrument.channels[a:b]).any():
             raise ChannelError('Channel array declared for event data does not '
                                'match channel array declared for the loaded '
@@ -131,6 +134,19 @@ class Signal(ParameterSubspace):
                 self._background = background
         else:
             self._background = None
+
+        if support is not None:
+
+            if self._data.counts.shape[0]==support.shape[0]:
+                self._support = support
+            else:
+                raise TypeError("Data spectrum and background support must the have same shape")
+        else:
+            try :
+                self._support = -1.0 * _np.ones((self._data.counts.shape[0],2))
+                self._support[:,0] = 0.0
+            except AttributeError:
+                pass
 
         if interstellar is not None:
             if not isinstance(interstellar, Interstellar):
@@ -150,6 +166,7 @@ class Signal(ParameterSubspace):
 
         if bounds is None: bounds = {}
         if values is None: values = {}
+
 
         doc = """
         The phase shift for the signal, a periodic parameter [cycles].

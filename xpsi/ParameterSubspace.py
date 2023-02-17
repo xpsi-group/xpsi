@@ -1,15 +1,13 @@
 """ Abstract parameter subspace :math:`\mathbb{R}^{d}`. """
 
-from __future__ import division, print_function
-
-from .global_imports import *
-from . import global_imports, make_verbose
+from xpsi.global_imports import *
+from xpsi.utils import make_verbose
 
 from abc import ABCMeta
 
-from .Parameter import Parameter
+from xpsi.Parameter import Parameter
 
-class ParameterSubspace(object):
+class ParameterSubspace(object, metaclass=ABCMeta):
     """ Ordered parameter subspace.
 
     :param str prefix:
@@ -26,8 +24,6 @@ class ParameterSubspace(object):
         and subspaces will be merged into this new subspace.
 
     """
-
-    __metaclass__ = ABCMeta
 
     @make_verbose()
     def __init__(self, *args, **kwargs):
@@ -131,7 +127,7 @@ class ParameterSubspace(object):
                     if name == param.name:
                         return param
 
-            raise KeyError('No parameter in subspace with matching name.')
+            raise KeyError('No parameter called \"'+ name +'\" in subspace with matching name.')
 
     def index(self, name):
         """ Get the index of a free parameter. """
@@ -218,7 +214,7 @@ class ParameterSubspace(object):
             except NameError:
                 pass
             else:
-                raise KeyError('No parameter in subspace with matching name.')
+                raise KeyError('No parameter called \"'+ key +'\" in subspace with matching name.')
         elif isinstance(key, int):
             try: # note only free parameters considered for this variant
                 [param for param in self][key].value = value
@@ -231,17 +227,17 @@ class ParameterSubspace(object):
         self._index = -1
         return self
 
-    def __next__(self):
-        """ Redirect for Python 3 compatibility. """
-        return self.next()
+    #def __next__(self):
+    #    """ Redirect for Python 3 compatibility. """
+    #    return self.next()
 
-    def next(self):
+    def __next__(self):
         """ Get next free parameter. """
         self._index += 1
         if self._index == len(self._params):
             raise StopIteration
         elif self._params[self._index].fixed:
-            return self.next()
+            return next(self)
         else:
             return self._params[self._index]
 

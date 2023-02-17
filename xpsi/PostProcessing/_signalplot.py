@@ -1,5 +1,3 @@
-from __future__ import division
-
 from ._global_imports import *
 
 try:
@@ -10,7 +8,7 @@ except ImportError:
 
 from .. import Signal
 
-class SignalPlot(object):
+class SignalPlot(object, metaclass=ABCMeta):
     """ Base class for a signal plot.
 
     Interact with a single :class:`~xpsi.Signal.Signal` instance to plot
@@ -30,9 +28,6 @@ class SignalPlot(object):
          distribution).
 
     """
-
-    __metaclass__ = ABCMeta
-
     __figtype__ = None
 
     # When you subclass, assign values to the following specials and then
@@ -193,7 +188,7 @@ class SignalPlot(object):
 
         # will shadow class attributes if you really do want instance-specific
         # attributes
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             key = '_' + key if key[0] != '_' else key
             try:
                 getattr(self, key)
@@ -232,12 +227,7 @@ class SignalPlot(object):
 
     def __next__(self):
         """ Redirect for Python 3 compatibility. """
-        return self.next()
-
-    @abstractmethod
-    def next(self):
-        """ Execute next iteration of custom behaviour given updated signal. """
-        pass
+        return next(self)
 
     def __enter__(self):
         """ Plots are a resource to be managed. """
@@ -304,12 +294,12 @@ class SignalPlot(object):
 
     def __next__(self):
         """ Redirect for Python 3 compatibility. """
-        return self.next()
+        return next(self)
 
-    @abstractmethod
-    def next(self):
-        """ Execute next iteration. """
-        pass
+    #@abstractmethod
+    #def __next__(self):
+    #    """ Execute next iteration. """
+    #    pass
 
     @abstractmethod
     def finalize(self):
@@ -342,7 +332,7 @@ class SignalPlot(object):
                        width=self._tick_width,
                        direction='out')
 
-        for spine in ax.spines.itervalues():
+        for spine in ax.spines.values():
             spine.set_linewidth(self._tick_width)
 
     def _add_contours(self,

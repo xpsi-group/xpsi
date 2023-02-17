@@ -1,11 +1,7 @@
-from __future__ import division, print_function
 
-from .global_imports import *
-from . import global_imports
+from xpsi.ParameterSubspace import ParameterSubspace
 
-from .ParameterSubspace import ParameterSubspace
-
-from .HotRegion import HotRegion
+from xpsi.HotRegion import HotRegion
 
 class HotRegions(ParameterSubspace):
     """ Two or more photospheric hot regions, where the hot regions are objects.

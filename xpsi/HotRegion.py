@@ -1,15 +1,12 @@
-from __future__ import division, print_function
+from xpsi.global_imports import *
 
-from .global_imports import *
-from . import global_imports
+from xpsi.cellmesh.mesh_tools import allocate_cells as _allocate_cells
+from xpsi.cellmesh.mesh import construct_spot_cellMesh as _construct_spot_cellMesh
+from xpsi.cellmesh.polar_mesh import construct_polar_cellMesh as _construct_polar_cellMesh
+from xpsi.cellmesh.rays import compute_rays as _compute_rays
 
-from .cellmesh.mesh_tools import allocate_cells as _allocate_cells
-from .cellmesh.mesh import construct_spot_cellMesh as _construct_spot_cellMesh
-from .cellmesh.polar_mesh import construct_polar_cellMesh as _construct_polar_cellMesh
-from .cellmesh.rays import compute_rays as _compute_rays
-
-from .Parameter import Parameter, Derive
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter, Derive
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class RayError(xpsiError):
     """ Raised if a problem was encountered during ray integration. """
@@ -61,7 +58,9 @@ class HotRegion(ParameterSubspace):
             * ``'name': (x, y)``
 
         where if a bound is ``None`` that bound is set equal to a strict
-        hard-coded bound.
+        hard-coded bound. We note that the bounds for parameters used in the
+        atmosphere model should be restricted (by the user) to be within the
+        tabulated values, in case a numerical atmosphere extension is used.
 
     :param dict values:
         Initial values of *free* parameters, fixed values of *fixed* parameters,
@@ -135,7 +134,7 @@ class HotRegion(ParameterSubspace):
         hot region at phase zero is aligned with the meridian on which
         the observer's antipode lies. Alignment also depends on the structure
         of the hot region. As a rule, if the hot region has a superseding
-        region (*superseding* region or an *omission* region) then the centre
+        region (``super`` region or an ``omit`` region) then the centre
         of that region is the point that is *aligned* to a meridian.
 
     :param bool is_secondary:
@@ -438,7 +437,7 @@ class HotRegion(ParameterSubspace):
             log10(superseding region effective temperature [K])
             """
             super_temp = Parameter('super_temperature',
-                          strict_bounds = (3.0, 7.5), # very cold --> very hot
+                          strict_bounds = (3.0, 7.6), # very cold --> very hot
                           bounds = bounds.get('super_temperature', None),
                           doc = doc,
                           symbol = r'$\log_{10}(T\;[\rm{K}])$',
@@ -448,7 +447,7 @@ class HotRegion(ParameterSubspace):
                 log10(ceding region effective temperature [K])
                 """
                 cede_temp = Parameter('cede_temperature',
-                              strict_bounds = (3.0, 7.5), # same story
+                              strict_bounds = (3.0, 7.6), # same story
                               bounds = bounds.get('cede_temperature', None),
                               doc = doc,
                               symbol = r'$\log_{10}(\mathcal{T}\;[\rm{K}])$',
@@ -484,12 +483,11 @@ class HotRegion(ParameterSubspace):
 
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
-            from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator 
-            from .cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
+            from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator 
+            from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
         else: # more general purpose
-            from .cellmesh.integrator import integrate as _integrator
-            from .cellmesh.integratorIQU import integrate as _integratorIQU
-
+            from xpsi.cellmesh.integrator import integrate as _integrator
+            from xpsi.cellmesh.integratorIQU import integrate as _integratorIQU
         self._integrator = _integrator
         self._integratorIQU = _integratorIQU
 

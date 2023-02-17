@@ -3,44 +3,62 @@
 Installation
 ============
 
-.. _dev_env:
-
-Python environment
-------------------
-
-X-PSI was developed in Python 2.7, and has not yet been ported to Python 3.
-Fortunately, there are several ways to create a virtual environment with a
-different version of Python, without disrupting your Python ecosystem.
-
-Clone X-PSI:
+X-PSI is an open-source software package that is available on `GitHub
+<https://github.com/xpsi-group/xpsi.git>`_ and can be cloned as:
 
 .. code-block:: bash
 
     git clone https://github.com/xpsi-group/xpsi.git </path/to/xpsi>
 
-Basic Conda environment
------------------------
+In this page, we lay down the instructions for installing X-PSI and all the
+necessary pre-requisites on your local self-administered system.
 
-In the source directory we provide a basic dependency file that installs
-the core Python packages required for *likelihood* functionality. These
-packages are:
+.. note::
 
-* `NumPy <https://docs.scipy.org/doc/numpy/index.html>`_
-* `Cython <http://cython.readthedocs.io/en/latest>`_
+    For installation on a high-performance computing system, we direct the 
+    reader to the :ref:`hpcsystems` page for guidance since the instructions 
+    on this page are either not applicable or do not target performance.
 
-For likelihood evaluation, you also require the GNU Scientific Library
-(`GSL <https://www.gnu.org/software/gsl/>`_). We have included this in the
-Conda environment file, but we give installation
-instructions from `source`_ below; in the latter case, you can remove the
-GSL entry from the environment file prior to creation.
+.. _dev_env:
 
-If you want to run X-PSI in a
-`Jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_
-notebook, you can add this as an entry (e.g., ``- jupyter=1.0``) to the
-environment file or you can install it via Conda (or pip) after environment
-creation.
+Prerequisite Python packages
+----------------------------
 
-To create a virtual environment from file:
+X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of 
+X-PSI v2.0. We recommend creating a conda virtual environment with anaconda3 as
+per instructions below so as to not disrupt your Python ecosystem.
+
+.. _basic_env:
+
+Conda Environment
+^^^^^^^^^^^^^^^^^
+
+In the source directory we provide a dependency file ``basic_environment.yml`` that
+installs the Python packages required for basic functionality of X-PSI. Its
+contents are:
+
+.. code-block:: bash
+
+    name: xpsi
+    channels:
+        - defaults
+    dependencies:
+        - numpy
+        - cython
+        - matplotlib
+        - scipy
+        - wrapt
+
+
+The core packages required for likelihood functionality are
+`numpy <https://docs.scipy.org/doc/numpy/index.html>`_,
+`cython <http://cython.readthedocs.io/en/latest>`_,
+`matplotlib <https://matplotlib.org/stable/index.html>`_,
+`scipy <https://docs.scipy.org/doc//scipy/index.html>`_, and
+`wrapt <https://wrapt.readthedocs.io/en/latest/>`_. 
+
+
+To create a virtual environment from this file:
 
 .. code-block:: bash
 
@@ -51,136 +69,56 @@ an environment manually via
 
 .. code-block:: bash
 
-     conda create -n xpsi python=2.7
+     conda create -n xpsi
 
-and then install the core dependencies listed in `basic_environment.yml`,
-such as `NumPy`_ and `Cython`_, and also `GSL`_.
+and then install the core dependencies listed in ``basic_environment.yml`` via
+conda.
 
-Conda environment duplication
------------------------------
-
-In the source repository we provide a dependency file that can facilitate
-exact duplication of the environment from which X-PSI ``v0.6`` was
-released. This information may be useful if trying to diagnose installation
-problems, but can only be expected to be compatible with the same platform.
-
-The development environment:
-
-    * Ubuntu 14.04
-    * Installed globally via ``apt``: GCC 4.8.4; Open MPI 1.6.5 ("ancient");
-      BLAS; LAPACK; ATLAS.
-    * `Miniconda2 <https://docs.conda.io/en/latest/miniconda.html>`_
-      (Python 2.7; 64-bit)
-    * Conda environment exported to ``xpsi/environment.yml``
-
-When inspecting the ``xpsi/environment.yml`` file, note that most of the
-entries were installed via automatic resolution of a strict dependency chain
-when core packages were specified. Also note the packages that
-were installed into a Conda environment via pip. There are a few reasons
-for these choices, but the main one is that pip is purely for Python
-packages and will not install unwanted non-Python libraries. To be clear, such
-libraries would be dependencies that could have been installed via Conda,
-if we had not already satisfied them as listed above in this instance.
-
-The Python packages below can be installed straightforwardly from source
-or via a package manager (Conda, pip, or a combination), via the instructions
-native to the packages. When searching for an open-source package you may need
-to add *conda-forge* package channel.
-
-.. note::
-
-    The specifications on this page regard the development environment:
-    you are free to set up alternative environment. For installation on a
-    high-performance system, instructions on this page, which tailor to a
-    self-administered machine, are either not applicable or do not target
-    performance. We direct the reader to the :ref:`surfsystems` page for
-    guidance.
-
-To duplicate from file:
+Activate the environment as:
 
 .. code-block:: bash
 
-     conda env create -f <path/to/xpsi>/environment.yml
-
-Dependencies
-------------
-
-The following Python packages are required for nested sampling:
-
-* `PyMultiNest <https://github.com/JohannesBuchner/PyMultiNest>`_
-  (the interface to the MultiNest library)
-* `mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_
-  (for parallelisation)
-* `SciPy <https://docs.scipy.org/doc/scipy/reference/>`_
-  (optional core package useful for, e.g., inverse prior sampling)
+    conda activate xpsi
 
 .. note::
 
-    That ``conda install -c conda-forge pymultinest`` might try to install
-    dependencies in the environment, including binaries for MPI, BLAS/LAPACK,
-    and a Fortran compiler, all in order to install MultiNest. Moreover, the
-    MultiNest version listed is a minor release too low to satisfy all our
-    needs. Although production sampling runs need to be performed on a
-    high-performance system, it is advisable to install MultiNest on your
-    personal machine to gain experience on application to inexpensive test
-    problems. Below we offer `from source`__ instructions.
+    **ALL THE FOLLOWING STEPS SHOULD BE PERFORMED IN THIS NEWLY CREATED
+    ENVIRONMENT.** Pay special attention to reactivate the environment if you
+    ever have to restart the kernel.
+    
+Next, install the packages
+`pymultinest <https://johannesbuchner.github.io/PyMultiNest/>`_ and
+`mpi4py <http://cython.readthedocs.io/en/latest>`_ which are required for 
+nested sampling:
 
-The following Python packages are required for full functionality of the
-post-processing module:
+.. code-block:: bash
 
-* `Matplotlib <https://matplotlib.org/>`_
-* `GetDist <https://getdist.readthedocs.io/en/latest/>`_
-  (posterior KDE corner plotting)\ [#]_
-* `h5py <http://docs.h5py.org/en/stable/>`_
-  (storage of X-ray signals computed from posterior samples; also used by
-  emcee_)
-* `nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_
-  (posterior error analysis, plotting, run combination, etc.)\ [#]_
-* `fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_
-  (conditional posterior plotting; also required by nestcheck)
+    conda install -c conda-forge mpi4py pymultinest
+    
+Note that pyMultiNest is only a wrapper and requires MultiNest to run properly.
+See below for installation instructions (:ref:`multinest`).
+Then, install optional packages
+`getdist <https://getdist.readthedocs.io/en/latest/>`_,
+`h5py <https://docs.h5py.org/en/stable/index.html>`_,
+`nestcheck <https://nestcheck.readthedocs.io/en/latest/>`_, and
+`fgivenx <https://fgivenx.readthedocs.io/en/latest/>`_ which are required for
+post-processing:
 
-Note that post-processing can generally be done on a desktop computer and thus
-these packages are not necessary for running sampling processes on a
-high-performance system. If they are not installed, a warning message is
-printed or an exception is raised (by the root process if MPI world size >1).
+.. code-block:: bash
 
-The `emcee <https://emcee.readthedocs.io/en/latest/>`_ Python package for
-ensemble-MCMC is optional.
+    conda install -c conda-forge getdist h5py nestcheck fgivenx
 
-.. note::
+In addition, some optional miscellaneous packages are:
 
-    That ``conda install -c conda-forge emcee`` will handle dependencies
-    recursively to the extent that MPI would be installed if you accept.
-
-.. rubric:: Footnotes
-
-.. [#] The version of GetDist_ currently compatible with X-PSI, and used in
-       :ref:`R19`, is v0.3.1. It may be cloned as follows:
-
-       .. code-block:: bash
-
-          git clone [--single-branch] -b customisation \
-          https://github.com/ThomasEdwardRiley/getdist.git
-
-.. [#] The version of nestcheck_ currently compatible with X-PSI, and used in
-       :ref:`R19`, is v0.2.0. It may be cloned as follows:
-
-       .. code-block:: bash
-
-          git clone [--single-branch] -b feature/getdist_kde \
-          https://github.com/ThomasEdwardRiley/nestcheck.git
-
-.. note::
-
-    For installing X-PSI on a Mac OS, please look at the tips below before proceeding with the installation of the various depnedencies.
+#. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook.
+#. `pytest <https://docs.pytest.org/en/7.2.x/>`_ if you want to run functionality tests for X-PSI.
+#. `emcee <https://emcee.readthedocs.io/en/latest/>`_ for optional ensemble-MCMC functionality.
 
 
-__ source_
+.. _nonpython:
 
-.. _source:
-
-From source
------------
+Prerequisite Non-Python Packages
+--------------------------------
 
 X-PSI has several dependencies that are not Python packages. Build and
 install guidelines are given below.
@@ -188,26 +126,41 @@ install guidelines are given below.
 GSL
 ^^^
 
-To obtain the latest GSL_ source code (otherwise ``v2.5`` works):
+GSL is the GNU Scientific Library. To obtain the latest 
+`GSL <https://www.gnu.org/software/gsl/>`_ source code (otherwise ``v2.5`` 
+works):
 
 .. code-block:: bash
 
    wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
 
-Untar, navigate to the build directory (e.g., ``cd gsl-latest/build``), and
+.. note::
+
+    The next steps require an `OpenMP <http://www.openmp.org>`_-enabled C 
+    compiler (known compatibility with ``icc``, ``gcc``, and ``clang``). Most 
+    linux systems come with `GCC <https://gcc.gnu.org>`_ built-in. To find out
+    the GCC path-executable on your system, run ``which gcc``.
+
+Untar, navigate to the directory (e.g., ``cd gsl-latest``), and
 then build and install:
 
 .. code-block:: bash
 
-    ../configure CC=<path/to/compiler/executable> --prefix=$HOME/gsl
+    ./configure CC=<path/to/compiler/executable> --prefix=$HOME/gsl
     make
     make check
     make install
     make installcheck
     make clean
+    
+This will install the library in your ``$HOME``, as an example. Next, add GSL
+to your path by adding the following line to ``~/.bashrc``:
 
-This will install the library in your ``$HOME``, as an example. You can check
-the prefix and version of GSL on your path:
+.. code-block:: bash
+
+    export PATH=$HOME/gsl/bin:$PATH
+
+You can check the prefix and version of GSL on your path:
 
 .. code-block:: bash
 
@@ -215,95 +168,75 @@ the prefix and version of GSL on your path:
     gsl-config --prefix
 
 
+.. _multinest:
 
 MultiNest
 ^^^^^^^^^
 
-To leverage some capabilities of sample post-processing software you require
-`MultiNest`_ ``v3.11``. To build the MultiNest library,
-you require an MPI-wrapped Fortran compiler (e.g., ``mpifort`` from Open MPI).
-
-.. _MultiNest: https://github.com/farhanferoz/MultiNest
+Although production sampling runs need to be performed on a high-performance 
+system and X-PSI can be installed locally without sampling functionality, it is
+advisable to install MultiNest on your personal machine to gain experience in
+application to inexpensive test problems. In addition, to leverage some
+capabilities of sample post-processing software you 
+`require MultiNest <https://github.com/JohannesBuchner/MultiNest>`_ ``v3.12``. 
+To build the MultiNest library, you require an MPI-wrapped Fortran compiler
+(e.g.,  `openmpi-mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
+from Open MPI).
 
 .. note::
 
-    The following assumes an environment similar to that summarised in
-    the in the :ref:`dev_env` section above, specifically to emphasise where an
-    MPI compiler wrapper is required.
+    The following assumes you have installed PyMultiNest and mpi4py. If you
+    have not already installed it through the ``environment.yml`` file, you may
+    do so e.g. via ``conda install -c conda-forge pymultinest mpi4py``.
 
-First clone the repository, then navigate to it and build:
+We follow
+`this guide <https://johannesbuchner.github.io/PyMultiNest/install.html>`_ for 
+installation of MultiNest. Prerequisites for MultiNest are c and fortran 
+compilers (e.g. ``gcc``, ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
+``atlas``:
 
 .. code-block:: bash
 
-    git clone https://github.com/farhanferoz/MultiNest.git <path/to/clone>/multinest
-    cd <path/to/clone>/multinest/MultiNest_v3.11_CMake/multinest
-    mkdir build
-    cd build
-    CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+    sudo apt-get install cmake libblas-dev liblapack-dev libatlas-base-dev
+
+Assuming these libraries are available, first clone the repository,
+then navigate to it and build:
+
+.. code-block:: bash
+
+    git clone https://github.com/JohannesBuchner/MultiNest
+    cd MultiNest/build
+    cmake ..
     make
-    ls ../lib/
 
-Use the last command to check for the presence of shared objects. There is
-*no* need to ``make install`` as suggested in the source code documentation.
-
-If you have not already installed mpi4py using pip (or Conda assuming a
-different environment setup to that summarised in :ref:`dev_env`), then here
-is how to do it from source (e.g., on some path such as ``$HOME``):
+Next, you need PyMultinest to interface with MultiNest. To do so, add the
+following line to ``~/.bashrc``:
 
 .. code-block:: bash
 
-    wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
+    export LD_LIBRARY_PATH=/my/directory/MultiNest/lib/:$LD_LIBRARY_PATH
+    
+It's also good to check whether this has worked. In a new kernel, try 
 
-    tar -xf mpi4py-3.0.0.tar.gz
+.. code-block:: bash
 
-    python setup.py build --mpicc=mpicc
-
-    python setup.py install
-
+    python -c 'import pymultinest'
+    
+which should import without any errors. If you get ``ERROR:   Could not load
+MultiNest library "libmultinest.so"``, that means either MultiNest was not
+succesfully installed or could not be found.  While X-PSI will run properly,
+the nested-sampling capabilities (requiring MultiNest) will crash. The user can
+use EMCEE as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
+Note however that the post-processing turorials have only been implemented
+for the outputs of MultiNest.
 
 The package will be installed in your Conda environment (if activated).
 
-To test:
-
-.. code-block:: bash
-
-    mpiexec -n 4 python demo/helloworld.py
-
-Do you see ranks 0 through 3 reporting for duty? The number of MPI processes
-might be best set to somewhere between the number of physical cores and
-logical cores in your machine for test sampling applications. For a typical
-laptop that might be up to ``-n 4``.
-
-Now you need the Python interface to MultiNest:
-
-.. code-block:: bash
-
-    git clone https://github.com/JohannesBuchner/PyMultiNest.git <path/to/clone>/pymultinest
-    cd <path/to/clone>/pymultinest
-    python setup.py install [--user]
-
-The package will be installed in your Conda environment (if activated).
-
-.. note::
-
-    Here we clone the PyMultiNest repository. However, for :ref:`R19`,
-    working with X-PSI ``v0.1``, we used the repository as frozen in a *fork*.
-    To clone this version instead:
-
-    .. code-block:: bash
-
-        git clone https://github.com/ThomasEdwardRiley/PyMultiNest.git <path/to/clone>
-
-    and then simply follow the same installation procedure.
 
 X-PSI
-^^^^^
+-----
 
-.. _OpenMP: http://www.openmp.org
-
-To build and install from the X-PSI clone root, you require an
-`OpenMP`_-enabled C compiler (known compatibility with ``icc``, ``gcc``, and
-``clang``):
+Finally, to build and install from the X-PSI clone root, execute:
 
 .. code-block:: bash
 
@@ -323,33 +256,56 @@ C flags for compilation of the X-PSI extensions. Because the library location
 will not change for runtime, we state the runtime linking instructions at
 compilation in the ``setup.py`` script.
 
+A quick check of the X-PSI installation can be done with ``import xpsi``, which
+should print to screen the following:
+
+.. code-block:: bash
+
+    /=============================================\
+    | X-PSI: X-ray Pulse Simulation and Inference |
+    |---------------------------------------------|
+    |                Version: 1.2.1               |
+    |---------------------------------------------|
+    |      https://xpsi-group.github.io/xpsi      |
+    \=============================================/
+
+    Imported GetDist version: 1.4
+    Imported nestcheck version: 0.2.1
+
+
+For a more complete verification of the X-PSI installation, you can execute
+the following:
+
+.. code-block:: bash
+
+    cd examples/examples_fast/Modules/
+    python main.py
+
+This module performs a ``likelihood check``. If the likelihood value calculated
+matches the given value, X-PSI is functioning as expected, else it will raise
+an error message.  The following part of this module requires a functioning
+MultiNest installation. It initiate sampling using MultiNest, and given the
+settings, it should take ~5 minutes. To cancel mid-way press ``ctrl + C``.
+
 .. note::
 
-   To install X-PSI on Mac OS, you can use ``llvm clang`` rather than ``gcc``.
-   First install ``homebrew`` and use that to install ``llvm``:
+   The default X-PSI is installed with an analytical blackbody surface emission
+   model extension. If you want to use alternative models for the surface 
+   radiation field, you will need to (re-)install / (re-)compile XPSI with the 
+   appropriate flags:
 
    .. code-block:: bash
 
-      /usr/bin/ruby -e
-      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+      CC=<path/to/compiler/executable> python setup.py --help
+      CC=<path/to/compiler/executable> python setup.py install [--NumHot] [--NumElse] [--user]
 
-      brew install llvm
-
-   Modify your ``.profile`` file as follows:
-
-   .. code-block:: bash
-
-      export PATH=/usr/local/opt/llvm/bin:$PATH
-      export LDFLAGS="-L/usr/local/opt/llvm/lib"
-      export CPPFLAGS="-I/usr/local/opt/llvm/include"
-      export KMP_DUPLICATE_LIB_OK=TRUE
-
-   Install X-PSI using
+   This will install the numerical atmosphere for the hot regions and/or for
+   the rest of the surface (``elsewhere``). To (re-) install the default
+   blackbody surface emission model, run the command again without the flags:
 
    .. code-block:: bash
 
-      CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user]
-
+      CC=<path/to/compiler/executable> python setup.py install [--user]
 
 If you ever need to reinstall, first clean to recompile the C files:
 
@@ -370,9 +326,20 @@ environment variable, or inserted into ``sys.path`` within a calling module.
 Documentation
 -------------
 
-.. _Sphinx: http://www.sphinx-doc.org/en/master
 
-If you wish to compile the documentation you require `Sphinx`_:
+If you wish to compile the documentation you require 
+`Sphinx <http://www.sphinx-doc.org/en/master>`_ and extensions. To install
+these, run the following command:
+
+.. code-block:: bash
+
+    conda install sphinx
+    conda install -c conda-forge nbsphinx
+    conda install decorator
+    conda install sphinxcontrib-websupport
+    conda install sphinx_rtd_theme
+
+Now the documentation can be compiled using:
 
 .. code-block:: bash
 
@@ -382,13 +349,8 @@ To rebuild the documentation after a change to source code docstrings:
 
 .. code-block:: bash
 
-    [CC=<compiler>] python setup.py install [--user]; cd docs; make clean; make html; cd ..
-
-You need the relevant extensions (such as ``nbsphinx``, which you will be
-prompted to install) and atheme such as the Sphinx `Read the Docs theme`__.
-Customisation can be made in the ``xpsi/docs/source/conf.py`` script.
-
-__ https://sphinx-rtd-theme.readthedocs.io/en/latest/
+    [CC=<path/to/compiler/executable>] python setup.py install [--user]; cd
+    docs; make clean; make html; cd ..
 
 The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
 notebooks for the tutorials in this documentation. The ``.html`` files can
@@ -407,116 +369,96 @@ script. Then make sure the extension modules are inside the source directory
    To build the documentation, all modules need to be imported, and the
    dependencies that are not resolved will print warning messages.
 
-Tips for installing on a Mac OS
--------------------------------
-Be mindful on the order of the programs that need to be installed.
-Install ``xcode`` or ``xcode tools``. 
+Tips for installing on Mac OS
+-----------------------------
+
+Most of the aforementioned instructions for linux are also applicable for Mac
+OS. Here we note some of the changes required.
+
+After creating the environment using the ``environment.yml`` file, 
+install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to
+be installed hereafter. Use ``pip install`` to download and install ``h5py``
+and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy`` and ``cython`` if not
+using the ``environment.yml``. You may use the file as a reference of the
+packages required).
+
+On Mac OS, it's preferable to use ``llvm clang`` rather than ``gcc``.  The
+``homebrew`` version of ``clang`` works, but some users may face potential
+issues (see below for the MacOS native ``clang``).  To use ``homebrew`` version
+of ``clang``, first install  ``homebrew``:
+
+.. code-block:: bash
+
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+Install ``llvm`` with homebrew, even if weird messages appear, saying llvm is
+already present in the Mac OS:
+
+.. code-block:: bash
+
+    brew install llvm 
+   
 Install ``GSL`` (see above).
-Install ``maplotlib``, ``numpy``, ``cython``, ``h5py`` and ``emcee`` using ``pip install``.
-Install  ``homebrew``:
+
+Install ``fortran`` before ``MPI``. If faced with issues when specifying or
+using gfortran (and it "does not pass simple tests") specify the compiler as
+being gfortran in the ``mpif90`` wrapper files and delete the files that were
+already in the build directory. Once ``MPI`` is installed, export the following
+environment variables:
 
 .. code-block:: bash
 
-   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-Install ``llvm`` with homebrew, even if weird messages appear, saying llvm is already present in the Mac OS:
-
-.. code-block:: bash
-
-   brew install llvm
-
-Install ``fortran`` before ``MPI``.
-If you have some troubles with specifying or using gfortran (and it "doesn’t not pass simple tests") specify in the mpif90 wrapper files the compiler as being gfortran and delete the files that were already in the build directory.
-Once ``MPI`` is installed, 
-export PATH and LD_LIBRARY_PATH:
-
-.. code-block:: bash
-
-   LD_LIBRARY_PATH="/Users/<your_path>/openmpi/lib:$LD_LIBRARY_PATH" 
-   PATH=$PATH:/Users/<your_path>/mpi/bin/ 
-
-Consider if to add these lines directly in your bashrc (or equivalent file for a different shell).
+    export LD_LIBRARY_PATH="/Users/<your_path>/openmpi/lib:$LD_LIBRARY_PATH"
+    export PATH=$PATH:/Users/<your_path>/mpi/bin/
+    export LDFLAGS="-L/usr/local/opt/llvm/lib"
+    export CPPFLAGS="-I/usr/local/opt/llvm/include"
+    export KMP_DUPLICATE_LIB_OK=TRUE
 
 
-Install ``X-PSI`` using: 
+Consider adding these lines directly in your bashrc (or equivalent file for a
+different shell e.g. zshrc).
+
+Install ``X-PSI`` using:
 
 .. code-block:: bash
 
-   CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user]
+    CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user] 
 
-If it gives problem, remove the ``tools`` and ``surface_radiation_field`` entires from ``setup.py`` of ``X-PSI``. 
-The line in the setup.py file would then look like: 
 
-.. code-block:: bash
-
-   packages = ['xpsi', 'xpsi/PostProcessing']
-
-If you encounter any problems with permissions when installing X-PSI, use the ``--user`` option. 
-
-For compatibility, install the ``GetDist`` and ``nestcheck`` versions:
+If you are facing problem with this installation (e.g., linker problems, or
+--fopenmp libraries missing), you may try the following:
 
 .. code-block:: bash
 
-   GetDist version: 0.3.1
-   nestcheck version: 0.2.0
+    CC=/usr/local/opt/llvm/bin/clang python setup.py install --noopenmp [--user] 
 
-Installing on Windows
----------------------
 
-X-PSI has been successfully installed and run on Windows, at least for the
-purpose of likelihood functionality, using the following user-contributed
-procedure.
+You may also try to use the MacOS native version of ``clang``:
 
-.. _Ubuntu: https://www.windowscentral.com/install-windows-subsystem-linux-windows-10
+.. code-block:: bash
 
-.. _Python 2.7: https://help.dreamhost.com/hc/en-us/articles/115000218612-Installing-a-custom-version-of-Python
+    CC=/usr/bin/clang python setup.py install --noopenmp [--user] 
 
-.. _virtual Python environment: https://help.dreamhost.com/hc/en-us/articles/215489338-Installing-and-using-virtualenv-with-Python-2
+
+
+If you encounter any problems with permissions when installing X-PSI, use the
+``--user`` option (This will install X-PSI globally, and not just within your
+virtual environment).
+
+Tips for installing on Windows
+------------------------------
+
+.. note::
+
+    We do not recommend installing and running X-PSI on windows. However, if
+    you must, this section details some of the relevant procedures.
+
+
+X-PSI was successfully installed and run on Windows in the year 2020, at least
+for the purpose of likelihood functionality, using the following 
+user-contributed procedure.
 
 * Clone the X-PSI repository to a directory on your Windows computer (see above).
-* Download `Ubuntu`_ for Windows.
-* Install `Python 2.7`_.
-* Create a `virtual Python environment`_ in an Ubuntu shell.
-* Install supporting packages ``pip install matplotlib numpy cython scipy``
-  followed by ``sudo apt-get install libgsl-dev``.
-* Ensure you are in the X-PSI directory and install X-PSI
-  ``CC=gcc python setup.py install``.
-* Install any missing packages that you need, e.g., ``pip install h5py`` for
-  post-processing functionality if you have posterior sample sets available.
-* Install Jupyter notebook using ``pip install notebook``.
-* Start the kernel with the command ``Jupyter notebook``.
-
-
-Example of .bash_profile
-------------------------
-
-.. code-block:: bash
-   
-   # .bash_profile
-   # Get the aliases and functions
-   if [ -f ~/.bashrc ]; then
-       . ~/.bashrc
-   fi
-   # User specific environment and startup programs
-   PATH=$PATH:$HOME/bin
-   export PATH
-
-Example of .bashrc
-------------------
-
-.. code-block:: bash
-
-   module load pre2019
-   module load intel/2017b
-   module load cmake
-   module load python/2.7.9
-   export FC=ifort
-   export CC=icc
-   export CXX=icpc
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
-   export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages/:$PYTHONPATH
-   # Source global definitions
-   if [ -f /etc/bashrc ]; then
-       . /etc/bashrc
-   fi
-   # User specific aliases and functions
+* Download `Ubuntu <https://www.windowscentral.com/install-windows-subsystem-linux-windows-10>`_ for Windows.
+* Install a Anaconda or Miniconda  virtual Python environment in an Ubuntu shell.
+* Follow the instructions of this page to install all the python and non-python packages.

@@ -1,28 +1,22 @@
-from __future__ import division, print_function
-
-from .global_imports import *
-from . import global_imports
-from . import _warning, make_verbose, verbose
+from xpsi.global_imports import *
+from xpsi import _warning, _verbose
+from xpsi.utils import  make_verbose, verbose
 
 from os.path import join as _join
 
-from .Spacetime import Spacetime
-from .HotRegion import HotRegion
-from .Elsewhere import Elsewhere
-from .Everywhere import Everywhere
+from xpsi.Spacetime import Spacetime
+from xpsi.HotRegion import HotRegion
+from xpsi.Elsewhere import Elsewhere
+from xpsi.Everywhere import Everywhere
 
-from .Parameter import Parameter
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.ParameterSubspace import ParameterSubspace
 
-from .pixelmesh.integrator import integrate as _integrate
-from .tools.energy_integrator import energy_integrator
-from .tools.phase_integrator import phase_integrator
+from xpsi.pixelmesh.integrator import integrate as _integrate
+from xpsi.tools.energy_integrator import energy_integrator
+from xpsi.tools.phase_integrator import phase_integrator
 
-try:
-    _mpl
-except NameError:
-    pass
-else:
+if _mpl is not None:
     import matplotlib
     from matplotlib import pyplot as plt
     from matplotlib.figure import Figure
@@ -33,6 +27,8 @@ else:
     from matplotlib import cm
     from matplotlib import animation
     import matplotlib.image as mgimg
+else:
+    pass
 
 class Photosphere(ParameterSubspace):
     """ A photosphere embedded in an ambient Schwarzschild spacetime.
@@ -2068,9 +2064,9 @@ class Photosphere(ParameterSubspace):
 
         filename = file_root + '_animated.mp4'
         yield 'Writing to disk: %s' % filename
-        ani.save(filename, writer = 'ffmpeg',
+        ani.save(filename,
                  dpi = dpi, fps = fps, bitrate = bitrate,
-                 extra_args=['-vcodec', 'libx264'])
+                 )
 
         fig.clf() # this or ax.cla() needed to free memory
         plt.close(fig)
@@ -2101,4 +2097,4 @@ def _veneer(x, y, axes, lw=1.0, length=8, log=(False, False)):
 
     axes.tick_params(which='major', colors='black', length=length, width=lw)
     axes.tick_params(which='minor', colors='black', length=int(length/2), width=lw)
-    plt.setp(axes.spines.values(), linewidth=lw, color='black')
+    plt.setp(list(axes.spines.values()), linewidth=lw, color='black')

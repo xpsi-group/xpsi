@@ -6,7 +6,6 @@
 
 """ Integrate over the image of a star on a distant observer's sky. """
 
-from __future__ import division
 import numpy as np
 cimport numpy as np
 from cython.parallel cimport *

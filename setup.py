@@ -9,9 +9,62 @@ If compiling and linking with Intel icc, with is on $PATH:
     --> LDSHARED="icc -shared" CC=icc python setup.py install [--user]
 """
 
-import os
-
 from setuptools import setup, Extension
+import os
+import argparse
+import sys
+import shutil
+
+desc = '''Options to choose the blackbody (default) or numerical atmosphere surface radiation fields 
+          for the hot region and the rest of the surface'''
+parser = argparse.ArgumentParser(description=desc)
+
+try:
+    parser.add_argument('--NumHot', help="Numerical atmosphere for the hot region(s)", default=False, action="store_true")
+    parser.add_argument('--NumElse', help="Numerical atmosphere for the rest of the surface", default=False, action="store_true")
+    parser.add_argument('--NumHotBeam',help="Numerical atmosphere for the hot region(s) including free beaming", default=False, action="store_true")
+    parser.add_argument('--noopenmp', help="Ignore the openmp install options", default=False, action="store_true")
+    # parser.add_argument('--ComptHot', help="Compton emission model for the hot region(s)", default=False, action="store_true")
+    # parser.add_argument('--ComptElse', help="Compton emission model for the rest of the surface", default=False, action="store_true")
+    if '--help' in sys.argv:
+        print(parser.print_help())
+        print('-----------------------------------------------------------------------------------')
+
+    # Copying the blackbody 'Hot' and 'Elsewhere' by default
+    shutil.copy('xpsi/surface_radiation_field/archive/hot/blackbody.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+    shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/blackbody.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
+
+    # Copying the Numerical 'Hot' and 'Elsewhere' if user selected
+    if '--NumHot' in sys.argv:
+        print("Copying numerical atmosphere for the hot region(s)")
+        shutil.copy('xpsi/surface_radiation_field/archive/hot/numerical.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+        sys.argv.remove("--NumHot")
+    if '--NumElse' in sys.argv:
+        print("Copying numerical atmosphere for the rest of the surface")
+        shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
+        sys.argv.remove("--NumElse")
+    if '--NumHotBeam' in sys.argv:
+        print("Copying numerical atmosphere for the hot region(s)")
+        shutil.copy('xpsi/surface_radiation_field/archive/hot/numerical_fbeam.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+        sys.argv.remove("--NumHotBeam")
+    # if '--ComptHot' in sys.argv:
+    #     print("Copying Compton emission model for the hot region(s)")
+    #     shutil.copy('xpsi/surface_radiation_field/archive/hot/compton.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+    #     sys.argv.remove("--ComptHot")
+    # if '--ComptElse' in sys.argv:
+    #     print("Copying Compton emission model for the rest of the surface")
+    #     shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/compton.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
+    #     sys.argv.remove("--ComptElse")
+
+    # Setting the noopenmp option from argv
+    if '--noopenmp' in sys.argv:
+        noopenmp = True
+        sys.argv.remove("--noopenmp")
+    else:
+        noopenmp = False
+
+except:
+    pass
 
 if __name__ == '__main__':
     import numpy
@@ -30,8 +83,8 @@ if __name__ == '__main__':
             raise
 
         try:
-            gsl_version = sub.check_output(['gsl-config','--version'])[:-1]
-            gsl_prefix = sub.check_output(['gsl-config','--prefix'])[:-1]
+            gsl_version = sub.check_output(['gsl-config','--version'])[:-1].decode("UTF-8")
+            gsl_prefix = sub.check_output(['gsl-config','--prefix'])[:-1].decode("UTF-8")
         except Exception:
             print('GNU Scientific Library cannot be located.')
             raise
@@ -47,7 +100,7 @@ if __name__ == '__main__':
             # point to shared library at compile time so runtime resolution
             # is not affected by environment variables, but is determined
             # by the binary itself
-            extra_link_args = ['-Wl,-rpath,%s'%(gsl_prefix+'/lib')]
+            extra_link_args = ['-Wl,-rpath,%s'%(str(gsl_prefix)+'/lib')]
 
         # try to get the rayXpanda library:
         # please modify these compilation steps it does not work for your
@@ -90,38 +143,67 @@ if __name__ == '__main__':
                                                  'xpsi/include/rayXpanda')]
 
         try:
-            if 'gcc' in os.environ['CC']:
-                extra_compile_args=['-fopenmp',
-                                    '-march=native',
-                                    '-O3',
-                                    '-funroll-loops',
-                                    '-Wno-unused-function',
-                                    '-Wno-uninitialized',
-                                    '-Wno-cpp']
-                extra_link_args.append('-fopenmp')
-            elif 'icc' in os.environ['CC']:
-                # on high-performance systems using Intel processors
-                # on compute nodes, it is usually recommended to select the
-                # instruction set (extensions) optimised for a given processor
-                extra_compile_args=['-qopenmp',
-                                    '-O3',
-                                    '-xHOST',
-                                    # alternative instruction set
-                                    '-axCORE-AVX2,AVX',
-                                    '-funroll-loops',
-                                    '-Wno-unused-function']
-                extra_link_args.append('-qopenmp')
-            elif 'clang' in os.environ['CC']:
-                extra_compile_args=['-fopenmp',
-                                    '-Wno-unused-function',
-                                    '-Wno-uninitialized',
-                                    '-Wno-#warnings',
-                                    '-Wno-error=format-security']
-                extra_link_args.append('-fopenmp')
-                # you might need these lookup paths for llvm clang on macOS
-                # or you might need to edit these paths for your compiler
-                #library_dirs.append('/usr/local/opt/llvm/lib')
-                #include_dirs.append('/usr/local/opt/llvm/include')
+            print("NOOPENMP =", noopenmp)
+            if not noopenmp :
+                if 'gcc' in os.environ['CC']:
+                    extra_compile_args=['-fopenmp',
+                                        '-march=native',
+                                        '-O3',
+                                        '-funroll-loops',
+                                        '-Wno-unused-function',
+                                        '-Wno-uninitialized',
+                                        '-Wno-cpp']
+                    extra_link_args.append('-fopenmp')
+                elif 'icc' in os.environ['CC']:
+                    # on high-performance systems using Intel processors
+                    # on compute nodes, it is usually recommended to select the
+                    # instruction set (extensions) optimised for a given processor
+                    extra_compile_args=['-qopenmp',
+                                        '-O3',
+                                        '-xHOST',
+                                        # alternative instruction set
+                                        '-axCORE-AVX2,AVX',
+                                        '-funroll-loops',
+                                        '-Wno-unused-function']
+                    extra_link_args.append('-qopenmp')
+                elif 'clang' in os.environ['CC']:
+                    extra_compile_args=['-fopenmp',
+                                        '-Wno-unused-function',
+                                        '-Wno-uninitialized',
+                                        '-Wno-#warnings',
+                                        '-Wno-error=format-security']
+                    extra_link_args.append('-fopenmp')
+                    # you might need these lookup paths for llvm clang on macOS
+                    # or you might need to edit these paths for your compiler
+                    #library_dirs.append('/usr/local/opt/llvm/lib')
+                    #include_dirs.append('/usr/local/opt/llvm/include')
+            else:
+                if 'gcc' in os.environ['CC']:
+                    extra_compile_args=['-march=native',
+                                        '-O3',
+                                        '-funroll-loops',
+                                        '-Wno-unused-function',
+                                        '-Wno-uninitialized',
+                                        '-Wno-cpp']
+                elif 'icc' in os.environ['CC']:
+                    # on high-performance systems using Intel processors
+                    # on compute nodes, it is usually recommended to select the
+                    # instruction set (extensions) optimised for a given processor
+                    extra_compile_args=['-O3',
+                                        '-xHOST',
+                                        # alternative instruction set
+                                        '-axCORE-AVX2,AVX',
+                                        '-funroll-loops',
+                                        '-Wno-unused-function']
+                elif 'clang' in os.environ['CC']:
+                    extra_compile_args=['-Wno-unused-function',
+                                        '-Wno-uninitialized',
+                                        '-Wno-#warnings',
+                                        '-Wno-error=format-security']
+                    # you might need these lookup paths for llvm clang on macOS
+                    # or you might need to edit these paths for your compiler
+                    #library_dirs.append('/usr/local/opt/llvm/lib')
+                    #include_dirs.append('/usr/local/opt/llvm/include')
         except KeyError:
             print('Export CC environment variable to "icc" or "gcc" or '
                   '"clang", or modify the setup script for your compiler.')
@@ -207,13 +289,16 @@ if __name__ == '__main__':
     for mod in modnames:
         extensions.append(EXTENSION(mod))
 
+    for e in extensions:
+        e.cython_directives = {'language_level': "3"}
+
     setup(
         name = 'xpsi',
-        version = '0.7.10',
-        author = 'Thomas Edward Riley',
-        author_email = 't.e.riley@uva.nl; t.riley.phd@gmail.com',
-        url = 'https://github.com/ThomasEdwardRiley/xpsi',
-        license = 'MIT',
+        version = '2.0.0',
+        author = 'The X-PSI Core Team',
+        author_email = 'A.L.Watts@uva.nl',
+        url = 'https://github.com/xpsi-group/xpsi',
+        license = 'GPLv3',
         description = """X-PSI: An open-source package for
                          neutron star X-ray Pulse Simulation and Inference.""",
         long_description = open('README.rst').read(),
@@ -223,6 +308,7 @@ if __name__ == '__main__':
                     'xpsi/tools',
                     'xpsi/surface_radiation_field',
                     'xpsi/likelihoods',
+                    'xpsi/utilities',
                     'xpsi/pixelmesh'],
         install_requires = ['numpy'],
         setup_requires = ['cython'],
@@ -230,10 +316,10 @@ if __name__ == '__main__':
         include_package_data = True,
         ext_modules = extensions,
         cmdclass = cmdclass,
-        classifiers = ['Development Status :: 3 - Alpha',
+        classifiers = ['Development Status :: 5 - Production/Stable',
                        'Intended Audience :: Science/Research',
                        'Operating System :: Linux, macOS',
-                       'License :: OSI Approved :: MIT License',
+                       'License :: OSI Approved :: GPLv3',
                        'Programming Language :: Python'],
         zip_safe = False,
     )

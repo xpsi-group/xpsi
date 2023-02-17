@@ -4,8 +4,6 @@
 #cython: wraparound=False
 #cython: embedsignature=True
 
-from __future__ import print_function
-
 import numpy as np
 cimport numpy as np
 from libc.stdlib cimport malloc, free
@@ -131,6 +129,7 @@ def eval_marginal_likelihood(double exposure_time,
                              double sigmas,
                              double llzero,
                              allow_negative = False,
+                             slim = 20.0,
                              background = None):
     """ Evaluate the Poisson likelihood.
 
@@ -222,6 +221,14 @@ def eval_marginal_likelihood(double exposure_time,
         to those present in cubic splines, for instance, because it is
         designed to handle a rapidly changing second-order derivative.
 
+    :param double slim:
+        The number that determines how many sigmas below the signal from the star
+        can the data be at most (at any channel) before skipping the exact
+        likelihood calculation and returning a random likelihood only slightly
+        above the logZero level of MultiNest (no expected counts or background
+        are returned in that case). By default a value of 20.0 is used.
+        If a negative value is provided, no limit is applied.
+
     :param obj background:
         If not ``None``, then a C-contiguous :class:`numpy.ndarray` of
         background count rates where phase interval increases with column
@@ -230,11 +237,13 @@ def eval_marginal_likelihood(double exposure_time,
         is restricted.
 
     :returns:
-        A tuple ``(double, 2D ndarray, 1D ndarray)``. The first element is
+        A tuple ``(double, 2D ndarray, 1D ndarray, 1D ndarray)``. The first element is
         the logarithm of the marginal likelihood. The second element is the
         expected count numbers in joint phase-channel intervals from the star
-        (the target source). The last element is the vector of background
+        (the target source). The third element is the vector of background
         count numbers that are estimated to maximise the conditional
+        likelihood function, one per channel. The last element is the vector of background
+        count numbers, within the given support, that are estimated to maximise the conditional
         likelihood function, one per channel.
 
     """
@@ -380,11 +389,13 @@ def eval_marginal_likelihood(double exposure_time,
             av_STAR += STAR[i,j]
             av_DATA += counts[i,j]
 
-        limit = av_STAR * SCALE - 20.0 * sqrt(av_STAR * SCALE) - av_DATA
-
-        if limit > 0.0:
-            LOGLIKE = llzero * (0.1 + 0.9 * np.random.rand(1))
-            break
+        if slim < 0.0:
+            pass
+        else:
+            limit = av_STAR * SCALE - slim * sqrt(av_STAR * SCALE) - av_DATA
+            if limit > 0.0:
+                LOGLIKE = llzero * (0.1 + 0.9 * np.random.rand(1))
+                break
 
         av_STAR /= n
         av_DATA /= exposure_time

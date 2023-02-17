@@ -1,14 +1,11 @@
-from __future__ import division, print_function
+from xpsi.global_imports import *
 
-from .global_imports import *
-from . import global_imports
+from xpsi.cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed_cellMesh
+from xpsi.cellmesh.rays import compute_rays as _compute_rays
+from xpsi.cellmesh.integrator_for_time_invariance import integrate as _integrator
 
-from .cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed_cellMesh
-from .cellmesh.rays import compute_rays as _compute_rays
-from .cellmesh.integrator_for_time_invariance import integrate as _integrator
-
-from .Parameter import Parameter
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class RayError(xpsiError):
     """ Raised if a problem was encountered during ray integration. """
@@ -41,7 +38,9 @@ class Elsewhere(ParameterSubspace):
         of a temperature parameter. The parameter name
         ``'elsewhere_temperature'`` must be a key in the dictionary unless the
         parameter is *fixed* or *derived*. If a bound is ``None`` that bound
-        is set equal to a strict hard-coded bound.
+        is set equal to a strict hard-coded bound. We note that the bounds for
+        parameters used in the atmosphere model should be restricted (by the user)
+        to be within the tabulated values, in case a numerical atmosphere extension is used.
 
     :param dict values:
         Either the fixed value of the temperature elsewhere, a callable if the
@@ -100,7 +99,7 @@ class Elsewhere(ParameterSubspace):
 
         if not custom: # setup default temperature parameter
             T = Parameter('elsewhere_temperature',
-                          strict_bounds = (3.0, 7.0), # very cold --> very hot
+                          strict_bounds = (3.0, 7.6), # very cold --> very hot
                           bounds = bounds.get('elsewhere_temperature', None),
                           doc = 'log10 of the effective temperature elsewhere',
                           symbol = r'$\log_{10}(T_{\rm EW}\;[\rm{K}])$',

@@ -1,12 +1,10 @@
-from __future__ import division, print_function
 
 __all__ = ["Background", "BackgroundError"]
 
-from .global_imports import *
-from . import global_imports
+from xpsi.global_imports import *
 
 from abc import abstractmethod
-from .ParameterSubspace import ParameterSubspace
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class BackgroundError(xpsiError):
     """ Raised if there is an issue with the incident background . """

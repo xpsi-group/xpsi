@@ -1,13 +1,15 @@
-from __future__ import division, print_function
 
 import os
 import sys
 
-import six
-
 import xpsi
 
 def write(filename, module):
+    """ Write a module to a file.
+
+    :param filename (str): Name of the file to write to.
+    :param module (str): The module to write to the file.
+    """
     with open(filename, 'w') as mod:
         _module = ''''''
         for _line in module.splitlines():
@@ -23,7 +25,13 @@ import argparse
 import re
 
 class ArgumentParserCustom(argparse.ArgumentParser):
+    """A custom implementation of argparse.ArgumentParser for handling arguments specified in a configuration file."""
     def convert_arg_line_to_args(self, arg_line):
+        """ Convert a line from a configuration file to a list of arguments.
+
+        :param arg_line (str): Line from the configuration file.
+        :return: A list of arguments.
+        """
         if (re.match(r'^[\s]*#', arg_line) or   # look for any number of whitespace characters up to a `#` character
             re.match(r'^[\s]*$', arg_line)):    # look for lines containing nothing or just whitespace
             return []
@@ -40,6 +48,9 @@ class ArgumentParserCustom(argparse.ArgumentParser):
             return [arg_line]
 
     def add_argument(self, *args, **kwargs):
+        """
+        Add an argument to the argument parser.
+        """
         if kwargs.pop('destined_for_config_file', True) and args[0] != '-h':
             _ = (args[0],
                  kwargs.get('default', None),
@@ -64,11 +75,36 @@ class ArgumentParserCustom(argparse.ArgumentParser):
         super(ArgumentParserCustom, self).add_argument(*args, **kwargs)
 
 class GenerateConfigAction(argparse.Action):
+    """ Class that generates a configuration file based on the arguments provided to argparse.
+
+    The class inherits from argparse.Action and overrides the __init__ and __call__ methods to
+    implement the configuration file generation.
+    """
     def __init__(self, option_strings, dest, **kwargs):
+        """ Initialize the class instance.
+
+        :param option_strings (list): A list of command-line option strings.
+        :param dest (str): The name of the attribute to be added to the namespace.
+        """
         super(GenerateConfigAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
 
     @staticmethod
     def _typeset(arg, default, nargs, comment_line_above, empty_lines_below, comment, inline_comment, action, newline=True):
+        """ Helper method to generate the text for a single argument in the configuration file.
+
+        :param arg (str): The name of the argument.
+        :param default (str, list): The default value for the argument.
+        :param nargs (int, str): The number of values to take as input for the argument.
+        :param comment_line_above (str): Text to place above the argument. Enter 'rule' if you just want to place a
+                                         separating line above, or enter a header text describing a group of arguments.
+        :param empty_lines_below (int): The number of empty lines to include below the argument.
+        :param comment (bool): Whether the argument should be commented out or not.
+        :param inline_comment (str): A comment to include next to the argument.
+        :param action (str): The action to be performed with the argument.
+        :param newline (bool): Whether to include a newline before the argument.
+
+        :return str: The text for the argument in the configuration file.
+        """
         entry = '\n' if newline else ''
 
         if comment_line_above is not None:
@@ -112,7 +148,15 @@ class GenerateConfigAction(argparse.Action):
         return entry
 
     def __call__(self, parser, namespace, values, option_string=None):
+        """Method that generates the configuration file.
 
+            :param parser (argparse.ArgumentParser): The ArgumentParser object.
+            :param namespace (argparse.Namespace): The Namespace object.
+            :param values (list): The values for the arguments.
+            :param option_string (str, optional): The option string for the argument.
+
+            :returns None:
+        """
         for _ in parser._config_file_args:
             try:
                 config_file
@@ -197,7 +241,7 @@ def str_to_bool(x):
 parser.add_argument('--is-antiphased',
                     type=str_to_bool,
                     action='append',
-                    help='Specify whether the hot regions are anti-phased w.r.t to Earth.')
+                    help='Specify whether the hot regions are anti-phased w.r.t to Earth. If True, the cell mesh shifts by pi radians about the stellar rotation axis for pulse integration and therefore the hot region at phase zero is aligned with the meridian on which the observer’s antipode lies.')
 
 parser.add_argument('--prefix',
                     type=str,
@@ -339,6 +383,7 @@ if args.model is None:
     if args.elsewhere_atmosphere_model is not None:
         args.model += ' + {}'.format(args.elsewhere_atmosphere_model)
 
+# Creating Main module
 module = (
 '''""" Main module for {} {} <- X-PSI {} {}"""'''.format(_telescopes,
                                                          args.source,
@@ -352,15 +397,18 @@ for _x in args.telescope[1:]:
 
 module += (
 '''
-from __future__ import print_function, division
-
 import os
-import six
 import argparse
 import re
 
 class ArgumentParserCustom(argparse.ArgumentParser):
+    """A custom implementation of argparse.ArgumentParser for handling arguments specified in a configuration file."""
     def convert_arg_line_to_args(self, arg_line):
+        """ Convert a line from a configuration file to a list of arguments.
+
+        :param arg_line (str): Line from the configuration file.
+        :return: A list of arguments.
+        """
         if (re.match(r'^[\s]*#', arg_line) or   # look for any number of whitespace characters up to a `#` character
             re.match(r'^[\s]*$', arg_line)):    # look for lines containing nothing or just whitespace
             return []
@@ -377,6 +425,9 @@ class ArgumentParserCustom(argparse.ArgumentParser):
             return [arg_line]
 
     def add_argument(self, *args, **kwargs):
+        """
+        Add an argument to the argument parser.
+        """
         if kwargs.pop('destined_for_config_file', True) and args[0] != '-h':
             _ = (args[0],
                  kwargs.get('default', None),
@@ -411,11 +462,36 @@ class CompileAction(argparse._StoreAction):
             setattr(namespace, self.dest, compile(values, '<string>', 'eval'))
 
 class GenerateConfigAction(argparse.Action):
+    """ Class that generates a configuration file based on the arguments provided to argparse.
+
+    The class inherits from argparse.Action and overrides the __init__ and __call__ methods to
+    implement the configuration file generation.
+    """
     def __init__(self, option_strings, dest, **kwargs):
+        """ Initialize the class instance.
+
+        :param option_strings (list): A list of command-line option strings.
+        :param dest (str): The name of the attribute to be added to the namespace.
+        """
         super(GenerateConfigAction, self).__init__(option_strings, dest, nargs=0, **kwargs)
 
     @staticmethod
     def _typeset(arg, default, nargs, comment_line_above, empty_lines_below, comment, inline_comment, action, newline=True):
+        """ Helper method to generate the text for a single argument in the configuration file.
+
+        :param arg (str): The name of the argument.
+        :param default (str, list): The default value for the argument.
+        :param nargs (int, str): The number of values to take as input for the argument.
+        :param comment_line_above (str): Text to place above the argument. Enter 'rule' if you just want to place a
+                                         separating line above, or enter a header text describing a group of arguments.
+        :param empty_lines_below (int): The number of empty lines to include below the argument.
+        :param comment (bool): Whether the argument should be commented out or not.
+        :param inline_comment (str): A comment to include next to the argument.
+        :param action (str): The action to be performed with the argument.
+        :param newline (bool): Whether to include a newline before the argument.
+
+        :return str: The text for the argument in the configuration file.
+        """
         entry = '\\n' if newline else ''
 
         if comment_line_above is not None:
@@ -459,7 +535,15 @@ class GenerateConfigAction(argparse.Action):
         return entry
 
     def __call__(self, parser, namespace, values, option_string=None):
+        """Method that generates the configuration file.
 
+            :param parser (argparse.ArgumentParser): The ArgumentParser object.
+            :param namespace (argparse.Namespace): The Namespace object.
+            :param values (list): The values for the arguments.
+            :param option_string (str, optional): The option string for the argument.
+
+            :returns None:
+        """
         for _ in parser._config_file_args:
             try:
                 config_file
@@ -867,7 +951,7 @@ parser.add_argument('--distance-value',
            _CDF_notice)
 )
 
-for _h, _m in zip(args.prefix, args.hot_region_model)[:1 if (len(args.hot_region_model) == 1 or args.antipodal_reflection_symmetry) else 2]:
+for _h, _m in list(zip(args.prefix, args.hot_region_model))[:1 if (len(args.hot_region_model) == 1 or args.antipodal_reflection_symmetry) else 2]:
     module += (
     '''
 parser.add_argument('--{0}-super-colatitude-bounds',
@@ -1394,26 +1478,6 @@ def parse_bounds(bounds, value, default_to_free=True):
 
     return None
 
-bounds = dict(neutral_hydrogen_column_density = parse_bounds(args.neutral_hydrogen_column_density_bounds,
-                                                              args.neutral_hydrogen_column_density_value))
-values = dict(neutral_hydrogen_column_density = args.neutral_hydrogen_column_density_value)
-
-interstellar = CustomInterstellar.load(args.attenuation_path,
-                                       args.attenuation_energy_column,
-                                       args.attenuation_column,
-                                       bounds = bounds,
-                                       values = values)
-'''
-)
-
-module += (
-'''
-signals = [[],]
-'''
-)
-
-module += (
-'''
 def derived_parameter(func, parameter, space='caller'):
 
     class derive(Derive):
@@ -1434,6 +1498,26 @@ def parse_value(value):
             return derived_parameter(*eval(value))
     else:
         return None
+'''
+)
+
+module += (
+'''
+bounds = dict(neutral_hydrogen_column_density = parse_bounds(args.neutral_hydrogen_column_density_bounds,
+                                                              args.neutral_hydrogen_column_density_value))
+values = dict(neutral_hydrogen_column_density = parse_value(args.neutral_hydrogen_column_density_value))
+
+interstellar = CustomInterstellar.load(args.attenuation_path,
+                                       args.attenuation_energy_column,
+                                       args.attenuation_column,
+                                       bounds = bounds,
+                                       values = values)
+'''
+)
+
+module += (
+'''
+signals = [[],]
 '''
 )
 
@@ -1500,7 +1584,7 @@ bounds = dict({2} = parse_bounds(args.{0}_{2}_bounds,
 
 try:
     counts = np.loadtxt(args.{0}_count_matrix_path, dtype=np.double)
-except IOError:
+except ValueError:
     {0}.data = xpsi.Data.bin__event_list(args.{0}_event_path,
                                          channels={0}.instrument.channels,
                                          phases=np.linspace(0.0, 1.0, args.{0}_number_phase_bins + 1),
@@ -1515,7 +1599,9 @@ except IOError:
                                          last=len({0}.instrument.channels) - 1,
                                          exposure_time=args.{0}_exposure_time)
 
-    np.savetxt(args.{0}_count_matrix_path, {0}.data.counts)
+    np.savetxt(args.{0}_event_path.replace('.txt','_converted_to_counts.txt'), {0}.data.counts)
+    print('Counts file saved as: '+args.{0}_event_path.replace('.txt','_converted_to_counts.txt'))
+    print('Update configuration file to take in counts file to save computation time.')
 else:
     if counts.ndim == 1:
         counts = counts.reshape(-1,1)
@@ -1547,7 +1633,7 @@ elif args.{0}_background_path:
         if support[i,1] == 0.0:
             for j in range(i, support.shape[0]):
                 if support[j,1] > 0.0:
-                    support[i,0] = support[j,1]
+                    support[i,1] = support[j,1]
                     break
 
     support *= ({0}.data.exposure_time / args.{0}_background_exposure_time) * float(eval(args.{0}_background_scaling_factor)) # exposure ratio * scaling
@@ -2000,11 +2086,9 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path,
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, '__init__')), '')
 
-
+# Creating Signal module
 module = (
 '''""" Signal module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import numpy as np
 import math
@@ -2076,16 +2160,22 @@ class CustomSignal(xpsi.Signal):
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_signal_module)), module)
 
+# Creating Photosphere module
 module = (
 '''""" Photosphere module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import argparse
 import re
 
 class ArgumentParserCustom(argparse.ArgumentParser):
+    """A custom implementation of argparse.ArgumentParser for handling arguments specified in a configuration file."""
+    
     def convert_arg_line_to_args(self, arg_line):
+        """ Convert a line from a configuration file to a list of arguments.
+
+        :param arg_line (str): Line from the configuration file.
+        :return: A list of arguments.
+        """
         if (re.match(r'^[\s]*#', arg_line) or   # look for any number of whitespace characters up to a `#` character
             re.match(r'^[\s]*$', arg_line)):    # look for lines containing nothing or just whitespace
             return []
@@ -2345,16 +2435,22 @@ else:
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_photosphere_module)), module)
 
+# Creating Prior module
 module = (
 '''""" Prior module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import argparse
 import re
 
 class ArgumentParserCustom(argparse.ArgumentParser):
+    """A custom implementation of argparse.ArgumentParser for handling arguments specified in a configuration file."""
+
     def convert_arg_line_to_args(self, arg_line):
+        """ Convert a line from a configuration file to a list of arguments.
+
+        :param arg_line (str): Line from the configuration file.
+        :return: A list of arguments.
+        """
         if (re.match(r'^[\s]*#', arg_line) or   # look for any number of whitespace characters up to a `#` character
             re.match(r'^[\s]*$', arg_line)):    # look for lines containing nothing or just whitespace
             return []
@@ -2561,7 +2657,7 @@ if (   'CST' in args.hot_region_model
     module += (
     '''
         self.a_f = 0.001
-        self.b_f = 2.0
+        self.b_f = 1.0
         self.a_zeta = 0.001
         self.b_zeta = math.pi/2.0 - self.a_zeta
 
@@ -2761,7 +2857,7 @@ if len(args.hot_region_model) == 2 and not args.antipodal_reflection_symmetry:
         elif args.hot_region_model[1 - _DT_idx] in ['CST', 'EST']:
             module += (
             '''
-        if self._overlap(ref, '{0}', '{1}', 'cede', 'cede', {2:.1f}, {3:.1f}):
+        if self._overlap(ref, '{0}', '{1}', 'cede', 'super', {2:.1f}, {3:.1f}):
             if not self._overlap(ref, '{0}', '{1}', 'cede', 'omit', {2:.1f}, {3:.1f}, superset='{1}'):
                 return -np.inf
             '''.format(args.prefix[_DT_idx],
@@ -2810,11 +2906,11 @@ if len(args.hot_region_model) == 2 and not args.antipodal_reflection_symmetry:
         elif args.hot_region_model[1 - _PDT_idx] in ['CST', 'EST']:
             module += (
             '''
-        if self._overlap(ref, '{0}', '{1}', 'super', 'cede', {2:.1f}, {3:.1f}):
+        if self._overlap(ref, '{0}', '{1}', 'super', 'super', {2:.1f}, {3:.1f}):
             if not self._overlap(ref, '{0}', '{1}', 'super', 'omit', {2:.1f}, {3:.1f}, superset='{1}'):
                 return -np.inf
 
-        if self._overlap(ref, '{0}', '{1}', 'cede', 'cede', {2:.1f}, {3:.1f}):
+        if self._overlap(ref, '{0}', '{1}', 'cede', 'super', {2:.1f}, {3:.1f}):
             if not self._overlap(ref, '{0}', '{1}', 'cede', 'omit', {2:.1f}, {3:.1f}, superset='{1}'):
                 return -np.inf
             '''.format(args.prefix[_PDT_idx],
@@ -3097,7 +3193,7 @@ if (   'CST' in args.hot_region_model
         return x * np.log(self.b_zeta/self.a_zeta)
 
     def _II_super_smaller(self, x):
-        return x - a_xi - x*np.log(x/self.b_zeta)
+        return x - self.a_zeta - x*np.log(x/self.b_zeta)
 
     def _scalar_super_smaller_radius_mass(self, x):
         if x >= self.a_zeta:
@@ -3190,7 +3286,7 @@ module += (
         except AttributeError:
             self._modded_names = [name.replace('__', '_') for name in ref.names]
 
-        for modded_name, name in zip(self._modded_names, ref.names):
+        for modded_name, name in list(zip(self._modded_names, ref.names)):
             if getattr(args, modded_name + '_prior', None) is not None:
                 idx = ref.index(name)
                 x = hypercube[idx]
@@ -3281,7 +3377,7 @@ if len(args.hot_region_model) == 2 and not args.antipodal_reflection_symmetry:
 module += (
 '''
         # restore proper cache
-        for parameter, cache in zip(self.parameters, to_cache):
+        for parameter, cache in list(zip(self.parameters, to_cache)):
             parameter.cached = cache
 
         # it is important that we return the desired vector because it is
@@ -3292,13 +3388,13 @@ module += (
 
 module += (
 '''
-    def transform(self, p):
+    def transform(self, p, **kargs):
         """ A transformation for post-processing. """
 
         p = list(p) # copy
 
         # used ordered names and values
-        ref = dict(zip(self.parameters.names, p))
+        ref = dict(list(zip(self.parameters.names, p)))
 
         # compactness ratio M/R_eq
         p += [gravradius(ref['mass']) / ref['radius']]
@@ -3309,11 +3405,9 @@ module += (
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_prior_module)), module)
 
-
+# Creating Interstellar module
 module = (
 '''""" Interstellar module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import numpy as np
 import math
@@ -3395,10 +3489,9 @@ for _x in args.instrument[1:-1]:
     _instruments += ', {}'.format(_x)
 _instruments += ', and {}'.format(args.instrument[-1])
 
+# Creating Instrument module
 module = (
 '''""" Instrument module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import numpy as np
 import math
@@ -3548,10 +3641,9 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_instr
 if not args.background_model:
     sys.exit(0)
 
+# Creating Background module
 module = (
 '''""" Background module for X-PSI {0} modelling of {1} {2} event data. """
-
-from __future__ import print_function, division
 
 import numpy as np
 import math

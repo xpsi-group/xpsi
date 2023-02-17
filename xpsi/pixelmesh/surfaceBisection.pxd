@@ -1,4 +1,4 @@
-from geometricConfiguration cimport _GEOM
+from .geometricConfiguration cimport _GEOM
 
 cdef double RADIUS(double x, double epsilon, double zeta) nogil
     

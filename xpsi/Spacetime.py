@@ -1,12 +1,9 @@
-from __future__ import division, print_function
+from xpsi.global_imports import *
 
-from .global_imports import *
-from . import global_imports
+from xpsi.utils import make_verbose
 
-from . import make_verbose
-
-from .Parameter import Parameter
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class Spacetime(ParameterSubspace):
     """ The ambient Schwarzschild spacetime and Earth coordinates.
@@ -38,6 +35,10 @@ class Spacetime(ParameterSubspace):
                       'cos_inclination']
 
     def __init__(self, bounds, values):
+
+
+        if not isinstance(bounds, dict) or not isinstance(values, dict):
+             raise TypeError("Both bounds and values need to be dictionaries.")
 
         f = Parameter('frequency',
                       strict_bounds = (0.0, 800.0),
@@ -75,29 +76,6 @@ class Spacetime(ParameterSubspace):
                          value = values.get('cos_inclination', None))
 
         super(Spacetime, self).__init__(f, M, R, D, cosi)
-
-    @classmethod
-    @make_verbose('Configuring default bounds with fixed spin',
-                  'Spacetime configured')
-    def fixed_spin(cls, frequency):
-        """
-        :param float frequency:
-            The fixed coordinate spin frequency in Hz.
-
-        .. note::
-
-            The degeneracy due to equatorially-reflection symmetric physics
-            is eliminated here by declaring prior support for Earth inclination
-            from northern rotation pole to equatorial plane.
-
-        """
-
-        bounds = dict(mass = (1.0, 3.0),
-                      radius = (gravradius(1.0), 16.0),
-                      distance = (0.05, 2.0),
-                      cos_inclination = (0.0, 1.0))
-
-        return cls(bounds, dict(frequency = frequency))
 
     @property
     def M(self):

@@ -1,5 +1,3 @@
-from __future__ import division, print_function
-
 __all__ = ["make_verbose",
            "verbose",
            "fragile",
@@ -35,8 +33,9 @@ __all__ = ["make_verbose",
 
 from abc import ABCMeta, abstractmethod
 
-from ..global_imports import *
-from .. import make_verbose, verbose, fragile, _warning, _verbose
+from xpsi.global_imports import *
+from xpsi import _warning, _verbose
+from xpsi.utils import make_verbose, verbose, fragile
 
 import wrapt
 
@@ -68,13 +67,6 @@ else:
     if _verbose:
         print('Imported GetDist version: %s' % getdist.__version__)
 
-    _expected_version = '0.3.1'
-    if getdist.__version__ != _expected_version:
-        if _verbose:
-            _warning('The PostProcessing module is compatible with a specific '
-                     'GetDist commit, with version %s, so this module will '
-                     'likely not work as intended.' % _expected_version)
-
     # the following disables getdist.chains.print_load_details
     getdist.chains.print_load_details = False
 
@@ -86,13 +78,6 @@ except ImportError:
 else:
     if _verbose:
         print('Imported nestcheck version: %s' % nestcheck.__version__)
-
-    _expected_version = '0.2.0'
-    if nestcheck.__version__ != _expected_version:
-        if _verbose:
-            _warning('The PostProcessing module is compatible with a specific '
-                     'nestcheck commit, with version %s, so this module will '
-                     'likely not work as intended.' % _expected_version)
 
 class AmbiguityError(xpsiError):
     """ Thrown if ambiguous IDs are declared for objects. """

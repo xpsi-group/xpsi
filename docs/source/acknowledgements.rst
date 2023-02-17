@@ -1,7 +1,7 @@
 .. _acknowledgements:
 
-Acknowledgements
-----------------
+Team and acknowledgements
+-------------------------
 
 Below we acknowledge people who have contributed explicitly and implicitly
 to the development of X-PSI. If you wish to have your name removed, please
@@ -13,70 +13,53 @@ for team members to ease maintainability.
 
 .. _team:
 
-Team
-~~~~
+Core team
+~~~~~~~~~
 
-The X-PSI team may be contacted privately at *xpsi-team[at]googlegroups.com*.
+Those involved in maintenance and development (technical and scientific).
 
-**Project maintainers**
-
-* Thomas E. Riley (t.e.riley[at]uva.nl), University of Amsterdam
-
-**Active developers**
-
-Requirement is to have added a feature to latest major version.
-
-* Thomas E. Riley
-
-**Experienced users**
-
-People who are experienced with the X-PSI package.
+**Current active members**
 
 * Devarshi Choudhury (d.choudhury[at]uva.nl), University of Amsterdam
+* Bas Dorsman (b.dorsman[at]uva.nl), University of Amsterdam
+* Sebastien Guillot (sebastien.guillot[at]irap.omp.eu), IRAP
+* Daniela Huppenkothen (d.huppenkothen[at]sron.nl), SRON
+* Yves Kini (y.kini[at]uva.nl), University of Amsterdam
+* Tuomo Salmi (t.h.j.salmi[at]uva.nl), University of Amsterdam
 * Serena Vinciguerra (s.vinciguerra[at]uva.nl), University of Amsterdam
-* Tuomo Salmi (t.h.j.salmi[at]uva.nl)
-* Yves Kini (y.kini[at]uva.nl)
+* Anna Watts (a.l.watts[at]uva.nl), University of Amsterdam
 
-**Science Case developers**
+**Past members**
 
-The grant-holding architects of past, present, and future X-PSI science.
+Thomas E. Riley (t.riley.phd[at]gmail.com), the Initial Creator of X-PSI
 
-* Anna L. Watts (A.L.Watts[at]uva.nl), University of Amsterdam
-
-**Past developers**
-
-Requirement is to have added a feature to previous major version.
-
-*
 
 .. _community:
 
 Community
 ~~~~~~~~~
 
-**Contributor group one**
+Folks who have used X-PSI in their research or engaged with the team during
+development and science analysis, thereby prompting fixes or
+improvements.
 
-Explicit engagement, testing (including contribution of patches explicitly or
-implicitly), and (optionally) direct application to their research.
-
-* Devarshi Choudhury
-* Serena Vinciguerra
-* Sebastien Guillot
+* Matteo Bacchetti
 * Anna Bilous
-* Tuomo Salmi
-* Yves Kini
+* Erik Bootsma
+* Johannes Buchner
+* Yuri Cavecchi
+* Frank Chambers
+* Alex Chen
+* Julia Deneva
+* Siem Fenne
+* Gwénaël Loyer
+* Geert Raaijmakers
+* Paul Ray
+* Evert Rol
+* Rahul Silié
 * Emma van der Wateren
 * Bob de Witte
-
-**Contributor group two**
-
-Intellectual contribution & engagement (explicit and/or implicit).
-
-* Yuri Cavecchi
-* Geert Raaijmakers
 * The NICER collaboration
-* Alex Chen
-* Frank Chambers
 
 **Miscellaneous**
 
@@ -93,7 +76,7 @@ direction of this project or led to some specific improvements.
   and about model space definitions)
 * Will M. Farr (for ideas to accelerate likelihood function evaluation; WIP)
 * Sam Geen (for expanding support to include Windows OS)
-
+* Martin Heemskerk, Jeroen Roodhart and the SurfSARA servicedesk (for help with HPC issues).
 
 Literature
 ~~~~~~~~~~
@@ -101,9 +84,10 @@ Literature
 This project is built upon the work of many researchers in many fields. For
 citations to (astro)physics and (astro)statistics literature, please see the
 technical documents pointed to in the :ref:`citation` section. Moreover, we
-point to the bibliograpy of :ref:`R19` as the first published application of
+point to the bibliograpy of `Riley et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_ as the first published application of
 the X-PSI package, and to the `ApJL Focus Issue <https://iopscience.iop.org/journal/2041-8205/page/Focus_on_NICER_Constraints_on_the_Dense_Matter_Equation_of_State>`_
-of which this article is a member.
+of which this article is a member. For other scientific papers that have used 
+X-PSI see :ref:`applications`.
 
 
 .. _funding:
@@ -111,5 +95,6 @@ of which this article is a member.
 Funding
 ~~~~~~~
 
-T.E.R. and A.L.W. acknowledge support from ERC Starting Grant No. 639217
-CSINEUTRONSTAR and ERC Consolidator Grant No. 865768 AEONS.
+Development of X-PSI has been funded by two ERC Grants (PI Anna Watts), 
+ERC Starting Grant No. 639217 CSINEUTRONSTAR and ERC Consolidator 
+Grant No. 865768 AEONS.

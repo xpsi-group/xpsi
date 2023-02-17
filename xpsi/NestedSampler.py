@@ -1,12 +1,9 @@
-from __future__ import division, print_function
 
-from .global_imports import *
-import global_imports
+from xpsi import _verbose
+from xpsi.utils import make_verbose
 
-from . import make_verbose, _verbose
-
-from .Likelihood import Likelihood
-from .Prior import Prior
+from xpsi.Likelihood import Likelihood
+from xpsi.Prior import Prior
 
 try:
     import pymultinest

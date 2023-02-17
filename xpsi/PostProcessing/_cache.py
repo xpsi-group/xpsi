@@ -1,5 +1,3 @@
-from __future__ import division, print_function
-
 from .. import __version__
 
 from ._global_imports import *
@@ -60,9 +58,9 @@ class _Cache(object):
 
         with self._open('r+') as f:
             g = f['data']
-            for key, value in data.iteritems():
+            for key, value in data.items():
                 if isinstance(value, tuple) or isinstance(value, list):
-                    if key not in g.keys():
+                    if key not in list(g.keys()):
                         shape = [f.attrs['n'], len(value)]
                         shape += [s for s in value[0].shape]
                         g.create_dataset(key, shape=shape, dtype='float64')
@@ -70,7 +68,7 @@ class _Cache(object):
                     for j, v in enumerate(value):
                         g[key][self.i,j,...] = v
                 else:
-                    if key not in g.keys():
+                    if key not in list(g.keys()):
                         shape = [f.attrs['n']] + [s for s in value.shape]
                         g.create_dataset(key, shape=shape, dtype='float64')
 
@@ -100,10 +98,6 @@ class _Cache(object):
 
         return cached
 
-    def next(self):
-        """ Python 2.x compatibility. """
-        return self.__next__()
-
     @make_verbose('Checking whether an existing cache can be read:',
                   'Cache state determined')
     def do_caching(self, samples, force=False):
@@ -119,7 +113,7 @@ class _Cache(object):
 
         try: # try reading file and checking keys
             with self._open('r') as f:
-                if 'thetas' not in f.keys():
+                if 'thetas' not in list(f.keys()):
                     self._new(samples)
                     return True
         except IOError: # create new cache file

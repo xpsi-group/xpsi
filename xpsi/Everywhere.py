@@ -1,13 +1,11 @@
-from __future__ import division, print_function
 
-from .global_imports import *
-from . import global_imports
+from xpsi.global_imports import *
 
-from .cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed_cellMesh
-from .cellmesh.rays import compute_rays as _compute_rays
+from xpsi.cellmesh.global_mesh import construct_closed_cellMesh as _construct_closed_cellMesh
+from xpsi.cellmesh.rays import compute_rays as _compute_rays
 
-from .Parameter import Parameter
-from .ParameterSubspace import ParameterSubspace
+from xpsi.Parameter import Parameter
+from xpsi.ParameterSubspace import ParameterSubspace
 
 class RayError(xpsiError):
     """ Raised if a problem was encountered during ray integration. """
@@ -43,7 +41,9 @@ class Everywhere(ParameterSubspace):
         of a temperature parameter. The parameter name
         ``'temperature'`` must be a key in the dictionary unless the
         parameter is *fixed* or *derived*. If a bound is ``None`` that bound
-        is set equal to a strict hard-coded bound.
+        is set equal to a strict hard-coded bound. We note that the bounds for
+        parameters used in the atmosphere model should be restricted (by the user)
+        to be within the tabulated values, in case a numerical atmosphere extension is used.
 
     :param dict values:
         Either the fixed value of the temperature, a callable if the
@@ -142,7 +142,7 @@ class Everywhere(ParameterSubspace):
 
         if not custom: # setup default temperature parameter
             T = Parameter('temperature',
-                          strict_bounds = (3.0, 7.0), # very cold --> very hot
+                          strict_bounds = (3.0, 7.6), # very cold --> very hot
                           bounds = bounds.get('temperature', None),
                           doc = 'log10(effective temperature [K] everywhere)',
                           symbol = r'$\log_{10}(T\;[\rm{K}])$',
@@ -183,13 +183,13 @@ class Everywhere(ParameterSubspace):
         # find the required integrator
         if invariant: # can we safely assume azimuthal invariance?
             self._time_invariant = True
-            from .cellmesh.integrator_for_time_invariance import integrate as _integrator
+            from xpsi.cellmesh.integrator_for_time_invariance import integrate as _integrator
         else: # more general purpose
             self._time_invariant = False
             if not self._integrator_toggle:
-                from .cellmesh.integrator import integrate as _integrator
+                from xpsi.cellmesh.integrator import integrate as _integrator
             else:
-                from .cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+                from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
         self._integrator = _integrator
 
     @property
@@ -250,7 +250,7 @@ class Everywhere(ParameterSubspace):
             return self._rayXpanda_defl_lim
         except AttributeError:
             try:
-                from .cellmesh import __rayXpanda_defl_lim__
+                from xpsi.cellmesh import __rayXpanda_defl_lim__
             except ImportError:
                 return None
             else:

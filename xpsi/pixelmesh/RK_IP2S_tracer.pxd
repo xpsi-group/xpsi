@@ -1,5 +1,5 @@
 from GSL cimport gsl_odeiv2_step, gsl_odeiv2_control, gsl_odeiv2_evolve, gsl_odeiv2_system
-from geometricConfiguration cimport _GEOM
+from .geometricConfiguration cimport _GEOM
 
 ctypedef struct _RAY:
     double AFFINE
