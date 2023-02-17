@@ -343,67 +343,65 @@ class Likelihood(ParameterSubspace):
             for signal in signals:
                 if star_updated or signal.needs_update:
                     if signal.isI:
-		            signal.register(tuple(
-		                             tuple(self._divide(component,
-		                                            self._star.spacetime.d_sq)
-		                                   for component in hot_region)
-		                             for hot_region in photosphere.signal),
-		                       fast_mode=fast_mode, threads=self.threads)
-		    elif signal.isQ:
-		            signal.register(tuple(
-		                             tuple(self._divide(component,
-		                                            self._star.spacetime.d_sq)
-		                                   for component in hot_region)
-		                             for hot_region in photosphere.signalQ),
-		                       fast_mode=fast_mode, threads=self.threads)
-		    elif signal.isU:
-		            signal.register(tuple(
-		                             tuple(self._divide(component,
-		                                            self._star.spacetime.d_sq)
-		                                   for component in hot_region)
-		                             for hot_region in photosphere.signalU),
-		                       fast_mode=fast_mode, threads=self.threads)
-		    elif signal.isQn:		    
-		            signal.register(tuple(
-		                             tuple(self._divide(component,
-		                                            self._star.spacetime.d_sq)
-		                                   for component in hot_region)
-		                             for hot_region in photosphere.signalQ),
-		                       fast_mode=fast_mode, threads=self.threads)
-		            Qsignal = signal.signals 
-		            signal.register(tuple(
-		                             tuple(self._divide(component,
-		                                            self._star.spacetime.d_sq)
-		                                   for component in hot_region)
-		                             for hot_region in photosphere.signal),
-		                       fast_mode=fast_mode, threads=self.threads)
-		            Isignal = signal.signals
-                            for ihot in range(len(photosphere.signalQ)):
-		                signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Qsignal[ihot]/Isignal[ihot])
-		    elif signal.isUn:
-		            signal.register(tuple(
-		                             tuple(self._divide(component,
-		                                            self._star.spacetime.d_sq)
-		                                   for component in hot_region)
-		                             for hot_region in photosphere.signalU),
-		                       fast_mode=fast_mode, threads=self.threads)
-		            Usignal = signal.signals 
-		            signal.register(tuple(
-		                             tuple(self._divide(component,
-		                                            self._star.spacetime.d_sq)
-		                                   for component in hot_region)
-		                             for hot_region in photosphere.signal),
-		                       fast_mode=fast_mode, threads=self.threads)
-		            Isignal = signal.signals
-                            for ihot in range(len(photosphere.signalU)):
-                                signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Usignal[ihot]/Isignal[ihot])
-		    else:
-		        raise TypeError('Signal type must be either I, Q, U, Qn, or Un.')
-		                       
+                        signal.register(tuple(
+                                         tuple(self._divide(component,
+                                                      self._star.spacetime.d_sq)
+                                               for component in hot_region)
+                                         for hot_region in photosphere.signal),
+                                    fast_mode=fast_mode, threads=self.threads)
+                    elif signal.isQ:
+                        signal.register(tuple(
+                                         tuple(self._divide(component,
+                                                      self._star.spacetime.d_sq)
+                                               for component in hot_region)
+                                         for hot_region in photosphere.signalQ),
+                                    fast_mode=fast_mode, threads=self.threads)
+                    elif signal.isU:
+                        signal.register(tuple(
+                                         tuple(self._divide(component,
+                                                      self._star.spacetime.d_sq)
+                                               for component in hot_region)
+                                         for hot_region in photosphere.signalU),
+                                    fast_mode=fast_mode, threads=self.threads)
+                    elif signal.isQn:
+                        signal.register(tuple(
+                                         tuple(self._divide(component,
+                                                      self._star.spacetime.d_sq)
+                                               for component in hot_region)
+                                         for hot_region in photosphere.signalQ),
+                                    fast_mode=fast_mode, threads=self.threads)
+                        Qsignal = signal.signals
+                        signal.register(tuple(
+                                         tuple(self._divide(component,
+                                                      self._star.spacetime.d_sq)
+                                               for component in hot_region)
+                                         for hot_region in photosphere.signal),
+                                    fast_mode=fast_mode, threads=self.threads)
+                        Isignal = signal.signals
+                        for ihot in range(len(photosphere.signalQ)):
+                            signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Qsignal[ihot]/Isignal[ihot])
+                    elif signal.isUn:
+                        signal.register(tuple(
+                                         tuple(self._divide(component,
+                                                      self._star.spacetime.d_sq)
+                                               for component in hot_region)
+                                         for hot_region in photosphere.signalU),
+                                    fast_mode=fast_mode, threads=self.threads)
+                        Usignal = signal.signals
+                        signal.register(tuple(
+                                         tuple(self._divide(component,
+                                                      self._star.spacetime.d_sq)
+                                               for component in hot_region)
+                                         for hot_region in photosphere.signal),
+                                    fast_mode=fast_mode, threads=self.threads)
+                        Isignal = signal.signals
+                        for ihot in range(len(photosphere.signalU)):
+                            signal._signals[ihot]=_np.where(Isignal[ihot]==0.0, 0.0, Usignal[ihot]/Isignal[ihot])
+                    else:
+                        raise TypeError('Signal type must be either I, Q, U, Qn, or Un.')
                     reregistered = True
                 else:
                     reregistered = False
-
                 if not fast_mode and reregistered:
                     if synthesise:
                         hot = photosphere.hot

@@ -1301,6 +1301,6 @@ class HotRegion(ParameterSubspace):
                                  'pulse integration.')
             else:
                 return (super_pulse[1], cede_pulse[1]), (super_pulse_Q[1], cede_pulse_Q[1]), (super_pulse_U[1], cede_pulse_U[1])
-	return (super_pulse[1],), (super_pulse_Q[1],), (super_pulse_U[1],)      
+        return (super_pulse[1],), (super_pulse_Q[1],), (super_pulse_U[1],)
 
 HotRegion._update_doc()
