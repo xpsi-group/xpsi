@@ -23,6 +23,8 @@ try:
     parser.add_argument('--NumHot', help="Numerical atmosphere for the hot region(s)", default=False, action="store_true")
     parser.add_argument('--NumElse', help="Numerical atmosphere for the rest of the surface", default=False, action="store_true")
     parser.add_argument('--NumHotBeam',help="Numerical atmosphere for the hot region(s) including free beaming", default=False, action="store_true")
+    parser.add_argument('--HotPol',help="Analytical atmosphere including polarimetry", default=False, action="store_true")
+    parser.add_argument('--NumHotPol',help="Numerical atmosphere including polarimetry", default=False, action="store_true")
     parser.add_argument('--noopenmp', help="Ignore the openmp install options", default=False, action="store_true")
     # parser.add_argument('--ComptHot', help="Compton emission model for the hot region(s)", default=False, action="store_true")
     # parser.add_argument('--ComptElse', help="Compton emission model for the rest of the surface", default=False, action="store_true")
@@ -47,6 +49,14 @@ try:
         print("Copying numerical atmosphere for the hot region(s)")
         shutil.copy('xpsi/surface_radiation_field/archive/hot/numerical_fbeam.pyx', 'xpsi/surface_radiation_field/hot.pyx')
         sys.argv.remove("--NumHotBeam")
+    if '--HotPol' in sys.argv:
+        print("Copying numerical atmosphere for the hot region(s)")
+        shutil.copy('xpsi/surface_radiation_field/archive/hot/hot_bb.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+        sys.argv.remove("--HotPol")
+    if '--NumHotPol' in sys.argv:
+        print("Copying numerical atmosphere for the hot region(s)")
+        shutil.copy('xpsi/surface_radiation_field/archive/hot/hot_numerical_2D.pyx', 'xpsi/surface_radiation_field/hot.pyx')
+        sys.argv.remove("--NumHotPol")
     # if '--ComptHot' in sys.argv:
     #     print("Copying Compton emission model for the hot region(s)")
     #     shutil.copy('xpsi/surface_radiation_field/archive/hot/compton.pyx', 'xpsi/surface_radiation_field/hot.pyx')
