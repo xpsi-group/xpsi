@@ -6,9 +6,6 @@ import xpsi
 
 np.random.seed(xpsi._rank+10)
 
-import sys
-sys.path.append('../../examples/examples_fast/Modules/')
-
 from CustomInstrument import CustomInstrument
 from CustomSignal import CustomSignal
 from CustomPhotosphere import CustomPhotosphere
