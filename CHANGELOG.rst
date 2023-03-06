@@ -33,6 +33,19 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
+
+[pre-v2.0.1] - 2023-03-06
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Added
+^^^^^
+* Continuous integration test for checking the likelihood
+
+Attribution
+^^^^^^^^^^^
+Tuomo Salmi
+
+
 [v2.0.0] - 2023-02-16
 ~~~~~~~~~~~~~~~~~~~~~
 
