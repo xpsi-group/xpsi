@@ -262,7 +262,7 @@ class TestLikelihoodCheck(object):
         try:
             data_loaded = np.loadtxt('../../examples/examples_fast/Data/xpsi_good_realisation.dat', dtype=np.double)
         except:
-            data_loaded = np.loadtxt('file:./examples/examples_fast/Data/xpsi_good_realisation.dat', dtype=np.double)
+            data_loaded = np.loadtxt('./examples/examples_fast/Data/xpsi_good_realisation.dat', dtype=np.double)
 
         data = xpsi.Data(data_loaded,
 	                         channels=np.arange(10,301),
