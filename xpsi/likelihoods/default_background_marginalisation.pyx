@@ -85,10 +85,12 @@ cdef double marginal_integrand(double B, void *params) nogil:
 
     for j in range(a.n):
         c = a.SCALE * (a.star[j] + B)
-        if c == 0.0 and a.data[j] == 0.0:
-            x += 1.0
-        else:
+        if c > 0.0:
             x += a.data[j] * log(c) - c
+        elif c == 0.0 and a.data[j] == 0.0:
+            pass  #x += log(1) = 0
+        else:
+            return 0.0 #x += log(0) -> return exp(-inf)
 
     #with gil:
     #    if x - a.A > 0.0:
@@ -495,10 +497,12 @@ def eval_marginal_likelihood(double exposure_time,
             a.A = 0.0
             for j in range(a.n):
                 c = a.SCALE * (a.star[j] + B_for_integrand)
-                if c == 0.0 and a.data[j] == 0.0:
-                    a.A += 1.0
-                else:
+                if c > 0.0:
                     a.A += a.data[j] * log(c) - c
+                elif c == 0.0 and a.data[j] == 0.0:
+                    pass  #a.A += log(1)
+                else:
+                    a.A += llzero #a.A += log(0)
 
             gsl_integration_cquad(&f, lower, upper,
                                   epsabs, epsrel,
