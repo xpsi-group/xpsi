@@ -34,16 +34,28 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[pre-v2.0.1] - 2023-03-06
-~~~~~~~~~~~~~~~~~~~~~~~~~
+[v2.0.1] - 2023-03-30
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Numerical problems in likelihood computation were fixed for cases with zero counts, preventing also the code from being incorrectly optimized on Intel CPUs when using Intel compilers (producing incorrect GSL integration results and likelihoods). For the tested cases, the effect of these fixes seems non-detectable for the results in the systems where the optimization was already working correctly. In addition, a likelihood check was added as a part of continous integration tests.
+
+Fixed
+^^^^^
+
+* Treatment of the special cases in the likelihood computation in ``xpsi/likelihoods/default_background_marginalisation.pyx`` was changed so that taking the logarithm of zero is not allowed anymore. Previously, that could happen if the modelled counts were zero, but the observed counts were not. In addition, in case they both are zero, we now add 0 (i.e., log(1)) to the log-likelihood, instead of 1 added before. (T.S., E.R., M.H.)
 
 Added
 ^^^^^
-* Continuous integration test for checking the likelihood
+* Continuous integration test for checking the likelihood (T.S.)
 
 Attribution
 ^^^^^^^^^^^
-Tuomo Salmi
+Tuomo Salmi,
+Evert Rol,
+Martin Heemskerk
 
 
 [v2.0.0] - 2023-02-16
