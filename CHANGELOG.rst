@@ -40,7 +40,7 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* Numerical problems in likelihood computation were fixed for cases with zero counts, preventing also the code from being incorrectly optimized on Intel CPUs when using Intel compilers (producing incorrect GSL integration results and likelihoods). For the tested cases, the effect of these fixes seems non-detectable for the results in the systems where the optimization was already working correctly. In addition, a likelihood check was added as a part of continous integration tests.
+* Numerical problems in likelihood computation were fixed for cases with zero counts, preventing also the code from being incorrectly optimized on Intel CPUs when using Intel compilers (producing incorrect GSL integration results and likelihoods). For the tested cases, the effect of these fixes seems non-detectable for the results in the systems where the optimization was already working correctly. In addition, a likelihood check was added as a part of continuous integration tests.
 
 Fixed
 ^^^^^
