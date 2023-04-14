@@ -134,6 +134,7 @@ primary = xpsi.HotRegion(bounds=bounds,
 	                    max_sqrt_num_cells=64,
 	                    num_leaves=100,
 	                    num_rays=200,
+	                    atm_ext=1,
 	                    prefix='p')
 
 class derive(xpsi.Derive):
@@ -169,6 +170,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
 	                      num_leaves=100,
 	                      num_rays=200,
 	                      do_fast=False,
+	                      atm_ext=1,
 	                      is_antiphased=True,
 	                      prefix='s')
 

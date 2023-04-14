@@ -139,6 +139,7 @@ primary =  CustomHotRegion(bounds=bounds,
 	                    num_leaves=100,
 	                    num_rays=200,                            
                             fbeam=True,
+                            atm_ext=2,
                             prefix='p')
               	                    
 bounds['super_abb'] = None  
@@ -195,6 +196,7 @@ secondary =  CustomHotRegion(bounds=bounds,
 	                    do_fast=False,
 	                    is_antiphased=True,
                             fbeam=True,
+                            atm_ext=2,
                             prefix='s')	                      
 
 

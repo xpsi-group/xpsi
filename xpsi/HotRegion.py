@@ -234,6 +234,7 @@ class HotRegion(ParameterSubspace):
                  fast_num_phases = None,
                  fast_phases = None,
                  is_antiphased = False,
+                 atm_ext=1,
                  custom = None,
                  image_order_limit = None,
                  **kwargs):
@@ -255,6 +256,8 @@ class HotRegion(ParameterSubspace):
         self.image_order_limit = image_order_limit
 
         self.symmetry = symmetry
+
+        self.atm_ext = atm_ext
 
         # first the parameters that are fundemental to this class
         doc = """
@@ -690,6 +693,15 @@ class HotRegion(ParameterSubspace):
         """ Shift the hot region by half a rotational cycle? """
         return self._is_antiphased
 
+    @property
+    def atm_ext(self):
+        """ ... """
+        return self._atm_ext
+
+    @atm_ext.setter
+    def atm_ext(self,extension):
+        self._atm_ext = extension
+
     @is_antiphased.setter
     def is_antiphased(self, is_antiphased):
         if not isinstance(is_antiphased, bool):
@@ -1102,6 +1114,7 @@ class HotRegion(ParameterSubspace):
                                        phases,
                                        hot_atmosphere,
                                        elsewhere_atmosphere,
+                                       self.atm_ext,
                                        self._image_order_limit)
 
         if super_pulse[0] == 1:

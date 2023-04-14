@@ -49,10 +49,10 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
                                                    free_preload)
 
-from xpsi.surface_radiation_field.hot cimport (init_hot,
-                                               eval_hot,
-                                               eval_hot_norm,
-                                               free_hot)
+from xpsi.surface_radiation_field.hot_wrapper cimport (init_hot,
+                                                     free_hot,
+                                                     eval_hot,
+                                                     eval_hot_norm)
 
 from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
                                                      free_elsewhere,
@@ -85,6 +85,7 @@ def integrate(size_t numThreads,
               double[::1] phases,
               hot_atmosphere,
               elsewhere_atmosphere,
+              atm_ext,
               image_order_limit = None):
 
     # check for rayXpanda explicitly in case of some linker issue
@@ -240,11 +241,13 @@ def integrate(size_t numThreads,
     cdef void *hot_data = NULL
     cdef void *ext_data = NULL
 
+    cdef size_t _atm_ext = atm_ext
+
     if hot_atmosphere:
         hot_preloaded = init_preload(hot_atmosphere)
-        hot_data = init_hot(N_T, hot_preloaded)
+        hot_data = init_hot(N_T, hot_preloaded, _atm_ext)
     else:
-        hot_data = init_hot(N_T, NULL)
+        hot_data = init_hot(N_T, NULL, _atm_ext)
 
     cdef double[:,:,::1] correction
     cdef int perform_correction
