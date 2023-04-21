@@ -241,13 +241,11 @@ def integrate(size_t numThreads,
     cdef void *hot_data = NULL
     cdef void *ext_data = NULL
 
-    cdef size_t _atm_ext = atm_ext
-
     if hot_atmosphere:
         hot_preloaded = init_preload(hot_atmosphere)
-        hot_data = init_hot(N_T, hot_preloaded, _atm_ext)
+        hot_data = init_hot(N_T, hot_preloaded, atm_ext)
     else:
-        hot_data = init_hot(N_T, NULL, _atm_ext)
+        hot_data = init_hot(N_T, NULL, atm_ext)
 
     cdef double[:,:,::1] correction
     cdef int perform_correction

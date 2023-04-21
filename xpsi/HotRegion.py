@@ -234,7 +234,7 @@ class HotRegion(ParameterSubspace):
                  fast_num_phases = None,
                  fast_phases = None,
                  is_antiphased = False,
-                 atm_ext=1,
+                 atm_ext="BB",
                  custom = None,
                  image_order_limit = None,
                  **kwargs):
@@ -700,7 +700,13 @@ class HotRegion(ParameterSubspace):
 
     @atm_ext.setter
     def atm_ext(self,extension):
-        self._atm_ext = extension
+        if extension=="BB":
+            self._atm_ext = 1
+        elif extension=="NumBeam":
+            self._atm_ext = 2
+        else:
+            raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
+                            'atmosphere options are at the moment "BB" and "NumBeam".')
 
     @is_antiphased.setter
     def is_antiphased(self, is_antiphased):
