@@ -44,7 +44,7 @@ ctypedef struct DATA:
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_hot2(size_t numThreads, const _preloaded *const preloaded) nogil:
+cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) nogil:
     # This function must match the free management routine free_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -133,7 +133,7 @@ cdef void* init_hot2(size_t numThreads, const _preloaded *const preloaded) nogil
     return <void*> D
 
 
-cdef int free_hot2(size_t numThreads, void *const data) nogil:
+cdef int free_hot_Num4D(size_t numThreads, void *const data) nogil:
     # This function must match the initialisation routine init_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -172,8 +172,7 @@ cdef int free_hot2(size_t numThreads, void *const data) nogil:
 # >>> Improve acceleration properties... i.e. do not recompute numerical
 # ... weights or re-read intensities if not necessary.
 #----------------------------------------------------------------------->>>
-cdef double eval_hot_interp(size_t THREAD,
-#cdef double eval_hot(size_t THREAD,
+cdef double eval_hot_Num4D(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -345,84 +344,8 @@ cdef double eval_hot_interp(size_t THREAD,
     if I < 0.0:
         return 0.0	
     return I * pow(10.0, 3.0 * vec[0])
-    #return I_bc
 
-
-#Normalization constant for the beaming correction calculated here:
-cdef double eval_hot2(size_t THREAD,
-                     double E,
-                     double mu,
-                     const double *const VEC,
-                     void *const data) nogil:
-
-    cdef:
-        double I_hot=0.0
-        double I_nsx=0.0
-        double I_nsx_imu=0.0
-        double I_fbeam_imu=0.0
-        double I_nom=0.0
-        double I_denom=0.0
-        double I_denom_test=0.0        
-        double mu_imu=0.0
-        double dmu=0.0
-        double anorm=0.0
-        double VEC_red[2],
-        #size_t nimu = 100 #1000
- 
-    abb = VEC[1]
-    bbb = VEC[2]
-    cbb = VEC[3]
-    dbb = VEC[4] 
-    emodel = VEC[5] 
-    nimu = VEC[6] 
-    
-    #Checking if calling using a non-customized HotRegion:
-    if emodel != 0 and emodel != 1 and emodel != 2 and emodel != 3:
-        emodel = 0     
-        VEC_red[0] = VEC[0]
-        VEC_red[1] = VEC[1] 
-    else:                                                                               
-        VEC_red[0] = VEC[0]
-        VEC_red[1] = VEC[7] 
-        	
-        
-    cdef size_t imu                   
-   
-    I_nsx = eval_hot_interp(THREAD,E,mu,VEC_red,data) 
-    
-    if emodel==0:
-        return I_nsx
-    if emodel==1:
-        I_hot = (1.0+abb*((E)**cbb)*mu+bbb*((E)**dbb)*mu**2)*I_nsx
-    if emodel==2:
-        anorm = 0.5/(0.5+(1.0/3.0)*abb*E**cbb+(1.0/4.0)*bbb*E**dbb)
-        I_hot = anorm*(1.0+abb*((E)**cbb)*mu+bbb*((E)**dbb)*mu**2)*I_nsx   
-    if emodel==3:          
-        #integral using trapezoidal rule (consider changing to Gauss quadrature)          
-        for imu in range(<size_t> nimu):
-            mu_imu = mu_imu+(1.0/nimu)
-            if imu==0 or imu==nimu-1:
-                    dmu = (0.5/nimu)
-            else:
-                    dmu = (1.0/nimu)          
-            I_nsx_imu = eval_hot_interp(THREAD,E,mu_imu,VEC_red,data)      
-            I_fbeam_imu =  (1.0+abb*((E)**cbb)*mu_imu+bbb*((E)**dbb)*mu_imu**2)
-            I_denom = I_denom + mu_imu*I_fbeam_imu*I_nsx_imu*dmu
-            I_nom = I_nom + mu_imu*I_nsx_imu*dmu
-            #I_denom_test = I_denom_test + mu_imu*dmu
-            #printf("%d,%.8e,%.8e,%.8e,%.8e,%.8e\n",imu,mu_imu,dmu,I_denom,I_denom_test,I_denom_test*I_nsx_imu)            
-        if I_denom == 0.0:
-            I_hot = 0.0
-        else:
-            I_hot = (I_nom/I_denom)*(1.0+abb*((E)**cbb)*mu+bbb*((E)**dbb)*mu**2)*I_nsx 
-
-    #printf("Normalization constant: %.8e, %.8e, %.8e\n",I_hot, I_nom, I_denom) 
-    if I_hot < 0.0:
-        return 0.0              
-    return I_hot
-
-
-cdef double eval_hot_norm2() nogil:
+cdef double eval_hot_norm_Num4D() nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.

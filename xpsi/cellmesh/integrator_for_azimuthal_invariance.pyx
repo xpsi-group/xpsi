@@ -86,6 +86,7 @@ def integrate(size_t numThreads,
               hot_atmosphere,
               elsewhere_atmosphere,
               atm_ext,
+              beam_opt,
               image_order_limit = None):
 
     # check for rayXpanda explicitly in case of some linker issue
@@ -153,6 +154,7 @@ def integrate(size_t numThreads,
         double _phase_lag
         double _specific_flux
         size_t _InvisPhase
+        size_t _beam_opt = beam_opt
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -437,7 +439,8 @@ def integrate(size_t numThreads,
                                                    E_prime,
                                                    _ABB,
                                                    &(srcCellParams[i,J,0]),
-                                                   hot_data)
+                                                   hot_data,
+                                                   _beam_opt)
 
                                     if perform_correction == 1:
                                         correction_I_E = eval_elsewhere(T,
