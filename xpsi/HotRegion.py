@@ -1082,7 +1082,7 @@ class HotRegion(ParameterSubspace):
             self._concentric = concentric
 
     def integrate(self, st, energies, threads,
-                  hot_atmosphere, elsewhere_atmosphere):
+                  hot_atmosphere, elsewhere_atmosphere, atm_ext_else):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
@@ -1122,6 +1122,10 @@ class HotRegion(ParameterSubspace):
         else:
             super_energies = cede_energies = energies
 
+        #if self.atm_ext==2:
+        #if hot_atmosphere == ():
+        #    print("It is not there!")
+
         super_pulse = self._integrator(threads,
                                        st.R,
                                        st.Omega,
@@ -1147,6 +1151,7 @@ class HotRegion(ParameterSubspace):
                                        hot_atmosphere,
                                        elsewhere_atmosphere,
                                        self.atm_ext,
+                                       atm_ext_else,
                                        self.beam_opt,
                                        self._image_order_limit)
 

@@ -267,6 +267,7 @@ if __name__ == '__main__':
                 'xpsi.surface_radiation_field.hot_BB',
                 'xpsi.surface_radiation_field.hot_Num4D',
                 'xpsi.surface_radiation_field.hot_wrapper',
+                'xpsi.surface_radiation_field.elsewhere_wrapper',
                 'xpsi.surface_radiation_field.elsewhere',
                 'xpsi.cellmesh.integrator',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance',

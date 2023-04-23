@@ -48,6 +48,13 @@ class Elsewhere(ParameterSubspace):
         temperature is free. The dictionary must have a key with name
         ``'elsewhere_temperature'`` if it is *fixed* or *derived*.
 
+    :param string atm_ext:
+        Used to determine which atmospheric extension to use.
+        Options at the moment:
+        "BB": Analytical blackbody (default)
+        "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data
+
     :param iterable custom:
         Iterable over :class:`~.Parameter.Parameter` instances. If you
         supply custom parameter definitions, you need to overwrite the
@@ -86,13 +93,14 @@ class Elsewhere(ParameterSubspace):
                  num_rays = 1000,
                  bounds = None,
                  values = None,
+                 atm_ext="BB",
                  custom = None,
                  image_order_limit = None):
 
         self.sqrt_num_cells = sqrt_num_cells
         self.num_rays = num_rays
-
         self.image_order_limit = image_order_limit
+        self.atm_ext = atm_ext
 
         if bounds is None: bounds = {}
         if values is None: values = {}
@@ -145,6 +153,21 @@ class Elsewhere(ParameterSubspace):
     def num_cells(self):
         """ Get the total number of cells in the mesh. """
         return self._num_cells
+
+    @property
+    def atm_ext(self):
+        """ ... """
+        return self._atm_ext
+
+    @atm_ext.setter
+    def atm_ext(self,extension):
+        if extension=="BB":
+            self._atm_ext = 1
+        elif extension=="Num4D":
+            self._atm_ext = 2
+        else:
+            raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
+                            'atmosphere options are at the moment "BB" and "Num4D".')
 
     @property
     def image_order_limit(self):
@@ -297,6 +320,7 @@ class Elsewhere(ParameterSubspace):
                            self._cos_gamma,
                            _energies,
                            atmosphere,
+                           self._atm_ext,
                            self._image_order_limit)
         if out[0] == 1:
             raise IntegrationError('Fatal numerical error during elsewhere integration.')

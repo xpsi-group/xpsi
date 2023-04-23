@@ -317,11 +317,16 @@ class Photosphere(ParameterSubspace):
                                                      *self._elsewhere_atmosphere)
 
             if self._hot is not None:
+                try:
+                    else_atm_ext = self._elsewhere.atm_ext
+                except:
+                    else_atm_ext = None
                 self._signal = self._hot.integrate(self._spacetime,
                                                    energies,
                                                    threads,
                                                    self._hot_atmosphere,
-                                                   self._elsewhere_atmosphere)
+                                                   self._elsewhere_atmosphere,
+                                                   else_atm_ext)
 
                 if not isinstance(self._signal[0], tuple):
                     self._signal = (self._signal,)
