@@ -7,6 +7,9 @@ from xpsi.cellmesh.integrator_for_time_invariance import integrate as _integrato
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
 
+class AtmosError(xpsiError):
+    """ Raised if the numerical atmosphere data were not preloaded. """
+
 class RayError(xpsiError):
     """ Raised if a problem was encountered during ray integration. """
 
@@ -48,7 +51,7 @@ class Elsewhere(ParameterSubspace):
         temperature is free. The dictionary must have a key with name
         ``'elsewhere_temperature'`` if it is *fixed* or *derived*.
 
-    :param string atm_ext:
+    :param str atm_ext:
         Used to determine which atmospheric extension to use.
         Options at the moment:
         "BB": Analytical blackbody (default)
@@ -300,6 +303,11 @@ class Elsewhere(ParameterSubspace):
                 _energies = energies[0][0]
         else:
             _energies = energies
+
+        if self._atm_ext==2:
+            if atmosphere == ():
+                raise AtmosError('The numerical atmosphere data were not preloaded, '
+                                 'even though that is required by the current atmosphere extension.')
 
         out = _integrator(threads,
                            st.R,

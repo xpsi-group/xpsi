@@ -8,6 +8,9 @@ from xpsi.cellmesh.rays import compute_rays as _compute_rays
 from xpsi.Parameter import Parameter, Derive
 from xpsi.ParameterSubspace import ParameterSubspace
 
+class AtmosError(xpsiError):
+    """ Raised if the numerical atmosphere data were not preloaded. """
+
 class RayError(xpsiError):
     """ Raised if a problem was encountered during ray integration. """
 
@@ -165,7 +168,7 @@ class HotRegion(ParameterSubspace):
         and the user can implement more complicated prior support boundaries
         in a :class:`~.Prior.Prior` subclass instance.
 
-    :param string atm_ext:
+    :param str atm_ext:
         Used to determine which atmospheric extension to use.
         Options at the moment:
         "BB": Analytical blackbody
@@ -1122,9 +1125,10 @@ class HotRegion(ParameterSubspace):
         else:
             super_energies = cede_energies = energies
 
-        #if self.atm_ext==2:
-        #if hot_atmosphere == ():
-        #    print("It is not there!")
+        if self.atm_ext==2:
+            if hot_atmosphere == ():
+                raise AtmosError('The numerical atmosphere data were not preloaded, '
+                                 'even though that is required by the current atmosphere extension.')
 
         super_pulse = self._integrator(threads,
                                        st.R,
