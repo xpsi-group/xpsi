@@ -1188,6 +1188,9 @@ class HotRegion(ParameterSubspace):
                                           phases,
                                           hot_atmosphere,
                                           elsewhere_atmosphere,
+                                          self.atm_ext,
+                                          atm_ext_else,
+                                          self.beam_opt,
                                           self._image_order_limit)
         except AttributeError:
             pass
