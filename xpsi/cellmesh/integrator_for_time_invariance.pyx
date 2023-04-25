@@ -321,7 +321,8 @@ def integrate(size_t numThreads,
                                                  E_prime,
                                                  _ABB,
                                                  &(srcCellParams[i,j,0]),
-                                                 data)
+                                                 data,
+                                                 0)
 
                             privateFlux[T,e] += I_E * _GEOM
             if terminate[T] == 1:

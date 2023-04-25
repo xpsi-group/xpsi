@@ -82,12 +82,12 @@ from .preload cimport (_preloaded,
                        init_preload,
                        free_preload)
 
-from .hot cimport (init_hot,
+from .hot_wrapper cimport (init_hot,
                    eval_hot,
                    eval_hot_norm,
                    free_hot)
 
-from .elsewhere cimport (init_elsewhere,
+from .elsewhere_wrapper cimport (init_elsewhere,
                          free_elsewhere,
                          eval_elsewhere,
                          eval_elsewhere_norm)
@@ -102,7 +102,7 @@ from .effective_gravity_universal cimport effectiveGravity
 
 from xpsi.pixelmesh.geometricConfiguration cimport _GEOM
 
-ctypedef void* (*fptr_init)(size_t, const _preloaded *const) nogil
+ctypedef void* (*fptr_init)(size_t, const _preloaded *const, size_t) nogil
 
 ctypedef int (*fptr_free)(size_t, void *const) nogil
 
@@ -110,7 +110,8 @@ ctypedef double (*fptr_eval)(size_t,
                              double,
                              double,
                              const double *const,
-                             void *const) nogil
+                             void *const,
+                             size_t) nogil
 
 ctypedef double (*fptr_norm)() nogil
 
@@ -118,7 +119,9 @@ def intensity(double[::1] energies,
               double[::1] mu,
               double[:,::1] local_variables,
               atmosphere = None,
-              extension = 'hot',
+              region_extension = 'hot',
+              atmos_extension = "BB",
+              beam_opt = 0,
               size_t numTHREADS = 1):
     """ Evaluate the photon specific intensity using an extension module.
 
@@ -135,8 +138,9 @@ def intensity(double[::1] energies,
         comoving frame.
 
     :param double[:,::1] local_variables:
-        A 2D :class:`numpy.ndarray` of local variables such as temperature
-        and effective gravity. Rows correspond to the sequence of points in the
+        A 2D :class:`numpy.ndarray` (with beam_opt=0) or 7D :class:`numpy.ndarray`
+        (with beam_opt > 0) of local variables such as temperature, effective gravity,
+        and beaming parameters. Rows correspond to the sequence of points in the
         space of energy and angle specified above, and columns contain the
         required variable values, one variable per column, in the expected
         order.
@@ -168,9 +172,21 @@ def intensity(double[::1] energies,
         script exits and the kernel stops. The likelihood callback accesses
         the same memory upon each call without I/O.
 
-    :param str extension:
-        Specify the extension module to invoke. Options are ``'hot'`` and
+    :param str region_extension:
+        Specify the radiating region extension module to invoke. Options are ``'hot'`` and
         ``'elsewhere'``.
+
+    :param str atmos_extension:
+        Specify the atmosphere extension module to invoke. Options are ``'BB'`` and
+        ``'Num4D'``.
+
+    :param int beam_opt:
+        Used to determine which atmospheric beaming modification model to use.
+        Options at the moment:
+        0: No modification (default)
+        1: Original*beaming_correction without re-normalization
+        2: Original*beaming_correction with analytical re-normalization estimate
+        3: Original*beaming_correction with numerical re-normalization
 
     :param int numTHREADS:
         Number of OpenMP threads to launch.
@@ -180,33 +196,45 @@ def intensity(double[::1] energies,
         units of photons/s/keV/cm^2/sr.
 
     """
+    cdef size_t _beam_opt = beam_opt
+    cdef size_t _atmos_extension
+
     cdef fptr_init init_ptr = NULL
     cdef fptr_free free_ptr = NULL
     cdef fptr_eval eval_ptr = NULL
     cdef fptr_norm norm_ptr = NULL
 
-    if extension == 'hot':
+    if region_extension == 'hot':
         init_ptr = init_hot
         free_ptr = free_hot
         eval_ptr = eval_hot
         norm_ptr = eval_hot_norm
-    elif extension == 'elsewhere':
+    elif region_extension == 'elsewhere':
         init_ptr = init_elsewhere
         free_ptr = free_elsewhere
         eval_ptr = eval_elsewhere
         norm_ptr = eval_elsewhere_norm
     else:
-        raise ValueError("Extension module must be 'hot' or 'elsewhere'.")
+        raise ValueError("Region extension module must be 'hot' or 'elsewhere'.")
 
     # initialise the source radiation field
     cdef _preloaded *preloaded = NULL
     cdef void *data = NULL
 
+    if atmos_extension == "BB":
+        _atmos_extension = 1
+    elif atmos_extension == "Num4D":
+        _atmos_extension = 2
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    else:
+        raise ValueError("Atmosphere extension module must be 'BB' or 'Num4D'.")
+
     if atmosphere:
         preloaded = init_preload(atmosphere)
-        data = init_ptr(numTHREADS, preloaded)
+        data = init_ptr(numTHREADS, preloaded, _atmos_extension)
     else:
-        data = init_ptr(numTHREADS, NULL)
+        data = init_ptr(numTHREADS, NULL, _atmos_extension)
 
     cdef double[::1] intensities = np.zeros(energies.shape[0],
                                             dtype = np.double)
@@ -226,7 +254,8 @@ def intensity(double[::1] energies,
                                   energies[i],
                                   mu[i],
                                   &(local_variables[i,0]),
-                                  data)
+                                  data,
+                                  _beam_opt)
 
         # get photon specific intensity
         intensities[i] *= norm_ptr() / (energies[i] * keV)
@@ -249,6 +278,7 @@ def intensity_from_globals(double[::1] energies,
                            double zeta,
                            double epsilon,
                            atmosphere = None,
+                           atmos_extension = "BB",
                            size_t numTHREADS = 1):
     """ Evaluate the photon specific intensity using extension modules.
 
@@ -332,6 +362,10 @@ def intensity_from_globals(double[::1] energies,
         script exits and the kernel stops. The likelihood callback accesses
         the same memory upon each call without I/O.
 
+    :param str atmos_extension:
+        Specify the atmosphere extension module to invoke. Options are ``'BB'`` and
+        ``'Num4D'``.
+
     :param int numTHREADS:
         Number of OpenMP threads to launch.
 
@@ -340,6 +374,7 @@ def intensity_from_globals(double[::1] energies,
         units of photons/s/keV/cm^2/sr.
 
     """
+    cdef size_t _atmos_extension
     cdef _GEOM GEOM
 
     GEOM.R_eq = R_eq
@@ -355,11 +390,20 @@ def intensity_from_globals(double[::1] energies,
     cdef _preloaded *preloaded = NULL
     cdef void *data = NULL
 
+    if atmos_extension == "BB":
+        _atmos_extension = 1
+    elif atmos_extension == "Num4D":
+        _atmos_extension = 2
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    else:
+        raise ValueError("Atmosphere extension module must be 'BB' or 'Num4D'.")
+
     if atmosphere:
         preloaded = init_preload(atmosphere)
-        data = init_ptr(numTHREADS, preloaded)
+        data = init_ptr(numTHREADS, preloaded, _atmos_extension)
     else:
-        data = init_ptr(numTHREADS, NULL)
+        data = init_ptr(numTHREADS, NULL, _atmos_extension)
 
     cdef storage *local_vars_buf = init_local_variables(numTHREADS, NULL)
 
@@ -399,7 +443,8 @@ def intensity_from_globals(double[::1] energies,
                                       energies[i],
                                       mu[i],
                                       local_vars_buf.local_variables[T],
-                                      data)
+                                      data,
+                                      0)
         else:
             intensities[i] = 0.0
 

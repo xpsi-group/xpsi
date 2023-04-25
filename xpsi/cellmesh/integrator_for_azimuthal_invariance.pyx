@@ -448,7 +448,8 @@ def integrate(size_t numThreads,
                                                                         E_prime,
                                                                         _ABB,
                                                                         &(correction[i,J,0]),
-                                                                        ext_data)
+                                                                        ext_data,
+                                                                        0)
                                         correction_I_E = correction_I_E * eval_elsewhere_norm()
 
                                     (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM

@@ -4,7 +4,8 @@ cdef double eval_elsewhere(size_t THREAD,
                            double E,
                            double mu,
                            const double *const VEC,
-                           void *const data) nogil
+                           void *const data,
+                           size_t beam_opt) nogil
 
 cdef double eval_elsewhere_norm() nogil
 

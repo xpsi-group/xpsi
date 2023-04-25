@@ -33,8 +33,10 @@ cdef double eval_elsewhere(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
-                     void *const data) nogil:
-
+                     void *const data,
+                     size_t beam_opt) nogil:
+    #Note: Beaming option for elsewhere is not implented, at least yet,
+    #even though it is one of the input parameters.
     if atmos_extension_elsewhere == 1:
         I_hot = eval_hot_BB(THREAD,E,mu,VEC,data)
     else:
