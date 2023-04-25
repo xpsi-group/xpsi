@@ -57,6 +57,9 @@ class Elsewhere(ParameterSubspace):
         "BB": Analytical blackbody (default)
         "Num4D": Numerical atmosphere using 4D-interpolation from the provided
         atmosphere data
+        "user": A user-provided extension which can be set up by replacing the contents of 
+        the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+        (if not changed, "user" is the same as "BB").
 
     :param iterable custom:
         Iterable over :class:`~.Parameter.Parameter` instances. If you
@@ -168,9 +171,11 @@ class Elsewhere(ParameterSubspace):
             self._atm_ext = 1
         elif extension=="Num4D":
             self._atm_ext = 2
+        elif extension=="user":
+            self._atm_ext  = 3
         else:
             raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
-                            'atmosphere options are at the moment "BB" and "Num4D".')
+                            'atmosphere options are at the moment "BB", "Num4D", and "user".')
 
     @property
     def image_order_limit(self):

@@ -13,21 +13,30 @@ from xpsi.surface_radiation_field.hot_Num4D cimport (init_hot_Num4D,
                                                      eval_hot_Num4D,
                                                      eval_hot_norm_Num4D)
 
-                                                     
+#User-defined atmosphere extension (Blackbody by default)
+from xpsi.surface_radiation_field.hot_user cimport (init_hot_user,
+                                                     free_hot_user,
+                                                     eval_hot_user,
+                                                     eval_hot_norm_user)
+
 #----------------------------------------------------------------------->>>
 cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) nogil:
     global atmos_extension
     atmos_extension=atm_ext
     if atmos_extension == 1:
         return init_hot_BB(numThreads, preloaded)
-    else:
+    elif atmos_extension == 2:
         return init_hot_Num4D(numThreads, preloaded)
+    else:
+        return init_hot_user(numThreads, preloaded)
 
 cdef int free_hot(size_t numThreads, void *const data) nogil:
     if atmos_extension == 1:
         return free_hot_BB(numThreads, data)
-    else:
+    elif atmos_extension == 2:
         return free_hot_Num4D(numThreads, data)
+    else:
+        return free_hot_user(numThreads, data)
 
 cdef double eval_hot(size_t THREAD,
                      double E,
@@ -55,8 +64,10 @@ cdef double eval_hot(size_t THREAD,
 
     if atmos_extension == 1:
         I_hot = eval_hot_BB(THREAD,E,mu,VEC_red,data)
-    else:
+    elif atmos_extension == 2:
         I_hot = eval_hot_Num4D(THREAD,E,mu,VEC_red,data)
+    else:
+        I_hot = eval_hot_user(THREAD,E,mu,VEC_red,data)
 
     if beam_opt==0:
         return I_hot
@@ -82,8 +93,10 @@ cdef double eval_hot(size_t THREAD,
                     dmu = (1.0/nimu)
             if atmos_extension == 1:
                 I_hot_imu = eval_hot_BB(THREAD,E,mu_imu,VEC_red,data)
-            else:
+            elif atmos_extension == 2:
                 I_hot_imu = eval_hot_Num4D(THREAD,E,mu_imu,VEC_red,data)
+            else:
+                I_hot_imu = eval_hot_user(THREAD,E,mu_imu,VEC_red,data)
 
             I_fbeam_imu =  (1.0+abb*((E)**cbb)*mu_imu+bbb*((E)**dbb)*mu_imu**2)
             I_denom = I_denom + mu_imu*I_fbeam_imu*I_hot_imu*dmu
@@ -103,5 +116,7 @@ cdef double eval_hot(size_t THREAD,
 cdef double eval_hot_norm() nogil:
     if atmos_extension == 1:
         return eval_hot_norm_BB()
-    else:
+    elif atmos_extension == 2:
         return eval_hot_norm_Num4D()
+    else:
+        return eval_hot_norm_user()

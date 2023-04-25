@@ -13,7 +13,12 @@ from xpsi.surface_radiation_field.hot_Num4D cimport (init_hot_Num4D,
                                                      eval_hot_Num4D,
                                                      eval_hot_norm_Num4D)
 
-                                                     
+#User-defined atmosphere extension (Blackbody by default)
+from xpsi.surface_radiation_field.elsewhere_user cimport (init_elsewhere_user,
+                                                     free_elsewhere_user,
+                                                     eval_elsewhere_user,
+                                                     eval_elsewhere_norm_user)
+
 #----------------------------------------------------------------------->>>
 cdef void* init_elsewhere(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) nogil:
     global atmos_extension_elsewhere
