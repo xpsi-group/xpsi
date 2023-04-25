@@ -30,12 +30,12 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
                                                    free_preload)
 
-from xpsi.surface_radiation_field.hot cimport (init_hot,
+from xpsi.surface_radiation_field.hot_wrapper cimport (init_hot,
                                                eval_hot,
                                                eval_hot_norm,
                                                free_hot)
 
-from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
+from xpsi.surface_radiation_field.elsewhere_wrapper cimport (init_elsewhere,
                                                      free_elsewhere,
                                                      eval_elsewhere,
                                                      eval_elsewhere_norm)
@@ -68,6 +68,9 @@ def integrate(size_t numThreads,
               double[::1] phases,
               hot_atmosphere,
               elsewhere_atmosphere,
+              hot_atm_ext,
+              else_atm_ext,
+              beam_opt,
               image_order_limit = None):
 
     # check for rayXpanda explicitly in case of some linker issue
@@ -134,6 +137,7 @@ def integrate(size_t numThreads,
         int I, image_order, _IO
         double _phase_lag
         size_t _InvisPhase
+        size_t _beam_opt = beam_opt
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_P, N_E), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -237,9 +241,9 @@ def integrate(size_t numThreads,
 
     if hot_atmosphere:
         hot_preloaded = init_preload(hot_atmosphere)
-        hot_data = init_hot(N_T, hot_preloaded)
+        hot_data = init_hot(N_T, hot_preloaded, hot_atm_ext)
     else:
-        hot_data = init_hot(N_T, NULL)
+        hot_data = init_hot(N_T, NULL, hot_atm_ext)
 
     cdef double[:,:,::1] correction
     cdef int perform_correction
@@ -253,9 +257,9 @@ def integrate(size_t numThreads,
     if perform_correction == 1:
         if elsewhere_atmosphere:
             ext_preloaded = init_preload(elsewhere_atmosphere)
-            ext_data = init_elsewhere(N_T, ext_preloaded)
+            ext_data = init_elsewhere(N_T, ext_preloaded, else_atm_ext)
         else:
-            ext_data = init_elsewhere(N_T, NULL)
+            ext_data = init_elsewhere(N_T, NULL, else_atm_ext)
 
     #----------------------------------------------------------------------->>>
     # >>> Integrate.
@@ -593,7 +597,8 @@ def integrate(size_t numThreads,
                                                        E_prime,
                                                        __ABB,
                                                        &(srcCellParams[i,j,0]),
-                                                       hot_data)
+                                                       hot_data,
+                                                       _beam_opt)
 
                                         I_E = I_E * eval_hot_norm()
 
@@ -602,7 +607,8 @@ def integrate(size_t numThreads,
                                                                    E_prime,
                                                                    __ABB,
                                                                    &(correction[i,j,0]),
-                                                                   ext_data)
+                                                                   ext_data,
+                                                                   0)
 
                                             correction_I_E = correction_I_E * eval_elsewhere_norm()
 
