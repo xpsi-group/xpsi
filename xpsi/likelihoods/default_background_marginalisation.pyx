@@ -78,6 +78,33 @@ ctypedef struct args:
     double A
 
 cdef double marginal_integrand(double B, void *params) nogil:
+    """ Compute the integrand for background marginalisation (for a given energy channel).
+
+    This function corresponds to the integrand in the second last expression
+    of Equation B.19 in Riley 2019. See appendix B:
+    https://hdl.handle.net/11245.1/aa86fcf3-2437-4bc2-810e-cf9f30a98f7a
+
+    :param double B:
+        Background count rate, which is the integration variable.
+
+    :param void *params:
+        Additional parameters, which include:
+        "n":      Number of phase bins.
+        "SCALE":  Scaling from modelled count rate to number of counts.
+        "star":   Modelled count rate binned in phases.
+        "data":   Observed number of counts binned in phases.
+        "A":      Estimated maximum log-likelihood within the integration limits.
+
+    :returns:
+        A `double` with probability value for a given background variable.
+        This probability value is the exponent of Poisson log-probabilities summed over
+        different phase bins and subtracted with the maximum likelihood estimate.
+        In a special case of zero modelled counts (in any phase bin), probability of
+        zero is returned, unless the corresponding number of observed counts is also zero.
+        In the latter case, log-probability of that phase bin assessed to be 0.0,
+        and the sum over log-probabilites from different phase bins is continued.
+
+    """
 
     cdef size_t j
     cdef double c, x = 0.0
@@ -85,10 +112,14 @@ cdef double marginal_integrand(double B, void *params) nogil:
 
     for j in range(a.n):
         c = a.SCALE * (a.star[j] + B)
-        if c == 0.0 and a.data[j] == 0.0:
-            x += 1.0
-        else:
+        if c > 0.0:
             x += a.data[j] * log(c) - c
+        elif c == 0.0 and a.data[j] == 0.0:
+            #x += log(1) = 0
+            pass
+        else:
+            #x += log(0) -> return exp(-inf) = 0
+            return 0.0
 
     #with gil:
     #    if x - a.A > 0.0:
@@ -151,6 +182,9 @@ def eval_marginal_likelihood(double exposure_time,
 
     :param double[::1] phases:
         A :class:`numpy.ndarray` of phase interval edges in cycles.
+
+    :param double[:,::1] counts:
+        A :class:`numpy.ndarray` of observed number of counts in energy and phase bins.
 
     :param tuple components:
         Component signals, each a C-contiguous :class:`numpy.ndarray` of
@@ -495,10 +529,14 @@ def eval_marginal_likelihood(double exposure_time,
             a.A = 0.0
             for j in range(a.n):
                 c = a.SCALE * (a.star[j] + B_for_integrand)
-                if c == 0.0 and a.data[j] == 0.0:
-                    a.A += 1.0
-                else:
+                if c > 0.0:
                     a.A += a.data[j] * log(c) - c
+                elif c == 0.0 and a.data[j] == 0.0:
+                    #a.A += log(1)
+                    pass
+                else:
+                    #a.A += log(0)
+                    a.A += llzero
 
             gsl_integration_cquad(&f, lower, upper,
                                   epsabs, epsrel,
