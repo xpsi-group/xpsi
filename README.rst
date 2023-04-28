@@ -29,7 +29,7 @@ It provides the following functionality:
 
 
 For more details on current and planned capabilities, check out the 
-`XPSI documentation <https://xpsi-group.github.io/xpsi/index.html>`_.
+`X-PSI documentation <https://xpsi-group.github.io/xpsi/index.html>`_.
 
 Installation and Testing
 ------------------------

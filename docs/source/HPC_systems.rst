@@ -78,7 +78,7 @@ Load ``cmake`` module:
 
 .. code-block:: bash
 
-    module load CMake/3.20.1-GCCcore-10.3.0
+    module load CMake/3.23.1-GCCcore-11.3.0
 
 To prepare MPI from ``$HOME``:
 
