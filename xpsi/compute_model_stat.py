@@ -1045,7 +1045,7 @@ photosphere.integrate(energy_keV, threads=1, stokes=True)
 #save_pulse("pulses/pulse_ps21_thom_s21X") #if numerical_atmos=True (Thomson atmosphere)
 #exit()
 for ie in range(len(energy_keV)):
-	save_pulse("pulses/all_E_128b/xpsi_ps21_thom_s21X",ie) 
+	save_pulse("pulses/all_E_128b/xpsi_ps21_thom_s21",ie) 
 
 likelihood = xpsi.Likelihood(star = star, signals = signals,
                              num_energies=128,#281,#128,
@@ -1138,44 +1138,44 @@ def plot_pulse_stokes(phasepol=None,qnpol=None,unpol=None,inpol=None,psind0=0,ps
     #exit()
     
     if include_I:
-	    fig = plt.figure(figsize=(7,7))
-	    ax = fig.add_subplot(111)
+        fig = plt.figure(figsize=(7,7))
+        ax = fig.add_subplot(111)
 
-	    ax.set_ylabel('Signal [arbitrary normalisation]')
-	    ax.set_xlabel('Phase [cycles]')
+        ax.set_ylabel('Signal [arbitrary normalisation]')
+        ax.set_xlabel('Phase [cycles]')
 
-	    #print("photosphere.signalI:")
-	    #print(np.sum(photosphere.signal[0][0], axis=0))
+        #print("photosphere.signalI:")
+        #print(np.sum(photosphere.signal[0][0], axis=0))
 
-	    temp = np.sum(signals[0][0].signals[0], axis=0)
-	    I1s = temp
-	    ax.plot(signals[0][0].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
-	    if two_spots:
-		temp = np.sum(signals[0][0].signals[1], axis=0)    
-		I2s = temp
-		ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
+        temp = np.sum(signals[0][0].signals[0], axis=0)
+        I1s = temp
+        ax.plot(signals[0][0].phases[0], temp/np.max(temp), '-', color='k', lw=0.5)
+        if two_spots:
+            temp = np.sum(signals[0][0].signals[1], axis=0)    
+            I2s = temp
+            ax.plot(signals[0][0].phases[1], temp/np.max(temp), '-', color='r', lw=0.5)
 	    
-	    temp = np.sum(phot_sig_cut, axis=0) #photosphere.signal[0][0][psind,:]
-	    I1p = temp
-	    #print("I1p:",I1p)
-	    ax.plot(signals[0][0].phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
-	    if two_spots:
-		temp = np.sum(photosphere.signal[1][0], axis=0)    
-		I2p = temp
-		ax.plot(signals[0][0].phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)    
+        temp = np.sum(phot_sig_cut, axis=0) #photosphere.signal[0][0][psind,:]
+        I1p = temp
+        #print("I1p:",I1p)
+        ax.plot(signals[0][0].phases[0], temp/np.max(temp), 'o-', color='k', lw=0.5, markersize=2)
+        if two_spots:
+            temp = np.sum(photosphere.signal[1][0], axis=0)    
+            I2p = temp
+            ax.plot(signals[0][0].phases[1], temp/np.max(temp), 'o-', color='r', lw=0.5, markersize=2)
 
-	    temp = np.sum(signals[0][0].expected_counts, axis=0)
-	    Iexpect = temp
-	    data_phases = np.linspace(0.0, 1.0, 10) #(0.0, 1.0, 10) #(0.0, 1.0, 33)
-	    #ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
-	    ax.plot(data_phases[0:9], Iexpect/np.max(Iexpect), '--', color='k', lw=0.5)    
+        temp = np.sum(signals[0][0].expected_counts, axis=0)
+        Iexpect = temp
+        data_phases = np.linspace(0.0, 1.0, 10) #(0.0, 1.0, 10) #(0.0, 1.0, 33)
+        #ax.plot(data_phases[0:32], temp/np.max(temp), '--', color='k', lw=0.5)
+        ax.plot(data_phases[0:9], Iexpect/np.max(Iexpect), '--', color='k', lw=0.5)    
 
-	    ax.errorbar(IXPE_du1_I.data.phases, IXPE_du1_I.data.counts[0]/(np.max(IXPE_du1_I.data.counts[0])), yerr=IXPE_du1_I.data.errors[0]/(np.max(IXPE_du1_I.data.counts[0])), xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)
-
-	    if (phasepol is not None and inpol is not None):
-	    	ax.plot(phasepol,inpol,'--',color='red')
-	    #veneer((0.05,0.2), (0.05,0.2), ax)
-	    fig.savefig("figs/signalsIX.pdf")
+        ax.errorbar(IXPE_du1_I.data.phases, IXPE_du1_I.data.counts[0]/(np.max(IXPE_du1_I.data.counts[0])), yerr=IXPE_du1_I.data.errors[0]/(np.max(IXPE_du1_I.data.counts[0])), xerr=0.0, fmt='o', color="purple",capsize=2.0,markersize=3.0)
+    
+        if (phasepol is not None and inpol is not None):
+            ax.plot(phasepol,inpol,'--',color='red')
+        #veneer((0.05,0.2), (0.05,0.2), ax)
+        fig.savefig("figs/signalsIX.pdf")
     
     fig = plt.figure(figsize=(7,7))
     ax = fig.add_subplot(111)
@@ -1293,7 +1293,7 @@ def plot_pulse_stokes(phasepol=None,qnpol=None,unpol=None,inpol=None,psind0=0,ps
         U2p = np.sum(photosphere.signalU[1][0], axis=0)
         U2pn = np.copy(U2p)
         for ip in range(len(U1pn)):
-    	    if(I2p[ip] > 1e-10):
+            if(I2p[ip] > 1e-10):
                 U2pn[ip] = U2p[ip]/I2p[ip]
             else:
                 U2pn[ip] = 0.0
@@ -1366,7 +1366,7 @@ print(phase)
 
 #Save pulses for X-PSI
 for ie in range(len(energy_keV)):
-	save_pulse("pulses/all_E_128a/xpsi_ps21_thom_s21X",ie) 
+	save_pulse("pulses/all_E_128a/xpsi_ps21_thom_s21",ie) 
 
 
 mass= 1.4 #0.01

@@ -167,70 +167,70 @@ def readData_pcube_combined(Filename):
 	
 def read_response_IXPE(MRF,RMF,min_input,max_input,min_channel,max_channel):
 
-	hdulist_mrf = fits.open(MRF)
-	#cols1 = hdulist_mrf[1].columns
-	#print(cols1.info())
-	specresp = hdulist_mrf[1].data["SPECRESP"]
-	ene_lo = hdulist_mrf[1].data["ENERG_LO"]
-	ene_hi = hdulist_mrf[1].data["ENERG_HI"]
-	
-	hdulist_rmf = fits.open(RMF)	
-	matrix = hdulist_rmf[1].data["MATRIX"]
-	emin = hdulist_rmf[2].data["E_MIN"]
-	emax = hdulist_rmf[2].data["E_MAX"]		
-	#cols1 = hdulist_rmf[2].columns
+    hdulist_mrf = fits.open(MRF)
+    #cols1 = hdulist_mrf[1].columns
+    #print(cols1.info())
+    specresp = hdulist_mrf[1].data["SPECRESP"]
+    ene_lo = hdulist_mrf[1].data["ENERG_LO"]
+    ene_hi = hdulist_mrf[1].data["ENERG_HI"]
 
-        #matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
-        matrix_cut = np.ascontiguousarray(matrix[min_input:max_input,min_channel:max_channel].T, dtype=np.double)
-        #print("matrix_cut:")
-        #print(matrix_cut)
+    hdulist_rmf = fits.open(RMF)	
+    matrix = hdulist_rmf[1].data["MATRIX"]
+    emin = hdulist_rmf[2].data["E_MIN"]
+    emax = hdulist_rmf[2].data["E_MAX"]		
+    #cols1 = hdulist_rmf[2].columns
 
-        #print(ene_lo[min_input:max_input])
-        #print(ene_hi[min_input:max_input])
-        #print(emin[min_channel:max_channel])
-        #print(emax[min_channel:max_channel])
+    #matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
+    matrix_cut = np.ascontiguousarray(matrix[min_input:max_input,min_channel:max_channel].T, dtype=np.double)
+    #print("matrix_cut:")
+    #print(matrix_cut)
 
-	#print(specresp[min_input:max_input].shape[0]+1)
+    #print(ene_lo[min_input:max_input])
+    #print(ene_hi[min_input:max_input])
+    #print(emin[min_channel:max_channel])
+    #print(emax[min_channel:max_channel])
 
-        edges = np.zeros(specresp[min_input:max_input].shape[0]+1, dtype=np.double)
-        edges[0] = ene_lo[min_input]; edges[1:] = ene_hi[min_input:max_input]
+#print(specresp[min_input:max_input].shape[0]+1)
 
-        for i in range(matrix_cut.shape[0]):
-            matrix_cut[i,:] *= specresp[min_input:max_input]
+    edges = np.zeros(specresp[min_input:max_input].shape[0]+1, dtype=np.double)
+    edges[0] = ene_lo[min_input]; edges[1:] = ene_hi[min_input:max_input]
 
-        #print("matrix_cut:")
-        #print(matrix_cut)
-        #channels = np.arange(20, 201)
+    for i in range(matrix_cut.shape[0]):
+        matrix_cut[i,:] *= specresp[min_input:max_input]
+
+    #print("matrix_cut:")
+    #print(matrix_cut)
+    #channels = np.arange(20, 201)
         
-	channel_edges = np.zeros(matrix[min_channel:max_channel,0].shape[0]+1, dtype=np.double)
-        channel_edges[0] = emin[min_channel]; channel_edges[1:] = emax[min_channel:max_channel]	
+    channel_edges = np.zeros(matrix[min_channel:max_channel,0].shape[0]+1, dtype=np.double)
+    channel_edges[0] = emin[min_channel]; channel_edges[1:] = emax[min_channel:max_channel]	
 
-	#print(edges)
-	#print(channel_edges)
+    #print(edges)
+    #print(channel_edges)
         #exit()
 
-	channels = np.arange(min_channel,max_channel)
-	
-	#Re-bin channels if necessary for the data product:
-	rebin = True
-	pcube = True
-	if rebin:
-		if pcube:
-			#Assuming Nchan = 1
-			channels = np.array([0])
-			channel_edges = np.array([2.0,8.0])#([4.0,8.0])
-			matrix_rb = np.zeros((1,len(matrix_cut[0,:])))
-			#Calculating just the average here
-			for ich in range(0,max_channel-min_channel):
-				matrix_rb[0,:] += matrix_cut[ich,:]
-			matrix_rb[0,:] = matrix_rb[0,:]/(max_channel-min_channel)
-			matrix_cut = matrix_rb	
-		else:
-			print("Other re-binning options to be implemented.")
-			exit()	
+    channels = np.arange(min_channel,max_channel)
 
-	print("matrix_cut=",matrix_cut, len(matrix_cut[0,:]), len(matrix_cut[:,0]))
-	return matrix_cut, edges, channels, channel_edges
+    #Re-bin channels if necessary for the data product:
+    rebin = True
+    pcube = True
+    if rebin:
+	    if pcube:
+		    #Assuming Nchan = 1
+		    channels = np.array([0])
+		    channel_edges = np.array([2.0,8.0])#([4.0,8.0])
+		    matrix_rb = np.zeros((1,len(matrix_cut[0,:])))
+		    #Calculating just the average here
+		    for ich in range(0,max_channel-min_channel):
+			    matrix_rb[0,:] += matrix_cut[ich,:]
+		    matrix_rb[0,:] = matrix_rb[0,:]/(max_channel-min_channel)
+		    matrix_cut = matrix_rb	
+	    else:
+		    print("Other re-binning options to be implemented.")
+		    exit()	
+
+    print("matrix_cut=",matrix_cut, len(matrix_cut[0,:]), len(matrix_cut[:,0]))
+    return matrix_cut, edges, channels, channel_edges
 	
 	
 	

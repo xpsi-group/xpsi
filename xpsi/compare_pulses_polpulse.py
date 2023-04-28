@@ -12,7 +12,7 @@ from scipy.interpolate import interp1d
 from scipy.special import kn
 from matplotlib.pyplot import *
 from bisect import bisect
-import find_best_phshift
+#import find_best_phshift
 
 def shift_phase(phi,shift):
 	return (phi + shift) % 1 
@@ -28,7 +28,7 @@ NEnergy = 128 #281 # 50# 101 # number of energy points (x)
 #IntEnergy = logspace(x_l,x_u,NEnergy), log(1e1)*(x_u-x_l)/(NEnergy-1.)
 #x_ene,x_weight=IntEnergy
 #energy_keV = x_ene*evere/1e3
-energy_keV = [ 1.,          1.01975887,  1.03990815,  1.06045555,  1.08140895,  1.10277637,
+energy_keV = [ 1., 1.01975887,  1.03990815,  1.06045555,  1.08140895,  1.10277637,
   1.12456598,  1.14678613,  1.16944532,  1.19255224,  1.21611572,  1.24014479,
   1.26464864,  1.28963666,  1.31511842,  1.34110367,  1.36760236,  1.39462463,
   1.42218084,  1.45028152,  1.47893744,  1.50815956,  1.53795909,  1.56834742,
@@ -43,13 +43,13 @@ energy_keV = [ 1.,          1.01975887,  1.03990815,  1.06045555,  1.08140895,  
   4.09090401,  4.17173564,  4.2541644,   4.33822187,  4.42394022,  4.51135226,
   4.60049147,  4.69139197,  4.78408856,  4.87861672,  4.97501266,  5.07331327,
   5.17355619,  5.2757798,   5.38002323,  5.48632639,  5.59472998,  5.70527551,
-  5.81800528,  5.93296247,  6.05019109,  6.16973601,  6.291643,    6.41595873,
+  5.81800528,  5.93296247,  6.05019109,  6.16973601,  6.291643, 6.41595873,
   6.54273081,  6.67200775,  6.80383906,  6.93827521,  7.07536767,  7.21516891,
   7.35773247,  7.50311293,  7.65136594,  7.80254826,  7.95671777,  8.11393349,
   8.27425562,  8.43774553,  8.60446582,  8.77448032,  8.9478541,   9.12465356,
   9.30494637,  9.48880157,  9.67628953,  9.86748204, 10.06245231, 10.26127496,
  10.46402612, 10.67078342, 10.88162601, 11.0966346,  11.31589153, 11.53948072,
- 11.76748778, 12.        ]
+ 11.76748778, 12.  ]
 
 
 
@@ -85,19 +85,19 @@ matplotlib.pyplot.subplots_adjust(wspace=0, hspace=0)
 if(plot_all):
 	if not(plot5):
 		plotAF=figA.add_subplot(4,1,1,yscale='linear') 
-		plotAp=figA.add_subplot(4,1,2)      #
-		plotAc=figA.add_subplot(4,1,3)      #
-		plotAd=figA.add_subplot(4,1,4)      #
+		plotAp=figA.add_subplot(4,1,2)   #
+		plotAc=figA.add_subplot(4,1,3)   #
+		plotAd=figA.add_subplot(4,1,4)   #
 	if(plot5):
 		plotAFF=figA.add_subplot(5,1,1,yscale='linear')
 		plotAF=figA.add_subplot(5,1,2)
 		plotAp=figA.add_subplot(5,1,3)
 		plotAc=figA.add_subplot(5,1,4)
-		plotAd=figA.add_subplot(5,1,5)      
-        
+		plotAd=figA.add_subplot(5,1,5)   
+  
 else:	
-	plotAc=figA.add_subplot(2,1,1)      #
-	plotAd=figA.add_subplot(2,1,2)      #
+	plotAc=figA.add_subplot(2,1,1)   #
+	plotAd=figA.add_subplot(2,1,2)   #
 
 
 
@@ -117,12 +117,12 @@ for ish in range(1,-1,-1):
 		PulsName='pulses/all_E_128a/xpatap_ps21_thom_s21'		
 		NPhase = 150 #121 #150
 	if(ish == 1):
-		#pversion = '_test_26052022_thom_corr2'
-		#pversion = 'xpsi_ps21_burstN_s21'
-		pversion = 'xpsi_ps21_thom_s21'
-	        #PulsName='pulses/all_E_281/'+pversion		
-	        PulsName='pulses/all_E_128a/'+pversion
-		NPhase = 150 #121 #100
+	    #pversion = '_test_26052022_thom_corr2'
+	    #pversion = 'xpsi_ps21_burstN_s21'
+	    pversion = 'xpsi_ps21_thom_s21'
+	    #PulsName='pulses/all_E_281/'+pversion		
+	    PulsName='pulses/all_E_128a/'+pversion
+	    NPhase = 150 #121 #100
 	computePulse= True
 	plotAtm=not True
 	plotPulse=True
@@ -156,7 +156,7 @@ for ish in range(1,-1,-1):
 
 	phi = fromfile(inphi)
 
-            	            
+   	   
 	#Flux=zeros((NPhase,NEnergy,3))
 	#if(ish==0):
 	#	print(fluxlcurve_Iene)
@@ -316,7 +316,7 @@ if(compare_to_arcmancer):
 			if(i==1):
 				norm_obsF[:,i-1] = full_chain[i,:]/np.max(full_chain[1,:])
 			else:
-                                norm_obsF[:,i-1] = full_chain[i,:]/full_chain[1,:]
+			    norm_obsF[:,i-1] = full_chain[i,:]/full_chain[1,:]
 			obsF[:,i-1] = full_chain[i,:]
 
 		ene = 0
@@ -380,7 +380,7 @@ if(compare_to_arcmancer):
 				for ipha in range(0,len(phase_new)-1):
 					if(phase_new[ipha+1] > phase_new[ipha]):
 						plotAF.plot(phase_new[ipha:ipha+2],norm_obsF[ipha:ipha+2,i],"--",color=colors[i],dashes=[2,2])
-        
+  
 
 
 plot_PA_residuals = True
