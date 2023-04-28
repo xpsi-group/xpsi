@@ -171,9 +171,9 @@ class HotRegion(ParameterSubspace):
     :param str atm_ext:
         Used to determine which atmospheric extension to use.
         Options at the moment:
-        "BB": Analytical blackbody
+        "BB": Analytical blackbody,
         "Num4D": Numerical atmosphere using 4D-interpolation from the provided
-        atmosphere data
+        atmosphere data,
         "user": A user-provided extension which can be set up by replacing the contents of 
         the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
         (if not changed, "user" is the same as "BB").
@@ -181,10 +181,10 @@ class HotRegion(ParameterSubspace):
     :param int beam_opt:
         Used to determine which atmospheric beaming modification model to use.
         Options at the moment:
-        0: No modification (default)
-        1: Original*beaming_correction without re-normalization
-        2: Original*beaming_correction with analytical re-normalization estimate
-        3: Original*beaming_correction with numerical re-normalization
+        0: No modification (default),
+        1: Original*beaming_correction without re-normalization,
+        2: Original*beaming_correction with analytical re-normalization estimate,
+        3: Original*beaming_correction with numerical re-normalization.
 
     :param iterable custom:
         Iterable over :class:`~.Parameter.Parameter` instances. If you

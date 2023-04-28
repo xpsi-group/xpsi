@@ -22,19 +22,25 @@ includes:
 
 The first type of signal computation is enabled by surface discretization,
 whilst the latter is enabled via image-plane discretization. For surface
-discretization there are two extension modules for users and developers to
-work with: ``hot.pyx`` and ``elsewhere.pyx``. These extension modules contain
-functions whose bodies enable evaluation of specific intensities with respect
-to local comoving frames at the stellar surface. These functions have simple
-default code (isotropic blackbody radiation field) but must generally be
-customized for more advanced physics models. The ``hot.pyx`` module defines
-the radiation field inside surface hot regions represented by
-:class:`~xpsi.HotRegion.HotRegion` instances; however, the same module is used
-by an instance of the :class:`~xpsi.Everywhere.Everywhere` class. The
-``Elsewhere.pyx`` extension module defines the radiation field *exterior* to
-the :class:`~xpsi.HotRegion.HotRegion` instances on the surface.
+discretization there are several extension modules for users and developers to
+work with; ``hot_BB.pyx``, and ``hot_Num4D.pyx`` are the built-in options for
+isotropic blackbody radiation field and numerical 4D-interpolation from a preloaded
+atmosphere table (they can be selected using appropriate flags when creating
+instances of the radiating regions); ``hot_user.pyx`` and ``elsewhere_user.pyx``
+are additional extensions which can be replaced by user-developed versions, and
+used after re-installing X-PSI (by default they are the same as ``hot_BB.pyx``).
+These extension modules contain functions whose bodies enable evaluation of
+specific intensities with respect to local comoving frames at the stellar surface.
+The ``hot_*.pyx`` modules define the radiation field inside surface hot regions
+represented by :class:`~xpsi.HotRegion.HotRegion` instances; however, the same
+modules are used by an instance of the :class:`~xpsi.Everywhere.Everywhere` class.
+The ``elsewhere_user.pyx`` extension module defines the customized radiation
+field *exterior* to the :class:`~xpsi.HotRegion.HotRegion` instances on the surface.
+In case no customized module for the exterior surface is needed, the surface
+radiation field for exterior surface can be selected from one of the built-in
+options for the hot regions.
 
-For image-plane discretization, the ``hot.pyx`` extension defines the local
+For image-plane discretization, the ``hot_*.pyx`` extensions define the local
 surface radiation field properties with respect to a comoving frame. However,
 to compute the variables required by this module to evaluate specific intensity,
 another extension module is required with transforms a set of *global*
@@ -55,12 +61,12 @@ and point to the data structures in memory when computing signals; developers
 can develop extension modules to work with preloaded numerical atmosphere data.
 When preloading an atmosphere, the number of grid points in each dimension
 is dynamically inferred, but the existing source code for multi-dimensional
-interpolation is hard-coded for four dimensions. With development, this can be
-made more sophisticated.
+interpolation (``hot_Num4D.pyx``) is hard-coded for four dimensions. With
+development, this can be made more sophisticated.
 
 Developers can contribute extension modules to the
 ``surface_radiation_field/archive``. Extensions from this archive must replace
-the contents of the ``hot.pyx``, ``elsewhere.pyx``, and ``local_variables.pyx``
+the contents of the ``hot_user.pyx``, ``elsewhere_user.pyx``, and ``local_variables.pyx``
 modules, adhering to the function prototypes defined in the associated
 header files and using existing examples in the archive for guidance.
 
@@ -177,8 +183,14 @@ def intensity(double[::1] energies,
         ``'elsewhere'``.
 
     :param str atmos_extension:
-        Specify the atmosphere extension module to invoke. Options are ``'BB'`` and
-        ``'Num4D'``.
+        Used to determine which atmospheric extension to use.
+        Options at the moment:
+        "BB": Analytical blackbody,
+        "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data,
+        "user": A user-provided extension which can be set up by replacing the contents of
+        the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+        (if not changed, "user" is the same as "BB").
 
     :param int beam_opt:
         Used to determine which atmospheric beaming modification model to use.
@@ -227,8 +239,10 @@ def intensity(double[::1] energies,
         _atmos_extension = 2
         if atmosphere == None:
             raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 3
     else:
-        raise ValueError("Atmosphere extension module must be 'BB' or 'Num4D'.")
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', or 'user'.")
 
     if atmosphere:
         preloaded = init_preload(atmosphere)
@@ -363,8 +377,14 @@ def intensity_from_globals(double[::1] energies,
         the same memory upon each call without I/O.
 
     :param str atmos_extension:
-        Specify the atmosphere extension module to invoke. Options are ``'BB'`` and
-        ``'Num4D'``.
+        Used to determine which atmospheric extension to use.
+        Options at the moment:
+        "BB": Analytical blackbody,
+        "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data,
+        "user": A user-provided extension which can be set up by replacing the contents of
+        the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+        (if not changed, "user" is the same as "BB").
 
     :param int numTHREADS:
         Number of OpenMP threads to launch.
@@ -396,8 +416,10 @@ def intensity_from_globals(double[::1] energies,
         _atmos_extension = 2
         if atmosphere == None:
             raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 3
     else:
-        raise ValueError("Atmosphere extension module must be 'BB' or 'Num4D'.")
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', or 'user'.")
 
     if atmosphere:
         preloaded = init_preload(atmosphere)

@@ -310,26 +310,6 @@ an error message.  The following part of this module requires a functioning
 MultiNest installation. It initiate sampling using MultiNest, and given the
 settings, it should take ~5 minutes. To cancel mid-way press ``ctrl + C``.
 
-.. note::
-
-   The default X-PSI is installed with an analytical blackbody surface emission
-   model extension. If you want to use alternative models for the surface 
-   radiation field, you will need to (re-)install / (re-)compile XPSI with the 
-   appropriate flags:
-
-   .. code-block:: bash
-
-      CC=<path/to/compiler/executable> python setup.py --help
-      CC=<path/to/compiler/executable> python setup.py install [--NumHot] [--NumElse] [--user]
-
-   This will install the numerical atmosphere for the hot regions and/or for
-   the rest of the surface (``elsewhere``). To (re-) install the default
-   blackbody surface emission model, run the command again without the flags:
-
-   .. code-block:: bash
-
-      CC=<path/to/compiler/executable> python setup.py install [--user]
-
 If you ever need to reinstall, first clean to recompile the C files:
 
 .. code-block:: bash

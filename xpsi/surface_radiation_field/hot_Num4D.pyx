@@ -52,7 +52,7 @@ cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) 
 
     if preloaded == NULL :
         printf("ERROR: The numerical atmosphere data were not preloaded, which are required by this extension.\n")
-        
+
     cdef DATA *D = <DATA*> malloc(sizeof(DATA))
     D.p = preloaded
 
@@ -188,7 +188,7 @@ cdef double eval_hot_Num4D(size_t THREAD,
 
     cdef:
         size_t i = 0, ii
-        double I = 0.0, I_bc=0.0, temp
+        double I = 0.0, temp
         double *node_vals = D.acc.node_vals[THREAD]
         size_t *BN = D.acc.BN[THREAD]
         double *SPACE = D.acc.SPACE[THREAD]
@@ -197,15 +197,11 @@ cdef double eval_hot_Num4D(size_t THREAD,
         double *V_CACHE = D.acc.VEC_CACHE[THREAD]
         double vec[4]
         double E_eff = k_B_over_keV * pow(10.0, VEC[0])
-        double abb
-        double bbb
-        double cbb
-        double dbb
         int update_baseNode[4]
         int CACHE = 0
 
     vec[0] = VEC[0]
-    vec[1] = VEC[1]    
+    vec[1] = VEC[1]
     vec[2] = mu
     vec[3] = log10(E / E_eff)
 
@@ -339,10 +335,9 @@ cdef double eval_hot_Num4D(size_t THREAD,
 
     #printf("\nBase-nodes [%d,%d,%d,%d] ",
                 #<int>BN[0], <int>BN[1], <int>BN[2], <int>BN[3])
-    #printf("%.8e,%.8e,%.8e,%.8e,%.8e,%.8e\n",vec[0],abb,bbb,cbb,dbb,vec[1]) 
 
     if I < 0.0:
-        return 0.0	
+        return 0.0
     return I * pow(10.0, 3.0 * vec[0])
 
 cdef double eval_hot_norm_Num4D() nogil:
