@@ -446,7 +446,7 @@ def eval_marginal_likelihood(double exposure_time,
             if lower < support[i,0]:
                 lower = support[i,0]
             upper = 10.0 / exposure_time
-            if upper > support[i,1]:
+            if upper > support[i,1] and support[i,1] > 0.0:
                 upper = support[i,1]
 
             B = 0.0
@@ -467,8 +467,12 @@ def eval_marginal_likelihood(double exposure_time,
                         if (min_counts == -2.0 and counts[i,j] > 0.0) or (0.0 < counts[i,j] < min_counts):
                             min_counts = counts[i,j]
                 if min_counts != -1.0:
-                    B = 0.01 * min_counts / SCALE
-                    B_min = 0.1 * B
+                    if min_counts == -2.0:
+                        B = 0.0
+                        B_min = 0.0
+                    else:
+                        B = 0.01 * min_counts / SCALE
+                        B_min = 0.1 * B
                     #print("i, B = %i, %.16f" % (a.i,B))
                 else:
                     B = B_min
@@ -494,7 +498,10 @@ def eval_marginal_likelihood(double exposure_time,
                 #print("i, j, STAR[i,j] + B = %i, %i, %.16e, %.16e" % (a.i,j,STAR[i,j], B))
                 std_est += counts[i,j] / pow(STAR[i,j] + B, 2.0)
 
-            std_est = sqrt(1.0 / std_est)
+            if std_est > 0.0:
+                std_est = sqrt(1.0 / std_est)
+            else:
+                std_est = 1000000.0 #is this number high enough?
             #print("i, B, std = %i, %.16e, %.16e" % (a.i,B,std_est))
 
             a.B = B
