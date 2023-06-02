@@ -34,6 +34,30 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.0.2] - 2023-06-02
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* More numerical problems in likelihood computation were fixed for cases with zero counts. These fixes seem not to have any effect on the current examples, but for data with zero counts at some energy channels, more parameter vectors can now have acceptable likelihoods.
+
+Fixed
+^^^^^
+
+* Several numerical issues in ``xpsi/likelihoods/default_background_marginalisation.pyx`` for a given energy channel:
+
+* Prevented the upper limit of the background from becoming negative if using the semi-bounded option of the background support and having both zero modeled and observed counts at all phases.
+
+* Prevented the lower limit (and the initial guess) of the background from becoming negative if having zero observed counts at all phases but non-zero modeled counts at some phases.
+
+* Prevented division by zero when estimating the standard deviation for the background that maximizes the likelihood in the case of zero observed counts at all phases but non-zero modeled counts at some phases.
+
+Attribution
+^^^^^^^^^^^
+Tuomo Salmi
+
+
 [v2.0.1] - 2023-04-25
 ~~~~~~~~~~~~~~~~~~~~~
 
