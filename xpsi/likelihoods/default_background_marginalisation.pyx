@@ -501,7 +501,7 @@ def eval_marginal_likelihood(double exposure_time,
             if std_est > 0.0:
                 std_est = sqrt(1.0 / std_est)
             else:
-                std_est = 1000000.0 #is this number high enough?
+                std_est = 1e90
             #print("i, B, std = %i, %.16e, %.16e" % (a.i,B,std_est))
 
             a.B = B
