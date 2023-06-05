@@ -49,7 +49,20 @@ See also the associated `Zenodo repository`__.
 
 __ Zenodo_
 
-Below we give details of some settings for this paper.  For later papers some changes
+
+Other papers
+************
+
+**Kini et al. 2023** `(MNRAS, 522, 3389) <https://ui.adsabs.harvard.edu/abs/2023MNRAS.522.3389K/abstract>`_ used  ``v0.7.9`` of X-PSI (with small modifications described in the paper) to model simulated *RXTE* observations of thermonuclear X-ray burst oscillations when ignoring time variability in the properties of the emitting regions.  See also the associated `Zenodo repository`__.
+
+.. _Zenodo23akini: http://dx.doi.org/10.5281/zenodo.7665653
+__ Zenodo23akini_
+
+
+Settings
+********
+
+Below we give details of some settings for the **Riley et al. 2019** paper.  For later papers some changes
 were made - see papers for details. 
 
 *Resource consumption*:  The calculations reported were performed on the Dutch national supercomputer
