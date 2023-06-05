@@ -445,6 +445,7 @@ class CornerPlotter(PostProcessor):
         """
         #self.val_cred = []
         self.credible_interval_1d_all_show=credible_interval_1d_all_show
+        tight_gap_fraction = 0.13 # space between ticks and the edge
 
         if credible_interval_1d_all_show:
             KL_divergence=False
@@ -575,7 +576,7 @@ class CornerPlotter(PostProcessor):
                 axis = plotter.subplots[-1,j].xaxis
                 xmin, xmax = axis.get_view_interval()
                 width = xmax - xmin
-                gap_wanted = width * plotter.settings.tight_gap_fraction
+                gap_wanted = width * tight_gap_fraction
                 tick = [x for x in axis.get_major_ticks() if xmin <= x.get_loc() <= xmax]
 
                 if tick[0].get_loc() - xmin < gap_wanted:
@@ -588,7 +589,7 @@ class CornerPlotter(PostProcessor):
                     axis = plotter.subplots[j,0].yaxis
                     xmin, xmax = axis.get_view_interval()
                     width = xmax - xmin
-                    gap_wanted = width * plotter.settings.tight_gap_fraction
+                    gap_wanted = width * tight_gap_fraction
                     tick = [x for x in axis.get_major_ticks() if xmin <= x.get_loc() <= xmax]
 
                     if tick[0].get_loc() - xmin < gap_wanted:
