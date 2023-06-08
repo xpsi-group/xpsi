@@ -148,7 +148,11 @@ class CornerPlotter(PostProcessor):
             distributions. If ``bootstrap and not separate_plots`` then
             the density distribution linewidth is set to zero if not
             explicitly specified with kwarg ``lw_1d``.
-            In addition, keyword arguments for avoiding unnecessary re-drawing of prior samples (``force_draw``, ``prior_samples_fnames`` and ``priors_identical``).
+            In addition, keyword arguments for avoiding unnecessary re-drawing of prior samples
+            (``force_draw``, ``prior_samples_fnames`` and ``priors_identical``).
+            Param``precisions`` (a list of integers) can be used to define the decimal number
+            precision for each credible interval plotted.
+
 
         """
         self.set_subset(IDs, combine, combine_all,
@@ -640,6 +644,7 @@ class CornerPlotter(PostProcessor):
 
 
         self.credible_intervals=OrderedDict()
+        precisions = kwargs.get('precisions',[None]*plotter.subplots.shape[0])
 
         if credible_interval_1d_all_show and self.all_same(self.get_attr("parent_ID")):
             for r in range(len(self.subset_to_plot)):
@@ -657,7 +662,8 @@ class CornerPlotter(PostProcessor):
                                             annotate_xy=annotate_xy,
                                             sixtyeight=sixtyeight,
                                             ninety=ninety,
-                                            compute_all_intervals=compute_all_intervals)
+                                            compute_all_intervals=compute_all_intervals,
+                                            precision=precisions)
 
                 self.credible_intervals[id]=self.val_cred
         else:
@@ -674,7 +680,8 @@ class CornerPlotter(PostProcessor):
                                             annotate_xy=annotate_xy,
                                             sixtyeight=sixtyeight,
                                             ninety=ninety,
-                                            compute_all_intervals=compute_all_intervals)
+                                            compute_all_intervals=compute_all_intervals,
+                                            precisions=precisions)
 
                 self.credible_intervals[id]=self.val_cred
 
@@ -847,7 +854,7 @@ class CornerPlotter(PostProcessor):
                   'Added 1D marginal credible intervals')
     def _add_credible_interval(self, plotter, posterior, bootstrap, n_simulate,
                                annotate, annotate_xy, sixtyeight,
-                               ninety, compute_all_intervals):
+                               ninety, compute_all_intervals, precisions=None):
         """
         Estimate 1-:math:`\sigma` credible interval in one-dimension on a
         combined run, or if such a run does not exist, on the run with
@@ -864,6 +871,10 @@ class CornerPlotter(PostProcessor):
             ``False`` plots 95% credible interval about the median -- i.e.,
             symmetric quantiles about the median.
         """
+
+        if precisions is None:
+            precisions = [None]*plotter.subplots.shape[0]
+
         diag = [plotter.subplots[i,i] for i in range(plotter.subplots.shape[0])]
 
         run = self.run #posterior.subset_to_plot[0]
@@ -883,7 +894,7 @@ class CornerPlotter(PostProcessor):
 
         quantiles = [0.159, 0.5, 0.841] if sixtyeight else ([0.05,0.5,0.95] if ninety else [0.025, 0.5, 0.975])
 
-        def format_CI(name, cred, summary, additional=2, sscript=False):
+        def format_CI(name, cred, summary, additional=2, sscript=False, precision=None):
 
             if len(cred.shape) > 1:
                 _qs = (cred[1,1],
@@ -894,9 +905,12 @@ class CornerPlotter(PostProcessor):
                 _qs = (cred[1],
                        cred[1] - cred[0],
                        cred[2] - cred[1])
-
             _p = max(_precision(_qs[0]), _precision(_qs[1]), _precision(_qs[2]))
-            _f = '%.' + str(_p + additional) + 'f'
+
+            if precision is None:
+                _f = '%.' + str(_p + additional) + 'f'
+            else:
+                _f = '%.' + str(precision) + 'f'
 
             if name: name += ' '
 
@@ -956,7 +970,8 @@ class CornerPlotter(PostProcessor):
                                       cred,
                                       68 if sixtyeight else (90 if ninety else 95),
                                       additional=1,
-                                      sscript=True)
+                                      sscript=True,
+                                      precision=precisions[i])
 
                     title = ax.get_title()
                     if title:
@@ -1005,6 +1020,7 @@ class CornerPlotter(PostProcessor):
 
 
                 if compute_all_intervals:
+
                     yield format_CI(self.params.names[i],
                                     cred,
                                     68 if sixtyeight else (90 if ninety else 95))
@@ -1062,7 +1078,8 @@ class CornerPlotter(PostProcessor):
                                       cred,
                                       68 if sixtyeight else (90 if ninety else 95),
                                       additional=1,
-                                      sscript=True)
+                                      sscript=True,
+                                      precision=precisions[i])
 
                     title = ax.get_title()
                     if title:
