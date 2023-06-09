@@ -66,7 +66,6 @@ class Star(ParameterSubspace):
     def photospheres(self, obj):
         self._photospheres = [obj]
 
-
     def activate_fast_mode(self, activate):
         try:
             for photosphere in self._photospheres:
