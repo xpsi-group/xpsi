@@ -62,6 +62,11 @@ class Star(ParameterSubspace):
         """ Get the list of photosphere objects. """
         return self._photospheres
 
+    @photospheres.setter
+    def photospheres(self, obj):
+        self._photospheres = [obj]
+
+
     def activate_fast_mode(self, activate):
         try:
             for photosphere in self._photospheres:
