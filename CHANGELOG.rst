@@ -51,6 +51,8 @@ Added
 ^^^^^
 * Added a keyword argument in ``xpsi/PostProcessing/_corner.py`` to allow user to define the decimal precisions for all the credible intervals printed in the figures (T.S.).
 
+* Added a photosphere setter in ``xpsi/Star.py`` which should allow producing residual and signal plots for models with multiple photosphere objects as explained in ``https://github.com/xpsi-group/xpsi/issues/304`` (Y.K, T.S.).
+
 Attribution
 ^^^^^^^^^^^
 
