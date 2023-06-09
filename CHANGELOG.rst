@@ -34,6 +34,29 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[pre-v2.0.3] - 2023-06-09
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Updates and bug fixes in post-processing.
+
+Fixed
+^^^^^
+
+* Fixed a bug when defining ``param_plot_lims`` in ``xpsi/PostProcessing/_corner.py`` caused by ``tight_gap_fraction`` being only defined in the customized GetDist version that is not used anymore. That parameter is now defined in X-PSI instead (T.S., Y.K., S.G.).
+
+Added
+^^^^^
+* Added a keyword argument in ``xpsi/PostProcessing/_corner.py`` to allow user to define the decimal precisions for all the credible intervals printed in the figures (T.S.).
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi, Yves Kini, Sebastien Guillot
+
+
 [v2.0.2] - 2023-06-09
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -55,6 +78,7 @@ Fixed
 
 Attribution
 ^^^^^^^^^^^
+
 Tuomo Salmi
 
 
@@ -77,6 +101,7 @@ Added
 
 Attribution
 ^^^^^^^^^^^
+
 Tuomo Salmi,
 Evert Rol,
 Martin Heemskerk
