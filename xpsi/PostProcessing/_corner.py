@@ -644,7 +644,17 @@ class CornerPlotter(PostProcessor):
 
 
         self.credible_intervals=OrderedDict()
-        precisions = kwargs.get('precisions',[None]*plotter.subplots.shape[0])
+
+        if "precisions" in kwargs:
+            precisions = kwargs.get('precisions')
+            if (not isinstance(precisions, list)) or (not all(isinstance(element, int) for element in precisions)):
+                raise ValueError("Precisions need to be given as a list of integers.")
+            if len(precisions) != plotter.subplots.shape[0]:
+                print("Warning: Precisions list has wrong number of dimensions. " +
+                "Using the automatic default precision instead.")
+                precisions = [None]*plotter.subplots.shape[0]
+        else:
+            precisions = [None]*plotter.subplots.shape[0]
 
         if credible_interval_1d_all_show and self.all_same(self.get_attr("parent_ID")):
             for r in range(len(self.subset_to_plot)):
