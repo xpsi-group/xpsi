@@ -150,8 +150,10 @@ class CornerPlotter(PostProcessor):
             explicitly specified with kwarg ``lw_1d``.
             In addition, keyword arguments for avoiding unnecessary re-drawing of prior samples
             (``force_draw``, ``prior_samples_fnames`` and ``priors_identical``).
-            Param``precisions`` (a list of integers) can be used to define the decimal number
-            precision for each credible interval plotted.
+            Param``precisions`` (a list of integers or Nones) can be used to define the decimal number
+            precision for each credible interval plotted. In case of 2 parameters, one can do e.g.
+            precisions=[2,None] to use 2 digit decimal precision for the first parameter and use the
+            default automatic precision for the second.
 
 
         """
@@ -647,11 +649,13 @@ class CornerPlotter(PostProcessor):
 
         if "precisions" in kwargs:
             precisions = kwargs.get('precisions')
-            if (not isinstance(precisions, list)) or (not all(isinstance(element, int) for element in precisions)):
-                raise ValueError("Precisions need to be given as a list of integers.")
-            if len(precisions) != plotter.subplots.shape[0]:
+            if (not isinstance(precisions, list)) or (not all((isinstance(element, int) or element==None) for element in precisions)):
+                print("Warning: Precisions need to be given as a list of integers or Nones. " +
+                "Using the automatic default precisions instead.")
+                precisions = [None]*plotter.subplots.shape[0]
+            elif len(precisions) != plotter.subplots.shape[0]:
                 print("Warning: Precisions list has wrong number of dimensions. " +
-                "Using the automatic default precision instead.")
+                "Using the automatic default precisions instead.")
                 precisions = [None]*plotter.subplots.shape[0]
         else:
             precisions = [None]*plotter.subplots.shape[0]
@@ -673,7 +677,7 @@ class CornerPlotter(PostProcessor):
                                             sixtyeight=sixtyeight,
                                             ninety=ninety,
                                             compute_all_intervals=compute_all_intervals,
-                                            precision=precisions)
+                                            precisions=precisions)
 
                 self.credible_intervals[id]=self.val_cred
         else:
