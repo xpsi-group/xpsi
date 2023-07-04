@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[pre-v2.0.3] - 2023-06-09
+[pre-v2.0.3] - 2023-07-04
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -52,6 +52,8 @@ Added
 * Added a keyword argument in ``xpsi/PostProcessing/_corner.py`` to allow user to define the decimal precisions for all the credible intervals printed in the figures (T.S.).
 
 * Added a photosphere setter in ``xpsi/Star.py`` which should allow producing residual and signal plots for models with multiple photosphere objects as explained in ``https://github.com/xpsi-group/xpsi/issues/304`` (Y.K, T.S.).
+
+* Added a minor ticks back to corner plots in ``xpsi/PostProcessing/_corner.py``. Previously, these ticks were produced by the customized older GetDist version (T.S.).
 
 Attribution
 ^^^^^^^^^^^
