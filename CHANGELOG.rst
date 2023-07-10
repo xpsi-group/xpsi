@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[pre-v2.0.3] - 2023-06-09
+[pre-v2.0.3] - 2023-07-09
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -47,11 +47,15 @@ Fixed
 
 * Fixed a bug when defining ``param_plot_lims`` in ``xpsi/PostProcessing/_corner.py`` caused by ``tight_gap_fraction`` being only defined in the customized GetDist version that is not used anymore. That parameter is now defined in X-PSI instead (T.S., Y.K., S.G.).
 
+* Fixed a bug when combining multiple runs in ``xpsi/PostProcessing/_runs.py``, which caused the combination sometimes fail since PolyChord (instead of MultiNest) default was used for the initial live point likelihoods in dead-birth files. This bug appeared after switching to use a non-customized version of NestCheck (after X-PSI version 2.0.0). Now the newest NestCheck version allows to change this value, and this change is now done within X-PSI. If trying to use an older NestCheck version, an error is raised (T.S., Y.K.).
+
 Added
 ^^^^^
 * Added a keyword argument in ``xpsi/PostProcessing/_corner.py`` to allow user to define the decimal precisions for all the credible intervals printed in the figures (T.S.).
 
 * Added a photosphere setter in ``xpsi/Star.py`` which should allow producing residual and signal plots for models with multiple photosphere objects as explained in ``https://github.com/xpsi-group/xpsi/issues/304`` (Y.K, T.S.).
+
+* Added a minor ticks back to corner plots in ``xpsi/PostProcessing/_corner.py``. Previously, these ticks were produced by the customized older GetDist version (T.S.).
 
 Attribution
 ^^^^^^^^^^^

@@ -553,6 +553,15 @@ class CornerPlotter(PostProcessor):
         else:
             plotter.legend.set_frame_on(legend_frameon)
 
+        params = self.params
+        for j in range(len(params.names)):
+                for i in range(j,len(params.names)):
+                    ax = plotter.subplots[i,j]
+                    ax.xaxis.set_minor_locator(AutoMinorLocator())
+                for i in range(j):
+                    ax = plotter.subplots[j,i]
+                    ax.yaxis.set_minor_locator(AutoMinorLocator())
+
         # add custom parameter plotting limits and updated autolocation
         with fragile(verbose(param_plot_lims,
                              'Applying bespoke parameter viewing intervals',
