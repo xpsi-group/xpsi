@@ -106,23 +106,17 @@ class NestedBackend(Run):
                 try:
                     self._nc_bcknd = process_multinest_run(root,
                                                        base_dir=base_dir)
-                except:
-                    try:
-                        self._nc_bcknd = process_multinest_run(root+"-",
-                                                       base_dir=base_dir)
-                    except:
-                        raise
+                except FileNotFoundError:
+                    self._nc_bcknd = process_multinest_run(root+"-",
+                                                   base_dir=base_dir)
             else:
                 if kwargs['implementation'] == 'multinest':
                     try:
                         self._nc_bcknd = process_multinest_run(root,
                                                            base_dir=base_dir)
-                    except:
-                        try:
-                            self._nc_bcknd = process_multinest_run(root+"-",
-                                                           base_dir=base_dir)
-                        except:
-                            raise
+                    except FileNotFoundError:
+                        self._nc_bcknd = process_multinest_run(root+"-",
+                                                       base_dir=base_dir)
                 elif kwargs['implementation'] == 'polychord':
                     self._nc_bcknd = process_polychord_run(root,
                                                            base_dir=base_dir)
