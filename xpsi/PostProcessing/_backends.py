@@ -103,12 +103,26 @@ class NestedBackend(Run):
             except KeyError:
                 print('Root %r sampling implementation not specified... '
                       'assuming MultiNest for nestcheck...')
-                self._nc_bcknd = process_multinest_run(root,
+                try:
+                    self._nc_bcknd = process_multinest_run(root,
                                                        base_dir=base_dir)
+                except:
+                    try:
+                        self._nc_bcknd = process_multinest_run(root+"-",
+                                                       base_dir=base_dir)
+                    except:
+                        raise
             else:
                 if kwargs['implementation'] == 'multinest':
-                    self._nc_bcknd = process_multinest_run(root,
+                    try:
+                        self._nc_bcknd = process_multinest_run(root,
                                                            base_dir=base_dir)
+                    except:
+                        try:
+                            self._nc_bcknd = process_multinest_run(root+"-",
+                                                           base_dir=base_dir)
+                        except:
+                            raise
                 elif kwargs['implementation'] == 'polychord':
                     self._nc_bcknd = process_polychord_run(root,
                                                            base_dir=base_dir)
