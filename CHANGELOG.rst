@@ -49,6 +49,8 @@ Fixed
 
 * Fixed a bug when combining multiple runs in ``xpsi/PostProcessing/_runs.py``, which caused the combination sometimes fail since PolyChord (instead of MultiNest) default was used for the initial live point likelihoods in dead-birth files. This bug appeared after switching to use a non-customized version of NestCheck (after X-PSI version 2.0.0). Now the newest NestCheck version allows to change this value, and this change is now done within X-PSI. If trying to use an older NestCheck version, an error is raised (T.S., Y.K.).
 
+* Fixed the hyphens in the file names in ``xpsi/PostProcessing/_backends.py`` when reading MultiNest output files with the newest NestCheck version from GitHub, although trying still to read the filenames also with the older syntax to allow older NestCheck versions for other things than combining runs (T.S.).
+
 Added
 ^^^^^
 * Added a keyword argument in ``xpsi/PostProcessing/_corner.py`` to allow user to define the decimal precisions for all the credible intervals printed in the figures (T.S.).
