@@ -171,7 +171,7 @@ class HotRegion(ParameterSubspace):
     :param str atm_ext:
         Used to determine which atmospheric extension to use.
         Options at the moment:
-        "BB": Analytical blackbody,
+        "BB": Analytical blackbody (default),
         "Num4D": Numerical atmosphere using 4D-interpolation from the provided
         atmosphere data,
         "user": A user-provided extension which can be set up by replacing the contents of 
