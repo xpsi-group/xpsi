@@ -34,6 +34,62 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.0.3] - 2023-07-11
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Updates and bug fixes in post-processing.
+
+Fixed
+^^^^^
+
+* Fixed a bug when defining ``param_plot_lims`` in ``xpsi/PostProcessing/_corner.py`` caused by ``tight_gap_fraction`` being only defined in the customized GetDist version that is not used anymore. That parameter is now defined in X-PSI instead (T.S., Y.K., S.G.).
+
+* Fixed a bug when combining multiple runs in ``xpsi/PostProcessing/_runs.py``, which caused the combination sometimes fail since PolyChord (instead of MultiNest) default was used for the initial live point likelihoods in dead-birth files. This bug appeared after switching to use a non-customized version of NestCheck (after X-PSI version 2.0.0). Now the newest NestCheck version allows to change this value, and this change is now done within X-PSI. If trying to use an older NestCheck version, an error is raised (T.S., Y.K.).
+
+* Fixed the hyphens in the file names in ``xpsi/PostProcessing/_backends.py`` when reading MultiNest output files with the newest NestCheck version from GitHub, although trying still to read the filenames also with the older syntax to allow older NestCheck versions for other things than combining runs (T.S.).
+
+Added
+^^^^^
+* Added a keyword argument in ``xpsi/PostProcessing/_corner.py`` to allow user to define the decimal precisions for all the credible intervals printed in the figures (T.S.).
+
+* Added a photosphere setter in ``xpsi/Star.py`` which should allow producing residual and signal plots for models with multiple photosphere objects as explained in ``https://github.com/xpsi-group/xpsi/issues/304`` (Y.K, T.S.).
+
+* Added minor ticks back to corner plots in ``xpsi/PostProcessing/_corner.py``. Previously, these ticks were produced by the customized older GetDist version (T.S.).
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi, Yves Kini, Sebastien Guillot
+
+
+[v2.0.2] - 2023-06-09
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* More numerical problems in likelihood computation were fixed for cases with zero counts. These fixes seem not to have any effect on the current examples, but for data with zero counts at some energy channels, more parameter vectors can now have acceptable likelihoods.
+
+Fixed
+^^^^^
+
+* Several numerical issues in ``xpsi/likelihoods/default_background_marginalisation.pyx`` for a given energy channel:
+
+* Prevented the upper limit of the background from becoming negative if using the semi-bounded option of the background support and having both zero modeled and observed counts at all phases.
+
+* Prevented the lower limit (and the initial guess) of the background from becoming negative if having zero observed counts at all phases but non-zero modeled counts at some phases.
+
+* Prevented division by zero when estimating the standard deviation for the background that maximizes the likelihood in the case of zero observed counts at all phases but non-zero modeled counts at some phases.
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi
+
+
 [v2.0.1] - 2023-04-25
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -53,6 +109,7 @@ Added
 
 Attribution
 ^^^^^^^^^^^
+
 Tuomo Salmi,
 Evert Rol,
 Martin Heemskerk
