@@ -34,6 +34,28 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[pre-v2.1.0] - 2023-07-18
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Atmosphere switching implemented without need for re-installing X-PSI for different atmosphere extensions.
+
+Fixed
+^^^^^
+
+Added
+^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi,
+Bas Dorsman,
+Sebastien Guillot
+
+
 [v2.0.3] - 2023-07-11
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -62,7 +84,9 @@ Added
 Attribution
 ^^^^^^^^^^^
 
-Tuomo Salmi, Yves Kini, Sebastien Guillot
+Tuomo Salmi,
+Yves Kini,
+Sebastien Guillot
 
 
 [v2.0.2] - 2023-06-09
