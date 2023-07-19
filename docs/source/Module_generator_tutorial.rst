@@ -31,12 +31,12 @@ The output of the above code block is:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.0.0               |
+    |                Version: 2.1.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
 
-    Imported GetDist version: 1.4
+    Imported GetDist version: 1.4.3
     Imported nestcheck version: 0.2.1
     Parsing configuration file...
     usage: module_generator.py [-h] [--generate-config-file]
@@ -171,12 +171,12 @@ The corresponding output is:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.0.0               |
+    |                Version: 2.1.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
 
-    Imported GetDist version: 1.4
+    Imported GetDist version: 1.4.3
     Imported nestcheck version: 0.2.1
     Parsing configuration file...
     Configuration file generated.
@@ -319,8 +319,11 @@ It should look like this:
     --custom-background-module=CustomBackground
 
 We can modify the ``generate.ini`` file as per our need by filling up, commenting and/or removing the arguments provided.
-An example of a filled out ``generate.ini`` file is present in ``../examples/examples_module_generator`` which creates a
-`CST+PDT` hot-region model for PSR J0030+0451 using `NSX-H` atmosphere model.
+An example of a filled out ``generate.ini`` file is present in `../examples/examples_module_generator`__ which creates a `CST+PDT` hot-region model for PSR J0030+0451 using `NSX-H` atmosphere model.
+
+.. _generate: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_module_generator/
+
+__ generate_
 
 The ``generate.ini`` file can then be used to create the required `Main` and `Custom` modules as follows:
 
@@ -336,12 +339,12 @@ will take in the default value specified.
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.0.0               |
+    |                Version: 2.1.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
 
-    Imported GetDist version: 1.4
+    Imported GetDist version: 1.4.3
     Imported nestcheck version: 0.2.1
     Parsing configuration file...
     --telescope=NICER
@@ -416,12 +419,12 @@ The corresponding output is:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.0.0               |
+    |                Version: 2.1.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
 
-    Imported GetDist version: 1.4
+    Imported GetDist version: 1.4.3
     Imported nestcheck version: 0.2.1
     Parsing configuration file...
     Configuration file generated.
@@ -440,8 +443,13 @@ You can check the content of the empty ``config.ini`` file by running:
 
 Again, we don't display the empty ``config.ini`` file in here given the large number of potential arguments to pass to
 the modules. We can modify the ``config.ini`` file as per our need by filling up, commenting and/or removing the
-arguments provided. An example of a filled out ``config.ini`` file is present in ``../examples/examples_module_generator``.
+arguments provided. An example of a filled out ``config.ini`` file is present in `../examples/examples_module_generator`__.
 The files specified in the examples config file can be found on `Zenodo <https://zenodo.org/record/7113931#.Y90fHi8w35k>`_.
+
+.. _config: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_module_generator/
+
+__ config_
+
 
 The modules can then be run as follows:
 
