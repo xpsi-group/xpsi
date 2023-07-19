@@ -21,13 +21,13 @@ Second script called `examples/examples_modeling_tutorial/TestRun_BB.py`__ is a 
 
 __ t2_
 
-Third script called `examples/examples_modeling_tutorial/TestRun_Num.py`__ is also a test run, which is similar to the :doc:`Modeling<Modeling>` tutorial, except using the numerical atmosphere extension (X-PSI installed using the flag ``--NumHot``).
+Third script called `examples/examples_modeling_tutorial/TestRun_Num.py`__ is also a test run, which is similar to the :doc:`Modeling<Modeling>` tutorial, except using the numerical atmosphere extension.
 
 .. _t3: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_Num.py
 
 __ t3_
 
-Fourth script called `examples/examples_modeling_tutorial/TestRun_NumBeam.py`__ is a similar test run as the previous, except using a numerical atmosphere extension with extra parameters allowing deviations to the atmospheric beaming pattern (X-PSI installed using the flag ``--NumHotBeam`` instead of ``--NumHot``).
+Fourth script called `examples/examples_modeling_tutorial/TestRun_NumBeam.py`__ is a similar test run as the previous, except using a numerical atmosphere extension with extra parameters allowing deviations to the atmospheric beaming pattern.
 
 .. _t4: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_NumBeam.py
 
