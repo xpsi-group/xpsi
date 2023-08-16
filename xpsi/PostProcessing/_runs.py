@@ -185,12 +185,24 @@ class Runs(Metadata):
             run['output']['base_dir'] = base_dir
             run['output']['file_root'] = file_root
 
-            write_run_output(run,
-                             write_dead = True,
-                             write_stats = True,
-                             posteriors = True,
-                             stats_means_errs = True,
-                             n_simulate = 1000)
+            try:
+                #use MultiNest initial likelihood (logl_init) instead of the default PolyChord
+                write_run_output(run,
+                                 write_dead = True,
+                                 write_stats = True,
+                                 posteriors = True,
+                                 stats_means_errs = True,
+                                 n_simulate = 1000,
+                                 logl_init = -0.179769313486231571E+309)
+            except TypeError as e:
+                if str(e) == "Unexpected **kwargs: {'logl_init': -1.7976931348623157e+308}":
+                    raise TypeError("The used nestcheck version does not support combining "
+                    "MultiNest runs in X-PSI. To use this feature, nestcheck version newer "
+                    "than in this commit: "
+                    "https://github.com/ejhigson/nestcheck/commit/513ef962ef7b0d66377686f9fe0a9e354dad48b3 "
+                    "should be used (see installation instructions for installing it from github).")
+                else:
+                    raise
 
         kwargs = {'kde_settings': self.kde_settings,
                   'ID': 'combined',

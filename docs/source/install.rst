@@ -115,6 +115,13 @@ post-processing:
 
     conda install -c conda-forge getdist h5py nestcheck fgivenx
 
+.. note::
+
+    However, to get the most updated versions of getdist and nestcheck (which may be needed by
+    some of the X-PSI post-processing features), they should be installed from the source
+    (https://github.com/cmbant/getdist and https://github.com/ejhigson/nestcheck)
+    by cloning the repositories and running ``python setup.py install`` in them.
+
 In addition, some optional miscellaneous packages are:
 
 #. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook.
