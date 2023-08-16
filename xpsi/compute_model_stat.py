@@ -784,8 +784,9 @@ deg2rad = np.pi/180.0
 tempkeV = 1.0219978 #1.0
 tempK = np.log10(tempkeV*11604525.00617)
 print("tempK=",tempK)
-values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}              
-#values = {'super_radius': 10.0*deg2rad,'super_temperature': tempK}              
+#values = {'super_radius': 1.0*deg2rad,'super_temperature': tempK}
+values = {'super_radius': 0.01*deg2rad,'super_temperature': tempK}
+#values = {'super_radius': 10.0*deg2rad,'super_temperature': tempK}
 
 ceding=False
 
@@ -942,7 +943,7 @@ class CustomPhotosphere(xpsi.Photosphere):
                           self.hot.objects[1]['s__super_temperature']])
 
 
-numerical_atmos = True
+numerical_atmos = False #True
 
 if numerical_atmos:
     photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
@@ -971,13 +972,13 @@ if two_spots:
         0.0,
         20.0*deg2rad]
 else:
-    p = [math.cos(60.0*deg2rad),
-        0.0,
-        20.0*deg2rad]
-    #p = [math.cos(40.0*deg2rad),
+    #p = [math.cos(60.0*deg2rad),
     #    0.0,
-    #    60.0*deg2rad]        
-    pmaxL = [0.53979588066914197, 0.0382707326272626602, 0.313082096977971847] #[0.58450219, 0.70448103, 0.0056285 ] 
+    #    20.0*deg2rad]
+    p = [math.cos(0.3*deg2rad),
+        0.0,
+        0.3*deg2rad]
+    pmaxL = [0.53979588066914197, 0.0382707326272626602, 0.313082096977971847] #[0.58450219, 0.70448103, 0.0056285 ]
     #p = pmaxL 
 
 star(p)
@@ -1044,8 +1045,8 @@ photosphere.integrate(energy_keV, threads=1, stokes=True)
 #save_pulse("pulses/pulse_test_25052022_X") #if numerical_atmos=False (burst atmosphere)
 #save_pulse("pulses/pulse_ps21_thom_s21X") #if numerical_atmos=True (Thomson atmosphere)
 #exit()
-for ie in range(len(energy_keV)):
-	save_pulse("pulses/all_E_128b/xpsi_ps21_thom_s21",ie) 
+#for ie in range(len(energy_keV)):
+#	save_pulse("pulses/all_E_128b/xpsi_ps21_burst_s21",ie)
 
 likelihood = xpsi.Likelihood(star = star, signals = signals,
                              num_energies=128,#281,#128,
@@ -1366,18 +1367,27 @@ print(phase)
 
 #Save pulses for X-PSI
 for ie in range(len(energy_keV)):
-	save_pulse("pulses/all_E_128a/xpsi_ps21_thom_s21",ie) 
+	#save_pulse("pulses/all_E_128a/xpsi_ps21_burst_s21",ie)
+	save_pulse("pulses/all_E_128a/xpsi_burst_pole1X",ie)
 
+#mass= 1.4 #0.01
+#rad = 12.0
+#incl = 60.0
+#theta = 20.0
+#rho = 1.0
+#pol = 0.0
 
-mass= 1.4 #0.01
+mass = 1.4
 rad = 12.0
-incl = 60.0
-theta = 20.0
-rho = 1.0
-pol = 0.0
+incl = 0.3 #2.0 #0.3 #20.0 #0.3 #20.0 #0.03 #0.03 #20.0 #0.01 #0.1 #0.5 #3.0 #5.0 #34
+theta = 0.3 #2.0 #0.3 #20.0 #0.3 #20.0 #0.03 #0.03 #20.0 #0.01 #20.0 #0.1 #0.5 #3.0 #5.0 #23
+rho = 0.01 #1.0
+pol = 0.0  # or 0.1171
+
 #Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,atmos_path="/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_thom/")
 #Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/xpatap_rho10f600_Tc_281_pshift_match_X',savePulse=True,atmos_path="atmos_thom/")
-Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/all_E_128a/xpatap_ps21_thom_s21X',savePulse=True,atmos_path="atmos_thom/")
+#Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/all_E_128a/xpatap_ps21_burst_s21X',savePulse=True,atmos_path="atmos_thom/")
+Flux = compf(mass,rad,incl,theta,rho,pol,energy_keV,phase,spath='pulses/all_E_128a/xpatap_burst_pole1X',savePulse=True,atmos_path="atmos_thom/")
 print(len(Flux),len(Flux[:,0,0]),len(Flux[0,:,0]),len(Flux[0,0,:]))
 #exit()
 

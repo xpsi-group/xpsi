@@ -11,7 +11,7 @@ Spectrum={
       2:'Burst',
       1:'simplThomson', 
       0:'FromFile'
-}[1] 
+}[2]#[1]
 
 oblateness='AlGendy'
 
@@ -199,13 +199,18 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 
 	#precomputations : Done already beforehand
 
-	NMu = 22 # 20# 15 # number of propagation zenith angle cosines (\mu) [0,1]
+	NMu = 22# 20# 15 # number of propagation zenith angle cosines (\mu) [0,1]
 	NZenith = 2*NMu # number of propagation zenith angles (z) [0,pi]
 	#IntEnergy = logspace(x_l,x_u,NEnergy), log(1e1)*(x_u-x_l)/(NEnergy-1.) # sample points and weights for integrations over the spectrum computing sorce function
 	IntZenith = leggauss(NZenith) #  sample points and weights for integrations over zenith angle in positive and negative directions together   
 
 	mu,mu_weight=IntZenith
 	
+	mu = np.append(mu,1.0)
+	#mu=cos(linspace(-pi/2,pi/2,num=NZenith))
+	#print(mu)
+	#exit()
+
 	#x_l, x_u = -3.7 , -1.2 # -3.7 , .3 # -3.7, -1.2 # lower and upper bounds of the log_10 energy span
 	#NEnergy =  281 # number of energy points (x)	
 	#x,x_weight=IntEnergy
@@ -291,25 +296,27 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 
 
 	if Spectrum=='Burst' : # Initializing Stokes vectors arrays, computing zeroth scattering 
-		Intensity=zeros((NEnergy,NZenith,2)) # total intensity of all scattering orders from the slab suface 
+		Intensity=zeros((NEnergy,NZenith+1,2)) # total intensity of all scattering orders from the slab surface
 		for e in range(NEnergy):
-			for d in range(NZenith):
+			for d in range(NZenith+1):
 				#Intensity[e,d,0]=Planck(x[e],T)#*(1 + 2.06*mu[d])#TS TESTING BLACKBODY energy spectrum with burst-beaming only in polarization
 				Intensity[e,d,0]=Planck(x[e],T)*(0.421+0.868*mu[d]) #more accurate version
 				Intensity[e,d,1]=Intensity[e,d,0]*0.1171*(mu[d] - 1.)/(1. + 3.582*mu[d])
+				#if e==42:
+				#	print("Q,mu:",Intensity[e,d,1],mu[d])
 
 
 	NPhi = 120 #500 #120 # Number of equidistant phase points
 	NBend= 20 # Number of knots in light bending integrations
 	NAlpha= 200#1000 # 10000 # Number of psi/aplha grid points 
 	IntBend = leggauss(NBend)
-	NZenithBig=100
+	NZenithBig=5001 #101 #100
 	#NZenithBig = NZenith
-	bending_exact = True #False #True
+	bending_exact = False #True
 	tdelay_exact = True #False #True #False #True
 
 	phi=linspace(0,2*pi,num=NPhi,endpoint=False,retstep=False)
-	
+	#exit()
 
 	#NPhase = 150 #500# 150 # Number of observation phases
 	#phase =linspace(0,1,num=NPhase,endpoint=True,retstep=False)
@@ -321,13 +328,13 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 	nu=401.0#1.0#100 #600 # star rotation frequency in Hz
 	#M=1.4 # star mass in solar masses
 	M=mass #input param
-	R_g=M*2.95325 # gravitational Schwarzschild radius #TS: Made this more accurate
+	R_g=M*2.95325 #2.95325024 #2.95325 # gravitational Schwarzschild radius #TS: Made this more accurate
 	#R_e=12.0 # equatorial radius of the star in kilometers
 	R_e=eqrad #input param
 
 	#Increase the resolution for the following when considering large spots!:
-	NRho=40 #4 #4 #20 #4 #40 #4#40#20#4#2#8
-	NVarphi=40 #2 #6 #20 #2 #40 #2#40#20#6#4
+	NRho=1 #20 #1 #4 #4 #20 #4 #40 #4#40#20#4#2#8
+	NVarphi=1 #20 #1 #2 #6 #20 #2 #40 #2#40#20#6#4
 
 	# IntVarphi = linspace(0,2*pi,num=NVarphi,endpoint=False,retstep=True)
 	IntVarphi = leggauss(NVarphi)
@@ -469,7 +476,8 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 
 
 
-
+	#print("mu:",mu[NMu:])
+	#exit()
 
 	for e in range(NEnergy):
 		IntInt=CubicSpline(mu[NMu:],Intensity[e,NMu:,0],extrapolate=True) # interpolate intensity
@@ -479,11 +487,15 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 
 
 		for d in range(NZenithBig):
+			#print("IQ",IQ(z[d]))
 			logIntensity[e,d] = log(max(0,IntInt(z[d]))),log(absolute(IQ(z[d]))),sign(IQ(z[d]))
 			#Testing with non-log interpolation:
 			#logIntensity[e,d] = max(0,IntInt(z[d])),IQ(z[d]),sign(IQ(z[d]))
+			#if e ==42:
+			#	print("Q,mu=",logIntensity[e,d][1],z[d])
 
-	mu=z.copy()   
+	mu=z.copy()
+	#exit()
 
 	for p in range(NSpots):
 		sin_theta=sin(theta[p])
@@ -537,7 +549,9 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 	
 					cos_alpha = cos(alpha2*dr1 + alpha1*dr2) # linear interpolation of alpha(psi)
 					sin_alpha = sqrt(1. - cos_alpha**2)
-					sin_alpha_over_sin_psi= sin_alpha/sin_psi if sin_psi > 1e-4 else 1./redshift
+					sin_alpha_over_sin_psi= sin_alpha/sin_psi if sin_psi > 1e-10 else 1./redshift
+					#if not sin_psi > 1e-10:
+					#    print("sin_psi:",sin_psi)
 					dcos_alpha=sin_alpha_over_sin_psi *dalpha/dpsi # d cos\alpha \over d \cos \psi
 					
 				else:
@@ -547,9 +561,16 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 					
 					cos_alpha = 1.0 - Poutanen(u, 1.0 - cos_psi) 
 					sin_alpha = sqrt(1. - cos_alpha**2)	
-					sin_alpha_over_sin_psi= sin_alpha/sin_psi if sin_psi > 1e-4 else 1./redshift
+					sin_alpha_over_sin_psi= sin_alpha/sin_psi if sin_psi > 1e-10 else 1./redshift
+					#if not sin_psi > 1e-10:
+					#    print("HELLO2")
 					dcos_alpha = Poutanen_der(u, 1.0 - cos_psi)
-				
+				#print("sin_alpha, sin_psi:",sin_alpha,sin_psi)
+				#exit()
+				#sin_alpha = sin_psi
+				#cos_alpha = cos_psi
+				#dcos_alpha = 1.0
+				#sin_alpha_over_sin_psi = 1.0
 
 				if(tdelay_exact):
 					dt1=dt[r1,a1 - 1]*dalpha1/dalpha + dt[r1,a1]*(1. - dalpha1/dalpha)
@@ -627,12 +648,19 @@ def compf(mass,eqrad,incl_deg,theta_deg,rho_deg,pol,ekev,ph,spherical=False,anti
 				I,Q=exp(logIQ[:2])* shift**3 * Omega
 				Q*=logIQ[2]
 				#Testing with non-log interpolation:
-				#I,Q=logIQ[:2]* shift**3 * Omega				
+				#I,Q=logIQ[:2]* shift**3 * Omega
+				#Testing with not interpolating at all:
+				#I = Planck(x0,T)*(0.421+0.868*mu0)*shift**3 * Omega
+				#Q = I*0.1171*(mu0 - 1.)/(1. + 3.582*mu0)
+				#Qtest = (0.421+0.868*mu0)*0.1171*(mu0 - 1.)/(1. + 3.582*mu0)
 
 				if I<0: ############
 					print('never')
 				Flux_obs[t,e]=[I, Q*cos_2chi, Q*sin_2chi]
-                                
+				if e==42:
+				    #print("Q0,Qtest,Q:",Q0,Qtest,Q)
+				    print("mu1,mu0,mu2",mu1,mu0,mu2)
+				    #print("t, Q, mu1, mu2=",t,Q,mu1,mu2,logIntensity[e2, d1],logIntensity[e2, d2])
 
 		for t in range(NPhase):
 			phase0=phase[t]

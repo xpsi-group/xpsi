@@ -28,7 +28,7 @@ def read_pulse_arcmancer():
         for i in range(c_lines,Nchain_size): 
             parts = lines[i].split(",")
             full_chain[j].append(float(parts[j]))
-	parts = lines[c_lines].split(",")
+    parts = lines[c_lines].split(",")
 
     full_chain = np.array(full_chain)
 
@@ -38,7 +38,7 @@ def read_pulse_arcmancer():
     obsF = np.zeros((len(phase),egrid))
     for i in range(1,egrid+1):
         if(i==1):
-	    norm_obsF[:,i-1] = full_chain[i,:]/np.max(full_chain[1,:])
+            norm_obsF[:,i-1] = full_chain[i,:]/np.max(full_chain[1,:])
         else:
             norm_obsF[:,i-1] = full_chain[i,:]/full_chain[1,:]
         obsF[:,i-1] = full_chain[i,:]
@@ -101,13 +101,13 @@ def plot_pulse_resid(photosphere,signals,phasepol=None,qnpol=None,unpol=None,inp
     Q1p = np.sum(photQ_sig_cut, axis=0) 
     Q1pn = np.copy(Q1p)
     for ip in range(len(Q1pn)):
-    	if(I1p[ip] > 1e-10):
-    		Q1pn[ip] = Q1p[ip]/I1p[ip]
-    	else:
-    		Q1pn[ip] = 0.0
+        if(I1p[ip] > 1e-10):
+            Q1pn[ip] = Q1p[ip]/I1p[ip]
+        else:
+            Q1pn[ip] = 0.0
     ax.plot(signals[0][0].phases[0], Q1pn, 'o-', color='k', lw=0.5, markersize=2)
     if (phasepol is not None and qnpol is not None):
-    	ax.plot(phasepol,qnpol,'--',color='red')
+        ax.plot(phasepol,qnpol,'--',color='red')
     if plot_arcmancer:
         for ipha in range(0,len(phase_arc)-1):
             if(phase_arc[ipha+1] > phase_arc[ipha]):    
@@ -130,13 +130,13 @@ def plot_pulse_resid(photosphere,signals,phasepol=None,qnpol=None,unpol=None,inp
     U1p = np.sum(photU_sig_cut, axis=0) 
     U1pn = np.copy(U1p)
     for ip in range(len(U1pn)):
-    	if(I1p[ip] > 1e-10):
-    		U1pn[ip] = U1p[ip]/I1p[ip]
-    	else:
-    		U1pn[ip] = 0.0  
+        if(I1p[ip] > 1e-10):
+            U1pn[ip] = U1p[ip]/I1p[ip]
+        else:
+            U1pn[ip] = 0.0
     ax.plot(signals[0][0].phases[0], U1pn, 'o-', color='k', lw=0.5, markersize=2)
     if (phasepol is not None and unpol is not None):
-    	ax.plot(phasepol,unpol,'--',color='red')
+        ax.plot(phasepol,unpol,'--',color='red')
     if plot_arcmancer:
         for ipha in range(0,len(phase_arc)-1):
             if(phase_arc[ipha+1] > phase_arc[ipha]):    

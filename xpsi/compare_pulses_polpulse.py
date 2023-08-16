@@ -110,18 +110,23 @@ for ish in range(1,-1,-1):
 	oblateness=shapes[ish]
 	print(ish)
 	if(ish == 0):
-		#PulsName='pulses/xpatap_rho10f600_Tc_'
-		#PulsName='pulses/xpatap_rho10f600_Tc_281_pshift_match_'
-		#PulsName='pulses/all_E_281/xpatap_ps21_thom_s21'
-		#PulsName='pulses/all_E_128a/xpatap_ps21_burst_s21'
-		PulsName='pulses/all_E_128a/xpatap_ps21_thom_s21'		
+		#PulsName='../../xpsi_dev/xpsi/pulses/xpatap_rho10f600_Tc_'
+		#PulsName='../../xpsi_dev/xpsi/pulses/xpatap_rho10f600_Tc_281_pshift_match_'
+		#PulsName='../../xpsi_dev/xpsi/pulses/all_E_281/xpatap_ps21_thom_s21'
+		#PulsName='../../xpsi_dev/xpsi/pulses/all_E_128a/xpatap_ps21_burst_s21'
+		#PulsName='pulses/all_E_128a/xpatap_ps21_burst_s21X'
+		PulsName='pulses/all_E_128a/xpatap_burst_pole1X'
+		#PulsName='../../xpsi_dev/xpsi/pulses/all_E_128a/xpatap_ps21_thom_s21'
 		NPhase = 150 #121 #150
 	if(ish == 1):
 	    #pversion = '_test_26052022_thom_corr2'
 	    #pversion = 'xpsi_ps21_burstN_s21'
-	    pversion = 'xpsi_ps21_thom_s21'
-	    #PulsName='pulses/all_E_281/'+pversion		
+	    #pversion = 'xpsi_ps21_burst_s21'
+	    pversion = 'xpsi_burst_pole1X'
+	    #pversion = 'xpsi_ps21_thom_s21'
+	    #PulsName='../../xpsi_dev/xpsi/pulses/all_E_281/'+pversion
 	    PulsName='pulses/all_E_128a/'+pversion
+	    #PulsName='../../xpsi_dev/xpsi/pulses/all_E_128a/'+pversion
 	    NPhase = 150 #121 #100
 	computePulse= True
 	plotAtm=not True
@@ -389,7 +394,7 @@ if(plot_QU):
 if(plot_PA_residuals): 
 	col = "black"
 	plotAd.set_xlim(0,1)
-	plotAd.set_ylim(-0.3,0.3)
+	#plotAd.set_ylim(-0.3,0.3)
 
 	plotAd.tick_params(axis='both', which='major', labelsize=ticksize,direction='in')
 	plotAd.tick_params(axis='x', which='major', labelsize=labelsize)
@@ -407,7 +412,7 @@ if(plot_PA_residuals):
 
 	print("sum_PA_err=",sum(res_PA[abs(res_PA)<5.0]))
 
-	plotAp.set_ylim(-0.03,0.03)
+	#plotAp.set_ylim(-0.03,0.03)
 
 	F0_VP04_interp = interp1d(shift_phase(np.array(phase0_VP04),phshift1),F0_VP04,fill_value='extrapolate')# workd with newer scipy
 	Q0_VP04_interp = interp1d(shift_phase(np.array(phase0_VP04),phshift1),Q0_VP04,fill_value='extrapolate')# workd with newer scipy
@@ -453,23 +458,23 @@ plotAc.yaxis.set_label_coords(labelx, 0.5)
 plotAd.yaxis.set_label_coords(labelx, 0.5)
 
 
-plotAF.set_yticks([-0.04,-0.02,0.0,0.02])
-plotAF.set_yticklabels(["-0.04","-0.02","0","0.02"],fontstyle="normal")
-plotAF.set_ylim(-0.05,0.03)
+#plotAF.set_yticks([-0.04,-0.02,0.0,0.02])
+#plotAF.set_yticklabels(["-0.04","-0.02","0","0.02"],fontstyle="normal")
+#plotAF.set_ylim(-0.05,0.03)
 
-plotAp.set_yticks([-0.02,0.0,0.02])
-plotAp.set_yticklabels(["-0.02","0","0.02"],fontstyle="normal")
+#plotAp.set_yticks([-0.02,0.0,0.02])
+#plotAp.set_yticklabels(["-0.02","0","0.02"],fontstyle="normal")
 
-plotAd.set_yticks([-0.2,0.0,0.2])
-plotAd.set_yticklabels(["-0.2","0","0.2"],fontstyle="normal")
+#plotAd.set_yticks([-0.2,0.0,0.2])
+#plotAd.set_yticklabels(["-0.2","0","0.2"],fontstyle="normal")
 
 
 if(plot5):
 	plotAFF.xaxis.set_major_formatter(matplotlib.pyplot.NullFormatter())
 	plotAFF.tick_params(axis='both', which='major', labelsize=fontsize, pad=wpad)
-	plotAFF.set_ylim(0.0,1.1)
-	plotAFF.set_yticks([0.0,0.2,0.4,0.6,0.8,1.0])
-	plotAFF.set_yticklabels(["0","0.2","0.4","0.6","0.8","1.0"],fontstyle="normal")
+	#plotAFF.set_ylim(0.0,1.1)
+	#plotAFF.set_yticks([0.0,0.2,0.4,0.6,0.8,1.0])
+	#plotAFF.set_yticklabels(["0","0.2","0.4","0.6","0.8","1.0"],fontstyle="normal")
 
 	plotAc.set_yticks([0,50,100,150])
 	plotAc.set_yticklabels(["0","50","100","150"],fontstyle="normal")
