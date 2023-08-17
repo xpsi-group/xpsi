@@ -739,8 +739,12 @@ class HotRegion(ParameterSubspace):
         return self._beam_opt
 
     @beam_opt.setter
-    def beam_opt(self,option):
-        self._beam_opt = option
+    def beam_opt(self, option):
+        if option in [0, 1, 2, 3]:
+            self._beam_opt = option
+        else:
+            raise TypeError('Got an unrecognised beam_opt argument. Note that the only allowed '
+                            'beam_opt options are 0, 1, 2, 3 (see documentation).')
 
     @is_antiphased.setter
     def is_antiphased(self, is_antiphased):
