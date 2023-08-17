@@ -3,7 +3,7 @@ channels:
   - defaults
 dependencies:
   - numpy
-  - cython >=0.23, == 0.*
+  - cython == 0.29
   - matplotlib
   - scipy
   - wrapt
