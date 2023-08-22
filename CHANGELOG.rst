@@ -61,7 +61,7 @@ Changed
 Deprecated
 ^^^^^^^^^^
 
-* The previous way of installing X-PSI with different atmosphere extensions has been deprecated. **To use the old scripts with numerical atmosphere setup, one needs to add 'atm_ext="Num4D"' as an input parameter for all the relevant HotRegion/Elsewhere/Everywhere objects.**
+* The previous way of installing X-PSI with different atmosphere extensions has been deprecated. **To use the old python scripts (files usually named as `main.py`) to run X-PSI with numerical atmosphere setup, one needs to add `atm_ext="Num4D"` as an input parameter for all the relevant HotRegion/Elsewhere/Everywhere objects.**
 
 Removed
 ^^^^^^^
