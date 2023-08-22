@@ -15,56 +15,14 @@ import argparse
 import sys
 import shutil
 
-desc = '''Options to choose the blackbody (default) or numerical atmosphere surface radiation fields 
-          for the hot region and the rest of the surface'''
+desc = '''Options for installation'''
 parser = argparse.ArgumentParser(description=desc)
 
 try:
-    parser.add_argument('--NumHot', help="Numerical atmosphere for the hot region(s)", default=False, action="store_true")
-    parser.add_argument('--NumElse', help="Numerical atmosphere for the rest of the surface", default=False, action="store_true")
-    parser.add_argument('--NumHotBeam',help="Numerical atmosphere for the hot region(s) including free beaming", default=False, action="store_true")
-    parser.add_argument('--HotPol',help="Analytical atmosphere including polarimetry", default=False, action="store_true")
-    parser.add_argument('--NumHotPol',help="Numerical atmosphere including polarimetry", default=False, action="store_true")
     parser.add_argument('--noopenmp', help="Ignore the openmp install options", default=False, action="store_true")
-    # parser.add_argument('--ComptHot', help="Compton emission model for the hot region(s)", default=False, action="store_true")
-    # parser.add_argument('--ComptElse', help="Compton emission model for the rest of the surface", default=False, action="store_true")
     if '--help' in sys.argv:
         print(parser.print_help())
         print('-----------------------------------------------------------------------------------')
-
-    # Copying the blackbody 'Hot' and 'Elsewhere' by default
-    shutil.copy('xpsi/surface_radiation_field/archive/hot/blackbody.pyx', 'xpsi/surface_radiation_field/hot.pyx')
-    shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/blackbody.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
-
-    # Copying the Numerical 'Hot' and 'Elsewhere' if user selected
-    if '--NumHot' in sys.argv:
-        print("Copying numerical atmosphere for the hot region(s)")
-        shutil.copy('xpsi/surface_radiation_field/archive/hot/numerical.pyx', 'xpsi/surface_radiation_field/hot.pyx')
-        sys.argv.remove("--NumHot")
-    if '--NumElse' in sys.argv:
-        print("Copying numerical atmosphere for the rest of the surface")
-        shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/numerical.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
-        sys.argv.remove("--NumElse")
-    if '--NumHotBeam' in sys.argv:
-        print("Copying numerical atmosphere for the hot region(s)")
-        shutil.copy('xpsi/surface_radiation_field/archive/hot/numerical_fbeam.pyx', 'xpsi/surface_radiation_field/hot.pyx')
-        sys.argv.remove("--NumHotBeam")
-    if '--HotPol' in sys.argv:
-        print("Copying numerical atmosphere for the hot region(s)")
-        shutil.copy('xpsi/surface_radiation_field/archive/hot/hot_bb.pyx', 'xpsi/surface_radiation_field/hot.pyx')
-        sys.argv.remove("--HotPol")
-    if '--NumHotPol' in sys.argv:
-        print("Copying numerical atmosphere for the hot region(s)")
-        shutil.copy('xpsi/surface_radiation_field/archive/hot/hot_numerical_2D.pyx', 'xpsi/surface_radiation_field/hot.pyx')
-        sys.argv.remove("--NumHotPol")
-    # if '--ComptHot' in sys.argv:
-    #     print("Copying Compton emission model for the hot region(s)")
-    #     shutil.copy('xpsi/surface_radiation_field/archive/hot/compton.pyx', 'xpsi/surface_radiation_field/hot.pyx')
-    #     sys.argv.remove("--ComptHot")
-    # if '--ComptElse' in sys.argv:
-    #     print("Copying Compton emission model for the rest of the surface")
-    #     shutil.copy('xpsi/surface_radiation_field/archive/elsewhere/compton.pyx', 'xpsi/surface_radiation_field/elsewhere.pyx')
-    #     sys.argv.remove("--ComptElse")
 
     # Setting the noopenmp option from argv
     if '--noopenmp' in sys.argv:
@@ -276,8 +234,12 @@ if __name__ == '__main__':
                 'xpsi.likelihoods._gaussian_likelihood_QnUn',                
                 'xpsi.surface_radiation_field.__init__',
                 'xpsi.surface_radiation_field.preload',
-                'xpsi.surface_radiation_field.hot',
-                'xpsi.surface_radiation_field.elsewhere',
+                'xpsi.surface_radiation_field.hot_user',
+                'xpsi.surface_radiation_field.hot_BB',
+                'xpsi.surface_radiation_field.hot_Num4D',
+                'xpsi.surface_radiation_field.hot_wrapper',
+                'xpsi.surface_radiation_field.elsewhere_user',
+                'xpsi.surface_radiation_field.elsewhere_wrapper',
                 'xpsi.cellmesh.integrator',
                 'xpsi.cellmesh.integratorIQU',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance',
@@ -304,7 +266,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '2.0.3',
+        version = '2.1.0',
         author = 'The X-PSI Core Team',
         author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',

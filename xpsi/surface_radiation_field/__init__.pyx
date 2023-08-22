@@ -22,19 +22,25 @@ includes:
 
 The first type of signal computation is enabled by surface discretization,
 whilst the latter is enabled via image-plane discretization. For surface
-discretization there are two extension modules for users and developers to
-work with: ``hot.pyx`` and ``elsewhere.pyx``. These extension modules contain
-functions whose bodies enable evaluation of specific intensities with respect
-to local comoving frames at the stellar surface. These functions have simple
-default code (isotropic blackbody radiation field) but must generally be
-customized for more advanced physics models. The ``hot.pyx`` module defines
-the radiation field inside surface hot regions represented by
-:class:`~xpsi.HotRegion.HotRegion` instances; however, the same module is used
-by an instance of the :class:`~xpsi.Everywhere.Everywhere` class. The
-``Elsewhere.pyx`` extension module defines the radiation field *exterior* to
-the :class:`~xpsi.HotRegion.HotRegion` instances on the surface.
+discretization there are several extension modules for users and developers to
+work with; ``hot_BB.pyx``, and ``hot_Num4D.pyx`` are the built-in options for
+isotropic blackbody radiation field and numerical 4D-interpolation from a preloaded
+atmosphere table (they can be selected using appropriate flags when creating
+instances of the radiating regions); ``hot_user.pyx`` and ``elsewhere_user.pyx``
+are additional extensions which can be replaced by user-developed versions, and
+used after re-installing X-PSI (by default they are the same as ``hot_BB.pyx``).
+These extension modules contain functions whose bodies enable evaluation of
+specific intensities with respect to local comoving frames at the stellar surface.
+The ``hot_*.pyx`` modules define the radiation field inside surface hot regions
+represented by :class:`~xpsi.HotRegion.HotRegion` instances; however, the same
+modules are used by an instance of the :class:`~xpsi.Everywhere.Everywhere` class.
+The ``elsewhere_user.pyx`` extension module defines the customized radiation
+field *exterior* to the :class:`~xpsi.HotRegion.HotRegion` instances on the surface.
+In case no customized module for the exterior surface is needed, the surface
+radiation field for exterior surface can be selected from one of the built-in
+options for the hot regions.
 
-For image-plane discretization, the ``hot.pyx`` extension defines the local
+For image-plane discretization, the ``hot_*.pyx`` extensions define the local
 surface radiation field properties with respect to a comoving frame. However,
 to compute the variables required by this module to evaluate specific intensity,
 another extension module is required with transforms a set of *global*
@@ -55,12 +61,12 @@ and point to the data structures in memory when computing signals; developers
 can develop extension modules to work with preloaded numerical atmosphere data.
 When preloading an atmosphere, the number of grid points in each dimension
 is dynamically inferred, but the existing source code for multi-dimensional
-interpolation is hard-coded for four dimensions. With development, this can be
-made more sophisticated.
+interpolation (``hot_Num4D.pyx``) is hard-coded for four dimensions. With
+development, this can be made more sophisticated.
 
 Developers can contribute extension modules to the
 ``surface_radiation_field/archive``. Extensions from this archive must replace
-the contents of the ``hot.pyx``, ``elsewhere.pyx``, and ``local_variables.pyx``
+the contents of the ``hot_user.pyx``, ``elsewhere_user.pyx``, and ``local_variables.pyx``
 modules, adhering to the function prototypes defined in the associated
 header files and using existing examples in the archive for guidance.
 
@@ -82,14 +88,14 @@ from .preload cimport (_preloaded,
                        init_preload,
                        free_preload)
 
-from .hot cimport (init_hot,
-                   eval_hot,
+from .hot_wrapper cimport (init_hot,
+                   #eval_hot,
                    eval_hot_I,
                    eval_hot_Q,
                    eval_hot_norm,
                    free_hot)
 
-from .elsewhere cimport (init_elsewhere,
+from .elsewhere_wrapper cimport (init_elsewhere,
                          free_elsewhere,
                          eval_elsewhere,
                          eval_elsewhere_norm)
@@ -104,7 +110,7 @@ from .effective_gravity_universal cimport effectiveGravity
 
 from xpsi.pixelmesh.geometricConfiguration cimport _GEOM
 
-ctypedef void* (*fptr_init)(size_t, const _preloaded *const) nogil
+ctypedef void* (*fptr_init)(size_t, const _preloaded *const, size_t) nogil
 
 ctypedef int (*fptr_free)(size_t, void *const) nogil
 
@@ -112,7 +118,8 @@ ctypedef double (*fptr_eval)(size_t,
                              double,
                              double,
                              const double *const,
-                             void *const) nogil
+                             void *const,
+                             size_t) nogil
 
 ctypedef double (*fptr_norm)() nogil
 
@@ -121,7 +128,9 @@ def intensity(double[::1] energies,
               double[:,::1] local_variables,
               atmosphere = None,
               int stokesQ = 0,
-              extension = 'hot',
+              region_extension = 'hot',
+              atmos_extension = "BB",
+              beam_opt = 0,
               size_t numTHREADS = 1):
     """ Evaluate the photon specific intensity using an extension module.
 
@@ -138,8 +147,9 @@ def intensity(double[::1] energies,
         comoving frame.
 
     :param double[:,::1] local_variables:
-        A 2D :class:`numpy.ndarray` of local variables such as temperature
-        and effective gravity. Rows correspond to the sequence of points in the
+        A 2D :class:`numpy.ndarray` (with beam_opt=0) or 7D :class:`numpy.ndarray`
+        (with beam_opt > 0) of local variables such as temperature, effective gravity,
+        and beaming parameters. Rows correspond to the sequence of points in the
         space of energy and angle specified above, and columns contain the
         required variable values, one variable per column, in the expected
         order.
@@ -171,9 +181,27 @@ def intensity(double[::1] energies,
         script exits and the kernel stops. The likelihood callback accesses
         the same memory upon each call without I/O.
 
-    :param str extension:
-        Specify the extension module to invoke. Options are ``'hot'`` and
+    :param str region_extension:
+        Specify the radiating region extension module to invoke. Options are ``'hot'`` and
         ``'elsewhere'``.
+
+    :param str atmos_extension:
+        Used to determine which atmospheric extension to use.
+        Options at the moment:
+        "BB": Analytical blackbody,
+        "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data,
+        "user": A user-provided extension which can be set up by replacing the contents of
+        the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+        (if not changed, "user" is the same as "BB").
+
+    :param int beam_opt:
+        Used to determine which atmospheric beaming modification model to use.
+        Options at the moment:
+        0: No modification (default)
+        1: Original*beaming_correction without re-normalization
+        2: Original*beaming_correction with analytical re-normalization estimate
+        3: Original*beaming_correction with numerical re-normalization
 
     :param int numTHREADS:
         Number of OpenMP threads to launch.
@@ -183,35 +211,49 @@ def intensity(double[::1] energies,
         units of photons/s/keV/cm^2/sr.
 
     """
+    cdef size_t _beam_opt = beam_opt
+    cdef size_t _atmos_extension
+
     cdef fptr_init init_ptr = NULL
     cdef fptr_free free_ptr = NULL
     cdef fptr_eval eval_ptr = NULL
     cdef fptr_norm norm_ptr = NULL
 
-    if extension == 'hot':
+    if region_extension == 'hot':
         init_ptr = init_hot
         free_ptr = free_hot
-        eval_ptr = eval_hot
+        #eval_ptr = eval_hot
         eval_ptr_I = eval_hot_I
         eval_ptr_Q = eval_hot_Q
         norm_ptr = eval_hot_norm
-    elif extension == 'elsewhere':
+    elif region_extension == 'elsewhere':
         init_ptr = init_elsewhere
         free_ptr = free_elsewhere
         eval_ptr = eval_elsewhere
         norm_ptr = eval_elsewhere_norm
     else:
-        raise ValueError("Extension module must be 'hot' or 'elsewhere'.")
+        raise ValueError("Region extension module must be 'hot' or 'elsewhere'.")
 
     # initialise the source radiation field
     cdef _preloaded *preloaded = NULL
     cdef void *data = NULL
 
+    if atmos_extension == "BB":
+        _atmos_extension = 1
+    elif atmos_extension == "Num4D":
+        _atmos_extension = 2
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 3
+    else:
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', or 'user'.")
+
     if atmosphere:
         preloaded = init_preload(atmosphere)
-        data = init_ptr(numTHREADS, preloaded)
+        data = init_ptr(numTHREADS, preloaded, _atmos_extension)
     else:
-        data = init_ptr(numTHREADS, NULL)
+        data = init_ptr(numTHREADS, NULL, _atmos_extension)
 
     cdef double[::1] intensities = np.zeros(energies.shape[0],
                                             dtype = np.double)
@@ -232,14 +274,23 @@ def intensity(double[::1] energies,
                                   energies[i],
                                   mu[i],
                                   &(local_variables[i,0]),
-                                  data)
+                                  data,
+                                  _beam_opt)
         else:
 
             intensities[i] = eval_ptr_I(T,
                                   energies[i],
                                   mu[i],
                                   &(local_variables[i,0]),
-                                  data)
+                                  data,
+                                  _beam_opt)
+
+        #intensities[i] = eval_ptr(T,
+        #                      energies[i],
+        #                      mu[i],
+        #                      &(local_variables[i,0]),
+        #                      data,
+        #                      _beam_opt)
 
         # get photon specific intensity
         intensities[i] *= norm_ptr() / (energies[i] * keV)
@@ -262,6 +313,7 @@ def intensity_from_globals(double[::1] energies,
                            double zeta,
                            double epsilon,
                            atmosphere = None,
+                           atmos_extension = "BB",
                            size_t numTHREADS = 1):
     """ Evaluate the photon specific intensity using extension modules.
 
@@ -345,6 +397,16 @@ def intensity_from_globals(double[::1] energies,
         script exits and the kernel stops. The likelihood callback accesses
         the same memory upon each call without I/O.
 
+    :param str atmos_extension:
+        Used to determine which atmospheric extension to use.
+        Options at the moment:
+        "BB": Analytical blackbody,
+        "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data,
+        "user": A user-provided extension which can be set up by replacing the contents of
+        the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+        (if not changed, "user" is the same as "BB").
+
     :param int numTHREADS:
         Number of OpenMP threads to launch.
 
@@ -353,6 +415,7 @@ def intensity_from_globals(double[::1] energies,
         units of photons/s/keV/cm^2/sr.
 
     """
+    cdef size_t _atmos_extension
     cdef _GEOM GEOM
 
     GEOM.R_eq = R_eq
@@ -361,18 +424,29 @@ def intensity_from_globals(double[::1] energies,
 
     cdef fptr_init init_ptr = init_hot
     cdef fptr_free free_ptr = free_hot
-    cdef fptr_eval eval_ptr = eval_hot
+    cdef fptr_eval eval_ptr = eval_hot_I
     cdef fptr_norm norm_ptr = eval_hot_norm
 
     # initialise the source radiation field
     cdef _preloaded *preloaded = NULL
     cdef void *data = NULL
 
+    if atmos_extension == "BB":
+        _atmos_extension = 1
+    elif atmos_extension == "Num4D":
+        _atmos_extension = 2
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 3
+    else:
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', or 'user'.")
+
     if atmosphere:
         preloaded = init_preload(atmosphere)
-        data = init_ptr(numTHREADS, preloaded)
+        data = init_ptr(numTHREADS, preloaded, _atmos_extension)
     else:
-        data = init_ptr(numTHREADS, NULL)
+        data = init_ptr(numTHREADS, NULL, _atmos_extension)
 
     cdef storage *local_vars_buf = init_local_variables(numTHREADS, NULL)
 
@@ -412,7 +486,8 @@ def intensity_from_globals(double[::1] energies,
                                       energies[i],
                                       mu[i],
                                       local_vars_buf.local_variables[T],
-                                      data)
+                                      data,
+                                      0)
         else:
             intensities[i] = 0.0
 

@@ -46,7 +46,7 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
                                                    free_preload)
 
-from xpsi.surface_radiation_field.elsewhere cimport (init_elsewhere,
+from xpsi.surface_radiation_field.elsewhere_wrapper cimport (init_elsewhere,
                                                      free_elsewhere,
                                                      eval_elsewhere,
                                                      eval_elsewhere_norm)
@@ -74,6 +74,7 @@ def integrate(size_t numThreads,
               double[::1] cos_gammaArray,
               double[::1] energies,
               atmosphere,
+              atm_ext,
               image_order_limit = None,
               *args):
 
@@ -187,9 +188,9 @@ def integrate(size_t numThreads,
 
     if atmosphere:
         preloaded = init_preload(atmosphere)
-        data = init_elsewhere(N_T, preloaded)
+        data = init_elsewhere(N_T, preloaded, atm_ext)
     else:
-        data = init_elsewhere(N_T, NULL)
+        data = init_elsewhere(N_T, NULL, atm_ext)
 
     #----------------------------------------------------------------------->>>
     # >>> Integrate.
@@ -320,7 +321,8 @@ def integrate(size_t numThreads,
                                                  E_prime,
                                                  _ABB,
                                                  &(srcCellParams[i,j,0]),
-                                                 data)
+                                                 data,
+                                                 0)
 
                             privateFlux[T,e] += I_E * _GEOM
             if terminate[T] == 1:

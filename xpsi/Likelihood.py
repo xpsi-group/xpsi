@@ -332,6 +332,10 @@ class Likelihood(ParameterSubspace):
                     elif isinstance(e, Elsewhere.IntegrationError):
                         print('Warning: Elsewhere.IntegrationError for '
                               'photosphere%s.' % prefix)
+                    elif isinstance(e, HotRegion.AtmosError):
+                        raise
+                    elif isinstance(e, Elsewhere.AtmosError):
+                        raise
 
                     print('Parameter vector: ', super(Likelihood,self).__call__())
                     return self.random_near_llzero

@@ -25,16 +25,6 @@ If you want to test the binaries on a login node, note that you can
 compile with multiple instruction sets for auto-dispatch using the ``-x`` and
 ``-ax`` flags. See the :ref:`hpcsystems` page for examples.
 
-.. rubric:: What atmosphere extension should I use?
-
-If you want to do some quick calculations and run the Modeling tutorial, you should use the default blackbody atmosphere extension. But if you want to use similar atmosphere models as in the published X-PSI applications so far, you should use to the numerical atmosphere extension when installing X-PSI (see instructions in :ref:`install`).
-
-Note that using the model scripts with an unintended atmosphere extension may lead to a segmentation fault error if trying to use numerical atmosphere without providing numerical atmosphere data. Or if using the scripts including the numerical atmosphere data with the blackbody extension, you can get unexpected results, printing though a warning that numerical atmosphere data were preloaded but not used. Examples of numerical atmosphere data, which are required by the numerical atmosphere extension, can be found here: `doi:10.5281/zenodo.7094144`__. Examples of how to use the numerical atmospheres are shown e.g. in Surface radiation field tools -tutorial and in :ref:`example_script`.
-
-.. _Zenodo: https://doi.org/10.5281/zenodo.7094144
-
-__ Zenodo_
-
 
 Sampling
 ^^^^^^^^

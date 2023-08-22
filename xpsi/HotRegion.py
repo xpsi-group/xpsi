@@ -8,6 +8,9 @@ from xpsi.cellmesh.rays import compute_rays as _compute_rays
 from xpsi.Parameter import Parameter, Derive
 from xpsi.ParameterSubspace import ParameterSubspace
 
+class AtmosError(xpsiError):
+    """ Raised if the numerical atmosphere data were not preloaded. """
+
 class RayError(xpsiError):
     """ Raised if a problem was encountered during ray integration. """
 
@@ -165,6 +168,24 @@ class HotRegion(ParameterSubspace):
         and the user can implement more complicated prior support boundaries
         in a :class:`~.Prior.Prior` subclass instance.
 
+    :param str atm_ext:
+        Used to determine which atmospheric extension to use.
+        Options at the moment:
+        "BB": Analytical blackbody (default),
+        "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data,
+        "user": A user-provided extension which can be set up by replacing the contents of 
+        the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+        (if not changed, "user" is the same as "BB").
+
+    :param int beam_opt:
+        Used to determine which atmospheric beaming modification model to use.
+        Options at the moment:
+        0: No modification (default),
+        1: Original*beaming_correction without re-normalization,
+        2: Original*beaming_correction with analytical re-normalization estimate,
+        3: Original*beaming_correction with numerical re-normalization.
+
     :param iterable custom:
         Iterable over :class:`~.Parameter.Parameter` instances. If you
         supply custom parameter definitions, you need to overwrite the
@@ -234,6 +255,8 @@ class HotRegion(ParameterSubspace):
                  fast_num_phases = None,
                  fast_phases = None,
                  is_antiphased = False,
+                 atm_ext="BB",
+                 beam_opt=0,
                  custom = None,
                  image_order_limit = None,
                  **kwargs):
@@ -255,6 +278,9 @@ class HotRegion(ParameterSubspace):
         self.image_order_limit = image_order_limit
 
         self.symmetry = symmetry
+
+        self.atm_ext = atm_ext
+        self.beam_opt = beam_opt
 
         # first the parameters that are fundemental to this class
         doc = """
@@ -698,6 +724,32 @@ class HotRegion(ParameterSubspace):
         """ Shift the hot region by half a rotational cycle? """
         return self._is_antiphased
 
+    @property
+    def atm_ext(self):
+        """ ... """
+        return self._atm_ext
+
+    @atm_ext.setter
+    def atm_ext(self,extension):
+        if extension=="BB":
+            self._atm_ext = 1
+        elif extension=="Num4D":
+            self._atm_ext = 2
+        elif extension=="user":
+            self._atm_ext  = 3
+        else:
+            raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
+                            'atmosphere options are at the moment "BB", "Num4D", and "user".')
+
+    @property
+    def beam_opt(self):
+        """ ... """
+        return self._beam_opt
+
+    @beam_opt.setter
+    def beam_opt(self,option):
+        self._beam_opt = option
+
     @is_antiphased.setter
     def is_antiphased(self, is_antiphased):
         if not isinstance(is_antiphased, bool):
@@ -1047,7 +1099,7 @@ class HotRegion(ParameterSubspace):
             self._concentric = concentric
 
     def integrate(self, st, energies, threads,
-                  hot_atmosphere, elsewhere_atmosphere):
+                  hot_atmosphere, elsewhere_atmosphere, atm_ext_else):
         """ Integrate over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
@@ -1087,6 +1139,11 @@ class HotRegion(ParameterSubspace):
         else:
             super_energies = cede_energies = energies
 
+        if self.atm_ext==2:
+            if hot_atmosphere == ():
+                raise AtmosError('The numerical atmosphere data were not preloaded, '
+                                 'even though that is required by the current atmosphere extension.')
+
         super_pulse = self._integrator(threads,
                                        st.R,
                                        st.Omega,
@@ -1111,6 +1168,9 @@ class HotRegion(ParameterSubspace):
                                        phases,
                                        hot_atmosphere,
                                        elsewhere_atmosphere,
+                                       self.atm_ext,
+                                       atm_ext_else,
+                                       self.beam_opt,
                                        self._image_order_limit)
 
         if super_pulse[0] == 1:
@@ -1142,6 +1202,9 @@ class HotRegion(ParameterSubspace):
                                           phases,
                                           hot_atmosphere,
                                           elsewhere_atmosphere,
+                                          self.atm_ext,
+                                          atm_ext_else,
+                                          self.beam_opt,
                                           self._image_order_limit)
         except AttributeError:
             pass

@@ -34,6 +34,48 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.1.0] - 2023-07-21
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Atmosphere switching implemented without need for re-installing X-PSI for different atmosphere extensions. **Note that old scripts using the numerical atmosphere extension need to be slightly modified (see Deprecated below).**
+
+Added
+^^^^^
+
+* Atmosphere extension flag ``atm_ext`` that can be used to select the wanted atmosphere extension (for an instance of HotRegion, Elsewhere, or Everywhere class). The default option is a blackbody atmosphere, but a numerical atmosphere extension can be switched by setting ``atm_ext="Num4D"``.
+
+* Beaming modification flag ``beam_opt`` (an integer) that can be used to select the wanted atmospheric beaming correction model for an instance of HotRegion or Everywhere class (not implemented to Elsewhere currently). The default option is no modification. See the docstring for HotRegion class for other options.
+
+* Extra atmosphere extension ``xpsi/surface_radiation_field/hot_user.pyx`` that can be replaced with a user-modified atmosphere model before (re-)installing X-PSI. This model can then be used by setting ``atm_ext="user"`` allowing still the possibility to use the other built-in options without re-installing X-PSI.
+
+* Options to switch atmosphere extension and beaming option in the surface radiation field tools (``xpsi/surface_radiation_field/__init__.pyx``).
+
+Changed
+^^^^^^^
+
+* Documentation, tutorials, and example scripts updated for using the new atmosphere switching (except ``xpsi/module_generator.py``).
+
+Deprecated
+^^^^^^^^^^
+
+* The previous way of installing X-PSI with different atmosphere extensions has been deprecated. **To use the old scripts with numerical atmosphere setup, one needs to add 'atm_ext="Num4D"' as an input parameter for all the relevant HotRegion/Elsewhere/Everywhere objects.**
+
+Removed
+^^^^^^^
+
+* Archived versions of atmosphere extensions that are not needed anymore.
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi,
+Bas Dorsman,
+Sebastien Guillot
+
+
 [v2.0.3] - 2023-07-11
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -53,6 +95,7 @@ Fixed
 
 Added
 ^^^^^
+
 * Added a keyword argument in ``xpsi/PostProcessing/_corner.py`` to allow user to define the decimal precisions for all the credible intervals printed in the figures (T.S.).
 
 * Added a photosphere setter in ``xpsi/Star.py`` which should allow producing residual and signal plots for models with multiple photosphere objects as explained in ``https://github.com/xpsi-group/xpsi/issues/304`` (Y.K, T.S.).
@@ -62,7 +105,9 @@ Added
 Attribution
 ^^^^^^^^^^^
 
-Tuomo Salmi, Yves Kini, Sebastien Guillot
+Tuomo Salmi,
+Yves Kini,
+Sebastien Guillot
 
 
 [v2.0.2] - 2023-06-09

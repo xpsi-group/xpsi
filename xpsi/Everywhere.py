@@ -7,6 +7,9 @@ from xpsi.cellmesh.rays import compute_rays as _compute_rays
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
 
+class AtmosError(xpsiError):
+    """ Raised if the numerical atmosphere data were not preloaded. """
+
 class RayError(xpsiError):
     """ Raised if a problem was encountered during ray integration. """
 
@@ -75,6 +78,24 @@ class Everywhere(ParameterSubspace):
     :param ndarray[m]:
         Array of phases to resolve a time-dependent signal at.
 
+    :param str atm_ext:
+        Used to determine which atmospheric extension to use.
+        Options at the moment:
+        "BB": Analytical blackbody (default),
+        "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data,
+        "user": A user-provided extension which can be set up by replacing the contents of 
+        the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+        (if not changed, "user" is the same as "BB").
+
+    :param int beam_opt:
+        Used to determine which atmospheric beaming modification model to use.
+        Options at the moment:
+        0: No modification (default),
+        1: Original*beaming_correction without re-normalization,
+        2: Original*beaming_correction with analytical re-normalization estimate,
+        3: Original*beaming_correction with numerical re-normalization.
+
     :param iterable custom:
         Iterable over :class:`~.Parameter.Parameter` instances. If you
         supply custom parameter definitions, you need to overwrite the
@@ -125,6 +146,8 @@ class Everywhere(ParameterSubspace):
                  num_leaves = 100,
                  num_phases = None,
                  phases = None,
+                 atm_ext="BB",
+                 beam_opt=0,
                  custom = None,
                  image_order_limit = None,
                  _integrator_toggle = False):
@@ -136,6 +159,9 @@ class Everywhere(ParameterSubspace):
         self.set_phases(num_leaves, num_phases, phases)
 
         self.image_order_limit = image_order_limit
+
+        self.atm_ext = atm_ext
+        self.beam_opt = beam_opt
 
         if bounds is None: bounds = {}
         if values is None: values = {}
@@ -154,6 +180,32 @@ class Everywhere(ParameterSubspace):
 
         self.time_invariant = time_invariant
         self._integrator_toggle = _integrator_toggle
+
+    @property
+    def atm_ext(self):
+        """ ... """
+        return self._atm_ext
+
+    @atm_ext.setter
+    def atm_ext(self,extension):
+        if extension=="BB":
+            self._atm_ext = 1
+        elif extension=="Num4D":
+            self._atm_ext = 2
+        elif extension=="user":
+            self._atm_ext  = 3
+        else:
+            raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
+                            'atmosphere options are at the moment "BB", "Num4D", and "user".')
+
+    @property
+    def beam_opt(self):
+        """ ... """
+        return self._beam_opt
+
+    @beam_opt.setter
+    def beam_opt(self,option):
+        self._beam_opt = option
 
     @property
     def _integrator_toggle(self):
@@ -423,6 +475,11 @@ class Everywhere(ParameterSubspace):
                             permitted to spawn.
 
         """
+        if self.atm_ext==2:
+            if atmosphere == ():
+                raise AtmosError('The numerical atmosphere data were not preloaded, '
+                                 'even though that is required by the current atmosphere extension.')
+
         if self._time_invariant:
             out = self._integrator(threads,
                                    st.R,
@@ -443,6 +500,7 @@ class Everywhere(ParameterSubspace):
                                    self._cos_gamma,
                                    energies,
                                    atmosphere,
+                                   self.atm_ext,
                                    self._image_order_limit)
         else:
             out = self._integrator(threads,
@@ -469,6 +527,9 @@ class Everywhere(ParameterSubspace):
                                    self._phases,
                                    atmosphere,
                                    None, # no other atmosphere needed
+                                   self.atm_ext,
+                                   None, # no other atmosphere needed
+                                   self.beam_opt,
                                    self._image_order_limit)
         if out[0] == 1:
             raise IntegrationError('Fatal numerical error during integration.')
