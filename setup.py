@@ -283,7 +283,7 @@ if __name__ == '__main__':
                     'xpsi/utilities',
                     'xpsi/pixelmesh'],
         install_requires = ['numpy'],
-        setup_requires = ['cython'],
+        setup_requires = ['cython ~= 0.29'],
         package_data = {'': ['README.rst', 'LICENSE']},
         include_package_data = True,
         ext_modules = extensions,
