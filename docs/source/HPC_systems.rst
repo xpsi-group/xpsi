@@ -236,7 +236,7 @@ Let's start by loading the necessary modules and creating a conda environment. A
    conda create -n xpsi_py3 python=3.10.6
    conda activate xpsi_py3
    conda install -c conda-forge mpi4py
-   conda install cython
+   conda install cython ~= 0.29
    conda install scipy
    conda install matplotlib
    conda install wrapt   
@@ -336,7 +336,7 @@ Then, create the conda environnnement and Install python packages with conda (or
     conda create -n xpsi --clone base
     conda activate xpsi
     conda install numpy scipy matplotlib wrapt
-    conda install cython
+    conda install cython ~= 0.29
     conda install h5py
     conda install -c conda-forge fgivenx
     pip install schwimmbad --user
