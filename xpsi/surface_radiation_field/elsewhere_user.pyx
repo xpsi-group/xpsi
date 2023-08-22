@@ -4,6 +4,7 @@
 #cython: wraparound=False
 
 from libc.math cimport exp, pow
+from libc.stdio cimport printf
 
 from xpsi.global_imports import _keV, _k_B
 
@@ -28,6 +29,9 @@ cdef void* init_elsewhere_user(size_t numThreads,
     # This function must match the free management routine
     # free_elsewhere() in terms of freeing dynamically allocated memory.
     # This is entirely the user's responsibility to manage.
+
+    if preloaded != NULL :
+        printf("WARNING: Numerical atmosphere data were preloaded, even though those are not used by this atmosphere extension.\n")
 
     # Return NULL if dynamic memory is not required for the model.
     return NULL
