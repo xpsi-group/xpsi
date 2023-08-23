@@ -1217,7 +1217,7 @@ class HotRegion(ParameterSubspace):
         return (super_pulse[1],)
 
     def integrate_stokes(self, st, energies, threads,
-                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere):
+                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere, atm_ext_else):
         """ Integrate Stokes parameters over the photospheric radiation field.
 
         Calls the CellMesh Stokes integrators, with or without exploitation of
@@ -1284,6 +1284,9 @@ class HotRegion(ParameterSubspace):
                                        hot_atmosphere_I,
                                        hot_atmosphere_Q,                                       
                                        elsewhere_atmosphere,
+                                       self.atm_ext,
+                                       atm_ext_else,
+                                       self.beam_opt,
                                        self._image_order_limit)
             super_pulse = all_pulses[0], all_pulses[1] #success and flux
             super_pulse_Q = all_pulses[0], all_pulses[2]
@@ -1314,6 +1317,9 @@ class HotRegion(ParameterSubspace):
                                        hot_atmosphere_I,
                                        hot_atmosphere_Q, 
                                        elsewhere_atmosphere,
+                                       self.atm_ext,
+                                       atm_ext_else,
+                                       self.beam_opt,
                                        self._image_order_limit)
             super_pulse = all_pulses[0], all_pulses[1] #success and flux
             super_pulse_Q = all_pulses[0], all_pulses[2]
@@ -1350,6 +1356,9 @@ class HotRegion(ParameterSubspace):
                                        hot_atmosphere_I,
                                        hot_atmosphere_Q, 
                                        elsewhere_atmosphere,
+                                       self.atm_ext,
+                                       atm_ext_else,
+                                       self.beam_opt,
                                        self._image_order_limit)
             cede_pulse = all_pulses[0], all_pulses[1] #success and flux
             cede_pulse_Q = all_pulses[0], all_pulses[2]

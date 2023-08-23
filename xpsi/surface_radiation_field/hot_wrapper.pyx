@@ -19,6 +19,9 @@ from xpsi.surface_radiation_field.hot_user cimport (init_hot_user,
                                                      eval_hot_user,
                                                      eval_hot_norm_user)
 
+#Burst polarization formula
+#from xpsi.surface_radiation_field.hot_burst_Q cimport (eval_hot_burst_Q)
+
 #----------------------------------------------------------------------->>>
 cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) nogil:
     global atmos_extension
@@ -38,7 +41,7 @@ cdef int free_hot(size_t numThreads, void *const data) nogil:
     else:
         return free_hot_user(numThreads, data)
 
-cdef double eval_hot(size_t THREAD,
+cdef double eval_hot_I(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -112,6 +115,26 @@ cdef double eval_hot(size_t THREAD,
     if I_hot_beam < 0.0:
         return 0.0
     return I_hot_beam
+
+cdef double eval_hot_Q(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data,
+                     size_t beam_opt) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
+    #cdef:
+    #    double Q_hot=0.0
+    #Q_hot = eval_hot_burst_Q(THREAD,E,mu,VEC_red,data)
+    cdef double I_E
+    I_E = eval_hot_I(THREAD,E,mu,VEC,data,beam_opt)
+    cdef double PD = 0.1171*(mu - 1.)/(1. + 3.582*mu)
+    return PD*I_E
 
 cdef double eval_hot_norm() nogil:
     if atmos_extension == 1:

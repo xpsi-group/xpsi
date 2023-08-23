@@ -31,7 +31,7 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    free_preload)
 
 from xpsi.surface_radiation_field.hot_wrapper cimport (init_hot,
-                                               eval_hot,
+                                               eval_hot_I,
                                                eval_hot_norm,
                                                free_hot)
 
@@ -593,7 +593,7 @@ def integrate(size_t numThreads,
 
                                     for p in range(N_E):
                                         E_prime = energies[p] / __Z
-                                        I_E = eval_hot(T,
+                                        I_E = eval_hot_I(T,
                                                        E_prime,
                                                        __ABB,
                                                        &(srcCellParams[i,j,0]),
