@@ -174,6 +174,9 @@ class HotRegion(ParameterSubspace):
         "BB": Analytical blackbody (default),
         "Num4D": Numerical atmosphere using 4D-interpolation from the provided
         atmosphere data,
+        "Pol_BB_burst": Polarized analytical blackbody+burst approximation,
+        "Pol_Num2D": Polarized numerical atmosphere using 2D-interpolation from the provided
+        atmosphere data,
         "user": A user-provided extension which can be set up by replacing the contents of 
         the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
         (if not changed, "user" is the same as "BB").
@@ -735,11 +738,16 @@ class HotRegion(ParameterSubspace):
             self._atm_ext = 1
         elif extension=="Num4D":
             self._atm_ext = 2
+        elif extension=="Pol_BB_Burst":
+            self._atm_ext = 3
+        elif extension=="Pol_Num2D":
+            self._atm_ext = 4
         elif extension=="user":
-            self._atm_ext  = 3
+            self._atm_ext  = 5
         else:
             raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
-                            'atmosphere options are at the moment "BB", "Num4D", and "user".')
+                            'atmosphere options are at the moment "BB", "Num4D", "Pol_BB_Burst",'
+                            '"Pol_Num2D", and "user".')
 
     @property
     def beam_opt(self):

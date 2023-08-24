@@ -78,6 +78,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                             num_leaves=121,
                             num_rays=200,
                             do_fast=False,
+                            atm_ext="Pol_BB_Burst",
                             prefix='p')
 
 #print(primary.phases_in_cycles)
@@ -119,6 +120,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
                               num_leaves=100,
                               num_rays=200,
                               do_fast=False,
+                              atm_ext="Pol_BB_Burst",
                               is_antiphased=True,
                               prefix='s') # unique prefix needed because >1 instance
 

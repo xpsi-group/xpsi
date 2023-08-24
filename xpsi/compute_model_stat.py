@@ -789,6 +789,8 @@ values = {'super_radius': 0.01*deg2rad,'super_temperature': tempK}
 #values = {'super_radius': 10.0*deg2rad,'super_temperature': tempK}
 
 ceding=False
+numerical_atmos = False #True
+
 
 if ceding:
 	bounds = dict(super_colatitude=(None,None),
@@ -800,6 +802,11 @@ if ceding:
 		      cede_azimuth = (None, None),
 		      cede_temperature = (None, None))
 	values={}	      
+
+if numerical_atmos:
+    atmosphere_extension = "Pol_Num2D"
+else:
+    atmosphere_extension = "Pol_BB_Burst"
 
 # a simple circular, simply-connected spot
 primary = xpsi.HotRegion(bounds=bounds,
@@ -813,6 +820,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                             max_sqrt_num_cells=64,
                             num_leaves=150,#121,#100,
                             num_rays=200,
+                            atm_ext=atmosphere_extension,
                             prefix='p') # unique prefix needed because >1 instance
 
 class derive(xpsi.Derive):
@@ -839,19 +847,20 @@ if two_spots:
     #bounds['super_temperature'] = None #this for ceding
     bounds = dict(super_colatitude = (None, None), phase_shift = (-0.25, 0.75))
     secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
-	                      #values={'super_temperature': derive()}, #for ceding
-	                      values={'super_radius': 1.0*deg2rad,'super_temperature': derive()},
-	                      symmetry=True,
-	                      omit=False,
-	                      cede=ceding,
-	                      concentric=False,
-	                      sqrt_num_cells=32,
-	                      min_sqrt_num_cells=10,
-	                      max_sqrt_num_cells=100,
-	                      num_leaves=100,
-	                      num_rays=200,
-	                      is_antiphased=True,
-	                      prefix='s') # unique prefix needed because >1 instance
+                            #values={'super_temperature': derive()}, #for ceding
+                            values={'super_radius': 1.0*deg2rad,'super_temperature': derive()},
+                            symmetry=True,
+                            omit=False,
+                            cede=ceding,
+                            concentric=False,
+                            sqrt_num_cells=32,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=100,
+                            num_leaves=100,
+                            num_rays=200,
+                            atm_ext=atmosphere_extension,
+                            is_antiphased=True,
+                            prefix='s') # unique prefix needed because >1 instance
 
     from xpsi import HotRegions
     hot = HotRegions((primary, secondary))
@@ -941,9 +950,6 @@ class CustomPhotosphere(xpsi.Photosphere):
                           (self['s__phase_shift'] + 0.5) * _2pi,
                           self['s__super_radius'],
                           self.hot.objects[1]['s__super_temperature']])
-
-
-numerical_atmos = False #True
 
 if numerical_atmos:
     photosphere = CustomPhotosphere(hot = hot, elsewhere = None, stokes=True,
