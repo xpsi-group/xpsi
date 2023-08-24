@@ -31,10 +31,10 @@ The following job script ``job.sh`` is an example job script for analysis on the
     module purge
 
     module load 2022
+    module load intel/2022a
     module load Anaconda3/2022.05
     source /sw/arch/RHEL8/EB_production/2022/software/Anaconda3/2022.05/etc/profile.d/conda.sh
     conda activate xpsi_py3
-    module load intel/2022a
     
     cp -r $HOME/xpsi/examples/examples_modeling_tutorial/* $TMPDIR/
     mkdir $TMPDIR/run
@@ -81,8 +81,8 @@ For Helios, we can use the following type of job script:
 
     module purge
     module load anaconda3/2021-05
-    conda activate xpsi_py3
     module load openmpi/3.1.6
+    conda activate xpsi_py3
 
     export OMP_NUM_THREADS=1
     export OPENBLAS_NUM_THREADS=1
