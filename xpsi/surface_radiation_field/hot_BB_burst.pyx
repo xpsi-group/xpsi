@@ -4,7 +4,6 @@
 #cython: wraparound=False
 
 from libc.math cimport exp, pow
-from libc.stdio cimport printf
 
 from xpsi.global_imports import _keV, _k_B
 
@@ -24,18 +23,15 @@ cdef double k_B_over_keV = k_B / keV
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_hot_user(size_t numThreads, const _preloaded *const preloaded) nogil:
+cdef void* init_hot_BB_burst(size_t numThreads, const _preloaded *const preloaded) nogil:
     # This function must match the free management routine free_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
 
-    if preloaded != NULL :
-        printf("WARNING: Numerical atmosphere data were preloaded, even though those are not used by this atmosphere extension.\n") 
-    
     # Return NULL if dynamic memory is not required for the model.
     return NULL
 
-cdef int free_hot_user(size_t numThreads, void *const data) nogil:
+cdef int free_hot_BB_burst(size_t numThreads, void *const data) nogil:
     # This function must match the initialisation routine init_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -50,7 +46,18 @@ cdef int free_hot_user(size_t numThreads, void *const data) nogil:
 
     return SUCCESS
 
-cdef double eval_hot_user_I(size_t THREAD,
+cdef double eval_hot_norm_BB_burst() nogil:
+    # Source radiation field normalisation which is independent of the
+    # parameters of the parametrised model -- i.e. cell properties, energy,
+    # and angle.
+    # Writing the normalisation here reduces the number of operations required
+    # during integration.
+    # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
+
+    return erg * Planck_dist_const
+    
+    
+cdef double eval_hot_BB_burst_I(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -63,9 +70,10 @@ cdef double eval_hot_user_I(size_t THREAD,
 
     cdef double temp = k_B_over_keV * pow(10.0, VEC[0])
 
-    return E * E * E / ( exp(E / temp) - 1.0 )
-
-cdef double eval_hot_user_Q(size_t THREAD,
+    return E * E * E / ( exp(E / temp) - 1.0 )*(0.421+0.868*mu)    
+    
+    
+cdef double eval_hot_BB_burst_Q(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -76,14 +84,12 @@ cdef double eval_hot_user_Q(size_t THREAD,
     # VEC = variables such as temperature, effective gravity, ...
     # data = numerical model data required for intensity evaluation
 
-    return 0.0
+    cdef double I_E
+    I_E = eval_hot_BB_burst_I(THREAD,E,mu,VEC,data)
+    cdef double PD = 0.1171*(mu - 1.)/(1. + 3.582*mu)
+    return PD*I_E
 
-cdef double eval_hot_norm_user() nogil:
-    # Source radiation field normalisation which is independent of the
-    # parameters of the parametrised model -- i.e. cell properties, energy,
-    # and angle.
-    # Writing the normalisation here reduces the number of operations required
-    # during integration.
-    # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
+    
+    
 
-    return erg * Planck_dist_const
+
