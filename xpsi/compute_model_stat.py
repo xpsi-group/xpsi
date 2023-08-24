@@ -946,7 +946,7 @@ class CustomPhotosphere(xpsi.Photosphere):
 numerical_atmos = False #True
 
 if numerical_atmos:
-    photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
+    photosphere = CustomPhotosphere(hot = hot, elsewhere = None, stokes=True,
                                 values=dict(mode_frequency = spacetime['frequency']))
     #photosphere.hot_atmosphere = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomI_corr2.txt"
     #photosphere.hot_atmosphere_Q = "/home/tuomo/polcslab/X-PATAP/x-patap/analysis/model/atmos_nsx_like/atmos_thomQ_corr2.txt"
@@ -957,7 +957,7 @@ if numerical_atmos:
 
 else:
 
-    photosphere = CustomPhotosphereBB(hot = hot, elsewhere = None,
+    photosphere = CustomPhotosphereBB(hot = hot, elsewhere = None, stokes=True,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 photosphere['mode_frequency'] == spacetime['frequency']
@@ -1040,7 +1040,7 @@ energy_keV = np.array([ 1.,          1.01975887,  1.03990815,  1.06045555,  1.08
 
 
 star.update()  
-photosphere.integrate(energy_keV, threads=1, stokes=True) 
+photosphere.integrate(energy_keV, threads=1) 
 #Saving the pulse corresponding accurately to that from x-patap/CompSlab
 #save_pulse("pulses/pulse_test_25052022_X") #if numerical_atmos=False (burst atmosphere)
 #save_pulse("pulses/pulse_ps21_thom_s21X") #if numerical_atmos=True (Thomson atmosphere)

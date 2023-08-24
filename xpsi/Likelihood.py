@@ -320,7 +320,7 @@ class Likelihood(ParameterSubspace):
                     else:
                         energies = signals[0].energies
 
-                    photosphere.integrate(energies, self.threads, stokes=True) #TBD: ADD stokes option to Likelihood class.
+                    photosphere.integrate(energies, self.threads)
                 except xpsiError as e:
                     try:
                         prefix = ' prefix ' + photosphere.prefix

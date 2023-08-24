@@ -126,7 +126,7 @@ class HotRegions(ParameterSubspace):
 
 
     def integrate_stokes(self, st, energies, threads,
-                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere):
+                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere, atm_ext_else):
         """ Integrate Stokes parameters over the photospheric radiation field.
 
         Calls the CellMesh integrator, with or without exploitation of
@@ -152,7 +152,8 @@ class HotRegions(ParameterSubspace):
                                          threads,
                                          hot_atmosphere_I,
                                          hot_atmosphere_Q,
-                                         elsewhere_atmosphere)
+                                         elsewhere_atmosphere,
+                                         atm_ext_else)
             signals.append(sigs[0])
             signalsQ.append(sigs[1])
             signalsU.append(sigs[2])

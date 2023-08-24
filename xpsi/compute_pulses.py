@@ -247,7 +247,7 @@ class CustomPhotosphere(xpsi.Photosphere):
 #               sqrt_num_cells=512,
 #               num_rays=512)
 
-photosphere = CustomPhotosphere(hot = hot, elsewhere = None,
+photosphere = CustomPhotosphere(hot = hot, elsewhere = None, stokes=True,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 
@@ -490,7 +490,7 @@ primary.image_order_limit = 1
 print("Photosphere integrate going to start:")
 
 start = time.time()
-photosphere.integrate(energies, threads=1, stokes=True) # the number of OpenMP threads to use
+photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 end = time.time()
 print("Time spent in integration:",end - start)
 

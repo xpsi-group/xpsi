@@ -101,6 +101,7 @@ class Photosphere(ParameterSubspace):
                  hot = None, elsewhere = None,
                  everywhere = None,
                  bounds = None, values = None,
+                 stokes=False,
                  custom = None,
                  **kwargs):
 
@@ -138,6 +139,7 @@ class Photosphere(ParameterSubspace):
         self._hot_atmosphere_Q = ()
         self._elsewhere = elsewhere
         self._everywhere = everywhere
+        self._stokes = stokes
 
         if bounds is None: bounds = {}
         if values is None: values = {}
@@ -304,6 +306,12 @@ class Photosphere(ParameterSubspace):
         # otherwise store a reference to the spacetime object
         self._spacetime = obj
 
+    @property
+    def stokes(self):
+        """ Get the stokes option. If True, a full Stokes vector is computed and
+        stored in signal, signalQ, and signalU. """
+        return self._stokes
+
     def embed(self, fast_total_counts, threads):
         """ Embed the photosphere in an ambient Schwarzschild spacetime.
 
@@ -332,7 +340,7 @@ class Photosphere(ParameterSubspace):
                                 fast_total_counts,
                                 threads)
 
-    def integrate(self, energies, threads, stokes=False):
+    def integrate(self, energies, threads):
         """ Integrate over the photospheric radiation field.
 
         :param energies:
@@ -346,7 +354,7 @@ class Photosphere(ParameterSubspace):
 
         """
         if self._everywhere is not None:
-            if stokes:
+            if self._stokes:
                 raise NotImplementedError('Stokes option for everywhere not implmented yet.')      
             spectrum = self._everywhere.integrate(self._spacetime,
                                                    energies,
@@ -358,7 +366,7 @@ class Photosphere(ParameterSubspace):
                 self._signal = ((spectrum,),)
         else:
             if self._elsewhere is not None:
-                if stokes:
+                if self._stokes:
                     raise NotImplementedError('Stokes option for elsewhere not implmented yet.')  
                 spectrum = self._elsewhere.integrate(self._spacetime,
                                                      energies,
@@ -371,7 +379,7 @@ class Photosphere(ParameterSubspace):
                 except:
                     else_atm_ext = None
 
-                if stokes:
+                if self._stokes:
                     self._signal, self._signalQ, self._signalU  = self._hot.integrate_stokes(self._spacetime,
                                                    energies,
                                                    threads,
