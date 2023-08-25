@@ -230,20 +230,17 @@ Let's start by loading the necessary modules and creating a conda environment. A
 
 .. code-block:: bash
 
+   module load anaconda3/2021-05
+   module load openmpi/3.1.6
    git clone https://github.com/xpsi-group/xpsi.git
    cd xpsi
-   module load anaconda3/2021-05
    conda create -n xpsi_py3 python=3.10.6
    conda activate xpsi_py3
    conda install -c conda-forge mpi4py
-   conda install cython ~= 0.29
+   conda install cython~=0.29
    conda install scipy
    conda install matplotlib
    conda install wrapt   
-   
-.. code-block:: bash
-
-   module load openmpi/3.1.6
      
 Let's then test if mpi4py works:
 
@@ -336,7 +333,7 @@ Then, create the conda environnnement and Install python packages with conda (or
     conda create -n xpsi --clone base
     conda activate xpsi
     conda install numpy scipy matplotlib wrapt
-    conda install cython ~= 0.29
+    conda install cython~=0.29
     conda install h5py
     conda install -c conda-forge fgivenx
     pip install schwimmbad --user
