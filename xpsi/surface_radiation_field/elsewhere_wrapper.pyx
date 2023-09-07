@@ -27,16 +27,25 @@ cdef void* init_elsewhere(size_t numThreads, const _preloaded *const preloaded, 
         return init_hot_BB(numThreads, preloaded)
     elif atmos_extension_elsewhere == 2:
         return init_hot_Num4D(numThreads, preloaded)
-    else:
+    elif atmos_extension_elsewhere == 3:
         return init_elsewhere_user(numThreads, preloaded)
+    else:
+        printf("WARNING: Wrong atmosphere extension provided for elsewhere. "
+               "Defaulting to Blackbody (atm_ext=BB).\n")
+        return init_hot_BB(numThreads, preloaded)
 
 cdef int free_elsewhere(size_t numThreads, void *const data) nogil:
     if atmos_extension_elsewhere == 1:
         return free_hot_BB(numThreads, data)
     elif atmos_extension_elsewhere == 2:
         return free_hot_Num4D(numThreads, data)
-    else:
+    elif atmos_extension_elsewhere == 3:
         return free_elsewhere_user(numThreads, data)
+    else:
+        printf("WARNING: Wrong atmosphere extension provided for elsewhere. "
+               "Defaulting to Blackbody (atm_ext=BB).\n")
+        return free_hot_BB(numThreads, data)
+
 
 cdef double eval_elsewhere(size_t THREAD,
                      double E,
@@ -50,8 +59,12 @@ cdef double eval_elsewhere(size_t THREAD,
         I_hot = eval_hot_BB(THREAD,E,mu,VEC,data)
     elif atmos_extension_elsewhere == 2:
         I_hot = eval_hot_Num4D(THREAD,E,mu,VEC,data)
-    else:
+    elif atmos_extension_elsewhere == 3:
         I_hot = eval_elsewhere_user(THREAD,E,mu,VEC,data)
+    else:
+        printf("WARNING: Wrong atmosphere extension provided for elsewhere. "
+               "Defaulting to Blackbody (atm_ext=BB).\n")
+        I_hot = eval_hot_BB(THREAD,E,mu,VEC,data)
 
     return I_hot
 
@@ -60,5 +73,9 @@ cdef double eval_elsewhere_norm() nogil:
         return eval_hot_norm_BB()
     elif atmos_extension_elsewhere == 2:
         return eval_hot_norm_Num4D()
-    else:
+    elif atmos_extension_elsewhere == 3:
         return eval_elsewhere_norm_user()
+    else:
+        printf("WARNING: Wrong atmosphere extension provided for elsewhere. "
+               "Defaulting to Blackbody (atm_ext=BB).\n")
+        return eval_hot_norm_BB()
