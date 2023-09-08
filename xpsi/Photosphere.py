@@ -317,11 +317,16 @@ class Photosphere(ParameterSubspace):
                                                      *self._elsewhere_atmosphere)
 
             if self._hot is not None:
+                try:
+                    else_atm_ext = self._elsewhere.atm_ext
+                except:
+                    else_atm_ext = None
                 self._signal = self._hot.integrate(self._spacetime,
                                                    energies,
                                                    threads,
                                                    self._hot_atmosphere,
-                                                   self._elsewhere_atmosphere)
+                                                   self._elsewhere_atmosphere,
+                                                   else_atm_ext)
 
                 if not isinstance(self._signal[0], tuple):
                     self._signal = (self._signal,)
@@ -604,6 +609,7 @@ class Photosphere(ParameterSubspace):
               sky_map_kwargs = None,
               animate_sky_maps = False,
               free_memory = True,
+              atm_ext="BB",
               animate_kwargs = None,
               **kwargs):
         """ Image the star as a function of phase and energy.
@@ -785,6 +791,16 @@ class Photosphere(ParameterSubspace):
             freed despite efforts to do so, because of non-weak references
             covertly held by the matplotlib module.
 
+        :param str atm_ext:
+            Used to determine which atmospheric extension to use.
+            Options at the moment:
+            "BB": Analytical blackbody
+            "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+            atmosphere data
+            "user": A user-provided extension which can be set up by replacing the contents of 
+            the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+            (if not changed, "user" is the same as "BB").
+
         :param dict animate_kwargs:
             Dictionary of keyword arguments passed to
             :meth:`~Photosphere._animate`. Refer to the associated method
@@ -796,6 +812,15 @@ class Photosphere(ParameterSubspace):
             switch.
 
         """
+        if atm_ext=="BB":
+            atmosphere_extension = 1
+        elif atm_ext=="Num4D":
+            atmosphere_extension = 2
+        elif atm_ext=="user":
+            atmosphere_extension = 3
+        else:
+            raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
+                            'atmosphere options are at the moment "BB", "Num4D", and "user".')
         ref = self._spacetime # geometry shortcut saves characters
         try:
             _DV = deactivate_verbosity
@@ -942,7 +967,8 @@ class Photosphere(ParameterSubspace):
                                 single_precision_intensities,
                                 _ray_map,
                                 self.global_to_local_file,
-                                self._hot_atmosphere)
+                                self._hot_atmosphere,
+                                atmosphere_extension)
 
             if images[0] == 1:
                 raise Exception('A numerical error arose during imaging '
