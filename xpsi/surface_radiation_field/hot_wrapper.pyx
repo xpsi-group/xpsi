@@ -46,8 +46,12 @@ cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t
         return init_hot_BB_burst(numThreads, preloaded)
     elif atmos_extension == 4:
         return init_hot_Num2D(numThreads, preloaded)
-    else:
+    elif atmos_extension == 5:
         return init_hot_user(numThreads, preloaded)
+    else:
+        printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
+               "Defaulting to Blackbody (atm_ext=BB).\n")
+        return init_hot_BB(numThreads, preloaded)
 
 cdef int free_hot(size_t numThreads, void *const data) nogil:
     if atmos_extension == 1:
@@ -58,8 +62,12 @@ cdef int free_hot(size_t numThreads, void *const data) nogil:
         return free_hot_BB_burst(numThreads, data)
     elif atmos_extension == 4:
         return free_hot_Num2D(numThreads, data)
-    else:
+    elif atmos_extension == 5:
         return free_hot_user(numThreads, data)
+    else:
+        printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
+               "Defaulting to Blackbody (atm_ext=BB).\n")
+        return free_hot_BB(numThreads, data)
 
 cdef double eval_hot_I(size_t THREAD,
                      double E,
@@ -93,8 +101,12 @@ cdef double eval_hot_I(size_t THREAD,
         I_hot = eval_hot_BB_burst_I(THREAD,E,mu,VEC_red,data)
     elif atmos_extension == 4:
         I_hot = eval_hot_Num2D_I(THREAD,E,mu,VEC_red,data)
-    else:
+    elif atmos_extension == 5:
         I_hot = eval_hot_user_I(THREAD,E,mu,VEC_red,data)
+    else:
+        printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
+               "Defaulting to Blackbody (atm_ext=BB).\n")
+        I_hot = eval_hot_BB(THREAD,E,mu,VEC_red,data)
 
     if beam_opt==0:
         return I_hot
@@ -122,8 +134,10 @@ cdef double eval_hot_I(size_t THREAD,
                 I_hot_imu = eval_hot_BB(THREAD,E,mu_imu,VEC_red,data)
             elif atmos_extension == 2:
                 I_hot_imu = eval_hot_Num4D(THREAD,E,mu_imu,VEC_red,data)
-            else:
+            elif atmos_extension == 3:
                 I_hot_imu = eval_hot_user_I(THREAD,E,mu_imu,VEC_red,data)
+            else:
+                I_hot_imu = eval_hot_BB(THREAD,E,mu_imu,VEC_red,data)
 
             I_fbeam_imu =  (1.0+abb*((E)**cbb)*mu_imu+bbb*((E)**dbb)*mu_imu**2)
             I_denom = I_denom + mu_imu*I_fbeam_imu*I_hot_imu*dmu
@@ -184,5 +198,9 @@ cdef double eval_hot_norm() nogil:
         return eval_hot_norm_BB_burst()
     elif atmos_extension == 4:
         return eval_hot_norm_Num2D()
-    else:
+    elif atmos_extension == 5:
         return eval_hot_norm_user()
+    else:
+        printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
+               "Defaulting to Blackbody (atm_ext=BB).\n")
+        return eval_hot_norm_BB()
