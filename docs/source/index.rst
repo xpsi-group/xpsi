@@ -33,7 +33,7 @@
    Hot_region_complexity
    Surface_radiation_field_tools
    Modeling_without_statistics
-   polarization
+   Polarization
    Post-processing
    Emitting_patterns_2Dprojection
    Importance_sample
