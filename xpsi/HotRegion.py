@@ -1151,7 +1151,7 @@ class HotRegion(ParameterSubspace):
         else:
             super_energies = cede_energies = energies
 
-        if self.atm_ext==2:
+        if self.atm_ext==2 or self.atm_ext==4:
             if hot_atmosphere == ():
                 raise AtmosError('The numerical atmosphere data were not preloaded, '
                                  'even though that is required by the current atmosphere extension.')

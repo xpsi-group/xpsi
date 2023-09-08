@@ -78,6 +78,10 @@ class Photosphere(ParameterSubspace):
         mode frequency is applied to normalise the ray lags instead of the
         stellar rotation frequency.
 
+    :param boolean stokes:
+        A Boolean that determines whether the signals for all the Stokes I, Q,
+        and U parameters are calculated. If False, only Stokes I is calculated.
+
     :param iterable custom:
         A :class:`~.Parameter.Parameter` instance or iterable over such
         instances. Might be useful for calling image plane extensions and
@@ -437,6 +441,9 @@ class Photosphere(ParameterSubspace):
             time-invariant, then :math:`n=1`.
 
         """
+        if not self._stokes:
+            raise Exception("Need to set stokes=True for the Photosphere object "
+            "to calculate Stokes Q signal.")
         return self._signalQ
         
     @property
@@ -452,6 +459,9 @@ class Photosphere(ParameterSubspace):
             time-invariant, then :math:`n=1`.
 
         """
+        if not self._stokes:
+            raise Exception("Need to set stokes=True for the Photosphere object "
+            "to calculate Stokes U signal.")
         return self._signalU
 
     @property
