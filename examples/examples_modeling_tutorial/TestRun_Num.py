@@ -134,6 +134,7 @@ primary = xpsi.HotRegion(bounds=bounds,
 	                    max_sqrt_num_cells=64,
 	                    num_leaves=100,
 	                    num_rays=200,
+	                    atm_ext="Num4D",
 	                    prefix='p')
 
 class derive(xpsi.Derive):
@@ -170,6 +171,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
 	                      num_rays=200,
 	                      do_fast=False,
 	                      is_antiphased=True,
+	                      atm_ext="Num4D",
 	                      prefix='s')
 
 
@@ -177,6 +179,20 @@ from xpsi import HotRegions
 hot = HotRegions((primary, secondary))
 h = hot.objects[0]
 hot['p__super_temperature'] = 6.0 # equivalent to ``primary['super_temperature'] = 6.0``
+
+
+use_elsewhere = False
+
+if use_elsewhere:
+    bounds=dict(elsewhere_temperature = (5.2, 6.5))
+
+    elsewhere = xpsi.Elsewhere(bounds=bounds,
+                   values={},
+                   sqrt_num_cells=512,
+                   num_rays=512,
+                   atm_ext="Num4D")
+else:
+    elsewhere = None
 
 class CustomPhotosphere_num(xpsi.Photosphere):
     """ A photosphere extension to preload the numerical atmosphere NSX. """
@@ -254,8 +270,42 @@ class CustomPhotosphere_num(xpsi.Photosphere):
 
         self._hot_atmosphere = (logT_opt, logg_opt, _mu_opt, logE_opt, buf_opt)
 
+    @xpsi.Photosphere.elsewhere_atmosphere.setter
+    def elsewhere_atmosphere(self,path):
+        size=(35, 14, 67, 166)
+        path_npy = path[0:len(path)-3]+"npy"
+        try:
+            NSX = np.load(path_npy)
+        except:
+            try:
+                NSX = np.loadtxt(path, dtype=np.double)
+            except:
+                print("ERROR: You miss the following file:", path)
+                print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
+                exit()
+            np.save(path_npy,NSX)
 
-photosphere = CustomPhotosphere_num(hot = hot, elsewhere = None,
+        def reorder_23(array, size):
+            new_array=np.zeros(size)
+            index=0
+            for i in range(size[3]):
+                 for j in range(size[2]):
+                      new_array[:,:,j,i]=array[:,:,index]
+                      index+=1
+            return new_array
+
+        _mu_opt = np.ascontiguousarray(NSX[0:size[2],1][::-1])
+        logE_opt = np.ascontiguousarray([NSX[i*size[2],0] for i in range(size[3])])
+        logT_opt = np.ascontiguousarray([NSX[i*size[1]*size[2]*size[3],3] for i in range(size[0])])
+        logg_opt = np.ascontiguousarray([NSX[i*size[2]*size[3],4] for i in range(size[1])])
+
+        reorder_buf_opt=reorder_23(10**NSX[:,2].reshape(size[0],size[1],int(np.prod(size)/(size[0]*size[1]))),size)
+        buf_opt=np.ravel(np.flip(reorder_buf_opt,2))
+
+        self._elsewhere_atmosphere = (logT_opt, logg_opt, _mu_opt, logE_opt, buf_opt)
+
+
+photosphere = CustomPhotosphere_num(hot = hot, elsewhere = elsewhere,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 from time import time
@@ -263,6 +313,8 @@ start_original = time()
 
 photosphere.hot_atmosphere = 'model_data/nsx_H_v200804.out'
 # #nsx_H_v171019.out'
+if use_elsewhere:
+    photosphere.elsewhere_atmosphere = 'model_data/nsx_H_v200804.out'
 
 done_original = time()
 print('Time taken by photosphere loading =', done_original-start_original)
@@ -274,17 +326,31 @@ star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
 print("Parameters of the star:")
 print(star.params)
 
-p = [1.0368513939430604,
-     6.087862992320039,
-     0.26870812456714116,
-     0.39140510783272897,
-     0.04346870860640872,
-     0.8002010406881243,
-     1.1165398710637626,
-     5.865655057483478,
-     0.07360477761463673,
-     2.4602238829718432,
-     0.4277092192054918]
+if use_elsewhere:
+    p = [1.0368513939430604,
+         6.087862992320039,
+         0.26870812456714116,
+         0.39140510783272897,
+         0.04346870860640872,
+         0.8002010406881243,
+         1.1165398710637626,
+         5.865655057483478,
+         0.07360477761463673,
+         2.4602238829718432,
+         0.4277092192054918,
+         5.5]
+else:
+    p = [1.0368513939430604,
+         6.087862992320039,
+         0.26870812456714116,
+         0.39140510783272897,
+         0.04346870860640872,
+         0.8002010406881243,
+         1.1165398710637626,
+         5.865655057483478,
+         0.07360477761463673,
+         2.4602238829718432,
+         0.4277092192054918]
 star(p)
 star.update()
 

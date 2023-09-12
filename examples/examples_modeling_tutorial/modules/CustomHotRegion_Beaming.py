@@ -186,31 +186,21 @@ class CustomHotRegion(xpsi.HotRegion):
         self._super_radiates = _np.greater(self._super_cellArea, 0.0).astype(_np.int32)
         self._super_cellParamVecs = _np.ones((self._super_radiates.shape[0],
                                               self._super_radiates.shape[1],
-                                              #2),
-                                              8),
+                                              7),
                                              dtype=_np.double)
 
         self._super_cellParamVecs[...,0] *= self['super_temperature']
-        self._super_cellParamVecs[...,1] *= self['super_abb']
-        self._super_cellParamVecs[...,2] *= self['super_bbb']
-        self._super_cellParamVecs[...,3] *= self['super_cbb']
-        self._super_cellParamVecs[...,4] *= self['super_dbb']
-        
-        #Use the following parameter to determine which emission model to use
-        #Options at the moment: 
-        #0: Numerical
-        #1: Numerical*beaming_correction without re-normalization
-        #2: Numerical*beaming_correction with analytical re-normalization estimate
-        #3: Numerical*beaming_correction with numerical re-normalization
-
-        self._super_cellParamVecs[...,5] *= 2      
-
-        #Number of mus in re-normalization integral:
-
-        self._super_cellParamVecs[...,6] *= 10 #100  
 
         for i in range(self._super_cellParamVecs.shape[1]):
-            self._super_cellParamVecs[:,i,-1] *= self._super_effGrav
+            self._super_cellParamVecs[:,i,1] *= self._super_effGrav
+
+        self._super_cellParamVecs[...,2] *= self['super_abb']
+        self._super_cellParamVecs[...,3] *= self['super_bbb']
+        self._super_cellParamVecs[...,4] *= self['super_cbb']
+        self._super_cellParamVecs[...,5] *= self['super_dbb']
+
+        #Number of mus in re-normalization integral:
+        self._super_cellParamVecs[...,6] *= 10 #100
 
         try:
             self._cede_radiates = _np.greater(self._cede_cellArea, 0.0).astype(_np.int32)

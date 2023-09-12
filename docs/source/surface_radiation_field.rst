@@ -19,10 +19,9 @@ Wrappers
 A numerical atmosphere
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The following is a customized version of the template extension module
-``hot.pyx`` for surface radiation field evaluation that may be found on path
-``surface_radiation_field/archive/hot/numerical.pyx``. This extension works
-with numerical atmosphere preloading to execute cubic polynomial interpolation
+The following is the extension module ``hot_Num4D.pyx`` for surface radiation field evaluation
+that may be found on path ``surface_radiation_field/hot_Num4D.pyx``.
+This extension works with numerical atmosphere preloading to execute cubic polynomial interpolation
 in four dimensions.
 
 .. code-block:: cython
@@ -73,7 +72,7 @@ in four dimensions.
     # >>> Thus the bodies of the following need not be written explicitly in
     # ... the Cython language.
     #----------------------------------------------------------------------->>>
-    cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded) nogil:
+    cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) nogil:
         # This function must match the free management routine free_hot()
         # in terms of freeing dynamically allocated memory. This is entirely
         # the user's responsibility to manage.
@@ -81,7 +80,7 @@ in four dimensions.
 
         if preloaded == NULL :
             printf("ERROR: The numerical atmosphere data were not preloaded, which are required by this extension.\n")
-        
+
         cdef DATA *D = <DATA*> malloc(sizeof(DATA))
         D.p = preloaded
 
@@ -162,7 +161,7 @@ in four dimensions.
         return <void*> D
 
 
-    cdef int free_hot(size_t numThreads, void *const data) nogil:
+    cdef int free_hot_Num4D(size_t numThreads, void *const data) nogil:
         # This function must match the initialisation routine init_hot()
         # in terms of freeing dynamically allocated memory. This is entirely
         # the user's responsibility to manage.
@@ -201,7 +200,7 @@ in four dimensions.
     # >>> Improve acceleration properties... i.e. do not recompute numerical
     # ... weights or re-read intensities if not necessary.
     #----------------------------------------------------------------------->>>
-    cdef double eval_hot(size_t THREAD,
+    cdef double eval_hot_Num4D(size_t THREAD,
                          double E,
                          double mu,
                          const double *const VEC,
@@ -367,11 +366,9 @@ in four dimensions.
 
         if I < 0.0:
             return 0.0
-
         return I * pow(10.0, 3.0 * vec[0])
 
-
-    cdef double eval_hot_norm() nogil:
+    cdef double eval_hot_norm_Num4D() nogil:
         # Source radiation field normalisation which is independent of the
         # parameters of the parametrised model -- i.e. cell properties, energy,
         # and angle.

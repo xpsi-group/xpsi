@@ -44,7 +44,7 @@ contents are:
         - defaults
     dependencies:
         - numpy
-        - cython
+        - cython ~= 0.29
         - matplotlib
         - scipy
         - wrapt
@@ -52,10 +52,15 @@ contents are:
 
 The core packages required for likelihood functionality are
 `numpy <https://docs.scipy.org/doc/numpy/index.html>`_,
-`cython <http://cython.readthedocs.io/en/latest>`_,
+`cython <http://cython.readthedocs.io/en/latest>`_ (< 1.0),
 `matplotlib <https://matplotlib.org/stable/index.html>`_,
 `scipy <https://docs.scipy.org/doc//scipy/index.html>`_, and
-`wrapt <https://wrapt.readthedocs.io/en/latest/>`_. 
+`wrapt <https://wrapt.readthedocs.io/en/latest/>`_.  The
+latest versions of ``cython (3.*)`` are not currently
+compatible with X-PSI (versions 1.* and 2.* of ``cython``
+were skipped). Therefore, it is important to install
+``cython ~= 0.29``, which will ensure that a compatible
+version is installed.
 
 
 To create a virtual environment from this file:
@@ -288,7 +293,7 @@ should print to screen something like the following:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.0.0               |
+    |                Version: 2.1.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
@@ -319,23 +324,25 @@ settings, it should take ~5 minutes. To cancel mid-way press ``ctrl + C``.
 
 .. note::
 
-   The default X-PSI is installed with an analytical blackbody surface emission
-   model extension. If you want to use alternative models for the surface 
-   radiation field, you will need to (re-)install / (re-)compile XPSI with the 
-   appropriate flags:
+   Note that in X-PSI versions before 2.1.0 the selection of the atmosphere
+   extension needed to be done when installing X-PSI using appropriate flags:
 
    .. code-block:: bash
 
       CC=<path/to/compiler/executable> python setup.py --help
       CC=<path/to/compiler/executable> python setup.py install [--NumHot] [--NumElse] [--user]
 
-   This will install the numerical atmosphere for the hot regions and/or for
+   This installed the numerical atmosphere for the hot regions and/or for
    the rest of the surface (``elsewhere``). To (re-) install the default
-   blackbody surface emission model, run the command again without the flags:
+   blackbody surface emission model, the following command without the flags
+   was used:
 
    .. code-block:: bash
 
       CC=<path/to/compiler/executable> python setup.py install [--user]
+
+   For X-PSI versions newer than 2.1.0 atmosphere selection is done without
+   reinstalling X-PSI.
 
 If you ever need to reinstall, first clean to recompile the C files:
 
@@ -408,8 +415,8 @@ OS. Here we note some of the changes required.
 After creating the environment using the ``environment.yml`` file, 
 install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to
 be installed hereafter. Use ``pip install`` to download and install ``h5py``
-and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy`` and ``cython`` if not
-using the ``environment.yml``. You may use the file as a reference of the
+and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy`` and ``cython ~= 0.29``
+if not using the ``environment.yml``. You may use the file as a reference of the
 packages required).
 
 On Mac OS, it's preferable to use ``llvm clang`` rather than ``gcc``.  The

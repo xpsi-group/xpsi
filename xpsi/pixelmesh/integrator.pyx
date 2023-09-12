@@ -25,7 +25,7 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
                                                    free_preload)
 
-from xpsi.surface_radiation_field.hot cimport (init_hot,
+from xpsi.surface_radiation_field.hot_wrapper cimport (init_hot,
                                                eval_hot,
                                                eval_hot_norm,
                                                free_hot)
@@ -69,7 +69,8 @@ def integrate(size_t numThreads,
               int single_precision_cache,
               reuse_ray_map = None,
               global_to_local_file = None,
-              atmosphere = None):
+              atmosphere = None,
+              atmosphere_extension = 1):
 
     """
     Compute image-plane-to-star X-ray light-curves when the photospheric
@@ -255,9 +256,9 @@ def integrate(size_t numThreads,
     cdef void *data = NULL
     if atmosphere:
         preloaded = init_preload(atmosphere)
-        data = init_hot(N_T, preloaded)
+        data = init_hot(N_T, preloaded, atmosphere_extension)
     else:
-        data = init_hot(N_T, NULL)
+        data = init_hot(N_T, NULL, atmosphere_extension)
 
     cdef double[:,::1] integrated_flux = np.zeros((N_P, N_E), dtype = np.double)
 
@@ -357,7 +358,8 @@ def integrate(size_t numThreads,
                                            E_prime,
                                            cos_zenith[INDEX],
                                            local_vars_buf.local_variables[T],
-                                           data)
+                                           data,
+                                           0)
 
                             I_E = I_E * pow(Z[INDEX], -3.0)
 
@@ -387,7 +389,8 @@ def integrate(size_t numThreads,
                                    E_prime,
                                    cos_zenith[0],
                                    local_vars_buf.local_variables[T],
-                                   data)
+                                   data,
+                                   0)
 
                     I_E = I_E * pow(Z[0], -3.0)
 
