@@ -34,6 +34,20 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[pre-v2.1.1] - 2023-09-26
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Fixed
+^^^^^
+
+* Prior probability values prevented from being exactly zero (or negative) for KL-divergence calculation and avoiding thus infinite values for the reported KL-divergence estimates (T.S.).
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi
+
+
 [v2.1.0] - 2023-09-08
 ~~~~~~~~~~~~~~~~~~~~~
 
