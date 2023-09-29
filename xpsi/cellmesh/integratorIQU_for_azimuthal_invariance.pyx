@@ -91,6 +91,7 @@ def integrate(size_t numThreads,
               hot_atm_ext,
               else_atm_ext,
               beam_opt,
+              stokes=0,
               image_order_limit = None):
 
     # check for rayXpanda explicitly in case of some linker issue
@@ -170,6 +171,7 @@ def integrate(size_t numThreads,
         double _specific_flux_U
         size_t _InvisPhase
         size_t _beam_opt = beam_opt
+        size_t _stokes = stokes
 
         double[:,:,::1] privateFlux_I = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,:,::1] privateFlux_Q = np.zeros((N_T, N_E, N_P), dtype = np.double)
@@ -376,7 +378,7 @@ def integrate(size_t numThreads,
             _IO = image_order
         for I in range(_IO): # loop over images
             InvisFlag[T] = 2 # initialise image order as not visible
-            #correction_I_E = 0.0
+            correction_I_E = 0.0
 
             for k in range(leaf_lim):
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
@@ -475,40 +477,41 @@ def integrate(size_t numThreads,
 
                                 PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
 
-                                sin_chi_0 = - sin_theta_i*sin(leaves[_kdx]) 
-                                cos_chi_0 = sin_i*cos_theta_i - sin_theta_i*cos_i*cos(leaves[_kdx])
-                                chi_0 = atan2(sin_chi_0,cos_chi_0)
+                                if _stokes==1:
+                                    sin_chi_0 = - sin_theta_i*sin(leaves[_kdx])
+                                    cos_chi_0 = sin_i*cos_theta_i - sin_theta_i*cos_i*cos(leaves[_kdx])
+                                    chi_0 = atan2(sin_chi_0,cos_chi_0)
 
-                                #Notes: mu = cos_sigma , Lorentz = 1/Gamma, mu0=eta*mu, cos_xi defined with no minus sign
-                                sin_chi_1 = sin_gamma*sin_i*sin(leaves[_kdx])*sin_alpha/sin_psi #times sin alpha sin sigma
-                                cos_chi_1 = cos_gamma - _cos_alpha*mu  #times sin alpha sin sigma 
-                                chi_1 = atan2(sin_chi_1,cos_chi_1)
+                                    #Notes: mu = cos_sigma , Lorentz = 1/Gamma, mu0=eta*mu, cos_xi defined with no minus sign
+                                    sin_chi_1 = sin_gamma*sin_i*sin(leaves[_kdx])*sin_alpha/sin_psi #times sin alpha sin sigma
+                                    cos_chi_1 = cos_gamma - _cos_alpha*mu  #times sin alpha sin sigma
+                                    chi_1 = atan2(sin_chi_1,cos_chi_1)
 
-                                sin_lambda = sin_theta_i*cos_gamma - sin_gamma*cos_theta_i
-                                cos_lambda = cos_theta_i*cos_gamma + sin_theta_i*sin_gamma
-                                cos_eps = (sin_alpha/sin_psi)*(cos_i*sin_lambda - sin_i*cos_lambda*cos(leaves[_kdx]) + cos_psi*sin_gamma) - _cos_alpha*sin_gamma
+                                    sin_lambda = sin_theta_i*cos_gamma - sin_gamma*cos_theta_i
+                                    cos_lambda = cos_theta_i*cos_gamma + sin_theta_i*sin_gamma
+                                    cos_eps = (sin_alpha/sin_psi)*(cos_i*sin_lambda - sin_i*cos_lambda*cos(leaves[_kdx]) + cos_psi*sin_gamma) - _cos_alpha*sin_gamma
 
-                                sin_chi_prime = cos_eps*eta*mu*beta/Lorentz
-                                cos_chi_prime = (1. - mu**2 /(1. + beta*cos_xi))
-                                chi_prime = atan2(sin_chi_prime,cos_chi_prime)
+                                    sin_chi_prime = cos_eps*eta*mu*beta/Lorentz
+                                    cos_chi_prime = (1. - mu**2 /(1. + beta*cos_xi))
+                                    chi_prime = atan2(sin_chi_prime,cos_chi_prime)
 
-                                chi = chi_0+chi_1+chi_prime
+                                    chi = chi_0+chi_1+chi_prime
 
-                                #printf("leaves[_kdx] = %.6e ",leaves[_kdx]/_2pi)
-                                #printf("sin_psi = %.6e ",sin_psi)
-                                #printf("sin_alpha = %.6e ",sin_alpha)
-                                #printf("sinalpha/sinpsi = %.6e ",sin_alpha/sin_psi)
-                                #printf("Grav_z = %.6e \n",Grav_z)
-                                #printf("chi_0 = %.6e ",chi_0)
-                                #printf("chi_1 = %.6e ",chi_1)
-                                #printf("chi_prime = %.6e ",chi_prime)
-                                #printf("PA_tot = %.6e\n",chi)
-                                #printf("sin_alpha = %.6e ",sin_alpha)
-                                #printf("sin_psi = %.6e\n ",sin_psi)
-                                #printf("redshift = %.6e\n",1.0/Grav_z)
-                                #printf("%d\n ",esec)
-                                cos_2chi = cos(2*chi)
-                                sin_2chi = sin(2*chi)
+                                    #printf("leaves[_kdx] = %.6e ",leaves[_kdx]/_2pi)
+                                    #printf("sin_psi = %.6e ",sin_psi)
+                                    #printf("sin_alpha = %.6e ",sin_alpha)
+                                    #printf("sinalpha/sinpsi = %.6e ",sin_alpha/sin_psi)
+                                    #printf("Grav_z = %.6e \n",Grav_z)
+                                    #printf("chi_0 = %.6e ",chi_0)
+                                    #printf("chi_1 = %.6e ",chi_1)
+                                    #printf("chi_prime = %.6e ",chi_prime)
+                                    #printf("PA_tot = %.6e\n",chi)
+                                    #printf("sin_alpha = %.6e ",sin_alpha)
+                                    #printf("sin_psi = %.6e\n ",sin_psi)
+                                    #printf("redshift = %.6e\n",1.0/Grav_z)
+                                    #printf("%d\n ",esec)
+                                    cos_2chi = cos(2*chi)
+                                    sin_2chi = sin(2*chi)
 
                                 # specific intensities
                                 for p in range(N_E):
@@ -520,34 +523,50 @@ def integrate(size_t numThreads,
                                                    &(srcCellParams[i,J,0]),
                                                    hot_data_I,
                                                    _beam_opt)
-
-                                    Q_E = eval_hot_Q(T,
-                                                   E_prime,
-                                                   _ABB,
-                                                   &(srcCellParams[i,J,0]),
-                                                   hot_data_Q,
-                                                   _beam_opt)
                                     
-                                    Q_obs = Q_E*cos_2chi
-                                    U_obs = Q_E*sin_2chi
-
                                     if perform_correction == 1:
-                                        printf("Error: Elsewhere radiation field not implement yet for the stokes vector.\n")
-                                        terminate[T] = 1
-                                        break # out of phase loop
+                                        correction_I_E = eval_elsewhere(T,
+                                                                        E_prime,
+                                                                        _ABB,
+                                                                        &(correction[i,J,0]),
+                                                                        ext_data,
+                                                                        0)
+                                        correction_I_E = correction_I_E * eval_elsewhere_norm()
 
-                                    (PROFILE_I[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm()) * _GEOM
-                                    (PROFILE_Q[T] + BLOCK[p] + _kdx)[0] = (Q_obs * eval_hot_norm()) * _GEOM
-                                    (PROFILE_U[T] + BLOCK[p] + _kdx)[0] = (U_obs * eval_hot_norm()) * _GEOM
-                                    #printf("Q_obs = %.6e\n",(Q_obs * eval_hot_norm() - correction_Q) * _GEOM)
+                                    (PROFILE_I[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
+
+                                    if _stokes==1:
+                                        Q_E = eval_hot_Q(T,
+                                                       E_prime,
+                                                       _ABB,
+                                                       &(srcCellParams[i,J,0]),
+                                                       hot_data_Q,
+                                                       _beam_opt)
+
+                                        Q_obs = Q_E*cos_2chi
+                                        U_obs = Q_E*sin_2chi
+
+                                        if perform_correction == 1:
+                                            printf("Error: Elsewhere radiation field not implement yet for the _stokes vector.\n")
+                                            terminate[T] = 1
+                                            break # out of phase loop
+
+                                        (PROFILE_Q[T] + BLOCK[p] + _kdx)[0] = (Q_obs * eval_hot_norm()) * _GEOM
+                                        (PROFILE_U[T] + BLOCK[p] + _kdx)[0] = (U_obs * eval_hot_norm()) * _GEOM
+                                        #printf("Q_obs = %.6e\n",(Q_obs * eval_hot_norm() - correction_Q) * _GEOM)
 
                         if k == 0: # if initially visible at first/last phase steps
                             # periodic
                             PHASE[T][N_L - 1] = PHASE[T][0] + _2pi
-                            for p in range(N_E):
-                                (PROFILE_I[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_I[T] + BLOCK[p])[0]
-                                (PROFILE_Q[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_Q[T] + BLOCK[p])[0]
-                                (PROFILE_U[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_U[T] + BLOCK[p])[0]
+                            if _stokes==1:
+                                for p in range(N_E):
+                                    (PROFILE_I[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_I[T] + BLOCK[p])[0]
+                                    (PROFILE_Q[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_Q[T] + BLOCK[p])[0]
+                                    (PROFILE_U[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_U[T] + BLOCK[p])[0]
+                            else:
+                                  for p in range(N_E):
+                                    (PROFILE_I[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_I[T] + BLOCK[p])[0]
+
                         elif k > 0 and InvisFlag[T] == 2: # initially not visible
                             # calculate the appropriate phase increment for
                             # phase steps through non-visible fraction of cycle
@@ -560,11 +579,16 @@ def integrate(size_t numThreads,
                                 PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
 
                             # set the specific intensities to zero
-                            for p in range(N_E):
-                                for m in range(N_L - k, N_L):
-                                    (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
-                                    (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
-                                    (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
+                            if _stokes==1:
+                                for p in range(N_E):
+                                    for m in range(N_L - k, N_L):
+                                        (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
+                                        (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
+                                        (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
+                            else:
+                                for p in range(N_E):
+                                    for m in range(N_L - k, N_L):
+                                        (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
 
                             # handle the duplicate points at the periodic
                             # boundary which are needed for interpolation
@@ -576,14 +600,20 @@ def integrate(size_t numThreads,
                                 PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
 
                             # set the reminaing specific intensities to zero
-                            for p in range(N_E):
-                                (PROFILE_I[T] + BLOCK[p])[0] = 0.0
-                                (PROFILE_Q[T] + BLOCK[p])[0] = 0.0
-                                (PROFILE_U[T] + BLOCK[p])[0] = 0.0
-                                for m in range(1, k):
-                                    (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
-                                    (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
-                                    (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
+                            if _stokes==1:
+                                for p in range(N_E):
+                                    (PROFILE_I[T] + BLOCK[p])[0] = 0.0
+                                    (PROFILE_Q[T] + BLOCK[p])[0] = 0.0
+                                    (PROFILE_U[T] + BLOCK[p])[0] = 0.0
+                                    for m in range(1, k):
+                                        (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
+                                        (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
+                                        (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
+                            else:
+                                for p in range(N_E):
+                                    (PROFILE_I[T] + BLOCK[p])[0] = 0.0
+                                    for m in range(1, k):
+                                        (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
                         elif InvisFlag[T] == 1: # handle linearly spaced phases
                             InvisStep[T] = PHASE[T][k] - PHASE[T][_InvisPhase - 1]
                             InvisStep[T] = InvisStep[T] / <double>(k - _InvisPhase + 1)
@@ -616,11 +646,16 @@ def integrate(size_t numThreads,
 
                             # set the specific intensities to zero when image
                             # is not visible
-                            for p in range(N_E):
-                                for m in range(k, N_L - k):
-                                    (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
-                                    (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
-                                    (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
+                            if _stokes==1:
+                                for p in range(N_E):
+                                    for m in range(k, N_L - k):
+                                        (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
+                                        (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
+                                        (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
+                            else:
+                                 for p in range(N_E):
+                                    for m in range(k, N_L - k):
+                                        (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
 
                             InvisFlag[T] = 1 # declare not visible
                             _InvisPhase = k
@@ -632,11 +667,16 @@ def integrate(size_t numThreads,
                         for m in range(k, N_L - k):
                             PHASE[T][m] = PHASE[T][m - 1] + InvisStep[T]
 
-                        for p in range(N_E):
-                            for m in range(k, N_L - k):
-                                (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
-                                (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
-                                (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
+                        if _stokes==1:
+                            for p in range(N_E):
+                                for m in range(k, N_L - k):
+                                    (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
+                        else:
+                            for p in range(N_E):
+                                for m in range(k, N_L - k):
+                                    (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
 
                         InvisFlag[T] = 1
                         _InvisPhase = k
@@ -658,14 +698,16 @@ def integrate(size_t numThreads,
                     phase_ptr = PHASE[T]
                     for p in range(N_E):
                         gsl_interp_accel_reset(accel_PROFILE_I[T])
-                        gsl_interp_accel_reset(accel_PROFILE_Q[T])
-                        gsl_interp_accel_reset(accel_PROFILE_U[T])
                         profile_ptr_I = PROFILE_I[T] + BLOCK[p]
-                        profile_ptr_Q = PROFILE_Q[T] + BLOCK[p]
-                        profile_ptr_U = PROFILE_U[T] + BLOCK[p]
                         gsl_interp_init(interp_PROFILE_I[T], phase_ptr, profile_ptr_I, N_L)
-                        gsl_interp_init(interp_PROFILE_Q[T], phase_ptr, profile_ptr_Q, N_L)
-                        gsl_interp_init(interp_PROFILE_U[T], phase_ptr, profile_ptr_U, N_L)
+
+                        if _stokes==1:
+                            gsl_interp_accel_reset(accel_PROFILE_Q[T])
+                            gsl_interp_accel_reset(accel_PROFILE_U[T])
+                            profile_ptr_Q = PROFILE_Q[T] + BLOCK[p]
+                            profile_ptr_U = PROFILE_U[T] + BLOCK[p]
+                            gsl_interp_init(interp_PROFILE_Q[T], phase_ptr, profile_ptr_Q, N_L)
+                            gsl_interp_init(interp_PROFILE_U[T], phase_ptr, profile_ptr_U, N_L)
 
                         j = 0
                         while j < <size_t> cellArea.shape[1] and terminate[T] == 0:
@@ -687,26 +729,30 @@ def integrate(size_t numThreads,
                                         printf("Out of bounds: max = %.16e\n", interp_PROFILE_I[T].xmax)
                                         terminate[T] = 1
                                         break # out of phase loop
-                                    if (_PHASE_plusShift < interp_PROFILE_Q[T].xmin or _PHASE_plusShift > interp_PROFILE_Q[T].xmax):
-                                        printf("Interpolation error: phase = %.16e\n", _PHASE_plusShift)
-                                        printf("Out of bounds: min = %.16e\n", interp_PROFILE_I[T].xmin)
-                                        printf("Out of bounds: max = %.16e\n", interp_PROFILE_I[T].xmax)
-                                        terminate[T] = 1
-                                        break # out of phase loop
-                                    if (_PHASE_plusShift < interp_PROFILE_U[T].xmin or _PHASE_plusShift > interp_PROFILE_U[T].xmax):
-                                        printf("Interpolation error: phase = %.16e\n", _PHASE_plusShift)
-                                        printf("Out of bounds: min = %.16e\n", interp_PROFILE_I[T].xmin)
-                                        printf("Out of bounds: max = %.16e\n", interp_PROFILE_I[T].xmax)
-                                        terminate[T] = 1
-                                        break # out of phase loop
 
                                     _specific_flux_I = gsl_interp_eval(interp_PROFILE_I[T], phase_ptr, profile_ptr_I, _PHASE_plusShift, accel_PROFILE_I[T])
-                                    _specific_flux_Q = gsl_interp_eval(interp_PROFILE_Q[T], phase_ptr, profile_ptr_Q, _PHASE_plusShift, accel_PROFILE_Q[T])
-                                    _specific_flux_U = gsl_interp_eval(interp_PROFILE_U[T], phase_ptr, profile_ptr_U, _PHASE_plusShift, accel_PROFILE_U[T])
+                                    if _stokes==1:
+
+                                        if (_PHASE_plusShift < interp_PROFILE_Q[T].xmin or _PHASE_plusShift > interp_PROFILE_Q[T].xmax):
+                                            printf("Interpolation error: phase = %.16e\n", _PHASE_plusShift)
+                                            printf("Out of bounds: min = %.16e\n", interp_PROFILE_I[T].xmin)
+                                            printf("Out of bounds: max = %.16e\n", interp_PROFILE_I[T].xmax)
+                                            terminate[T] = 1
+                                            break # out of phase loop
+                                        if (_PHASE_plusShift < interp_PROFILE_U[T].xmin or _PHASE_plusShift > interp_PROFILE_U[T].xmax):
+                                            printf("Interpolation error: phase = %.16e\n", _PHASE_plusShift)
+                                            printf("Out of bounds: min = %.16e\n", interp_PROFILE_I[T].xmin)
+                                            printf("Out of bounds: max = %.16e\n", interp_PROFILE_I[T].xmax)
+                                            terminate[T] = 1
+                                            break # out of phase loop
+
+                                        _specific_flux_Q = gsl_interp_eval(interp_PROFILE_Q[T], phase_ptr, profile_ptr_Q, _PHASE_plusShift, accel_PROFILE_Q[T])
+                                        _specific_flux_U = gsl_interp_eval(interp_PROFILE_U[T], phase_ptr, profile_ptr_U, _PHASE_plusShift, accel_PROFILE_U[T])
                                     if _specific_flux_I > 0.0 or perform_correction == 1:
                                         privateFlux_I[T,p,k] += cellArea[i,j] * _specific_flux_I
-                                        privateFlux_Q[T,p,k] += cellArea[i,j] * _specific_flux_Q
-                                        privateFlux_U[T,p,k] += cellArea[i,j] * _specific_flux_U
+                                        if _stokes==1:
+                                            privateFlux_Q[T,p,k] += cellArea[i,j] * _specific_flux_Q
+                                            privateFlux_U[T,p,k] += cellArea[i,j] * _specific_flux_U
 
                             j = j + 1
                         if terminate[T] == 1:
@@ -718,18 +764,29 @@ def integrate(size_t numThreads,
         if terminate[T] == 1:
            break # out of colatitude loop
 
-    for i in range(N_E):
-        for T in range(N_T):
-            for k in range(N_P):
-                flux_I[i,k] += privateFlux_I[T,i,k]
-                flux_Q[i,k] += privateFlux_Q[T,i,k]
-                flux_U[i,k] += privateFlux_U[T,i,k]
+    if _stokes==1:
+        for i in range(N_E):
+            for T in range(N_T):
+                for k in range(N_P):
+                    flux_I[i,k] += privateFlux_I[T,i,k]
+                    flux_Q[i,k] += privateFlux_Q[T,i,k]
+                    flux_U[i,k] += privateFlux_U[T,i,k]
 
-    for p in range(N_E):
-        for k in range(N_P):
-            flux_I[p,k] /= (energies[p] * keV)
-            flux_Q[p,k] /= (energies[p] * keV)
-            flux_U[p,k] /= (energies[p] * keV)
+        for p in range(N_E):
+            for k in range(N_P):
+                flux_I[p,k] /= (energies[p] * keV)
+                flux_Q[p,k] /= (energies[p] * keV)
+                flux_U[p,k] /= (energies[p] * keV)
+    else:
+        for i in range(N_E):
+            for T in range(N_T):
+                for k in range(N_P):
+                    flux_I[i,k] += privateFlux_I[T,i,k]
+        for p in range(N_E):
+            for k in range(N_P):
+                flux_I[p,k] /= (energies[p] * keV)
+
+
 
     for T in range(N_T):
         gsl_interp_free(interp_alpha[T])

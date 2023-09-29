@@ -1244,6 +1244,7 @@ class HotRegion(ParameterSubspace):
                             integration.
 
         """
+        stokes=1 #need to think how to pass this from photosphere. self.stokes is not working, since self if hot object.
         if self.fast_mode and not self.do_fast:
             try:
                 if self.cede:
@@ -1299,6 +1300,7 @@ class HotRegion(ParameterSubspace):
                                        self.atm_ext,
                                        atm_ext_else,
                                        self.beam_opt,
+                                       stokes,
                                        self._image_order_limit)
             super_pulse = all_pulses[0], all_pulses[1] #success and flux
             super_pulse_Q = all_pulses[0], all_pulses[2]
@@ -1332,6 +1334,7 @@ class HotRegion(ParameterSubspace):
                                        self.atm_ext,
                                        atm_ext_else,
                                        self.beam_opt,
+                                       stokes,
                                        self._image_order_limit)
             super_pulse = all_pulses[0], all_pulses[1] #success and flux
             super_pulse_Q = all_pulses[0], all_pulses[2]
@@ -1371,6 +1374,7 @@ class HotRegion(ParameterSubspace):
                                        self.atm_ext,
                                        atm_ext_else,
                                        self.beam_opt,
+                                       stokes,
                                        self._image_order_limit)
             cede_pulse = all_pulses[0], all_pulses[1] #success and flux
             cede_pulse_Q = all_pulses[0], all_pulses[2]
