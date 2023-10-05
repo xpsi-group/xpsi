@@ -3565,7 +3565,23 @@ for instrument in args.instrument:
         # check the loading assumptions and comment out the exception throw if they are true
         #raise NotImplementedError('Implement the class method for loading the {0} instrument.')
 
-        # template
+        #working template for the github example:
+        #if min_input != 0:
+        #    min_input = int(min_input)
+        #max_input = int(max_input)
+        #ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
+        #RMF = np.loadtxt(RMF, dtype=np.double)
+        #channel_energies = np.loadtxt(channel_energies, dtype=np.double, skiprows=3)[:,1:]
+        #matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
+        #edges = np.zeros(ARF[min_input:max_input,3].shape[0]+1, dtype=np.double)
+        #edges[0] = ARF[min_input,1]; edges[1:] = ARF[min_input:max_input,2]
+        #for i in range(matrix.shape[0]):
+        #    matrix[i,:] *= ARF[min_input:max_input,3]
+        #channels = np.arange(20, 201)
+        #return cls(matrix, edges, channels, channel_energies[20:202,-2], alpha, **kwargs)
+
+
+        # another template
         #ARF = np.loadtxt(ARF, dtype=np.double, skiprows=ARF_skiprows)
         #RMF = np.loadtxt(RMF, dtype=np.double, skiprows=RMF_skiprows, usecols=RMF_usecol)
         #channel_energies = np.loadtxt(channel_energies, dtype=np.double, skiprows=channel_energies_skiprows)
