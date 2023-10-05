@@ -1103,6 +1103,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                             num_rays=args.p_num_rays,
                             is_antiphased=False,
                             image_order_limit=args.image_order_limit,
+                            atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
                             prefix='p')
 
 symmetry = True
@@ -1157,6 +1158,7 @@ secondary = xpsi.HotRegion(bounds=bounds,
                                 num_rays=args.s_num_rays,
                                 is_antiphased=False,
                                 image_order_limit=args.image_order_limit,
+                                atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
                                 prefix='s')
 
 hot = HotRegions((primary, secondary))
