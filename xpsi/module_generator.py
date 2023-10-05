@@ -1920,6 +1920,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                             num_rays=args.{1}_num_rays,
                             is_antiphased={0},
                             image_order_limit=args.image_order_limit,
+                            atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
                             prefix='{1}')
 '''.format(str(args.is_antiphased[0]), args.prefix[0])
 )
@@ -1964,6 +1965,7 @@ secondary = xpsi.HotRegion(bounds=bounds,
                                 num_rays=args.{1}_num_rays,
                                 is_antiphased={0},
                                 image_order_limit=args.image_order_limit,
+                                atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
                                 prefix='{1}')
     '''.format(str(not args.is_antiphased[0] if args.antipodal_reflection_symmetry else args.is_antiphased[1]), args.prefix[1])
     )
