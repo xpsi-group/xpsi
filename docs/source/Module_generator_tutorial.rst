@@ -321,7 +321,7 @@ Let's take a look at the files generated.
     ls _auto_modules
 
 In the output below we can see the `Main` and `Custom` files that have been created in the ``_auto_module`` directory as
-prompted in ``generate.ini``.
+prompted in ``generate.ini`` (except CustomBackground that was removed for this example).
 
 .. code-block:: bash
 
