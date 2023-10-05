@@ -1,11 +1,12 @@
-""" Instrument module for X-PSI CST+PDT modelling of NICER PSR J0030+0415 event data. """
+""" Instrument module for X-PSI CST+PDT modelling of NICER PSR J0030+0451 event data. """
 
 import numpy as np
 import math
 
 import xpsi
 
-from xpsi import Parameter, make_verbose
+from xpsi import Parameter
+from xpsi.utils import make_verbose
 
 class CustomInstrument(xpsi.Instrument):
     """ XTI, and XTI. """

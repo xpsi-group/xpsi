@@ -1,4 +1,4 @@
-""" Main module for NICER PSR J0030+0415 <- X-PSI 1.2.1 CST+PDT"""
+""" Main module for NICER PSR J0030+0451 <- X-PSI 2.1.0 CST+PDT"""
 import os
 import argparse
 import re
@@ -167,7 +167,7 @@ class NullAction(argparse.Action):
 
 parser = ArgumentParserCustom(
     description="""
-    Main module for X-PSI CST+PDT modelling of NICER PSR J0030+0415 event data.
+    Main module for X-PSI CST+PDT modelling of NICER PSR J0030+0451 event data.
 
     You can run this module as a script and launch a sampler, optionally
     with a world of MPI processes.
