@@ -261,7 +261,7 @@ It should look like this:
     --custom-background-module=CustomBackground
 
 We can modify the ``generate.ini`` file as per our need by filling up, commenting and/or removing the arguments provided.
-An example of a filled out ``generate.ini`` file is present in `../examples/examples_module_generator`__ which creates a `CST+PDT` hot-region model for PSR J0030+0451 using `NSX-H` atmosphere model.
+An example of a filled out (and slightly modified) ``generate.ini`` file is present in `../examples/examples_module_generator`__ which creates a `CST+PDT` hot-region model for PSR J0030+0451 using `NSX-H` atmosphere model.
 
 .. _generate: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_module_generator/
 
