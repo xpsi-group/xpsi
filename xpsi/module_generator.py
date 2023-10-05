@@ -3498,7 +3498,8 @@ import math
 
 import xpsi
 
-from xpsi import Parameter, make_verbose
+from xpsi import Parameter
+from xpsi.utils import make_verbose
 
 class CustomInstrument(xpsi.Instrument):
     """ {3}. """
