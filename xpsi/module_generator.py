@@ -1318,8 +1318,6 @@ parser.add_argument('--multinest', action='store_true', help='Launch MultiNest s
 
 parser.add_argument('--resume', action='store_true', help='Resume sampling if module is executed.')
 
-parser.add_argument('--multimodal', action='store_true', help='Activate the mode-separation algorithm variant of MultiNest.',
-                    comment=True)
 
 parser.add_argument('--sample-files-directory-path',
                     type=str,
