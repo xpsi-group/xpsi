@@ -812,9 +812,11 @@ class CornerPlotter(PostProcessor):
                     except:
                         p = weighted_1d_gaussian_kde(x[where], x, w_rel)
                     # Due to spline interpolation, very small densities can be
-                    # negative, so manually give a small postive value which
+                    # negative, so manually give a small positive value which
                     # does not affect KL integral approximation
                     p[p<=0.0] = p[p>0.0].min()
+                    # Prevent also negative or zero values for the prior
+                    prior[prior<=0.0] = prior[prior>0.0].min()
 
                     KL = _np.sum(w_rel[where] \
                                    * (_np.log(p) - _np.log(prior))) \
