@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[pre-v2.1.1] - 2023-10-05
+[pre-v2.1.1] - 2023-10-11
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
@@ -43,6 +43,8 @@ Fixed
 * Synthesise function in ``xpsi/Likelihood.py`` forced to always use the given parameters and produce synthetic data regardless of other settings. (T.S.).
 
 * Prior probability values prevented from being exactly zero (or negative) for KL-divergence calculation and avoiding thus infinite values for the reported KL-divergence estimates (T.S.).
+
+* Module generator fixed to work with the current version of X-PSI and tutorial updated (T.S.).
 
 Attribution
 ^^^^^^^^^^^
