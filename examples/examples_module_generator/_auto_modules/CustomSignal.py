@@ -1,4 +1,4 @@
-""" Signal module for X-PSI CST+PDT modelling of NICER PSR J0030+0415 event data. """
+""" Signal module for X-PSI CST+PDT modelling of NICER PSR J0030+0451 event data. """
 
 import numpy as np
 import math

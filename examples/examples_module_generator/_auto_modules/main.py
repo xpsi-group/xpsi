@@ -1,4 +1,4 @@
-""" Main module for NICER PSR J0030+0415 <- X-PSI 1.2.1 CST+PDT"""
+""" Main module for NICER PSR J0030+0451 <- X-PSI 2.1.0 CST+PDT"""
 import os
 import argparse
 import re
@@ -167,7 +167,7 @@ class NullAction(argparse.Action):
 
 parser = ArgumentParserCustom(
     description="""
-    Main module for X-PSI CST+PDT modelling of NICER PSR J0030+0415 event data.
+    Main module for X-PSI CST+PDT modelling of NICER PSR J0030+0451 event data.
 
     You can run this module as a script and launch a sampler, optionally
     with a world of MPI processes.
@@ -783,8 +783,6 @@ parser.add_argument('--multinest', action='store_true', help='Launch MultiNest s
 
 parser.add_argument('--resume', action='store_true', help='Resume sampling if module is executed.')
 
-parser.add_argument('--multimodal', action='store_true', help='Activate the mode-separation algorithm variant of MultiNest.',
-                    comment=True)
 
 parser.add_argument('--sample-files-directory-path',
                     type=str,
@@ -1103,6 +1101,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                             num_rays=args.p_num_rays,
                             is_antiphased=False,
                             image_order_limit=args.image_order_limit,
+                            atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
                             prefix='p')
 
 symmetry = True
@@ -1157,6 +1156,7 @@ secondary = xpsi.HotRegion(bounds=bounds,
                                 num_rays=args.s_num_rays,
                                 is_antiphased=False,
                                 image_order_limit=args.image_order_limit,
+                                atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
                                 prefix='s')
 
 hot = HotRegions((primary, secondary))
