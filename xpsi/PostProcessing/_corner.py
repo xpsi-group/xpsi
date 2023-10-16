@@ -337,6 +337,7 @@ class CornerPlotter(PostProcessor):
                        no_ytick = False,
                        credible_interval_1d = True,
                        credible_interval_1d_all_show = False,
+                       show_vband=1,
                        annotate_credible_interval = True,
                        annotate_xy=(0.025,0.915),
                        sixtyeight = True,
@@ -451,6 +452,7 @@ class CornerPlotter(PostProcessor):
         """
         #self.val_cred = []
         self.credible_interval_1d_all_show=credible_interval_1d_all_show
+        self.show_vband=show_vband
         tight_gap_fraction = 0.13 # space between ticks and the edge
 
         if credible_interval_1d_all_show:
@@ -495,6 +497,8 @@ class CornerPlotter(PostProcessor):
         setattr(plotter.settings, 'progress', True)
         setattr(plotter.settings, 'norm_prob_label', 'Probability density')
         setattr(plotter.settings, 'prob_y_ticks', True)
+        setattr(plotter.settings, 'prob_y_ticks', True)
+        #setattr(plotter.settings, "figure_legend_ncol", 1)
 
         for key in kwargs.copy():
             if hasattr(plotter.settings, key):
@@ -669,26 +673,41 @@ class CornerPlotter(PostProcessor):
         else:
             precisions = [None]*plotter.subplots.shape[0]
 
-        if credible_interval_1d_all_show and self.all_same(self.get_attr("parent_ID")):
-            for r in range(len(self.subset_to_plot)):
-
+        self.tot0=0.
+        for sub_set in range(len(self.subset)):
+            for r in range(len(self.subset[sub_set].subset_to_plot)):
                 id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
                 self.r=r
+                self.sub_set=sub_set
                 self.val_cred = []
-                self.run = self.subset[0].subset_to_plot[r]
+                self.run = self.subset[sub_set].subset_to_plot[r]
+                self.tot0 +=1
 
-                self._add_credible_interval(plotter,
-                                            self.subset[0],
-                                            bootstrap=bootstrap,
-                                            n_simulate=kwargs.get('n_simulate'),
-                                            annotate=annotate_credible_interval,
-                                            annotate_xy=annotate_xy,
-                                            sixtyeight=sixtyeight,
-                                            ninety=ninety,
-                                            compute_all_intervals=compute_all_intervals,
-                                            precisions=precisions)
+        if credible_interval_1d_all_show:# and self.all_same(self.get_attr("parent_ID")):
+            self.tot1=0.
+            for sub_set in range(len(self.subset)):
+                for r in range(len(self.subset[sub_set].subset_to_plot)):
+                    #print("r", r)
 
-                self.credible_intervals[id]=self.val_cred
+                    id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
+                    self.r=r
+                    self.sub_set=sub_set
+                    self.val_cred = []
+                    self.run = self.subset[sub_set].subset_to_plot[r]
+                    self.tot1 +=1
+
+                    self._add_credible_interval(plotter,
+                                                self.subset[sub_set],
+                                                bootstrap=bootstrap,
+                                                n_simulate=kwargs.get('n_simulate'),
+                                                annotate=annotate_credible_interval,
+                                                annotate_xy=annotate_xy,
+                                                sixtyeight=sixtyeight,
+                                                ninety=ninety,
+                                                compute_all_intervals=compute_all_intervals,
+                                                precisions=precisions)
+
+                    self.credible_intervals[id]=self.val_cred
         else:
                 id=self.get_attr("parent_ID")[0]+"_"+self.get_attr("ID")[0]
                 self.r=0
@@ -1012,15 +1031,17 @@ class CornerPlotter(PostProcessor):
 
                     if self.credible_interval_1d_all_show:
                         x_pos = 0.5
-                        y_pos = 1.05 + 0.11 * (self.r)
+                        y_pos = 1.05 + 0.11 * (self.r+self.sub_set)
                         ax.text(x_pos, y_pos, title,
                                 color=color,
                                 horizontalalignment="center",
                                 alpha=1.,
                                 fontsize=fontsize,
                                 transform=ax.transAxes)
-                        if self.r == (len(self.subset_to_plot) - 1):
-                            y_pos = 1.05 + 0.11 * (1+self.r)
+
+
+                        if self.show_top:
+                            y_pos = 1.05 + 0.11 * (1+self.tot)
                             title_param_name = r'${}$'.format(param_name)
                             ax.text(x_pos, y_pos, title_param_name,
                                     color='black',
@@ -1089,7 +1110,7 @@ class CornerPlotter(PostProcessor):
                 cred = calculate_intervals(quantiles)
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
-                if self.r==0:
+                if self.r <self.show_vband:
                     ax.axvspan(cred[0], cred[2], alpha=0.25,
                                facecolor=color,
                                edgecolor=color,
@@ -1119,15 +1140,15 @@ class CornerPlotter(PostProcessor):
 
                     if self.credible_interval_1d_all_show:
                         x_pos = 0.5
-                        y_pos = 1.05 + 0.11 * (self.r)
+                        y_pos = 1.05 + 0.12 * (self.r+self.sub_set)
                         ax.text(x_pos, y_pos, title,
                                 color=color,
                                 horizontalalignment="center",
                                 alpha=1.,
                                 fontsize=fontsize,
                                 transform=ax.transAxes)
-                        if self.r == (len(self.subset_to_plot) - 1):
-                            y_pos = 1.05 + 0.11 * (1+self.r)
+                        if self.tot0 == self.tot1:
+                            y_pos = 1.05 + 0.12 * (1+self.r+self.sub_set)
                             title_param_name = r'${}$'.format(param_name)
                             ax.text(x_pos, y_pos, title_param_name,
                                     color='black',
