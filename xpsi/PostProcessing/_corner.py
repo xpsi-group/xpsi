@@ -683,8 +683,8 @@ class CornerPlotter(PostProcessor):
                 self.run = self.subset[sub_set].subset_to_plot[r]
                 self.tot0 +=1
 
+        self.tot1=0.
         if credible_interval_1d_all_show:# and self.all_same(self.get_attr("parent_ID")):
-            self.tot1=0.
             for sub_set in range(len(self.subset)):
                 for r in range(len(self.subset[sub_set].subset_to_plot)):
                     #print("r", r)
@@ -1110,7 +1110,7 @@ class CornerPlotter(PostProcessor):
                 cred = calculate_intervals(quantiles)
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
-                if self.r <self.show_vband:
+                if self.tot1-1 <self.show_vband:
                     ax.axvspan(cred[0], cred[2], alpha=0.25,
                                facecolor=color,
                                edgecolor=color,
