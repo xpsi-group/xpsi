@@ -34,11 +34,13 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[pre-v2.1.1] - 2023-10-06
+[pre-v2.1.1] - 2023-10-21
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Fixed
 ^^^^^
+
+* Synthesise function in ``xpsi/Likelihood.py`` forced to always use the given parameters and produce synthetic data regardless of other settings. (T.S.).
 
 * Prior probability values prevented from being exactly zero (or negative) for KL-divergence calculation and avoiding thus infinite values for the reported KL-divergence estimates (T.S.).
 
