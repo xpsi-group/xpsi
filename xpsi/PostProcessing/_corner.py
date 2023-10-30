@@ -414,7 +414,13 @@ class CornerPlotter(PostProcessor):
             wider and is shaded lighter.
 
         :param bool credible_interval_1d_all_show:
-            Show the 1D marginal credible intervals for all the runs IDs.
+            Show the 1D marginal credible intervals for all plotted posteriors.
+            The intervals will also be saved in a 'self.credible_intervals' dictionary.
+            Note that this option forces KL_divergence value to be False.
+
+        :param bool show_vband:
+            Select the number of 1D marginal credible intervals shown as colored
+            vertical bands if using 'credible_interval_1d_all_show=True'.
 
         :param bool annotate_credible_interval:
             Annotate each on-diagonal panel with numeric credible interval
