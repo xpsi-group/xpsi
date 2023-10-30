@@ -676,17 +676,13 @@ class CornerPlotter(PostProcessor):
         self.tot0=0.
         for sub_set in range(len(self.subset)):
             for r in range(len(self.subset[sub_set].subset_to_plot)):
-                id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
-                self.r=r
-                self.sub_set=sub_set
-                self.val_cred = []
-                self.run = self.subset[sub_set].subset_to_plot[r]
                 self.tot0 +=1
 
         self.tot1=0.
-        if credible_interval_1d_all_show:# and self.all_same(self.get_attr("parent_ID")):
+        if credible_interval_1d_all_show:
             for sub_set in range(len(self.subset)):
                 for r in range(len(self.subset[sub_set].subset_to_plot)):
+                    # assuming different runs for each model are combined when showing multiple models
                     if (sub_set == 0):
                         id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
                     else:
@@ -1330,10 +1326,3 @@ class CornerPlotter(PostProcessor):
                                   n_simulate=n_simulate,
                                   flip_skew=flip_skew)[0] for q in quantiles]
         return _quantiles
-
-    def all_same(self,items):
-        """
-        Checking if the all the element of a list are the same
-        """
-
-        return all(x == items[0] for x in items)
