@@ -687,9 +687,10 @@ class CornerPlotter(PostProcessor):
         if credible_interval_1d_all_show:# and self.all_same(self.get_attr("parent_ID")):
             for sub_set in range(len(self.subset)):
                 for r in range(len(self.subset[sub_set].subset_to_plot)):
-                    #print("r", r)
-
-                    id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
+                    if (sub_set == 0):
+                        id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
+                    else:
+                        id=self.get_attr("parent_ID")[sub_set]+"_"+self.get_attr("ID")[sub_set]
                     self.r=r
                     self.sub_set=sub_set
                     self.val_cred = []
