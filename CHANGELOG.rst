@@ -40,17 +40,19 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* Updates and fixes done to post-processing and module generator routines.
+* Updates and fixes done to post-processing, synthesise, and module generator routines.
 
 Added
 ^^^^^
 
-* An option `show_vband` added to the CornerPlotter class allowing to choose how many colored vertical bands are shown in the corner plots if printing the credible intervals for multiple runs or models (Y.K., T.S.).
+* An option ``show_vband`` added to the CornerPlotter class allowing to choose how many colored vertical bands are shown in the corner plots if printing the credible intervals for multiple runs or models (Y.K., T.S.).
 
 Fixed
 ^^^^^
 
-* Displaying and saving the credible intervals for all plotted posteriors fixed to work for multiple models and not only for multiple runs. The argument `credible_interval_1d_all_show` needs to be `True` to use this functionality (Y.K., T.S.).
+* Displaying and saving the credible intervals for all plotted posteriors fixed to work for multiple models and not only for multiple runs. The argument ``credible_interval_1d_all_show`` needs to be ``True`` to use this functionality (Y.K., T.S.).
+
+* Synthesise function in ``xpsi/Likelihood.py`` forced to always use the given parameters and produce synthetic data regardless of other settings. (T.S.).
 
 * Prior probability values prevented from being exactly zero (or negative) for KL-divergence calculation and avoiding thus infinite values for the reported KL-divergence estimates (T.S.).
 
