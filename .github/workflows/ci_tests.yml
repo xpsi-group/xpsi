@@ -41,6 +41,7 @@ jobs:
     - name: install gsl
       run: |
         sudo apt-get install -y libgsl-dev
+    - name: Make sure metadata not too new for flake8
       run: |
         pip install "importlib-metadata<5.0"
     - name: Lint with flake8
