@@ -33,7 +33,7 @@ jobs:
         environment-name: xpsipy3
     - name: mamba install flake8
       run: |
-        python --version
+        micromamba install "python<3.12"
         micromamba install flake8
     - name: mamba install pytest
       run: |
