@@ -28,7 +28,7 @@ jobs:
       uses: mamba-org/setup-micromamba@v1
       with:
         cache-environment: true
-        cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+        cache-environment-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
         environment-file: basic_environment.yml
         environment-name: xpsipy3
         create-args: >-
