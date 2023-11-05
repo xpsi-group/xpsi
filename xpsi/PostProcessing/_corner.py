@@ -416,7 +416,8 @@ class CornerPlotter(PostProcessor):
         :param bool credible_interval_1d_all_show:
             Show the 1D marginal credible intervals for all plotted posteriors.
             The intervals will also be saved in a 'self.credible_intervals' dictionary.
-            Note that this option forces KL_divergence value to be False.
+            Note that this option forces KL_divergence value to be False,
+            and intervals are only shown and saved if also annotate_credible_interval=True.
 
         :param bool show_vband:
             Select the number of 1D marginal credible intervals shown as colored
@@ -1203,8 +1204,8 @@ class CornerPlotter(PostProcessor):
                                         calculate_intervals([0.05, 0.5, 0.95]),
                                         90)
 
-
-        self.val_cred=np_.stack(self.val_cred,axis=0)
+        if annotate:
+            self.val_cred=np_.stack(self.val_cred,axis=0)
         yield None
 
     @staticmethod
