@@ -33,7 +33,7 @@ jobs:
         environment-name: xpsipy3
     - name: mamba install flake8
       run: |
-        micromamba install flake8==4.0.1
+        micromamba install flake8==5.0.4
     - name: mamba install importlib-metadata
       run: |
         micromamba install "importlib-metadata<4.3"
