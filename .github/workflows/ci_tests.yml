@@ -33,7 +33,7 @@ jobs:
         environment-name: xpsipy3
     - name: mamba install flake8 and importlib-metadata
       run: |
-        micromamba install flake8==4.0.1 "importlib-metadata<4.3"
+        micromamba install flake8==4.0.1 importlib-metadata==4.13.0
     - name: mamba install pytest
       run: |
         micromamba install pytest
