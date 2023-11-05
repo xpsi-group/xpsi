@@ -416,11 +416,12 @@ class CornerPlotter(PostProcessor):
         :param bool credible_interval_1d_all_show:
             Show the 1D marginal credible intervals for all plotted posteriors.
             The intervals will also be saved in a 'self.credible_intervals' dictionary.
-            Note that this option forces KL_divergence value to be False.
+            Note that this option forces KL_divergence value to be False,
+            and intervals are only shown and saved if also annotate_credible_interval=True.
 
         :param bool show_vband:
             Select the number of 1D marginal credible intervals shown as colored
-            vertical bands if using 'credible_interval_1d_all_show=True'.
+            vertical bands.
 
         :param bool annotate_credible_interval:
             Annotate each on-diagonal panel with numeric credible interval
@@ -712,6 +713,7 @@ class CornerPlotter(PostProcessor):
 
                     self.credible_intervals[id]=self.val_cred
         else:
+                self.tot1=1
                 id=self.get_attr("parent_ID")[0]+"_"+self.get_attr("ID")[0]
                 self.r=0
                 self.val_cred = []
@@ -991,26 +993,28 @@ class CornerPlotter(PostProcessor):
 
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
-                ax.axvspan(cred[0,0], cred[0,2], alpha=0.5,
-                           facecolor=color,
-                           edgecolor=color,
-                           linewidth=0,
-                           rasterized=True,
-                           zorder=zorder)
+                if self.tot1-1 <self.show_vband:
 
-                ax.axvspan(cred[2,0], cred[2,2], alpha=0.5,
-                           facecolor=color,
-                           edgecolor=color,
-                           linewidth=0,
-                           rasterized=True,
-                           zorder=zorder)
+                    ax.axvspan(cred[0,0], cred[0,2], alpha=0.5,
+                               facecolor=color,
+                               edgecolor=color,
+                               linewidth=0,
+                               rasterized=True,
+                               zorder=zorder)
 
-                ax.axvspan(cred[0,2], cred[2,0], alpha=0.25,
-                           facecolor=color,
-                           edgecolor=color,
-                           linewidth=0,
-                           rasterized=True,
-                           zorder=zorder)
+                    ax.axvspan(cred[2,0], cred[2,2], alpha=0.5,
+                               facecolor=color,
+                               edgecolor=color,
+                               linewidth=0,
+                               rasterized=True,
+                               zorder=zorder)
+
+                    ax.axvspan(cred[0,2], cred[2,0], alpha=0.25,
+                               facecolor=color,
+                               edgecolor=color,
+                               linewidth=0,
+                               rasterized=True,
+                               zorder=zorder)
 
                 if annotate:
                     stats = format_CI('', # parameter name not needed on plot
@@ -1034,7 +1038,7 @@ class CornerPlotter(PostProcessor):
 
                     if self.credible_interval_1d_all_show:
                         x_pos = 0.5
-                        y_pos = 1.05 + 0.11 * (self.r+self.sub_set)
+                        y_pos = 1.05 + 0.12 * (self.r+self.sub_set)
                         ax.text(x_pos, y_pos, title,
                                 color=color,
                                 horizontalalignment="center",
@@ -1043,8 +1047,8 @@ class CornerPlotter(PostProcessor):
                                 transform=ax.transAxes)
 
 
-                        if self.show_top:
-                            y_pos = 1.05 + 0.11 * (1+self.tot)
+                        if self.tot0 == self.tot1:
+                            y_pos = 1.05 + 0.12 * (1+self.r+self.sub_set)
                             title_param_name = r'${}$'.format(param_name)
                             ax.text(x_pos, y_pos, title_param_name,
                                     color='black',
@@ -1200,8 +1204,8 @@ class CornerPlotter(PostProcessor):
                                         calculate_intervals([0.05, 0.5, 0.95]),
                                         90)
 
-
-        self.val_cred=np_.stack(self.val_cred,axis=0)
+        if annotate:
+            self.val_cred=np_.stack(self.val_cred,axis=0)
         yield None
 
     @staticmethod

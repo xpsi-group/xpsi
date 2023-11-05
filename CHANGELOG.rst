@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v2.1.1] - 2023-11-01
+[v2.1.1] - 2023-11-05
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -45,7 +45,7 @@ Summary
 Added
 ^^^^^
 
-* An option ``show_vband`` added to the CornerPlotter class allowing to choose how many colored vertical bands are shown in the corner plots if printing the credible intervals for multiple runs or models (Y.K., T.S.).
+* An option ``show_vband`` added to the CornerPlotter class allowing to choose how many colored vertical bands are shown in the corner plots (Y.K., T.S., S.G).
 
 * Options ``xticks`` and ``yticks`` added in ``xpsi/PostProcessing/_signalplot.py`` to adjust the axis ticks and tick labels in signal plots for post-processing. Examples of their usage added to the Post-processing tutorial (T.S.).
 
@@ -64,7 +64,8 @@ Attribution
 ^^^^^^^^^^^
 
 Tuomo Salmi,
-Yves Kini
+Yves Kini,
+Sebastien Guillot
 
 
 [v2.1.0] - 2023-09-08
