@@ -992,26 +992,28 @@ class CornerPlotter(PostProcessor):
 
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
-                ax.axvspan(cred[0,0], cred[0,2], alpha=0.5,
-                           facecolor=color,
-                           edgecolor=color,
-                           linewidth=0,
-                           rasterized=True,
-                           zorder=zorder)
+                if self.tot1-1 <self.show_vband:
 
-                ax.axvspan(cred[2,0], cred[2,2], alpha=0.5,
-                           facecolor=color,
-                           edgecolor=color,
-                           linewidth=0,
-                           rasterized=True,
-                           zorder=zorder)
+                    ax.axvspan(cred[0,0], cred[0,2], alpha=0.5,
+                               facecolor=color,
+                               edgecolor=color,
+                               linewidth=0,
+                               rasterized=True,
+                               zorder=zorder)
 
-                ax.axvspan(cred[0,2], cred[2,0], alpha=0.25,
-                           facecolor=color,
-                           edgecolor=color,
-                           linewidth=0,
-                           rasterized=True,
-                           zorder=zorder)
+                    ax.axvspan(cred[2,0], cred[2,2], alpha=0.5,
+                               facecolor=color,
+                               edgecolor=color,
+                               linewidth=0,
+                               rasterized=True,
+                               zorder=zorder)
+
+                    ax.axvspan(cred[0,2], cred[2,0], alpha=0.25,
+                               facecolor=color,
+                               edgecolor=color,
+                               linewidth=0,
+                               rasterized=True,
+                               zorder=zorder)
 
                 if annotate:
                     stats = format_CI('', # parameter name not needed on plot
@@ -1035,7 +1037,7 @@ class CornerPlotter(PostProcessor):
 
                     if self.credible_interval_1d_all_show:
                         x_pos = 0.5
-                        y_pos = 1.05 + 0.11 * (self.r+self.sub_set)
+                        y_pos = 1.05 + 0.12 * (self.r+self.sub_set)
                         ax.text(x_pos, y_pos, title,
                                 color=color,
                                 horizontalalignment="center",
@@ -1044,8 +1046,8 @@ class CornerPlotter(PostProcessor):
                                 transform=ax.transAxes)
 
 
-                        if self.show_top:
-                            y_pos = 1.05 + 0.11 * (1+self.tot)
+                        if self.tot0 == self.tot1:
+                            y_pos = 1.05 + 0.12 * (1+self.r+self.sub_set)
                             title_param_name = r'${}$'.format(param_name)
                             ax.text(x_pos, y_pos, title_param_name,
                                     color='black',
