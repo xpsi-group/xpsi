@@ -31,12 +31,9 @@ jobs:
         cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
         environment-file: basic_environment.yml
         environment-name: xpsipy3
-    - name: mamba install flake8
+    - name: mamba install flake8 and importlib-metadata
       run: |
-        micromamba install flake8==4.0.1
-    - name: mamba install importlib-metadata
-      run: |
-        micromamba install "importlib-metadata<4.3"
+        micromamba install flake8==4.0.1 "importlib-metadata<4.3"
     - name: mamba install pytest
       run: |
         micromamba install pytest
