@@ -420,7 +420,7 @@ class CornerPlotter(PostProcessor):
 
         :param bool show_vband:
             Select the number of 1D marginal credible intervals shown as colored
-            vertical bands if using 'credible_interval_1d_all_show=True'.
+            vertical bands.
 
         :param bool annotate_credible_interval:
             Annotate each on-diagonal panel with numeric credible interval
@@ -712,6 +712,7 @@ class CornerPlotter(PostProcessor):
 
                     self.credible_intervals[id]=self.val_cred
         else:
+                self.tot1=1
                 id=self.get_attr("parent_ID")[0]+"_"+self.get_attr("ID")[0]
                 self.r=0
                 self.val_cred = []
