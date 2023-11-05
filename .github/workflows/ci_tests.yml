@@ -36,7 +36,7 @@ jobs:
         pip install "importlib-metadata<4.3"
     - name: mamba installs
       run: |
-        micromamba install flake8 pytest
+        micromamba install flake8==4.0.1 pytest
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
