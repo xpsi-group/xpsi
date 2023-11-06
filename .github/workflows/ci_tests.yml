@@ -25,12 +25,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install Conda environment with Micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
-        cache-env: true
-        cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+        cache-environment: true
+        cache-environment-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
         environment-file: basic_environment.yml
         environment-name: xpsipy3
+        create-args: >-
+          python=${{ matrix.python-version }}
     - name: mamba installs
       run: |
         micromamba install flake8 pytest
