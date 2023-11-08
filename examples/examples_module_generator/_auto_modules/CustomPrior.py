@@ -418,7 +418,7 @@ class CustomPrior(xpsi.Prior):
         # automatically written to disk by MultiNest and only by MultiNest
         return self.parameters.vector
 
-    def transform(self, p, **kargs):
+    def transform(self, p, **kwargs):
         """ A transformation for post-processing. """
 
         p = list(p) # copy
