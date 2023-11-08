@@ -47,6 +47,8 @@ Added
 
 * An option ``show_vband`` added to the CornerPlotter class allowing to choose how many colored vertical bands are shown in the corner plots (Y.K., T.S., S.G).
 
+* Options ``xticks`` and ``yticks`` added in ``xpsi/PostProcessing/_signalplot.py`` to adjust the axis ticks and tick labels in signal plots for post-processing. Examples of their usage added to the Post-processing tutorial (T.S.).
+
 Fixed
 ^^^^^
 

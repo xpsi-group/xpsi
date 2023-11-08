@@ -69,7 +69,9 @@ class SignalPlot(object, metaclass=ABCMeta):
                          write=True,
                          extension='.pdf',
                          dpi=300,
-                         write_kwargs=None):
+                         write_kwargs=None,
+                         xticks=None,
+                         yticks=None):
         """ Configure subclass with attributes, *before instantiation*.
 
         These attributes can in principle be safely changed during the runtime.
@@ -127,6 +129,18 @@ class SignalPlot(object, metaclass=ABCMeta):
         :param dict write_kwargs:
             Additional writing keyword arguments.
 
+        :param list(list(float)) xticks:
+            Determine the x-tick values that will be labelled in each of the subplots
+            (including color bars). Automatic ticks and labels are used for the
+            specific subplot if providing None instead of a list of floats
+            (e.g., xticks=[[0.1,0.5,1.0],None,None]).
+            If xticks=None (default), automatic ticks and labels are used for all the
+            subplots.
+
+        :param list(list(float)) yticks:
+            Determine the y-tick values that will be labelled in each of the subplots
+            (including color bars). See param xticks for more details.
+
         """
 
         if panelsize[1] >= panelsize[0]:
@@ -157,6 +171,8 @@ class SignalPlot(object, metaclass=ABCMeta):
         if not write_kwargs:
             cls._write_kwargs = dict(bbox_inches='tight')
 
+        cls._xticks = xticks
+        cls._yticks = yticks
         cls._settings_declared = True
 
         yield
@@ -166,7 +182,6 @@ class SignalPlot(object, metaclass=ABCMeta):
                  root_filename = '',
                  cmap = 'RdPu_r',
                  **kwargs):
-
         try:
             type(self)._settings_declared
         except AttributeError:
@@ -250,8 +265,25 @@ class SignalPlot(object, metaclass=ABCMeta):
             except TypeError: # quietly do nothing
                 pass
             else:
+                iax = 0
                 for ax in self._axes:
-                    self._veneer(ax)
+                    if self._xticks is None and self._yticks is None:
+                        self._veneer(ax)
+                    elif self._xticks is not None and self._yticks is None:
+                        self._veneer(ax,xticks=self._xticks[iax])
+                        if self._xticks[iax] is not None:
+                            ax.set_xticklabels(self._xticks[iax])
+                    elif self._yticks is not None and self._xticks is None:
+                        self._veneer(ax,yticks=self._yticks[iax])
+                        if self._yticks[iax] is not None:
+                            ax.set_yticklabels(self._yticks[iax])
+                    else:
+                        self._veneer(ax,xticks=self._xticks[iax],yticks=self._yticks[iax])
+                        if self._yticks[iax] is not None:
+                            ax.set_yticklabels(self._yticks[iax])
+                        if self._xticks[iax] is not None:
+                            ax.set_xticklabels(self._xticks[iax])
+                    iax = iax+1
 
         if self._write: self.savefig()
 
@@ -313,7 +345,7 @@ class SignalPlot(object, metaclass=ABCMeta):
         """
         pass
 
-    def _veneer(self, ax):
+    def _veneer(self, ax, xticks=None, yticks=None):
         """ These are globally applicable settings for aesthetics. """
 
         if not isinstance(ax, _mpl.axes.Axes):
@@ -334,6 +366,11 @@ class SignalPlot(object, metaclass=ABCMeta):
 
         for spine in ax.spines.values():
             spine.set_linewidth(self._tick_width)
+
+        if xticks:
+            ax.set_xticks(xticks)
+        if yticks:
+            ax.set_yticks(yticks)
 
     def _add_contours(self,
                       callback,
