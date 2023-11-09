@@ -160,3 +160,6 @@ venv.bak/
 
 # pycharm editing
 .idea/
+
+# scratchpad
+notebooks
