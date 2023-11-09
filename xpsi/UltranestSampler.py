@@ -18,13 +18,13 @@ class UltranestSampler(object):
 
     :param prior: An instance of :class:`~.Prior.Prior`.
 
-    :param kwargs: Keyword arguments passed to :func:`run`          handled via the PyMultiNest wrapper.
+    :param kwargs: Keyword arguments passed to :func:`run`
 
     """
 
     def __init__(self, 
                  likelihood,
-                 prior
+                 prior,
                  **kwargs):
 
         if not isinstance(likelihood, Likelihood):
