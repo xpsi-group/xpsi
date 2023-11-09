@@ -12,10 +12,20 @@ else:
         print('Imported UltraNest.')
 
 class UltranestSampler(object):
+    """ Initiate Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param kwargs: Keyword arguments passed to :func:`run`          handled via the PyMultiNest wrapper.
+
+    """
 
     def __init__(self, 
                  likelihood,
-                 prior):
+                 prior
+                 **kwargs):
 
         if not isinstance(likelihood, Likelihood):
             raise TypeError('Invalid type for likelihood object.')
@@ -32,8 +42,7 @@ class UltranestSampler(object):
 
         pass
 
-    def __call__(self, *args, **kwargs):
-        # start sampling using region sampler MLFriends as default
-        # result = sampler.run()
+    def __call__(self, **kwargs):
+        """ Start the sampling."""
 
-        pass
+        _ = self._sampler.run(**kwargs)

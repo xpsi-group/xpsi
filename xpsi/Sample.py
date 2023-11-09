@@ -292,3 +292,13 @@ def importance(target, importance,
     importance.externally_updated = _importance_state_to_restore
 
     yield
+
+def ultranest(likelihood, prior, **kwargs):
+
+    from xpsi.UltranestSampler import UltranestSampler
+
+    # Initialise emcee sampler
+    sampler = UltranestSampler(likelihood=likelihood, prior=prior, **kwargs)
+
+    # Commence emcee sampling process
+    sampler()
