@@ -298,7 +298,7 @@ def ultranested(likelihood, prior, **kwargs):
     from xpsi.UltranestSampler import UltranestSampler
 
     # Initialise emcee sampler
-    sampler = UltranestSampler(likelihood=likelihood, prior=prior, **kwargs)
+    sampler = UltranestSampler(likelihood, prior, **kwargs)
 
     # Commence emcee sampling process
     sampler()
