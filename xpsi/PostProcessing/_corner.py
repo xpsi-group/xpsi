@@ -970,7 +970,7 @@ class CornerPlotter(PostProcessor):
             else:
                 stats += (('%s/-%s/+%s$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
 
-            self.val_cred.append([np_.float(_f % _qs[0]),-np_.float(_f % _qs[1]),+np_.float(_f % _qs[2])])
+            self.val_cred.append([float(_f % _qs[0]),-float(_f % _qs[1]),+float(_f % _qs[2])])
 
             return stats
 
