@@ -293,7 +293,7 @@ def importance(target, importance,
 
     yield
 
-def ultranest(likelihood, prior, **kwargs):
+def ultranested(likelihood, prior, **kwargs):
 
     from xpsi.UltranestSampler import UltranestSampler
 
