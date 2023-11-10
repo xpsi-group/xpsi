@@ -1,34 +1,4 @@
-import numpy as np_
-from scipy.special import logsumexp
-
 from ._global_imports import *
-
-from . import _precision
-from collections import OrderedDict
-
-from getdist.plots import getSubplotPlotter
-from getdist.mcsamples import MCSamples
-
-try:
-    from nestcheck.ns_run_utils import get_logw, get_w_rel
-    from nestcheck.plots import bs_param_dists
-    from nestcheck.error_analysis import run_ci_bootstrap
-    from nestcheck.estimators import param_cred, logz
-except ImportError:
-    _warning('CornerPlotter instances cannot use nestcheck functionality.')
-else:
-    try:
-        from ._nestcheck_modifications import getdist_kde
-    except ImportError:
-        try:
-            from nestcheck.plots import weighted_1d_gaussian_kde
-        except ImportError:
-            _warning('CornerPlotter instances cannot use nestcheck '
-                     'functionality.')
-        else:
-            _warning('Using native nestcheck KDE instead of GetDist KDE.')
-
-from ._backends import NestedBackend
 from ._postprocessor import PostProcessor
 
 class CornerPlotter(PostProcessor):
