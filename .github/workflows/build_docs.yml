@@ -91,3 +91,13 @@ jobs:
         mkdir build/html/py2
         mv ../../../../py2/* build/html/py2/
       working-directory: docs/
+
+    - name: Deploy to GitHub Pages
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v3
+      with:
+        target_branch: gh-pages
+        build_dir: docs/build/html
+        jekyll: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
