@@ -1,7 +1,7 @@
 #import numpy as np_
 #from scipy.special import logsumexp
 #from ._global_imports import *
-
+from ._postprocessor import PostProcessor
 
 class CornerPlotter(PostProcessor):
     """ Container for nested sampling runs on a shared posterior.
