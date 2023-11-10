@@ -43,6 +43,9 @@ jobs:
         micromamba install sphinx decorator h5py
         micromamba install -c conda-forge nbsphinx nbconvert
         pip install sphinxcontrib-websupport sphinx_rtd_theme
+    - name : install other needed packages
+      run: |
+        micromamba install -c conda-forge getdist nestcheck
     - name: install X-PSI package
       run: |
         python setup.py install
