@@ -46,9 +46,6 @@ jobs:
     - name: install X-PSI package
       run: |
         python setup.py install
-     - name: install modules needed for CornerPlotter API
-      run: |
-        micromamba install -c conda-forge getdist nestcheck fgivenx
       shell: bash -l {0}
       env:
         CC:   gcc-10
