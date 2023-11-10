@@ -1,6 +1,13 @@
 from ._global_imports import *
 from ._postprocessor import PostProcessor
 
+from nestcheck.ns_run_utils import get_logw, get_w_rel
+from nestcheck.plots import bs_param_dists
+from nestcheck.error_analysis import run_ci_bootstrap
+from nestcheck.estimators import param_cred, logz
+from ._nestcheck_modifications import getdist_kde
+from nestcheck.plots import weighted_1d_gaussian_kde
+
 class CornerPlotter(PostProcessor):
     """ Plot marginal posterior densities and estimators.
 
