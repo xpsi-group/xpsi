@@ -337,7 +337,7 @@ class CornerPlotter(PostProcessor):
                        no_ytick = False,
                        credible_interval_1d = True,
                        credible_interval_1d_all_show = False,
-                       show_vband=1,
+                       show_vband=[0],
                        annotate_credible_interval = True,
                        annotate_xy=(0.025,0.915),
                        sixtyeight = True,
@@ -686,41 +686,22 @@ class CornerPlotter(PostProcessor):
                 self.tot0 +=1
 
         self.tot1=0.
-        if credible_interval_1d_all_show:
-            for sub_set in range(len(self.subset)):
-                for r in range(len(self.subset[sub_set].subset_to_plot)):
-                    # assuming different runs for each model are combined when showing multiple models
-                    if (sub_set == 0):
-                        id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
-                    else:
-                        id=self.get_attr("parent_ID")[sub_set]+"_"+self.get_attr("ID")[sub_set]
-                    self.r=r
-                    self.sub_set=sub_set
-                    self.val_cred = []
-                    self.run = self.subset[sub_set].subset_to_plot[r]
-                    self.tot1 +=1
-
-                    self._add_credible_interval(plotter,
-                                                self.subset[sub_set],
-                                                bootstrap=bootstrap,
-                                                n_simulate=kwargs.get('n_simulate'),
-                                                annotate=annotate_credible_interval,
-                                                annotate_xy=annotate_xy,
-                                                sixtyeight=sixtyeight,
-                                                ninety=ninety,
-                                                compute_all_intervals=compute_all_intervals,
-                                                precisions=precisions)
-
-                    self.credible_intervals[id]=self.val_cred
-        else:
-                self.tot1=1
-                id=self.get_attr("parent_ID")[0]+"_"+self.get_attr("ID")[0]
-                self.r=0
+        #if credible_interval_1d_all_show:
+        for sub_set in range(len(self.subset)):
+            for r in range(len(self.subset[sub_set].subset_to_plot)):
+                # assuming different runs for each model are combined when showing multiple models
+                if (sub_set == 0):
+                    id=self.get_attr("parent_ID")[r]+"_"+self.get_attr("ID")[r]
+                else:
+                    id=self.get_attr("parent_ID")[sub_set]+"_"+self.get_attr("ID")[sub_set]
+                self.r=r
+                self.sub_set=sub_set
                 self.val_cred = []
-                self.run = self.subset[0].subset_to_plot[0]
+                self.run = self.subset[sub_set].subset_to_plot[r]
+                self.tot1 +=1
 
                 self._add_credible_interval(plotter,
-                                            self.subset[0],
+                                            self.subset[sub_set],
                                             bootstrap=bootstrap,
                                             n_simulate=kwargs.get('n_simulate'),
                                             annotate=annotate_credible_interval,
@@ -731,7 +712,26 @@ class CornerPlotter(PostProcessor):
                                             precisions=precisions)
 
                 self.credible_intervals[id]=self.val_cred
-
+        # else:
+        #         self.tot1=1
+        #         id=self.get_attr("parent_ID")[0]+"_"+self.get_attr("ID")[0]
+        #         self.r=0
+        #         self.val_cred = []
+        #         self.run = self.subset[0].subset_to_plot[0]
+        #
+        #         self._add_credible_interval(plotter,
+        #                                     self.subset[0],
+        #                                     bootstrap=bootstrap,
+        #                                     n_simulate=kwargs.get('n_simulate'),
+        #                                     annotate=annotate_credible_interval,
+        #                                     annotate_xy=annotate_xy,
+        #                                     sixtyeight=sixtyeight,
+        #                                     ninety=ninety,
+        #                                     compute_all_intervals=compute_all_intervals,
+        #                                     precisions=precisions)
+        #
+        #         self.credible_intervals[id]=self.val_cred
+        #
 
         self._plotter = plotter
         return plotter
@@ -993,7 +993,10 @@ class CornerPlotter(PostProcessor):
 
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
-                if self.tot1-1 <self.show_vband:
+                if self.show_vband==None:
+                    pass
+
+                elif self.tot1-1 in self.show_vband:
 
                     ax.axvspan(cred[0,0], cred[0,2], alpha=0.5,
                                facecolor=color,
@@ -1057,7 +1060,7 @@ class CornerPlotter(PostProcessor):
                                     fontsize=fontsize,
                                     transform=ax.transAxes)
 
-                    else:
+                    elif self.tot1==1:
                         ax.set_title(title, color=color,
                                      fontsize=fontsize)
                         title_param_name = r'${}$'.format(param_name)
@@ -1117,7 +1120,10 @@ class CornerPlotter(PostProcessor):
                 cred = calculate_intervals(quantiles)
                 zorder = max([_.zorder for _ in ax.get_children()]) + 1
 
-                if self.tot1-1 <self.show_vband:
+                if self.show_vband==None:
+                    pass
+
+                elif self.tot1-1  in self.show_vband:
                     ax.axvspan(cred[0], cred[2], alpha=0.25,
                                facecolor=color,
                                edgecolor=color,
@@ -1163,7 +1169,7 @@ class CornerPlotter(PostProcessor):
                                     alpha=1.,
                                     fontsize=fontsize,
                                     transform=ax.transAxes)
-                    else:
+                    elif self.tot1==1:
                         ax.set_title(title, color=color,
                                      fontsize=fontsize)
                         title_param_name = r'${}$'.format(param_name)
