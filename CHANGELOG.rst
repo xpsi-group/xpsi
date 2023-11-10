@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v2.1.1] - 2023-11-09
+[v2.1.1] - 2023-11-10
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -54,7 +54,7 @@ Added
 Fixed
 ^^^^^
 
-* Displaying and saving the credible intervals for all plotted posteriors fixed to work for multiple models and not only for multiple runs. The argument ``credible_interval_1d_all_show`` needs to be ``True`` to use this functionality (Y.K., T.S.).
+* Displaying the credible intervals for all plotted posteriors fixed to work for multiple models and not only for multiple runs. The argument ``credible_interval_1d_all_show`` needs to be ``True`` to use this functionality (Y.K., T.S.).
 
 * Corrected a deprecated version of numpy float in ``xpsi/PostProcessing/_corner.py`` (M.H.).
 
@@ -63,6 +63,11 @@ Fixed
 * Prior probability values prevented from being exactly zero (or negative) for KL-divergence calculation and avoiding thus infinite values for the reported KL-divergence estimates (T.S.).
 
 * Module generator fixed to work with the current version of X-PSI and tutorial updated (T.S., D.C).
+
+Changed
+^^^^^^^
+
+* The 1D credible intervals for all the plotted posteriors are now always calculated (and saved if ``annotate_credible_interval=True``), even though not choosing to show all of them in a corner plot (Y.K).
 
 Attribution
 ^^^^^^^^^^^

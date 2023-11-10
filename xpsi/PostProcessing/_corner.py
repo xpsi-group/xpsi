@@ -415,13 +415,14 @@ class CornerPlotter(PostProcessor):
 
         :param bool credible_interval_1d_all_show:
             Show the 1D marginal credible intervals for all plotted posteriors.
-            The intervals will also be saved in a 'self.credible_intervals' dictionary.
             Note that this option forces KL_divergence value to be False,
-            and intervals are only shown and saved if also annotate_credible_interval=True.
+            and intervals are only shown if also annotate_credible_interval=True.
 
-        :param bool show_vband:
-            Select the number of 1D marginal credible intervals shown as colored
-            vertical bands.
+        :param list show_vband:
+            Select the indices (as a list of integers) of the runs/models whose
+            of 1D marginal credible intervals will be shown as colored vertical bands.
+            The default is [0], i.e., the vertical band is only shown for the
+            posterior with the first model/run ID.
 
         :param bool annotate_credible_interval:
             Annotate each on-diagonal panel with numeric credible interval
@@ -429,6 +430,7 @@ class CornerPlotter(PostProcessor):
             including the median, is estimated via bootstrapping with
             :mod:`nestcheck`, and the median of each quantile from the bootstrap
             realisations is used for the reported numeric credible interval.
+            The intervals will also be saved in a 'self.credible_intervals' dictionary.
 
         :param tuple annotate_xy:
             Coordinates as axis fractions for annotation of credible intervals.
@@ -686,7 +688,6 @@ class CornerPlotter(PostProcessor):
                 self.tot0 +=1
 
         self.tot1=0.
-        #if credible_interval_1d_all_show:
         for sub_set in range(len(self.subset)):
             for r in range(len(self.subset[sub_set].subset_to_plot)):
                 # assuming different runs for each model are combined when showing multiple models
@@ -712,26 +713,6 @@ class CornerPlotter(PostProcessor):
                                             precisions=precisions)
 
                 self.credible_intervals[id]=self.val_cred
-        # else:
-        #         self.tot1=1
-        #         id=self.get_attr("parent_ID")[0]+"_"+self.get_attr("ID")[0]
-        #         self.r=0
-        #         self.val_cred = []
-        #         self.run = self.subset[0].subset_to_plot[0]
-        #
-        #         self._add_credible_interval(plotter,
-        #                                     self.subset[0],
-        #                                     bootstrap=bootstrap,
-        #                                     n_simulate=kwargs.get('n_simulate'),
-        #                                     annotate=annotate_credible_interval,
-        #                                     annotate_xy=annotate_xy,
-        #                                     sixtyeight=sixtyeight,
-        #                                     ninety=ninety,
-        #                                     compute_all_intervals=compute_all_intervals,
-        #                                     precisions=precisions)
-        #
-        #         self.credible_intervals[id]=self.val_cred
-        #
 
         self._plotter = plotter
         return plotter
