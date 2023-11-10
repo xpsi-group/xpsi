@@ -18,10 +18,6 @@ PostProcessing
     :members:
     :show-inheritance:
 
-.. autoclass:: xpsi.PostProcessing.CornerPlotter
-    :members:
-    :show-inheritance:
-
 .. autoclass:: xpsi.PostProcessing.SignalPlotter
     :members:
     :show-inheritance:
@@ -37,6 +33,10 @@ PostProcessing
 .. autoclass:: xpsi.PostProcessing.SpectrumPlot
     :members:
     :show-inheritance:
+
+.. autoclass:: xpsi.PostProcessing.CornerPlotter
+    :members:
+    :show-inheritance:    
 
 Base classes for development
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
