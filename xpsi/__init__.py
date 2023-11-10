@@ -4,7 +4,7 @@ An open-source package for neutron star astrostatistics.
 
 """
 
-__version__ = "2.1.1_debug"
+__version__ = "2.1.1"
 __author__ = "The X-PSI Core Team"
 
 try:
