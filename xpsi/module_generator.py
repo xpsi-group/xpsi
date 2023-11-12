@@ -1405,16 +1405,16 @@ if args.print_MPI_rank:
 
 module += (
 '''
-from {0} import CustomInstrument
-from {1} import CustomSignal
-from {2} import CustomInterstellar
+from .{0} import CustomInstrument
+from .{1} import CustomSignal
+from .{2} import CustomInterstellar
 
 try:
-    from {3} import CustomPhotosphere
+    from .{3} import CustomPhotosphere
 except ImportError:
     from xpsi import Photosphere as CustomPhotosphere
 
-from {4} import CustomPrior
+from .{4} import CustomPrior
 '''.format(args.custom_instrument_module,
            args.custom_signal_module,
            args.custom_interstellar_module,
@@ -1433,14 +1433,14 @@ elif not args.background_shared_class:
 if args.background_shared_class:
     module += (
     '''
-from {0} import CustomBackground
+from .{0} import CustomBackground
     '''.format(args.custom_background_module)
     )
 elif args.background_shared_class:
     for _instrument in args.instruments:
         module += (
         '''
-from {0} import {1}_CustomBackground
+from .{0} import {1}_CustomBackground
         '''.format(args.custom_background_module,
                    _instrument)
         )
