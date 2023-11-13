@@ -293,12 +293,22 @@ def importance(target, importance,
 
     yield
 
-def ultranested(likelihood, prior, **kwargs):
+def ultranested(likelihood, prior, sampler_params={}, runtime_params={}):
+    """ Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
 
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param sampler_params: Keyword arguments passed instance of :class:`~.ultranest.ReactiveNestedSampler`
+
+    :param runtime_params: Keyword arguments passed passed to :func:`run`.
+    
+    """
     from xpsi.UltranestSampler import UltranestSampler
 
-    # Initialise emcee sampler
-    sampler = UltranestSampler(likelihood, prior, **kwargs)
+    # initialise the sampler
+    sampler = UltranestSampler(likelihood, prior, sampler_params)
 
-    # Commence emcee sampling process
-    sampler()
+    # start sampling 
+    sampler(runtime_params)

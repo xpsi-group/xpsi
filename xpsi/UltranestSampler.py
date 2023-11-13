@@ -11,39 +11,38 @@ else:
     if _verbose:
         print('Imported UltraNest.')
 
-class UltranestSampler(object):
+class UltranestSampler():
     """ Initiate Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
 
     :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
 
     :param prior: An instance of :class:`~.Prior.Prior`.
 
-    :param kwargs: Keyword arguments passed to :func:`run`
+    :param sampler_params: Keyword arguments passed instance of :class:`~.ultranest.ReactiveNestedSampler`.
 
     """
 
     def __init__(self, 
                  likelihood,
                  prior,
-                 **kwargs):
+                 sampler_params):
 
         if not isinstance(likelihood, Likelihood):
             raise TypeError('Invalid type for likelihood object.')
-        else:
-            self._likelihood = likelihood
+        self._likelihood = likelihood
 
         if not isinstance(prior, Prior):
             raise TypeError('Invalid type for prior object.')
-        else:
-            self._prior = prior
+        self._prior = prior
 
         # initialise sampler 
-        self._sampler = ultranest.ReactiveNestedSampler(param_names=self._likelihood.params, 
-                                                        loglike=self._likelihood, 
-                                                        transform=self._prior.inverse_sample, 
-                                                        **kwargs)
+        self._sampler = ultranest.ReactiveNestedSampler(param_names=self._likelihood.params, loglike=self._likelihood, transform=self._prior.inverse_sample, **sampler_params)
 
-    def __call__(self, **kwargs):
-        """ Start the sampling."""
+    def __call__(self, runtime_params):
+        """ Start the sampling.
+        
+        :param runtime_params: Keyword arguments passed passed to :func:`run`.
+        """
 
-        _ = self._sampler.run()
+        # run sampler with given runtime params
+        _ = self._sampler.run(**runtime_params)
