@@ -1457,7 +1457,9 @@ elif args.background_shared_class:
         module += (
         '''
 if __name__ == '__main__':
-    from .{0} import {1}_CustomBackground
+    from {0} import {1}_CustomBackground
+        '''.format(args.custom_background_module,
+                   _instrument)
 else:
     from .{0} import {1}_CustomBackground
         '''.format(args.custom_background_module,
