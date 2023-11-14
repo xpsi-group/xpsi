@@ -1,4 +1,4 @@
-__all__ = ["nested", "ensemble"]
+__all__ = ["nested", "ensemble", "ultranested"]
 
 from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size

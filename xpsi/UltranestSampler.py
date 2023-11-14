@@ -36,12 +36,13 @@ class UltranestSampler():
         self._prior = prior
 
         # initialise sampler 
-        self._sampler = ultranest.ReactiveNestedSampler(param_names=self._likelihood.params, loglike=self._likelihood, transform=self._prior.inverse_sample, **sampler_params)
+        self._sampler = ultranest.ReactiveNestedSampler(param_names=self._likelihood.names, loglike=self._likelihood, transform=self._prior.inverse_sample, **sampler_params)
 
     def __call__(self, runtime_params):
         """ Start the sampling.
         
         :param runtime_params: Keyword arguments passed passed to :func:`run`.
+        
         """
 
         # run sampler with given runtime params
