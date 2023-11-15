@@ -311,4 +311,6 @@ def ultranested(likelihood, prior, sampler_params={}, runtime_params={}):
     sampler = UltranestSampler(likelihood, prior, sampler_params)
 
     # start sampling 
-    sampler(runtime_params)
+    result = sampler(runtime_params)
+
+    return sampler, result

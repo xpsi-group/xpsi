@@ -11,7 +11,7 @@ else:
     if _verbose:
         print('Imported UltraNest.')
 
-class UltranestSampler():
+class UltranestSampler(ultranest.ReactiveNestedSampler):
     """ Initiate Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
 
     :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
@@ -36,7 +36,7 @@ class UltranestSampler():
         self._prior = prior
 
         # initialise sampler 
-        self._sampler = ultranest.ReactiveNestedSampler(param_names=self._likelihood.names, loglike=self._likelihood, transform=self._prior.inverse_sample, **sampler_params)
+        super().__init__(param_names=self._likelihood.names, loglike=self._likelihood, transform=self._prior.inverse_sample, **sampler_params)
 
     def __call__(self, runtime_params):
         """ Start the sampling.
@@ -46,4 +46,4 @@ class UltranestSampler():
         """
 
         # run sampler with given runtime params
-        _ = self._sampler.run(**runtime_params)
+        self.run(**runtime_params)
