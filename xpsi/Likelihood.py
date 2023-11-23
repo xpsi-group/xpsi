@@ -692,48 +692,46 @@ class Likelihood(ParameterSubspace):
         elif force: # no need to reinitialise, just clear cache and values
             self.clear_cache()
 
-        if not self.externally_updated: # do not safely assume already handled
-            if p is None: # expected a vector of values instead of nothing
-                raise TypeError('Parameter values have not been updated.')
-            super(Likelihood, self).__call__(p) # update free parameters
+        if p is None: # expected a vector of values instead of nothing
+            raise TypeError('Parameter values are None.')
+        super(Likelihood, self).__call__(p) # update free parameters
 
-        if self.needs_update or force:
-            try:
-                logprior = self._prior(p) # pass vector just in case wanted
-            except AttributeError:
-                pass
-            else:
-                if not _np.isfinite(logprior):
-                    because_of_1D_bounds = False
-                    for param in self._prior.parameters:
-                        if param.bounds[0] is not None:
-                            if not param.bounds[0] <= param.value:
-                                because_of_1D_bounds = True
-                        if param.bounds[1] is not None:
-                            if not param.value <= param.bounds[1]:
-                                because_of_1D_bounds = True
-                    if because_of_1D_bounds:
-                        print("Warning: Prior check failed, because at least one of the parameters is not within the hard 1D-bounds. No synthetic data will be produced.")
-                    else:
-                        print('Warning: Prior check failed because a requirement set in CustomPrior has failed. No synthetic data will be produced.')
-                    # we need to restore due to premature return
-                    super(Likelihood, self).__call__(self.cached)
-                    return None
+        try:
+            logprior = self._prior(p) # pass vector just in case wanted
+        except AttributeError:
+            pass
+        else:
+            if not _np.isfinite(logprior):
+                because_of_1D_bounds = False
+                for param in self._prior.parameters:
+                    if param.bounds[0] is not None:
+                        if not param.bounds[0] <= param.value:
+                            because_of_1D_bounds = True
+                    if param.bounds[1] is not None:
+                        if not param.value <= param.bounds[1]:
+                            because_of_1D_bounds = True
+                if because_of_1D_bounds:
+                    print("Warning: Prior check failed, because at least one of the parameters is not within the hard 1D-bounds. No synthetic data will be produced.")
+                else:
+                    print('Warning: Prior check failed because a requirement set in CustomPrior has failed. No synthetic data will be produced.')
+                # we need to restore due to premature return
+                super(Likelihood, self).__call__(self.cached)
+                return None
 
-            if self._do_fast:
-                # perform a low-resolution precomputation to direct cell
-                # allocation
-                x = self._driver(fast_mode=True,force_update=force)
-                if not isinstance(x, bool):
-                    super(Likelihood, self).__call__(self.cached) # restore
-                    return None
-                elif x:
-                    x = self._driver(synthesise=True,force_update=force, **kwargs)
-                    if not isinstance(x, bool):
-                        super(Likelihood, self).__call__(self.cached) # restore
-                        return None
-            else:
+        if self._do_fast:
+            # perform a low-resolution precomputation to direct cell
+            # allocation
+            x = self._driver(fast_mode=True,force_update=force)
+            if not isinstance(x, bool):
+                super(Likelihood, self).__call__(self.cached) # restore
+                return None
+            elif x:
                 x = self._driver(synthesise=True,force_update=force, **kwargs)
                 if not isinstance(x, bool):
                     super(Likelihood, self).__call__(self.cached) # restore
                     return None
+        else:
+            x = self._driver(synthesise=True,force_update=force, **kwargs)
+            if not isinstance(x, bool):
+                super(Likelihood, self).__call__(self.cached) # restore
+                return None

@@ -1318,8 +1318,6 @@ parser.add_argument('--multinest', action='store_true', help='Launch MultiNest s
 
 parser.add_argument('--resume', action='store_true', help='Resume sampling if module is executed.')
 
-parser.add_argument('--multimodal', action='store_true', help='Activate the mode-separation algorithm variant of MultiNest.',
-                    comment=True)
 
 parser.add_argument('--sample-files-directory-path',
                     type=str,
@@ -1920,6 +1918,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                             num_rays=args.{1}_num_rays,
                             is_antiphased={0},
                             image_order_limit=args.image_order_limit,
+                            atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
                             prefix='{1}')
 '''.format(str(args.is_antiphased[0]), args.prefix[0])
 )
@@ -1964,6 +1963,7 @@ secondary = xpsi.HotRegion(bounds=bounds,
                                 num_rays=args.{1}_num_rays,
                                 is_antiphased={0},
                                 image_order_limit=args.image_order_limit,
+                                atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
                                 prefix='{1}')
     '''.format(str(not args.is_antiphased[0] if args.antipodal_reflection_symmetry else args.is_antiphased[1]), args.prefix[1])
     )
@@ -3388,7 +3388,7 @@ module += (
 
 module += (
 '''
-    def transform(self, p, **kargs):
+    def transform(self, p, **kwargs):
         """ A transformation for post-processing. """
 
         p = list(p) # copy
@@ -3498,7 +3498,8 @@ import math
 
 import xpsi
 
-from xpsi import Parameter, make_verbose
+from xpsi import Parameter
+from xpsi.utils import make_verbose
 
 class CustomInstrument(xpsi.Instrument):
     """ {3}. """
@@ -3562,7 +3563,23 @@ for instrument in args.instrument:
         # check the loading assumptions and comment out the exception throw if they are true
         #raise NotImplementedError('Implement the class method for loading the {0} instrument.')
 
-        # template
+        #working template for the github example:
+        #if min_input != 0:
+        #    min_input = int(min_input)
+        #max_input = int(max_input)
+        #ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
+        #RMF = np.loadtxt(RMF, dtype=np.double)
+        #channel_energies = np.loadtxt(channel_energies, dtype=np.double, skiprows=3)[:,1:]
+        #matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
+        #edges = np.zeros(ARF[min_input:max_input,3].shape[0]+1, dtype=np.double)
+        #edges[0] = ARF[min_input,1]; edges[1:] = ARF[min_input:max_input,2]
+        #for i in range(matrix.shape[0]):
+        #    matrix[i,:] *= ARF[min_input:max_input,3]
+        #channels = np.arange(20, 201)
+        #return cls(matrix, edges, channels, channel_energies[20:202,-2], alpha, **kwargs)
+
+
+        # another template
         #ARF = np.loadtxt(ARF, dtype=np.double, skiprows=ARF_skiprows)
         #RMF = np.loadtxt(RMF, dtype=np.double, skiprows=RMF_skiprows, usecols=RMF_usecol)
         #channel_energies = np.loadtxt(channel_energies, dtype=np.double, skiprows=channel_energies_skiprows)

@@ -34,6 +34,51 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.1.1] - 2023-11-10
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Updates and fixes done to post-processing, synthesise, and module generator routines.
+
+Added
+^^^^^
+
+* An option ``show_vband`` added to the CornerPlotter class allowing to choose how many colored vertical bands are shown in the corner plots (Y.K., T.S., S.G).
+
+* Options ``xticks`` and ``yticks`` added in ``xpsi/PostProcessing/_signalplot.py`` to adjust the axis ticks and tick labels in signal plots for post-processing (T.S.).
+
+* Examples of the new features added to the Post-processing tutorial (T.S.).
+
+Fixed
+^^^^^
+
+* Displaying the credible intervals for all plotted posteriors fixed to work for multiple models and not only for multiple runs. The argument ``credible_interval_1d_all_show`` needs to be ``True`` to use this functionality (Y.K., T.S.).
+
+* Corrected a deprecated version of numpy float in ``xpsi/PostProcessing/_corner.py`` (M.H.).
+
+* Synthesise function in ``xpsi/Likelihood.py`` forced to always use the given parameters and produce synthetic data regardless of other settings. (T.S.).
+
+* Prior probability values prevented from being exactly zero (or negative) for KL-divergence calculation and avoiding thus infinite values for the reported KL-divergence estimates (T.S.).
+
+* Module generator fixed to work with the current version of X-PSI and tutorial updated (T.S., D.C).
+
+Changed
+^^^^^^^
+
+* The 1D credible intervals for all the plotted posteriors are now always calculated (and saved if ``annotate_credible_interval=True``), even though not choosing to show all of them in a corner plot (Y.K).
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Yves Kini (Y.K.),
+Sebastien Guillot (S.G.),
+Devarshi Choudhury (D.C.),
+Mariska Hoogkamer (M.H.)
+
+
 [v2.1.0] - 2023-09-08
 ~~~~~~~~~~~~~~~~~~~~~
 

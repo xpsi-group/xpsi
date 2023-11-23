@@ -1,4 +1,4 @@
-""" Photosphere module for X-PSI CST+PDT modelling of NICER PSR J0030+0415 event data. """
+""" Photosphere module for X-PSI CST+PDT modelling of NICER PSR J0030+0451 event data. """
 
 import argparse
 import re
@@ -27,7 +27,7 @@ class ArgumentParserCustom(argparse.ArgumentParser):
 
 parser = ArgumentParserCustom(
     description="""
-    Photosphere module for X-PSI CST+PDT modelling of NICER PSR J0030+0415 event data.
+    Photosphere module for X-PSI CST+PDT modelling of NICER PSR J0030+0451 event data.
 
     You should import this module.
 
