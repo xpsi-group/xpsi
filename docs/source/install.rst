@@ -43,7 +43,7 @@ contents are:
     channels:
         - defaults
     dependencies:
-        - numpy
+        - numpy < 2.0.0
         - cython ~= 0.29
         - matplotlib
         - scipy
