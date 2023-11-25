@@ -203,12 +203,6 @@ To build the MultiNest library, you require an MPI-wrapped Fortran compiler
 (e.g.,  `openmpi-mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
 from Open MPI).
 
-.. note::
-
-    The following assumes you have installed mpi4py. If you
-    have not already installed it through the ``environment.yml`` file, you may
-    do so e.g. via ``conda install -c conda-forge mpi4py``.
-
 Prerequisites for MultiNest are c and fortran
 compilers (e.g. ``gcc`` and ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
 ``atlas``. In case missing them, they can be installed by:
@@ -226,9 +220,13 @@ then navigate to it and build:
     cd <path/to/clone>/multinest/MultiNest_v3.12_CMake/multinest/
     mkdir build
     cd build
-    CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+    CC=gcc FC=<path/to/working/mpifortran/compiler/>mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
     make
     ls ../lib/
+
+.. note::
+
+   We note that new default mpif90 created by mpi4py conda installation may not work here. Thus, one needs to point the path to the native mpif90 compiler of the system (e.g. ``CC=gcc FC=/usr/bin/mpif90 CXX=g++ ...``) or install mpi4py only after MultiNest has been installed and use then ``FC=mpif90``.
 
 Now you need the Python interface to MultiNest:
 
