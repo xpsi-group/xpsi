@@ -211,6 +211,12 @@ compilers (e.g. ``gcc`` and ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
 
     sudo apt-get install cmake libblas-dev liblapack-dev libatlas-base-dev
 
+To have MPI-wrapped compilers, one should also install ``mpich`` if not installed already:
+
+.. code-block:: bash
+
+    sudo apt install mpich
+
 Assuming these libraries are available, first clone the repository,
 then navigate to it and build:
 
