@@ -368,7 +368,7 @@ these, run the following command:
 
 .. code-block:: bash
 
-    conda install sphinx
+    conda install "sphinx<7.0"
     conda install -c conda-forge nbsphinx
     conda install decorator
     conda install sphinxcontrib-websupport
