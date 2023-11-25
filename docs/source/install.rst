@@ -90,7 +90,13 @@ Activate the environment as:
     **ALL THE FOLLOWING STEPS SHOULD BE PERFORMED IN THIS NEWLY CREATED
     ENVIRONMENT.** Pay special attention to reactivate the environment if you
     ever have to restart the kernel.
-    
+
+We start by installing the GNU Scientific Library (GSL):
+
+.. code-block:: bash
+
+   conda install gsl
+
 Next, install
 `mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_ which is required for 
 nested sampling:
@@ -139,20 +145,9 @@ In addition, some optional miscellaneous packages are:
 Prerequisite Non-Python Packages and PyMultiNest
 ------------------------------------------------
 
-X-PSI has several dependencies that are not Python packages,
+X-PSI has dependencies that are not Python packages,
 or which are Python packages but need to be installed from source (PyMultiNest).
 Build and install guidelines are given below.
-
-GSL
-^^^
-
-GSL is the GNU Scientific Library. To obtain the latest 
-`GSL <https://www.gnu.org/software/gsl/>`_ source code (otherwise ``v2.5`` 
-works):
-
-.. code-block:: bash
-
-   wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
 
 .. note::
 
@@ -160,32 +155,6 @@ works):
     compiler (known compatibility with ``icc``, ``gcc``, and ``clang``). Most 
     linux systems come with `GCC <https://gcc.gnu.org>`_ built-in. To find out
     the GCC path-executable on your system, run ``which gcc``.
-
-Untar, navigate to the directory (e.g., ``cd gsl-latest``), and
-then build and install:
-
-.. code-block:: bash
-
-    ./configure CC=<path/to/compiler/executable> --prefix=$HOME/gsl
-    make
-    make check
-    make install
-    make installcheck
-    make clean
-    
-This will install the library in your ``$HOME``, as an example. Next, add GSL
-to your path by adding the following line to ``~/.bashrc``:
-
-.. code-block:: bash
-
-    export PATH=$HOME/gsl/bin:$PATH
-
-You can check the prefix and version of GSL on your path:
-
-.. code-block:: bash
-
-    gsl-config --version
-    gsl-config --prefix
 
 
 .. _multinest:
@@ -282,13 +251,6 @@ For ``icc``, you may need to prepend this command with
 ``LDSHARED="icc -shared"``. This ensures that both the compiler and linker
 are Intel, otherwise the ``gcc`` linker might be invoked.
 
-Provided the GSL ``<prefix>/bin`` is in your ``PATH``
-environment variable, the X-PSI ``setup.py`` script will automatically use the
-``gsl-config`` executable to link the shared libraries and give the required
-C flags for compilation of the X-PSI extensions. Because the library location
-will not change for runtime, we state the runtime linking instructions at
-compilation in the ``setup.py`` script.
-
 A quick check of the X-PSI installation can be done with ``import xpsi``, which
 should print to screen something like the following:
 
@@ -297,7 +259,7 @@ should print to screen something like the following:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.1.0               |
+    |                Version: 2.1.1               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
