@@ -73,6 +73,13 @@ class HotRegion(ParameterSubspace):
         with value ``None``, or a required name that is omitted from the bounds
         dictionary.
 
+    :param bool split:
+        If True, a ``CellMesh`` integrator compatible with 3+2 dimensional atmosphere
+        interpolation is deployed. This option is currently only effective if
+        setting symmetry=True. When used, it also ignores the atmosphere choices
+        made using the atm_ext and beam_opt arguments.
+
+
     :param bool symmetry:
         Is the radiation field axisymmetric (w.r.t the stellar rotation
         axis) within superseding (and ceding) member regions? This determines
@@ -260,6 +267,7 @@ class HotRegion(ParameterSubspace):
                  is_antiphased = False,
                  atm_ext="BB",
                  beam_opt=0,
+                 split=False,
                  custom = None,
                  image_order_limit = None,
                  **kwargs):
@@ -280,6 +288,7 @@ class HotRegion(ParameterSubspace):
 
         self.image_order_limit = image_order_limit
 
+        self._split = split
         self.symmetry = symmetry
 
         self.atm_ext = atm_ext
@@ -498,6 +507,17 @@ class HotRegion(ParameterSubspace):
         """ Return self for uniform interface with other classes. """
         return [self]
 
+    #@property
+    #def split(self):
+    #    """ Get the split interpolation declaration. """
+    #    return self._split
+
+    #@split.setter
+    #def symmetry(self, declaration):
+    #    if not isinstance(declaration, bool):
+    #        raise TypeError('Declare split existence with a boolean.')
+    #    self._split = declaration
+
     @property
     def symmetry(self):
         """ Get the symmetry declaration (controls integrator invocation). """
@@ -512,9 +532,16 @@ class HotRegion(ParameterSubspace):
 
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
-            from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator 
-            from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
+            if self._split:
+                from xpsi.cellmesh.integrator_for_azimuthal_invariance_split import integrate as _integrator
+                #Split version of the following still under construction:
+                from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU
+            else:
+                from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
+                from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance import integrate as _integratorIQU
         else: # more general purpose
+            if self._split:
+                raise TypeError("Split version of the integrator has not been implemented for symmetry=False.")
             from xpsi.cellmesh.integrator import integrate as _integrator
             from xpsi.cellmesh.integratorIQU import integrate as _integratorIQU
         self._integrator = _integrator
@@ -748,6 +775,9 @@ class HotRegion(ParameterSubspace):
             raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
                             'atmosphere options are at the moment "BB", "Num4D", "Pol_BB_Burst",'
                             '"Pol_Num2D", and "user".')
+        if self._split:
+            print('Warning: The default/given atmosphere option is ignored, since using split=True,'
+                  ' which only works with numerical 3+2D interpolation.')
 
     @property
     def beam_opt(self):
@@ -1151,7 +1181,7 @@ class HotRegion(ParameterSubspace):
         else:
             super_energies = cede_energies = energies
 
-        if self.atm_ext==2 or self.atm_ext==4:
+        if self.atm_ext==2 or self.atm_ext==4 or self._split:
             if hot_atmosphere == ():
                 raise AtmosError('The numerical atmosphere data were not preloaded, '
                                  'even though that is required by the current atmosphere extension.')
