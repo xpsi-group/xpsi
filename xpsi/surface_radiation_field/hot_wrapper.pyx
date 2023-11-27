@@ -178,7 +178,7 @@ cdef double eval_hot_Q(size_t THREAD,
     if atmos_extension == 1:
         Q_hot = 0.0
     elif atmos_extension == 2:
-        printf("Warning: Polarimetry not implemented for this atmosphere extension!")
+        printf("Warning: Polarimetry not implemented for this atmosphere extension!\n")
         Q_hot = 0.0
     elif atmos_extension == 3:
         Q_hot = eval_hot_BB_burst_Q(THREAD,E,mu,VEC,data)

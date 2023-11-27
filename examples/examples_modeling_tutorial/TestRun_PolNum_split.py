@@ -1,5 +1,5 @@
 '''
-Test script to check that X-PSI installation is working (with the polarized burst atmosphere extension).
+Test script to check that X-PSI installation is working (with the polarized 3+2 numerical atmosphere).
 
 Prequisities:
 Before running the script, add the NICER instrument files to the model_data subdirectory:
@@ -291,10 +291,9 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
             NSX = data_dictionary['NSX.npy']
             size_reorderme = data_dictionary['size.npy']
             #print(size_reorderme)
-        
+
         #size = (150, 9, 31, 11, 41)
         size = [size_reorderme[3], size_reorderme[4], size_reorderme[2], size_reorderme[1], size_reorderme[0]]
-
 
         Energy = np.ascontiguousarray(NSX[0:size[0],0])
         cos_zenith = np.ascontiguousarray([NSX[i*size[0],1] for i in range(size[1])])
@@ -305,11 +304,32 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
 
         self._hot_atmosphere = (t_e, t_bb, tau, cos_zenith, Energy, intensities)
 
-#Stokes option still to be implemented with the split integrator
-photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=False,#True,
+    @xpsi.Photosphere.hot_atmosphere_Q.setter
+    def hot_atmosphere_Q(self, path):
+        with np.load(path, allow_pickle=True) as data_dictionary:
+            NSX = data_dictionary['NSX.npy']
+            size_reorderme = data_dictionary['size.npy']
+            #print(size_reorderme)
+
+        #size = (150, 9, 31, 11, 41)
+        size = [size_reorderme[3], size_reorderme[4], size_reorderme[2], size_reorderme[1], size_reorderme[0]]
+
+        Energy = np.ascontiguousarray(NSX[0:size[0],0])
+        cos_zenith = np.ascontiguousarray([NSX[i*size[0],1] for i in range(size[1])])
+        tau = np.ascontiguousarray([NSX[i*size[0]*size[1],2] for i in range(size[2])])
+        t_bb = np.ascontiguousarray([NSX[i*size[0]*size[1]*size[2],3] for i in range(size[3])])
+        t_e = np.ascontiguousarray([NSX[i*size[0]*size[1]*size[2]*size[3],4] for i in range(size[4])])
+        intensities = np.ascontiguousarray(NSX[:,5])
+
+        self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, intensities*(-1.0))
+
+photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 photosphere.hot_atmosphere = '/home/tuomo/xpsi/xpsi_bas/input_files/Bobrikova_compton_slab.npz'
+#Replace the following file later with the correct one.
+#Let's now just pretend that Q data is the same as I data times -1.0.
+photosphere.hot_atmosphere_Q = '/home/tuomo/xpsi/xpsi_bas/input_files/Bobrikova_compton_slab.npz'
 
 photosphere['mode_frequency'] == spacetime['frequency']
 
@@ -365,21 +385,20 @@ photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 #print("Time spent in integration:",end - start)
 #exit()
 
-if True:
-    print("Bolometric profiles for I, Q, and U:")
-    print("1st spot:")
-    print(repr(np.sum(photosphere.signal[0][0], axis=0)))
-    #print(repr(np.sum(photosphere.signalQ[0][0], axis=0)))
-    #print(repr(np.sum(photosphere.signalU[0][0], axis=0)))
-    print("2nd spot:")
-    print(repr(np.sum(photosphere.signal[1][0], axis=0)))
-    #print(repr(np.sum(photosphere.signalQ[1][0], axis=0)))
-    #print(repr(np.sum(photosphere.signalU[1][0], axis=0)))
-    print()
-    print("2nd spot, ceding):")
-    print(np.sum(photosphere.signal[1][1], axis=0))
-    #print(np.sum(photosphere.signalQ[1][1], axis=0))
-    #print(np.sum(photosphere.signalU[1][1], axis=0))
-    print()
+print("Bolometric profiles for I, Q, and U:")
+print("1st spot:")
+print(repr(np.sum(photosphere.signal[0][0], axis=0)))
+print(repr(np.sum(photosphere.signalQ[0][0], axis=0)))
+print(repr(np.sum(photosphere.signalU[0][0], axis=0)))
+print("2nd spot:")
+print(repr(np.sum(photosphere.signal[1][0], axis=0)))
+print(repr(np.sum(photosphere.signalQ[1][0], axis=0)))
+print(repr(np.sum(photosphere.signalU[1][0], axis=0)))
+print()
+print("2nd spot, ceding):")
+print(np.sum(photosphere.signal[1][1], axis=0))
+print(np.sum(photosphere.signalQ[1][1], axis=0))
+print(np.sum(photosphere.signalU[1][1], axis=0))
+print()
 
 

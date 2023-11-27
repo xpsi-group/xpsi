@@ -50,14 +50,14 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    free_preload)
 
 from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot,
-                                               eval_hot,
+                                               eval_hot_I,
                                                eval_hot_norm,
                                                free_hot,
                                                produce_2D_data,
                                                make_atmosphere_2D)
 
 from xpsi.surface_radiation_field.hot_Num2D_split cimport (init_hot_2D,
-                                               eval_hot_2D,
+                                               eval_hot_2D_I,
                                                eval_hot_2D_norm,
                                                free_hot_2D)
 
@@ -470,7 +470,7 @@ def integrate(size_t numThreads,
 
                                     E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
                                     # printf('\neval hot start')
-                                    I_E2D = eval_hot_2D(T, E_electronrest, _ABB, hot_data_2D)
+                                    I_E2D = eval_hot_2D_I(T, E_electronrest, _ABB, hot_data_2D)
                                     # printf('\neval hot done')
                                     # I_E = eval_hot(T,
                                     #                E_electronrest,

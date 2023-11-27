@@ -9,7 +9,7 @@
 import numpy as np
 cimport numpy as np
 from cython.parallel cimport *
-from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil, log
+from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil, log, atan2
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 import xpsi
@@ -50,14 +50,16 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    free_preload)
 
 from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot,
-                                               eval_hot,
+                                               eval_hot_I,
+                                               eval_hot_Q,
                                                eval_hot_norm,
                                                free_hot,
                                                produce_2D_data,
                                                make_atmosphere_2D)
 
 from xpsi.surface_radiation_field.hot_Num2D_split cimport (init_hot_2D,
-                                               eval_hot_2D,
+                                               eval_hot_2D_I,
+                                               eval_hot_2D_Q,
                                                eval_hot_2D_norm,
                                                free_hot_2D)
 
@@ -90,7 +92,8 @@ def integrate(size_t numThreads,
               double[::1] energies,
               double[::1] leaves,
               double[::1] phases,
-              hot_atmosphere,
+              hot_atmosphere_I,
+              hot_atmosphere_Q,
               elsewhere_atmosphere,
               hot_atm_ext,
               else_atm_ext,
@@ -149,6 +152,14 @@ def integrate(size_t numThreads,
         double mu # NRF and then CRF emission angle w.r.t surface normal; TP
         double E_prime # Photon energy in the CRF, given an energy at infinity; TP
         double I_E, I_E2D # Radiant and or spectral intensity in the CRF; TP
+        double Q_E, Q_E2D # Stokes Q in the CRF; TP
+        double Q_obs # Stokes Q in the observer frame; TP
+        double U_obs # Stokes Q in the observer frame; TP
+        double sin_chi_0, cos_chi_0, chi_0, chi_1, chi_prime, chi
+        double sin_chi_1, cos_chi_1, sin_chi_prime, cos_chi_prime
+        double sin_lambda, cos_lambda, cos_eps
+        double sin_2chi # sine of 2*PA; TP
+        double cos_2chi # cosine of 2*PA; TP
         double _PHASE, _PHASE_plusShift, _GEOM, _Z, _ABB # TP
         double phi_shift # TP
         double superlum # TP
@@ -160,13 +171,19 @@ def integrate(size_t numThreads,
         double correction_I_E
         int I, image_order, _IO
         double _phase_lag
-        double _specific_flux
+        double _specific_flux_I
+        double _specific_flux_Q
+        double _specific_flux_U
         size_t _InvisPhase
         double E_electronrest
         double count_evals = 1.
 
-        double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
-        double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
+        double[:,:,::1] privateFlux_I = np.zeros((N_T, N_E, N_P), dtype = np.double)
+        double[:,:,::1] privateFlux_Q = np.zeros((N_T, N_E, N_P), dtype = np.double)
+        double[:,:,::1] privateFlux_U = np.zeros((N_T, N_E, N_P), dtype = np.double)
+        double[:,::1] flux_I = np.zeros((N_E, N_P), dtype = np.double)
+        double[:,::1] flux_Q = np.zeros((N_E, N_P), dtype = np.double)
+        double[:,::1] flux_U = np.zeros((N_E, N_P), dtype = np.double)
 
         int *terminate = <int*> malloc(N_T * sizeof(int))
 
@@ -182,10 +199,16 @@ def integrate(size_t numThreads,
 
         # Intensity spline interpolation
         double **PHASE = <double**> malloc(N_T * sizeof(double*))
-        double **PROFILE = <double**> malloc(N_T * sizeof(double*))
+        double **PROFILE_I = <double**> malloc(N_T * sizeof(double*))
+        double **PROFILE_Q = <double**> malloc(N_T * sizeof(double*))
+        double **PROFILE_U = <double**> malloc(N_T * sizeof(double*))
 
-        accel **accel_PROFILE = <accel**> malloc(N_T * sizeof(accel*))
-        interp **interp_PROFILE = <interp**> malloc(N_T * sizeof(interp*))
+        accel **accel_PROFILE_I = <accel**> malloc(N_T * sizeof(accel*))
+        accel **accel_PROFILE_Q = <accel**> malloc(N_T * sizeof(accel*))
+        accel **accel_PROFILE_U = <accel**> malloc(N_T * sizeof(accel*))
+        interp **interp_PROFILE_I = <interp**> malloc(N_T * sizeof(interp*))
+        interp **interp_PROFILE_Q = <interp**> malloc(N_T * sizeof(interp*))
+        interp **interp_PROFILE_U = <interp**> malloc(N_T * sizeof(interp*))
 
         size_t *BLOCK = <size_t*> malloc(N_E * sizeof(size_t))
 
@@ -194,7 +217,9 @@ def integrate(size_t numThreads,
         double *defl_alt_ptr
         double *alpha_alt_ptr
         double *lag_ptr
-        double *profile_ptr
+        double *profile_ptr_I
+        double *profile_ptr_Q
+        double *profile_ptr_U
         double *phase_ptr
 
     if not _use_rayXpanda:
@@ -212,9 +237,15 @@ def integrate(size_t numThreads,
         interp_lag[T] = gsl_interp_alloc(gsl_interp_steffen, N_R)
 
         PHASE[T] = <double*> malloc(N_L * sizeof(double))
-        PROFILE[T] = <double*> malloc(N_E * N_L * sizeof(double))
-        accel_PROFILE[T] = gsl_interp_accel_alloc()
-        interp_PROFILE[T] = gsl_interp_alloc(_interpolant, N_L)
+        PROFILE_I[T] = <double*> malloc(N_E * N_L * sizeof(double))
+        PROFILE_Q[T] = <double*> malloc(N_E * N_L * sizeof(double))
+        PROFILE_U[T] = <double*> malloc(N_E * N_L * sizeof(double))
+        accel_PROFILE_I[T] = gsl_interp_accel_alloc()
+        accel_PROFILE_Q[T] = gsl_interp_accel_alloc()
+        accel_PROFILE_U[T] = gsl_interp_accel_alloc()
+        interp_PROFILE_I[T] = gsl_interp_alloc(_interpolant, N_L)
+        interp_PROFILE_Q[T] = gsl_interp_alloc(_interpolant, N_L)
+        interp_PROFILE_U[T] = gsl_interp_alloc(_interpolant, N_L)
 
     for p in range(N_E):
         BLOCK[p] = p * N_L
@@ -250,14 +281,21 @@ def integrate(size_t numThreads,
     # initialise the source radiation field
     cdef _preloaded *hot_preloaded = NULL
     cdef _preloaded *ext_preloaded = NULL
-    cdef void *hot_data = NULL
+    cdef void *hot_data_I = NULL
+    cdef void *hot_data_Q = NULL
     cdef void *ext_data = NULL
 
-    if hot_atmosphere:
-        hot_preloaded = init_preload(hot_atmosphere)
-        hot_data = init_hot(N_T, hot_preloaded)
+    if hot_atmosphere_I:
+        hot_preloaded_I = init_preload(hot_atmosphere_I)
+        hot_data_I = init_hot(N_T, hot_preloaded_I)
     else:
-        hot_data = init_hot(N_T, NULL)
+        hot_data_I = init_hot(N_T, NULL)
+
+    if hot_atmosphere_Q:
+        hot_preloaded_Q = init_preload(hot_atmosphere_Q)
+        hot_data_Q = init_hot(N_T, hot_preloaded_Q)
+    else:
+        hot_data_Q = init_hot(N_T, NULL)
 
     cdef double[:,:,::1] correction
     cdef int perform_correction
@@ -284,14 +322,24 @@ def integrate(size_t numThreads,
     # printf('\nintegrate')
     # Initiate 2D atmosphere
     cdef double* I_data_2D
-    I_data_2D = produce_2D_data(T, &(srcCellParams[0,0,0]), hot_data)
+    cdef double* Q_data_2D
+
+    I_data_2D = produce_2D_data(T, &(srcCellParams[0,0,0]), hot_data_I)
     # printf('\nI_data_2D[0] = %f.', I_data_2D[0]) 
-    atmosphere_2D = make_atmosphere_2D(I_data_2D, hot_data)
+    atmosphere_2D_I = make_atmosphere_2D(I_data_2D, hot_data_I)
     
-    # initiate data 2D
-    hot_preloaded_2D = init_preload(atmosphere_2D)
-    hot_data_2D = init_hot_2D(N_T, hot_preloaded_2D)
+    # initiate I data 2D
+    hot_preloaded_2D_I = init_preload(atmosphere_2D_I)
+    hot_data_2D_I = init_hot_2D(N_T, hot_preloaded_2D_I)
     
+    Q_data_2D = produce_2D_data(T, &(srcCellParams[0,0,0]), hot_data_Q)
+    # printf('\nQ_data_2D[0] = %f.', Q_data_2D[0])
+    atmosphere_2D_Q = make_atmosphere_2D(Q_data_2D, hot_data_Q)
+
+    # initiate Qdata 2D
+    hot_preloaded_2D_Q = init_preload(atmosphere_2D_Q)
+    hot_data_2D_Q = init_hot_2D(N_T, hot_preloaded_2D_Q)
+
     
     for ii in prange(<signed int>cellArea.shape[0],
                      nogil = True,
@@ -455,6 +503,27 @@ def integrate(size_t numThreads,
 
                                 PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
 
+                                sin_chi_0 = - sin_theta_i*sin(leaves[_kdx])
+                                cos_chi_0 = sin_i*cos_theta_i - sin_theta_i*cos_i*cos(leaves[_kdx])
+                                chi_0 = atan2(sin_chi_0,cos_chi_0)
+
+                                #Notes: mu = cos_sigma , Lorentz = 1/Gamma, mu0=eta*mu, cos_xi defined with no minus sign
+                                sin_chi_1 = sin_gamma*sin_i*sin(leaves[_kdx])*sin_alpha/sin_psi #times sin alpha sin sigma
+                                cos_chi_1 = cos_gamma - _cos_alpha*mu  #times sin alpha sin sigma
+                                chi_1 = atan2(sin_chi_1,cos_chi_1)
+
+                                sin_lambda = sin_theta_i*cos_gamma - sin_gamma*cos_theta_i
+                                cos_lambda = cos_theta_i*cos_gamma + sin_theta_i*sin_gamma
+                                cos_eps = (sin_alpha/sin_psi)*(cos_i*sin_lambda - sin_i*cos_lambda*cos(leaves[_kdx]) + cos_psi*sin_gamma) - _cos_alpha*sin_gamma
+
+                                sin_chi_prime = cos_eps*eta*mu*beta/Lorentz
+                                cos_chi_prime = (1. - mu**2 /(1. + beta*cos_xi))
+                                chi_prime = atan2(sin_chi_prime,cos_chi_prime)
+
+                                chi = chi_0+chi_1+chi_prime
+                                cos_2chi = cos(2*chi)
+                                sin_2chi = sin(2*chi)
+
                                 # printf(".%.8e", count_evals)
                                 # count_evals = 1. + count_evals 
                                 # printf(".%ld",J)
@@ -470,30 +539,30 @@ def integrate(size_t numThreads,
 
                                     E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
                                     # printf('\neval hot start')
-                                    I_E2D = eval_hot_2D(T, E_electronrest, _ABB, hot_data_2D)
+                                    I_E2D = eval_hot_2D_I(T, E_electronrest, _ABB, hot_data_2D_I)
                                     # printf('\neval hot done')
-                                    # I_E = eval_hot(T,
-                                    #                E_electronrest,
-                                    #                _ABB,
-                                    #                &(srcCellParams[i,J,0]),
-                                    #                hot_data)
+
+                                    Q_E2D = eval_hot_2D_Q(T, E_electronrest, _ABB, hot_data_2D_Q)
+
+                                    Q_obs = Q_E2D*cos_2chi
+                                    U_obs = Q_E2D*sin_2chi
 
                                     if perform_correction == 1:
-                                        correction_I_E = eval_elsewhere(T,
-                                                                        E_prime,
-                                                                        _ABB,
-                                                                        &(correction[i,J,0]),
-                                                                        ext_data,
-                                                                        0)
-                                        correction_I_E = correction_I_E * eval_elsewhere_norm()
+                                        printf("Error: Elsewhere radiation field not implemented yet for the stokes vector.\n")
+                                        terminate[T] = 1
+                                        break # out of phase loop
 
-                                    (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E2D * eval_hot_norm() - correction_I_E) * _GEOM
+                                    (PROFILE_I[T] + BLOCK[p] + _kdx)[0] = (I_E2D * eval_hot_norm() - correction_I_E) * _GEOM
+                                    (PROFILE_Q[T] + BLOCK[p] + _kdx)[0] = (Q_obs * eval_hot_norm()) * _GEOM
+                                    (PROFILE_U[T] + BLOCK[p] + _kdx)[0] = (U_obs * eval_hot_norm()) * _GEOM
 
                         if k == 0: # if initially visible at first/last phase steps
                             # periodic
                             PHASE[T][N_L - 1] = PHASE[T][0] + _2pi
                             for p in range(N_E):
-                                (PROFILE[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE[T] + BLOCK[p])[0]
+                                (PROFILE_I[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_I[T] + BLOCK[p])[0]
+                                (PROFILE_Q[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_Q[T] + BLOCK[p])[0]
+                                (PROFILE_U[T] + BLOCK[p] + N_L - 1)[0] = (PROFILE_U[T] + BLOCK[p])[0]
                         elif k > 0 and InvisFlag[T] == 2: # initially not visible
                             # calculate the appropriate phase increment for
                             # phase steps through non-visible fraction of cycle
@@ -508,7 +577,9 @@ def integrate(size_t numThreads,
                             # set the specific intensities to zero
                             for p in range(N_E):
                                 for m in range(N_L - k, N_L):
-                                    (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
 
                             # handle the duplicate points at the periodic
                             # boundary which are needed for interpolation
@@ -521,9 +592,13 @@ def integrate(size_t numThreads,
 
                             # set the reminaing specific intensities to zero
                             for p in range(N_E):
-                                (PROFILE[T] + BLOCK[p])[0] = 0.0
+                                (PROFILE_I[T] + BLOCK[p])[0] = 0.0
+                                (PROFILE_Q[T] + BLOCK[p])[0] = 0.0
+                                (PROFILE_U[T] + BLOCK[p])[0] = 0.0
                                 for m in range(1, k):
-                                    (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
                         elif InvisFlag[T] == 1: # handle linearly spaced phases
                             InvisStep[T] = PHASE[T][k] - PHASE[T][_InvisPhase - 1]
                             InvisStep[T] = InvisStep[T] / <double>(k - _InvisPhase + 1)
@@ -558,7 +633,9 @@ def integrate(size_t numThreads,
                             # is not visible
                             for p in range(N_E):
                                 for m in range(k, N_L - k):
-                                    (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
+                                    (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
 
                             InvisFlag[T] = 1 # declare not visible
                             _InvisPhase = k
@@ -572,7 +649,9 @@ def integrate(size_t numThreads,
 
                         for p in range(N_E):
                             for m in range(k, N_L - k):
-                                (PROFILE[T] + BLOCK[p] + m)[0] = 0.0
+                                (PROFILE_I[T] + BLOCK[p] + m)[0] = 0.0
+                                (PROFILE_Q[T] + BLOCK[p] + m)[0] = 0.0
+                                (PROFILE_U[T] + BLOCK[p] + m)[0] = 0.0
 
                         InvisFlag[T] = 1
                         _InvisPhase = k
@@ -593,9 +672,15 @@ def integrate(size_t numThreads,
                 else:
                     phase_ptr = PHASE[T]
                     for p in range(N_E):
-                        gsl_interp_accel_reset(accel_PROFILE[T])
-                        profile_ptr = PROFILE[T] + BLOCK[p]
-                        gsl_interp_init(interp_PROFILE[T], phase_ptr, profile_ptr, N_L)
+                        gsl_interp_accel_reset(accel_PROFILE_I[T])
+                        gsl_interp_accel_reset(accel_PROFILE_Q[T])
+                        gsl_interp_accel_reset(accel_PROFILE_U[T])
+                        profile_ptr_I = PROFILE_I[T] + BLOCK[p]
+                        profile_ptr_Q = PROFILE_Q[T] + BLOCK[p]
+                        profile_ptr_U = PROFILE_U[T] + BLOCK[p]
+                        gsl_interp_init(interp_PROFILE_I[T], phase_ptr, profile_ptr_I, N_L)
+                        gsl_interp_init(interp_PROFILE_Q[T], phase_ptr, profile_ptr_Q, N_L)
+                        gsl_interp_init(interp_PROFILE_U[T], phase_ptr, profile_ptr_U, N_L)
 
                         j = 0
                         while j < cellArea.shape[1] and terminate[T] == 0:
@@ -611,16 +696,32 @@ def integrate(size_t numThreads,
                                         while _PHASE_plusShift < PHASE[T][0]:
                                             _PHASE_plusShift = _PHASE_plusShift + _2pi
 
-                                    if (_PHASE_plusShift < interp_PROFILE[T].xmin or _PHASE_plusShift > interp_PROFILE[T].xmax):
+                                    if (_PHASE_plusShift < interp_PROFILE_I[T].xmin or _PHASE_plusShift > interp_PROFILE_I[T].xmax):
                                         printf("Interpolation error: phase = %.16e\n", _PHASE_plusShift)
-                                        printf("Out of bounds: min = %.16e\n", interp_PROFILE[T].xmin)
-                                        printf("Out of bounds: max = %.16e\n", interp_PROFILE[T].xmax)
+                                        printf("Out of bounds: min = %.16e\n", interp_PROFILE_I[T].xmin)
+                                        printf("Out of bounds: max = %.16e\n", interp_PROFILE_I[T].xmax)
+                                        terminate[T] = 1
+                                        break # out of phase loop
+                                    if (_PHASE_plusShift < interp_PROFILE_Q[T].xmin or _PHASE_plusShift > interp_PROFILE_Q[T].xmax):
+                                        printf("Interpolation error: phase = %.16e\n", _PHASE_plusShift)
+                                        printf("Out of bounds: min = %.16e\n", interp_PROFILE_I[T].xmin)
+                                        printf("Out of bounds: max = %.16e\n", interp_PROFILE_I[T].xmax)
+                                        terminate[T] = 1
+                                        break # out of phase loop
+                                    if (_PHASE_plusShift < interp_PROFILE_U[T].xmin or _PHASE_plusShift > interp_PROFILE_U[T].xmax):
+                                        printf("Interpolation error: phase = %.16e\n", _PHASE_plusShift)
+                                        printf("Out of bounds: min = %.16e\n", interp_PROFILE_I[T].xmin)
+                                        printf("Out of bounds: max = %.16e\n", interp_PROFILE_I[T].xmax)
                                         terminate[T] = 1
                                         break # out of phase loop
 
-                                    _specific_flux = gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
-                                    if _specific_flux > 0.0 or perform_correction == 1:
-                                        privateFlux[T,p,k] += cellArea[i,j] * _specific_flux
+                                    _specific_flux_I = gsl_interp_eval(interp_PROFILE_I[T], phase_ptr, profile_ptr_I, _PHASE_plusShift, accel_PROFILE_I[T])
+                                    _specific_flux_Q = gsl_interp_eval(interp_PROFILE_Q[T], phase_ptr, profile_ptr_Q, _PHASE_plusShift, accel_PROFILE_Q[T])
+                                    _specific_flux_U = gsl_interp_eval(interp_PROFILE_U[T], phase_ptr, profile_ptr_U, _PHASE_plusShift, accel_PROFILE_U[T])
+                                    if _specific_flux_I > 0.0 or perform_correction == 1:
+                                        privateFlux_I[T,p,k] += cellArea[i,j] * _specific_flux_I
+                                        privateFlux_Q[T,p,k] += cellArea[i,j] * _specific_flux_Q
+                                        privateFlux_U[T,p,k] += cellArea[i,j] * _specific_flux_U
 
                             j = j + 1
                         if terminate[T] == 1:
@@ -635,11 +736,15 @@ def integrate(size_t numThreads,
     for i in range(N_E):
         for T in range(N_T):
             for k in range(N_P):
-                flux[i,k] += privateFlux[T,i,k]
+                flux_I[i,k] += privateFlux_I[T,i,k]
+                flux_Q[i,k] += privateFlux_Q[T,i,k]
+                flux_U[i,k] += privateFlux_U[T,i,k]
 
     for p in range(N_E):
         for k in range(N_P):
-            flux[p,k] /= (energies[p] * keV)
+            flux_I[p,k] /= (energies[p] * keV)
+            flux_Q[p,k] /= (energies[p] * keV)
+            flux_U[p,k] /= (energies[p] * keV)
 
     for T in range(N_T):
         gsl_interp_free(interp_alpha[T])
@@ -650,10 +755,16 @@ def integrate(size_t numThreads,
         gsl_interp_accel_free(accel_lag[T])
 
         free(PHASE[T])
-        free(PROFILE[T])
+        free(PROFILE_I[T])
+        free(PROFILE_Q[T])
+        free(PROFILE_U[T])
 
-        gsl_interp_free(interp_PROFILE[T])
-        gsl_interp_accel_free(accel_PROFILE[T])
+        gsl_interp_free(interp_PROFILE_I[T])
+        gsl_interp_free(interp_PROFILE_Q[T])
+        gsl_interp_free(interp_PROFILE_U[T])
+        gsl_interp_accel_free(accel_PROFILE_I[T])
+        gsl_interp_accel_free(accel_PROFILE_Q[T])
+        gsl_interp_accel_free(accel_PROFILE_U[T])
 
     free(interp_alpha)
     free(accel_alpha)
@@ -664,30 +775,44 @@ def integrate(size_t numThreads,
     free(accel_lag)
 
     free(PHASE)
-    free(PROFILE)
+    free(PROFILE_I)
+    free(PROFILE_Q)
+    free(PROFILE_U)
 
-    free(interp_PROFILE)
-    free(accel_PROFILE)
+    free(interp_PROFILE_I)
+    free(interp_PROFILE_Q)
+    free(interp_PROFILE_U)
+
+    free(accel_PROFILE_I)
+    free(accel_PROFILE_Q)
+    free(accel_PROFILE_U)
 
     free(InvisFlag)
     free(InvisStep)
 
     # 2D interpolator
     free(I_data_2D)
+    free(Q_data_2D)
 
     free(BLOCK)
 
-    if hot_atmosphere:
-        free_preload(hot_preloaded)
-        free_preload(hot_preloaded_2D)
- 
-    free_hot(N_T, hot_data)
-    free_hot_2D(N_T, hot_data_2D)
+    if hot_atmosphere_I:
+        free_preload(hot_preloaded_I)
+        free_preload(hot_preloaded_2D_I)
+
+    if hot_atmosphere_Q:
+        free_preload(hot_preloaded_Q)
+        free_preload(hot_preloaded_2D_Q)
+
+    free_hot(N_T, hot_data_I)
+    free_hot_2D(N_T, hot_data_2D_I)
+
+    free_hot(N_T, hot_data_Q)
+    free_hot_2D(N_T, hot_data_2D_Q)
 
     if perform_correction == 1:
         if elsewhere_atmosphere:
             free_preload(ext_preloaded)
-
         free_elsewhere(N_T, ext_data)
 
     for T in range(N_T):
@@ -699,5 +824,4 @@ def integrate(size_t numThreads,
     # printf('\nsucces')
     # printf('\nsucces2')
 
-    return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'))
-
+    return (SUCCESS, np.asarray(flux_I, dtype = np.double, order = 'C'),np.asarray(flux_Q, dtype = np.double, order = 'C'),np.asarray(flux_U, dtype = np.double, order = 'C'))

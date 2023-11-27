@@ -500,14 +500,41 @@ cdef double eval_hot(size_t THREAD,
 
     # printf("\nI:  %.8e", I)
 
+    return I
+
+cdef double eval_hot_I(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
+    cdef double I = eval_hot(THREAD,E,mu,VEC,data)
+
     if I < 0.0:
         return 0.0
-    # Vec here should be the temperature!
-    # printf(" I_out: %.8e, ", I * pow(10.0, 3.0 * vec[1]))
-    # printf(" I_out: %f, ", I)
-    
-    #return I * pow(10.0, 3.0 * Temperature)
+
     return I
+
+
+cdef double eval_hot_Q(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
+    return eval_hot(THREAD,E,mu,VEC,data)
+
+
 
 cdef double eval_hot_norm() nogil:
     # Source radiation field normalisation which is independent of the

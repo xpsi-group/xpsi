@@ -208,7 +208,7 @@ cdef int free_hot_2D(size_t numThreads, void *const data) nogil:
 # >>> Improve acceleration properties... i.e. do not recompute numerical
 # ... weights or re-read intensities if not necessary.
 #----------------------------------------------------------------------->>>
-    
+
 cdef double eval_hot_2D(size_t THREAD,
                      double E,
                      double mu,
@@ -478,13 +478,37 @@ cdef double eval_hot_2D(size_t THREAD,
     # printf("\nvec[0]: %f", vec[0])
     # printf("\nvec[1]: %f", vec[1])
 
+    return I
+
+cdef double eval_hot_2D_I(size_t THREAD,
+                     double E,
+                     double mu,
+                     void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
+    cdef double I = eval_hot_2D(THREAD,E,mu,data)
+
     if I < 0.0:
         return 0.0
-    # Vec here should be the temperature!
-    # printf(" I_out: %.8e, ", I * pow(10.0, 3.0 * vec[1]))
-    # printf(" I_out: %f, ", I)
-    #return I * pow(10.0, 3.0 * Temperature)
+
     return I
+
+
+cdef double eval_hot_2D_Q(size_t THREAD,
+                     double E,
+                     double mu,
+                     void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
+    return eval_hot_2D(THREAD,E,mu,data)
 
 cdef double eval_hot_2D_norm() nogil:
     # Source radiation field normalisation which is independent of the
