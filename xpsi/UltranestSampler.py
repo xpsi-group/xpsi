@@ -25,7 +25,8 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
     def __init__(self, 
                  likelihood,
                  prior,
-                 sampler_params):
+                 sampler_params,
+                 step):
 
         if not isinstance(likelihood, Likelihood):
             raise TypeError('Invalid type for likelihood object.')
@@ -37,11 +38,25 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         
         self._param_names = self._likelihood.names
 
-        # initialise sampler 
+        #  avoid getting output from ultranest since different format is required for xpsi
+        adjusted_sampler_params = sampler_params.copy()
+        adjusted_sampler_params['log_dir'] = None
+
+        # initialise (region) sampler
         super().__init__(param_names=self._param_names, 
                          loglike=self.my_likelihood, 
                          transform=self._prior.inverse_sample, 
-                         **sampler_params)
+                         **adjusted_sampler_params)
+        
+        # change region sampler to step sampler 
+        if step: 
+            nsteps = 2*len(self._param_names)
+            self.stepsampler = ultranest.stepsampler.SliceSampler(
+                nsteps=nsteps,
+                generate_direction=ultranest.stepsampler.generate_mixture_random_direction,
+                # adaptive_nsteps=False,
+                # max_nsteps=400
+                )
 
     def __call__(self, runtime_params):
         """ Start the sampling. --> Say what the output is 
