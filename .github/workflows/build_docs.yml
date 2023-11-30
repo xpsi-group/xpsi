@@ -25,7 +25,7 @@ jobs:
     - name: install gsl
       run: |
         sudo apt-get install -y libgsl-dev
-    - name: check out X-PSI v1.2.1 
+    - name: check out X-PSI v1.2.1
       uses: actions/checkout@v3
       with:
         ref: python2
@@ -40,7 +40,7 @@ jobs:
           python=2.7
     - name : install docs dependencies
       run: |
-        micromamba install sphinx=1.8.5 decorator=4.4.1 h5py 
+        micromamba install sphinx=1.8.5 decorator=4.4.1 h5py
         micromamba install -c conda-forge nbsphinx=0.5.1 nbconvert=5.6.1
         pip install sphinxcontrib-websupport==1.1.2 sphinx_rtd_theme==0.4.3
     - name: install X-PSI package
@@ -58,7 +58,7 @@ jobs:
         mv build/html/* ../../../../py2/
       working-directory: docs/
 
-    - name: check out X-PSI v1.2.1
+    - name: check out X-PSI main
       uses: actions/checkout@v3
       with:
         ref: main
@@ -76,6 +76,9 @@ jobs:
         micromamba install sphinx decorator h5py
         micromamba install -c conda-forge nbsphinx nbconvert
         pip install sphinxcontrib-websupport sphinx_rtd_theme
+    - name : install other needed packages
+      run: |
+        micromamba install -c conda-forge getdist nestcheck
     - name: install X-PSI package
       run: |
         python setup.py install
@@ -86,7 +89,7 @@ jobs:
       run: | 
         make html
         mkdir build/html/py2
-        mv ../../../../py2/* build/html/py2/  
+        mv ../../../../py2/* build/html/py2/
       working-directory: docs/
 
     - name: Deploy to GitHub Pages
