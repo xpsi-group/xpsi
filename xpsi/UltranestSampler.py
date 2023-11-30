@@ -2,6 +2,9 @@ from xpsi import _verbose
 from xpsi.Likelihood import Likelihood
 from xpsi.Prior import Prior
 
+import numpy as np
+import os
+
 try:
     import ultranest
 except ImportError:
@@ -77,3 +80,23 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         ultranest_likelihood = self._likelihood(p=[arg1, *args], reinitialise=True)
 
         return ultranest_likelihood
+    
+    def write_results(self, sampler_params, out_filename):
+
+        # extract results
+        data = np.array(self.results["weighted_samples"]["points"])
+        weights = np.array(self.results["weighted_samples"]["weights"])
+        logl = np.array(self.results["weighted_samples"]["logl"])
+
+        print("sampler params 2", sampler_params)
+
+        if 'log_dir' in sampler_params is not None:
+            log_dir = sampler_params['log_dir']
+        else:
+            log_dir = os.mkdir("results/")
+        
+        file_path = os.path.join(log_dir, out_filename)
+
+        output = np.column_stack((weights, -2*logl, data))
+
+        np.savetxt(file_path, output, delimiter=' ')
