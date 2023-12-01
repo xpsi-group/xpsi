@@ -16,13 +16,17 @@ else:
         print('Imported UltraNest.')
 
 class UltranestSampler(ultranest.ReactiveNestedSampler):
-    """ Initiate Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
+    """ Wrapper for the Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
 
     :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
 
     :param prior: An instance of :class:`~.Prior.Prior`.
 
-    :param sampler_params: Keyword arguments passed instance of :class:`~.ultranest.ReactiveNestedSampler`.
+    :param sampler_params: A dictionary of the keyword arguments passed to the instance of :class:`~.ultranest.ReactiveNestedSampler`.
+
+    :param use_stepsampler: Boolean indicating if the stepsampler is used. 
+
+    :param stepsampler_params: A dictionary of the keyword arguments passed to the stepsampler :`~.ultranest.stepsampler.SliceSampler`.
 
     """
 
@@ -63,9 +67,10 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
             self.stepsampler = ultranest.stepsampler.SliceSampler(**stepsampler_params)
 
     def __call__(self, runtime_params):
-        """ Start the sampling. --> Say what the output is 
+        """ Run the sampler until target convergence criteria are fulfilled with the 
+        given runtime parameters. 
         
-        :param runtime_params: Keyword arguments passed passed to :func:`run`.
+        :param runtime_params: A dictionary of the keyword arguments passed to :func:`run`.
         
         """
 
@@ -73,7 +78,13 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         self.run(**runtime_params)
 
     def my_likelihood(self, params):
-        """Create a non-xpsi likelihood object that ultranest understands. """
+        """Calculate the loglikelihood value for a given set of parameter values.  
+        
+        :param params: List of parameter values. 
+
+        :returns: Float with loglikelihood value for given set of parameter values. 
+
+        """
 
         arg1, *args = params
 
@@ -83,21 +94,26 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         return ultranest_likelihood
     
     def write_results(self, sampler_params, out_filename):
-        """ Get output in txt file with columns containing weights, 
-        -2*loglikelihood, and parameters. This format is needed for xpsi 
-        post-processing. 
+        """ Get output in txt file with columns containing weights, -2*loglikelihood, 
+        and parameters (this is the format required for post-processing within X-PSI). 
+
+        :param sampler_params: A dictionary of the keyword arguments passed to the instance of :class:`~.ultranest.ReactiveNestedSampler`.
+
+        :param out_filename: String of the output filename. 
+
         """
         # extract results
         data = np.array(self.results["weighted_samples"]["points"])
         weights = np.array(self.results["weighted_samples"]["weights"])
         logl = np.array(self.results["weighted_samples"]["logl"])
 
-        if 'log_dir' in sampler_params is not None:
-            log_dir = sampler_params['log_dir']
-        else:
-            log_dir = os.mkdir("results/")
-        
-        file_path = os.path.join(log_dir, out_filename)
         output = np.column_stack((weights, -2*logl, data))
 
-        np.savetxt(file_path, output, delimiter=' ')
+        # set default sampler parameters if not specified
+        sampler_params.setdefault('log_dir', 'results/')
+        
+        # check if directory exists, otherwise create one
+        log_dir = os.makedirs(sampler_params['log_dir'], exist_ok=True)
+        file_path = os.path.join(sampler_params['log_dir'], out_filename)
+
+        np.savetxt(file_path, output)

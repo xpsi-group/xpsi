@@ -309,6 +309,8 @@ def ultranested(likelihood,
     :param sampler_params: Keyword arguments passed instance of :class:`~.ultranest.ReactiveNestedSampler`
 
     :param runtime_params: Keyword arguments passed passed to :func:`run`.
+
+    :returns: An instance of :class:`~.xpsi.UltranestSampler` 
     
     """
     from xpsi.UltranestSampler import UltranestSampler
@@ -317,8 +319,9 @@ def ultranested(likelihood,
     sampler = UltranestSampler(likelihood, prior, sampler_params, use_stepsampler, stepsampler_params)
 
     # start sampling 
-    result = sampler(runtime_params)
+    sampler(runtime_params)
 
+    # store output 
     sampler.write_results(sampler_params, out_filename)
 
-    return sampler, result
+    return sampler
