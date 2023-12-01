@@ -7,6 +7,7 @@ import os
 
 try:
     import ultranest
+    import ultranest.stepsampler
 except ImportError:
     print('Check your UltraNest installation.')
     raise
@@ -29,7 +30,8 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
                  likelihood,
                  prior,
                  sampler_params,
-                 step):
+                 use_stepsampler,
+                 stepsampler_params):
 
         if not isinstance(likelihood, Likelihood):
             raise TypeError('Invalid type for likelihood object.')
@@ -52,14 +54,13 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
                          **adjusted_sampler_params)
         
         # change region sampler to step sampler 
-        if step: 
-            nsteps = 2*len(self._param_names)
-            self.stepsampler = ultranest.stepsampler.SliceSampler(
-                nsteps=nsteps,
-                generate_direction=ultranest.stepsampler.generate_mixture_random_direction,
-                # adaptive_nsteps=False,
-                # max_nsteps=400
-                )
+        if use_stepsampler: 
+            # set default stepsampler parameters if not specified 
+            stepsampler_params.setdefault('nsteps', 2*len(self._param_names))
+            stepsampler_params.setdefault('generate_direction', ultranest.stepsampler.generate_mixture_random_direction)
+            
+            # initialise step sampler 
+            self.stepsampler = ultranest.stepsampler.SliceSampler(**stepsampler_params)
 
     def __call__(self, runtime_params):
         """ Start the sampling. --> Say what the output is 
@@ -82,13 +83,14 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         return ultranest_likelihood
     
     def write_results(self, sampler_params, out_filename):
-
+        """ Get output in txt file with columns containing weights, 
+        -2*loglikelihood, and parameters. This format is needed for xpsi 
+        post-processing. 
+        """
         # extract results
         data = np.array(self.results["weighted_samples"]["points"])
         weights = np.array(self.results["weighted_samples"]["weights"])
         logl = np.array(self.results["weighted_samples"]["logl"])
-
-        print("sampler params 2", sampler_params)
 
         if 'log_dir' in sampler_params is not None:
             log_dir = sampler_params['log_dir']
@@ -96,7 +98,6 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
             log_dir = os.mkdir("results/")
         
         file_path = os.path.join(log_dir, out_filename)
-
         output = np.column_stack((weights, -2*logl, data))
 
         np.savetxt(file_path, output, delimiter=' ')

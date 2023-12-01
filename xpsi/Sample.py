@@ -293,7 +293,13 @@ def importance(target, importance,
 
     yield
 
-def ultranested(likelihood, prior, sampler_params={}, runtime_params={}, step=False, out_filename="output"):
+def ultranested(likelihood, 
+                prior, 
+                sampler_params={}, 
+                runtime_params={}, 
+                use_stepsampler=False, 
+                stepsampler_params={},
+                out_filename="output"):
     """ Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
 
     :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
@@ -308,7 +314,7 @@ def ultranested(likelihood, prior, sampler_params={}, runtime_params={}, step=Fa
     from xpsi.UltranestSampler import UltranestSampler
 
     # initialise the sampler
-    sampler = UltranestSampler(likelihood, prior, sampler_params, step)
+    sampler = UltranestSampler(likelihood, prior, sampler_params, use_stepsampler, stepsampler_params)
 
     # start sampling 
     result = sampler(runtime_params)
