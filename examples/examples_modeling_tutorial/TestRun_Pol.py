@@ -31,7 +31,8 @@ bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
                 cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
 
-spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
+#spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
+spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=400.9752075))
 
 bounds = dict(super_colatitude = (None, None),
               super_radius = (None, None),
@@ -148,7 +149,8 @@ star.update()
 #start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
-energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
+#energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
+energies = np.logspace(-1.0, np.log10(12.0), 400, base=10.0)
 photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 
 #end = time.time()
@@ -171,4 +173,6 @@ print(np.sum(photosphere.signalQ[1][1], axis=0))
 print(np.sum(photosphere.signalU[1][1], axis=0))
 print()
 
-
+def get_photosphere_stokes_1spot():
+    #Return signal from the 1st spot to ixpeobssim
+    return hot.phases_in_cycles[0], energies, photosphere.signal[0][0], photosphere.signalQ[0][0], photosphere.signalU[0][0]

@@ -31,7 +31,8 @@ bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
                 cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
 
-spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
+#spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
+spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=400.9752075))
 
 from xpsi.Parameter import Parameter
 class CustomHotRegion_Accreting(xpsi.HotRegion):
@@ -321,7 +322,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
         t_e = np.ascontiguousarray([NSX[i*size[0]*size[1]*size[2]*size[3],4] for i in range(size[4])])
         intensities = np.ascontiguousarray(NSX[:,5])
 
-        self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, intensities*(-1.0))
+        self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, 0.1*intensities*(-1.0))
 
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True,
                                 values=dict(mode_frequency = spacetime['frequency']))
@@ -378,7 +379,8 @@ star.update()
 #start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
-energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
+#energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
+energies = np.logspace(-1.0, np.log10(12.0), 400, base=10.0)
 photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 
 #end = time.time()
@@ -401,4 +403,7 @@ print(np.sum(photosphere.signalQ[1][1], axis=0))
 print(np.sum(photosphere.signalU[1][1], axis=0))
 print()
 
+def get_photosphere_stokes_1spot():
+    #Return signal from the 1st spot to ixpeobssim
+    return hot.phases_in_cycles[0], energies, photosphere.signal[0][0], photosphere.signalQ[0][0], photosphere.signalU[0][0]
 
