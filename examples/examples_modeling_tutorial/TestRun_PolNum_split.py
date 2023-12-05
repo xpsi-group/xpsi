@@ -329,7 +329,7 @@ photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=T
 
 photosphere.hot_atmosphere = '/home/tuomo/xpsi/xpsi_bas/input_files/Bobrikova_compton_slab.npz'
 #Replace the following file later with the correct one.
-#Let's now just pretend that Q data is the same as I data times -1.0.
+#Let's now just pretend that Q data is the same as I data times -0.1.
 photosphere.hot_atmosphere_Q = '/home/tuomo/xpsi/xpsi_bas/input_files/Bobrikova_compton_slab.npz'
 
 photosphere['mode_frequency'] == spacetime['frequency']
@@ -375,7 +375,6 @@ if use_elsewhere:
 
 star(p)
 star.update()
-
 #start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:

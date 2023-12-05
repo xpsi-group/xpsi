@@ -776,7 +776,7 @@ class HotRegion(ParameterSubspace):
                             'atmosphere options are at the moment "BB", "Num4D", "Pol_BB_Burst",'
                             '"Pol_Num2D", and "user".')
         if self._split:
-            print('Warning: The default/given atmosphere option is ignored, since using split=True,'
+            print('The default/given atmosphere option is ignored, since using split=True,'
                   ' which only works with numerical 3+2D interpolation.')
 
     @property
@@ -1299,73 +1299,45 @@ class HotRegion(ParameterSubspace):
         else:
             super_energies = cede_energies = energies
 
-        if(self._symmetry):
+        if self.atm_ext==2 or self.atm_ext==4 or self._split:
+            if hot_atmosphere_I == () or hot_atmosphere_Q == ():
+                raise AtmosError('The numerical atmosphere data were not preloaded, '
+                                 'even though that is required by the current atmosphere extension.')
 
-            all_pulses = self._integratorIQU(threads,
-                                       st.R,
-                                       st.Omega,
-                                       st.r_s,
-                                       st.i,
-                                       self._super_cellArea,
-                                       self._super_r,
-                                       self._super_r_s_over_r,
-                                       self._super_theta,
-                                       self._super_phi,
-                                       self._super_cellParamVecs,
-                                       self._super_radiates,
-                                       self._super_correctionVecs,
-                                       num_rays,
-                                       self._super_deflection,
-                                       self._super_cos_alpha,
-                                       self._super_lag,
-                                       self._super_maxDeflection,
-                                       self._super_cos_gamma,
-                                       super_energies,
-                                       leaves,
-                                       phases,
-                                       hot_atmosphere_I,
-                                       hot_atmosphere_Q,                                       
-                                       elsewhere_atmosphere,
-                                       self.atm_ext,
-                                       atm_ext_else,
-                                       self.beam_opt,
-                                       self._image_order_limit)
-            super_pulse = all_pulses[0], all_pulses[1] #success and flux
-            super_pulse_Q = all_pulses[0], all_pulses[2]
-            super_pulse_U = all_pulses[0], all_pulses[3]
-        else: 
-            all_pulses = self._integratorIQU(threads,
-                                       st.R,
-                                       st.Omega,
-                                       st.r_s,
-                                       st.i,
-                                       self._super_cellArea,
-                                       self._super_r,
-                                       self._super_r_s_over_r,
-                                       self._super_theta,
-                                       self._super_phi,
-                                       self._super_cellParamVecs,
-                                       self._super_radiates,
-                                       self._super_correctionVecs,
-                                       num_rays,
-                                       self._super_deflection,
-                                       self._super_cos_alpha,
-                                       self._super_lag,
-                                       self._super_maxDeflection,
-                                       self._super_cos_gamma,
-                                       super_energies,
-                                       leaves,
-                                       phases,
-                                       hot_atmosphere_I,
-                                       hot_atmosphere_Q, 
-                                       elsewhere_atmosphere,
-                                       self.atm_ext,
-                                       atm_ext_else,
-                                       self.beam_opt,
-                                       self._image_order_limit)
-            super_pulse = all_pulses[0], all_pulses[1] #success and flux
-            super_pulse_Q = all_pulses[0], all_pulses[2]
-            super_pulse_U = all_pulses[0], all_pulses[3]
+        all_pulses = self._integratorIQU(threads,
+                                   st.R,
+                                   st.Omega,
+                                   st.r_s,
+                                   st.i,
+                                   self._super_cellArea,
+                                   self._super_r,
+                                   self._super_r_s_over_r,
+                                   self._super_theta,
+                                   self._super_phi,
+                                   self._super_cellParamVecs,
+                                   self._super_radiates,
+                                   self._super_correctionVecs,
+                                   num_rays,
+                                   self._super_deflection,
+                                   self._super_cos_alpha,
+                                   self._super_lag,
+                                   self._super_maxDeflection,
+                                   self._super_cos_gamma,
+                                   super_energies,
+                                   leaves,
+                                   phases,
+                                   hot_atmosphere_I,
+                                   hot_atmosphere_Q,
+                                   elsewhere_atmosphere,
+                                   self.atm_ext,
+                                   atm_ext_else,
+                                   self.beam_opt,
+                                   self._image_order_limit)
+
+        super_pulse = all_pulses[0], all_pulses[1]
+        super_pulse_Q = all_pulses[0], all_pulses[2]
+        super_pulse_U = all_pulses[0], all_pulses[3]
+
 
         if super_pulse[0] == 1:
             raise PulseError('Fatal numerical error during superseding-'
