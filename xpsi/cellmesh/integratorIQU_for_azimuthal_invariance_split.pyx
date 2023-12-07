@@ -524,6 +524,13 @@ def integrate(size_t numThreads,
                                 cos_2chi = cos(2*chi)
                                 sin_2chi = sin(2*chi)
 
+                                #if(ks == 0):
+                                #    printf("leaves[_kdx] = %.6e ",leaves[_kdx]/_2pi)
+                                #    printf("chi_0 = %.6e ",chi_0)
+                                #    printf("chi_1 = %.6e ",chi_1)
+                                #    printf("chi_prime = %.6e ",chi_prime)
+                                #    printf("PA_tot = %.6e\n",chi)
+
                                 # printf(".%.8e", count_evals)
                                 # count_evals = 1. + count_evals 
                                 # printf(".%ld",J)

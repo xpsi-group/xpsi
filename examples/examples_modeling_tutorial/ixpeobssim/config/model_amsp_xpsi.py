@@ -69,15 +69,6 @@ for j in range(NPhase):
 	for i in range(NEnergy):
 		Imod[j,i],Qmod[j,i],Umod[j,i]=photosphere_I[i,j], photosphere_Q[i,j], photosphere_U[i,j]
 
-
-
-#PA_check = arctan2(-Umod,-Qmod)*90/pi+90
-#print(PA_check[:,200])
-#plt.figure()
-#plt.plot(phase, PA_check[:,200], label='Energy = %.2f keV' % energies[200])
-#setup_gca(ymin=-90., ymax=180.0, legend=True, **fmtaxis.pp_pol_ang)
-#plt.savefig("test.png")
-
 chi = 0.0 #pulsar rotation axis position angle
 chi_rad = chi*pi/180.0
 
@@ -210,7 +201,7 @@ def display(emin=1., emax=12.):
     # Pulse profile: Flux.
     plt.figure('%s pulse profile' % __model__)
     for E in [2., 5., 8.]:
-        print("E,spec",E,spec(E, phase))
+        #print("E,spec",E,spec(E, phase))
         plt.plot(phase, spec(E, phase), label='Energy = %.2f keV' % E)
     setup_gca(ymin=0., legend=True, **fmtaxis.spec)
 

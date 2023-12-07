@@ -228,9 +228,9 @@ primary = CustomHotRegion_Accreting(bounds=bounds,
                             omit=False,
                             cede=False,
                             concentric=False,
-                            sqrt_num_cells=32,
+                            sqrt_num_cells=32, #100
                             min_sqrt_num_cells=10,
-                            max_sqrt_num_cells=64,
+                            max_sqrt_num_cells=64, #100
                             num_leaves=100,
                             num_rays=200,
                             split=True,
@@ -291,9 +291,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
         with np.load(path, allow_pickle=True) as data_dictionary:
             NSX = data_dictionary['NSX.npy']
             size_reorderme = data_dictionary['size.npy']
-            #print(size_reorderme)
 
-        #size = (150, 9, 31, 11, 41)
         size = [size_reorderme[3], size_reorderme[4], size_reorderme[2], size_reorderme[1], size_reorderme[0]]
 
         Energy = np.ascontiguousarray(NSX[0:size[0],0])
@@ -310,9 +308,7 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
         with np.load(path, allow_pickle=True) as data_dictionary:
             NSX = data_dictionary['NSX.npy']
             size_reorderme = data_dictionary['size.npy']
-            #print(size_reorderme)
 
-        #size = (150, 9, 31, 11, 41)
         size = [size_reorderme[3], size_reorderme[4], size_reorderme[2], size_reorderme[1], size_reorderme[0]]
 
         Energy = np.ascontiguousarray(NSX[0:size[0],0])
@@ -322,15 +318,15 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
         t_e = np.ascontiguousarray([NSX[i*size[0]*size[1]*size[2]*size[3],4] for i in range(size[4])])
         intensities = np.ascontiguousarray(NSX[:,5])
 
-        self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, 0.1*intensities*(-1.0))
+        #self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, 0.1*intensities*(-1.0))
+        self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, intensities)
 
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
-photosphere.hot_atmosphere = '/home/tuomo/xpsi/xpsi_bas/input_files/Bobrikova_compton_slab.npz'
-#Replace the following file later with the correct one.
-#Let's now just pretend that Q data is the same as I data times -0.1.
-photosphere.hot_atmosphere_Q = '/home/tuomo/xpsi/xpsi_bas/input_files/Bobrikova_compton_slab.npz'
+this_directory = os.path.dirname(os.path.abspath(__file__))
+photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
+photosphere.hot_atmosphere_Q = this_directory+'/model_data/Bobrikova_compton_slab_Q.npz'
 
 photosphere['mode_frequency'] == spacetime['frequency']
 
