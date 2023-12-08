@@ -855,16 +855,30 @@ from xpsi.Parameter import Derive
 from xpsi import HotRegions
 
 print('Rank reporting: %d' % xpsi._rank)
-from CustomInstrument import CustomInstrument
-from CustomSignal import CustomSignal
-from CustomInterstellar import CustomInterstellar
 
-try:
-    from CustomPhotosphere import CustomPhotosphere
-except ImportError:
-    from xpsi import Photosphere as CustomPhotosphere
+if __name__ == '__main__':
+    from CustomInstrument import CustomInstrument
+    from CustomSignal import CustomSignal
+    from CustomInterstellar import CustomInterstellar
 
-from CustomPrior import CustomPrior
+    try:
+        from CustomPhotosphere import CustomPhotosphere
+    except ImportError:
+        from xpsi import Photosphere as CustomPhotosphere
+
+    from CustomPrior import CustomPrior
+
+else:
+    from .CustomInstrument import CustomInstrument
+    from .CustomSignal import CustomSignal
+    from .CustomInterstellar import CustomInterstellar
+
+    try:
+        from .CustomPhotosphere import CustomPhotosphere
+    except ImportError:
+        from xpsi import Photosphere as CustomPhotosphere
+
+    from .CustomPrior import CustomPrior
 
 if args.main_import_statements is not None:
     for import_statement in args.main_import_statements:
