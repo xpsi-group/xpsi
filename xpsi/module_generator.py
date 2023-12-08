@@ -1460,6 +1460,9 @@ if __name__ == '__main__':
     from {0} import {1}_CustomBackground
         '''.format(args.custom_background_module,
                    _instrument)
+        )
+        module += (
+        '''
 else:
     from .{0} import {1}_CustomBackground
         '''.format(args.custom_background_module,
