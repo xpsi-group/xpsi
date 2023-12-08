@@ -531,6 +531,12 @@ def eval_marginal_likelihood(double exposure_time,
                     lower = support[i,0]
                     B_for_integrand = support[i,1]
 
+            #Ensuring that the maximum log-likelihood background for the integrand is within the integration limits
+            if B_for_integrand < lower:
+                B_for_integrand = lower
+            elif B_for_integrand > upper:
+                B_for_integrand = upper
+
             f.params = &a
 
             a.A = 0.0
