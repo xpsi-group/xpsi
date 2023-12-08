@@ -461,15 +461,16 @@ if __name__ == "__main__":
                         default="new_synthetic_data", help="Specify name for output file\
                         (default: new_synthetic_data)")
     
-    parser.add_argument("-e", "--exptime", action="store", required=False, dest="exposure_time",
-                        default=1000.0, help="Specify exposure time (default: 1000.0)")
+    parser.add_argument("-t", "--exptime", action="store", required=False, dest="exposure_time",
+                        default=1000.0, type=float, help="Specify exposure time (default: 1000.0)")
     
     parser.add_argument("-b", "--bkgcounts", action="store", required=False, dest="expected_background_counts",
-                        default=10000.0, help="Specify background counts (default: 10000.0)")
+                        default=10000.0, type=float, help="Specify background counts (default: 10000.0)")
 
     parser.add_argument("-p", "--parameters", action="store", required=False, dest="p_T",
                         default=[1.4, 12, 1., math.cos(60*np.pi/180), 0.0, 70*np.pi/180, 0.75, 6.7, -2], 
-                        help="Give list with star model parameter values:\
+                        type=float, nargs='+', help="Specify star model parameter values as floats like this:\
+                        python create_synthetic_data.py -p 1.4 12 1. 0.5 etc. The parameters are: \
                         mass in solar radius, equatorial radius in km, distance in kpc,\
                         cosine of Earth inclination, rotation axis, phase shift,\
                         colatitude of the centre of the superseding region,\
