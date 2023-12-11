@@ -244,7 +244,7 @@ class CustomBackground(xpsi.Background):
         Powerlaw spectral index.
         """
         index = xpsi.Parameter('powerlaw_index',
-                                strict_bounds = (-4.0, -1.01),
+                                strict_bounds = (1., 3.),
                                 bounds = bounds,
                                 doc = doc,
                                 symbol = r'$\Gamma$',
@@ -330,10 +330,10 @@ def create_star():
 
     spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=314.0))# Fixing the spin
 
-    bounds = dict(super_colatitude = (None, None),
-              super_radius = (None, None),
+    bounds = dict(super_colatitude = (0.001, math.pi/2 - 0.001),
+              super_radius = (0.001, math.pi/2 - 0.001),
               phase_shift = (-0.25, 0.75),
-              super_temperature = (None, None))
+              super_temperature = (6.5, 7.2))
 
     # a simple circular, simply-connected spot
     hot_spot = xpsi.HotRegion(bounds=bounds,
