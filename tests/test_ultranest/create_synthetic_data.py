@@ -479,10 +479,10 @@ if __name__ == "__main__":
     
     clargs = parser.parse_args()
 
+    directory = clargs.directory 
+    name = clargs.name
     exposure_time = clargs.exposure_time
     expected_background_counts = clargs.expected_background_counts
-    name = clargs.name
-    directory = clargs.directory 
     p_T = clargs.p_T
 
     create_synthetic_data(exposure_time, expected_background_counts, name, directory, p_T)  
