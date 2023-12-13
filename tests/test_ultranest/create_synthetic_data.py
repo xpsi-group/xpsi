@@ -323,10 +323,10 @@ def create_instrument():
 def create_star():
     """ Create a star object. """
 
-    bounds = dict(distance = (0.1, 10.0),                   # (Earth) distance
-                mass = (1.0, 3.0),                          # mass
-                radius = (3.0 * gravradius(1.0), 16.0),     # equatorial radius
-                cos_inclination = (0.0, 1.0))               # (Earth) inclination to rotation axis
+    bounds = dict(distance = (0.5,2.),                  # (Earth) distance
+                mass = (1.0, 3.0),                      # mass
+                radius = (10., 15.0),                   # equatorial radius
+                cos_inclination = (0., 1.))             # (Earth) inclination to rotation axis
 
     spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=314.0))# Fixing the spin
 
@@ -436,7 +436,7 @@ def create_synthetic_data(exposure_time, expected_background_counts, name, direc
                         prefix='Instrument')
 
     likelihood = xpsi.Likelihood(star = star, signals = signal,
-                        num_energies=384,
+                        num_energies=128, 
                         threads=1,
                         externally_updated=False,
                         prior = prior)       
