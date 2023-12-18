@@ -47,6 +47,8 @@ class CustomPrior(xpsi.Prior):
         :returns: Logarithm of the distribution evaluated at ``p``.
 
         """
+        # print("p:", p)
+
         temp = super(CustomPrior, self).__call__(p)
         if not np.isfinite(temp):
             return temp
@@ -55,12 +57,12 @@ class CustomPrior(xpsi.Prior):
         # if not self.parameters['radius'] <= 16.0:
         #     return -np.inf
 
-        # ref = self.parameters.star.spacetime # shortcut
+        ref = self.parameters.star.spacetime # shortcut
 
-        # # Compactness limit
-        # R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
-        # if R_p < 1.76 / ref.R_r_s:
-        #     return -np.inf
+        # Compactness limit
+        R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
+        if R_p < 1.76 / ref.R_r_s:
+            return -np.inf
 
         # mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
 
@@ -69,8 +71,6 @@ class CustomPrior(xpsi.Prior):
         # for high spin frequenies
         # if mu < 1.0:
         #     return -np.inf
-
-        # ref = self.parameters
 
         return 0.0
 
