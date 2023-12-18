@@ -20,7 +20,7 @@ class CustomPrior(xpsi.Prior):
 
     """
 
-    __derived_names__ = ['compactness', 'phase_separation',]
+    # __derived_names__ = ['compactness', 'phase_separation',]
 
     def __init__(self):
         """ Nothing to be done.
@@ -52,25 +52,25 @@ class CustomPrior(xpsi.Prior):
             return temp
 
         # based on contemporary EOS theory
-        if not self.parameters['radius'] <= 16.0:
-            return -np.inf
+        # if not self.parameters['radius'] <= 16.0:
+        #     return -np.inf
 
-        ref = self.parameters.star.spacetime # shortcut
+        # ref = self.parameters.star.spacetime # shortcut
 
-        # Compactness limit
-        R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
-        if R_p < 1.76 / ref.R_r_s:
-            return -np.inf
+        # # Compactness limit
+        # R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
+        # if R_p < 1.76 / ref.R_r_s:
+        #     return -np.inf
 
-        mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
+        # mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
 
         # 2-surface cross-section have a single maximum in |z|
         # i.e., an elliptical surface; minor effect on support, if any,
         # for high spin frequenies
-        if mu < 1.0:
-            return -np.inf
+        # if mu < 1.0:
+        #     return -np.inf
 
-        ref = self.parameters
+        # ref = self.parameters
 
         return 0.0
 
@@ -87,15 +87,15 @@ class CustomPrior(xpsi.Prior):
 
         ref = self.parameters # shortcut
 
-        idx = ref.index('distance')
-        ref['distance'] = truncnorm.ppf(hypercube[idx], -5.0, 5.0, loc=1.0, scale=0.1)
+        # idx = ref.index('distance')
+        # ref['distance'] = truncnorm.ppf(hypercube[idx], -5.0, 5.0, loc=1.0, scale=0.1)
 
         # flat priors in cosine of hot region centre colatitudes (isotropy)
         # support modified by no-overlap rejection condition
-        idx = ref.index('hot__super_colatitude')
-        a, b = ref.get_param('hot__super_colatitude').bounds
-        a = math.cos(a); b = math.cos(b)
-        ref['hot__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
+        # idx = ref.index('hot__super_colatitude')
+        # a, b = ref.get_param('hot__super_colatitude').bounds
+        # a = math.cos(a); b = math.cos(b)
+        # ref['hot__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
 
 
         # restore proper cache
@@ -115,6 +115,6 @@ class CustomPrior(xpsi.Prior):
         ref = dict(zip(self.parameters.names, p))
 
         # compactness ratio M/R_eq
-        p += [gravradius(ref['mass']) / ref['radius']]
+        # p += [gravradius(ref['mass']) / ref['radius']]
 
         return p

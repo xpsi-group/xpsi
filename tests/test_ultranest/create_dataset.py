@@ -11,7 +11,7 @@ import subprocess
 
 # create file storing synthetic data parameters 
 filepath = "../synthetic_data/syndat_overview.txt"
-header = "# sample_number, exposure_time, mass, radius, distance, inclination, phase_shift, super_colatitude, super_radius, super_temperature, background"
+header = "# sample_number, mass, radius, distance, cos_inclination, phase_shift, super_colatitude, super_radius, super_temperature, background, exposure_time, expected_background_counts"
 
 os.makedirs(os.path.dirname(filepath), exist_ok=True)
 with open(filepath, "w+") as f:
@@ -56,8 +56,7 @@ try:
             # or for which sampling takes too long (above 10^7 counts)
             if 10**5 < total_photon_count < 10**7:
                 with open(filepath, "a") as f:
-                    f.write(f"""\n{sample_number}\t {exposure_time}\t {mass}\t {radius}\t {distance}\t {cos_inclination}\t {phase_shift}\t {super_colatitude}\t {super_radius}\t {super_temperature}\t {background}""")
-                    # np.savetxt(filepath, f"\n{sample_number}, {exposure_time}, {mass}, {radius}, {distance}, {inclination}, {phase_shift}, {super_colatitude}, {super_radius}, {super_temperature}, {background}", delimiter=",")
+                    f.write(f"""\n{sample_number}\t {mass}\t {radius}\t {distance}\t {cos_inclination}\t {phase_shift}\t {super_colatitude}\t {super_radius}\t {super_temperature}\t {background}\t {exposure_time}\t {expected_background_counts}""")
                     f.close()
 
                 sample_number += 1

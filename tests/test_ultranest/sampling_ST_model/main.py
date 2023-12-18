@@ -2,7 +2,6 @@
 """
 import argparse
 import numpy as np
-import math
 import re 
 import os 
 
@@ -15,35 +14,46 @@ from CustomPhotosphere import CustomPhotosphere
 from CustomPrior import CustomPrior
 
 def load_data(directory, name, sample_number):
-    # # Data
-
+    
     # get information from syndat_overview.txt 
     overview_file_path = os.path.join(directory, "syndat_overview.txt")
     overview_file = np.loadtxt(overview_file_path)
 
-    if sample_number is not None:
-        data_loaded = np.loadtxt(f"../../synthetic_data/dataset_{sample_number}/syndat_{sample_number}_realisation.dat", dtype=np.double)
-        exposure_time = overview_file[sample_number,1]
-    else:    
-        file_path = os.path.join(directory, name)
-        data_loaded = np.loadtxt(file_path, dtype=np.double)
-        
-        try: 
+    try: 
+
+        if sample_number is not None:
+            data_loaded = np.loadtxt(f"../../synthetic_data/dataset_{sample_number}/syndat_{sample_number}_realisation.dat", dtype=np.double)
+        else:    
+            file_path = os.path.join(directory, name)
+            data_loaded = np.loadtxt(file_path, dtype=np.double)
             sample_number = int(re.findall(r'\d+', name)[0])
-            exposure_time = overview_file[sample_number,1]
-        except:
-            exposure_time = 1000.0
-       
+
+    except Exception as e:
+        print(e, "Specify the sample number in order to retrieve synthetic data parameters.")
+    
+    return overview_file, sample_number, data_loaded 
+
+def create_star_model(overview_file, sample_number, data_loaded ): 
+
+    # get the synthetic data parameters 
+    radius = overview_file[sample_number,2]
+    distance = overview_file[sample_number,3]
+    cos_inclination = overview_file[sample_number,4]
+    phase_shift = overview_file[sample_number,5]
+    super_colatitude = overview_file[sample_number,6]
+    super_radius = overview_file[sample_number,7]
+    super_temperature = overview_file[sample_number,8]
+    background = overview_file[sample_number,9]
+    exposure_time = overview_file[sample_number,10]
+    # expected_background_counts = overview_file[sample_number,11]
+
+    # # Data
     data = xpsi.Data(data_loaded,
                         channels=np.arange(10,301),
                         phases=np.linspace(0.0, 1.0, 33),
                         first=0,
                         last=290,
                         exposure_time=exposure_time) 
-        
-    return data
-
-def create_star_model(data): 
 
     # # Instrument settings
     channel_number=np.arange(0,1501)    # The channel nnumber
@@ -89,33 +99,35 @@ def create_star_model(data):
                         sigmas = 10.0) 
 
     # # Space-time
-    bounds = dict(distance = (0.5,2.),
-                mass = (1.0,3.0),
-                radius = (10.,15.),
-                cos_inclination = (0.,1.))
+    bounds = dict(mass = (1.0,3.0))
 
-    spacetime = xpsi.Spacetime(bounds,
-                            values=dict(frequency = 314.0))
+    values = dict(distance = distance,
+                radius = radius,
+                cos_inclination = cos_inclination,
+                frequency = 314.0)
+    
+    spacetime = xpsi.Spacetime(bounds=bounds,
+                            values=values)
 
     # # Hot-spot
-    bounds = dict(super_colatitude = (0.001, math.pi/2 - 0.001),
-                super_radius = (0.001, math.pi/2 - 0.001),
-                phase_shift = (-0.25, 0.75),
-                super_temperature = (6.5, 7.2))  
+    values = dict(super_colatitude = super_colatitude,
+                super_radius = super_radius,
+                phase_shift = phase_shift,
+                super_temperature = super_temperature)
 
-    hot_spot = xpsi.HotRegion(bounds=bounds,
-                                    values={},
-                                    symmetry=True,
-                                    omit=False,
-                                    cede=False,
-                                    concentric=False,
-                                    sqrt_num_cells=32,
-                                    min_sqrt_num_cells=10,
-                                    max_sqrt_num_cells=64,
-                                    num_leaves=100,
-                                    num_rays=200,
-                                    is_secondary=True,
-                                    prefix='hot')
+    hot_spot = xpsi.HotRegion(bounds={},
+                            values=values,
+                            symmetry=True,
+                            omit=False,
+                            cede=False,
+                            concentric=False,
+                            sqrt_num_cells=32,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=64,
+                            num_leaves=100,
+                            num_rays=200,
+                            is_secondary=True,
+                            prefix='hot')
 
     # # Photosphere
     photosphere = CustomPhotosphere(hot = hot_spot, elsewhere = None,
@@ -141,7 +153,6 @@ def run_sampler(likelihood, prior, directory, name, sample_number):
 
     if sample_number is not None:
         output_dir = f"../../synthetic_data/dataset_{sample_number}/"
-        print("output", output_dir)
         output_filename = f"syndat_{sample_number}_output.txt"
     else:
         output_dir = directory
@@ -149,8 +160,7 @@ def run_sampler(likelihood, prior, directory, name, sample_number):
 
     sampler = xpsi.Sample.ultranested(likelihood=likelihood, 
                                         prior=prior, 
-                                        sampler_params={'wrapped_params': [False, False, False, False, True, False, False, False],
-                                                        'log_dir' : output_dir},
+                                        sampler_params={'log_dir' : output_dir},
                                         runtime_params={'show_status': True},
                                         use_stepsampler=False, 
                                         # stepsampler_params={'max_nsteps' : 400}, 
@@ -183,8 +193,8 @@ if __name__ == '__main__':
     sample_number = clargs.sample_number
 
     # load synthetic data and create ST model
-    data = load_data(directory, name, sample_number)
-    likelihood, prior = create_star_model(data)
+    overview_file, sample_number, data_loaded  = load_data(directory, name, sample_number)
+    likelihood, prior = create_star_model(overview_file, sample_number, data_loaded )
     
     # start sampling 
     run_sampler(likelihood, prior, directory, name, sample_number)
