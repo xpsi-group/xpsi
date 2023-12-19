@@ -449,7 +449,6 @@ def create_synthetic_data(exposure_time, expected_background_counts, name, direc
     likelihood.synthesise(p_T, force=True, Instrument=instrument_kwargs) 
     print("Done !")                      
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Creating synthetic data")
     
@@ -468,7 +467,7 @@ if __name__ == "__main__":
                         default=10000.0, type=float, help="Specify background counts (default: 10000.0)")
 
     parser.add_argument("-p", "--parameters", action="store", required=False, dest="p_T",
-                        default=[1.4, 12, 1., math.cos(60*np.pi/180), 0.0, 70*np.pi/180, 0.75, 6.7, -2], 
+                        default=[1.4, 12, 1., math.cos(60*np.pi/180), 0.0, 70*np.pi/180, 0.75, 6.7, 2.], 
                         type=float, nargs='+', help="Specify star model parameter values as floats like this:\
                         python create_synthetic_data.py -p 1.4 12 1. 0.5 etc. The parameters are: \
                         mass in solar radius, equatorial radius in km, distance in kpc,\

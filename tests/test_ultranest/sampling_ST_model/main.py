@@ -36,16 +36,19 @@ def load_data(directory, name, sample_number):
 def create_star_model(overview_file, sample_number, data_loaded ): 
 
     # get the synthetic data parameters 
-    radius = overview_file[sample_number,2]
-    distance = overview_file[sample_number,3]
-    cos_inclination = overview_file[sample_number,4]
-    phase_shift = overview_file[sample_number,5]
-    super_colatitude = overview_file[sample_number,6]
-    super_radius = overview_file[sample_number,7]
-    super_temperature = overview_file[sample_number,8]
-    background = overview_file[sample_number,9]
-    exposure_time = overview_file[sample_number,10]
-    # expected_background_counts = overview_file[sample_number,11]
+    row = sample_number -1 
+    params = overview_file[row] 
+    
+    radius = params[2]
+    distance = params[3]
+    cos_inclination = params[4]
+    phase_shift = params[5]
+    super_colatitude = params[6]
+    super_radius = params[7]
+    super_temperature = params[8]
+    background = params[9]
+    exposure_time = params[10]
+    # expected_background_counts = params[11]
 
     # # Data
     data = xpsi.Data(data_loaded,
