@@ -26,6 +26,49 @@ np.random.seed(xpsi._rank+10)
 
 print('Rank reporting: %d' % xpsi._rank)
 
+this_directory = os.path.dirname(os.path.abspath(__file__))
+
+import sys
+sys.path.append(this_directory+"/ixpeobssim/")
+
+class namespace():
+    pass
+
+IXPE_I = namespace()
+IXPE_Q = namespace()
+IXPE_U = namespace()
+
+from ixpe_read import readData_pcube_ebin
+
+fname_ixpedata = this_directory+"/ixpeobssim/data/amp_data1/model_amsp_xpsi"
+
+phase_IXPE, Idat, qn, un, Iderr_du1, qnerr_du1, unerr_du1, keVdat = readData_pcube_ebin(fname_ixpedata)
+
+#print(phase_IXPE)
+#print([Idat[:,0]])
+#exit()
+
+IXPE_I.data = xpsi.Data([Idat[:,0]],
+                       channels=np.arange(0, 1),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=0,
+                       exposure_time=1.0)
+IXPE_Q.data = xpsi.Data([qn[:,0]],
+                       channels=np.arange(0, 1),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=0,
+                       exposure_time=1.0)
+IXPE_U.data = xpsi.Data([un[:,0]],
+                       channels=np.arange(0, 1),
+                       phases=phase_IXPE,
+                       first=0,
+                       last=0,
+                       exposure_time=1.0)
+#exit()
+
+
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 mass = (1.0, 3.0),                       # mass
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
@@ -324,7 +367,6 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
-this_directory = os.path.dirname(os.path.abspath(__file__))
 photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
 photosphere.hot_atmosphere_Q = this_directory+'/model_data/Bobrikova_compton_slab_Q.npz'
 

@@ -71,14 +71,22 @@ def bin_():
 def display_pulse_profile():
     """Display the pulse profile.
     """
+    shape = (len(ENERGY_BINNING) - 1, len(PHASE_BINNING) - 1)
+    emean = numpy.zeros(shape)
+    for i, (min_, max_) in pairwise_enum(PHASE_BINNING):
+        file_list = pipeline.file_list('folded', ('phase', i), 'pcube')
+        pcube = xBinnedPolarizationCube.from_file_list(file_list)
+        emean[:,i] = pcube.E_MEAN
+    mean_energy = numpy.mean(emean)
+
     pipeline.figure('pulse profile')
     file_list = pipeline.file_list('folded_pp')
     pp = xBinnedPulseProfile.from_file_list(file_list)
     pp.plot(label='IXPE %d ks' % pp.ontime())
     phase = numpy.linspace(0., 1., 100)
-    model_pp = input_model.spec(2.0,phase)
+    model_pp = input_model.spec(mean_energy,phase)
     scale = numpy.mean(pp.COUNTS) / numpy.mean(model_pp)
-    plt.plot(phase, scale * model_pp, label='Input model')
+    plt.plot(phase, scale * model_pp, label='Input model @ %.2f keV' % mean_energy)
     setup_gca(ymin=0, legend=True)
 
 
@@ -112,7 +120,7 @@ def display_pol_degree():
     for i, (min_, max_) in pairwise_enum(ENERGY_BINNING):
         plt.errorbar(phase_bins, pol_deg[i,:], pol_deg_err[i,:], fmt='o',
                      label=data_label(min_, max_))
-        energy = 2.0#numpy.mean(emean[i,:])
+        energy = numpy.mean(emean[i,:])
         plt.plot(phase, input_model.pol_deg(energy, phase),
                  color=last_line_color(), label=model_label(energy))
     setup_gca(ymin=0, ymax=0.55, legend=True, **fmtaxis.pp_pol_deg)
@@ -121,7 +129,7 @@ def display_pol_degree():
     for i, (min_, max_) in pairwise_enum(ENERGY_BINNING):
         plt.errorbar(phase_bins, pol_ang[i,:], pol_ang_err[i,:], fmt='o',
                      label=data_label(min_, max_))
-        energy = 2.0#numpy.mean(emean[i,:])
+        energy = numpy.mean(emean[i,:])
         plt.plot(phase, numpy.degrees(input_model.pol_ang(energy, phase)),
                  color=last_line_color(), label=model_label(energy))
     setup_gca(ymin=-180.0, ymax=180.0, legend=True, **fmtaxis.pp_pol_ang)
