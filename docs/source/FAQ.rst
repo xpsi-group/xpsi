@@ -72,7 +72,7 @@ Can happen in PostProcessing for runs with ``use_nestcheck=[False]`` (e.g. impor
       :alt: image
       :width: 10cm
 
-The problem is the ``xpsi/xpsi/surface_radiation_field/local_variable.pyx`` file which should be overwritten by ``xpsi/xpsi/surface_radiation_field/archive/local_variables/PST_U.pyx`` or ``xpsi/xpsi/surface_radiation_field/archive/local_variables/two_spots.pyx`` (depending on the model) and then re-install X-PSI.
+The problem is the ``xpsi/xpsi/surface_radiation_field/local_variables.pyx`` file which should be overwritten by ``xpsi/xpsi/surface_radiation_field/archive/local_variables/PST_U.pyx`` or ``xpsi/xpsi/surface_radiation_field/archive/local_variables/two_spots.pyx`` (depending on the model) and then re-install X-PSI.
 
 .. rubric:: *ImportError: No module named tools*
 
