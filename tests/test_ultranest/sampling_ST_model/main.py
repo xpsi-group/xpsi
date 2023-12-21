@@ -164,7 +164,7 @@ def run_sampler(likelihood, prior, directory, name, sample_number):
     sampler = xpsi.Sample.ultranested(likelihood=likelihood, 
                                         prior=prior, 
                                         sampler_params={'log_dir' : output_dir},
-                                        runtime_params={'show_status': True},
+                                        runtime_params={'show_status': True, 'min_num_live_points' : 1000},
                                         use_stepsampler=False, 
                                         # stepsampler_params={'max_nsteps' : 400}, 
                                         out_filename=output_filename)
