@@ -4,6 +4,7 @@ import argparse
 import numpy as np
 import re 
 import os 
+import shutil
 
 import xpsi
 import time
@@ -14,6 +15,9 @@ from CustomPhotosphere import CustomPhotosphere
 from CustomPrior import CustomPrior
 
 def load_data(directory, name, sample_number):
+    """Load the synthetic data and the overview file containing the parameters used to create 
+    the synthetic data. Also, retrieve the sample number. 
+    """
     
     # get information from syndat_overview.txt 
     overview_file_path = os.path.join(directory, "syndat_overview.txt")
@@ -34,6 +38,9 @@ def load_data(directory, name, sample_number):
     return overview_file, sample_number, data_loaded 
 
 def create_star_model(overview_file, sample_number, data_loaded ): 
+    """Create a simple star model (ST) with only mass as free parameter. 
+    Return the likelihood and prior.
+    """
 
     # get the synthetic data parameters 
     row = sample_number -1 
@@ -151,9 +158,13 @@ def create_star_model(overview_file, sample_number, data_loaded ):
     
     return likelihood, prior 
 
-def run_sampler(likelihood, prior, directory, name, sample_number):
+def run_sampler(likelihood, prior, directory, name, sample_number, use_ultranest):
+    """Run the sampler, either using UltraNest (default) or with MultiNest. 
+    """
+    # track sampling time 
     start = time.time()
 
+    # create output directory and output filenames 
     if sample_number is not None:
         output_dir = f"../../synthetic_data/dataset_{sample_number}/"
         output_filename = f"syndat_{sample_number}_output.txt"
@@ -161,14 +172,42 @@ def run_sampler(likelihood, prior, directory, name, sample_number):
         output_dir = directory
         output_filename = f"{name}_output.txt"
 
-    sampler = xpsi.Sample.ultranested(likelihood=likelihood, 
-                                        prior=prior, 
-                                        sampler_params={'log_dir' : output_dir},
-                                        runtime_params={'show_status':True, 'update_interval_volume_fraction': 0.1, 'min_num_live_points':5000},
-                                        use_stepsampler=False, 
-                                        # stepsampler_params={'max_nsteps' : 400}, 
-                                        out_filename=output_filename)
-    sampler.print_results()
+    # start sampling with ultranest
+    if use_ultranest: 
+        sampler = xpsi.Sample.ultranested(likelihood=likelihood, 
+                                            prior=prior, 
+                                            sampler_params={'log_dir' : output_dir},
+                                            runtime_params={'show_status':True, 'update_interval_volume_fraction': 0.1, 'min_num_live_points':5000},
+                                            use_stepsampler=False, 
+                                            # stepsampler_params={'max_nsteps' : 400}, 
+                                            out_filename=output_filename)
+        sampler.print_results()
+    
+    # otherwise sample multinest 
+    else: 
+        # create dir to temporarily store multinest output 
+        os.mkdir(path=f"{output_dir}multinest/")
+
+        # multinest sampler 
+        runtime_params = {'resume': False,
+                        'importance_nested_sampling': False,
+                        'multimodal': False,
+                        'n_clustering_params': None,
+                        'outputfiles_basename': f"{output_dir}multinest/syndat_{sample_number}_multinest_output",
+                        'n_iter_before_update': 100,
+                        'n_live_points': 1000,
+                        'sampling_efficiency': 0.1,
+                        'const_efficiency_mode': False,
+                        'evidence_tolerance': 0.1,
+                        'max_iter': -1,
+                        'seed' : 0, # Fixing the seed
+                        'verbose': True}
+
+        xpsi.Sample.nested(likelihood, prior, **runtime_params)
+
+        # keep only the file needed for the PP-plot and remove rest 
+        os.replace(f"{output_dir}multinest/syndat_{sample_number}_multinest_output.txt", f"{output_dir}syndat_{sample_number}_multinest_output.txt")
+        shutil.rmtree(f"{output_dir}multinest/")
 
     print('Sampling took', (time.time()-start)/60, 'minutes')
 
@@ -190,14 +229,19 @@ if __name__ == '__main__':
                         default=None, type=int, help="Specify sample number of the synthetic data input\
                         file (default: 1)")
     
+    parser.add_argument("-u", "--ultranest", action=argparse.BooleanOptionalAction, required=False, dest="use_ultranest",
+                        default=True, type=bool, help="Specify which sampler to use: uses UltraNest by default, \
+                        --no-ultranest to use MultiNest (default: True)")
+    
     clargs = parser.parse_args()
     directory = clargs.directory 
     name = clargs.name
     sample_number = clargs.sample_number
+    use_ultranest = clargs.use_ultranest
 
     # load synthetic data and create ST model
     overview_file, sample_number, data_loaded  = load_data(directory, name, sample_number)
     likelihood, prior = create_star_model(overview_file, sample_number, data_loaded )
     
     # start sampling 
-    run_sampler(likelihood, prior, directory, name, sample_number)
+    run_sampler(likelihood, prior, directory, name, sample_number, use_ultranest)
