@@ -186,7 +186,7 @@ def run_sampler(likelihood, prior, directory, name, sample_number, use_ultranest
     # otherwise sample multinest 
     else: 
         # create dir to temporarily store multinest output 
-        os.mkdir(path=f"{output_dir}multinest/")
+        os.makedirs(f"{output_dir}multinest/", exist_ok=True)
 
         # multinest sampler 
         runtime_params = {'resume': False,
@@ -194,20 +194,24 @@ def run_sampler(likelihood, prior, directory, name, sample_number, use_ultranest
                         'multimodal': False,
                         'n_clustering_params': None,
                         'outputfiles_basename': f"{output_dir}multinest/syndat_{sample_number}_multinest_output",
-                        'n_iter_before_update': 100,
-                        'n_live_points': 1000,
-                        'sampling_efficiency': 0.1,
+                        'n_iter_before_update': 50, #100,
+                        'n_live_points': 50,#1000,
+                        'sampling_efficiency': 0.3, #0.1,
                         'const_efficiency_mode': False,
                         'evidence_tolerance': 0.1,
-                        'max_iter': -1,
+                        'max_iter': 100, #-1,
                         'seed' : 0, # Fixing the seed
                         'verbose': True}
 
         xpsi.Sample.nested(likelihood, prior, **runtime_params)
 
         # keep only the file needed for the PP-plot and remove rest 
-        os.replace(f"{output_dir}multinest/syndat_{sample_number}_multinest_output.txt", f"{output_dir}syndat_{sample_number}_multinest_output.txt")
-        shutil.rmtree(f"{output_dir}multinest/")
+        try: 
+            os.replace(f"{output_dir}multinest/syndat_{sample_number}_multinest_output.txt", f"{output_dir}syndat_{sample_number}_multinest_output.txt")
+            shutil.rmtree(f"{output_dir}multinest/")
+        except Exception as e:
+            print(e)
+
 
     print('Sampling took', (time.time()-start)/60, 'minutes')
 
