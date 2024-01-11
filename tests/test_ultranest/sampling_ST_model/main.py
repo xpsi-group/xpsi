@@ -194,12 +194,12 @@ def run_sampler(likelihood, prior, directory, name, sample_number, use_ultranest
                         'multimodal': False,
                         'n_clustering_params': None,
                         'outputfiles_basename': f"{output_dir}multinest/syndat_{sample_number}_multinest_output",
-                        'n_iter_before_update': 50, #100,
-                        'n_live_points': 50,#1000,
-                        'sampling_efficiency': 0.3, #0.1,
+                        'n_iter_before_update': 100,
+                        'n_live_points': 1000,
+                        'sampling_efficiency': 0.1,
                         'const_efficiency_mode': False,
                         'evidence_tolerance': 0.1,
-                        'max_iter': 100, #-1,
+                        'max_iter': -1,
                         'seed' : 0, # Fixing the seed
                         'verbose': True}
 
