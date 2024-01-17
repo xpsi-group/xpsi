@@ -1786,7 +1786,7 @@ class Photosphere(ParameterSubspace):
                                 levels[-1] = _np.array([0.0, 0.001*MIN] + list(levels[-1]))
             else:
                 with verbose(True,
-                             'Normalising sky map panels globally'
+                             'Normalising sky map panels globally',
                              'Normalised sky map panels globally'):
                     MIN = _np.min(images[:,:,:][images[:,:,:] > 0.0])
                     MAX = _np.max(images[:,:,:])
