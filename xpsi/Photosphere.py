@@ -370,8 +370,6 @@ class Photosphere(ParameterSubspace):
                 self._signal = ((spectrum,),)
         else:
             if self._elsewhere is not None:
-                if self._stokes:
-                    raise NotImplementedError('Stokes option for elsewhere not implmented yet.')  
                 spectrum = self._elsewhere.integrate(self._spacetime,
                                                      energies,
                                                      threads,
@@ -407,11 +405,10 @@ class Photosphere(ParameterSubspace):
                     if not isinstance(self._signal[0], tuple):
                         self._signal = (self._signal,)
 
-                    # add time-invariant component to first time-dependent component
-                    if self._elsewhere is not None:
-                        for i in range(self._signal[0][0].shape[1]):
-                            self._signal[0][0][:,i] += spectrum
-
+                # add time-invariant component to first time-dependent component
+                if self._elsewhere is not None:
+                    for i in range(self._signal[0][0].shape[1]):
+                        self._signal[0][0][:,i] += spectrum
 
     @property
     def signal(self):

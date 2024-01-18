@@ -376,7 +376,7 @@ def integrate(size_t numThreads,
             _IO = image_order
         for I in range(_IO): # loop over images
             InvisFlag[T] = 2 # initialise image order as not visible
-            #correction_I_E = 0.0
+            correction_I_E = 0.0
 
             for k in range(leaf_lim):
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
@@ -532,11 +532,15 @@ def integrate(size_t numThreads,
                                     U_obs = Q_E*sin_2chi
 
                                     if perform_correction == 1:
-                                        printf("Error: Elsewhere radiation field not implement yet for the stokes vector.\n")
-                                        terminate[T] = 1
-                                        break # out of phase loop
+                                        correction_I_E = eval_elsewhere(T,
+                                                                        E_prime,
+                                                                        _ABB,
+                                                                        &(correction[i,J,0]),
+                                                                        ext_data,
+                                                                        0)
+                                        correction_I_E = correction_I_E * eval_elsewhere_norm()
 
-                                    (PROFILE_I[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm()) * _GEOM
+                                    (PROFILE_I[T] + BLOCK[p] + _kdx)[0] = (I_E * eval_hot_norm() - correction_I_E) * _GEOM
                                     (PROFILE_Q[T] + BLOCK[p] + _kdx)[0] = (Q_obs * eval_hot_norm()) * _GEOM
                                     (PROFILE_U[T] + BLOCK[p] + _kdx)[0] = (U_obs * eval_hot_norm()) * _GEOM
                                     #printf("Q_obs = %.6e\n",(Q_obs * eval_hot_norm() - correction_Q) * _GEOM)
