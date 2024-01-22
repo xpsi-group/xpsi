@@ -23,6 +23,7 @@ Those involved in maintenance and development (technical and scientific).
 * Devarshi Choudhury (d.choudhury[at]uva.nl), University of Amsterdam
 * Bas Dorsman (b.dorsman[at]uva.nl), University of Amsterdam
 * Sebastien Guillot (sebastien.guillot[at]irap.omp.eu), IRAP
+* Mariska Hoogkamer (m.m.hoogkamer@uva.nl), University of Amsterdam
 * Daniela Huppenkothen (d.huppenkothen[at]sron.nl), SRON
 * Yves Kini (y.kini[at]uva.nl), University of Amsterdam
 * Tuomo Salmi (t.h.j.salmi[at]uva.nl), University of Amsterdam

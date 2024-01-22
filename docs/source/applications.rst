@@ -26,7 +26,7 @@ NICER papers
 
 X-PSI has been used in several Pulse Profile Modeling analysis papers using *NICER* data of rotation-powered millisecond pulsars. These are typically published with a Zenodo repository containing data, model files, X-PSI scripts, samples and post-processing notebooks to enable full reproduction and independent analysis. 
 
-**Vinciguerra et al. 2024** `(ApJ accepted) <https://ui.adsabs.harvard.edu/abs/2023arXiv230809469V/abstract>`_ used  ``v0.7.3`` to ``v2.0.0`` of X-PSI to carry out a much more in-depth and updated analysis of the PSR J0030+0451 *NICER* data set analysed in Riley et al. (2019). See also the associated `Zenodo repository`__.   
+**Vinciguerra et al. 2024** `(ApJ, 961,62) <https://ui.adsabs.harvard.edu/abs/2024ApJ...961...62V/abstract>`_ used  ``v0.7.3`` to ``v2.0.0`` of X-PSI to carry out a much more in-depth and updated analysis of the PSR J0030+0451 *NICER* data set analysed in Riley et al. (2019). See also the associated `Zenodo repository`__.   
 
 .. _Zenodo24a: https://doi.org/10.5281/zenodo.8239000
 __ Zenodo24a_
@@ -67,7 +67,7 @@ __ Zenodo_
 Other papers
 ************
 
-**Kini et al. 2024** `(MNRAS, 527, 8118) <https://academic.oup.com/mnras/article/527/3/8118/7440002>`_ used ``v0.7.9`` of X-PSI (with small modifications described in the paper) to explore strategies for mitigating variability when doing pulse profile modelling for thermonuclear burst oscillations.  See also the associated `Zenodo repository`__.
+**Kini et al. 2024** `(MNRAS, 527, 8118) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.527.8118K/abstract>`_ used ``v0.7.9`` of X-PSI (with small modifications described in the paper) to explore strategies for mitigating variability when doing pulse profile modelling for thermonuclear burst oscillations.  See also the associated `Zenodo repository`__.
 
 .. _Zenodo24kini: http://dx.doi.org/10.5281/zenodo.8033527
 __ Zenodo24kini_
