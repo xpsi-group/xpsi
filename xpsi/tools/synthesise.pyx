@@ -61,7 +61,8 @@ def synthesise_exposure(double exposure_time,
     :param tuple component_phases:
         For each component, a C-contiguous :class:`numpy.ndarray` of phases
         in cycles at which the model :obj:`signal` is evaluated on
-        the interval ``[0,1]``.
+        the interval ``[0,1]``. Typically this is more finely spaced than the
+        to be synthesised data.
 
     :param array-like phase_shift:
         Phase shifts in cycles, such as on the interval ``[-0.5,0.5]``, for
@@ -74,8 +75,8 @@ def synthesise_exposure(double exposure_time,
     :param double[:,::1] background:
         A C-contiguous :class:`numpy.ndarray` of background expected
         *counts*, whose shape matches the number of channels in each element
-        of :obj:`components` and the number of phase intervals constructed
-        from :obj:`phases`.
+        of :obj:`components` and the number of phase intervals (i.e. one element
+        fewer than phase interval edges) constructed from :obj:`phases`.
 
     :param int gsl_seed:
         Seed number for adding random noise to the data. If not specified,
@@ -83,10 +84,10 @@ def synthesise_exposure(double exposure_time,
 
     :returns:
         A tuple ``(2D ndarray, 2D ndarray, double)``. The first element is
-        the expected count numbers in joint phase-channel intervals. The
-        second element is a stochastic realisation of those count numbers.
-        The last element is the required normalisation of the background.
-
+        the expected count numbers in joint phase-channel intervals. Note those
+        are intervals, not edges. The second element is a stochastic realisation
+        of those count numbers. The last element is the required normalisation of
+        the background.
     """
     cdef const gsl_interp_type *_interpolant
 
@@ -268,7 +269,8 @@ def synthesise_given_total_count_number(double[::1] phases,
     :param tuple component_phases:
         For each component, a C-contiguous :class:`numpy.ndarray` of phases
         in cycles at which the model :obj:`signal` is evaluated on
-        the interval ``[0,1]``.
+        the interval ``[0,1]``. Typically this is more finely spaced than the
+        to be synthesised data.
 
     :param array-like phase_shift:
         Phase shifts in cycles, such as on the interval ``[-0.5,0.5]``, for
@@ -281,8 +283,8 @@ def synthesise_given_total_count_number(double[::1] phases,
     :param double[:,::1] background:
         A C-contiguous :class:`numpy.ndarray` of background expected
         *counts*, whose shape matches the number of channels in each element
-        of :obj:`components` and the number of phase intervals constructed
-        from :obj:`phases`.
+        of :obj:`components` and the number of phase intervals (i.e. one element
+        fewer than phase interval edges) constructed from :obj:`phases`.
 
     :param obj allow_negative:
         A boolean or an array of booleans, one per component, declaring whether
@@ -299,11 +301,10 @@ def synthesise_given_total_count_number(double[::1] phases,
 
     :returns:
         A tuple ``(2D ndarray, 2D ndarray, double, double)``. The first element
-        is the expected count numbers in joint phase-channel intervals. The
-        second element is a stochastic realisation of those count numbers.
-        The third element is the required exposure time. The last element is
-        the required normalisation of the background.
-
+        is the expected count numbers in joint phase-channel intervals. Note those
+        are intervals, not edges. The second element is a stochastic realisation
+        of those count numbers. The third element is the required exposure time.
+        The last element is the required normalisation of the background.
     """
     cdef const gsl_interp_type *_interpolant
 
