@@ -40,7 +40,7 @@ Q_mighty = ones((len(t__e), len(t__bb), len(tau__t), NEnergy_i, NZenith_i)) #5D 
 
 
 def reading_table(): #routine that just reads fits tables to I_mighty and Q_mighty
-    path='/home/tuomo/polcslab/ixpe_sim/Bobrikova/ComptonSlabTables/'
+    path='../examples_modeling_tutorial/model_data/ComptonSlabTables/'
     global I_mighty
     global Q_mighty
     p=0 #as we will not go over lenght_Te but just over values within t__e array, we'll need a counter for index corr. to Te

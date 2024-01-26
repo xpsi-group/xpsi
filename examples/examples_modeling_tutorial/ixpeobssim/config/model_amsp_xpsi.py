@@ -50,7 +50,7 @@ from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
 import sys
 sys.path.append('../../')
 sys.path.append('../')
-from TestRun_PolNum_split import get_photosphere_stokes_1spot
+from TestRun_PolNum_split_1spot import get_photosphere_stokes_1spot
 #from TestRun_Pol import get_photosphere_stokes_1spot
 
 phase, energies, photosphere_I, photosphere_Q, photosphere_U = get_photosphere_stokes_1spot()
@@ -72,7 +72,8 @@ for j in range(NPhase):
 chi = 0.0 #pulsar rotation axis position angle
 chi_rad = chi*pi/180.0
 
-distance_m = 1.0
+distance_kpc = 3.5
+distance_m = 3.08567758128e19*distance_kpc
 
 #Note that if want to obtain the specific flux in units of photons/cm/s/keV instead, the output of photosphere.signal needs to be divided by distance squared, where distance is measured in meters
 
@@ -82,8 +83,8 @@ for ii in range(0,NEnergy):
 	U_obs = sin(2*chi_rad)*Qmod[:,ii]+cos(2*chi_rad)*Umod[:,ii]
 
 	PAobs[:,ii] = arctan2(-U_obs,-Q_obs)*90/pi+90
-	for jj in range(0,NPhase-1):
-		if(Imod[jj,ii] > 1e-10):
+	for jj in range(0,NPhase):
+		if(Imod[jj,ii] > 1e-30):
 			PDobs[jj,ii] = sqrt(U_obs[jj]**2+Q_obs[jj]**2)/Imod[jj,ii]
 		else:
 			PDobs[jj,ii] = 0.0
@@ -91,9 +92,37 @@ for ii in range(0,NEnergy):
 	#Unit change to cm^-2 s^-1 keV^-1 from photosphere.signal units 
 	Imod[:,ii] = Imod[:,ii]/distance_m**2
 	
-brightn = 100 # Target's brightness in mCrab	
+#brightn = 100 # Target's brightness in mCrab
+#highest_I = np.max(Imod)
+#Imod = Imod/(highest_I)*brightn*0.0019986928
+
 highest_I = np.max(Imod)
-Imod = Imod/(highest_I)*brightn*0.0019986928 
+Icrab = highest_I/0.0019986928
+print("Brightness in mCrab:",Icrab) #this is maybe wrong
+
+kev2erg = 1.6021766339999E-9
+Isum = 0
+for ie in range(len(energies)):
+        if (2.0 < energies[ie] < 10.0):
+                Isum = Isum + energies[ie]*np.sum(Imod[0:NPhase-1,ie])*(energies[ie+1]-energies[ie-1])/2.0
+print(Isum*kev2erg)
+#3.951080182049406e-09 erg/cm2/s (2-8 keV)
+#4.136649868134335e-09 erg/cm2/s (2-10 keV)
+#4.951437858112026e-09 erg/cm2/s (2-24 keV)
+print("Brightness in mCrab (new):", 1000.0*(Isum*kev2erg)/2.4e-8)
+#Crab: 2- 10 keV: 2.4e-8 erg/cm2/s
+
+#flux ~130 mCrab (2.8×10−9 erg/cm2/s) in 2-8 keV  (https://ui.adsabs.harvard.edu/abs/2023IAUS..363..329D/abstract)?
+
+#https://en.wikipedia.org/wiki/Crab_(unit)
+
+
+#print("I[:,100]:",Imod[:,1])
+#print("Q[:,100]:",Qmod[:,1])
+#print("U[:,100]:",Umod[:,1])
+#print("PA[:,100]:",PAobs[:,1])
+#print("PD[:,100]:",PDobs[:,1])
+#exit()
 
 phi, energy_keV, St_I, PD_tot, PA_tot = phase, energies, Imod, PDobs, PAobs
 

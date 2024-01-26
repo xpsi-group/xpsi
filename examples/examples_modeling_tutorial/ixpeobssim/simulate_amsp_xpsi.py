@@ -34,7 +34,6 @@ from ixpeobssim.utils.misc import pairwise_enum
 from ixpeobssim.utils.matplotlib_ import plt, setup_gca, last_line_color
 from ixpeobssim.utils.fmtaxis import fmtaxis
 
-#obs_length = 7*86400.
 DURATION = 600000.
 source_name = list(input_model.ROI_MODEL)[0]
 PHASE_BINNING = numpy.linspace(0., 1., 11)
