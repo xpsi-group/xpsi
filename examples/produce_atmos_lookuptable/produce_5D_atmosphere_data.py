@@ -27,8 +27,8 @@ from astropy.io import fits
 from numpy import ones, zeros
 from scipy import interpolate
 
-t__e = np.arange(40.0, 202.0, 4.0) #actual range is 40-200 imaginaty units, ~20-100 keV (Te(keV)*1000/511keV is here)
-t__bb = np.arange(0.001, 0.0031, 0.0002) #this one is non-physical, we went for way_to_low Tbbs here, I will most probably delete results from too small Tbbs. This is Tbb(keV)/511keV, so these correspond to 0.07 - 1.5 keV, but our calculations don't work correctly for Tbb<<0.5 keV
+t__e = np.arange(40.0, 202.0, 4.0) #te = Te(keV)*1000/511keV
+t__bb = np.arange(0.001, 0.0031, 0.0002) #tbb = Tbb(keV)/511keV
 tau__t = np.arange(0.5, 3.55, 0.1) 
 
 NEnergy_i = 150

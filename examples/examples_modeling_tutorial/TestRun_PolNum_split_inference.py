@@ -1,10 +1,14 @@
 '''
-Test script to check that X-PSI installation is working (with the polarized 3+2 numerical atmosphere).
+Test script with the polarized 3+2 numerical atmosphere applied to a ST+PDT model.
+Example of fitting Stokes signals observed by an instrument will be added here.
 
 Prequisities:
-Before running the script, add the NICER instrument files to the model_data subdirectory:
-nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt
-(found from https://doi.org/10.5281/zenodo.7094144).
+Before running the script, add the atmosphere data to the model_data subdirectory:
+Bobrikova_compton_slab_I.npz and Bobrikova_compton_slab_Q.npz. See the
+example script in xpsi/examples/produce_atmos_lookuptable for producing these files
+from those provided in https://github.com/AnnaBobrikova/ComptonSlabTables.
+In addition, the simulated polarization data files need to placed in
+xpsi/examples/examples_modeling_tutorial/ixpeobssim/ixpeobssimdata/.
 '''
 
 import os
@@ -40,13 +44,11 @@ IXPE_U = namespace()
 
 from ixpe_read import readData_pcube_ebin
 
-fname_ixpedata = "~/ixpeobssimdata/model_amsp_xpsi"#this_directory+"/ixpeobssim/data/amp_data1/model_amsp_xpsi"
+fname_ixpedata = this_directory+"/ixpeobssim/ixpeobssimdata/model_amsp_xpsi"
 
+#In the end, we probably want to use data in PHA format instead of PCUBE, to properly account for the instrument response.
+#For now, we just read some PCUBE data (created by ixpeobssim) for testing purposes (binned in 1 energy channel).
 phase_IXPE, Idat, qn, un, Iderr_du1, qnerr_du1, unerr_du1, keVdat = readData_pcube_ebin(fname_ixpedata)
-
-#print(phase_IXPE)
-#print([Idat[:,0]])
-#exit()
 
 IXPE_I.data = xpsi.Data([Idat[:,0]],
                        channels=np.arange(0, 1),
@@ -66,15 +68,12 @@ IXPE_U.data = xpsi.Data([un[:,0]],
                        first=0,
                        last=0,
                        exposure_time=1.0)
-#exit()
-
 
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 mass = (1.0, 3.0),                       # mass
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
                 cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
 
-#spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
 spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=400.9752075))
 
 from xpsi.Parameter import Parameter
@@ -138,17 +137,16 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
         tbb
         """
         super_tbb = Parameter('super_tbb',
-  		    strict_bounds = (0.001, 0.003), # this one is non-physical, we went for way_to_low Tbbs here, I will most probably delete results from too small Tbbs. This is Tbb(keV)/511keV, so these correspond to 0.07 - 1.5 keV, but our calculations don't work correctly for Tbb<<0.5 keV
-  		    bounds = bounds.get('super_tbb', None),
-  		    doc = doc,
-  		    symbol = r'tbb',
-  		    value = values.get('super_tbb', None))
-
+                    strict_bounds = (0.001, 0.003), #tbb = Tbb(keV)/511keV
+                    bounds = bounds.get('super_tbb', None),
+                    doc = doc,
+                    symbol = r'tbb',
+                    value = values.get('super_tbb', None))
         doc = """
         te
         """
         super_te = Parameter('super_te',
-                    strict_bounds = (40., 200.), #actual range is 40-200 imaginaty units, ~20-100 keV (Te(keV)*1000/511keV is here)
+                    strict_bounds = (40., 200.), #te = Te(keV)*1000/511keV
                     bounds = bounds.get('super_te', None),
                     doc = doc,
                     symbol = r'te',
@@ -197,11 +195,8 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
                         doc = doc,
                         symbol = r'cede_tau',
                         value = values.get('cede_tau', None))
-            
-            #np.append(custom,[cede_tbb,cede_te,cede_tau])
+
             custom += [cede_tbb,cede_te,cede_tau]
-            #print("custom:",custom)
-            #exit()          
 
         super(CustomHotRegion_Accreting, self).__init__(
                 bounds,
@@ -361,7 +356,6 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
         t_e = np.ascontiguousarray([NSX[i*size[0]*size[1]*size[2]*size[3],4] for i in range(size[4])])
         intensities = np.ascontiguousarray(NSX[:,5])
 
-        #self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, 0.1*intensities*(-1.0))
         self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, intensities)
 
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True,
@@ -384,14 +378,12 @@ p = [1.0368513939430604,
      0.04346870860640872,
      0.8002010406881243,
      1.1165398710637626,
-     #5.865655057483478,
      0.0015,
      100.0,
      1.0,
      0.07360477761463673,
      2.4602238829718432,
      0.4277092192054918,
-     #6.0,     
      2.3, #cede_colatitude
      0.5, #cede_radius
      0.1, #cede_azimuth
@@ -400,13 +392,11 @@ p = [1.0368513939430604,
      1.0,     
      0.0015,
      100.0,
-     1.0]     
-     #6.1] #cede_temperature
+     1.0]
 print(len(p))
 
-#    tbb=0.0015 #0.001 -0.003 Tbb(data) = Tbb(keV)/511keV, 1 keV = 0.002 data
-#    te=100. #40-200 corresponds to 20-100 keV (Te(data) = Te(keV)*1000/511keV), 50 keV = 100 data
-#    tau=1.
+#Tbb = 1 keV <=> tbb = 0.002 (roughly)
+#Te = 50 keV <=>  te = 100 (roughly)
 
 if use_elsewhere:
     p.append(5.5)
@@ -416,7 +406,6 @@ star.update()
 #start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
-#energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
 energies = np.logspace(-1.0, np.log10(12.0), 400, base=10.0)
 photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 

@@ -1,4 +1,11 @@
 '''
+Test script with the polarized 3+2 numerical atmosphere applied to a one-spot model.
+
+Prequisities:
+Before running the script, add the atmosphere data to the model_data subdirectory:
+Bobrikova_compton_slab_I.npz and Bobrikova_compton_slab_Q.npz. See the
+example script in xpsi/examples/produce_atmos_lookuptable for producing these files
+from those provided in https://github.com/AnnaBobrikova/ComptonSlabTables.
 '''
 
 import os
@@ -27,7 +34,6 @@ bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
                 cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
 
-#spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
 spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=400.9752075))
 
 from xpsi.Parameter import Parameter
@@ -91,17 +97,16 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
         tbb
         """
         super_tbb = Parameter('super_tbb',
-  		    strict_bounds = (0.001, 0.003), # this one is non-physical, we went for way_to_low Tbbs here, I will most probably delete results from too small Tbbs. This is Tbb(keV)/511keV, so these correspond to 0.07 - 1.5 keV, but our calculations don't work correctly for Tbb<<0.5 keV
-  		    bounds = bounds.get('super_tbb', None),
-  		    doc = doc,
-  		    symbol = r'tbb',
-  		    value = values.get('super_tbb', None))
-
+                    strict_bounds = (0.001, 0.003), #tbb = Tbb(keV)/511keV
+                    bounds = bounds.get('super_tbb', None),
+                    doc = doc,
+                    symbol = r'tbb',
+                    value = values.get('super_tbb', None))
         doc = """
         te
         """
         super_te = Parameter('super_te',
-                    strict_bounds = (40., 200.), #actual range is 40-200 imaginaty units, ~20-100 keV (Te(keV)*1000/511keV is here)
+                    strict_bounds = (40., 200.), #te = Te(keV)*1000/511keV
                     bounds = bounds.get('super_te', None),
                     doc = doc,
                     symbol = r'te',
@@ -151,10 +156,7 @@ class CustomHotRegion_Accreting(xpsi.HotRegion):
                         symbol = r'cede_tau',
                         value = values.get('cede_tau', None))
             
-            #np.append(custom,[cede_tbb,cede_te,cede_tau])
             custom += [cede_tbb,cede_te,cede_tau]
-            #print("custom:",custom)
-            #exit()          
 
         super(CustomHotRegion_Accreting, self).__init__(
                 bounds,
@@ -303,18 +305,21 @@ print(star.params, len(star.params))
 mass = 1.4
 radius = 12.0
 distance = 3.5
-inclination = 10.0 #60.0 #10.0 #60.0
+inclination = 10.0 #60.0
 cos_i = math.cos(inclination*math.pi/180.0)
 
 # Hotspot
 phase_shift = 0.0
-super_colatitude = 105.0*math.pi/180.0 #45.0*math.pi/180.0 # 20*math.pi/180 # 
+super_colatitude = 105.0*math.pi/180.0 #45.0*math.pi/180.0
 super_radius = 1.0*math.pi/180.0 #15.5*math.pi/180.0
 
 # Compton slab model parameters
-tbb=0.002 #0.0012 # 0.0017 #0.001 -0.003 Tbb(data) = Tbb(keV)/511keV, 1 keV = 0.002 data
-te=100.0 # 50. # 40-200 corresponds to 20-100 keV (Te(data) = Te(keV)*1000/511keV), 50 keV = 100 data
-tau=1.6 #1.0 #1.6 #1.0 #0.5 - 3.5 tau = ln(Fin/Fout)
+tbb=0.002 #0.0012
+te=100.0 # 50.0
+tau=1.6 #1.0
+
+#Tbb = 1 keV <=> tbb = 0.002 (roughly)
+#Te = 50 keV <=>  te = 100 (roughly)
 
 p = [mass, #grav mass
       radius, #coordinate equatorial radius
@@ -329,10 +334,6 @@ p = [mass, #grav mass
       ]
 
 print(len(p))
-
-#    tbb=0.0015 #0.001 -0.003 Tbb(data) = Tbb(keV)/511keV, 1 keV = 0.002 data
-#    te=100. #40-200 corresponds to 20-100 keV (Te(data) = Te(keV)*1000/511keV), 50 keV = 100 data
-#    tau=1.
 
 # elsewhere
 elsewhere_T_keV = 0.4 #  keV
@@ -354,7 +355,6 @@ star.update()
 #start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
-#energies = np.logspace(-1.0, np.log10(3.0), 128, base=10.0)
 energies = np.logspace(-1.0, np.log10(16.0), 400, base=10.0)
 photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 
@@ -418,14 +418,14 @@ class CustomInterstellar(xpsi.Interstellar):
 
         return cls(energies, attenuation, **kwargs)
 
-
-column_density = 1.17 #10^21 cm^-2
-interstellar = CustomInterstellar.from_SWG(this_directory+'/model_data/tbnew0.14.txt', bounds=(None, None), value=column_density)
-
 StokesI = photosphere.signal[0][0]
 StokesQ = photosphere.signalQ[0][0]
 StokesU = photosphere.signalU[0][0]
 
+
+#Uncomment the following code (and download the required input table) if want to add interstellar attenuation to the modeled signal:
+#column_density = 1.17 #10^21 cm^-2
+#interstellar = CustomInterstellar.from_SWG(this_directory+'/model_data/tbnew0.14.txt', bounds=(None, None), value=column_density)
 #interstellar(energies, StokesI)
 #interstellar(energies, StokesQ)
 #interstellar(energies, StokesU)

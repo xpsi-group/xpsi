@@ -1,10 +1,5 @@
 '''
-Test script to check that X-PSI installation is working (with the polarized burst atmosphere extension).
-
-Prequisities:
-Before running the script, add the NICER instrument files to the model_data subdirectory:
-nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt
-(found from https://doi.org/10.5281/zenodo.7094144).
+Test script with the polarized burst atmosphere extension.
 '''
 
 import os
@@ -31,7 +26,6 @@ bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
                 cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
 
-#spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
 spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=400.9752075))
 
 bounds = dict(super_colatitude = (None, None),
@@ -97,22 +91,7 @@ if use_elsewhere:
 else:
     elsewhere = None
 
-
-class CustomPhotosphere_BB(xpsi.Photosphere):
-    """ Implement method for imaging."""
-    @property
-    def global_variables(self):
-
-        return np.array([self['p__super_colatitude'],
-                          self['p__phase_shift'] * _2pi,
-                          self['p__super_radius'],
-                          self['p__super_temperature'],
-                          self['s__super_colatitude'],
-                          (self['s__phase_shift'] + 0.5) * _2pi,
-                          self['s__super_radius'],
-                          self.hot.objects[1]['s__super_temperature']])
-
-photosphere = CustomPhotosphere_BB(hot = hot, elsewhere = elsewhere, stokes=True,
+photosphere = xpsi.Photosphere(hot = hot, elsewhere = elsewhere, stokes=True,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 
