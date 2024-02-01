@@ -62,7 +62,7 @@ def synthesise_exposure(double exposure_time,
         For each component, a C-contiguous :class:`numpy.ndarray` of phases
         in cycles at which the model :obj:`signal` is evaluated on
         the interval ``[0,1]``. Typically this is more finely spaced than the
-        to be synthesised data.
+        resulting synthesised data.
 
     :param array-like phase_shift:
         Phase shifts in cycles, such as on the interval ``[-0.5,0.5]``, for
@@ -270,7 +270,7 @@ def synthesise_given_total_count_number(double[::1] phases,
         For each component, a C-contiguous :class:`numpy.ndarray` of phases
         in cycles at which the model :obj:`signal` is evaluated on
         the interval ``[0,1]``. Typically this is more finely spaced than the
-        to be synthesised data.
+        resulting synthesised data.
 
     :param array-like phase_shift:
         Phase shifts in cycles, such as on the interval ``[-0.5,0.5]``, for
