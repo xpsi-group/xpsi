@@ -43,7 +43,7 @@ def simulate():
     """Run the simulation and fold the events in phase.
     """
     file_list = pipeline.xpobssim(duration=DURATION, startdate=input_model.start_date,
-                                  occult=True, saa=True)
+                                  seed=0)#, occult=True, saa=True)
     pipeline.xpphase(*file_list, suffix='folded', **input_model.ephemeris.dict())
 
 def select():

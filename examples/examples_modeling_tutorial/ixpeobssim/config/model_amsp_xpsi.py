@@ -139,8 +139,9 @@ phi, energy_keV, St_I, PD_tot, PA_tot = phase, energies, Imod, PDobs, PAobs
 
 
 __model__ = file_path_to_model_name(__file__)
-ra, dec = 45., 45.
-
+#ra, dec = 45., 45.
+ra, dec = 272.11475, -36.97897
+#http://simbad.u-strasbg.fr/simbad/sim-id?Ident=SAX+J1808.4-3658&NbIdent=1&Radius=2&Radius.unit=arcmin&submit=submit+id
 
 #E and phase will be tuple when called from ixpeobssim
 #'''
