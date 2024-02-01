@@ -235,7 +235,7 @@ primary = CustomHotRegion_Accreting(bounds=bounds,
 from xpsi import HotRegions
 hot = HotRegions((primary,))
 
-use_elsewhere = True
+use_elsewhere = False #True
 
 if use_elsewhere:
     bounds=dict(elsewhere_temperature = (3.0, 7.5))
@@ -303,18 +303,18 @@ print(star.params, len(star.params))
 mass = 1.4
 radius = 12.0
 distance = 3.5
-inclination = 60.0
+inclination = 10.0 #60.0 #10.0 #60.0
 cos_i = math.cos(inclination*math.pi/180.0)
 
 # Hotspot
 phase_shift = 0.0
-super_colatitude = 45.0*math.pi/180.0 # 20*math.pi/180 # 
-super_radius = 15.5*math.pi/180.0
+super_colatitude = 105.0*math.pi/180.0 #45.0*math.pi/180.0 # 20*math.pi/180 # 
+super_radius = 1.0*math.pi/180.0 #15.5*math.pi/180.0
 
 # Compton slab model parameters
-tbb=0.0012 # 0.0017 #0.001 -0.003 Tbb(data) = Tbb(keV)/511keV, 1 keV = 0.002 data
+tbb=0.002 #0.0012 # 0.0017 #0.001 -0.003 Tbb(data) = Tbb(keV)/511keV, 1 keV = 0.002 data
 te=100.0 # 50. # 40-200 corresponds to 20-100 keV (Te(data) = Te(keV)*1000/511keV), 50 keV = 100 data
-tau=1.0 #0.5 - 3.5 tau = ln(Fin/Fout)
+tau=1.6 #1.0 #1.6 #1.0 #0.5 - 3.5 tau = ln(Fin/Fout)
 
 p = [mass, #grav mass
       radius, #coordinate equatorial radius
@@ -327,9 +327,6 @@ p = [mass, #grav mass
       te,
       tau
       ]
-
-# elsewhere
-elsewhere_T_keV = 0.4 # 0.5 #  k
 
 print(len(p))
 
@@ -429,9 +426,9 @@ StokesI = photosphere.signal[0][0]
 StokesQ = photosphere.signalQ[0][0]
 StokesU = photosphere.signalU[0][0]
 
-interstellar(energies, StokesI)
-interstellar(energies, StokesQ)
-interstellar(energies, StokesU)
+#interstellar(energies, StokesI)
+#interstellar(energies, StokesQ)
+#interstellar(energies, StokesU)
 
 #plt.plot(energies[0:50],np.sum(StokesI,axis=1)[0:50])
 #print(energies[0:130])

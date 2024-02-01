@@ -42,6 +42,9 @@ def readData_pcube_ebin(Filename):
                   if (p < 10):
                         hdulist = fits.open(f'{Filename}_du{d}_folded_phase000{p}_pcube.fits')
                         for ie in range(0,NEnerg):
+                              cols1 = hdulist[1].columns
+                              #print(cols1)
+                              #exit()
                               mu = hdulist[1].data["MU"][ie]
                               mu_all[p] = mu_all[p] + mu
                               Id = hdulist[1].data["I"][ie]

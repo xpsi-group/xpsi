@@ -92,26 +92,36 @@ for ii in range(0,NEnergy):
 	#Unit change to cm^-2 s^-1 keV^-1 from photosphere.signal units 
 	Imod[:,ii] = Imod[:,ii]/distance_m**2
 	
-#brightn = 100 # Target's brightness in mCrab
-#highest_I = np.max(Imod)
-#Imod = Imod/(highest_I)*brightn*0.0019986928
+brightn = 100 # Target's brightness in mCrab
+highest_I = np.max(Imod)
+Imod = Imod/(highest_I)*brightn*0.0019986928
 
 highest_I = np.max(Imod)
 Icrab = highest_I/0.0019986928
+
+print("Correction factor:",brightn*0.0019986928/highest_I)
 print("Brightness in mCrab:",Icrab) #this is maybe wrong
 
-kev2erg = 1.6021766339999E-9
+kev2erg = 1.6021766339999e-9
 Isum = 0
 for ie in range(len(energies)):
         if (2.0 < energies[ie] < 10.0):
-                Isum = Isum + energies[ie]*np.sum(Imod[0:NPhase-1,ie])*(energies[ie+1]-energies[ie-1])/2.0
+                Iplus = energies[ie]*np.sum(Imod[0:NPhase,ie])/NPhase + energies[ie+1]*np.sum(Imod[0:NPhase,ie+1])/NPhase
+                #Iplus = energies[ie]*Imod[0,ie] + energies[ie+1]*Imod[0,ie+1]
+                Isum = Isum + Iplus*(energies[ie+1]-energies[ie])/2.0
 print(Isum*kev2erg)
+
+Imodspec = np.sum(Imod,axis=0)/NPhase
+#Imodspec = Imod[0,:]
+from scipy import integrate
+Imod_intg = integrate.simpson(energies[236:363]*Imodspec[236:363], energies[236:363])
+print(Imod_intg*kev2erg)
+
 #3.951080182049406e-09 erg/cm2/s (2-8 keV)
 #4.136649868134335e-09 erg/cm2/s (2-10 keV)
 #4.951437858112026e-09 erg/cm2/s (2-24 keV)
 print("Brightness in mCrab (new):", 1000.0*(Isum*kev2erg)/2.4e-8)
 #Crab: 2- 10 keV: 2.4e-8 erg/cm2/s
-
 #flux ~130 mCrab (2.8×10−9 erg/cm2/s) in 2-8 keV  (https://ui.adsabs.harvard.edu/abs/2023IAUS..363..329D/abstract)?
 
 #https://en.wikipedia.org/wiki/Crab_(unit)

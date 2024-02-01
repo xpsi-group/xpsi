@@ -40,7 +40,7 @@ IXPE_U = namespace()
 
 from ixpe_read import readData_pcube_ebin
 
-fname_ixpedata = this_directory+"/ixpeobssim/data/amp_data1/model_amsp_xpsi"
+fname_ixpedata = "~/ixpeobssimdata/model_amsp_xpsi"#this_directory+"/ixpeobssim/data/amp_data1/model_amsp_xpsi"
 
 phase_IXPE, Idat, qn, un, Iderr_du1, qnerr_du1, unerr_du1, keVdat = readData_pcube_ebin(fname_ixpedata)
 

@@ -99,6 +99,7 @@ def display_pol_degree():
     pol_deg_err = numpy.zeros(shape)
     pol_ang = numpy.zeros(shape)
     pol_ang_err = numpy.zeros(shape)
+    MDP = numpy.zeros(shape)
     emean = numpy.zeros(shape)
     for i, (min_, max_) in pairwise_enum(PHASE_BINNING):
         file_list = pipeline.file_list('folded', ('phase', i), 'pcube')
@@ -107,6 +108,7 @@ def display_pol_degree():
         pol_deg_err[:,i] = pcube.PD_ERR
         pol_ang[:,i] = pcube.PA
         pol_ang_err[:,i] = pcube.PA_ERR
+        MDP[:,i] = pcube.MDP_99
         emean[:,i] = pcube.E_MEAN
 
     def data_label(emin, emax):
@@ -122,7 +124,9 @@ def display_pol_degree():
         energy = numpy.mean(emean[i,:])
         plt.plot(phase, input_model.pol_deg(energy, phase),
                  color=last_line_color(), label=model_label(energy))
-    setup_gca(ymin=0, ymax=0.55, legend=True, **fmtaxis.pp_pol_deg)
+        plt.errorbar(phase_bins, MDP[i,:], 0.0*MDP[i,:], fmt='o',color='red',
+                     label="MDP")
+    setup_gca(ymin=0, ymax=0.2, legend=True, **fmtaxis.pp_pol_deg)
 
     pipeline.figure('polarization angle')
     for i, (min_, max_) in pairwise_enum(ENERGY_BINNING):
