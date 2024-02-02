@@ -180,6 +180,10 @@ def intensity(double[::1] energies,
         script exits and the kernel stops. The likelihood callback accesses
         the same memory upon each call without I/O.
 
+    :param int StokesQ:
+        If StokesQ=1, Stokes Q intensities will be evaluated. Otherwise Stokes I
+        intensities. Default is StokesQ=0.
+
     :param str region_extension:
         Specify the radiating region extension module to invoke. Options are ``'hot'`` and
         ``'elsewhere'``.
@@ -227,8 +231,10 @@ def intensity(double[::1] energies,
     elif region_extension == 'elsewhere':
         init_ptr = init_elsewhere
         free_ptr = free_elsewhere
-        eval_ptr = eval_elsewhere
+        eval_ptr_I = eval_elsewhere
         norm_ptr = eval_elsewhere_norm
+        if stokesQ == 1:
+            raise ValueError("StokesQ option is not allowed for the elsewhere extension.")
     else:
         raise ValueError("Region extension module must be 'hot' or 'elsewhere'.")
 
@@ -242,10 +248,22 @@ def intensity(double[::1] energies,
         _atmos_extension = 2
         if atmosphere == None:
             raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
-    elif atmos_extension == "user":
+    elif atmos_extension == "Pol_BB_Burst":
         _atmos_extension = 3
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_BB_Burst' is not supported by the elsewhere extension")
+    elif atmos_extension == "Pol_Num2D":
+        _atmos_extension = 4
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_Num2D' is not supported by the elsewhere extension")
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 5
+        if region_extension == 'elsewhere':
+            _atmos_extension = 3
     else:
-        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', or 'user'.")
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', 'Pol_BB_Burst', 'Pol_Num2D', or 'user'.")
 
     if atmosphere:
         preloaded = init_preload(atmosphere)
@@ -275,14 +293,12 @@ def intensity(double[::1] energies,
                                   data,
                                   _beam_opt)
         else:
-
             intensities[i] = eval_ptr_I(T,
                                   energies[i],
                                   mu[i],
                                   &(local_variables[i,0]),
                                   data,
                                   _beam_opt)
-
         # get photon specific intensity
         intensities[i] *= norm_ptr() / (energies[i] * keV)
 
