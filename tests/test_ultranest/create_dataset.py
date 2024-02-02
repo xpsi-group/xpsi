@@ -19,9 +19,9 @@ with open(filepath, "w+") as f:
     f.close()
 
 try: 
-    max_sample_size = 10
+    max_sample_size = 10 # amount of synthetic datasets you want to create 
     sample_number = 1 
-    while sample_number <= max_sample_size: # amount of synthetic datasets you want to create 
+    while sample_number <= max_sample_size: 
 
         # pick random parameter values between specified bounds 
         mass = random.uniform(1., 3.)                               # Mass in solar Mass

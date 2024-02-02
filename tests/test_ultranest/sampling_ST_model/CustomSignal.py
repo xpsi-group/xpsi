@@ -1,13 +1,11 @@
-
-
 import numpy as np
 import math
 
 import xpsi
 import six as _six
 
-from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
 from xpsi.likelihoods.default_background_marginalisation import precomputation
+from xpsi.likelihoods._poisson_likelihood_given_background import poisson_likelihood_given_background
 
 class CustomSignal(xpsi.Signal):
     """ A custom calculation of the logarithm of the NICER likelihood.
@@ -52,18 +50,15 @@ class CustomSignal(xpsi.Signal):
         self._support = obj
 
     def __call__(self, *args, **kwargs):
-        self.loglikelihood, self.expected_counts, self.background_signal,self.background_given_support = \
-                eval_marginal_likelihood(self._data.exposure_time,
+        """Preform a likelihood evaluation with zero background expected counts."""
+        
+        zero_background = np.zeros((len(self._data.counts),len(self._data.phases)))
+
+        self.loglikelihood, self.expected_counts = \
+                poisson_likelihood_given_background(self._data.exposure_time,
                                           self._data.phases,
                                           self._data.counts,
                                           self._signals,
                                           self._phases,
                                           self._shifts,
-                                          self._precomp,
-                                          self._support,
-                                          self._workspace_intervals,
-                                          self._epsabs,
-                                          self._epsrel,
-                                          self._epsilon,
-                                          self._sigmas,
-                                          kwargs.get('llzero'))
+                                          zero_background)
