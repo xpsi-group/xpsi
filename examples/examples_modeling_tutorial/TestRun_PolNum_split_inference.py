@@ -48,7 +48,7 @@ fname_ixpedata = this_directory+"/ixpeobssim/ixpeobssimdata/model_amsp_xpsi"
 
 #In the end, we probably want to use data in PHA format instead of PCUBE, to properly account for the instrument response.
 #For now, we just read some PCUBE data (created by ixpeobssim) for testing purposes (binned in 1 energy channel).
-phase_IXPE, Idat, qn, un, Iderr_du1, qnerr_du1, unerr_du1, keVdat = readData_pcube_ebin(fname_ixpedata)
+phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, keVdat = readData_pcube_ebin(fname_ixpedata)
 
 IXPE_I.data = xpsi.Data([Idat[:,0]],
                        channels=np.arange(0, 1),
@@ -68,6 +68,180 @@ IXPE_U.data = xpsi.Data([un[:,0]],
                        first=0,
                        last=0,
                        exposure_time=1.0)
+
+IXPE_I.data.errors, IXPE_Q.data.errors, IXPE_U.data.errors = Iderr, qnerr, unerr
+
+
+from ixpe_read import read_response_IXPE
+
+class CustomInstrument_stokes(xpsi.Instrument):
+    """ A model of the NICER telescope response. """
+
+    def __call__(self, signal, *args):
+        """ Overwrite base just to show it is possible.
+
+        We loaded only a submatrix of the total instrument response
+        matrix into memory, so here we can simplify the method in the
+        base class.
+
+        """
+        matrix = self.construct_matrix()
+
+        self._folded_signal = np.dot(matrix, signal)
+
+        return self._folded_signal
+
+    @classmethod
+    def from_response_files(cls, MRF, RMF, max_input, max_channel, min_input=0, min_channel=0,
+                            channel_edges=None):
+        """ Constructor which converts response files into :class:`numpy.ndarray`s.
+        :param str MRF: Path to MRF which is compatible with
+                                :...
+        :param str RMF: Path to RMF which is compatible with
+                                :...
+        :param str channel_edges: Optional path to edges which is compatible with
+                                  :func:`numpy.loadtxt`.
+        """
+        if min_input != 0:
+            min_input = int(min_input)
+        max_input = int(max_input)
+        try:
+            matrix, edges, channels, channel_edgesT = read_response_IXPE(MRF,RMF,min_input,max_input,min_channel,max_channel)
+            if channel_edges:
+                channel_edgesT = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
+        except:
+            print('A file could not be loaded.')
+            raise
+        return cls(matrix, edges, channels, channel_edgesT)
+
+#Let's test modeling using just the instrument files for the first detector unit of IXPE:
+IXPE_du1 = CustomInstrument_stokes.from_response_files(MRF = this_directory+'/model_data/ixpe_d1_obssim_v012.mrf',
+                                             RMF = this_directory+'/model_data/ixpe_d1_obssim_v012.rmf',
+                                             max_input = 275, #175, #275,
+                                             max_channel = 200,
+                                             min_input = 0, #25, #25 for 2 keV, 75 for 4 keV
+                                             min_channel = 50, #50 for 2 keV, 100 for 4 keV
+                                             channel_edges = None)
+
+from xpsi.likelihoods._gaussian_likelihood_QnUn import gaussian_likelihood_QnUn
+from xpsi.likelihoods._gaussian_likelihood_given_background_IQU import gaussian_likelihood_given_background
+
+from scipy.interpolate import interp1d
+
+class CustomSignal_gaussian(xpsi.Signal):
+    """
+
+    A custom calculation of the logarithm of the likelihood.
+    We extend the :class:`~xpsi.Signal.Signal` class to make it callable.
+    We overwrite the body of the __call__ method. The docstring for the
+    abstract method is copied.
+
+    """
+
+    def __init__(self, workspace_intervals = 1000, epsabs = 0, epsrel = 1.0e-8,
+                 epsilon = 1.0e-3, sigmas = 10.0, support = None, **kwargs):
+        """ Perform precomputation.
+
+        :params ndarray[m,2] support:
+            Prior support bounds for background count rate variables in the
+            :math:`m` instrument channels, where the lower bounds must be zero
+            or positive, and the upper bounds must be positive and greater than
+            the lower bound. Alternatively, setting the an upper bounds as
+            negative means the prior support is unbounded and the flat prior
+            density functions per channel are improper. If ``None``, the lower-
+            bound of the support for each channel is zero but the prior is
+            unbounded.
+
+        """
+
+        super(CustomSignal_gaussian, self).__init__(**kwargs)
+
+    def __call__(self, *args, **kwargs):
+        anegI = (False, False)
+        anegQU = (True, True)
+        background = np.zeros((np.shape(self._data.counts))) #self._background.registered_background
+        if self.isI:
+            self.loglikelihood, self.expected_counts = \
+                gaussian_likelihood_given_background(self._data.exposure_time,
+                                          self._data.phases,
+                                          self._data.counts,
+                                          self._data.errors,
+                                          self._signals,
+                                          self._phases,
+                                          self._shifts,
+                                          background = background,
+                                          allow_negative=anegI)
+
+        else:
+            #Note: Signal can be in Qn or Un form if defined so when creating Signal object.
+            #In that case: Make sure to have exposure time to 1, background zero, and only 1 hot spot:
+            #And also convert signal first to data phase points:
+            #(This version is still only for the most simple case)
+            #sig1 = self._signals[0][0]
+            #fsig = interp1d(self._phases[0], sig1, kind='linear')
+            #signal_dphase = fsig(self._data.phases)
+
+            #self.loglikelihood, self.expected_counts = \
+            #    gaussian_likelihood_QnUn(self._data.phases,
+            #                              self._data.counts,
+            #                              self._data.errors,
+            #                              signal_dphase)
+
+            #This for non-normalized Q and U:
+            self.loglikelihood, self.expected_counts = \
+                gaussian_likelihood_given_background(self._data.exposure_time,
+                                          self._data.phases,
+                                          self._data.counts,
+                                          self._data.errors,
+                                          self._signals,
+                                          self._phases,
+                                          self._shifts,
+                                          background = background,
+                                          allow_negative=anegQU)
+
+signals = [[],]
+
+signalI = CustomSignal_gaussian(data = IXPE_I.data,
+                instrument = IXPE_du1,
+                #background = background,
+                interstellar = None,
+                workspace_intervals = 1000,
+                cache = True,
+                epsrel = 1.0e-8,
+                epsilon = 1.0e-3,
+                sigmas = 10.0,
+                support = None,
+                stokes="I")
+
+signals[0].append(signalI)
+
+signalQ = CustomSignal_gaussian(data = IXPE_Q.data,
+                        instrument = IXPE_du1,
+                        #background = background,
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        support = None,
+                        stokes="Q")
+
+signals[0].append(signalQ)
+
+signalU = CustomSignal_gaussian(data = IXPE_U.data,
+	                instrument = IXPE_du1,
+	                #background = background,
+	                interstellar = None,
+	                workspace_intervals = 1000,
+	                cache = True,
+	                epsrel = 1.0e-8,
+	                epsilon = 1.0e-3,
+	                sigmas = 10.0,
+	                support = None,
+	                stokes="U")
+signals[0].append(signalU)
+
 
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 mass = (1.0, 3.0),                       # mass
@@ -433,3 +607,142 @@ def get_photosphere_stokes_1spot():
     #Return signal from the 1st spot to ixpeobssim
     return hot.phases_in_cycles[0], energies, photosphere.signal[0][0], photosphere.signalQ[0][0], photosphere.signalU[0][0]
 
+
+star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+
+likelihood = xpsi.Likelihood(star = star, signals = signals,
+                             num_energies=128,
+                             threads=1,
+                             externally_updated=False)
+
+
+from scipy.stats import truncnorm
+class CustomPrior(xpsi.Prior):
+    """ A custom (joint) prior distribution.
+    """
+
+    __derived_names__ = ['compactness', 'phase_separation',]
+
+    def __init__(self):
+        super(CustomPrior, self).__init__() # not strictly required if no hyperparameters
+
+    def __call__(self, p = None):
+        """ Evaluate distribution at ``p``.
+        :param list p: Model parameter values.
+        :returns: Logarithm of the distribution evaluated at ``p``.
+
+        """
+        temp = super(CustomPrior, self).__call__(p)
+        if not np.isfinite(temp):
+            return temp
+
+        ## based on contemporary EOS theory
+        if not self.parameters['radius'] <= 16.0:
+            return -np.inf
+
+        ref = self.parameters.star.spacetime # shortcut
+
+        # limit polar radius to try to exclude deflections >= \pi radians
+        # due to oblateness this does not quite eliminate all configurations
+        # with deflections >= \pi radians
+        R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
+        if R_p < 1.76 / ref.R_r_s:
+            return -np.inf
+
+        mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
+
+        # 2-surface cross-section have a single maximum in |z|
+        # i.e., an elliptical surface; minor effect on support, if any,
+        # for high spin frequenies
+        if mu < 1.0:
+            return -np.inf
+
+        ref = self.parameters # redefine shortcut
+
+        # enforce order in hot region colatitude
+        if ref['p__super_colatitude'] > ref['s__super_colatitude']:
+                return -np.inf
+
+        # hot regions cannot overlap
+        #To be added...
+        return 0.0
+
+    def inverse_sample(self, hypercube=None):
+        """ Draw sample uniformly from the distribution via inverse sampling. """
+
+        to_cache = self.parameters.vector
+
+        if hypercube is None:
+            hypercube = np.random.rand(len(self))
+
+        # the base method is useful, so to avoid writing that code again:
+        _ = super(CustomPrior, self).inverse_sample(hypercube)
+
+        ref = self.parameters # shortcut)
+
+        # flat priors in cosine of hot region centre colatitudes (isotropy)
+        # support modified by no-overlap rejection condition
+        idx = ref.index('p__super_colatitude')
+        a, b = ref.get_param('p__super_colatitude').bounds
+        a = math.cos(a); b = math.cos(b)
+        ref['p__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
+
+        idx = ref.index('s__super_colatitude')
+        a, b = ref.get_param('s__super_colatitude').bounds
+        a = math.cos(a); b = math.cos(b)
+        ref['s__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
+
+        # restore proper cache
+        for parameter, cache in zip(ref, to_cache):
+            parameter.cached = cache
+
+        # it is important that we return the desired vector because it is
+        # automatically written to disk by MultiNest and only by MultiNest
+        return self.parameters.vector
+
+    def transform(self, p, **kwargs):
+        """ A transformation for post-processing. """
+
+        p = list(p) # copy
+
+        # used ordered names and values
+        ref = dict(zip(self.parameters.names, p))
+
+        return p
+
+prior = CustomPrior()
+likelihood.prior = prior
+
+wrapped_params = [0]*len(likelihood)
+wrapped_params[likelihood.index('p__phase_shift')] = 1
+wrapped_params[likelihood.index('s__phase_shift')] = 1
+
+runtime_params = {'resume': False,
+                  'importance_nested_sampling': False,
+                  'multimodal': False,
+                  'n_clustering_params': None,
+                  'outputfiles_basename': './run/run_PolNum',
+                  'n_iter_before_update': 50,
+                  'n_live_points': 50,
+                  'sampling_efficiency': 0.8,
+                  'const_efficiency_mode': False,
+                  'wrapped_params': wrapped_params,
+                  'evidence_tolerance': 0.5,
+                  'seed': 7,
+                  'max_iter': 100, # manual termination condition for short test
+                  'verbose': True}
+
+likelihood.reinitialise()
+likelihood.clear_cache()
+
+true_logl = -1.2738517361e+06
+
+if __name__ == '__main__': # sample from the posterior
+    # inform source code that parameter objects updated when inverse sampling
+    likelihood.externally_updated = True
+    # let's require that checks pass before starting to sample
+    check_kwargs = dict(hypercube_points = None,
+                    physical_points = p, # externally_updated preserved
+                    loglikelihood_call_vals = [true_logl],
+                    rtol_loglike = 1.0e-6) # choose a tolerance
+    xpsi.Sample.nested(likelihood, prior, check_kwargs, **runtime_params)
