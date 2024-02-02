@@ -94,49 +94,37 @@ for ii in range(0,NEnergy):
 	
 brightn = 100 # Target's brightness in mCrab
 highest_I = np.max(Imod)
+Icrab = highest_I/0.0019986928
+
+#Using now a rough magic scaling relation here.
+#In a more realistic case, no scaling should be done here.
+print("Initial brightness in mCrab:",Icrab)
+print("Correction factor:",brightn*0.0019986928/highest_I)
 Imod = Imod/(highest_I)*brightn*0.0019986928
 
 highest_I = np.max(Imod)
 Icrab = highest_I/0.0019986928
-
-print("Correction factor:",brightn*0.0019986928/highest_I)
-print("Brightness in mCrab:",Icrab) #this is maybe wrong
+print("Brightness in mCrab:",Icrab)
 
 kev2erg = 1.6021766339999e-9
 Isum = 0
 for ie in range(len(energies)):
         if (2.0 < energies[ie] < 10.0):
                 Iplus = energies[ie]*np.sum(Imod[0:NPhase,ie])/NPhase + energies[ie+1]*np.sum(Imod[0:NPhase,ie+1])/NPhase
-                #Iplus = energies[ie]*Imod[0,ie] + energies[ie+1]*Imod[0,ie+1]
                 Isum = Isum + Iplus*(energies[ie+1]-energies[ie])/2.0
-print(Isum*kev2erg)
+print("Self-integrated flux:",Isum*kev2erg)
 
 Imodspec = np.sum(Imod,axis=0)/NPhase
-#Imodspec = Imod[0,:]
 from scipy import integrate
 Imod_intg = integrate.simpson(energies[236:363]*Imodspec[236:363], energies[236:363])
-print(Imod_intg*kev2erg)
+print("Scipy-integrated flux:",Imod_intg*kev2erg)
 
-#3.951080182049406e-09 erg/cm2/s (2-8 keV)
-#4.136649868134335e-09 erg/cm2/s (2-10 keV)
-#4.951437858112026e-09 erg/cm2/s (2-24 keV)
-print("Brightness in mCrab (new):", 1000.0*(Isum*kev2erg)/2.4e-8)
+print("Brightness in mCrab (more accurate):", 1000.0*(Isum*kev2erg)/2.4e-8)
 #Crab: 2- 10 keV: 2.4e-8 erg/cm2/s
-#flux ~130 mCrab (2.8×10−9 erg/cm2/s) in 2-8 keV  (https://ui.adsabs.harvard.edu/abs/2023IAUS..363..329D/abstract)?
-
+#flux ~130 mCrab (2.8×10−9 erg/cm2/s) in 2-8 keV  (https://ui.adsabs.harvard.edu/abs/2023IAUS..363..329D/abstract).
 #https://en.wikipedia.org/wiki/Crab_(unit)
 
-
-#print("I[:,100]:",Imod[:,1])
-#print("Q[:,100]:",Qmod[:,1])
-#print("U[:,100]:",Umod[:,1])
-#print("PA[:,100]:",PAobs[:,1])
-#print("PD[:,100]:",PDobs[:,1])
-#exit()
-
 phi, energy_keV, St_I, PD_tot, PA_tot = phase, energies, Imod, PDobs, PAobs
-
-
 
 __model__ = file_path_to_model_name(__file__)
 #ra, dec = 45., 45.
@@ -211,9 +199,7 @@ def pol_ang(E, phase, ra=None, dec=None):
 
 start_date = '2023-10-06'
 
-#nu0 = 401.0
 nu0 = 400.9752075
-#nu0=300.0
 ephemeris = xEphemeris(0., nu0)
 src = xPeriodicPointSource('AMSP', ra, dec, spec, pol_deg, pol_ang,
                            ephemeris)
@@ -255,7 +241,6 @@ def display(emin=1., emax=12.):
 
 
 if __name__ == '__main__':
-    #readdata()
     print("PA at 5 kev, t= 0.5ph",pol_ang(5.0,0.5))
     from ixpeobssim.config import bootstrap_display
     bootstrap_display()

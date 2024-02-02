@@ -209,21 +209,4 @@ def gaussian_likelihood_given_background(double exposure_time,
             STAR[i,j] += background[i,j]/n
             STAR[i,j] *= exposure_time
 
-
-
-	#loglik = 0.0
-	#sigma_tot2 = error**2+error_intr**2 #+error_calib**2 ...
-	#for t in range(NPhadat):
-	#	if(abs(error[t])<1e-10):
-	#		loglik = loglik
-	#	else:
-	#		if(use_intr_sigma):
-	#			norm = 0.5*np.log(2.0*np.pi*sigma_tot2[t]) 
-	#			loglik = loglik - (model[t]-data[t])**2/(2.0*sigma_tot2[t])-norm
-	#		else:
-	#			loglik = loglik - (model[t]-data[t])**2/(2.0*error[t]**2)
-	##print(loglik)
-	#return loglik
-
-
     return (LOGLIKE, np.asarray(STAR, order='C', dtype=np.double))

@@ -45,19 +45,26 @@ Summary
 Added
 ^^^^^
 
-* Option to calculate and extract all the Stokes I, Q, and U signals as a function of energy and phase. This can be activated if giving ``stokes=True`` as an input parameter (default is ``stokes=False``) when initializing a photosphere object. The computed (photosphere) stokes signals can then be obtained using the ``signal``, ``signalQ``, and ``signalU`` functions of the Photosphere class. For using Stokes signals in the likelihood calculation, a separate signal object of the Signal class needs be created for each Stokes signal so that the type of the signal is speficied using a ``stokes`` input argument. A list of all the signals can be then given to the likelihood object, when initializing it. (T.S)
+* Option to calculate and extract all the Stokes I, Q, and U signals as a function of energy and phase. This can be activated if giving ``stokes=True`` as an input parameter (default is ``stokes=False``) when initializing a photosphere object. The computed (photosphere) stokes signals can then be obtained using the ``signal``, ``signalQ``, and ``signalU`` functions of the Photosphere class. For using Stokes signals in the likelihood calculation, a separate signal object of the Signal class needs be created for each Stokes signal so that the type of the signal is speficied using a ``stokes`` input argument. A list of all the signals can be then given to the likelihood object, when initializing it. (T.S.)
 
 * Polarized alternatives for integrators in ``xpsi/cellmesh/integratorIQU_...``, which include the transportation of polarization angle from the star to the observer using the formalism of `Loktev et al. (2020) <https://doi.org/10.1051/0004-6361/202039134>`_. These are used when setting ``stokes=True`` as instructed above. (T.S.)
 
 * A new "split" integrator in ``xpsi/cellmesh/``, which allows atmosphere interpolations with 5 parameters to be performed in 2 steps: first in 3D and then in 2D. This can be activated by giving ``split=True`` (default is ``split=False``) input parameter when initializing a hotregion object. Setting ``split=True`` will automatically determine also the atmosphere option. (B.D.)
 
-* New atmosphere options in ``xpsi/cellmesh/surface_radiation_field/``. See the docstring of the HotRegion class for all the options. (B.D., T.S)
+* New atmosphere options in ``xpsi/cellmesh/surface_radiation_field/``. See the docstring of the HotRegion class for all the options. (B.D., T.S.)
 
 * Polarization tutorial to the documentation pages. (T.S.)
 
-* Example scripts for calculating polarized pulses in ``examples/examples_modeling_tutorial/`` using either an analytical polarized burst atmosphere (``TestRun_Pol.py``) or a numerical 5D atmosphere model (``TestRun_PolNum_split.py``). (T.S)
+* Example scripts for calculating polarized pulses in ``examples/examples_modeling_tutorial/`` using either an analytical polarized burst atmosphere (``TestRun_Pol.py``) or a numerical 5D atmosphere model (``TestRun_PolNum_split_1spot.py`` or ``TestRun_PolNum_split_inference.py``). (T.S.)
 
-* Example scripts for combining X-PSI to `ixpeobssim <https://github.com/lucabaldini/ixpeobssim>`_ for simulating polarized X-ray observations in ``examples/examples_modeling_tutorial/ixpeobssim/``. See instructions in the documentation. (T.S)
+* Example scripts for combining X-PSI to `ixpeobssim <https://github.com/lucabaldini/ixpeobssim>`_ for simulating polarized X-ray observations in ``examples/examples_modeling_tutorial/ixpeobssim/``. See instructions in the documentation. (T.S.)
+
+Changed
+^^^^^^^
+
+* To allow modeling of all Stokes parameters, no error is anymore raised if the data have negative values in ``xpsi/Data.py``. (T.S.)
+
+* No error is anymore raised in ``xpsi/Data.py`` if setting the first and last energy channel to be the same channel. (T.S.)
 
 Attribution
 ^^^^^^^^^^^

@@ -89,7 +89,6 @@ from .preload cimport (_preloaded,
                        free_preload)
 
 from .hot_wrapper cimport (init_hot,
-                   #eval_hot,
                    eval_hot_I,
                    eval_hot_Q,
                    eval_hot_norm,
@@ -222,7 +221,6 @@ def intensity(double[::1] energies,
     if region_extension == 'hot':
         init_ptr = init_hot
         free_ptr = free_hot
-        #eval_ptr = eval_hot
         eval_ptr_I = eval_hot_I
         eval_ptr_Q = eval_hot_Q
         norm_ptr = eval_hot_norm
@@ -284,13 +282,6 @@ def intensity(double[::1] energies,
                                   &(local_variables[i,0]),
                                   data,
                                   _beam_opt)
-
-        #intensities[i] = eval_ptr(T,
-        #                      energies[i],
-        #                      mu[i],
-        #                      &(local_variables[i,0]),
-        #                      data,
-        #                      _beam_opt)
 
         # get photon specific intensity
         intensities[i] *= norm_ptr() / (energies[i] * keV)

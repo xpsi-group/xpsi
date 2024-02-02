@@ -18,6 +18,8 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 * :doc:`Modeling (without statistics)<Modeling_without_statistics>` is similar to :doc:`Modeling<Modeling>` but omits any statistical inference and adds various plots of signals. This is a useful tutorial if you are only interested to use X-PSI to create synthetic data.
 
+* :doc:`Polarization<Polarization>` is a tutorial that shows how to model polarized X-rays in X-PSI.
+
 * :doc:`Post-processing<Post-processing>` is a simple exercise on how to use the main post-processing tools provided by X-PSI.
 
 * :doc:`Emitting patterns 2D projection<Emitting_patterns_2Dprojection>` is a tutorial showing how to use the 2D projection tool for the hot emitting regions on the star's surface.

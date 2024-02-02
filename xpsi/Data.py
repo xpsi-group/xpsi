@@ -127,8 +127,8 @@ class Data(object):
 
         #if self._first >= self._last:
         if self._first > self._last:        
-            raise ValueError('The first channel number must be lower than the '
-                             'the last channel number.')
+            raise ValueError('The first channel number must be equal or lower '
+                             'than the last channel number.')
 
         if counts.shape[0] != self._last - self._first + 1:
             raise ValueError('The number of rows must be compatible '

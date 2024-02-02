@@ -72,7 +72,7 @@ class Likelihood(ParameterSubspace):
     :param float max_energy:
         Optional maximum of energy set for signal computation. If no maximum
         is requested (the default), then the maximum is equal to the maximum
-        energy from the loaded instrument response models.      
+        energy from the loaded instrument response models.
 
     """
     def __init__(self, star, signals,
@@ -81,8 +81,7 @@ class Likelihood(ParameterSubspace):
                  threads = 1, llzero = -1.0e90,
                  externally_updated = False,
                  prior = None,
-                 max_energy = None,
-                 stokes = "I"):
+                 max_energy = None):
 
         self.star = star
         self.signals = signals
@@ -131,7 +130,7 @@ class Likelihood(ParameterSubspace):
             self.prior = prior
 
         # merge subspaces
-        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]))        
+        super(Likelihood, self).__init__(self._star, *(self._signals + [prior]))
 
     @property
     def threads(self):
@@ -406,6 +405,7 @@ class Likelihood(ParameterSubspace):
                     reregistered = True
                 else:
                     reregistered = False
+
                 if not fast_mode and reregistered:
                     if synthesise:
                         hot = photosphere.hot

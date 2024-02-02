@@ -206,7 +206,7 @@ def poisson_likelihood_given_background(double exposure_time,
                 EXPEC = (STAR[i,j] + background[i,j]/n) * exposure_time
                 LOGLIKE -= EXPEC
                 LOGLIKE += counts[i,j] * log(EXPEC)
-            else:   #WARNING: This is really not the correct way, and seems not to even produce negative log-likelihoods!
+            else:   #WARNING: This is maybe not correct!
                 EXPEC = fabs(STAR[i,j] + background[i,j]/n) * exposure_time
                 LOGLIKE -= EXPEC
                 LOGLIKE += fabs(counts[i,j]) * log(EXPEC)

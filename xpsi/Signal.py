@@ -67,7 +67,8 @@ class Signal(ParameterSubspace):
         Deprecated. You can use this or ``cache``, which has the same effect.
         
     :param str stokes:
-        Give I, Q, or U.         
+        Define the type of the signal. Options are Stokes "I" (default), "Q",
+        "U", "Qn" (Q/I), and "Un" (U/I).
 
     """
     def __init__(self,

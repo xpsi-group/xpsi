@@ -507,17 +507,6 @@ class HotRegion(ParameterSubspace):
         """ Return self for uniform interface with other classes. """
         return [self]
 
-    #@property
-    #def split(self):
-    #    """ Get the split interpolation declaration. """
-    #    return self._split
-
-    #@split.setter
-    #def symmetry(self, declaration):
-    #    if not isinstance(declaration, bool):
-    #        raise TypeError('Declare split existence with a boolean.')
-    #    self._split = declaration
-
     @property
     def symmetry(self):
         """ Get the symmetry declaration (controls integrator invocation). """
@@ -534,7 +523,6 @@ class HotRegion(ParameterSubspace):
         if declaration: # can we safely assume azimuthal invariance?
             if self._split:
                 from xpsi.cellmesh.integrator_for_azimuthal_invariance_split import integrate as _integrator
-                #Split version of the following still under construction:
                 from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU
             else:
                 from xpsi.cellmesh.integrator_for_azimuthal_invariance import integrate as _integrator
@@ -880,7 +868,6 @@ class HotRegion(ParameterSubspace):
                 mesh_func = _construct_polar_cellMesh
             else:
                 mesh_func = _construct_spot_cellMesh
-
 
             (self._cede_theta,
              self._cede_phi,
