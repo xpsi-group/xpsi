@@ -490,8 +490,6 @@ runtime_params = {'resume': False,
 
 # let's require that checks pass before starting to sample
 true_logl = -116504.074
-
-#print(likelihood(p)) #Need to print this if not using force_update in the following line.
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior

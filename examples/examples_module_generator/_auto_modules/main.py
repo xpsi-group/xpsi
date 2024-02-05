@@ -1,4 +1,4 @@
-""" Main module for NICER PSR J0030+0451 <- X-PSI 2.1.0 CST+PDT"""
+""" Main module for NICER PSR J0030+0451 <- X-PSI 2.1.2 CST+PDT"""
 import os
 import argparse
 import re
@@ -855,7 +855,6 @@ from xpsi.Parameter import Derive
 from xpsi import HotRegions
 
 print('Rank reporting: %d' % xpsi._rank)
-
 if __name__ == '__main__':
     from CustomInstrument import CustomInstrument
     from CustomSignal import CustomSignal
@@ -1018,9 +1017,12 @@ elif args.XTI_background_path:
 
     for i in range(support.shape[0]):
         if support[i,1] == 0.0:
-            for j in range(i, support.shape[0]):
-                if support[j,1] > 0.0:
-                    support[i,1] = support[j,1]
+            for j in range(1, support.shape[0]):
+                if i+j < support.shape[0] and support[i+j,1] > 0.0:
+                    support[i,1] = support[i+j,1]
+                    break
+                elif i-j >= 0 and support[i-j,1] > 0.0:
+                    support[i,1] = support[i-j,1]
                     break
 
     support *= (XTI.data.exposure_time / args.XTI_background_exposure_time) * float(eval(args.XTI_background_scaling_factor)) # exposure ratio * scaling

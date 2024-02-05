@@ -594,22 +594,8 @@ runtime_params = {'resume': False,
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
-try:
-	true_logl = -6.84930649e+04 
-	#print(likelihood(p))#Need to print this if not using force_update in the following line.
-	likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
-except:
-	print("Likelihood check did not pass. Checking if blackbody atmosphere model installed.")
-	true_logl = -116504.074
-	#print(likelihood(p))#Need to print this if not using force_update in the following line.
-	try:
-		likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
-		print("Seems that blacbkody atmosphere extension was used instead of numerical.")
-		print("Please re-install X-PSI using numerical atmosphere extension including beaming parameters if want to use this test run.")
-	except:
-		print("Seems that neither of the likelihood checks passed, which can mean that the basic numerical atmosphere extension was used instead of the one with additional beaming parameters (required by this test run). Please re-install X-PSI with the latter if that is the case. Otherwise, something else must be wrong.")
-		exit()
-	exit()
+true_logl = -6.84930649e+04
+likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
     xpsi.Sample.nested(likelihood, prior,**runtime_params)

@@ -298,6 +298,15 @@ def eval_marginal_likelihood(double exposure_time,
         double SCALE = exposure_time / n
         double _val
 
+    if(support.shape[0]!=counts.shape[0]):
+        raise TypeError('The number of energy channels in the background support does not match to that of the data.')
+
+    for i in range(<size_t>support.shape[0]):
+        if(support[i,1] == 0):
+            raise TypeError('Background upper limit cannot be set to 0.')
+        if(support[i,1] > 0 and support[i,1] - support[i,0] < 0):
+            raise TypeError('Background upper limit must be higher than the lower limit.')
+
     if background is not None:
         _background = background
 
@@ -530,6 +539,12 @@ def eval_marginal_likelihood(double exposure_time,
                 if lower > support[i,1]:
                     lower = support[i,0]
                     B_for_integrand = support[i,1]
+
+            #Ensuring that the maximum log-likelihood background for the integrand is within the integration limits
+            if B_for_integrand < lower:
+                B_for_integrand = lower
+            elif B_for_integrand > upper:
+                B_for_integrand = upper
 
             f.params = &a
 

@@ -34,6 +34,42 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.1.2] - 2024-02-05
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Updates and fixes were done to background marginalisation, post-processing, and module generator routines.
+
+Added
+^^^^^
+
+* Added error messages in the background marginalisation if providing a background support that does not fulfill the documented requirements (T.S.).
+
+Fixed
+^^^^^
+
+* Fixed the sometimes incorrect value of the factor (``B_for_integrand``) that should ensure that the exponent in the likelihood integrand is at some point unity within the integration domain in ``xpsi/likelihoods/default_background_marginalisation.pyx``. This was not always working when the background bounds were based both on the user-given bounds and on the default bounds leading to numerical problems in the integration and unnecessarily bad likelihood values in some example cases. Now ``B_for_integrand`` is forced to be within the integration limits (T.S.).
+
+* Fixed module imports in ``xpsi/module_generator.py`` (D.C., T.S.).
+
+* Fixed the background support upper limit zero replacements to work even when all the highest energy channels have zero background in ``xpsi/module_generator.py`` (T.S., S.V.).
+
+Changed
+^^^^^^^
+
+* Changed ``xpsi/PostProcessing/_metadata.py`` so that ``None`` can be given as truth value for a parameter, which is not wanted to be shown in a corner plot (T.S., Y.K.).
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Devarshi Choudhury (D.C.),
+Serena Vinciguerra (S.V.),
+Yves Kini (Y.K.)
+
+
 [v2.1.1] - 2023-11-10
 ~~~~~~~~~~~~~~~~~~~~~
 
