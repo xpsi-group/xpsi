@@ -1660,8 +1660,6 @@ elif args.{0}_background_path:
                 elif i-j >= 0 and support[i-j,1] > 0.0:
                     support[i,1] = support[i-j,1]
                     break
-                else:
-                    print("WARNING: Zero background specified in every channel!")
 
     support *= ({0}.data.exposure_time / args.{0}_background_exposure_time) * float(eval(args.{0}_background_scaling_factor)) # exposure ratio * scaling
 
