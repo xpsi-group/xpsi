@@ -1024,8 +1024,6 @@ elif args.XTI_background_path:
                 elif i-j >= 0 and support[i-j,1] > 0.0:
                     support[i,1] = support[i-j,1]
                     break
-                else:
-                    print("WARNING: Zero background specified in every channel!")
 
     support *= (XTI.data.exposure_time / args.XTI_background_exposure_time) * float(eval(args.XTI_background_scaling_factor)) # exposure ratio * scaling
 
