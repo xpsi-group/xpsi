@@ -32,7 +32,9 @@ and this project adheres to
 
 .. Attribution
 .. ^^^^^^^^^^^
-[v2.1.2] - 2023-12-08
+
+
+[v2.1.2] - 2024-02-05
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
