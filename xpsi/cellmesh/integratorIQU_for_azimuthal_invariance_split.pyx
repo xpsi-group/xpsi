@@ -176,7 +176,6 @@ def integrate(size_t numThreads,
         double _specific_flux_U
         size_t _InvisPhase
         double E_electronrest
-        double count_evals = 1.
 
         double[:,:,::1] privateFlux_I = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,:,::1] privateFlux_Q = np.zeros((N_T, N_E, N_P), dtype = np.double)
@@ -227,7 +226,6 @@ def integrate(size_t numThreads,
         interp_alpha_alt = <interp**> malloc(N_T * sizeof(interp*))
 
     for T in range(N_T):
-        # printf('integrate on thread: %ld\n', T)
         terminate[T] = 0
         accel_alpha[T] = gsl_interp_accel_alloc()
         interp_alpha[T] = gsl_interp_alloc(gsl_interp_steffen, N_R)
@@ -317,30 +315,25 @@ def integrate(size_t numThreads,
     # >>> Integrate.
     # >>>
     #----------------------------------------------------------------------->>>
-    
-    
-    # printf('\nintegrate')
+
     # Initiate 2D atmosphere
     cdef double* I_data_2D
     cdef double* Q_data_2D
 
     I_data_2D = produce_2D_data(T, &(srcCellParams[0,0,0]), hot_data_I)
-    # printf('\nI_data_2D[0] = %f.', I_data_2D[0]) 
     atmosphere_2D_I = make_atmosphere_2D(I_data_2D, hot_data_I)
-    
+
     # initiate I data 2D
     hot_preloaded_2D_I = init_preload(atmosphere_2D_I)
     hot_data_2D_I = init_hot_2D(N_T, hot_preloaded_2D_I)
-    
+
     Q_data_2D = produce_2D_data(T, &(srcCellParams[0,0,0]), hot_data_Q)
-    # printf('\nQ_data_2D[0] = %f.', Q_data_2D[0])
     atmosphere_2D_Q = make_atmosphere_2D(Q_data_2D, hot_data_Q)
 
     # initiate Qdata 2D
     hot_preloaded_2D_Q = init_preload(atmosphere_2D_Q)
     hot_data_2D_Q = init_hot_2D(N_T, hot_preloaded_2D_Q)
 
-    
     for ii in prange(<signed int>cellArea.shape[0],
                      nogil = True,
                      schedule = 'static',
@@ -531,26 +524,12 @@ def integrate(size_t numThreads,
                                 #    printf("chi_prime = %.6e ",chi_prime)
                                 #    printf("PA_tot = %.6e\n",chi)
 
-                                # printf(".%.8e", count_evals)
-                                # count_evals = 1. + count_evals 
-                                # printf(".%ld",J)
-
                                 # specific intensities
                                 for p in range(N_E):
                                     E_prime = energies[p] / _Z
-                                    # printf("\ninput parameters reporting:")
-                                    # printf("E_prime: %.8e, ", E_prime)
-                                    # printf("__ABB: %.8e, ", _ABB)
-                                    # printf("srcCellParams[i,j,0]: %.8e, ", srcCellParams[i,J,0])
-                                    # printf("srcCellParams[i,j,1]: %.8e, ", srcCellParams[i,J,1])
-
                                     E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
-                                    # printf('\neval hot start')
                                     I_E2D = eval_hot_2D_I(T, E_electronrest, _ABB, hot_data_2D_I)
-                                    # printf('\neval hot done')
-
                                     Q_E2D = eval_hot_2D_Q(T, E_electronrest, _ABB, hot_data_2D_Q)
-
                                     Q_obs = Q_E2D*cos_2chi
                                     U_obs = Q_E2D*sin_2chi
 

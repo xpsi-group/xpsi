@@ -163,7 +163,6 @@ def integrate(size_t numThreads,
         double _specific_flux
         size_t _InvisPhase
         double E_electronrest
-        double count_evals = 1.
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
@@ -202,7 +201,6 @@ def integrate(size_t numThreads,
         interp_alpha_alt = <interp**> malloc(N_T * sizeof(interp*))
 
     for T in range(N_T):
-        # printf('integrate on thread: %ld\n', T)
         terminate[T] = 0
         accel_alpha[T] = gsl_interp_accel_alloc()
         interp_alpha[T] = gsl_interp_alloc(gsl_interp_steffen, N_R)
@@ -279,20 +277,17 @@ def integrate(size_t numThreads,
     # >>> Integrate.
     # >>>
     #----------------------------------------------------------------------->>>
-    
-    
-    # printf('\nintegrate')
+
     # Initiate 2D atmosphere
     cdef double* I_data_2D
     I_data_2D = produce_2D_data(T, &(srcCellParams[0,0,0]), hot_data)
-    # printf('\nI_data_2D[0] = %f.', I_data_2D[0]) 
     atmosphere_2D = make_atmosphere_2D(I_data_2D, hot_data)
-    
+
     # initiate data 2D
     hot_preloaded_2D = init_preload(atmosphere_2D)
     hot_data_2D = init_hot_2D(N_T, hot_preloaded_2D)
-    
-    
+
+
     for ii in prange(<signed int>cellArea.shape[0],
                      nogil = True,
                      schedule = 'static',
@@ -455,28 +450,11 @@ def integrate(size_t numThreads,
 
                                 PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
 
-                                # printf(".%.8e", count_evals)
-                                # count_evals = 1. + count_evals 
-                                # printf(".%ld",J)
-
                                 # specific intensities
                                 for p in range(N_E):
                                     E_prime = energies[p] / _Z
-                                    # printf("\ninput parameters reporting:")
-                                    # printf("E_prime: %.8e, ", E_prime)
-                                    # printf("__ABB: %.8e, ", _ABB)
-                                    # printf("srcCellParams[i,j,0]: %.8e, ", srcCellParams[i,J,0])
-                                    # printf("srcCellParams[i,j,1]: %.8e, ", srcCellParams[i,J,1])
-
                                     E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
-                                    # printf('\neval hot start')
                                     I_E2D = eval_hot_2D_I(T, E_electronrest, _ABB, hot_data_2D)
-                                    # printf('\neval hot done')
-                                    # I_E = eval_hot(T,
-                                    #                E_electronrest,
-                                    #                _ABB,
-                                    #                &(srcCellParams[i,J,0]),
-                                    #                hot_data)
 
                                     if perform_correction == 1:
                                         correction_I_E = eval_elsewhere(T,
@@ -680,7 +658,7 @@ def integrate(size_t numThreads,
     if hot_atmosphere:
         free_preload(hot_preloaded)
         free_preload(hot_preloaded_2D)
- 
+
     free_hot(N_T, hot_data)
     free_hot_2D(N_T, hot_data_2D)
 
