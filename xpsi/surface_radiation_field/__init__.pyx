@@ -181,7 +181,7 @@ def intensity(double[::1] energies,
         the same memory upon each call without I/O.
 
     :param int StokesQ:
-        If StokesQ=1, Stokes Q intensities will be evaluated. Otherwise Stokes I
+        If StokesQ=1, Stokes Q intensities will be returned. Otherwise Stokes I
         intensities. Default is StokesQ=0.
 
     :param str region_extension:
@@ -193,6 +193,9 @@ def intensity(double[::1] energies,
         Options at the moment:
         "BB": Analytical blackbody,
         "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data,
+        "Pol_BB_burst": Polarized analytical blackbody+burst approximation,
+        "Pol_Num2D": Polarized numerical atmosphere using 2D-interpolation from the provided
         atmosphere data,
         "user": A user-provided extension which can be set up by replacing the contents of
         the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
