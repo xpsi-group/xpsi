@@ -1,0 +1,723 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>HPC systems &mdash; x-psi 1.2.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Code of Conduct" href="code_of_conduct.html" />
+    <link rel="prev" title="Applications" href="applications.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> x-psi
+          
+
+          
+            
+            <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">HPC systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#snellius-surf">Snellius (SURF)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#batch-usage">Batch usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#lisa-surf">Lisa (SURF)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#helios-api">Helios (API)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#helios-using-conda">Helios (using conda)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helios-using-python-user">Helios (using <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--user</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Batch usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#calmip">CALMIP</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>HPC systems</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/HPC_systems.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="hpc-systems">
+<span id="hpcsystems"></span><h1>HPC systems<a class="headerlink" href="#hpc-systems" title="Permalink to this headline">¶</a></h1>
+<p>The information provided in this page is for users who intend to work on High-Performance Computing (HPC) systems, and want to use the Python 2.7 version of X-PSI. These installation instructions are system-specific. X-PSI has already been used on different systems, for some of which, we provide the instructions below. This information may also be translated to other systems by users looking for guidance.</p>
+<div class="section" id="snellius-surf">
+<h2>Snellius (SURF)<a class="headerlink" href="#snellius-surf" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://servicedesk.surf.nl/wiki/display/WIKI/Snellius">Snellius</a> is the Dutch National Supercomputer.</p>
+<div class="section" id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<p>All of the following must be performed on a login node, in your <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> file
+system.</p>
+<p>Start by cleaning your home file system of existing versions of dependencies
+and move anything else to some archive in <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>. Clean <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> and
+<code class="docutils literal notranslate"><span class="pre">.bash_profile</span></code> of anything related to this software. Clean <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> and
+<code class="docutils literal notranslate"><span class="pre">.bash_profile</span></code> of environment variables such as: <code class="docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code>,
+<code class="docutils literal notranslate"><span class="pre">LD_PRELOAD</span></code>, <code class="docutils literal notranslate"><span class="pre">RUN_PATH</span></code>, <code class="docutils literal notranslate"><span class="pre">PATH</span></code>, and <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code>. Then logout and
+log back in order to get a clean environment.</p>
+<p>To be additionally safe, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module purge
+</pre></div>
+</div>
+<p>Load environment module and modify clean environment with Intel toolchain information:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load <span class="m">2021</span>
+module load intel/2021a
+</pre></div>
+</div>
+<p>Prepare python environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load Python/2.7.18-GCCcore-10.3.0-bare
+</pre></div>
+</div>
+<p>We will now install the various python packages we require. We use the module
+<code class="docutils literal notranslate"><span class="pre">/sw/arch/Centos8/EB_production/2021/modulefiles/lang/Python/2.7.18-GCCcore-10.3.0-bare.lua</span></code> and its <code class="docutils literal notranslate"><span class="pre">pip</span></code> package manager to install packages
+locally in <code class="docutils literal notranslate"><span class="pre">$HOME/.local/lib/python2.7/site-packages/</span></code> if they are not
+installed globally or are outdated.</p>
+<p>Note that the python packages must be installed before pointing to intel compilers on Snellius to avoid child process reliability issues if using threads.
+<cite>matplotlib</cite> can be optionally installed for plotting purposes and is not necessary for modelling and inferencing.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --user <span class="nv">Cython</span><span class="o">==</span><span class="m">0</span>.29.24
+pip install --user wrapt
+
+pip install --user scipy
+pip install --user numpy
+pip install --user matplotlib
+pip install --upgrade --user setuptools
+</pre></div>
+</div>
+<p>Set <cite>PYTHONPATH</cite>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$HOME</span>/.local/lib/python2.7/site-packages/:<span class="nv">$PYTHONPATH</span>
+</pre></div>
+</div>
+<p>Point to Intel compilers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">FC</span><span class="o">=</span>ifort
+<span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>icc
+<span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>icpc
+</pre></div>
+</div>
+<p>Below we explicitly specify flag arguments to select intel instruction sets that are compatible with the AMD processors present in Snellius.</p>
+<p>Load <code class="docutils literal notranslate"><span class="pre">cmake</span></code> module:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load CMake/3.20.1-GCCcore-10.3.0
+</pre></div>
+</div>
+<p>To prepare MPI from <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
+tar -xvf mpi4py-3.0.0.tar.gz
+<span class="nb">cd</span> mpi4py-3.0.0
+python setup.py install --user
+</pre></div>
+</div>
+<p>To test on the login node:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpiexec -n <span class="m">8</span> python demo/helloworld.py
+</pre></div>
+</div>
+<p>Do you see ranks 0 through 7 reporting for duty?</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If faced with an error message <code class="docutils literal notranslate"><span class="pre">Can't</span> <span class="pre">locate</span> <span class="pre">Switch.pm</span> <span class="pre">...</span></code>, the <cite>Switch</cite> module can be loaded using the <cite>CPAN</cite> package manager as:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cpan
+</pre></div>
+</div>
+<p>Follow the default instructions for the interactive cpan questions.</p>
+<div class="last highlight-bash notranslate"><div class="highlight"><pre><span></span>cpan<span class="o">[</span><span class="m">1</span><span class="o">]</span>&gt; install Switch
+cpan<span class="o">[</span><span class="m">2</span><span class="o">]</span>&gt; <span class="nb">exit</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If MPI raises a warning about missing hydra process manager, run the following code-block:</p>
+<div class="last highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">unset</span> I_MPI_PMI_LIBRARY
+<span class="nb">export</span> <span class="nv">I_MPI_JOB_RESPECT_PROCESS_PLACEMENT</span><span class="o">=</span><span class="m">0</span>
+</pre></div>
+</div>
+</div>
+<p>To prepare <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> from
+<code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/farhanferoz/MultiNest.git ~/multinest
+<span class="nb">cd</span> ~/multinest/MultiNest_v3.12_CMake/multinest
+mkdir build
+<span class="nb">cd</span> build
+cmake -DCMAKE_<span class="o">{</span>C,CXX<span class="o">}</span><span class="nv">_FLAGS</span><span class="o">=</span><span class="s2">&quot;-O3 -xAVX -axCORE-AVX2 -funroll-loops&quot;</span> -DCMAKE_Fortran_FLAGS<span class="o">=</span><span class="s2">&quot;-O3 -xAVX -axCORE-AVX2 -funroll-loops&quot;</span> ..<span class="p">;</span> make
+ls ../lib/
+</pre></div>
+</div>
+<p>Use the last command to check for the presence of shared objects.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The Intel compilers on Snellius may run into issues with Intel Math Kernel Library (MKL) due to static linkage. These issues can be solved by setting the appropriate paths to the environment variable for the pre-load libs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LD_PRELOAD</span><span class="o">=</span>/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_def.so.1:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_avx2.so.1:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_core.so:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_lp64.so:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_thread.so:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/compiler/2021.2.0/linux/compiler/lib/intel64_lin/libiomp5.so
+</pre></div>
+</div>
+<p class="last">Further details on MKL issues can be found in this <a class="reference external" href="https://community.intel.com/t5/Intel-oneAPI-Math-Kernel-Library/mkl-fails-to-load/m-p/1155538">thread</a></p>
+</div>
+<p>We also need to set the environment variable for the library path to point at MultiNest:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:<span class="nv">$HOME</span>/multinest/MultiNest_v3.12_CMake/multinest/lib/
+</pre></div>
+</div>
+<p>Now you need the Python interface to MultiNest, starting from <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/JohannesBuchner/PyMultiNest.git ~/pymultinest
+<span class="nb">cd</span> ~/pymultinest
+python setup.py install --user
+</pre></div>
+</div>
+<p>If want to make sure that PyMultiNest is compatible with Python 2.7 version of X-PSI, you can e.g., checkout the following PyMultiNest commit: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">c8eba95</span></code>, before running the setup.py file. To test the installation of MultiNest and PyMultiNest on the login node:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpiexec -n <span class="m">2</span> python pymultinest_demo.py
+</pre></div>
+</div>
+<p>Do you obtain parameter values and evidences?</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We assumed above that nested sampling with <a class="reference external" href="https://github.com/farhanferoz/MultiNest">MultiNest</a> is desired. If
+ensemble-MCMC with <code class="docutils literal notranslate"><span class="pre">emcee</span></code> is desired, you need to install the Python
+packages <code class="docutils literal notranslate"><span class="pre">emcee</span></code> and <code class="docutils literal notranslate"><span class="pre">schwimmbad</span></code>. We assume the user can infer how to
+do this using the information above and on the <a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a> page, or using the instructions provided for the <a class="reference internal" href="#calmipsystem"><span class="std std-ref">CALMIP</span></a> instructions below.</p>
+</div>
+<p>Next, we need to load <a class="reference external" href="https://www.gnu.org/software/gsl/">GSL</a> and set the <cite>PATH</cite> environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load GSL/2.7-GCC-10.3.0
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span>/sw/arch/Centos8/EB_production/2021/software/GSL/2.7-GCC-10.3.0:<span class="nv">$PATH</span>
+</pre></div>
+</div>
+<p>To prepare X-PSI from <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/xpsi-group/xpsi.git
+<span class="nb">cd</span> xpsi
+git checkout python2
+<span class="nv">LDSHARED</span><span class="o">=</span><span class="s2">&quot;icc -shared&quot;</span> <span class="nv">CC</span><span class="o">=</span>icc python setup.py install --user
+</pre></div>
+</div>
+<p>This ensures that both the compiler and linker are Intel, otherwise gcc linker
+would be invoked. Provided the GSL <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;/bin</span></code> is in your <code class="docutils literal notranslate"><span class="pre">PATH</span></code>
+environment variable, the X-PSI <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script will automatically use the
+<code class="docutils literal notranslate"><span class="pre">gsl-config</span></code> executable to link the shared libraries and give the required
+cflags for compilation of the X-PSI extensions. Because the library location
+will not change for runtime, we state the runtime linking instructions at
+compilation in the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Since Snellius uses AMD processors and the Intel instruction sets are internally translated, the installation proceeds while repeating <cite>automatic CPU dispatch</cite> and <cite>icc</cite> warnings.
+These warnings are safe to ignore. However, as they get printed, it takes longer for the installation and can exceed the idle time on the login node, resulting in a <cite>broken pipe</cite>. In this case, it would be preferable to direct the output of the installation into an output file, and if required use a <cite>nohup</cite> or similar command.</p>
+</div>
+<p>If you ever need to reinstall, first clean to recompile C files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rm -r build dist *egg* xpsi/*/*.c
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We typically do not used the <a class="reference internal" href="postprocessing.html#module-xpsi.PostProcessing" title="xpsi.PostProcessing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">PostProcessing</span></code></a> module, but instead
+<code class="docutils literal notranslate"><span class="pre">rsync</span></code> output files to a local system to perform plotting.
+This circumvents any potential backend problems and permits straightforward
+use of IPython for interactive plotting. However, if one wishes to use it on a HPC, it would require installation of <cite>GetDist</cite> and <cite>Nestcheck</cite>. See <a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a> page for relevant details.</p>
+</div>
+</div>
+<div class="section" id="environment-variables">
+<h3>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h3>
+<p>The following environment variables need to be exported in your job script
+script so that all relevant libraries can be located at <em>runtime</em> by the
+dynamic loader (ensure that the environment variables are only extended, and
+not overwritten because module loading modifies these variables).</p>
+<p>Set runtime linking path for MultiNest:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:<span class="nv">$HOME</span>/multinest/MultiNest_v3.12_CMake/multinest/lib/
+</pre></div>
+</div>
+<p>We want to ensure that your locally installed Python packages take
+precedence over globally installed packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$HOME</span>/.local/lib/python2.7/site-packages/:<span class="nv">$PYTHONPATH</span>
+</pre></div>
+</div>
+<p>If you are to perform small tests on login nodes in your login shell, these
+environment variables need to be exported in your <code class="docutils literal notranslate"><span class="pre">.bash_profile</span></code> script, or
+in your <code class="docutils literal notranslate"><span class="pre">.bash.rc</span></code> script which can be sourced by your <code class="docutils literal notranslate"><span class="pre">.bash_profile</span></code>
+script (the default default behaviour).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">/sara/sw/python-2.7.9/</span></code> Python distribution does not
+seem to have <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.26)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> linked against the Intel MKL library. Instead it
+uses the open-source, multithreaded OpenBLAS library which still offers an
+optimised interface to BLAS and LAPACK. However for our purposes on distributed
+memory architectures, we  wish to export the following environment variables
+in our batch job script if we do not want multithreaded libraries to spawn
+worker (OpenMP or POSIX) threads:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span> <span class="nv">GOTO_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span> <span class="nv">OPENBLAS_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span> <span class="nv">MKL_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
+<p>If we instruct our likelihood evaluation object to OpenMP multithread, local
+multithreading regions are used which do not take instructions from the
+<code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> environment variable, so we can invariantly <code class="docutils literal notranslate"><span class="pre">export</span></code> it as
+above.
+However, the <code class="docutils literal notranslate"><span class="pre">MKL_NUM_THREADS</span></code> environment variable should either not be
+exported (in which case the <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> variable is used), or increased
+so that <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.26)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> can multithread outside of the local multithreading
+regions in the X-PSI extension modules.</p>
+<p>Note that OpenBLAS may not be compiled against the OpenMP library but instead
+use Pthreads. If <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.26)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> <em>is</em> linked against MKL, we have covered all
+possibilities because MKL whilst uses OpenMP threading but the
+<code class="docutils literal notranslate"><span class="pre">MKL_NUM_THREADS</span></code> environment variable takes precedence if set and thus we
+ensure it is set to one.</p>
+<p>The GSL library we installed (see above) is not a parallel library itself,
+and actually supplies a low-level layer of its own as a CBLAS implementation.
+This may be replaced with an optimised implementation, in which case the
+question of nested multithreading arises. The OpenBLAS and MKL implementations
+can detect whether library calls are made within OpenMP-parallel regions of
+the X-PSI source code provided the same threading library is used: e.g.,
+OpenBLAS compiled with <code class="docutils literal notranslate"><span class="pre">USE_OPENMP=1</span></code>, or X-PSI compiled with an Intel
+compiler and linked against MKL.</p>
+</div>
+<div class="section" id="batch-usage">
+<h3>Batch usage<a class="headerlink" href="#batch-usage" title="Permalink to this headline">¶</a></h3>
+<p>For an example job script, refer to <a class="reference internal" href="Example_job.html#example-job"><span class="std std-ref">Example job</span></a>.</p>
+</div>
+</div>
+<div class="section" id="lisa-surf">
+<h2>Lisa (SURF)<a class="headerlink" href="#lisa-surf" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://servicedesk.surf.nl/wiki/display/WIKI/Lisa">Lisa</a> follows the exact installation instructions as that of Snellius, except for the paths provided
+to the environment variable for the pre-load libs, which is as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LD_PRELOAD</span><span class="o">=</span>/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_def.so.1:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_avx2.so.1:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_core.so:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_lp64.so:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_thread.so:/sw/arch/Debian10/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/compiler/2021.2.0/linux/compiler/lib/intel64_lin/libiomp5.so
+</pre></div>
+</div>
+</div>
+<div class="section" id="helios-api">
+<h2>Helios (API)<a class="headerlink" href="#helios-api" title="Permalink to this headline">¶</a></h2>
+<p>Helios is a cluster of the Anton Pannekoek Institute for Astronomy.
+Here we present two possible approaches to install X-PSI.
+We can use either a conda environment or install locally in the user home directory using <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--user</span></code> (but do not mix them).
+Note, however, that using the conda environment is safer if there ever will be need for conflicting auxiliary installations for the user in the cluster:</p>
+<div class="section" id="helios-using-conda">
+<h3>Helios (using conda)<a class="headerlink" href="#helios-using-conda" title="Permalink to this headline">¶</a></h3>
+<p>Let’s start by loading the necessary modules and creating a conda environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/xpsi-group/xpsi.git
+<span class="nb">cd</span> xpsi
+git checkout python2
+module load anaconda2/2019-10
+conda env create -f basic_environment.yml
+conda activate xpsi
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load openmpi/3.1.6
+</pre></div>
+</div>
+<p>Let’s then install mpi4py:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
+tar zxvf mpi4py-3.0.3.tar.gz
+<span class="nb">cd</span> mpi4py-3.0.3
+python setup.py build   --mpicc<span class="o">=</span>/zfs/helios/filer0/sw-astro/api/openmpi/3.1.6/bin/mpicc
+python setup.py install
+mpiexec -n <span class="m">4</span> python demo/helloworld.py
+</pre></div>
+</div>
+<p>Let’s then install MultiNest and PyMultiNest (and checkout a version that is known to be Python 2.7 compatible):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> git clone https://github.com/farhanferoz/MultiNest.git multinest
+<span class="nb">cd</span> multinest/MultiNest_v3.12_CMake/multinest
+mkdir build
+<span class="nb">cd</span> build
+<span class="nv">CC</span><span class="o">=</span>gcc <span class="nv">FC</span><span class="o">=</span>mpif90 <span class="nv">CXX</span><span class="o">=</span>g++ cmake -DCMAKE_<span class="o">{</span>C,CXX<span class="o">}</span><span class="nv">_FLAGS</span><span class="o">=</span><span class="s2">&quot;-O3 -march=native -funroll-loops&quot;</span> -DCMAKE_Fortran_FLAGS<span class="o">=</span><span class="s2">&quot;-O3 -march=native -funroll-loops&quot;</span> ..
+make
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
+<span class="nb">cd</span> pymultinest
+git checkout c8eba95
+python setup.py install
+</pre></div>
+</div>
+<p>Let’s then install GSL:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+<span class="nb">cd</span> gsl-latest
+mkdir build
+<span class="nb">cd</span> build
+../configure <span class="nv">CC</span><span class="o">=</span>gcc --prefix<span class="o">=</span><span class="nv">$HOME</span>/gsl
+make
+make check
+make install
+make installcheck
+make clean
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/gsl/bin:<span class="nv">$PATH</span>
+</pre></div>
+</div>
+<p>Let’s then finally install X-PSI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> <span class="nb">cd</span> xpsi<span class="p">;</span>
+<span class="nv">CC</span><span class="o">=</span>gcc python setup.py install
+</pre></div>
+</div>
+</div>
+<div class="section" id="helios-using-python-user">
+<h3>Helios (using <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--user</span></code>)<a class="headerlink" href="#helios-using-python-user" title="Permalink to this headline">¶</a></h3>
+<p>Let’s start by loading the necessary modules and upgrading the setup-tools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module load anaconda2/python2.7.16
+module load openmpi/3.1.6
+pip install --upgrade --user setuptools
+</pre></div>
+</div>
+<p>Let’s then install mpi4py:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
+tar zxvf mpi4py-3.0.3.tar.gz
+<span class="nb">cd</span> mpi4py-3.0.3
+python setup.py install --user
+mpiexec -n <span class="m">4</span> python demo/helloworld.py
+</pre></div>
+</div>
+<p>Let’s then install MultiNest and PyMultiNest (and checkout a version that is known to be Python 2.7 compatible):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> git clone https://github.com/farhanferoz/MultiNest.git multinest
+<span class="nb">cd</span> multinest/MultiNest_v3.12_CMake/multinest
+mkdir build
+<span class="nb">cd</span> build
+<span class="nv">CC</span><span class="o">=</span>gcc <span class="nv">FC</span><span class="o">=</span>mpif90 <span class="nv">CXX</span><span class="o">=</span>g++ cmake -DCMAKE_<span class="o">{</span>C,CXX<span class="o">}</span><span class="nv">_FLAGS</span><span class="o">=</span><span class="s2">&quot;-O3 -march=native -funroll-loops&quot;</span> -DCMAKE_Fortran_FLAGS<span class="o">=</span><span class="s2">&quot;-O3 -march=native -funroll-loops&quot;</span> ..
+make
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
+<span class="nb">cd</span> pymultinest
+git checkout c8eba95
+python setup.py install --user
+</pre></div>
+</div>
+<p>Let’s then install GSL:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
+<span class="nb">cd</span> gsl-latest
+mkdir build
+<span class="nb">cd</span> build
+../configure <span class="nv">CC</span><span class="o">=</span>gcc --prefix<span class="o">=</span><span class="nv">$HOME</span>/gsl
+make
+make check
+make install
+make installcheck
+make clean
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/gsl/bin:<span class="nv">$PATH</span>
+</pre></div>
+</div>
+<p>Let’s then finally install X-PSI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd<span class="p">;</span> git clone https://github.com/xpsi-group/xpsi.git
+<span class="nb">cd</span> xpsi
+git checkout python2
+<span class="nv">CC</span><span class="o">=</span>gcc python setup.py install --user
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h3>Batch usage<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>For example job scripts, see Helios using conda environment or <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--user</span></code> in <a class="reference internal" href="Example_job.html#example-job"><span class="std std-ref">Example job</span></a>.</p>
+</div>
+</div>
+<div class="section" id="calmip">
+<span id="calmipsystem"></span><h2>CALMIP<a class="headerlink" href="#calmip" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://www.calmip.univ-toulouse.fr">CALMIP</a> is the supercomputer of <a class="reference external" href="https://www.univ-toulouse.fr">Université Fédérale de Toulouse</a></p>
+<div class="section" id="id3">
+<h3>Installation<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>In your <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> file system, from the login node, start by loading the necessary modules:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>module purge
+module load python/2.7.14
+module load cmake
+module load intel/18.2.199
+module load intelmpi/18.2
+module load gsl/2.5-icc
+</pre></div>
+</div>
+<p>Then, install/update the required python packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="nv">emcee</span><span class="o">==</span><span class="m">3</span>.0.2  --user
+pip install --upgrade numpy --user
+pip install --upgrade Cython --user
+pip install schwimmbad --user
+</pre></div>
+</div>
+<p>Install MPI4PY in your <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.0.tar.gz
+tar -xvf mpi4py-3.0.0.tar.gz
+<span class="nb">cd</span> mpi4py-3.0.0
+python setup.py install --user
+</pre></div>
+</div>
+<p>Download the MultiNest package in your <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/farhanferoz/MultiNest.git ~/multinest
+<span class="nb">cd</span> ~/multinest/MultiNest_v3.11_CMake/multinest
+mkdir build
+<span class="nb">cd</span> build
+</pre></div>
+</div>
+<p>Compile MultiNest in your <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>, following recommendation from CALMIP support:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake -DCMAKE_INSTALL_PREFIX<span class="o">=</span>~/multiNest <span class="se">\</span>
+        -DCMAKE_<span class="o">{</span>C,CXX<span class="o">}</span><span class="nv">_FLAGS</span><span class="o">=</span><span class="s2">&quot;-O3 -xCORE-AVX512 -mkl&quot;</span> <span class="se">\</span>
+        -DCMAKE_Fortran_FLAGS<span class="o">=</span><span class="s2">&quot;-O3 -xCORE-AVX512 -mkl&quot;</span> <span class="se">\</span>
+        -DCMAKE_C_COMPILER<span class="o">=</span>mpiicc    <span class="se">\</span>
+        -DCMAKE_CXX_COMPILER<span class="o">=</span>mpiicpc <span class="se">\</span>
+        -DCMAKE_Fortran_COMPILER<span class="o">=</span>mpiifort  ..
+make
+</pre></div>
+</div>
+<p>Set up your library paths:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:<span class="nv">$HOME</span>/multiNest/MultiNest_v3.12_CMake/multinest/lib
+<span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$HOME</span>/.local/lib/python2.7/site-packages/:<span class="nv">$PYTHONPATH</span>
+<span class="nb">export</span> <span class="nv">LD_PRELOAD</span><span class="o">=</span><span class="nv">$MKLROOT</span>/lib/intel64/libmkl_core.so:<span class="nv">$MKLROOT</span>/lib/intel64/libmkl_sequential.so
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">module</span></code> commands, and the library path <code class="docutils literal notranslate"><span class="pre">commands</span></code> above will have to be added in your SBATCH script (see <a class="reference internal" href="Example_job.html#example-job"><span class="std std-ref">Example job</span></a>) to execute a run.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="code_of_conduct.html" class="btn btn-neutral float-right" title="Code of Conduct" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="applications.html" class="btn btn-neutral float-left" title="Applications" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019-2022 the X-PSI Core Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
