@@ -228,10 +228,10 @@ It's also good to check whether this has worked. In a new kernel, try
     
 which should import without any errors. If you get ``ERROR:   Could not load
 MultiNest library "libmultinest.so"``, that means either MultiNest was not
-succesfully installed or could not be found.  While X-PSI will run properly,
+successfully installed or could not be found.  While X-PSI will run properly,
 the nested-sampling capabilities (requiring MultiNest) will crash. The user can
 use emcee as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
-Note however that the post-processing turorials have only been implemented
+Note however that the post-processing tutorials have only been implemented
 for the outputs of MultiNest.
 
 
@@ -285,7 +285,7 @@ the following:
 This module performs a ``likelihood check``. If the likelihood value calculated
 matches the given value, X-PSI is functioning as expected, else it will raise
 an error message.  The following part of this module requires a functioning
-MultiNest installation. It initiate sampling using MultiNest, and given the
+MultiNest installation. It initiates sampling using MultiNest, and given the
 settings, it should take ~5 minutes. To cancel mid-way press ``ctrl + C``.
 
 .. note::
@@ -355,7 +355,7 @@ To rebuild the documentation after a change to source code docstrings:
     [CC=<path/to/compiler/executable>] python setup.py install [--user]; cd
     docs; make clean; make html; cd ..
 
-The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
+The ``.html`` files can then be found in ``xpsi/docs/build/html``, along with the
 notebooks for the tutorials in this documentation. The ``.html`` files can
 naturally be opened in a browser, handily via a Jupyter session (this is
 particularly useful if the edits are to tutorial notebooks).
@@ -428,7 +428,7 @@ Install ``X-PSI`` using:
     CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user] 
 
 
-If you are facing problem with this installation (e.g., linker problems, or
+If you are facing problems with this installation (e.g., linker problems, or
 --fopenmp libraries missing), you may try the following:
 
 .. code-block:: bash

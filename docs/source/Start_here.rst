@@ -8,7 +8,7 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 **Overview of the available tutorials:**
 
-* :doc:`Modeling<Modeling>` is an in-depth tutorial that first covers the structure of X-PSI followed by basic usage of X-PSI. Basic usage includes constructing your first model (e.g. instrument, star, and atmosphere) and construct a likelihood for nested sampling.
+* :doc:`Modeling<Modeling>` is an in-depth tutorial that first covers the structure of X-PSI followed by basic usage of X-PSI. Basic usage includes constructing your first model (e.g. instrument, star, and atmosphere) and constructing a likelihood for nested sampling.
 
 * :doc:`Instrument synergy<Instrument_synergy>` shows how to construct a joint likelihood with data from two instruments.
 

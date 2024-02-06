@@ -40,12 +40,12 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* Modeling polarized X-ray signals has been implented and examples added for simulating polarized pulses (Stokes parameters) using a couple of different atmosphere options. Support for polarized likelihood calculation has also been included. In addition, new integrators (with and without polarimetry) have been implented to allow atmosphere interpolations with 5 parameters to be performed in 2 steps.
+* Modeling polarized X-ray signals has been implemented and examples added for simulating polarized pulses (Stokes parameters) using a couple of different atmosphere options. Support for polarized likelihood calculation has also been included. In addition, new integrators (with and without polarimetry) have been implemented to allow atmosphere interpolations with 5 parameters to be performed in 2 steps.
 
 Added
 ^^^^^
 
-* Option to calculate and extract all the Stokes I, Q, and U signals as a function of energy and phase. This can be activated if giving ``stokes=True`` as an input parameter (default is ``stokes=False``) when initializing a photosphere object. The computed (photosphere) stokes signals can then be obtained using the ``signal``, ``signalQ``, and ``signalU`` functions of the Photosphere class. For using Stokes signals in the likelihood calculation, a separate signal object of the Signal class needs be created for each Stokes signal so that the type of the signal is speficied using a ``stokes`` input argument. A list of all the signals can be then given to the likelihood object, when initializing it. (T.S.)
+* Option to calculate and extract all the Stokes I, Q, and U signals as a function of energy and phase. This can be activated if giving ``stokes=True`` as an input parameter (default is ``stokes=False``) when initializing a photosphere object. The computed (photosphere) stokes signals can then be obtained using the ``signal``, ``signalQ``, and ``signalU`` functions of the Photosphere class. For using Stokes signals in the likelihood calculation, a separate signal object of the Signal class needs to be created for each Stokes signal so that the type of the signal is specified using a ``stokes`` input argument. A list of all the signals can be then given to the likelihood object when initializing it. (T.S.)
 
 * Polarized alternatives for integrators in ``xpsi/cellmesh/integratorIQU_...``, which include the transportation of polarization angle from the star to the observer using the formalism of `Loktev et al. (2020) <https://doi.org/10.1051/0004-6361/202039134>`_. These are used when setting ``stokes=True`` as instructed above. (T.S.)
 
