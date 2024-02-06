@@ -43,7 +43,7 @@ def reading_table(): #routine that just reads fits tables to I_mighty and Q_migh
     path='../examples_modeling_tutorial/model_data/ComptonSlabTables/'
     global I_mighty
     global Q_mighty
-    p=0 #as we will not go over lenght_Te but just over values within t__e array, we'll need a counter for index corr. to Te
+    p=0 #as we will not go over length_Te but just over values within t__e array, we'll need a counter for index corr. to Te
     for i in t__e:
         hdu = fits.open(path+'CompSlab_%s.fits' %(i), mode='update')
         print('With CompSlab_%s.fits still works' %(i)) #just to see sth on the screen while the files are being opened

@@ -40,7 +40,7 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* Modeling polarized X-ray signals has been implented and examples added for simulating polarized pulses (Stokes parameters) using a couple of different atmosphere options. Support for polarized likelihood calculation has also been included. In addition, new integrators (with and without polarimetry) have been implented to allow atmosphere interpolations with 5 parameters to be performed in 2 steps (first in 3D and then in 2D).
+* Modeling polarized X-ray signals has been implented and examples added for simulating polarized pulses (Stokes parameters) using a couple of different atmosphere options. Support for polarized likelihood calculation has also been included. In addition, new integrators (with and without polarimetry) have been implented to allow atmosphere interpolations with 5 parameters to be performed in 2 steps.
 
 Added
 ^^^^^
@@ -49,7 +49,7 @@ Added
 
 * Polarized alternatives for integrators in ``xpsi/cellmesh/integratorIQU_...``, which include the transportation of polarization angle from the star to the observer using the formalism of `Loktev et al. (2020) <https://doi.org/10.1051/0004-6361/202039134>`_. These are used when setting ``stokes=True`` as instructed above. (T.S.)
 
-* A new "split" integrator in ``xpsi/cellmesh/``, which allows atmosphere interpolations with 5 parameters to be performed in 2 steps: first in 3D and then in 2D. This can be activated by giving ``split=True`` (default is ``split=False``) input parameter when initializing a hotregion object. Setting ``split=True`` will automatically determine also the atmosphere option. (B.D.)
+* A new "split" integrator in ``xpsi/cellmesh/``, which allows atmosphere interpolations with 5 parameters to be performed in 2 steps: first interpolating 3 parameters that do not vary within the hot region (creating a 2D data set) and then interpolating in 2D for each photon energy and emission angle. This can be activated by giving ``split=True`` (default is ``split=False``) input parameter when initializing a hotregion object. Setting ``split=True`` will automatically determine also the atmosphere option. (B.D.)
 
 * New atmosphere options in ``xpsi/cellmesh/surface_radiation_field/``. See the docstring of the HotRegion class for all the options. (B.D., T.S.)
 

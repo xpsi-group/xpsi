@@ -259,7 +259,7 @@ should print to screen something like the following:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.1.1               |
+    |                Version: 2.2.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
