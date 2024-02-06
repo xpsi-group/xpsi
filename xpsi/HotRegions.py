@@ -123,3 +123,39 @@ class HotRegions(ParameterSubspace):
                                          atm_ext_else))
 
         return tuple(signals)
+
+
+    def integrate_stokes(self, st, energies, threads,
+                  hot_atmosphere_I, hot_atmosphere_Q, elsewhere_atmosphere, atm_ext_else):
+        """ Integrate Stokes parameters over the photospheric radiation field.
+
+        Calls the CellMesh integrator, with or without exploitation of
+        azimuthal invariance of the radiation field.
+
+        :param st: Instance of :class:`~.Spacetime.Spacetime`.
+
+        :param energies:
+            A one-dimensional :class:`numpy.ndarray` of energies in keV.
+
+        :param int threads:
+            Number of ``OpenMP`` threads for pulse integration.
+
+        """
+        if not isinstance(energies, tuple):
+            energies = [energies] * len(self)
+
+        signals = []
+        signalsQ = []
+        signalsU = []
+        for obj, E in zip(self._objects, energies):
+            sigs = obj.integrate_stokes(st, E,
+                                         threads,
+                                         hot_atmosphere_I,
+                                         hot_atmosphere_Q,
+                                         elsewhere_atmosphere,
+                                         atm_ext_else)
+            signals.append(sigs[0])
+            signalsQ.append(sigs[1])
+            signalsU.append(sigs[2])
+
+        return tuple(signals), tuple(signalsQ), tuple(signalsU)

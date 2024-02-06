@@ -136,7 +136,7 @@ Use the last command to check for the presence of shared objects.
 
     Further details on MKL issues can be found in this `thread <https://community.intel.com/t5/Intel-oneAPI-Math-Kernel-Library/mkl-fails-to-load/m-p/1155538>`_
 
-We also need to the set the environment variable for library path to point at
+We also need to set the environment variable for library path to point at
 MultiNest:
 
 .. code-block:: bash
@@ -200,11 +200,11 @@ If you ever need to reinstall, first clean to recompile C files:
 
 .. note::
 
-    We typically do not used the :mod:`~xpsi.PostProcessing` module, but 
+    We typically do not use the :mod:`~xpsi.PostProcessing` module, but
     instead ``rsync`` output files to a local system to perform plotting. This
     circumvents any potential backend problems and permits straightforward use
     of IPython for interactive plotting. However, if one wishes to use it on an
-    HPC, it would require installation of `GetDist` and `Nestcheck`. See 
+    HPC, it would require the installation of `GetDist` and `Nestcheck`. See
     :ref:`install` page for relevant details.
 
 
@@ -378,7 +378,7 @@ Download and Install the MultiNest package in your ``$HOME`` (e.g. in ``~/Softwa
                 -DCMAKE_Fortran_COMPILER=mpiifort  ..
     make
 
-    ## Check that librairies have been compiled and are present
+    ## Check that libraries have been compiled and are present
     ls ../lib
 
 Install pymultinest in your ``$HOME`` (e.g. in ``~/Softwares``:

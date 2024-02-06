@@ -78,6 +78,10 @@ class Photosphere(ParameterSubspace):
         mode frequency is applied to normalise the ray lags instead of the
         stellar rotation frequency.
 
+    :param boolean stokes:
+        A Boolean that determines whether the signals for all the Stokes I, Q,
+        and U parameters are calculated. If False, only Stokes I is calculated.
+
     :param iterable custom:
         A :class:`~.Parameter.Parameter` instance or iterable over such
         instances. Might be useful for calling image plane extensions and
@@ -101,6 +105,7 @@ class Photosphere(ParameterSubspace):
                  hot = None, elsewhere = None,
                  everywhere = None,
                  bounds = None, values = None,
+                 stokes=False,
                  custom = None,
                  **kwargs):
 
@@ -135,8 +140,10 @@ class Photosphere(ParameterSubspace):
 
         self._hot = hot
         self._hot_atmosphere = ()
+        self._hot_atmosphere_Q = ()
         self._elsewhere = elsewhere
         self._everywhere = everywhere
+        self._stokes = stokes
 
         if bounds is None: bounds = {}
         if values is None: values = {}
@@ -195,6 +202,47 @@ class Photosphere(ParameterSubspace):
     def hot_atmosphere(self, path):
         """ Implement if required. """
         raise NotImplementedError('Implement setter if required.')
+
+
+    @property
+    def hot_atmosphere_Q(self):
+        """ Get the numerical atmosphere Stokes Q buffers for hot regions if used.
+
+        To preload a numerical atmosphere into a buffer, subclass and
+        overwrite the setter. The underscore attribute set by the setter
+        must be an :math:`n`-tuple whose :math:`n^{th}` element is an
+        :math:`(n-1)`-dimensional array flattened into a one-dimensional
+        :class:`numpy.ndarray`. The first :math:`n-1`
+        elements of the :math:`n`-tuple must each be an ordered one-dimensional
+        :class:`numpy.ndarray` of parameter values for the purpose of
+        multi-dimensional interpolation in the :math:`n^{th}` buffer. The
+        first :math:`n-1` elements must be ordered to match the index
+        arithmetic applied to the :math:`n^{th}` buffer. An example would be
+        ``self._hot_atmosphere_Q = (logT, logg, mu, logE, buf)``, where:
+        ``logT`` is a logarithm of local comoving effective temperature;
+        ``logg`` is a logarithm of effective surface gravity;
+        ``mu`` is the cosine of the angle from the local surface normal;
+        ``logE`` is a logarithm of the photon energy; and
+        ``buf`` is a one-dimensional buffer of intensities of size given by
+        the product of sizes of the first :math:`n-1` tuple elements.
+
+        It is highly recommended that buffer preloading is used, instead
+        of loading from disk in the customisable radiation field extension
+        module, to avoid reading from disk for every signal
+        (likelihood) evaluation. This can be a non-negligible waste of compute
+        resources. By preloading in Python, the memory is allocated and
+        references to that memory are not in general deleted until a sampling
+        script exits and the kernel stops. The likelihood callback accesses
+        the same memory upon each call without I/O.
+
+        """
+        return self._hot_atmosphere_Q
+
+    @hot_atmosphere_Q.setter
+    def hot_atmosphere_Q(self, path):
+        """ Implement if required. """
+        raise NotImplementedError('Implement setter if required.')
+
 
     @property
     def elsewhere_atmosphere(self):
@@ -262,6 +310,12 @@ class Photosphere(ParameterSubspace):
         # otherwise store a reference to the spacetime object
         self._spacetime = obj
 
+    @property
+    def stokes(self):
+        """ Get the stokes option. If True, a full Stokes vector is computed and
+        stored in signal, signalQ, and signalU. """
+        return self._stokes
+
     def embed(self, fast_total_counts, threads):
         """ Embed the photosphere in an ambient Schwarzschild spacetime.
 
@@ -299,8 +353,13 @@ class Photosphere(ParameterSubspace):
         :param int threads:
             Number of ``OpenMP`` threads to spawn for signal integration.
 
+        :param bool stokes:
+            If activated, a full Stokes vector is computed and stored in signal, signalQ, and signalU.
+
         """
         if self._everywhere is not None:
+            if self._stokes:
+                raise NotImplementedError('Stokes option for everywhere not implmented yet.')      
             spectrum = self._everywhere.integrate(self._spacetime,
                                                    energies,
                                                    threads,
@@ -321,15 +380,30 @@ class Photosphere(ParameterSubspace):
                     else_atm_ext = self._elsewhere.atm_ext
                 except:
                     else_atm_ext = None
-                self._signal = self._hot.integrate(self._spacetime,
+
+                if self._stokes:
+                    self._signal, self._signalQ, self._signalU  = self._hot.integrate_stokes(self._spacetime,
+                                                   energies,
+                                                   threads,
+                                                   self._hot_atmosphere,
+                                                   self._hot_atmosphere_Q,
+                                                   self._elsewhere_atmosphere,
+                                                   else_atm_ext)
+                    if not isinstance(self._signal[0], tuple):
+                        self._signal = (self._signal,)
+                    if not isinstance(self._signalQ[0], tuple):
+                        self._signalQ = (self._signalQ,)
+                    if not isinstance(self._signalU[0], tuple):
+                        self._signalU = (self._signalU,)
+                else:
+                    self._signal = self._hot.integrate(self._spacetime,
                                                    energies,
                                                    threads,
                                                    self._hot_atmosphere,
                                                    self._elsewhere_atmosphere,
                                                    else_atm_ext)
-
-                if not isinstance(self._signal[0], tuple):
-                    self._signal = (self._signal,)
+                    if not isinstance(self._signal[0], tuple):
+                        self._signal = (self._signal,)
 
                 # add time-invariant component to first time-dependent component
                 if self._elsewhere is not None:
@@ -338,7 +412,7 @@ class Photosphere(ParameterSubspace):
 
     @property
     def signal(self):
-        """ Get the stored signal.
+        """ Get the stored signal (Stokes I).
 
         :returns:
             A tuple of tuples of *ndarray[m,n]*.
@@ -350,6 +424,42 @@ class Photosphere(ParameterSubspace):
 
         """
         return self._signal
+        
+    @property
+    def signalQ(self):
+        """ Get the stored Stokes Q signal.
+
+        :returns:
+            A tuple of tuples of *ndarray[m,n]*.
+            Here :math:`m` is the number of energies, and
+            :math:`n` is the number of phases. Units are photon/s/keV; the
+            distance is a fast parameter so the areal units are not yet
+            factored in. If the signal is a spectrum because the signal is
+            time-invariant, then :math:`n=1`.
+
+        """
+        if not self._stokes:
+            raise Exception("Need to set stokes=True for the Photosphere object "
+            "to calculate Stokes Q signal.")
+        return self._signalQ
+        
+    @property
+    def signalU(self):
+        """ Get the stored Stokes U signal.
+
+        :returns:
+            A tuple of tuples of *ndarray[m,n]*.
+            Here :math:`m` is the number of energies, and
+            :math:`n` is the number of phases. Units are photon/s/keV; the
+            distance is a fast parameter so the areal units are not yet
+            factored in. If the signal is a spectrum because the signal is
+            time-invariant, then :math:`n=1`.
+
+        """
+        if not self._stokes:
+            raise Exception("Need to set stokes=True for the Photosphere object "
+            "to calculate Stokes U signal.")
+        return self._signalU
 
     @property
     def global_variables(self):

@@ -13,10 +13,25 @@ from xpsi.surface_radiation_field.hot_Num4D cimport (init_hot_Num4D,
                                                      eval_hot_Num4D,
                                                      eval_hot_norm_Num4D)
 
+#Blackbody-burst (with beaming and polarization)
+from xpsi.surface_radiation_field.hot_BB_burst cimport (init_hot_BB_burst,
+                                                     free_hot_BB_burst,
+                                                     eval_hot_BB_burst_I,
+                                                     eval_hot_BB_burst_Q,
+                                                     eval_hot_norm_BB_burst)
+#2D-Numerical (with polarization)
+from xpsi.surface_radiation_field.hot_Num2D cimport (init_hot_Num2D,
+                                                     free_hot_Num2D,
+                                                     eval_hot_Num2D_I,
+                                                     eval_hot_Num2D_Q,
+                                                     eval_hot_norm_Num2D)
+
+
 #User-defined atmosphere extension (Blackbody by default)
 from xpsi.surface_radiation_field.hot_user cimport (init_hot_user,
                                                      free_hot_user,
-                                                     eval_hot_user,
+                                                     eval_hot_user_I,
+                                                     eval_hot_user_Q,
                                                      eval_hot_norm_user)
 
 #----------------------------------------------------------------------->>>
@@ -28,6 +43,10 @@ cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t
     elif atmos_extension == 2:
         return init_hot_Num4D(numThreads, preloaded)
     elif atmos_extension == 3:
+        return init_hot_BB_burst(numThreads, preloaded)
+    elif atmos_extension == 4:
+        return init_hot_Num2D(numThreads, preloaded)
+    elif atmos_extension == 5:
         return init_hot_user(numThreads, preloaded)
     else:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
@@ -40,13 +59,17 @@ cdef int free_hot(size_t numThreads, void *const data) nogil:
     elif atmos_extension == 2:
         return free_hot_Num4D(numThreads, data)
     elif atmos_extension == 3:
+        return free_hot_BB_burst(numThreads, data)
+    elif atmos_extension == 4:
+        return free_hot_Num2D(numThreads, data)
+    elif atmos_extension == 5:
         return free_hot_user(numThreads, data)
     else:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
                "Defaulting to Blackbody (atm_ext=BB).\n")
         return free_hot_BB(numThreads, data)
 
-cdef double eval_hot(size_t THREAD,
+cdef double eval_hot_I(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -75,7 +98,11 @@ cdef double eval_hot(size_t THREAD,
     elif atmos_extension == 2:
         I_hot = eval_hot_Num4D(THREAD,E,mu,VEC_red,data)
     elif atmos_extension == 3:
-        I_hot = eval_hot_user(THREAD,E,mu,VEC_red,data)
+        I_hot = eval_hot_BB_burst_I(THREAD,E,mu,VEC_red,data)
+    elif atmos_extension == 4:
+        I_hot = eval_hot_Num2D_I(THREAD,E,mu,VEC_red,data)
+    elif atmos_extension == 5:
+        I_hot = eval_hot_user_I(THREAD,E,mu,VEC_red,data)
     else:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
                "Defaulting to Blackbody (atm_ext=BB).\n")
@@ -108,7 +135,7 @@ cdef double eval_hot(size_t THREAD,
             elif atmos_extension == 2:
                 I_hot_imu = eval_hot_Num4D(THREAD,E,mu_imu,VEC_red,data)
             elif atmos_extension == 3:
-                I_hot_imu = eval_hot_user(THREAD,E,mu_imu,VEC_red,data)
+                I_hot_imu = eval_hot_user_I(THREAD,E,mu_imu,VEC_red,data)
             else:
                 I_hot_imu = eval_hot_BB(THREAD,E,mu_imu,VEC_red,data)
 
@@ -127,12 +154,51 @@ cdef double eval_hot(size_t THREAD,
         return 0.0
     return I_hot_beam
 
+cdef double eval_hot_Q(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data,
+                     size_t beam_opt) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
+    cdef:
+        double Q_hot=0.0
+
+    #Q_hot = eval_hot_burst_Q(THREAD,E,mu,VEC_red,data)
+    #cdef double I_E
+    #I_E = eval_hot_I(THREAD,E,mu,VEC,data,beam_opt)
+    #cdef double PD = 0.1171*(mu - 1.)/(1. + 3.582*mu)
+    #return PD*I_E
+
+    if atmos_extension == 1:
+        Q_hot = 0.0
+    elif atmos_extension == 2:
+        printf("Warning: Polarimetry not implemented for this atmosphere extension!\n")
+        Q_hot = 0.0
+    elif atmos_extension == 3:
+        Q_hot = eval_hot_BB_burst_Q(THREAD,E,mu,VEC,data)
+    elif atmos_extension == 4:
+        Q_hot = eval_hot_Num2D_Q(THREAD,E,mu,VEC,data)
+    else:
+        Q_hot = eval_hot_user_Q(THREAD,E,mu,VEC,data)
+    return Q_hot
+
+
 cdef double eval_hot_norm() nogil:
     if atmos_extension == 1:
         return eval_hot_norm_BB()
     elif atmos_extension == 2:
         return eval_hot_norm_Num4D()
     elif atmos_extension == 3:
+        return eval_hot_norm_BB_burst()
+    elif atmos_extension == 4:
+        return eval_hot_norm_Num2D()
+    elif atmos_extension == 5:
         return eval_hot_norm_user()
     else:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
