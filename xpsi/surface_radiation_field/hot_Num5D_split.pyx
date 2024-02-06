@@ -378,9 +378,7 @@ cdef double eval_hot_norm() nogil:
 
 cdef double* produce_2D_data(size_t THREAD, const double *const VEC, void *const data) nogil:
     # interpolate data to make a 2D dataset with only E and mu
-    # printf('\nproduce_2D_data called')
     cdef DATA *D = <DATA*> data
-    # printf('\n')
     
     cdef size_t i, j
     cdef double I_E
