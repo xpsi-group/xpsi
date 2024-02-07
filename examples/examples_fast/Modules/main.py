@@ -128,15 +128,15 @@ prior = CustomPrior()
 # # Likelihood
 
 likelihood = xpsi.Likelihood(star = star, signals = signal,
-                             num_energies = 128,
+                             num_energies = 64,
                              threads = 1,
                              externally_updated = True,
                              prior = prior)
 
 # Crucial step, if the likelihood check fails, then something went terrible wrong :)
-p=[1.4,10,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.8]
+p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
 
-likelihood.check(None, [-47881.27817666349], 1.0e-5, physical_points=[p])
+likelihood.check(None, [-3.1603740790e+04], 1.0e-5, physical_points=[p])
 
 
 if __name__ == '__main__':
