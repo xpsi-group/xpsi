@@ -47,16 +47,16 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         
         self._param_names = self._likelihood.names
 
-        #  avoid getting output from ultranest since different format is required for xpsi
-        adjusted_sampler_params = sampler_params.copy()
-        adjusted_sampler_params['log_dir'] = None
+        # make default folder for output if not specified
+        sampler_params.setdefault('log_dir', 'output')
+        os.makedirs(sampler_params['log_dir'], exist_ok=True)
 
         # initialise (region) sampler
         super().__init__(param_names=self._param_names, 
                          loglike=self.my_likelihood, 
                          transform=self._prior.inverse_sample, 
-                         **adjusted_sampler_params)
-        
+                         **sampler_params)
+                
         # change region sampler to step sampler 
         if use_stepsampler: 
             # set default stepsampler parameters if not specified 
@@ -91,13 +91,14 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         # calculate the log-likelihood
         ultranest_likelihood = self._likelihood(p=[arg1, *args], reinitialise=True)
 
+        if isinstance(ultranest_likelihood, np.ndarray): # hackish way around: need to find better solution for this
+            ultranest_likelihood = ultranest_likelihood[0]
+        
         return ultranest_likelihood
     
     def write_results(self, sampler_params, out_filename):
         """ Get output in txt file with columns containing weights, -2*loglikelihood, 
         and parameters (this is the format required for post-processing within X-PSI). 
-
-        :param sampler_params: A dictionary of the keyword arguments passed to the instance of :class:`~.ultranest.ReactiveNestedSampler`.
 
         :param out_filename: String of the output filename. 
 
@@ -107,13 +108,7 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         weights = np.array(self.results["weighted_samples"]["weights"])
         logl = np.array(self.results["weighted_samples"]["logl"])
 
-        output = np.column_stack((weights, -2*logl, data))
-
-        # set default sampler parameters if not specified
-        sampler_params.setdefault('log_dir', 'results/')
-        
-        # check if directory exists, otherwise create one
-        log_dir = os.makedirs(sampler_params['log_dir'], exist_ok=True)
+        # save extra output file special for xpsi post-processing
+        output = np.column_stack((weights, -2*logl, data))        
         file_path = os.path.join(sampler_params['log_dir'], out_filename)
-
         np.savetxt(file_path, output)

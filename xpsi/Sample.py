@@ -299,7 +299,7 @@ def ultranested(likelihood,
                 runtime_params={}, 
                 use_stepsampler=False, 
                 stepsampler_params={},
-                out_filename="output"):
+                out_filename="weighted_post_xpsi"):
     """ Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
 
     :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
