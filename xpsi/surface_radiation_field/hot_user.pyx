@@ -50,7 +50,7 @@ cdef int free_hot_user(size_t numThreads, void *const data) nogil:
 
     return SUCCESS
 
-cdef double eval_hot_user(size_t THREAD,
+cdef double eval_hot_user_I(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -64,6 +64,19 @@ cdef double eval_hot_user(size_t THREAD,
     cdef double temp = k_B_over_keV * pow(10.0, VEC[0])
 
     return E * E * E / ( exp(E / temp) - 1.0 )
+
+cdef double eval_hot_user_Q(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data) nogil:
+    # Arguments:
+    # E = photon energy in keV
+    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
+    # VEC = variables such as temperature, effective gravity, ...
+    # data = numerical model data required for intensity evaluation
+
+    return 0.0
 
 cdef double eval_hot_norm_user() nogil:
     # Source radiation field normalisation which is independent of the

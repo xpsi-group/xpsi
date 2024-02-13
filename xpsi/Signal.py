@@ -65,6 +65,10 @@ class Signal(ParameterSubspace):
 
     :param bool store:
         Deprecated. You can use this or ``cache``, which has the same effect.
+        
+    :param str stokes:
+        Define the type of the signal. Options are Stokes "I" (default), "Q",
+        "U", "Qn" (Q/I), and "Un" (U/I).
 
     """
     def __init__(self,
@@ -77,9 +81,30 @@ class Signal(ParameterSubspace):
                  cache = False,
                  bounds = None,
                  values = None,
+                 stokes = "I",
                  *args,
                  **kwargs):
 
+        self._isI = False
+        self._isQ = False
+        self._isU = False
+        self._isQn = False
+        self._isUn = False        
+
+        if stokes == "I":
+            self._isI = True
+        elif stokes == "Q":
+            self._isQ = True
+        elif stokes == "U":
+            self._isU = True
+        elif stokes == "Qn":
+            self._isQn = True
+        elif stokes == "Un":
+            self._isUn = True            
+            
+        else:
+             raise TypeError('param stokes for likelihood must be either "I", "Q", "U", "Qn", or "Un".')
+             
         if not isinstance(data, Data):
             raise TypeError('Invalid type for a data object.')
         else:
@@ -172,6 +197,58 @@ class Signal(ParameterSubspace):
                                      phase_shift,
                                      *args, **kwargs)
 
+
+    @property
+    def isI(self):
+        """ ... """
+        return self._isI
+        
+    @isI.setter
+    def isI(self, b):
+        """ ... """
+        self._isI = b
+        
+    @property
+    def isQ(self):
+        """ ... """
+        return self._isQ
+        
+    @isQ.setter
+    def isQ(self, b):
+        """ ... """
+        self._isQ = b
+        
+    @property
+    def isU(self):
+        """ ... """
+        return self._isU
+        
+    @isU.setter
+    def isU(self, b):
+        """ ... """
+        self._isU = b 
+        
+    @property
+    def isQn(self):
+        """ ... """
+        return self._isQn
+        
+    @isQn.setter
+    def isQn(self, b):
+        """ ... """
+        self._isQn = b
+        
+    @property
+    def isUn(self):
+        """ ... """
+        return self._isUn
+        
+    @isUn.setter
+    def isUn(self, b):
+        """ ... """
+        self._isUn = b         
+        
+        
     @property
     def background(self):
         """ Get the instance of :class:`~.Background.Background`."""

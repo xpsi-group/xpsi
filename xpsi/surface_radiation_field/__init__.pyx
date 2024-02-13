@@ -89,7 +89,8 @@ from .preload cimport (_preloaded,
                        free_preload)
 
 from .hot_wrapper cimport (init_hot,
-                   eval_hot,
+                   eval_hot_I,
+                   eval_hot_Q,
                    eval_hot_norm,
                    free_hot)
 
@@ -125,6 +126,7 @@ def intensity(double[::1] energies,
               double[::1] mu,
               double[:,::1] local_variables,
               atmosphere = None,
+              int stokesQ = 0,
               region_extension = 'hot',
               atmos_extension = "BB",
               beam_opt = 0,
@@ -178,6 +180,10 @@ def intensity(double[::1] energies,
         script exits and the kernel stops. The likelihood callback accesses
         the same memory upon each call without I/O.
 
+    :param int StokesQ:
+        If StokesQ=1, Stokes Q intensities will be returned. Otherwise Stokes I
+        intensities. Default is StokesQ=0.
+
     :param str region_extension:
         Specify the radiating region extension module to invoke. Options are ``'hot'`` and
         ``'elsewhere'``.
@@ -187,6 +193,9 @@ def intensity(double[::1] energies,
         Options at the moment:
         "BB": Analytical blackbody,
         "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data,
+        "Pol_BB_burst": Polarized analytical blackbody+burst approximation,
+        "Pol_Num2D": Polarized numerical atmosphere using 2D-interpolation from the provided
         atmosphere data,
         "user": A user-provided extension which can be set up by replacing the contents of
         the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
@@ -219,13 +228,16 @@ def intensity(double[::1] energies,
     if region_extension == 'hot':
         init_ptr = init_hot
         free_ptr = free_hot
-        eval_ptr = eval_hot
+        eval_ptr_I = eval_hot_I
+        eval_ptr_Q = eval_hot_Q
         norm_ptr = eval_hot_norm
     elif region_extension == 'elsewhere':
         init_ptr = init_elsewhere
         free_ptr = free_elsewhere
-        eval_ptr = eval_elsewhere
+        eval_ptr_I = eval_elsewhere
         norm_ptr = eval_elsewhere_norm
+        if stokesQ == 1:
+            raise ValueError("StokesQ option is not allowed for the elsewhere extension.")
     else:
         raise ValueError("Region extension module must be 'hot' or 'elsewhere'.")
 
@@ -239,10 +251,22 @@ def intensity(double[::1] energies,
         _atmos_extension = 2
         if atmosphere == None:
             raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
-    elif atmos_extension == "user":
+    elif atmos_extension == "Pol_BB_Burst":
         _atmos_extension = 3
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_BB_Burst' is not supported by the elsewhere extension")
+    elif atmos_extension == "Pol_Num2D":
+        _atmos_extension = 4
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_Num2D' is not supported by the elsewhere extension")
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 5
+        if region_extension == 'elsewhere':
+            _atmos_extension = 3
     else:
-        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', or 'user'.")
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', 'Pol_BB_Burst', 'Pol_Num2D', or 'user'.")
 
     if atmosphere:
         preloaded = init_preload(atmosphere)
@@ -264,13 +288,20 @@ def intensity(double[::1] energies,
         T = threadid()
         i = <size_t> ii
 
-        intensities[i] = eval_ptr(T,
+        if stokesQ == 1:
+            intensities[i] = eval_ptr_Q(T,
                                   energies[i],
                                   mu[i],
                                   &(local_variables[i,0]),
                                   data,
                                   _beam_opt)
-
+        else:
+            intensities[i] = eval_ptr_I(T,
+                                  energies[i],
+                                  mu[i],
+                                  &(local_variables[i,0]),
+                                  data,
+                                  _beam_opt)
         # get photon specific intensity
         intensities[i] *= norm_ptr() / (energies[i] * keV)
 
@@ -403,7 +434,7 @@ def intensity_from_globals(double[::1] energies,
 
     cdef fptr_init init_ptr = init_hot
     cdef fptr_free free_ptr = free_hot
-    cdef fptr_eval eval_ptr = eval_hot
+    cdef fptr_eval eval_ptr = eval_hot_I
     cdef fptr_norm norm_ptr = eval_hot_norm
 
     # initialise the source radiation field

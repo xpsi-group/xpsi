@@ -32,3 +32,21 @@ Fourth script called `examples/examples_modeling_tutorial/TestRun_NumBeam.py`__ 
 .. _t4: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_NumBeam.py
 
 __ t4_
+
+Fifth script called `examples/examples_modeling_tutorial/TestRun_Pol.py`__ is an example script for producing polarized pulses in X-PSI using a simple analytical model for the atmosphere emission.
+
+.. _t5: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_Pol.py
+
+__ t5_
+
+Sixth script called `examples/examples_modeling_tutorial/TestRun_PolNum_split_1spot.py`__ is an example script for producing polarized pulses in X-PSI using a numerical atmosphere model with 3+2 dimensional interpolation.
+
+.. _t6: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_PolNum_split_1spot.py
+
+__ t6_
+
+Seventh script called `examples/examples_modeling_tutorial/TestRun_PolNum_split_inference.py`__ is a preliminary example script for producing and analyzing polarized pulses in X-PSI using a numerical atmosphere model with 3+2 dimensional interpolation and ST+PDT spot model.
+
+.. _t7: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_PolNum_split_inference.py
+
+__ t7_

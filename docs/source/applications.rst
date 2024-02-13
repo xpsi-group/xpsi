@@ -1,6 +1,6 @@
 .. _applications:
 
-Applications
+Publications
 ------------
 
 X-PSI has been applied in the following studies. In addition to giving an
@@ -24,26 +24,41 @@ results of some parameter recovery tests using synthetic data.
 NICER papers
 ************
 
-X-PSI has been used in several Pulse Profile Modeling analysis papers by the *NICER* team. These are typically published with a Zenodo repository containing data, model files, X-PSI scripts, samples and post-processing notebooks to enable full reproduction and independent analysis. 
+X-PSI has been used in several Pulse Profile Modeling analysis papers using *NICER* data of rotation-powered millisecond pulsars. These are typically published with a Zenodo repository containing data, model files, X-PSI scripts, samples and post-processing notebooks to enable full reproduction and independent analysis. 
 
-**Salmi et al. 2022** `(ApJ, 941, 150) <https://ui.adsabs.harvard.edu/abs/2022ApJ...941..150S/abstract>`_ used  ``v0.7.10`` of X-PSI to model *NICER* observations of the rotation-powered millisecond X-ray pulsar PSR J0740+6620 using *NICER* background estimates.  See also the associated `Zenodo repository`__.
+**Vinciguerra et al. 2024** `(ApJ, 961,62) <https://ui.adsabs.harvard.edu/abs/2024ApJ...961...62V/abstract>`_ *An Updated Mass-Radius Analysis of the 2017-2018 NICER Data Set of PSR J0030+0451*. See also the associated `Zenodo repository`__.   
+
+.. _Zenodo24a: https://doi.org/10.5281/zenodo.8239000
+__ Zenodo24a_
+
+**Vinciguerra et al. 2023** `(ApJ, 959, 55) <https://ui.adsabs.harvard.edu/abs/2023ApJ...959...55V/abstract>`_ *X-PSI Parameter Recovery for Temperature Map Configurations Inspired by PSR J0030+0451*.  See also the associated `Zenodo repository`__.
+
+.. _Zenodo23b: https://doi.org/10.5281/zenodo.7646352
+__ Zenodo23b_
+
+**Salmi et al. 2023** `(ApJ, 956, 138) <https://ui.adsabs.harvard.edu/abs/2023ApJ...956..138S/abstract>`_ *Atmospheric Effects on Neutron Star Parameter Constraints with NICER*.  See also the associated `Zenodo repository`__.
+
+.. _Zenodo23a: https://doi.org/10.5281/zenodo.7449785
+__ Zenodo23a_
+
+**Salmi et al. 2022** `(ApJ, 941, 150) <https://ui.adsabs.harvard.edu/abs/2022ApJ...941..150S/abstract>`_ *The Radius of PSR J0740+6620 from NICER with NICER Background Estimates*.  See also the associated `Zenodo repository`__.
 
 .. _Zenodo22: https://doi.org/10.5281/zenodo.6827536
 __ Zenodo22_
 
 
-**Riley et al. 2021**  `(ApJL, 918, L27) <https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract>`_ used ``v0.7.6`` of X-PSI to model *NICER* observations of the rotation-powered millisecond X-ray pulsar PSR J0740+6620. See also the associated `Zenodo repository`__.
+**Riley et al. 2021**  `(ApJL, 918, L27) <https://ui.adsabs.harvard.edu/abs/2021ApJ...918L..27R/abstract>`_ *A NICER View of the Massive Pulsar PSR J0740+6620 Informed by Radio Timing and XMM-Newton Spectroscopy*. See also the associated `Zenodo repository`__.
 
 .. _Zenodo21: https://doi.org/10.5281/zenodo.4697624
 __ Zenodo21_
 
-**Bogdanov et al. 2021**  `(ApJL, 914, L15) <https://ui.adsabs.harvard.edu/abs/2021ApJ...914L..15B/abstract>`_ provides additional details of the models used for *NICER* Pulse Profile Modeling, reports ray-tracing cross-tests for X-PSI and other codes for very compact stars where multiple imaging is important, and reports some parameter recovery simulations for synthetic data.  
+**Bogdanov et al. 2021**  `(ApJL, 914, L15) <https://ui.adsabs.harvard.edu/abs/2021ApJ...914L..15B/abstract>`_ *Constraining the Neutron Star Mass-Radius Relation and Dense Matter Equation of State with NICER. III. Model Description and Verification of Parameter Estimation Codes*.
 
-**Bogdanov et al. 2019** `(ApJL, 887, L26) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..26B/abstract>`_ reports the results of ray-tracing cross-tests for several codes in use in the *NICER* team including X-PSI.
+**Bogdanov et al. 2019** `(ApJL, 887, L26) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..26B/abstract>`_ *Constraining the Neutron Star Mass-Radius Relation and Dense Matter Equation of State with NICER. III. Model Description and Verification of Parameter Estimation Codes*.
 
-**Riley et al. 2019** `(ApJL, 887, L21) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_ used 
-``v0.1`` of X-PSI to model *NICER* observations of the rotation-powered millisecond X-ray pulsar PSR J0030+0451. 
-See also the associated `Zenodo repository`__.
+**Bilous et al. 2019** `(ApJL, 887, L23) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..23B/abstract>`_ *A NICER View of PSR J0030+0451: Evidence for a Global-scale Multipolar Magnetic Field*. 
+
+**Riley et al. 2019** `(ApJL, 887, L21) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..21R/abstract>`_ *A NICER View of PSR J0030+0451: Millisecond Pulsar Parameter Estimation*. See also the associated `Zenodo repository`__.
 
 .. _Zenodo: https://doi.org/10.5281/zenodo.3386448
 
@@ -53,10 +68,15 @@ __ Zenodo_
 Other papers
 ************
 
-**Kini et al. 2023** `(MNRAS, 522, 3389) <https://ui.adsabs.harvard.edu/abs/2023MNRAS.522.3389K/abstract>`_ used  ``v0.7.9`` of X-PSI (with small modifications described in the paper) to model simulated *RXTE* observations of thermonuclear X-ray burst oscillations when ignoring time variability in the properties of the emitting regions.  See also the associated `Zenodo repository`__.
+**Kini et al. 2024** `(MNRAS, 527, 8118) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.527.8118K/abstract>`_ *Pulse profile modelling of thermonuclear burst oscillations - II. Handling variability*.  See also the associated `Zenodo repository`__.
 
-.. _Zenodo23akini: http://dx.doi.org/10.5281/zenodo.7665653
-__ Zenodo23akini_
+.. _Zenodo24kini: http://dx.doi.org/10.5281/zenodo.8033527
+__ Zenodo24kini_
+
+**Kini et al. 2023** `(MNRAS, 522, 3389) <https://ui.adsabs.harvard.edu/abs/2023MNRAS.522.3389K/abstract>`_ *Pulse profile modelling of thermonuclear burst oscillations - I. The effect of neglecting variability*.  See also the associated `Zenodo repository`__.
+
+.. _Zenodo23kini: http://dx.doi.org/10.5281/zenodo.7665653
+__ Zenodo23kini_
 
 
 Settings

@@ -26,7 +26,7 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    free_preload)
 
 from xpsi.surface_radiation_field.hot_wrapper cimport (init_hot,
-                                               eval_hot,
+                                               eval_hot_I,
                                                eval_hot_norm,
                                                free_hot)
 
@@ -354,7 +354,7 @@ def integrate(size_t numThreads,
                                                  local_vars_buf,
                                                  T)
 
-                            I_E = eval_hot(T,
+                            I_E = eval_hot_I(T,
                                            E_prime,
                                            cos_zenith[INDEX],
                                            local_vars_buf.local_variables[T],
@@ -385,7 +385,7 @@ def integrate(size_t numThreads,
                                          local_vars_buf,
                                          T)
 
-                    I_E = eval_hot(T,
+                    I_E = eval_hot_I(T,
                                    E_prime,
                                    cos_zenith[0],
                                    local_vars_buf.local_variables[T],

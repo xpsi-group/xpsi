@@ -103,8 +103,8 @@ class Data(object):
             raise TypeError('Counts must be in a one- or two-dimensional '
                             'array.')
 
-        if (counts < 0.0).any():
-            raise ValueError('Negative count numbers are invalid.')
+        #if (counts < 0.0).any():
+        #    raise ValueError('Negative count numbers are invalid.')
 
         self.channels = channels
 
@@ -125,9 +125,10 @@ class Data(object):
         except TypeError:
             raise TypeError('The first and last channels must be integers.')
 
-        if self._first >= self._last:
-            raise ValueError('The first channel number must be lower than the '
-                             'the last channel number.')
+        #if self._first >= self._last:
+        if self._first > self._last:        
+            raise ValueError('The first channel number must be equal or lower '
+                             'than the last channel number.')
 
         if counts.shape[0] != self._last - self._first + 1:
             raise ValueError('The number of rows must be compatible '

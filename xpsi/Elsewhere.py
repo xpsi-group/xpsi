@@ -175,7 +175,7 @@ class Elsewhere(ParameterSubspace):
             self._atm_ext  = 3
         else:
             raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
-                            'atmosphere options are at the moment "BB", "Num4D", and "user".')
+                            'atmosphere options for Elsewhere are at the moment "BB", "Num4D", and "user".')
 
     @property
     def image_order_limit(self):

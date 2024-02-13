@@ -43,7 +43,7 @@ contents are:
     channels:
         - defaults
     dependencies:
-        - numpy
+        - numpy < 2.0.0
         - cython ~= 0.29
         - matplotlib
         - scipy
@@ -90,7 +90,13 @@ Activate the environment as:
     **ALL THE FOLLOWING STEPS SHOULD BE PERFORMED IN THIS NEWLY CREATED
     ENVIRONMENT.** Pay special attention to reactivate the environment if you
     ever have to restart the kernel.
-    
+
+We start by installing the GNU Scientific Library (GSL):
+
+.. code-block:: bash
+
+   conda install gsl
+
 Next, install
 `mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_ which is required for 
 nested sampling:
@@ -139,20 +145,9 @@ In addition, some optional miscellaneous packages are:
 Prerequisite Non-Python Packages and PyMultiNest
 ------------------------------------------------
 
-X-PSI has several dependencies that are not Python packages,
+X-PSI has dependencies that are not Python packages,
 or which are Python packages but need to be installed from source (PyMultiNest).
 Build and install guidelines are given below.
-
-GSL
-^^^
-
-GSL is the GNU Scientific Library. To obtain the latest 
-`GSL <https://www.gnu.org/software/gsl/>`_ source code (otherwise ``v2.5`` 
-works):
-
-.. code-block:: bash
-
-   wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
 
 .. note::
 
@@ -160,32 +155,6 @@ works):
     compiler (known compatibility with ``icc``, ``gcc``, and ``clang``). Most 
     linux systems come with `GCC <https://gcc.gnu.org>`_ built-in. To find out
     the GCC path-executable on your system, run ``which gcc``.
-
-Untar, navigate to the directory (e.g., ``cd gsl-latest``), and
-then build and install:
-
-.. code-block:: bash
-
-    ./configure CC=<path/to/compiler/executable> --prefix=$HOME/gsl
-    make
-    make check
-    make install
-    make installcheck
-    make clean
-    
-This will install the library in your ``$HOME``, as an example. Next, add GSL
-to your path by adding the following line to ``~/.bashrc``:
-
-.. code-block:: bash
-
-    export PATH=$HOME/gsl/bin:$PATH
-
-You can check the prefix and version of GSL on your path:
-
-.. code-block:: bash
-
-    gsl-config --version
-    gsl-config --prefix
 
 
 .. _multinest:
@@ -203,12 +172,6 @@ To build the MultiNest library, you require an MPI-wrapped Fortran compiler
 (e.g.,  `openmpi-mpifort <https://anaconda.org/conda-forge/openmpi-mpifort>`_
 from Open MPI).
 
-.. note::
-
-    The following assumes you have installed mpi4py. If you
-    have not already installed it through the ``environment.yml`` file, you may
-    do so e.g. via ``conda install -c conda-forge mpi4py``.
-
 Prerequisites for MultiNest are c and fortran
 compilers (e.g. ``gcc`` and ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
 ``atlas``. In case missing them, they can be installed by:
@@ -216,6 +179,12 @@ compilers (e.g. ``gcc`` and ``gfortran``), ``cmake``, ``blas``, ``lapack``, and
 .. code-block:: bash
 
     sudo apt-get install cmake libblas-dev liblapack-dev libatlas-base-dev
+
+To have MPI-wrapped compilers, one should also install ``mpich`` if not installed already:
+
+.. code-block:: bash
+
+    sudo apt install mpich
 
 Assuming these libraries are available, first clone the repository,
 then navigate to it and build:
@@ -226,9 +195,13 @@ then navigate to it and build:
     cd <path/to/clone>/multinest/MultiNest_v3.12_CMake/multinest/
     mkdir build
     cd build
-    CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+    CC=gcc FC=<path/to/working/mpifortran/compiler/>mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
     make
     ls ../lib/
+
+.. note::
+
+   We note that new default mpif90 created by mpi4py conda installation may not work here. Thus, one needs to point the path to the native mpif90 compiler of the system (e.g. ``CC=gcc FC=/usr/bin/mpif90 CXX=g++ ...``) or install mpi4py only after MultiNest has been installed and use then ``FC=mpif90``.
 
 Now you need the Python interface to MultiNest:
 
@@ -255,10 +228,10 @@ It's also good to check whether this has worked. In a new kernel, try
     
 which should import without any errors. If you get ``ERROR:   Could not load
 MultiNest library "libmultinest.so"``, that means either MultiNest was not
-succesfully installed or could not be found.  While X-PSI will run properly,
+successfully installed or could not be found.  While X-PSI will run properly,
 the nested-sampling capabilities (requiring MultiNest) will crash. The user can
 use emcee as the back-up sampler (see example in :doc:`Modeling<Modeling>`).
-Note however that the post-processing turorials have only been implemented
+Note however that the post-processing tutorials have only been implemented
 for the outputs of MultiNest.
 
 
@@ -278,13 +251,6 @@ For ``icc``, you may need to prepend this command with
 ``LDSHARED="icc -shared"``. This ensures that both the compiler and linker
 are Intel, otherwise the ``gcc`` linker might be invoked.
 
-Provided the GSL ``<prefix>/bin`` is in your ``PATH``
-environment variable, the X-PSI ``setup.py`` script will automatically use the
-``gsl-config`` executable to link the shared libraries and give the required
-C flags for compilation of the X-PSI extensions. Because the library location
-will not change for runtime, we state the runtime linking instructions at
-compilation in the ``setup.py`` script.
-
 A quick check of the X-PSI installation can be done with ``import xpsi``, which
 should print to screen something like the following:
 
@@ -293,7 +259,7 @@ should print to screen something like the following:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.1.0               |
+    |                Version: 2.2.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
@@ -319,7 +285,7 @@ the following:
 This module performs a ``likelihood check``. If the likelihood value calculated
 matches the given value, X-PSI is functioning as expected, else it will raise
 an error message.  The following part of this module requires a functioning
-MultiNest installation. It initiate sampling using MultiNest, and given the
+MultiNest installation. It initiates sampling using MultiNest, and given the
 settings, it should take ~5 minutes. To cancel mid-way press ``ctrl + C``.
 
 .. note::
@@ -348,7 +314,7 @@ If you ever need to reinstall, first clean to recompile the C files:
 
 .. code-block:: bash
 
-    rm -r build dist *egg* xpsi/*/*.c
+    rm -r build dist *egg* xpsi/*/*.c xpsi/include/rayXpanda/*.o
 
 Alternatively, to build X-PSI in-place:
 
@@ -370,7 +336,7 @@ these, run the following command:
 
 .. code-block:: bash
 
-    conda install sphinx
+    conda install "sphinx<7.0"
     conda install -c conda-forge nbsphinx
     conda install decorator
     conda install sphinxcontrib-websupport
@@ -389,7 +355,7 @@ To rebuild the documentation after a change to source code docstrings:
     [CC=<path/to/compiler/executable>] python setup.py install [--user]; cd
     docs; make clean; make html; cd ..
 
-The ``.html`` files can then found in ``xpsi/docs/build/html``, along with the
+The ``.html`` files can then be found in ``xpsi/docs/build/html``, along with the
 notebooks for the tutorials in this documentation. The ``.html`` files can
 naturally be opened in a browser, handily via a Jupyter session (this is
 particularly useful if the edits are to tutorial notebooks).
@@ -462,7 +428,7 @@ Install ``X-PSI`` using:
     CC=/usr/local/opt/llvm/bin/clang python setup.py install [--user] 
 
 
-If you are facing problem with this installation (e.g., linker problems, or
+If you are facing problems with this installation (e.g., linker problems, or
 --fopenmp libraries missing), you may try the following:
 
 .. code-block:: bash

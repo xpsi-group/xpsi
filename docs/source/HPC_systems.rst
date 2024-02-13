@@ -84,9 +84,9 @@ To prepare MPI from ``$HOME``:
 
 .. code-block:: bash
 
-    cd; wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.1.4.tar.gz
-    tar zxvf mpi4py-3.1.4.tar.gz
-    cd mpi4py-3.1.4
+    cd; wget https://github.com/mpi4py/mpi4py/releases/download/3.1.5/mpi4py-3.1.5.tar.gz
+    tar zxvf mpi4py-3.1.5.tar.gz
+    cd mpi4py-3.1.5
     python setup.py build   --mpicc=/sw/arch/RHEL8/EB_production/2022/software/impi/2021.6.0-intel-compilers-2022.1.0/mpi/2021.6.0/bin/mpicc
     python setup.py install
 
@@ -136,7 +136,7 @@ Use the last command to check for the presence of shared objects.
 
     Further details on MKL issues can be found in this `thread <https://community.intel.com/t5/Intel-oneAPI-Math-Kernel-Library/mkl-fails-to-load/m-p/1155538>`_
 
-We also need to the set the environment variable for library path to point at
+We also need to set the environment variable for library path to point at
 MultiNest:
 
 .. code-block:: bash
@@ -200,11 +200,11 @@ If you ever need to reinstall, first clean to recompile C files:
 
 .. note::
 
-    We typically do not used the :mod:`~xpsi.PostProcessing` module, but 
+    We typically do not use the :mod:`~xpsi.PostProcessing` module, but
     instead ``rsync`` output files to a local system to perform plotting. This
     circumvents any potential backend problems and permits straightforward use
     of IPython for interactive plotting. However, if one wishes to use it on an
-    HPC, it would require installation of `GetDist` and `Nestcheck`. See 
+    HPC, it would require the installation of `GetDist` and `Nestcheck`. See
     :ref:`install` page for relevant details.
 
 
@@ -246,9 +246,9 @@ Let's then test if mpi4py works:
 
 .. code-block:: bash
 
-   cd; wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.1.4.tar.gz
-   tar zxvf mpi4py-3.1.4.tar.gz
-   cd mpi4py-3.1.4
+   cd; wget https://github.com/mpi4py/mpi4py/releases/download/3.1.5/mpi4py-3.1.5.tar.gz
+   tar zxvf mpi4py-3.1.5.tar.gz
+   cd mpi4py-3.1.5
    mpiexec -n 4 python demo/helloworld.py
    
 Let's then install MultiNest and PyMultiNest:
@@ -259,7 +259,7 @@ Let's then install MultiNest and PyMultiNest:
    cd multinest/MultiNest_v3.12_CMake/multinest
    mkdir build
    cd build
-   CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+   CC=gcc FC=/zfs/helios/filer0/sw-astro/api/openmpi/3.1.6/bin/mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
    make
    
 .. code-block:: bash
@@ -280,7 +280,7 @@ Let's then install GSL:
 .. code-block:: bash
 
    cd; wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
-   tar -xzvf gsl-{latest}
+   tar -xzvf gsl-latest.tar.gz
    cd gsl-{latest} 
    ./configure CC=gcc --prefix=$HOME/gsl
    make
@@ -352,9 +352,9 @@ Install mpi4py in your ``$HOME`` (e.g. in ``~/Softwares``):
 
     mkdir Softwares
     cd Softwares
-    wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.1.4.tar.gz
-    tar zxvf mpi4py-3.1.4.tar.gz
-    cd mpi4py-3.1.4
+    wget https://github.com/mpi4py/mpi4py/releases/download/3.1.5/mpi4py-3.1.5.tar.gz
+    tar zxvf mpi4py-3.1.5.tar.gz
+    cd mpi4py-3.1.5
     python setup.py build
     python setup.py install
     # Test on login node:
@@ -378,7 +378,7 @@ Download and Install the MultiNest package in your ``$HOME`` (e.g. in ``~/Softwa
                 -DCMAKE_Fortran_COMPILER=mpiifort  ..
     make
 
-    ## Check that librairies have been compiled and are present
+    ## Check that libraries have been compiled and are present
     ls ../lib
 
 Install pymultinest in your ``$HOME`` (e.g. in ``~/Softwares``:

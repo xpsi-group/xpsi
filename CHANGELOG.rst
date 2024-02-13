@@ -34,6 +34,81 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.2.0] - 2024-02-06
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Modeling polarized X-ray signals has been implemented and examples added for simulating polarized pulses (Stokes parameters) using a couple of different atmosphere options. Support for polarized likelihood calculation has also been included. In addition, new integrators (with and without polarimetry) have been implemented to allow atmosphere interpolations with 5 parameters to be performed in 2 steps.
+
+Added
+^^^^^
+
+* Option to calculate and extract all the Stokes I, Q, and U signals as a function of energy and phase. This can be activated if giving ``stokes=True`` as an input parameter (default is ``stokes=False``) when initializing a photosphere object. The computed (photosphere) stokes signals can then be obtained using the ``signal``, ``signalQ``, and ``signalU`` functions of the Photosphere class. For using Stokes signals in the likelihood calculation, a separate signal object of the Signal class needs to be created for each Stokes signal so that the type of the signal is specified using a ``stokes`` input argument. A list of all the signals can be then given to the likelihood object when initializing it. (T.S.)
+
+* Polarized alternatives for integrators in ``xpsi/cellmesh/integratorIQU_...``, which include the transportation of polarization angle from the star to the observer using the formalism of `Loktev et al. (2020) <https://doi.org/10.1051/0004-6361/202039134>`_. These are used when setting ``stokes=True`` as instructed above. (T.S.)
+
+* A new "split" integrator in ``xpsi/cellmesh/``, which allows atmosphere interpolations with 5 parameters to be performed in 2 steps: first interpolating 3 parameters that do not vary within the hot region (creating a 2D data set) and then interpolating in 2D for each photon energy and emission angle. This can be activated by giving ``split=True`` (default is ``split=False``) input parameter when initializing a hotregion object. Setting ``split=True`` will automatically determine also the atmosphere option. (B.D.)
+
+* New atmosphere options in ``xpsi/cellmesh/surface_radiation_field/``. See the docstring of the HotRegion class for all the options. (B.D., T.S.)
+
+* Polarization tutorial to the documentation pages. (T.S.)
+
+* Example scripts for calculating polarized pulses in ``examples/examples_modeling_tutorial/`` using either an analytical polarized burst atmosphere (``TestRun_Pol.py``) or a numerical 5D atmosphere model (``TestRun_PolNum_split_1spot.py`` or ``TestRun_PolNum_split_inference.py``). (T.S.)
+
+* Example scripts for combining X-PSI to `ixpeobssim <https://github.com/lucabaldini/ixpeobssim>`_ for simulating polarized X-ray observations in ``examples/examples_modeling_tutorial/ixpeobssim/``. See instructions in the documentation. (T.S.)
+
+Changed
+^^^^^^^
+
+* To allow modeling of all Stokes parameters, no error is anymore raised if the data have negative values in ``xpsi/Data.py``. (T.S.)
+
+* No error is anymore raised in ``xpsi/Data.py`` if setting the first and last energy channel to be the same channel. (T.S.)
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Bas Dorsman (B.D.)
+
+
+[v2.1.2] - 2024-02-05
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Updates and fixes were done to background marginalisation, post-processing, and module generator routines.
+
+Added
+^^^^^
+
+* Added error messages in the background marginalisation if providing a background support that does not fulfill the documented requirements (T.S.).
+
+Fixed
+^^^^^
+
+* Fixed the sometimes incorrect value of the factor (``B_for_integrand``) that should ensure that the exponent in the likelihood integrand is at some point unity within the integration domain in ``xpsi/likelihoods/default_background_marginalisation.pyx``. This was not always working when the background bounds were based both on the user-given bounds and on the default bounds leading to numerical problems in the integration and unnecessarily bad likelihood values in some example cases. Now ``B_for_integrand`` is forced to be within the integration limits (T.S.).
+
+* Fixed module imports in ``xpsi/module_generator.py`` (D.C., T.S.).
+
+* Fixed the background support upper limit zero replacements to work even when all the highest energy channels have zero background in ``xpsi/module_generator.py`` (T.S., S.V.).
+
+Changed
+^^^^^^^
+
+* Changed ``xpsi/PostProcessing/_metadata.py`` so that ``None`` can be given as truth value for a parameter, which is not wanted to be shown in a corner plot (T.S., Y.K.).
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Devarshi Choudhury (D.C.),
+Serena Vinciguerra (S.V.),
+Yves Kini (Y.K.)
+
+
 [v2.1.1] - 2023-11-10
 ~~~~~~~~~~~~~~~~~~~~~
 

@@ -55,7 +55,7 @@ class Metadata(object):
         if kde_settings is not None:
             self.kde_settings = kde_settings
 
-        if truths is not None and None not in truths.values():
+        if truths is not None:
             self.truths = truths
         else:
             self._truths = dict(list(zip(self.names, [None] * len(self.names))))
@@ -210,7 +210,6 @@ class Metadata(object):
             if len(obj) != len(self.names):
                 raise TypeError
             for key in obj:
-                float(obj[key])
                 if key not in self.names:
                     raise TypeError
         except TypeError:

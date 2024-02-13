@@ -1,6 +1,12 @@
 from .preload cimport _preloaded
 
-cdef double eval_hot_user(size_t THREAD,
+cdef double eval_hot_user_I(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data) nogil
+
+cdef double eval_hot_user_Q(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,

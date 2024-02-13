@@ -1405,16 +1405,29 @@ if args.print_MPI_rank:
 
 module += (
 '''
-from {0} import CustomInstrument
-from {1} import CustomSignal
-from {2} import CustomInterstellar
+if __name__ == '__main__':
+    from {0} import CustomInstrument
+    from {1} import CustomSignal
+    from {2} import CustomInterstellar
 
-try:
-    from {3} import CustomPhotosphere
-except ImportError:
-    from xpsi import Photosphere as CustomPhotosphere
+    try:
+        from {3} import CustomPhotosphere
+    except ImportError:
+        from xpsi import Photosphere as CustomPhotosphere
 
-from {4} import CustomPrior
+    from {4} import CustomPrior
+
+else:
+    from .{0} import CustomInstrument
+    from .{1} import CustomSignal
+    from .{2} import CustomInterstellar
+
+    try:
+        from .{3} import CustomPhotosphere
+    except ImportError:
+        from xpsi import Photosphere as CustomPhotosphere
+
+    from .{4} import CustomPrior
 '''.format(args.custom_instrument_module,
            args.custom_signal_module,
            args.custom_interstellar_module,
@@ -1433,14 +1446,25 @@ elif not args.background_shared_class:
 if args.background_shared_class:
     module += (
     '''
-from {0} import CustomBackground
+if __name__ == '__main__':
+    from {0} import CustomBackground
+else:
+    from .{0} import CustomBackground
     '''.format(args.custom_background_module)
     )
 elif args.background_shared_class:
     for _instrument in args.instruments:
         module += (
         '''
-from {0} import {1}_CustomBackground
+if __name__ == '__main__':
+    from {0} import {1}_CustomBackground
+        '''.format(args.custom_background_module,
+                   _instrument)
+        )
+        module += (
+        '''
+else:
+    from .{0} import {1}_CustomBackground
         '''.format(args.custom_background_module,
                    _instrument)
         )
@@ -1629,9 +1653,12 @@ elif args.{0}_background_path:
 
     for i in range(support.shape[0]):
         if support[i,1] == 0.0:
-            for j in range(i, support.shape[0]):
-                if support[j,1] > 0.0:
-                    support[i,1] = support[j,1]
+            for j in range(1, support.shape[0]):
+                if i+j < support.shape[0] and support[i+j,1] > 0.0:
+                    support[i,1] = support[i+j,1]
+                    break
+                elif i-j >= 0 and support[i-j,1] > 0.0:
+                    support[i,1] = support[i-j,1]
                     break
 
     support *= ({0}.data.exposure_time / args.{0}_background_exposure_time) * float(eval(args.{0}_background_scaling_factor)) # exposure ratio * scaling
