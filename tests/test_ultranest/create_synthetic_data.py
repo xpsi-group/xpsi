@@ -353,7 +353,7 @@ def create_star():
     photosphere = CustomPhotosphere(hot = hot_spot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
     
-    for h in hot_spot.objects:
+    for h in hot_spot.objects: # don't need this probably, is defined above 
         h.set_phases(num_leaves = 100)
 
     star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
@@ -377,8 +377,8 @@ def synthesise(self,
                                                              self._phases,
                                                              self._shifts,
                                                              expected_background_counts,
-                                                             self._background.registered_background,
-                                                             gsl_seed=42)
+                                                             self._background.registered_background, # gives count rate for every energy channel
+                                                             gsl_seed=42) # noise: setting to None gives different noise every time, otherwise same every time 
         
         try:
             if not os.path.isdir(directory):
@@ -387,6 +387,11 @@ def synthesise(self,
             print('Cannot create write directory.')
             raise
 
+        # in case you want to save the synthetic data without noise 
+        # np.savetxt(os.path.join(directory, name+'_realisation_no_noise.dat'),
+        #            self._expected_counts,
+        #            fmt = '%u')
+        
         np.savetxt(os.path.join(directory, name+'_realisation.dat'),
                    synthetic,
                    fmt = '%u')

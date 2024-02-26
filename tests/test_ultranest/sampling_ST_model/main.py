@@ -98,6 +98,14 @@ def create_star_model(overview_file, sample_number, data_loaded ):
                                                 channel=[10,301])
 
     # # Signal
+    # # set an upper and lower limit to the background when using background marginalization 
+    # support = np.zeros((301,2), dtype=np.double) # number of energy channels, (upper/lower limit)
+    # support[:,0] = 0.0 # lower limit  
+    # support[:,1] = 1/exposure_time # upper limit 
+
+    # do likelihood evaluation with zero background 
+    # zero_background = np.zeros((301,33)) # energy channels, phase energy bins 
+
     signal = CustomSignal(data = data,
                         instrument = Instrument,
                         interstellar = None,
@@ -106,7 +114,8 @@ def create_star_model(overview_file, sample_number, data_loaded ):
                         workspace_intervals = 1000,
                         epsrel = 1.0e-8,
                         epsilon = 1.0e-3,
-                        sigmas = 10.0) 
+                        sigmas = 10.0,
+                        support=None) 
 
     # # Space-time
     bounds = dict(mass = (1.0,3.0))
@@ -156,6 +165,27 @@ def create_star_model(overview_file, sample_number, data_loaded ):
                                 externally_updated = True,
                                 prior = prior)
     
+    # ### INVESTIGATING ###### (comment out sampling part when using this)
+    # handpicking a best guess mass (now median of mass found)
+    # best_mass_guess = 1.3869193736954475  # sample number 1
+    # true_mass = 1.3858796817826617 
+    # p_T = [radius, distance, cos_inclination, phase_shift, super_colatitude, super_radius,
+    #     super_temperature, background]
+    
+    # likelihood(p=[best_mass_guess], reinitialise=True, force=True)
+    # loglikelihood_best_guess = signal.loglikelihood
+
+    # # # to make an output file needed to plot the residuals 
+    # # np.savetxt("syndat_1_realisation_guess_no_background.dat",signal.expected_counts)
+    
+    # #check if the background is close to zero
+    # likelihood(p=[true_mass], reinitialise=True, force=True)
+    # # print("Background for true mass (should be close to zero):",
+    # #       signal.background_signal/np.sum(signal.expected_counts, axis=1))
+    # loglikelihood_true_mass = signal.loglikelihood
+    # print("loglikelihood best guess vs true mass:", loglikelihood_best_guess, loglikelihood_true_mass,
+    #       "difference:", (loglikelihood_best_guess-loglikelihood_true_mass))
+        
     return likelihood, prior 
 
 def run_sampler(likelihood, prior, directory, name, sample_number, use_ultranest):
@@ -178,7 +208,7 @@ def run_sampler(likelihood, prior, directory, name, sample_number, use_ultranest
                                             prior=prior, 
                                             sampler_params={'log_dir' : output_dir},
                                             runtime_params={'show_status':True, 'update_interval_volume_fraction': 0.1, 'min_num_live_points':5000},
-                                            use_stepsampler=False, 
+                                            use_stepsampler=False,
                                             # stepsampler_params={'max_nsteps' : 400}, 
                                             out_filename=output_filename)
         sampler.print_results()
