@@ -4,6 +4,11 @@ from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size
 from xpsi.utils import make_verbose
 from xpsi import Likelihood
+from xpsi.Posterior import Posterior
+
+from xpsi.EnsembleSampler import EnsembleSampler
+from xpsi.NestedSampler import NestedSampler
+from xpsi.UltranestSampler import UltranestSampler
 
 posterior = None
 
@@ -46,7 +51,6 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
     """
     # use the globally scoped variable
     global posterior
-    from xpsi.Posterior import Posterior
     # Callable instance of the posterior
     posterior = Posterior(likelihood,
                           prior,
@@ -65,8 +69,6 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
                 pool.wait()
                 _sys.exit(0)
 
-            from xpsi.EnsembleSampler import EnsembleSampler
-
             # Initialise emcee sampler
             sampler = EnsembleSampler(ndims = len(likelihood),
                                       posterior = func,
@@ -77,8 +79,6 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
             # Commence emcee sampling process
             sampler()
     else:
-        from xpsi.EnsembleSampler import EnsembleSampler
-
         # Initialise emcee sampler
         sampler = EnsembleSampler(ndims = len(likelihood),
                                   posterior = posterior,
@@ -108,7 +108,6 @@ def nested(likelihood, prior, check_kwargs={}, **kwargs):
     :param kwargs: Keyword arguments for PyMultiNest.
 
     """
-    from xpsi.NestedSampler import NestedSampler
 
     if check_kwargs:
         likelihood.check(**check_kwargs)
@@ -300,20 +299,31 @@ def ultranested(likelihood,
                 use_stepsampler=False, 
                 stepsampler_params={},
                 out_filename="weighted_post_xpsi"):
-    """ Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
+    """ Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/) 
+        package (Buchner 2021).
 
     :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
 
     :param prior: An instance of :class:`~.Prior.Prior`.
 
-    :param sampler_params: Keyword arguments passed instance of :class:`~.ultranest.ReactiveNestedSampler`
+    :param sampler_params: A dictionary of the keyword arguments passed to the 
+        instance of :class:`~.UltranestSampler` to initialise the sampler.
 
-    :param runtime_params: Keyword arguments passed passed to :func:`run`.
+    :param runtime_params:  A dictionary of the keyword arguments passed to the 
+        instance of :class:`~.UltranestSampler` to run the sampler.
 
-    :returns: An instance of :class:`~.xpsi.UltranestSampler` 
+    :param use_stepsampler: Boolean indicating if the stepsampler is used. In this 
+        case the :class:`ultranest.stepsampler.SliceSampler` is used. 
+
+    :param stepsampler_params: A dictionary of the keyword arguments passed to the 
+        to the instance of :class:`~.UltranestSampler` specifying the stepsampler 
+        runtime parameters.
+
+    :param out_filename: String specifying the name of the output file.
+
+    :returns: An instance of :class:`~.UltranestSampler` 
     
     """
-    from xpsi.UltranestSampler import UltranestSampler
 
     # initialise the sampler
     sampler = UltranestSampler(likelihood, prior, sampler_params, use_stepsampler, stepsampler_params)

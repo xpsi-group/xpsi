@@ -16,17 +16,17 @@ else:
         print('Imported UltraNest.')
 
 class UltranestSampler(ultranest.ReactiveNestedSampler):
-    """ Wrapper for the Ultranest sampler (from https://johannesbuchner.github.io/UltraNest/ultranest.html)
+    """ Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/) package (Buchner 2021). 
 
     :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
 
     :param prior: An instance of :class:`~.Prior.Prior`.
 
-    :param sampler_params: A dictionary of the keyword arguments passed to the instance of :class:`~.ultranest.ReactiveNestedSampler`.
+    :param sampler_params: A dictionary of the keyword arguments passed to the instance of :class:`ultranest.ReactiveNestedSampler`.
 
-    :param use_stepsampler: Boolean indicating if the stepsampler is used. 
+    :param use_stepsampler: Boolean indicating if the stepsampler is used. In this case the :class:`ultranest.stepsampler.SliceSampler` is used. 
 
-    :param stepsampler_params: A dictionary of the keyword arguments passed to the stepsampler :`~.ultranest.stepsampler.SliceSampler`.
+    :param stepsampler_params: A dictionary of the keyword arguments passed to the stepsampler :class:`ultranest.stepsampler.SliceSampler`.
 
     """
 
@@ -74,7 +74,6 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         
         """
 
-        # run sampler with given runtime params
         self.run(**runtime_params)
 
     def my_likelihood(self, params):
@@ -97,10 +96,13 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         return ultranest_likelihood
     
     def write_results(self, sampler_params, out_filename):
-        """ Get output in txt file with columns containing weights, -2*loglikelihood, 
-        and parameters (this is the format required for post-processing within X-PSI). 
+        """ Get output txt file with columns containing weights, -2*loglikelihood, 
+        and parameters, which is the format required for post-processing within X-PSI. 
+        This is additional to output files UltraNest produces.  
 
-        :param out_filename: String of the output filename. 
+        :param sampler_params: A dictionary of the keyword arguments passed to the instance of :class:`ultranest.ReactiveNestedSampler`.
+
+        :param out_filename: String specifying the name of the output file. 
 
         """
         # extract results
