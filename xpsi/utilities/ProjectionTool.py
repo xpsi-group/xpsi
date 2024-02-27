@@ -307,6 +307,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             elif ('-U' in model):
                 ind = model.find('-')
                 hot_name = model[:ind]
+                hot_name_s = model[:ind]
                 hotspot_check(hot_name,DICT_VECTOR,'p')
                 hotspot_check(hot_name,DICT_VECTOR,'s')
             
@@ -920,10 +921,10 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             else:
                 transform_plot_lines(thetaA_anti[i],phiA_anti[i],Vi,CAall[i],NO_POLE_FLAG,'-.',2)
                 
-    L1 = r'$\phi=0\,[cycle],\, \theta = \pi/2\,[rad]$'
+    L1 = r'$\phi=0\,[\mathrm{cycle}],\, \theta = \pi/2\,[\mathrm{rad}]$'
     transform_plot(np.pi*0.5,0.0,[0,0,1],5,False,'o', mycolors1[2], True,L1, '')
 
-    L1 = r'$\phi=0.125\,[cycle],\, \theta = \pi/2\,[rad]$'
+    L1 = r'$\phi=0.125\,[\mathrm{cycle}],\, \theta = \pi/2\,[\mathrm{rad}]$'
     transform_plot(np.pi*0.5,0.125,[0,0,1],5,False,'D', mycolors1[2], True,L1, '')
 
 
