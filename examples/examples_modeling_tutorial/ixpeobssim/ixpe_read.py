@@ -7,7 +7,7 @@ These scripts are still to be checked and likely developed further.
 import numpy as np
 from astropy.io import fits
 
-NPhadat = 10 # number of phases in .fits
+NPhadat = 10 #30 #10 # number of phases in .fits
 
 def readData_pcube_ebin(Filename):
       NDet = 3  # number of detectors used
@@ -44,52 +44,52 @@ def readData_pcube_ebin(Filename):
             for d in range(1, NDet + 1):
                   if (p < 10):
                         hdulist = fits.open(f'{Filename}_du{d}_folded_phase000{p}_pcube.fits')
-                        for ie in range(0,NEnerg):
-                              cols1 = hdulist[1].columns
-                              #print(cols1)
-                              #exit()
-                              mu = hdulist[1].data["MU"][ie]
-                              mu_all[p] = mu_all[p] + mu
-                              Id = hdulist[1].data["I"][ie]
-                              Qd = hdulist[1].data["Q"][ie]
-                              Ud = hdulist[1].data["U"][ie]
-                              Pd = hdulist[1].data["PD"][ie]
-                              Pd_err = hdulist[1].data["PD_ERR"][ie]
-                              Pad = hdulist[1].data["PA"][ie]
-                              Pad_err = hdulist[1].data["PA_ERR"][ie]
-                              W2 = hdulist[1].data["W2"][ie]
-
-                              Uerrd = hdulist[1].data["U_ERR"][ie]
-                              Qerrd = hdulist[1].data["Q_ERR"][ie]
-                              Ierrd = hdulist[1].data["I_ERR"][ie]
-
-                              I[p,ie] = I[p,ie] + Id
-                              Q[p,ie] = Q[p,ie] + Qd
-                              U[p,ie] = U[p,ie] + Ud
-
-                              Ierr[p,ie] = Ierr[p,ie] + Ierrd**2
-                              Qerr[p,ie] = Qerr[p,ie] + Qerrd**2
-                              Uerr[p,ie] = Uerr[p,ie] + Uerrd**2
-
-                              W2_all[p,ie] = W2_all[p,ie] + W2
-
-                              PDEG[p,ie] = PDEG[p,ie] + Pd
-                              PANG[p,ie] = PANG[p,ie] + Pad
-                              PDEG_ERR[p,ie] = PDEG_ERR[p,ie] + Pd_err ** 2
-                              PANG_ERR[p,ie] = PANG_ERR[p,ie] + Pad_err ** 2
-                              counts = hdulist[1].data["COUNTS"][ie]
-                              emean[p, d - 1,ie] = hdulist[1].data["E_MEAN"][ie]
-                              elow[p, d - 1, ie] = hdulist[1].data["ENERG_LO"][ie]
-                              ehigh[p, d - 1, ie] = hdulist[1].data["ENERG_HI"][ie]
-
-                              counts_all[p,ie] = counts_all[p,ie] + counts
-
-                              #Ierr[p,ie] = Ierr[p,ie] + np.sqrt(Id) ** 2
-
-
+                  elif (p < 100):
+                        hdulist = fits.open(f'{Filename}_du{d}_folded_phase00{p}_pcube.fits')
                   else:
-                        print("ERROR: We assume no more than 10 phase bins!")
+                        print("ERROR: We assume no more than 100 phase bins!")
                         exit()
+                  for ie in range(0,NEnerg):
+                        cols1 = hdulist[1].columns
+                        #print(cols1)
+                        #exit()
+                        mu = hdulist[1].data["MU"][ie]
+                        mu_all[p] = mu_all[p] + mu
+                        Id = hdulist[1].data["I"][ie]
+                        Qd = hdulist[1].data["Q"][ie]
+                        Ud = hdulist[1].data["U"][ie]
+                        Pd = hdulist[1].data["PD"][ie]
+                        Pd_err = hdulist[1].data["PD_ERR"][ie]
+                        Pad = hdulist[1].data["PA"][ie]
+                        Pad_err = hdulist[1].data["PA_ERR"][ie]
+                        W2 = hdulist[1].data["W2"][ie]
+
+                        Uerrd = hdulist[1].data["U_ERR"][ie]
+                        Qerrd = hdulist[1].data["Q_ERR"][ie]
+                        Ierrd = hdulist[1].data["I_ERR"][ie]
+
+                        I[p,ie] = I[p,ie] + Id
+                        Q[p,ie] = Q[p,ie] + Qd
+                        U[p,ie] = U[p,ie] + Ud
+
+                        Ierr[p,ie] = Ierr[p,ie] + Ierrd**2
+                        Qerr[p,ie] = Qerr[p,ie] + Qerrd**2
+                        Uerr[p,ie] = Uerr[p,ie] + Uerrd**2
+
+                        W2_all[p,ie] = W2_all[p,ie] + W2
+
+                        PDEG[p,ie] = PDEG[p,ie] + Pd
+                        PANG[p,ie] = PANG[p,ie] + Pad
+                        PDEG_ERR[p,ie] = PDEG_ERR[p,ie] + Pd_err ** 2
+                        PANG_ERR[p,ie] = PANG_ERR[p,ie] + Pad_err ** 2
+                        counts = hdulist[1].data["COUNTS"][ie]
+                        emean[p, d - 1,ie] = hdulist[1].data["E_MEAN"][ie]
+                        elow[p, d - 1, ie] = hdulist[1].data["ENERG_LO"][ie]
+                        ehigh[p, d - 1, ie] = hdulist[1].data["ENERG_HI"][ie]
+
+                        counts_all[p,ie] = counts_all[p,ie] + counts
+
+                        #Ierr[p,ie] = Ierr[p,ie] + np.sqrt(Id) ** 2                        
       # After sum over detectors finished
       Q = Q / I
       U = U / I
