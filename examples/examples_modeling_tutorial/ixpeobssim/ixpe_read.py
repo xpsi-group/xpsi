@@ -7,7 +7,7 @@ These scripts are still to be checked and likely developed further.
 import numpy as np
 from astropy.io import fits
 
-NPhadat = 10 #30 #10 # number of phases in .fits
+NPhadat = 10 # number of phases in .fits
 
 def readData_pcube_ebin(Filename):
       NDet = 3  # number of detectors used
@@ -30,6 +30,8 @@ def readData_pcube_ebin(Filename):
       PANG = np.zeros((NPhadat,NEnerg))
       PANG_ERR = np.zeros((NPhadat,NEnerg))
 
+      MDP_tot = np.zeros((NPhadat))
+
       mu_all = np.zeros((NPhadat,NEnerg))
       emean = np.zeros((NPhadat, NDet, NEnerg))
       elow = np.zeros((NPhadat, NDet, NEnerg))
@@ -39,6 +41,8 @@ def readData_pcube_ebin(Filename):
       phase = np.zeros((NPhadat))
       for i in range(0, NPhadat):
             phase[i] = (phase_points[i + 1] + phase_points[i]) / 2.0
+
+
 
       for p in range(NPhadat):
             for d in range(1, NDet + 1):
@@ -89,7 +93,7 @@ def readData_pcube_ebin(Filename):
 
                         counts_all[p,ie] = counts_all[p,ie] + counts
 
-                        #Ierr[p,ie] = Ierr[p,ie] + np.sqrt(Id) ** 2                        
+                        #Ierr[p,ie] = Ierr[p,ie] + np.sqrt(Id) ** 2
       # After sum over detectors finished
       Q = Q / I
       U = U / I
@@ -114,6 +118,9 @@ def readData_pcube_ebin(Filename):
       Qerr = np.nan_to_num(Qerr)
       Uerr = np.nan_to_num(Uerr)
 
+      PDEG_ERR = np.sqrt(PDEG_ERR)/NDet
+      MDP_tot = 4.29*np.sqrt(W2_all)/(mu_all*I)
+
       #keV = np.mean(emean, axis=1)
       #keV = np.mean(keV, axis=0)
 
@@ -125,7 +132,7 @@ def readData_pcube_ebin(Filename):
 
       ebinning_data = np.append(elow[0], ehigh)
 
-      return phase, I, Q, U, Ierr, Qerr, Uerr, ebinning_data
+      return phase, I, Q, U, Ierr, Qerr, Uerr, PDEG, PDEG_ERR, ebinning_data, MDP_tot
 
 
 def read_response_IXPE(MRF,RMF,min_input,max_input,min_channel,max_channel):
