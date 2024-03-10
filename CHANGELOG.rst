@@ -42,6 +42,11 @@ Summary
 
 * The default imaging extension has been changed from ``uniform.pyx`` to ``PDT_U.pyx`` to avoid the need for X-PSI re-installation when computing neutron star images for different nested models. The tutorials have been updated to account for this change when necessary.
 
+Fixed
+^^^^^
+
+* Fixed a bug in ``photosphere.image()`` causing the code crash if not providing the ``sky_map_kwargs`` argument.
+
 Changed
 ^^^^^^^
 
@@ -50,7 +55,7 @@ Changed
 Removed
 ^^^^^^^
 
-* Archived versions of imaging extensions that are not needed anymore.
+* Removed the archived versions of imaging extensions that are not needed anymore.
 
 Attribution
 ^^^^^^^^^^^

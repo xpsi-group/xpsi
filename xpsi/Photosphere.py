@@ -967,7 +967,8 @@ class Photosphere(ParameterSubspace):
         if not isinstance(energies, _np.ndarray):
             raise TypeError('Imaging energies must be in a 1D ndarray.')
 
-        time_is_space = sky_map_kwargs.get('time_is_space', False)
+        if sky_map_kwargs is not None:
+            time_is_space = sky_map_kwargs.get('time_is_space', False)
 
         if reimage:
             if plot_sky_maps and not cache_intensities:
