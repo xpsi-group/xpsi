@@ -34,13 +34,13 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[pre-v2.2.1] - 2024-03-10
+[v2.2.1] - 2024-03-10
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* The default imaging extension has been changed from ``uniform.pyx`` to ``PDT_U.pyx`` to avoid the need for X-PSI re-installation when computing neutron star images for different nested models. The tutorials have been updated to account for this change when necessary (IN PROGRESS).
+* The default imaging extension has been changed from ``uniform.pyx`` to ``PDT_U.pyx`` to avoid the need for X-PSI re-installation when computing neutron star images for different nested models. The tutorials have been updated to account for this change when necessary.
 
 Changed
 ^^^^^^^
