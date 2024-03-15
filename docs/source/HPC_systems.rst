@@ -35,78 +35,36 @@ To be additionally safe, run:
 
     module purge
 
-Load environment module and modify clean environment with Intel toolchain
-information:
+Load environment module and modify clean environment with foss toolchain
+information and the needed modules:
 
 .. code-block:: bash
 
     module load 2022
-    module load intel/2022a
-
-Prepare a conda environment for X-PSI:
-
-.. code-block:: bash
-
-    module load Anaconda3/2022.05
-    git clone https://github.com/xpsi-group/xpsi.git
-    cd xpsi
-    conda env create -f basic_environment.yml
-    conda init
-    
-For changes to take effect, close and re-open the current shell. After that
-load the modules again, and activate the environment:  
-
-.. code-block:: bash
-
-    module load 2022
-    module load intel/2022a
-    module load Anaconda3/2022.05
-    conda activate xpsi_py3
-    
-Next, we point to Intel compilers:
-
-.. code-block:: bash
-
-    export FC=ifort
-    export CC=icc
-    export CXX=icpc
-
-Below we explicitly specify flag arguments to select intel instruction sets
-that are compatible with the AMD processors present in Snellius.
-
-Load ``cmake`` module:
-
-.. code-block:: bash
-
+    module load foss/2022a
+    module load SciPy-bundle/2022.05-foss-2022a
+    module load wrapt/1.15.0-foss-2022a
+    module load matplotlib/3.5.2-foss-2022a
     module load CMake/3.23.1-GCCcore-11.3.0
 
-To prepare MPI from ``$HOME``:
+Prepare a new Python virtual environment for X-PSI (named for example "xpsi_py3") in case the possibility of having several co-existing X-PSI and/or PyMultiNest versions is wished (otherwise proceed to MultiNest installation):
 
 .. code-block:: bash
 
-    cd; wget https://github.com/mpi4py/mpi4py/releases/download/3.1.5/mpi4py-3.1.5.tar.gz
-    tar zxvf mpi4py-3.1.5.tar.gz
-    cd mpi4py-3.1.5
-    python setup.py build   --mpicc=/sw/arch/RHEL8/EB_production/2022/software/impi/2021.6.0-intel-compilers-2022.1.0/mpi/2021.6.0/bin/mpicc
-    python setup.py install
+    mkdir venvs
+    python -m venv ./venvs/xpsi_py3
 
-To test on the login node:
+To access all the loaded site packages when activating the virtual environment, one needs to modify the file ``./venvs/xpsi_py3/Pyvenv.cfg`` (using e.g. ``vim`` or ``emacs`` text editor) to change "false" into "true":
 
 .. code-block:: bash
 
-    mpiexec -n 4 python demo/helloworld.py
+    Include system site packages = true
 
-Do you see ranks 0 through 3 reporting for duty?
+Now the environment can be activated with
 
-.. note::
+.. code-block:: bash
 
-    If MPI raises a warning about missing hydra process manager, run the
-    following code-block:
-
-    .. code-block:: bash
-
-        unset I_MPI_PMI_LIBRARY
-        export I_MPI_JOB_RESPECT_PROCESS_PLACEMENT=0
+    source ./venvs/xpsi_py3/bin/activate
 
 
 To prepare `MultiNest <https://github.com/farhanferoz/MultiNest>`_ from
@@ -116,25 +74,11 @@ To prepare `MultiNest <https://github.com/farhanferoz/MultiNest>`_ from
 
     git clone https://github.com/farhanferoz/MultiNest.git ~/multinest
     cd ~/multinest/MultiNest_v3.12_CMake/multinest
-    mkdir build
-    cd build
-    cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -xAVX -axCORE-AVX2 -funroll-loops" ..; make
+    mkdir build; cd build
+    cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=znver2 -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=znver2 -funroll-loops" ..; make
     ls ../lib/
 
 Use the last command to check for the presence of shared objects.
-
-.. note::
-
-    In case the Intel compilers on Snellius run into issues with Intel Math
-    Kernel Library (MKL) due to static linkage, you can solve the problem by
-    setting the appropriate paths to the environment variable for the pre-load
-    libs:
-
-    .. code-block:: bash
-
-        export LD_PRELOAD=/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_def.so.1:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_avx2.so.1:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_core.so:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_lp64.so:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/mkl/2021.2.0/lib/intel64/libmkl_intel_thread.so:/sw/arch/Centos8/EB_production/2021/software/imkl/2021.2.0-iimpi-2021a/compiler/2021.2.0/linux/compiler/lib/intel64_lin/libiomp5.so
-
-    Further details on MKL issues can be found in this `thread <https://community.intel.com/t5/Intel-oneAPI-Math-Kernel-Library/mkl-fails-to-load/m-p/1155538>`_
 
 We also need to set the environment variable for library path to point at
 MultiNest:
@@ -161,6 +105,10 @@ Do you obtain parameter values and evidences?
 
 .. note::
 
+    Without knowing exactly the reason, we currently get typically this message ``Open MPI failed an OFI Libfabric library call (fi_domain).  This is highly unusual; your job may behave unpredictably (and/or abort) after this.`` when doing this test. However, the test works otherwise as expected, and this message seem not to appear when submitting jobs in the cluster instead of using the login node.
+
+.. note::
+
     We assumed above that nested sampling with `MultiNest`_ is desired. If
     ensemble-MCMC with ``emcee`` is desired, you need to install the Python
     packages ``emcee`` and ``schwimmbad``. We assume the user can infer how to
@@ -173,30 +121,13 @@ only need:
 .. code-block:: bash
 
     cd ~/xpsi
-    LDSHARED="icc -shared" CC=icc python setup.py install
-
-This ensures that both the compiler and linker are Intel, otherwise gcc linker
-would be invoked. The X-PSI ``setup.py`` script will automatically use the
-``gsl-config`` executable to link the shared libraries and give the required
-cflags for compilation of the X-PSI extensions. Because the library location
-will not change for runtime, we state the runtime linking instructions at
-compilation in the ``setup.py`` script.
-
-.. note::
-
-    Since Snellius uses AMD processors and the Intel instruction sets are
-    internally translated, the installation proceeds while repeating `automatic
-    CPU dispatch` and `icc` warnings. These warnings are safe to ignore.
-    However, as they get printed, it takes longer for the installation and can
-    exceed the idle time on the login node, resulting in a `broken pipe`. In
-    this case, it would be preferable to direct the output of the installation
-    into an output file, and if required use a `nohup` or similar command.
+    LDSHARED="gcc -shared" CC=gcc python setup.py install
 
 If you ever need to reinstall, first clean to recompile C files:
 
 .. code-block:: bash
 
-    rm -r build dist *egg* xpsi/*/*.c
+    rm -r build dist *egg* xpsi/*/*.c xpsi/include/rayXpanda/*.o
 
 .. note::
 
