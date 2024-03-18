@@ -77,7 +77,7 @@ direction of this project or led to some specific improvements.
   and about model space definitions)
 * Will M. Farr (for ideas to accelerate likelihood function evaluation; WIP)
 * Sam Geen (for expanding support to include Windows OS)
-* Martin Heemskerk, Jeroen Roodhart and the SurfSARA servicedesk (for help with HPC issues).
+* Martin Heemskerk, Jeroen Roodhart, Satish Kamath and the SurfSARA servicedesk (for help with HPC issues).
 
 Literature
 ~~~~~~~~~~
