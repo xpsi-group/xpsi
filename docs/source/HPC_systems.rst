@@ -95,6 +95,10 @@ Now you need the Python interface to MultiNest, starting from ``$HOME``:
     cd ~/pymultinest
     python setup.py install
 
+.. note::
+
+    If not using a Python virtual environment, you should add ``--user`` flag when installing PyMultiNest.
+
 To test the installation of MultiNest and PyMultiNest on the login node:
 
 .. code-block:: bash
@@ -122,6 +126,10 @@ only need:
 
     cd ~/xpsi
     LDSHARED="gcc -shared" CC=gcc python setup.py install
+
+.. note::
+
+    If not using a Python virtual environment, you should add ``--user`` flag when installing X-PSI.
 
 If you ever need to reinstall, first clean to recompile C files:
 
