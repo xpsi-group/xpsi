@@ -221,18 +221,19 @@ bounds = dict(super_colatitude = (None, None),
               super_te = (40.0, 200.0))
 
 primary = CustomHotRegion_Accreting(bounds=bounds,
-                            values={},
-                            symmetry=True,
-                            omit=False,
-                            cede=False,
-                            concentric=False,
-                            sqrt_num_cells=32, #100
-                            min_sqrt_num_cells=10,
-                            max_sqrt_num_cells=64, #100
-                            num_leaves=100,
-                            num_rays=200,
-                            split=True,
-                            prefix='p')
+                                    values={},
+                                    symmetry=True,
+                                    omit=False,
+                                    cede=False,
+                                    concentric=False,
+                                    sqrt_num_cells=32, #100
+                                    min_sqrt_num_cells=10,
+                                    max_sqrt_num_cells=64, #100
+                                    num_leaves=100,
+                                    num_rays=200,
+                                    split=True,
+                                    image_order_limit=3,
+                                    prefix='p')
 
 from xpsi import HotRegions
 hot = HotRegions((primary,))

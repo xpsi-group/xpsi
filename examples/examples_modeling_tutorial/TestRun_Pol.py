@@ -34,18 +34,19 @@ bounds = dict(super_colatitude = (None, None),
               super_temperature = (5.1, 6.8))
 
 primary = xpsi.HotRegion(bounds=bounds,
-                            values={},
-                            symmetry=True,
-                            omit=False,
-                            cede=False,
-                            concentric=False,
-                            sqrt_num_cells=32,
-                            min_sqrt_num_cells=10,
-                            max_sqrt_num_cells=64,
-                            num_leaves=100,
-                            num_rays=200,
-                            atm_ext="Pol_BB_Burst",
-                            prefix='p')
+                        values={},
+                        symmetry=True,
+                        omit=False,
+                        cede=False,
+                        concentric=False,
+                        sqrt_num_cells=32,
+                        min_sqrt_num_cells=10,
+                        max_sqrt_num_cells=64,
+                        num_leaves=100,
+                        num_rays=200,
+                        atm_ext="Pol_BB_Burst",
+                        image_order_limit=3,
+                        prefix='p')
 
 bounds2 = dict(super_colatitude = (None, None),
                         super_radius = (None, None),
@@ -70,6 +71,7 @@ secondary = xpsi.HotRegion(bounds=bounds2, # can otherwise use same bounds
                             do_fast=False,
                             atm_ext="Pol_BB_Burst",
                             is_antiphased=True,
+                            image_order_limit=3,
                             prefix='s')
 
 
