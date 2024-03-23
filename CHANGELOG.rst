@@ -49,6 +49,11 @@ Fixed
 
 * Fixed a bug in ``photosphere.image()`` causing the code crash if setting ``reimage=False`` and trying to plot the skymaps.
 
+Added
+^^^^^
+
+* Global surface emission tutorial was added back to the documentation pages since it works now.
+
 Changed
 ^^^^^^^
 
