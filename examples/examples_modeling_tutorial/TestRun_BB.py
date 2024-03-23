@@ -187,13 +187,21 @@ class CustomPhotosphere_BB(xpsi.Photosphere):
     def global_variables(self):
 
         return np.array([self['p__super_colatitude'],
-                          self['p__phase_shift'] * _2pi,
+                          self['p__phase_shift'] * 2.0 * math.pi,
                           self['p__super_radius'],
-                          self['p__super_temperature'],
+                          0.0, #self['p__cede_colatitude'],
+                          0.0, #self['p__phase_shift'] * 2.0 * math.pi - self['p__cede_azimuth'],
+                          0.0, #self['p__cede_radius'],
                           self['s__super_colatitude'],
-                          (self['s__phase_shift'] + 0.5) * _2pi,
+                          (self['s__phase_shift'] + 0.5) * 2.0 * math.pi,
                           self['s__super_radius'],
-                          self.hot.objects[1]['s__super_temperature']])
+                          0.0, #self['s__cede_colatitude'],
+                          0.0, #(self['s__phase_shift'] + 0.5) * 2.0 * math.pi - self['s__cede_azimuth'],
+                          0.0, #self['s__cede_radius'],
+                          self['p__super_temperature'],
+                          0.0, #self['p__cede_temperature'],
+                          self.hot.objects[1]['s__super_temperature'],
+                          0.0]) #self['s__cede_temperature']])
 
 photosphere = CustomPhotosphere_BB(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
