@@ -14,6 +14,8 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 * :doc:`Hot region complexity<Hot_region_complexity>` goes into more detail about multiple and especially multiple overlapping hot regions. We note that :doc:`hotregion<hotregion>` is a useful page that contains overview figures of various overlapping cases.
 
+* :doc:`Global surface emission<Global_surface_emission>` concerns surface emission from fields that span the full star and showcases three different options for signal integration. The first is a globally uniform temperature field, which allows for a time invariant signal integration. In the second case the temperature field is phase dependent and thus requires time dependent integration. The third case is general purpose and discretises a distant image plane instead of the stellar surface.
+
 * :doc:`Surface radiation field tools<Surface_radiation_field_tools>` demonstrates the usage of the default (blackbody) and an alternative (atmosphere interpolated from precomputed data) surface radiation field module to compute photon specific intensities. It also shows how to do beaming pattern and spectrum plots for the radiation fields.
 
 * :doc:`Modeling (without statistics)<Modeling_without_statistics>` is similar to :doc:`Modeling<Modeling>` but omits any statistical inference and adds various plots of signals. This is a useful tutorial if you are only interested to use X-PSI to create synthetic data.
