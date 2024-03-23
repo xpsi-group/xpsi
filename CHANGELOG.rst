@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v2.2.1] - 2024-03-10
+[v2.2.1] - 2024-03-23
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -46,6 +46,8 @@ Fixed
 ^^^^^
 
 * Fixed a bug in ``photosphere.image()`` causing the code crash if not providing the ``sky_map_kwargs`` argument.
+
+* Fixed a bug in ``photosphere.image()`` causing the code crash if setting ``reimage=False`` and trying to plot the skymaps.
 
 Changed
 ^^^^^^^
