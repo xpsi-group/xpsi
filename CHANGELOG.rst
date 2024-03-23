@@ -52,7 +52,7 @@ Fixed
 Added
 ^^^^^
 
-* Global surface emission tutorial was added back to the documentation pages since it works now.
+* The Global surface emission -tutorial was added back to the documentation pages since it works now.
 
 Changed
 ^^^^^^^
