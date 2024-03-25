@@ -163,3 +163,6 @@ venv.bak/
 
 # scratchpad
 notebooks
+
+# synthetic data
+tests/synthetic_data/
