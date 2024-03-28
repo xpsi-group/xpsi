@@ -47,6 +47,7 @@ IXPE_U = namespace()
 from ixpe_read import readData_pcube_ebin
 
 fname_ixpedata = "/home/xiaotuo/ixpeobssimdata/ixpeobssimdata_24_set1Bas_dt0/model_amsp_xpsi"
+#fname_ixpedata = "/home/xiaotuo/ixpeobssimdata/ixpeobssimdata_24_set3_dt0/model_amsp_xpsi"
 
 #In the end, we probably want to use data in PHA format instead of PCUBE, to properly account for the instrument response.
 #For now, we just read some PCUBE data (created by ixpeobssim) for testing purposes (binned in 1 energy channel).
@@ -563,6 +564,12 @@ print(star.params, len(star.params))
 #set1Bas
 p = [1.4, 12.0, 3.5, 0.5000000000000001, 0.0, 0.7853981633974483, 0.27052603405912107, 0.0012, 100.0, 1.0]
 
+#set2:
+#p = [1.4, 12.0, 3.5, 0.984807753012208, 0.0, 1.8325957145940461, 0.6981317007977318, 0.002, 100.0, 1.6]
+
+#set3
+#p = [1.4, 12.0, 3.5, 0.984807753012208, 0.0, 1.8325957145940461, 0.27052603405912107, 0.002, 100.0, 1.6]
+
 
 print(len(p))
 elsewhere_T_keV = 0.4 #  keV
@@ -575,6 +582,12 @@ def get_T_in_log10_Kelvin(T_keV):
 elsewhere_T_log10_K = get_T_in_log10_Kelvin(elsewhere_T_keV)
 if use_elsewhere:
     p.append(elsewhere_T_log10_K)
+
+#overwriting p with the found maxL solution (+distance= 1.0 or 3.5):
+#p = [2.03431421e+00, 1.57761215e+01, 3.5, 4.72596557e-02, 4.77767506e-01,
+# 7.49863991e-01, 1.35199302e+00, 1.68339025e-03, 1.16438934e+02,
+# 3.30295403e+00, 5.76610075e+00]
+
 
 star(p)
 star.update()
@@ -722,8 +735,15 @@ likelihood = xpsi.Likelihood(star = star, signals = signals,
                              externally_updated=False)
                              
 p.append(column_density)
+
+#overwriting p with the found maxL solution (+distance= 1.0 or 3.5):
+
+#p = [2.03431421e+00, 1.57761215e+01, 3.5, 4.72596557e-02, 4.77767506e-01,
+# 7.49863991e-01, 1.35199302e+00, 1.68339025e-03, 1.16438934e+02,
+# 3.30295403e+00, 5.76610075e+00, 8.52169979e+00]
+
 print(likelihood, p)
-true_logl = -1.4223099929e+05 #-9.1394271354e+05 #-9.1394389824e+05 #-9.1097204709e+05 #-7.4212895162e+05
+true_logl = -1.4223095642e+05 #-1.2543696401e+04 #-1.3357765522e+05 #-9.1393983034e+05 #-9.1394271354e+05 #-1.4223099929e+05 #-9.1394280091e+0
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 Isig = np.sum(signals[0][0].signals[0], axis=0)
