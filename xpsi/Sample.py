@@ -9,6 +9,7 @@ from xpsi.Posterior import Posterior
 from xpsi.EnsembleSampler import EnsembleSampler
 from xpsi.NestedSampler import NestedSampler
 from xpsi.UltranestSampler import UltranestSampler
+from xpsi.DynestySampler import DynestySampler
 
 posterior = None
 
@@ -298,7 +299,7 @@ def ultranested(likelihood,
                 runtime_params={}, 
                 use_stepsampler=False, 
                 stepsampler_params={},
-                out_filename="weighted_post_xpsi"):
+                out_filename="weighted_post_ultranest_xpsi"):
     """ Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/) 
         package (Buchner 2021).
 
@@ -333,5 +334,25 @@ def ultranested(likelihood,
 
     # store output 
     sampler.write_results(sampler_params, out_filename)
+
+    return sampler
+
+
+def dynested(likelihood, 
+             prior, 
+             sampler_params={}, 
+             runtime_params={},
+             out_filename="weighted_post_dynesty_xpsi"):
+    """ Wrapper for Dynesty (https://dynesty.readthedocs.io/en/stable/) package.
+    """
+
+     # initialise the sampler
+    sampler = DynestySampler(likelihood, prior, sampler_params)
+
+    # start sampling 
+    sampler(runtime_params)
+
+    # store output 
+    sampler.write_results(sampler.results, out_filename)
 
     return sampler
