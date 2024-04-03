@@ -75,7 +75,6 @@ class DynestySampler(dynesty.DynamicNestedSampler):
     def write_results(self, results, out_filename):
         """ Get output txt file with columns containing weights, -2*loglikelihood, 
         and parameters, which is the format required for post-processing within X-PSI. 
-        This is additional to output files Dynesty produces.  
 
         :param sampler_params: A dictionary of the keyword arguments passed to the instance of :class:`ultranest.ReactiveNestedSampler`.
 
@@ -84,7 +83,7 @@ class DynestySampler(dynesty.DynamicNestedSampler):
         """
         # extract results
         data = results.samples
-        weights = results.logwt
+        weights = results.importance_weights()
         logl = results.logl
 
         # save extra output file special for xpsi post-processing
