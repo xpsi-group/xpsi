@@ -9,7 +9,6 @@ from xpsi.Posterior import Posterior
 from xpsi.EnsembleSampler import EnsembleSampler
 from xpsi.NestedSampler import NestedSampler
 from xpsi.UltranestSampler import UltranestSampler
-from xpsi.DynestySampler import DynestySampler
 
 posterior = None
 
