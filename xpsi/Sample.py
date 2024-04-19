@@ -332,27 +332,12 @@ def ultranested(likelihood,
     # start sampling 
     sampler(runtime_params)
 
+    # print results
+    sampler.print_results()
+    if use_stepsampler:
+        sampler.stepsampler.print_diagnostic()
+
     # store output 
     sampler.write_results(sampler_params, out_filename)
-
-    return sampler
-
-
-def dynested(likelihood, 
-             prior, 
-             sampler_params={}, 
-             runtime_params={},
-             out_filename="weighted_post_dynesty_xpsi"):
-    """ Wrapper for Dynesty (https://dynesty.readthedocs.io/en/stable/) package.
-    """
-
-     # initialise the sampler
-    sampler = DynestySampler(likelihood, prior, sampler_params)
-
-    # start sampling 
-    sampler(runtime_params)
-
-    # store output 
-    sampler.write_results(sampler.results, out_filename)
 
     return sampler

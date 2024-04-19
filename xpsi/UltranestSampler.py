@@ -62,7 +62,9 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
             # set default stepsampler parameters if not specified 
             stepsampler_params.setdefault('nsteps', 2*len(self._param_names))
             stepsampler_params.setdefault('generate_direction', ultranest.stepsampler.generate_mixture_random_direction)
-            
+            stepsampler_params.setdefault('check_nsteps','move-distance')
+            stepsampler_params.setdefault('log', open(f"{sampler_params['log_dir']}stepsampler_diagnostics.txt", "w") )
+
             # initialise step sampler 
             self.stepsampler = ultranest.stepsampler.SliceSampler(**stepsampler_params)
 
