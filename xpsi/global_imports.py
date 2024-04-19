@@ -11,6 +11,7 @@ __all__ = ["_np",
            "_2pi",
            "_4pi",
            "_c",
+           "_c_cgs",
            "_csq",
            "_km",
            "_kpc",
@@ -68,6 +69,7 @@ _pi = _m.pi
 _2pi = 2.0 * _pi
 _4pi = 4.0 * _pi
 _c = 2.99792458E8
+_c_cgs = _c*1E2
 _csq = _c * _c
 _kpc = 3.08567758e19
 _keV = 1.60217662e-16
@@ -89,3 +91,4 @@ def inv_gravradius(R):
 
 class xpsiError(Exception):
     """ Base exception for xpsi-specific runtime errors. """
+

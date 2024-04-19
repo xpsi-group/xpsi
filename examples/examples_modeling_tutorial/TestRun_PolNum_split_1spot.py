@@ -355,7 +355,7 @@ star.update()
 #start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
-energies = np.logspace(-1.0, np.log10(16.0), 400, base=10.0)
+energies = np.logspace(np.log10(0.15), np.log10(12.0), 400, base=10.0)
 photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 
 #end = time.time()
@@ -438,6 +438,27 @@ StokesU = photosphere.signalU[0][0]
 #plt.ylim(0.0,8.0e31)
 #plt.savefig("figs/spectrum_after_ism.png")
 #exit()
+
+#An example of how to add disk background to StokesI:
+add_disk_bkg = True
+if add_disk_bkg:
+    star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
+    from modules.CustomBackground_DiskBB import CustomBackground_DiskBB, k_disk_derive
+    k_disk = k_disk_derive()
+    T_in = get_T_in_log10_Kelvin(0.25) #(0.29)
+    R_in = 30.0 #55.0
+    values = {'T_in':T_in,'R_in':R_in,'K_disk': k_disk}
+    background = CustomBackground_DiskBB(bounds={}, values=values)#, interstellar = interstellar)
+    k_disk.star = star
+    k_disk.background = background
+    spectral_radiance = background.B_E
+    distance_m = 3.08567758128e19*distance
+    #Converting to photosphere.signal units
+    bkg = background.get_f_disk(energies, spectral_radiance)*distance_m**2/energies
+    #interstellar(energies, bkg)
+    for ip in range(len(hot.phases_in_cycles[0])):
+        StokesI[:,ip] = StokesI[:,ip] + bkg
+
 
 def get_photosphere_stokes_1spot():
     #Return signal from the spot to ixpeobssim
