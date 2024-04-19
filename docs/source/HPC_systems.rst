@@ -54,7 +54,7 @@ Prepare a new Python virtual environment for X-PSI (named for example "xpsi_py3"
     mkdir venvs
     python -m venv ./venvs/xpsi_py3
 
-To access all the loaded site packages when activating the virtual environment, one needs to modify the file ``./venvs/xpsi_py3/Pyvenv.cfg`` (using e.g. ``vim`` or ``emacs`` text editor) to change "false" into "true":
+To access all the loaded site packages when activating the virtual environment, one needs to modify the file ``./venvs/xpsi_py3/pyvenv.cfg`` (using e.g. ``vim`` or ``emacs`` text editor) to change "false" into "true":
 
 .. code-block:: bash
 
@@ -124,6 +124,7 @@ only need:
 
 .. code-block:: bash
 
+    git clone https://github.com/xpsi-group/xpsi.git
     cd ~/xpsi
     LDSHARED="gcc -shared" CC=gcc python setup.py install
 
