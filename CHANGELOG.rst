@@ -34,6 +34,40 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.2.1] - 2024-04-23
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Fixes and updates in the projection tool, post-processing, documentation, and example scripts.
+
+Fixed
+^^^^^
+
+* A bug in the projection tool for PDT-U model was fixed. (T.S., S.V.)
+
+Added
+^^^^^
+
+* Added a keyword argument ``ci_gap`` for ``xpsi/PostProcessing/_corner.py`` that can be used to adjust the vertical space between the reported credible intervals above the contour plots. (T.S.)
+
+Changed
+^^^^^^^
+
+* The installation instructions and example job script for Snellius cluster were updated. (T.S., B.D., M.H.)
+
+* Small updates done on the likelihood check and settings used in the fast example scripts. (B.D.)
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Serena Vinciguerra (S.V.),
+Bas Dorsman (B.D.),
+Mariska Hoogkamer (M.H.)
+
+
 [v2.2.0] - 2024-02-06
 ~~~~~~~~~~~~~~~~~~~~~
 
