@@ -1054,7 +1054,7 @@ class CornerPlotter(PostProcessor):
                                      fontsize=fontsize)
                         title_param_name = r'${}$'.format(param_name)
                         x_pos = 0.5
-                        y_pos = 1.05 + self.ci_gap * (len(title.split('\n')))
+                        y_pos = 1.05 + (self.ci_gap-0.02) * (len(title.split('\n')))
                         ax.text(x_pos, y_pos, title_param_name,
                                 color='black',
                                 horizontalalignment="center",
@@ -1163,7 +1163,7 @@ class CornerPlotter(PostProcessor):
                                      fontsize=fontsize)
                         title_param_name = r'${}$'.format(param_name)
                         x_pos = 0.5
-                        y_pos = 1.05 + self.ci_gap * (len(title.split('\n')))
+                        y_pos = 1.05 + (self.ci_gap-0.02) * (len(title.split('\n')))
                         ax.text(x_pos, y_pos, title_param_name,
                                 color='black',
                                 horizontalalignment="center",
