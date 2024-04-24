@@ -150,10 +150,12 @@ class CornerPlotter(PostProcessor):
             explicitly specified with kwarg ``lw_1d``.
             In addition, keyword arguments for avoiding unnecessary re-drawing of prior samples
             (``force_draw``, ``prior_samples_fnames`` and ``priors_identical``).
-            Param``precisions`` (a list of integers or Nones) can be used to define the decimal number
+            Param ``precisions`` (a list of integers or Nones) can be used to define the decimal number
             precision for each credible interval plotted. In case of 2 parameters, one can do e.g.
             precisions=[2,None] to use 2 digit decimal precision for the first parameter and use the
             default automatic precision for the second.
+            Param ``ci_gap`` (a float) can be used to adjust the white gaps between the texts printed
+            above the diagonal (the default is 0.12).
 
 
         """
@@ -451,6 +453,7 @@ class CornerPlotter(PostProcessor):
             * setting for not drawing prior samples but reading them from a file instead or saving them in a file if no such already exists ``force_draw = [False,]``
             * setting for choosing a non-default file name to be used if samples are not re-drawn: ``prior_samples_fnames=["name.npy",]``
             * setting for plotting the priors only for one of the runs if they are known to be identical: ``priors_identical=True``
+            * setting to modify the white space gaps (in float) between the printed texts above the diagonal: ``ci_gap``
 
         .. note::
 
@@ -681,6 +684,11 @@ class CornerPlotter(PostProcessor):
                 precisions = [None]*plotter.subplots.shape[0]
         else:
             precisions = [None]*plotter.subplots.shape[0]
+
+        if "ci_gap" in kwargs:
+            self.ci_gap = kwargs.get("ci_gap")
+        else:
+            self.ci_gap = 0.12
 
         self.tot0=0.
         for sub_set in range(len(self.subset)):
@@ -1022,7 +1030,7 @@ class CornerPlotter(PostProcessor):
 
                     if self.credible_interval_1d_all_show:
                         x_pos = 0.5
-                        y_pos = 1.05 + 0.12 * (self.r+self.sub_set)
+                        y_pos = 1.05 + self.ci_gap * (self.r+self.sub_set)
                         ax.text(x_pos, y_pos, title,
                                 color=color,
                                 horizontalalignment="center",
@@ -1032,7 +1040,7 @@ class CornerPlotter(PostProcessor):
 
 
                         if self.tot0 == self.tot1:
-                            y_pos = 1.05 + 0.12 * (1+self.r+self.sub_set)
+                            y_pos = 1.05 + self.ci_gap * (1+self.r+self.sub_set)
                             title_param_name = r'${}$'.format(param_name)
                             ax.text(x_pos, y_pos, title_param_name,
                                     color='black',
@@ -1046,7 +1054,7 @@ class CornerPlotter(PostProcessor):
                                      fontsize=fontsize)
                         title_param_name = r'${}$'.format(param_name)
                         x_pos = 0.5
-                        y_pos = 1.05 + 0.10 * (len(title.split('\n')))
+                        y_pos = 1.05 + (self.ci_gap-0.02) * (len(title.split('\n')))
                         ax.text(x_pos, y_pos, title_param_name,
                                 color='black',
                                 horizontalalignment="center",
@@ -1134,7 +1142,7 @@ class CornerPlotter(PostProcessor):
 
                     if self.credible_interval_1d_all_show:
                         x_pos = 0.5
-                        y_pos = 1.05 + 0.12 * (self.r+self.sub_set)
+                        y_pos = 1.05 + self.ci_gap * (self.r+self.sub_set)
                         ax.text(x_pos, y_pos, title,
                                 color=color,
                                 horizontalalignment="center",
@@ -1142,7 +1150,7 @@ class CornerPlotter(PostProcessor):
                                 fontsize=fontsize,
                                 transform=ax.transAxes)
                         if self.tot0 == self.tot1:
-                            y_pos = 1.05 + 0.12 * (1+self.r+self.sub_set)
+                            y_pos = 1.05 + self.ci_gap * (1+self.r+self.sub_set)
                             title_param_name = r'${}$'.format(param_name)
                             ax.text(x_pos, y_pos, title_param_name,
                                     color='black',
@@ -1155,7 +1163,7 @@ class CornerPlotter(PostProcessor):
                                      fontsize=fontsize)
                         title_param_name = r'${}$'.format(param_name)
                         x_pos = 0.5
-                        y_pos = 1.05 + 0.10 * (len(title.split('\n')))
+                        y_pos = 1.05 + (self.ci_gap-0.02) * (len(title.split('\n')))
                         ax.text(x_pos, y_pos, title_param_name,
                                 color='black',
                                 horizontalalignment="center",
