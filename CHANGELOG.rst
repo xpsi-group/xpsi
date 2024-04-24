@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v2.2.1] - 2024-04-23
+[v2.2.1] - 2024-04-24
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -58,6 +58,8 @@ Changed
 * The installation instructions and example job script for Snellius cluster were updated. (T.S., B.D., M.H.)
 
 * Small updates done on the likelihood check and settings used in the fast example scripts. (B.D.)
+
+* Post-processing tutorial updated to account for the changes in the imported example modules. (T.S.)
 
 Attribution
 ^^^^^^^^^^^
