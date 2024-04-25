@@ -140,6 +140,7 @@ primary =  CustomHotRegion(bounds=bounds,
                             num_rays=200,
                             fbeam=True,
                             atm_ext="Num4D",
+                            image_order_limit=3,
                             beam_opt=2,
                             prefix='p')
               	                    
@@ -198,6 +199,7 @@ secondary =  CustomHotRegion(bounds=bounds,
                             is_antiphased=True,
                             fbeam=True,
                             atm_ext="Num4D",
+                            image_order_limit=3,
                             beam_opt=2,
                             prefix='s')	                      
 
@@ -450,11 +452,9 @@ class CustomPrior(xpsi.Prior):
 
         ref = self.parameters.star.spacetime # shortcut
 
-        # limit polar radius to try to exclude deflections >= \pi radians
-        # due to oblateness this does not quite eliminate all configurations
-        # with deflections >= \pi radians
+        # limit polar radius to be outside the Schwarzschild photon sphere
         R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
-        if R_p < 1.76 / ref.R_r_s:
+        if R_p < 1.505 / ref.R_r_s:
             return -np.inf
 
         # polar radius at photon sphere for ~static star (static ambient spacetime)
