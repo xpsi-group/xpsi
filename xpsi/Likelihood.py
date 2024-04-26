@@ -111,13 +111,20 @@ class Likelihood(ParameterSubspace):
                                                    list(signals),
                                                    max_energy)
 
+            if photosphere.hot is not None:
+                signal.surf = photosphere.hot
+            else:
+                signal.surf = photosphere.everywhere
+                signal.surf.do_fast = False
+                signal.surf.objects = [signal.surf]
+
             for signal in signals:
                 signal.energies = energies
-                signal.phases = photosphere.hot.phases_in_cycles
+                signal.phases = signal.surf.phases_in_cycles
 
-                if photosphere.hot.do_fast:
+                if signal.surf.do_fast:
                     signal.fast_energies = fast_energies
-                    signal.fast_phases = photosphere.hot.fast_phases_in_cycles
+                    signal.fast_phases = signal.surf.fast_phases_in_cycles
                     self._do_fast = True
 
         self.threads = threads
@@ -408,7 +415,7 @@ class Likelihood(ParameterSubspace):
 
                 if not fast_mode and reregistered:
                     if synthesise:
-                        hot = photosphere.hot
+                        hot = signal.surf
                         try:
                             kws = kwargs.pop(signal.prefix)
                         except AttributeError:
@@ -419,7 +426,7 @@ class Likelihood(ParameterSubspace):
                         signal.synthesise(threads=self._threads, **kws)
                     else:
                         try:
-                            hot = photosphere.hot
+                            hot = signal.surf
                             shifts = [h['phase_shift'] for h in hot.objects]
                             signal.shifts = _np.array(shifts)
                             signal(threads=self._threads, llzero=self._llzero)
