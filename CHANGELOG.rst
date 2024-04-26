@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v2.2.2] - 2024-04-24
+[v2.2.2] - 2024-04-26
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -58,6 +58,8 @@ Changed
 ^^^^^^^
 
 * The default ``xpsi/surface_radiation_field/local_variables.pyx`` extension is now ``PDT_U.pyx`` instead of ``uniform.pyx``. The former is a more general version of the latter, and also a more general version of ``PST_U.pyx`` and ``two_spots.pyx``. The new default extension can be used to compute neutron star images for all the aforementioned models without re-installing X-PSI. For the simpler models, one can define e.g. the global variable for ceding region size to be zero if no ceding regions exist in the model. The tutorials have been updated to have those variables defined when needed.
+
+* Example scripts updated to have settings more commonly used in NICER analyses (for compactness limits and multiple imaging orders).
 
 Removed
 ^^^^^^^
