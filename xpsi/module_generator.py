@@ -1931,7 +1931,6 @@ get_member_settings(args.hot_region_model[0])
 get_bounds_and_values(args.prefix[0], args.hot_region_model[0])
 
 if 'NSX' in args.hot_atmosphere_model or 'nsx' in args.hot_atmosphere_model:
-    print(args.hot_atmosphere_model)
     module += (
     '''
 primary = xpsi.HotRegion(bounds=bounds,
@@ -2053,16 +2052,30 @@ hot = primary
     )
 
 if args.elsewhere_atmosphere_model is not None:
-    module += (
-    '''
+    if 'NSX' in args.elsewhere_atmosphere_model or 'nsx' in args.elsewhere_atmosphere_model:
+        module += (
+        '''
 elsewhere = xpsi.Elsewhere(bounds=dict(elsewhere_temperature = parse_bounds(args.elsewhere_temperature_bounds,
-                                                                                     args.elsewhere_temperature_value)),
+                                                                                    args.elsewhere_temperature_value)),
                                     values=dict(elsewhere_temperature = parse_value(args.elsewhere_temperature_value)),
                                     sqrt_num_cells=args.elsewhere_sqrt_num_cells,
                                     num_rays=args.elsewhere_num_rays,
-                                    image_order_limit=args.image_order_limit)
-    '''
-    )
+                                    image_order_limit=args.image_order_limit,
+                                    atm_ext="Num4D")
+        '''
+        )
+    else:
+        module += (
+        '''
+elsewhere = xpsi.Elsewhere(bounds=dict(elsewhere_temperature = parse_bounds(args.elsewhere_temperature_bounds,
+                                                                                    args.elsewhere_temperature_value)),
+                                    values=dict(elsewhere_temperature = parse_value(args.elsewhere_temperature_value)),
+                                    sqrt_num_cells=args.elsewhere_sqrt_num_cells,
+                                    num_rays=args.elsewhere_num_rays,
+                                    image_order_limit=args.image_order_limit,
+                                    atm_ext="BB")
+        '''
+        )        
 else:
     module += (
     '''
