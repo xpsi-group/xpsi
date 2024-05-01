@@ -2131,7 +2131,7 @@ if __name__ == '__main__':
 
         wrapped_params = [0] * len(likelihood)
         for name in likelihood.names:
-            if 'phase_shift' or 'azimuth' in name:
+            if ('phase_shift' in name) or ('azimuth' in name):
                 wrapped_params[likelihood.index(name)] = 1
 
         if args.sample_files_root is None:
