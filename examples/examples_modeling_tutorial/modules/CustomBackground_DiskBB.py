@@ -7,10 +7,13 @@ Created on Thu Dec  7 15:59:51 2023
 """
 
 import xpsi
-from xpsi.global_imports import  _keV, _k_B, _c_cgs, _h_keV
+from xpsi.global_imports import  _keV, _k_B, _h_keV
 k_B_over_keV = _k_B / _keV
 import numpy as np
 from scipy.integrate import quad
+
+_c = 2.99792458E8
+_c_cgs = _c*1E2
 
 def get_mids_from_edges(edges):
     mids_len = len(edges)-1
