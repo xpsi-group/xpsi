@@ -34,6 +34,33 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.2.3] - 2024-05-08
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Likelihood class was modified to allow inference runs with Everywhere objects without re-writing the Likelihood class. In addition, a few bugs in the module generator were fixed.
+
+Fixed
+^^^^^
+
+* Likelihood class was modified so that it can be directly used also for Everywhere objects (and not only for Hotregion objects). (Y.G., Y.K, T.S.)
+
+* A bug in the module generator was fixed, so that selecting blackbody atmosphere works correctly. (D.C.)
+
+* A bug in the module generator was fixed, so that not all the parameters are accidentally wrapped. (D.C., L.M.)
+
+Attribution
+^^^^^^^^^^^
+
+Devarshi Choudhury (D.C.),
+Ylvie Gerritsma (Y.G.),
+Yves Kini (Y.K.),
+Lucien Mauviard-Haag (L.M.),
+Tuomo Salmi (T.S.)
+
+
 [v2.2.2] - 2024-04-26
 ~~~~~~~~~~~~~~~~~~~~~
 
