@@ -110,21 +110,20 @@ class Likelihood(ParameterSubspace):
             fast_energies = construct_energy_array(num,
                                                    list(signals),
                                                    max_energy)
-
             if photosphere.hot is not None:
-                signal.surf = photosphere.hot
+                photosphere.surf = photosphere.hot
             else:
-                signal.surf = photosphere.everywhere
-                signal.surf.do_fast = False
-                signal.surf.objects = [signal.surf]
+                photosphere.surf = photosphere.everywhere
+                photosphere.surf.do_fast = False
+                photosphere.surf.objects = [photosphere.surf]
 
             for signal in signals:
                 signal.energies = energies
-                signal.phases = signal.surf.phases_in_cycles
+                signal.phases = photosphere.surf.phases_in_cycles
 
-                if signal.surf.do_fast:
+                if photosphere.surf.do_fast:
                     signal.fast_energies = fast_energies
-                    signal.fast_phases = signal.surf.fast_phases_in_cycles
+                    signal.fast_phases = photosphere.surf.fast_phases_in_cycles
                     self._do_fast = True
 
         self.threads = threads
@@ -415,7 +414,7 @@ class Likelihood(ParameterSubspace):
 
                 if not fast_mode and reregistered:
                     if synthesise:
-                        hot = signal.surf
+                        hot = photosphere.surf
                         try:
                             kws = kwargs.pop(signal.prefix)
                         except AttributeError:
@@ -426,7 +425,7 @@ class Likelihood(ParameterSubspace):
                         signal.synthesise(threads=self._threads, **kws)
                     else:
                         try:
-                            hot = signal.surf
+                            hot = photosphere.surf
                             shifts = [h['phase_shift'] for h in hot.objects]
                             signal.shifts = _np.array(shifts)
                             signal(threads=self._threads, llzero=self._llzero)
