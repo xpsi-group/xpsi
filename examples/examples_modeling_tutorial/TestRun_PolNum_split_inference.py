@@ -738,7 +738,7 @@ runtime_params = {'resume': False,
 likelihood.reinitialise()
 likelihood.clear_cache()
 
-true_logl = -1.2738517361e+06
+true_logl = -1.5663833842e+06
 
 if __name__ == '__main__': # sample from the posterior
     # inform source code that parameter objects updated when inverse sampling
