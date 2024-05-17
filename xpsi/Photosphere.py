@@ -899,7 +899,7 @@ class Photosphere(ParameterSubspace):
             cached.
 
         :param bool plot_sky_maps:
-            Plot (specific) intenity sky maps at a sequence of phases, or
+            Plot (specific) intensity sky maps at a sequence of phases, or
             by averaging over phase. Maps can be made at one more energies
             or energy intervals. The images will be written to disk and
             can be used as frames in an animated sequence.
@@ -995,7 +995,8 @@ class Photosphere(ParameterSubspace):
         if not isinstance(energies, _np.ndarray):
             raise TypeError('Imaging energies must be in a 1D ndarray.')
 
-        time_is_space = sky_map_kwargs.get('time_is_space', False)
+        if sky_map_kwargs is not None:
+            time_is_space = sky_map_kwargs.get('time_is_space', False)
 
         if reimage:
             if plot_sky_maps and not cache_intensities:
@@ -1155,6 +1156,13 @@ class Photosphere(ParameterSubspace):
         if animate_kwargs is None: animate_kwargs = {}
 
         if plot_sky_maps or animate_sky_maps:
+            if cache_phase_indices is None:
+                cache_phase_indices = _np.arange(len(phases),
+                                                  dtype=_np.int32)
+            if cache_energy_indices is None:
+                cache_energy_indices = _np.arange(len(energies),
+                                                  dtype=_np.int32)
+
             root_dir = sky_map_kwargs.pop('root_dir', './images')
             file_root = sky_map_kwargs.pop('file_root', 'skymap')
             file_root = _os.path.join(root_dir, file_root)

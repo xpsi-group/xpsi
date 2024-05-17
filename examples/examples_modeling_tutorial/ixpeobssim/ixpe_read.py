@@ -42,8 +42,6 @@ def readData_pcube_ebin(Filename):
       for i in range(0, NPhadat):
             phase[i] = (phase_points[i + 1] + phase_points[i]) / 2.0
 
-
-
       for p in range(NPhadat):
             for d in range(1, NDet + 1):
                   if (p < 10):

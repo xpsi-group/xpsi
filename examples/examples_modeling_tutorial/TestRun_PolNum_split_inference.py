@@ -435,18 +435,19 @@ bounds = dict(super_colatitude = (None, None),
               super_te = (40.0, 200.0))
 
 primary = CustomHotRegion_Accreting(bounds=bounds,
-                            values={},
-                            symmetry=True,
-                            omit=False,
-                            cede=False,
-                            concentric=False,
-                            sqrt_num_cells=32, #100
-                            min_sqrt_num_cells=10,
-                            max_sqrt_num_cells=64, #100
-                            num_leaves=100,
-                            num_rays=200,
-                            split=True,
-                            prefix='p')
+                                    values={},
+                                    symmetry=True,
+                                    omit=False,
+                                    cede=False,
+                                    concentric=False,
+                                    sqrt_num_cells=32, #100
+                                    min_sqrt_num_cells=10,
+                                    max_sqrt_num_cells=64, #100
+                                    num_leaves=100,
+                                    num_rays=200,
+                                    split=True,
+                                    image_order_limit=3,
+                                    prefix='p')
 
 bounds2 = dict(super_colatitude = (None, None),
                         super_radius = (None, None),
@@ -462,20 +463,21 @@ bounds2 = dict(super_colatitude = (None, None),
                         cede_te = (40.0, 200.0))
 
 secondary = CustomHotRegion_Accreting(bounds=bounds2, # can otherwise use same bounds
-                            values={},
-                            symmetry=True,
-                            omit=False,
-                            cede=True,
-                            concentric=False,
-                            sqrt_num_cells=32,
-                            min_sqrt_num_cells=10,
-                            max_sqrt_num_cells=100,
-                            num_leaves=100,
-                            num_rays=200,
-                            do_fast=False,
-                            is_antiphased=True,
-                            split=True,
-                            prefix='s')
+                                    values={},
+                                    symmetry=True,
+                                    omit=False,
+                                    cede=True,
+                                    concentric=False,
+                                    sqrt_num_cells=32,
+                                    min_sqrt_num_cells=10,
+                                    max_sqrt_num_cells=100,
+                                    num_leaves=100,
+                                    num_rays=200,
+                                    do_fast=False,
+                                    is_antiphased=True,
+                                    split=True,
+                                    image_order_limit=3,
+                                    prefix='s')
 
 
 from xpsi import HotRegions
@@ -645,11 +647,9 @@ class CustomPrior(xpsi.Prior):
 
         ref = self.parameters.star.spacetime # shortcut
 
-        # limit polar radius to try to exclude deflections >= \pi radians
-        # due to oblateness this does not quite eliminate all configurations
-        # with deflections >= \pi radians
+        # limit polar radius to be outside the Schwarzschild photon sphere
         R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
-        if R_p < 1.76 / ref.R_r_s:
+        if R_p < 1.505 / ref.R_r_s:
             return -np.inf
 
         mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
@@ -738,7 +738,7 @@ runtime_params = {'resume': False,
 likelihood.reinitialise()
 likelihood.clear_cache()
 
-true_logl = -1.5663833842e+06
+true_logl = -1.2738517361e+06
 
 if __name__ == '__main__': # sample from the posterior
     # inform source code that parameter objects updated when inverse sampling
