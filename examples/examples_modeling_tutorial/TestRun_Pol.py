@@ -91,7 +91,8 @@ if use_elsewhere:
 else:
     elsewhere = None
 
-photosphere = xpsi.Photosphere(hot = hot, elsewhere = elsewhere, stokes=True,
+bounds = dict(spin_axis_position_angle = (None, None))
+photosphere = xpsi.Photosphere(hot = hot, elsewhere = elsewhere, stokes=True, bounds=bounds,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 
@@ -106,6 +107,7 @@ p = [1.0368513939430604,
      6.087862992320039,
      0.26870812456714116,
      0.39140510783272897,
+     0.0,
      0.04346870860640872,
      0.8002010406881243,
      1.1165398710637626,

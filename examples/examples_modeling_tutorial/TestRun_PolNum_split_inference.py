@@ -532,8 +532,10 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
 
         self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, intensities)
 
+bounds = dict(spin_axis_position_angle = (None, None))
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True,
-                                values=dict(mode_frequency = spacetime['frequency']))
+                                values=dict(mode_frequency = spacetime['frequency']),
+                                bounds=bounds)
 
 photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
 photosphere.hot_atmosphere_Q = this_directory+'/model_data/Bobrikova_compton_slab_Q.npz'
@@ -549,6 +551,7 @@ p = [1.0368513939430604,
      6.087862992320039,
      0.26870812456714116,
      0.39140510783272897,
+     0.0,
      0.04346870860640872,
      0.8002010406881243,
      1.1165398710637626,

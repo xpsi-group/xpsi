@@ -288,7 +288,8 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
 
         self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, intensities)
 
-photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True,
+bounds = dict(spin_axis_position_angle = (None, None))
+photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True, bounds=bounds,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
@@ -307,6 +308,7 @@ radius = 12.0
 distance = 3.5
 inclination = 10.0 #60.0
 cos_i = math.cos(inclination*math.pi/180.0)
+chi0 = 0.0
 
 # Hotspot
 phase_shift = 0.0
@@ -325,6 +327,7 @@ p = [mass, #grav mass
       radius, #coordinate equatorial radius
       distance, # earth distance kpc
       cos_i, #cosine of earth inclination
+      chi0, #spin axis position angle
       phase_shift, #phase of hotregion
       super_colatitude, #colatitude of centre of superseding region
       super_radius,  #angular radius superceding region
