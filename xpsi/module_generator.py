@@ -1930,8 +1930,9 @@ concentric = False
 get_member_settings(args.hot_region_model[0])
 get_bounds_and_values(args.prefix[0], args.hot_region_model[0])
 
-module += (
-'''
+if 'NSX' in args.hot_atmosphere_model or 'nsx' in args.hot_atmosphere_model:
+    module += (
+    '''
 primary = xpsi.HotRegion(bounds=bounds,
                             values=values,
                             symmetry=symmetry,
@@ -1945,10 +1946,31 @@ primary = xpsi.HotRegion(bounds=bounds,
                             num_rays=args.{1}_num_rays,
                             is_antiphased={0},
                             image_order_limit=args.image_order_limit,
-                            atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
+                            atm_ext="Num4D",
                             prefix='{1}')
-'''.format(str(args.is_antiphased[0]), args.prefix[0])
-)
+    '''.format(str(args.is_antiphased[0]), args.prefix[0])
+    )
+
+else:
+    module += (
+    '''
+primary = xpsi.HotRegion(bounds=bounds,
+                            values=values,
+                            symmetry=symmetry,
+                            omit=omit,
+                            cede=cede,
+                            concentric=concentric,
+                            sqrt_num_cells=args.{1}_sqrt_num_cells,
+                            min_sqrt_num_cells=args.{1}_min_sqrt_num_cells,
+                            max_sqrt_num_cells=args.{1}_max_sqrt_num_cells,
+                            num_leaves=args.{1}_num_leaves,
+                            num_rays=args.{1}_num_rays,
+                            is_antiphased={0},
+                            image_order_limit=args.image_order_limit,
+                            atm_ext="BB",
+                            prefix='{1}')
+    '''.format(str(args.is_antiphased[0]), args.prefix[0])
+    )
 
 if len(args.hot_region_model) == 2:
 
@@ -1975,8 +1997,9 @@ values = dict(super_colatitude = derived_parameter(lambda x: math.pi - x, '{0}__
         get_member_settings(args.hot_region_model[1])
         get_bounds_and_values(args.prefix[1], args.hot_region_model[1])
 
-    module += (
-    '''
+    if 'NSX' in args.hot_atmosphere_model or 'nsx' in args.hot_atmosphere_model:
+        module += (
+        '''
 secondary = xpsi.HotRegion(bounds=bounds,
                                 values=values,
                                 symmetry=symmetry,
@@ -1990,10 +2013,31 @@ secondary = xpsi.HotRegion(bounds=bounds,
                                 num_rays=args.{1}_num_rays,
                                 is_antiphased={0},
                                 image_order_limit=args.image_order_limit,
-                                atm_ext="Num4D" if 'NSX' or 'nsx' in args.hot_atmosphere_model else "BB",
+                                atm_ext="Num4D",
                                 prefix='{1}')
-    '''.format(str(not args.is_antiphased[0] if args.antipodal_reflection_symmetry else args.is_antiphased[1]), args.prefix[1])
-    )
+        '''.format(str(not args.is_antiphased[0] if args.antipodal_reflection_symmetry else args.is_antiphased[1]), args.prefix[1])
+        )
+    
+    else:
+        module += (
+        '''
+secondary = xpsi.HotRegion(bounds=bounds,
+                                values=values,
+                                symmetry=symmetry,
+                                omit=omit,
+                                cede=cede,
+                                concentric=concentric,
+                                sqrt_num_cells=args.{1}_sqrt_num_cells,
+                                min_sqrt_num_cells=args.{1}_min_sqrt_num_cells,
+                                max_sqrt_num_cells=args.{1}_max_sqrt_num_cells,
+                                num_leaves=args.{1}_num_leaves,
+                                num_rays=args.{1}_num_rays,
+                                is_antiphased={0},
+                                image_order_limit=args.image_order_limit,
+                                atm_ext="BB",
+                                prefix='{1}')
+        '''.format(str(not args.is_antiphased[0] if args.antipodal_reflection_symmetry else args.is_antiphased[1]), args.prefix[1])
+        )        
 
     module += (
     '''
@@ -2008,16 +2052,30 @@ hot = primary
     )
 
 if args.elsewhere_atmosphere_model is not None:
-    module += (
-    '''
+    if 'NSX' in args.elsewhere_atmosphere_model or 'nsx' in args.elsewhere_atmosphere_model:
+        module += (
+        '''
 elsewhere = xpsi.Elsewhere(bounds=dict(elsewhere_temperature = parse_bounds(args.elsewhere_temperature_bounds,
-                                                                                     args.elsewhere_temperature_value)),
+                                                                                    args.elsewhere_temperature_value)),
                                     values=dict(elsewhere_temperature = parse_value(args.elsewhere_temperature_value)),
                                     sqrt_num_cells=args.elsewhere_sqrt_num_cells,
                                     num_rays=args.elsewhere_num_rays,
-                                    image_order_limit=args.image_order_limit)
-    '''
-    )
+                                    image_order_limit=args.image_order_limit,
+                                    atm_ext="Num4D")
+        '''
+        )
+    else:
+        module += (
+        '''
+elsewhere = xpsi.Elsewhere(bounds=dict(elsewhere_temperature = parse_bounds(args.elsewhere_temperature_bounds,
+                                                                                    args.elsewhere_temperature_value)),
+                                    values=dict(elsewhere_temperature = parse_value(args.elsewhere_temperature_value)),
+                                    sqrt_num_cells=args.elsewhere_sqrt_num_cells,
+                                    num_rays=args.elsewhere_num_rays,
+                                    image_order_limit=args.image_order_limit,
+                                    atm_ext="BB")
+        '''
+        )        
 else:
     module += (
     '''
@@ -2073,7 +2131,7 @@ if __name__ == '__main__':
 
         wrapped_params = [0] * len(likelihood)
         for name in likelihood.names:
-            if 'phase_shift' or 'azimuth' in name:
+            if ('phase_shift' in name) or ('azimuth' in name):
                 wrapped_params[likelihood.index(name)] = 1
 
         if args.sample_files_root is None:
@@ -2753,7 +2811,7 @@ module += (
 '''
 )
 
-if 'NSX' or 'nsx' in args.hot_atmosphere_model:
+if 'NSX' in args.hot_atmosphere_model or 'nsx' in args.hot_atmosphere_model:
     module += (
     '''
         for g in grav:
