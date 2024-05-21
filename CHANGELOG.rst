@@ -40,7 +40,7 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* A new parameter for the spin axis position angle was added when modelling polarized X-rays. In addition, a few bugs in the module generator were fixed.
+* A new parameter for the spin axis position angle was added when modelling polarized X-rays. In addition, polarimetry examples were udpated and a few bugs in the module generator were fixed.
 
 Fixed
 ^^^^^
@@ -52,12 +52,15 @@ Fixed
 Added
 ^^^^^
 
-* A new parameter called ``spin_axis_position_angle`` was added to the Photosphere class when calculating the pulses using the ``stokes=True`` option. This is the angle between the north and the projection of the pulsar rotation axis on the plane of the sky, affecting the observed polarization angle and Stokes parameters.
+* A new parameter called ``spin_axis_position_angle`` was added to the Photosphere class when calculating the pulses using the ``stokes=True`` option. This is the angle between the observer north and the projection of the pulsar rotation axis on the plane of the sky, affecting the observed polarization angle and Stokes parameters. (T.S.)
+
+* An example of using a constant accretion disk background was added in ``xpsi/examples/examples_modeling_tutorial/TestRun_PolNum_split_1spot.py``. (T.S., B.D.)
 
 Attribution
 ^^^^^^^^^^^
 
 Tuomo Salmi (T.S.),
+Bas Dorsman (B.D.),
 Devarshi Choudhury (D.C.),
 Lucien Mauviard-Haag (L.M.),
 
