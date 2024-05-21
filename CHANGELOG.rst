@@ -34,6 +34,34 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.2.3] - 2024-05-21
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* A new parameter for the spin axis position angle was added when modelling polarized X-rays. In addition, a few bugs in the module generator were fixed.
+
+Fixed
+^^^^^
+
+* A bug in the module generator was fixed, so that selecting blackbody atmosphere works correctly. (D.C.)
+
+* A bug in the module generator was fixed, so that not all the parameters are accidentally wrapped. (D.C., L.M.)
+
+Added
+^^^^^
+
+* A new parameter called ``spin_axis_position_angle`` was added to the Photosphere class when calculating the pulses using the ``stokes=True`` option. This is the angle between the north and the projection of the pulsar rotation axis on the plane of the sky, affecting the observed polarization angle and Stokes parameters.
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Devarshi Choudhury (D.C.),
+Lucien Mauviard-Haag (L.M.),
+
+
 [v2.2.2] - 2024-04-26
 ~~~~~~~~~~~~~~~~~~~~~
 
