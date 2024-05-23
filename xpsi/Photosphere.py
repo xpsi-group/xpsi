@@ -159,10 +159,28 @@ class Photosphere(ParameterSubspace):
                                    symbol = r'$f_{\rm mode}$',
                                    value = values.get('mode_frequency', None))
 
-        super(Photosphere, self).__init__(mode_frequency,
-                                          hot, elsewhere, everywhere,
-                                          custom,
-                                          **kwargs)
+        if stokes:
+            doc = """
+            Spin axis position angle measured from the north counterclock-
+            wise to the projection of the rotation axis on the plane of the
+            sky [in radians].
+            """
+            spin_axis_position_angle = Parameter('spin_axis_position_angle',
+                                       strict_bounds = (-_np.pi/2.0, _np.pi/2.0),
+                                       bounds = bounds.get('spin_axis_position_angle', None),
+                                       doc = doc,
+                                       symbol = r'$\chi_{0}$',
+                                       value = values.get('spin_axis_position_angle', None))
+
+            super(Photosphere, self).__init__(mode_frequency, spin_axis_position_angle,
+                                              hot, elsewhere, everywhere,
+                                              custom,
+                                              **kwargs)
+        else:
+            super(Photosphere, self).__init__(mode_frequency,
+                                              hot, elsewhere, everywhere,
+                                              custom,
+                                              **kwargs)
 
     @property
     def hot_atmosphere(self):
@@ -395,6 +413,16 @@ class Photosphere(ParameterSubspace):
                         self._signalQ = (self._signalQ,)
                     if not isinstance(self._signalU[0], tuple):
                         self._signalU = (self._signalU,)
+                    #Rotate the Stokes parameters based on position of the spin axis:
+                    chi_rad = self["spin_axis_position_angle"]
+                    tempQ = [list(x) for x in self._signalQ]
+                    tempU = [list(x) for x in self._signalU]
+                    for ih in range(0,len(self._signalQ)):
+                        for ic in range(0,len(self._signalQ[ih][:])):
+                            tempQ[ih][ic] = _np.cos(2.0*chi_rad) * tempQ[ih][ic] - _np.sin(2.0*chi_rad) * tempU[ih][ic]
+                            tempU[ih][ic] = _np.sin(2.0*chi_rad) * tempQ[ih][ic] + _np.cos(2.0*chi_rad) * tempU[ih][ic]
+                    self._signalQ = tuple(map(tuple, tempQ))
+                    self._signalU = tuple(map(tuple, tempU))
                 else:
                     self._signal = self._hot.integrate(self._spacetime,
                                                    energies,
