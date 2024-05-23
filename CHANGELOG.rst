@@ -34,13 +34,13 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v2.2.3] - 2024-05-21
+[v2.2.3] - 2024-05-23
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* A new parameter for the spin axis position angle was added when modelling polarized X-rays. In addition, polarimetry examples were udpated and a few bugs in the module generator were fixed.
+* A new parameter for the spin axis position angle was added when modelling polarized X-rays. In addition, polarimetry examples were updated and a few bugs in the module generator were fixed.
 
 Fixed
 ^^^^^
