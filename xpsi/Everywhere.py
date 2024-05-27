@@ -163,6 +163,9 @@ class Everywhere(ParameterSubspace):
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
 
+        #Do-fast option is not supported for Everywhere.
+        self.do_fast = False
+
         if bounds is None: bounds = {}
         if values is None: values = {}
 

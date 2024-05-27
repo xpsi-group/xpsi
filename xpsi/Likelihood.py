@@ -110,20 +110,14 @@ class Likelihood(ParameterSubspace):
             fast_energies = construct_energy_array(num,
                                                    list(signals),
                                                    max_energy)
-            if photosphere.hot is not None:
-                photosphere.surf = photosphere.hot
-            else:
-                photosphere.surf = photosphere.everywhere
-                photosphere.surf.do_fast = False
-                photosphere.surf.objects = [photosphere.surf]
 
             for signal in signals:
                 signal.energies = energies
-                signal.phases = photosphere.surf.phases_in_cycles
+                signal.phases = photosphere.surface.phases_in_cycles
 
-                if photosphere.surf.do_fast:
+                if photosphere.surface.do_fast:
                     signal.fast_energies = fast_energies
-                    signal.fast_phases = photosphere.surf.fast_phases_in_cycles
+                    signal.fast_phases = photosphere.surface.fast_phases_in_cycles
                     self._do_fast = True
 
         self.threads = threads
@@ -414,7 +408,7 @@ class Likelihood(ParameterSubspace):
 
                 if not fast_mode and reregistered:
                     if synthesise:
-                        hot = photosphere.surf
+                        hot = photosphere.surface
                         try:
                             kws = kwargs.pop(signal.prefix)
                         except AttributeError:
@@ -425,7 +419,7 @@ class Likelihood(ParameterSubspace):
                         signal.synthesise(threads=self._threads, **kws)
                     else:
                         try:
-                            hot = photosphere.surf
+                            hot = photosphere.surface
                             shifts = [h['phase_shift'] for h in hot.objects]
                             signal.shifts = _np.array(shifts)
                             signal(threads=self._threads, llzero=self._llzero)
