@@ -48,23 +48,23 @@ fname_ixpedata = this_directory+"/ixpeobssim/ixpeobssimdata/model_amsp_xpsi"
 
 #In the end, we probably want to use data in PHA format instead of PCUBE, to properly account for the instrument response.
 #For now, we just read some PCUBE data (created by ixpeobssim) for testing purposes (binned in 1 energy channel).
-phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, keVdat = readData_pcube_ebin(fname_ixpedata)
+phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, PD, PDerr, keVdat, MDP99 = readData_pcube_ebin(fname_ixpedata)
 
 IXPE_I.data = xpsi.Data([Idat[:,0]],
                        channels=np.arange(0, 1),
-                       phases=phase_IXPE,
+                       phases=np.linspace(0,1,len(phase_IXPE)+1),
                        first=0,
                        last=0,
                        exposure_time=1.0)
 IXPE_Q.data = xpsi.Data([qn[:,0]],
                        channels=np.arange(0, 1),
-                       phases=phase_IXPE,
+                       phases=np.linspace(0,1,len(phase_IXPE)+1),
                        first=0,
                        last=0,
                        exposure_time=1.0)
 IXPE_U.data = xpsi.Data([un[:,0]],
                        channels=np.arange(0, 1),
-                       phases=phase_IXPE,
+                       phases=np.linspace(0,1,len(phase_IXPE)+1),
                        first=0,
                        last=0,
                        exposure_time=1.0)
@@ -179,7 +179,7 @@ class CustomSignal_gaussian(xpsi.Signal):
             #(This version is still only for the most simple case)
             #sig1 = self._signals[0][0]
             #fsig = interp1d(self._phases[0], sig1, kind='linear')
-            #signal_dphase = fsig(self._data.phases)
+            #signal_dphase = fsig(phase_IXPE)
 
             #self.loglikelihood, self.expected_counts = \
             #    gaussian_likelihood_QnUn(self._data.phases,
@@ -534,8 +534,10 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
 
         self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, intensities)
 
+bounds = dict(spin_axis_position_angle = (None, None))
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True,
-                                values=dict(mode_frequency = spacetime['frequency']))
+                                values=dict(mode_frequency = spacetime['frequency']),
+                                bounds=bounds)
 
 photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
 photosphere.hot_atmosphere_Q = this_directory+'/model_data/Bobrikova_compton_slab_Q.npz'
@@ -551,6 +553,7 @@ p = [1.0368513939430604,
      6.087862992320039,
      0.26870812456714116,
      0.39140510783272897,
+     0.0,
      0.04346870860640872,
      0.8002010406881243,
      1.1165398710637626,
@@ -735,7 +738,7 @@ runtime_params = {'resume': False,
 likelihood.reinitialise()
 likelihood.clear_cache()
 
-true_logl = -1.2738517361e+06
+true_logl = -1.5663833842e+06
 
 if __name__ == '__main__': # sample from the posterior
     # inform source code that parameter objects updated when inverse sampling

@@ -16,6 +16,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+#To specify the directory where output is saved when running this script:
+#export IXPEOBSSIM_DATA=/home/xiaotuo/ixpeobssimdata/ixpeobssimdata_24X
+
 from __future__ import print_function, division
 
 import os
@@ -43,7 +46,7 @@ def simulate():
     """Run the simulation and fold the events in phase.
     """
     file_list = pipeline.xpobssim(duration=DURATION, startdate=input_model.start_date,
-                                  seed=0)#, occult=True, saa=True)
+                                  seed=0, deadtime=0.0)#, occult=True, saa=True)
     pipeline.xpphase(*file_list, suffix='folded', **input_model.ephemeris.dict())
 
 def select():

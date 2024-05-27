@@ -34,31 +34,56 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v2.2.3] - 2024-05-21
+[v2.2.4] - 2024-05-27
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* Likelihood class was modified to allow inference runs with Everywhere objects without re-writing the Likelihood class. In addition, a few bugs in the module generator were fixed.
+* Likelihood class was modified to allow inference runs with Everywhere objects without re-writing the Likelihood class.
 
 Fixed
 ^^^^^
 
-* Likelihood class was modified so that it can be directly used also for Everywhere objects (and not only for Hotregion objects). (Y.G., Y.K, T.S.)
+* Likelihood class was modified so that it can be directly used also for Everywhere objects (and not only for Hotregion objects). (T.S., Y.G., Y.K)
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Ylvie Gerritsma (Y.G.),
+Yves Kini (Y.K.)
+
+
+[v2.2.3] - 2024-05-23
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* A new parameter for the spin axis position angle was added when modelling polarized X-rays. In addition, polarimetry examples were updated and a few bugs in the module generator were fixed.
+
+Fixed
+^^^^^
 
 * A bug in the module generator was fixed, so that selecting blackbody atmosphere works correctly. (D.C.)
 
 * A bug in the module generator was fixed, so that not all the parameters are accidentally wrapped. (D.C., L.M.)
 
+Added
+^^^^^
+
+* A new parameter called ``spin_axis_position_angle`` was added to the Photosphere class when calculating the pulses using the ``stokes=True`` option. This is the angle between the observer north and the projection of the pulsar rotation axis on the plane of the sky, affecting the observed polarization angle and Stokes parameters. (T.S.)
+
+* An example of using a constant accretion disk background was added in ``xpsi/examples/examples_modeling_tutorial/TestRun_PolNum_split_1spot.py``. (T.S., B.D.)
+
 Attribution
 ^^^^^^^^^^^
 
+Tuomo Salmi (T.S.),
+Bas Dorsman (B.D.),
 Devarshi Choudhury (D.C.),
-Ylvie Gerritsma (Y.G.),
-Yves Kini (Y.K.),
-Lucien Mauviard-Haag (L.M.),
-Tuomo Salmi (T.S.)
+Lucien Mauviard-Haag (L.M.)
 
 
 [v2.2.2] - 2024-04-26
