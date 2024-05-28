@@ -34,6 +34,27 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.2.4] - 2024-05-28
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Likelihood class was modified to allow inference runs with Everywhere objects without re-writing the Likelihood class.
+
+Fixed
+^^^^^
+
+* Likelihood class was modified so that it can be directly used also for Everywhere objects (and not only for Hotregion objects). (T.S., Y.G., Y.K)
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Ylvie Gerritsma (Y.G.),
+Yves Kini (Y.K.)
+
+
 [v2.2.3] - 2024-05-23
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -62,7 +83,7 @@ Attribution
 Tuomo Salmi (T.S.),
 Bas Dorsman (B.D.),
 Devarshi Choudhury (D.C.),
-Lucien Mauviard-Haag (L.M.),
+Lucien Mauviard-Haag (L.M.)
 
 
 [v2.2.2] - 2024-04-26

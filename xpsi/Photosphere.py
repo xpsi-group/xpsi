@@ -144,6 +144,11 @@ class Photosphere(ParameterSubspace):
         self._elsewhere = elsewhere
         self._everywhere = everywhere
         self._stokes = stokes
+        if hot is not None:
+            self._surface = self._hot
+        else:
+            self._surface = self._everywhere
+            self.surface.objects = [self.surface]
 
         if bounds is None: bounds = {}
         if values is None: values = {}
@@ -315,6 +320,13 @@ class Photosphere(ParameterSubspace):
     def everywhere(self):
         """ Get the instance of :class:`~.Everywhere.Everywhere`. """
         return self._everywhere
+
+    @property
+    def surface(self):
+        """ Get the instance of :class:`~.HotRegion.HotRegion` or
+        :class:`~.Everywhere.Everywhere` depending on which approach is used
+        in the modelling. """
+        return self._surface
 
     @property
     def spacetime(self):
