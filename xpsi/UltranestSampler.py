@@ -115,4 +115,4 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
         # save extra output file special for xpsi post-processing
         output = np.column_stack((weights, -2*logl, data))        
         file_path = os.path.join(sampler_params['log_dir'], out_filename)
-        np.savetxt(file_path, output)
+        np.savetxt(f"{file_path}.txt", output)
