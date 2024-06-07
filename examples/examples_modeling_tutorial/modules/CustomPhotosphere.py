@@ -63,6 +63,8 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
 
         if disk is not None:
             self._disk = disk
+        else:
+            self._disk = None
 
         if hot is not None:
             self._surface = self._hot
