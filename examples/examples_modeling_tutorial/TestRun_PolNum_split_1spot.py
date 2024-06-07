@@ -156,11 +156,12 @@ print(repr(np.sum(photosphere.signal[0][0], axis=0)))
 print(repr(np.sum(photosphere.signalQ[0][0], axis=0)))
 print(repr(np.sum(photosphere.signalU[0][0], axis=0)))
 
-from modules.CustomInterstellar import CustomInterstellar
-
 StokesI = photosphere.signal[0][0]
 StokesQ = photosphere.signalQ[0][0]
 StokesU = photosphere.signalU[0][0]
+
+# from modules.CustomInterstellar import CustomInterstellar
+
 
 
 #Uncomment the following code (and download the required input table) if want to add interstellar attenuation to the modeled signal:

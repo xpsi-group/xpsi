@@ -342,7 +342,7 @@ cos_i = math.cos(inclination*math.pi/180.0)
 chi0 = 0.0
 
 # Hotspot
-phase_shift =  0.226365126031355196E+00
+phase_shift = 0.226365126031355196E+00
 super_colatitude = 0.175993450466385537E+00
 super_radius = 0.156951249537834525E+01
 
@@ -378,14 +378,14 @@ if use_elsewhere:
 
 star(p)
 star.update()
-# start = time.time()
+start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
 energies = np.logspace(np.log10(0.15), np.log10(12.0), 100, base=10.0)
 photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 
-# end = time.time()
-# print("Time spent in integration:",end - start)
+end = time.time()
+print("Time spent in integration:",end - start)
 #exit()
 
 # print("Bolometric profiles for I, Q, and U:")
@@ -393,13 +393,10 @@ photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 # print(repr(np.sum(photosphere.signalQ[0][0], axis=0)))
 # print(repr(np.sum(photosphere.signalU[0][0], axis=0)))
 
-from modules.CustomInterstellar import CustomInterstellar
-
-
-StokesI = photosphere.signal[0][0]
-StokesQ = photosphere.signalQ[0][0]
-StokesU = photosphere.signalU[0][0]
-print('stokesI',StokesI)
+# StokesI = photosphere.signal[0][0]
+# StokesQ = photosphere.signalQ[0][0]
+# StokesU = photosphere.signalU[0][0]
+# print('stokesI',StokesI)
 
 
 
