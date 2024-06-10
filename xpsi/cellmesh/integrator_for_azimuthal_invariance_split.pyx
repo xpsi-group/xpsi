@@ -49,10 +49,10 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
                                                    free_preload)
 
-from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot,
-                                               eval_hot_I,
-                                               eval_hot_norm,
-                                               free_hot,
+from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot_Num5D,
+                                               eval_hot_Num5D_I,
+                                               eval_hot_norm_Num5D,
+                                               free_hot_Num5D,
                                                produce_2D_data,
                                                make_atmosphere_2D)
 
@@ -253,9 +253,9 @@ def integrate(size_t numThreads,
 
     if hot_atmosphere:
         hot_preloaded = init_preload(hot_atmosphere)
-        hot_data = init_hot(N_T, hot_preloaded)
+        hot_data = init_hot_Num5D(N_T, hot_preloaded)
     else:
-        hot_data = init_hot(N_T, NULL)
+        hot_data = init_hot_Num5D(N_T, NULL)
 
     cdef double[:,:,::1] correction
     cdef int perform_correction
@@ -454,7 +454,15 @@ def integrate(size_t numThreads,
                                 for p in range(N_E):
                                     E_prime = energies[p] / _Z
                                     E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
+                                    
+                                    # printf("E_electronrest %.8e\n", E_electronrest)
+                                    # printf("srcCellParams[i,J,0] %.8e\n", srcCellParams[i,J,0])
+                                    # printf("srcCellParams[i,J,1] %.8e\n", srcCellParams[i,J,1])
+                                    # printf("srcCellParams[i,J,2] %.8e\n", srcCellParams[i,J,2])
+
                                     I_E2D = eval_hot_2D_I(T, E_electronrest, _ABB, hot_data_2D)
+
+                                    # printf("I_E2D = %.8e\n", I_E2D)
 
                                     if perform_correction == 1:
                                         correction_I_E = eval_elsewhere(T,
@@ -465,7 +473,7 @@ def integrate(size_t numThreads,
                                                                         0)
                                         correction_I_E = correction_I_E * eval_elsewhere_norm()
 
-                                    (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E2D * eval_hot_norm() - correction_I_E) * _GEOM
+                                    (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E2D * eval_hot_norm_Num5D() - correction_I_E) * _GEOM
 
                         if k == 0: # if initially visible at first/last phase steps
                             # periodic
@@ -659,7 +667,7 @@ def integrate(size_t numThreads,
         free_preload(hot_preloaded)
         free_preload(hot_preloaded_2D)
 
-    free_hot(N_T, hot_data)
+    free_hot_Num5D(N_T, hot_data)
     free_hot_2D(N_T, hot_data_2D)
 
     if perform_correction == 1:

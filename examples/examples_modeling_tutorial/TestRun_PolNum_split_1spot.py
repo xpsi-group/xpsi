@@ -151,10 +151,10 @@ photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 #print("Time spent in integration:",end - start)
 #exit()
 
-print("Bolometric profiles for I, Q, and U:")
-print(repr(np.sum(photosphere.signal[0][0], axis=0)))
-print(repr(np.sum(photosphere.signalQ[0][0], axis=0)))
-print(repr(np.sum(photosphere.signalU[0][0], axis=0)))
+# print("Bolometric profiles for I, Q, and U:")
+# print(repr(np.sum(photosphere.signal[0][0], axis=0)))
+# print(repr(np.sum(photosphere.signalQ[0][0], axis=0)))
+# print(repr(np.sum(photosphere.signalU[0][0], axis=0)))
 
 StokesI = photosphere.signal[0][0]
 StokesQ = photosphere.signalQ[0][0]
@@ -171,12 +171,12 @@ StokesU = photosphere.signalU[0][0]
 #interstellar(energies, StokesQ)
 #interstellar(energies, StokesU)
 
-#plt.plot(energies[0:50],np.sum(StokesI,axis=1)[0:50])
+plt.plot(energies[0:50],np.sum(StokesI,axis=1)[0:50])
 #print(energies[0:130])
-#print(np.sum(StokesI,axis=1)[0:130])
-#plt.ylabel('Flux [?]')
-#plt.xlabel('Energy [keV]')
-#plt.ylim(0.0,8.0e31)
+print(np.sum(StokesI,axis=1)[0:130])
+plt.ylabel('Flux [?]')
+plt.xlabel('Energy [keV]')
+# plt.ylim(0.0,8.0e31)
 #plt.savefig("figs/spectrum_after_ism.png")
 #exit()
 

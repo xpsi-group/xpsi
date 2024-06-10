@@ -55,18 +55,21 @@ bounds = dict(super_colatitude = (None, None),
               super_tau = (0.5, 3.5),
               super_te = (40.0, 200.0))
 
+num_leaves=30
+
 primary = CustomHotRegion_Accreting(bounds=bounds,
                                     values={},
                                     symmetry=True,
                                     omit=False,
                                     cede=False,
                                     concentric=False,
-                                    sqrt_num_cells=32, #100
+                                    sqrt_num_cells=50, #100
                                     min_sqrt_num_cells=10,
                                     max_sqrt_num_cells=64, #100
-                                    num_leaves=100,
+                                    num_leaves=num_leaves,
                                     num_rays=200,
                                     split=True,
+                                    atm_ext='Num5D',
                                     image_order_limit=3,
                                     prefix='p')
 
@@ -307,16 +310,16 @@ class k_disk_derive(Derive):
    
 
 k_disk = k_disk_derive()
-T_in = get_T_in_log10_Kelvin(0.25) #(0.29)
-R_in = 30.0 #55.0
+T_in = get_T_in_log10_Kelvin(0.16845756373108872) #(0.29)
+R_in = 0.308122224729265000E+02 #55.0
 values = {'T_in':T_in,'R_in':R_in,'K_disk': k_disk}
 disk = Disk(bounds={}, values=values)
 
 from modules.CustomPhotosphere import CustomPhotosphere_NumA5
 
-
+stokes = True
 bounds = dict(spin_axis_position_angle = (None, None))
-photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True, disk=disk, bounds=bounds,
+photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=stokes, disk=None, bounds=bounds,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
@@ -337,35 +340,49 @@ k_disk.disk = disk
 mass = 1.4
 radius = 11.0
 distance = 2.7
-inclination = 40.
+inclination = 80.
 cos_i = math.cos(inclination*math.pi/180.0)
-chi0 = 0.0
+if stokes:
+    chi0 = 0.0
 
 # Hotspot
 phase_shift = 0.226365126031355196E+00
 super_colatitude = 0.175993450466385537E+00
-super_radius = 0.156951249537834525E+01
+super_radius = 30.*math.pi/180
 
 # Compton slab model parameters
-tbb=0.103616176435110115E-02
-te=0.729440224892133244E+02
-tau=0.153014380768402769E+01
+tbb=0.0025
+te=100.
+tau=2.0
 
 #Tbb = 1 keV <=> tbb = 0.002 (roughly)
 #Te = 50 keV <=>  te = 100 (roughly)
 
-p = [mass, #grav mass
-      radius, #coordinate equatorial radius
-      distance, # earth distance kpc
-      cos_i, #cosine of earth inclination
-      chi0, #spin axis position angle
-      phase_shift, #phase of hotregion
-      super_colatitude, #colatitude of centre of superseding region
-      super_radius,  #angular radius superceding region
-      tbb,
-      te,
-      tau
-      ]
+if stokes:
+    p = [mass, #grav mass
+          radius, #coordinate equatorial radius
+          distance, # earth distance kpc
+          cos_i, #cosine of earth inclination
+          chi0, #spin axis position angle
+          phase_shift, #phase of hotregion
+          super_colatitude, #colatitude of centre of superseding region
+          super_radius,  #angular radius superceding region
+          tbb,
+          te,
+          tau
+          ]
+elif not stokes:
+    p = [mass, #grav mass
+          radius, #coordinate equatorial radius
+          distance, # earth distance kpc
+          cos_i, #cosine of earth inclination
+          phase_shift, #phase of hotregion
+          super_colatitude, #colatitude of centre of superseding region
+          super_radius,  #angular radius superceding region
+          tbb,
+          te,
+          tau
+          ]
 
 # print(len(p))
 
@@ -381,11 +398,13 @@ star.update()
 start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
-energies = np.logspace(np.log10(0.15), np.log10(12.0), 100, base=10.0)
-photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
+energies = np.logspace(np.log10(0.15), np.log10(12.0), 40, base=10.0)
+multiple_times = 10
+for i in range(multiple_times):
+    photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 
 end = time.time()
-print("Time spent in integration:",end - start)
+print("Time spent in integration:",(end - start)/multiple_times)
 #exit()
 
 # print("Bolometric profiles for I, Q, and U:")
@@ -393,11 +412,22 @@ print("Time spent in integration:",end - start)
 # print(repr(np.sum(photosphere.signalQ[0][0], axis=0)))
 # print(repr(np.sum(photosphere.signalU[0][0], axis=0)))
 
-# StokesI = photosphere.signal[0][0]
+StokesI = photosphere.signal[0][0]
 # StokesQ = photosphere.signalQ[0][0]
 # StokesU = photosphere.signalU[0][0]
-# print('stokesI',StokesI)
+print('stokesI',StokesI)
+
+phases = np.linspace(0,1,num_leaves)
+from modules.helper_functions import CustomAxes
+fig, ax = plt.subplots()
+profile = CustomAxes.plot_2D_signal(ax, [StokesI], phases, [0,0], energies, 'energies')
+fig.colorbar(profile, ax=ax)
 
 
-
+# plt.plot(energies[0:50],np.sum(StokesI,axis=1)[0:50])
+# print(energies[0:130])
+# print(np.sum(StokesI,axis=1)[0:130])
+# plt.ylabel('Flux [?]')
+# plt.xlabel('Energy [keV]')
+# plt.ylim(0.0,8.0e31)
 

@@ -233,6 +233,6 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
     
             # print('signal inside customphotosphere: ', self._signal)
             if self._disk is not None: 
-                # print('signal',self._signal)
-                self._signal += self._disk(energies)
-                # print('self.signal+disk',self._signal)
+                self.disk_spectrum = self._disk(energies)
+                for i in range(self._signal[0][0].shape[1]):
+                    self._signal[0][0][:,i] += self.disk_spectrum    

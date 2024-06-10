@@ -759,6 +759,8 @@ class HotRegion(ParameterSubspace):
             self._atm_ext = 4
         elif extension=="user":
             self._atm_ext  = 5
+        elif extension=="Num5D":
+            self._atm_ext = 6
         else:
             raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
                             'atmosphere options are at the moment "BB", "Num4D", "Pol_BB_Burst",'

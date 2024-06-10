@@ -155,6 +155,7 @@ def integrate(size_t numThreads,
         double _phase_lag
         double _specific_flux
         size_t _InvisPhase
+        double E_electronrest
         size_t _beam_opt = beam_opt
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
@@ -435,17 +436,28 @@ def integrate(size_t numThreads,
                                 # specific intensities
                                 for p in range(N_E):
                                     E_prime = energies[p] / _Z
+                                    E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
+
+                                    # printf("__ABB: %.8e, \n", _ABB)
+                                    # printf("E_electronrest %.8e\n", E_electronrest)
+                                    # printf("srcCellParams[i,J,0] %.8e\n", srcCellParams[i,J,0])
+                                    # printf("srcCellParams[i,J,1] %.8e\n", srcCellParams[i,J,1])
+                                    # printf("srcCellParams[i,J,2] %.8e\n", srcCellParams[i,J,2])
+                                    # printf("beam_opt %ld\n", _beam_opt)
+
 
                                     I_E = eval_hot_I(T,
-                                                   E_prime,
+                                                   E_electronrest,
                                                    _ABB,
                                                    &(srcCellParams[i,J,0]),
                                                    hot_data,
                                                    _beam_opt)
+                                    
+                                    # printf("I_E = %.8e\n", I_E)
 
                                     if perform_correction == 1:
                                         correction_I_E = eval_elsewhere(T,
-                                                                        E_prime,
+                                                                        E_electronrest,
                                                                         _ABB,
                                                                         &(correction[i,J,0]),
                                                                         ext_data,

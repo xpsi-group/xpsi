@@ -50,13 +50,12 @@ ctypedef struct DATA:
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded) nogil:
+cdef void* init_hot_Num5D(size_t numThreads, const _preloaded *const preloaded) nogil:
     # This function must match the free management routine free_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
     # Return NULL if dynamic memory is not required for the model
 
-    #printf("inside init_hot()")
     cdef DATA *D = <DATA*> malloc(sizeof(DATA))	# Define DATA object
     D.p = preloaded 					# Store preloaded information from function call in DATA object. See also preload.pyx.
     
@@ -148,7 +147,7 @@ cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded) nogil:
     return <void*> D
 
 
-cdef int free_hot(size_t numThreads, void *const data) nogil:
+cdef int free_hot_Num5D(size_t numThreads, void *const data) nogil:
     # This function must match the initialisation routine init_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -158,8 +157,6 @@ cdef int free_hot(size_t numThreads, void *const data) nogil:
     # allocated in the function:
     #   init_hot()
     # because data is expected to be NULL in this case
-
-    # printf("inside free_hot()")
 
     cdef DATA *D = <DATA*> data
 
@@ -332,7 +329,7 @@ cdef double eval_hot(size_t THREAD,
 
     return I
 
-cdef double eval_hot_I(size_t THREAD,
+cdef double eval_hot_Num5D_I(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -351,7 +348,7 @@ cdef double eval_hot_I(size_t THREAD,
     return I
 
 
-cdef double eval_hot_Q(size_t THREAD,
+cdef double eval_hot_Num5D_Q(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -366,7 +363,7 @@ cdef double eval_hot_Q(size_t THREAD,
 
 
 
-cdef double eval_hot_norm() nogil:
+cdef double eval_hot_norm_Num5D() nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.
