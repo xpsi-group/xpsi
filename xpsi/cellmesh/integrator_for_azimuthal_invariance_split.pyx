@@ -164,6 +164,7 @@ def integrate(size_t numThreads,
         size_t _InvisPhase
         double E_electronrest
 
+
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
         double[:,::1] flux = np.zeros((N_E, N_P), dtype = np.double)
 
@@ -460,6 +461,7 @@ def integrate(size_t numThreads,
                                     # printf("srcCellParams[i,J,1] %.8e\n", srcCellParams[i,J,1])
                                     # printf("srcCellParams[i,J,2] %.8e\n", srcCellParams[i,J,2])
 
+
                                     I_E2D = eval_hot_2D_I(T, E_electronrest, _ABB, hot_data_2D)
 
                                     # printf("I_E2D = %.8e\n", I_E2D)
@@ -682,8 +684,7 @@ def integrate(size_t numThreads,
             return (ERROR, None)
 
     free(terminate)
-    # printf('\nsucces')
-    # printf('\nsucces2')
 
+    
     return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'))
 

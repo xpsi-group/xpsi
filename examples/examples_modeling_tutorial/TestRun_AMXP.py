@@ -68,8 +68,8 @@ primary = CustomHotRegion_Accreting(bounds=bounds,
                                     max_sqrt_num_cells=64, #100
                                     num_leaves=num_leaves,
                                     num_rays=200,
-                                    split=True,
-                                    atm_ext='Num5D',
+                                    split=False,
+                                    atm_ext='Num4D',
                                     image_order_limit=3,
                                     prefix='p')
 
@@ -317,7 +317,7 @@ disk = Disk(bounds={}, values=values)
 
 from modules.CustomPhotosphere import CustomPhotosphere_NumA5
 
-stokes = True
+stokes = False
 bounds = dict(spin_axis_position_angle = (None, None))
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=stokes, disk=None, bounds=bounds,
                                 values=dict(mode_frequency = spacetime['frequency']))
@@ -399,7 +399,7 @@ start = time.time()
 
 #To get the incident signal before interstellar absorption or operating with the telescope:
 energies = np.logspace(np.log10(0.15), np.log10(12.0), 40, base=10.0)
-multiple_times = 10
+multiple_times = 100
 for i in range(multiple_times):
     photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 

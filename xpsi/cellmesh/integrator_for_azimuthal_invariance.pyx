@@ -244,10 +244,12 @@ def integrate(size_t numThreads,
     cdef _preloaded *ext_preloaded = NULL
     cdef void *hot_data = NULL
     cdef void *ext_data = NULL
+    cdef int hot_atm
 
     if hot_atmosphere:
         hot_preloaded = init_preload(hot_atmosphere)
         hot_data = init_hot(N_T, hot_preloaded, hot_atm_ext)
+        hot_atm = hot_atm_ext
     else:
         hot_data = init_hot(N_T, NULL, hot_atm_ext)
 
@@ -436,7 +438,10 @@ def integrate(size_t numThreads,
                                 # specific intensities
                                 for p in range(N_E):
                                     E_prime = energies[p] / _Z
-                                    E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
+                                    
+                                    if hot_atm == 6:
+                                        E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
+                                        E_prime = E_electronrest
 
                                     # printf("__ABB: %.8e, \n", _ABB)
                                     # printf("E_electronrest %.8e\n", E_electronrest)
@@ -447,7 +452,7 @@ def integrate(size_t numThreads,
 
 
                                     I_E = eval_hot_I(T,
-                                                   E_electronrest,
+                                                   E_prime,
                                                    _ABB,
                                                    &(srcCellParams[i,J,0]),
                                                    hot_data,
