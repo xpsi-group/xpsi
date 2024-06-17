@@ -69,7 +69,7 @@ primary = CustomHotRegion_Accreting(bounds=bounds,
                                     num_leaves=num_leaves,
                                     num_rays=200,
                                     split=False,
-                                    atm_ext='Num4D',
+                                    atm_ext='Num5D',
                                     image_order_limit=3,
                                     prefix='p')
 
@@ -430,4 +430,5 @@ fig.colorbar(profile, ax=ax)
 # plt.ylabel('Flux [?]')
 # plt.xlabel('Energy [keV]')
 # plt.ylim(0.0,8.0e31)
+
 
