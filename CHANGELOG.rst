@@ -34,6 +34,21 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.2.5] - 2024-06-17
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* A new accretion disk implentation and another 5D atmosphere interpolation examples were added.
+
+Attribution
+^^^^^^^^^^^
+
+Bas Dorsman
+Tuomo Salmi
+
+
 [v2.2.4] - 2024-05-28
 ~~~~~~~~~~~~~~~~~~~~~
 
