@@ -6,9 +6,14 @@ from xpsi.utils import make_verbose
 from xpsi import Likelihood
 from xpsi.Posterior import Posterior
 
-from xpsi.EnsembleSampler import EnsembleSampler
-from xpsi.NestedSampler import NestedSampler
-from xpsi.UltranestSampler import UltranestSampler
+try: 
+    from xpsi.EnsembleSampler import EnsembleSampler
+    from xpsi.NestedSampler import NestedSampler
+    from xpsi.UltranestSampler import UltranestSampler
+except ImportError:
+    print("""Check your installation of emcee when using the EnsembleSampler,
+          PyMultiNest when using the NestedSampler, and
+          UltraNest when using the UltranestSampler""")
 
 posterior = None
 

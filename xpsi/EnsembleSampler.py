@@ -15,8 +15,7 @@ else:
 
 from xpsi.Parameter import StrictBoundsError
 from xpsi.ParameterSubspace import ParameterSubspace
-#from .Prior import Prior
-from xpsi.Posterior import Posterior, PriorError
+from xpsi.Posterior import PriorError
 
 class EnsembleSampler(_EnsembleSampler):
     """ Derives from `emcee`_'s :class:`~emcee.EnsembleSampler`.
