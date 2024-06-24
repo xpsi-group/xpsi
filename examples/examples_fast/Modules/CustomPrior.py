@@ -59,7 +59,7 @@ class CustomPrior(xpsi.Prior):
 
         # Compactness limit
         R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
-        if R_p < 1.76 / ref.R_r_s:
+        if R_p < 1.505 / ref.R_r_s:
             return -np.inf
 
         mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))

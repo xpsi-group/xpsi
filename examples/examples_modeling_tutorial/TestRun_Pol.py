@@ -34,18 +34,19 @@ bounds = dict(super_colatitude = (None, None),
               super_temperature = (5.1, 6.8))
 
 primary = xpsi.HotRegion(bounds=bounds,
-                            values={},
-                            symmetry=True,
-                            omit=False,
-                            cede=False,
-                            concentric=False,
-                            sqrt_num_cells=32,
-                            min_sqrt_num_cells=10,
-                            max_sqrt_num_cells=64,
-                            num_leaves=100,
-                            num_rays=200,
-                            atm_ext="Pol_BB_Burst",
-                            prefix='p')
+                        values={},
+                        symmetry=True,
+                        omit=False,
+                        cede=False,
+                        concentric=False,
+                        sqrt_num_cells=32,
+                        min_sqrt_num_cells=10,
+                        max_sqrt_num_cells=64,
+                        num_leaves=100,
+                        num_rays=200,
+                        atm_ext="Pol_BB_Burst",
+                        image_order_limit=3,
+                        prefix='p')
 
 bounds2 = dict(super_colatitude = (None, None),
                         super_radius = (None, None),
@@ -70,6 +71,7 @@ secondary = xpsi.HotRegion(bounds=bounds2, # can otherwise use same bounds
                             do_fast=False,
                             atm_ext="Pol_BB_Burst",
                             is_antiphased=True,
+                            image_order_limit=3,
                             prefix='s')
 
 
@@ -91,7 +93,8 @@ if use_elsewhere:
 else:
     elsewhere = None
 
-photosphere = xpsi.Photosphere(hot = hot, elsewhere = elsewhere, stokes=True,
+bounds = dict(spin_axis_position_angle = (None, None))
+photosphere = xpsi.Photosphere(hot = hot, elsewhere = elsewhere, stokes=True, bounds=bounds,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 
@@ -106,6 +109,7 @@ p = [1.0368513939430604,
      6.087862992320039,
      0.26870812456714116,
      0.39140510783272897,
+     0.0,
      0.04346870860640872,
      0.8002010406881243,
      1.1165398710637626,

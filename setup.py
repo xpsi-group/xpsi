@@ -272,7 +272,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '2.2.0',
+        version = '2.2.4',
         author = 'The X-PSI Core Team',
         author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',

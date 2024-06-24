@@ -144,6 +144,11 @@ class Photosphere(ParameterSubspace):
         self._elsewhere = elsewhere
         self._everywhere = everywhere
         self._stokes = stokes
+        if hot is not None:
+            self._surface = self._hot
+        else:
+            self._surface = self._everywhere
+            self.surface.objects = [self.surface]
 
         if bounds is None: bounds = {}
         if values is None: values = {}
@@ -159,10 +164,28 @@ class Photosphere(ParameterSubspace):
                                    symbol = r'$f_{\rm mode}$',
                                    value = values.get('mode_frequency', None))
 
-        super(Photosphere, self).__init__(mode_frequency,
-                                          hot, elsewhere, everywhere,
-                                          custom,
-                                          **kwargs)
+        if stokes:
+            doc = """
+            Spin axis position angle measured from the north counterclock-
+            wise to the projection of the rotation axis on the plane of the
+            sky [in radians].
+            """
+            spin_axis_position_angle = Parameter('spin_axis_position_angle',
+                                       strict_bounds = (-_np.pi/2.0, _np.pi/2.0),
+                                       bounds = bounds.get('spin_axis_position_angle', None),
+                                       doc = doc,
+                                       symbol = r'$\chi_{0}$',
+                                       value = values.get('spin_axis_position_angle', None))
+
+            super(Photosphere, self).__init__(mode_frequency, spin_axis_position_angle,
+                                              hot, elsewhere, everywhere,
+                                              custom,
+                                              **kwargs)
+        else:
+            super(Photosphere, self).__init__(mode_frequency,
+                                              hot, elsewhere, everywhere,
+                                              custom,
+                                              **kwargs)
 
     @property
     def hot_atmosphere(self):
@@ -299,6 +322,13 @@ class Photosphere(ParameterSubspace):
         return self._everywhere
 
     @property
+    def surface(self):
+        """ Get the instance of :class:`~.HotRegion.HotRegion` or
+        :class:`~.Everywhere.Everywhere` depending on which approach is used
+        in the modelling. """
+        return self._surface
+
+    @property
     def spacetime(self):
         """ Return instance of :class:`~.Spacetime.Spacetime`. """
         return self._spacetime
@@ -395,6 +425,16 @@ class Photosphere(ParameterSubspace):
                         self._signalQ = (self._signalQ,)
                     if not isinstance(self._signalU[0], tuple):
                         self._signalU = (self._signalU,)
+                    #Rotate the Stokes parameters based on position of the spin axis:
+                    chi_rad = self["spin_axis_position_angle"]
+                    tempQ = [list(x) for x in self._signalQ]
+                    tempU = [list(x) for x in self._signalU]
+                    for ih in range(0,len(self._signalQ)):
+                        for ic in range(0,len(self._signalQ[ih][:])):
+                            tempQ[ih][ic] = _np.cos(2.0*chi_rad) * tempQ[ih][ic] - _np.sin(2.0*chi_rad) * tempU[ih][ic]
+                            tempU[ih][ic] = _np.sin(2.0*chi_rad) * tempQ[ih][ic] + _np.cos(2.0*chi_rad) * tempU[ih][ic]
+                    self._signalQ = tuple(map(tuple, tempQ))
+                    self._signalU = tuple(map(tuple, tempU))
                 else:
                     self._signal = self._hot.integrate(self._spacetime,
                                                    energies,
@@ -871,7 +911,7 @@ class Photosphere(ParameterSubspace):
             cached.
 
         :param bool plot_sky_maps:
-            Plot (specific) intenity sky maps at a sequence of phases, or
+            Plot (specific) intensity sky maps at a sequence of phases, or
             by averaging over phase. Maps can be made at one more energies
             or energy intervals. The images will be written to disk and
             can be used as frames in an animated sequence.
@@ -967,7 +1007,8 @@ class Photosphere(ParameterSubspace):
         if not isinstance(energies, _np.ndarray):
             raise TypeError('Imaging energies must be in a 1D ndarray.')
 
-        time_is_space = sky_map_kwargs.get('time_is_space', False)
+        if sky_map_kwargs is not None:
+            time_is_space = sky_map_kwargs.get('time_is_space', False)
 
         if reimage:
             if plot_sky_maps and not cache_intensities:
@@ -1127,6 +1168,13 @@ class Photosphere(ParameterSubspace):
         if animate_kwargs is None: animate_kwargs = {}
 
         if plot_sky_maps or animate_sky_maps:
+            if cache_phase_indices is None:
+                cache_phase_indices = _np.arange(len(phases),
+                                                  dtype=_np.int32)
+            if cache_energy_indices is None:
+                cache_energy_indices = _np.arange(len(energies),
+                                                  dtype=_np.int32)
+
             root_dir = sky_map_kwargs.pop('root_dir', './images')
             file_root = sky_map_kwargs.pop('file_root', 'skymap')
             file_root = _os.path.join(root_dir, file_root)

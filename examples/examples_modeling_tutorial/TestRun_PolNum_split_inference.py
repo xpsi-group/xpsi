@@ -48,23 +48,23 @@ fname_ixpedata = this_directory+"/ixpeobssim/ixpeobssimdata/model_amsp_xpsi"
 
 #In the end, we probably want to use data in PHA format instead of PCUBE, to properly account for the instrument response.
 #For now, we just read some PCUBE data (created by ixpeobssim) for testing purposes (binned in 1 energy channel).
-phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, keVdat = readData_pcube_ebin(fname_ixpedata)
+phase_IXPE, Idat, qn, un, Iderr, qnerr, unerr, PD, PDerr, keVdat, MDP99 = readData_pcube_ebin(fname_ixpedata)
 
 IXPE_I.data = xpsi.Data([Idat[:,0]],
                        channels=np.arange(0, 1),
-                       phases=phase_IXPE,
+                       phases=np.linspace(0,1,len(phase_IXPE)+1),
                        first=0,
                        last=0,
                        exposure_time=1.0)
 IXPE_Q.data = xpsi.Data([qn[:,0]],
                        channels=np.arange(0, 1),
-                       phases=phase_IXPE,
+                       phases=np.linspace(0,1,len(phase_IXPE)+1),
                        first=0,
                        last=0,
                        exposure_time=1.0)
 IXPE_U.data = xpsi.Data([un[:,0]],
                        channels=np.arange(0, 1),
-                       phases=phase_IXPE,
+                       phases=np.linspace(0,1,len(phase_IXPE)+1),
                        first=0,
                        last=0,
                        exposure_time=1.0)
@@ -179,7 +179,7 @@ class CustomSignal_gaussian(xpsi.Signal):
             #(This version is still only for the most simple case)
             #sig1 = self._signals[0][0]
             #fsig = interp1d(self._phases[0], sig1, kind='linear')
-            #signal_dphase = fsig(self._data.phases)
+            #signal_dphase = fsig(phase_IXPE)
 
             #self.loglikelihood, self.expected_counts = \
             #    gaussian_likelihood_QnUn(self._data.phases,
@@ -435,18 +435,19 @@ bounds = dict(super_colatitude = (None, None),
               super_te = (40.0, 200.0))
 
 primary = CustomHotRegion_Accreting(bounds=bounds,
-                            values={},
-                            symmetry=True,
-                            omit=False,
-                            cede=False,
-                            concentric=False,
-                            sqrt_num_cells=32, #100
-                            min_sqrt_num_cells=10,
-                            max_sqrt_num_cells=64, #100
-                            num_leaves=100,
-                            num_rays=200,
-                            split=True,
-                            prefix='p')
+                                    values={},
+                                    symmetry=True,
+                                    omit=False,
+                                    cede=False,
+                                    concentric=False,
+                                    sqrt_num_cells=32, #100
+                                    min_sqrt_num_cells=10,
+                                    max_sqrt_num_cells=64, #100
+                                    num_leaves=100,
+                                    num_rays=200,
+                                    split=True,
+                                    image_order_limit=3,
+                                    prefix='p')
 
 bounds2 = dict(super_colatitude = (None, None),
                         super_radius = (None, None),
@@ -462,20 +463,21 @@ bounds2 = dict(super_colatitude = (None, None),
                         cede_te = (40.0, 200.0))
 
 secondary = CustomHotRegion_Accreting(bounds=bounds2, # can otherwise use same bounds
-                            values={},
-                            symmetry=True,
-                            omit=False,
-                            cede=True,
-                            concentric=False,
-                            sqrt_num_cells=32,
-                            min_sqrt_num_cells=10,
-                            max_sqrt_num_cells=100,
-                            num_leaves=100,
-                            num_rays=200,
-                            do_fast=False,
-                            is_antiphased=True,
-                            split=True,
-                            prefix='s')
+                                    values={},
+                                    symmetry=True,
+                                    omit=False,
+                                    cede=True,
+                                    concentric=False,
+                                    sqrt_num_cells=32,
+                                    min_sqrt_num_cells=10,
+                                    max_sqrt_num_cells=100,
+                                    num_leaves=100,
+                                    num_rays=200,
+                                    do_fast=False,
+                                    is_antiphased=True,
+                                    split=True,
+                                    image_order_limit=3,
+                                    prefix='s')
 
 
 from xpsi import HotRegions
@@ -532,8 +534,10 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
 
         self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, intensities)
 
+bounds = dict(spin_axis_position_angle = (None, None))
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True,
-                                values=dict(mode_frequency = spacetime['frequency']))
+                                values=dict(mode_frequency = spacetime['frequency']),
+                                bounds=bounds)
 
 photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
 photosphere.hot_atmosphere_Q = this_directory+'/model_data/Bobrikova_compton_slab_Q.npz'
@@ -549,6 +553,7 @@ p = [1.0368513939430604,
      6.087862992320039,
      0.26870812456714116,
      0.39140510783272897,
+     0.0,
      0.04346870860640872,
      0.8002010406881243,
      1.1165398710637626,
@@ -642,11 +647,9 @@ class CustomPrior(xpsi.Prior):
 
         ref = self.parameters.star.spacetime # shortcut
 
-        # limit polar radius to try to exclude deflections >= \pi radians
-        # due to oblateness this does not quite eliminate all configurations
-        # with deflections >= \pi radians
+        # limit polar radius to be outside the Schwarzschild photon sphere
         R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
-        if R_p < 1.76 / ref.R_r_s:
+        if R_p < 1.505 / ref.R_r_s:
             return -np.inf
 
         mu = math.sqrt(-1.0 / (3.0 * ref.epsilon * (-0.788 + 1.030 * ref.zeta)))
@@ -735,7 +738,7 @@ runtime_params = {'resume': False,
 likelihood.reinitialise()
 likelihood.clear_cache()
 
-true_logl = -1.2738517361e+06
+true_logl = -1.5663833842e+06
 
 if __name__ == '__main__': # sample from the posterior
     # inform source code that parameter objects updated when inverse sampling

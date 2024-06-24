@@ -124,18 +124,19 @@ bounds = dict(super_colatitude = (None, None),
               super_temperature = (5.1, 6.8))
 
 primary = xpsi.HotRegion(bounds=bounds,
-	                    values={},
-	                    symmetry=True,
-	                    omit=False,
-	                    cede=False,
-	                    concentric=False,
-	                    sqrt_num_cells=32,
-	                    min_sqrt_num_cells=10,
-	                    max_sqrt_num_cells=64,
-	                    num_leaves=100,
-	                    num_rays=200,
-	                    atm_ext="BB",
-	                    prefix='p')
+                        values={},
+                        symmetry=True,
+                        omit=False,
+                        cede=False,
+                        concentric=False,
+                        sqrt_num_cells=32,
+                        min_sqrt_num_cells=10,
+                        max_sqrt_num_cells=64,
+                        num_leaves=100,
+                        num_rays=200,
+                        atm_ext="BB",
+                        image_order_limit=3,
+                        prefix='p')
 
 class derive(xpsi.Derive):
     def __init__(self):
@@ -159,20 +160,21 @@ class derive(xpsi.Derive):
 bounds['super_temperature'] = None # declare fixed/derived variable
 
 secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
-	                      values={'super_temperature': derive()},
-	                      symmetry=True,
-	                      omit=False,
-	                      cede=False,
-	                      concentric=False,
-	                      sqrt_num_cells=32,
-	                      min_sqrt_num_cells=10,
-	                      max_sqrt_num_cells=100,
-	                      num_leaves=100,
-	                      num_rays=200,
-	                      do_fast=False,
-	                      atm_ext="BB",
-	                      is_antiphased=True,
-	                      prefix='s')
+                            values={'super_temperature': derive()},
+                            symmetry=True,
+                            omit=False,
+                            cede=False,
+                            concentric=False,
+                            sqrt_num_cells=32,
+                            min_sqrt_num_cells=10,
+                            max_sqrt_num_cells=100,
+                            num_leaves=100,
+                            num_rays=200,
+                            do_fast=False,
+                            atm_ext="BB",
+                            image_order_limit=3,
+                            is_antiphased=True,
+                            prefix='s')
 
 
 from xpsi import HotRegions
@@ -187,13 +189,21 @@ class CustomPhotosphere_BB(xpsi.Photosphere):
     def global_variables(self):
 
         return np.array([self['p__super_colatitude'],
-                          self['p__phase_shift'] * _2pi,
+                          self['p__phase_shift'] * 2.0 * math.pi,
                           self['p__super_radius'],
-                          self['p__super_temperature'],
+                          0.0, #self['p__cede_colatitude'],
+                          0.0, #self['p__phase_shift'] * 2.0 * math.pi - self['p__cede_azimuth'],
+                          0.0, #self['p__cede_radius'],
                           self['s__super_colatitude'],
-                          (self['s__phase_shift'] + 0.5) * _2pi,
+                          (self['s__phase_shift'] + 0.5) * 2.0 * math.pi,
                           self['s__super_radius'],
-                          self.hot.objects[1]['s__super_temperature']])
+                          0.0, #self['s__cede_colatitude'],
+                          0.0, #(self['s__phase_shift'] + 0.5) * 2.0 * math.pi - self['s__cede_azimuth'],
+                          0.0, #self['s__cede_radius'],
+                          self['p__super_temperature'],
+                          0.0, #self['p__cede_temperature'],
+                          self.hot.objects[1]['s__super_temperature'],
+                          0.0]) #self['s__cede_temperature']])
 
 photosphere = CustomPhotosphere_BB(hot = hot, elsewhere = None,
                                 values=dict(mode_frequency = spacetime['frequency']))
@@ -351,11 +361,9 @@ class CustomPrior(xpsi.Prior):
 
         ref = self.parameters.star.spacetime # shortcut
 
-        # limit polar radius to try to exclude deflections >= \pi radians
-        # due to oblateness this does not quite eliminate all configurations
-        # with deflections >= \pi radians
+        # limit polar radius to be outside the Schwarzschild photon sphere
         R_p = 1.0 + ref.epsilon * (-0.788 + 1.030 * ref.zeta)
-        if R_p < 1.76 / ref.R_r_s:
+        if R_p < 1.505 / ref.R_r_s:
             return -np.inf
 
         # polar radius at photon sphere for ~static star (static ambient spacetime)

@@ -163,6 +163,9 @@ class Everywhere(ParameterSubspace):
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
 
+        #Do-fast option is not supported for Everywhere.
+        self.do_fast = False
+
         if bounds is None: bounds = {}
         if values is None: values = {}
 
@@ -176,7 +179,14 @@ class Everywhere(ParameterSubspace):
         else: # let the custom subclass handle definitions; ignore bounds
             T = None
 
-        super(Everywhere, self).__init__(T, custom)
+        #An extra phase_shift parameter fixed to 0 just to be able use the standard
+        #Likelihood class when fitting data with Everywhere objects.
+        phase_shift = Parameter('phase_shift',
+                                strict_bounds = (-_np.infty, _np.infty),
+                                bounds = None,
+                                value = 0.0)
+
+        super(Everywhere, self).__init__(T, phase_shift, custom)
 
         self.time_invariant = time_invariant
         self._integrator_toggle = _integrator_toggle

@@ -34,6 +34,132 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.2.4] - 2024-05-28
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Likelihood class was modified to allow inference runs with Everywhere objects without re-writing the Likelihood class.
+
+Fixed
+^^^^^
+
+* Likelihood class was modified so that it can be directly used also for Everywhere objects (and not only for Hotregion objects). (T.S., Y.G., Y.K)
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Ylvie Gerritsma (Y.G.),
+Yves Kini (Y.K.)
+
+
+[v2.2.3] - 2024-05-23
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* A new parameter for the spin axis position angle was added when modelling polarized X-rays. In addition, polarimetry examples were updated and a few bugs in the module generator were fixed.
+
+Fixed
+^^^^^
+
+* A bug in the module generator was fixed, so that selecting blackbody atmosphere works correctly. (D.C.)
+
+* A bug in the module generator was fixed, so that not all the parameters are accidentally wrapped. (D.C., L.M.)
+
+Added
+^^^^^
+
+* A new parameter called ``spin_axis_position_angle`` was added to the Photosphere class when calculating the pulses using the ``stokes=True`` option. This is the angle between the observer north and the projection of the pulsar rotation axis on the plane of the sky, affecting the observed polarization angle and Stokes parameters. (T.S.)
+
+* An example of using a constant accretion disk background was added in ``xpsi/examples/examples_modeling_tutorial/TestRun_PolNum_split_1spot.py``. (T.S., B.D.)
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Bas Dorsman (B.D.),
+Devarshi Choudhury (D.C.),
+Lucien Mauviard-Haag (L.M.)
+
+
+[v2.2.2] - 2024-04-26
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* The default imaging extension has been changed from ``uniform.pyx`` to ``PDT_U.pyx`` to avoid the need for X-PSI re-installation when computing neutron star images for different nested models. The tutorials have been updated to account for this change when necessary.
+
+Fixed
+^^^^^
+
+* Fixed a bug in ``photosphere.image()`` causing the code crash if not providing the ``sky_map_kwargs`` argument.
+
+* Fixed a bug in ``photosphere.image()`` causing the code crash if setting ``reimage=False`` and trying to plot the skymaps.
+
+Added
+^^^^^
+
+* The Global surface emission -tutorial was added back to the documentation pages since it works now.
+
+Changed
+^^^^^^^
+
+* The default ``xpsi/surface_radiation_field/local_variables.pyx`` extension is now ``PDT_U.pyx`` instead of ``uniform.pyx``. The former is a more general version of the latter, and also a more general version of ``PST_U.pyx`` and ``two_spots.pyx``. The new default extension can be used to compute neutron star images for all the aforementioned models without re-installing X-PSI. For the simpler models, one can define e.g. the global variable for ceding region size to be zero if no ceding regions exist in the model. The tutorials have been updated to have those variables defined when needed.
+
+* Example scripts updated to have settings more commonly used in NICER analyses (for compactness limits and multiple imaging orders).
+
+Removed
+^^^^^^^
+
+* Removed the archived versions of imaging extensions that are not needed anymore.
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi
+
+
+[v2.2.1] - 2024-04-24
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Fixes and updates in the projection tool, post-processing, documentation, and example scripts.
+
+Fixed
+^^^^^
+
+* A bug in the projection tool for PDT-U model was fixed. (T.S., S.V.)
+
+Added
+^^^^^
+
+* Added a keyword argument ``ci_gap`` for ``xpsi/PostProcessing/_corner.py`` that can be used to adjust the vertical space between the reported credible intervals above the contour plots. (T.S.)
+
+Changed
+^^^^^^^
+
+* The installation instructions and example job script for Snellius cluster were updated. (T.S., B.D., M.H.)
+
+* Small updates done on the likelihood check and settings used in the fast example scripts. (B.D.)
+
+* Post-processing tutorial updated to account for the changes in the imported example modules. (T.S.)
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi (T.S.),
+Serena Vinciguerra (S.V.),
+Bas Dorsman (B.D.),
+Mariska Hoogkamer (M.H.)
+
+
 [v2.2.0] - 2024-02-06
 ~~~~~~~~~~~~~~~~~~~~~
 
