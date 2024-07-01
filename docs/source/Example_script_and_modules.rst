@@ -50,3 +50,10 @@ Seventh script called `examples/examples_modeling_tutorial/TestRun_PolNum_split_
 .. _t7: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_PolNum_split_inference.py
 
 __ t7_
+
+Eigth script called `examples/examples_modeling_tutorial/TestRun_AMXP.py`__ is an example script of an Accreting Millisecond Pulsar with accretion disk implemented through the CustomPhotosphere.py, and 3+2 dimensional interpolation. Note that TestRun_PolNum_split_1spot similarly includes an accretion disk implementation at the end, but there it is a background signal. The results are equivalent but the implementation in this example here is faster and thus recommended for sampling.
+
+.. _t8: https://github.com/xpsi-group/xpsi/tree/main/examples/examples_modeling_tutorial/TestRun_AMXP.py
+
+__ t8_
+
