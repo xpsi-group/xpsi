@@ -34,6 +34,20 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.2.6] - 2024-MM-DD
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* [Write something here.]
+
+Attribution
+^^^^^^^^^^^
+
+Mariska Hoogkamer
+
+
 [v2.2.5] - 2024-06-17
 ~~~~~~~~~~~~~~~~~~~~~
 
