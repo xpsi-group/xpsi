@@ -8,12 +8,16 @@ from xpsi.Posterior import Posterior
 
 try: 
     from xpsi.EnsembleSampler import EnsembleSampler
+except ImportError:
+    print("""Check your installation of emcee if using the EnsembleSampler""")
+try:
     from xpsi.NestedSampler import NestedSampler
+except:
+    print("""Check your installation of PyMultiNest if using the NestedSampler""")
+try:
     from xpsi.UltranestSampler import UltranestSampler
 except ImportError:
-    print("""Check your installation of emcee when using the EnsembleSampler,
-          PyMultiNest when using the NestedSampler, and
-          UltraNest when using the UltranestSampler""")
+    print("""Check your installation of UltraNest if using the UltranestSampler""")
 
 posterior = None
 
