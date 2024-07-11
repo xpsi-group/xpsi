@@ -34,6 +34,27 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.2.6] - 2024-06-11
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Added UltraNest as a sampler. 
+
+Added
+^^^^^
+
+* Added ``xpsi.UltranestSampler.py`` which is a wrapper for the UltraNest package.
+
+* Added ``ultranested`` function to ``xpsi.Sample.py`` to select UltraNest as a sampler.
+
+Attribution
+^^^^^^^^^^^
+
+Mariska Hoogkamer (M.H.)
+
+
 [v2.2.5] - 2024-06-17
 ~~~~~~~~~~~~~~~~~~~~~
 
