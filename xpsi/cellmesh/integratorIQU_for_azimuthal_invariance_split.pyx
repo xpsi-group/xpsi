@@ -49,11 +49,11 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
                                                    free_preload)
 
-from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot,
-                                               eval_hot_I,
-                                               eval_hot_Q,
-                                               eval_hot_norm,
-                                               free_hot,
+from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot_Num5D,
+                                               eval_hot_Num5D_I,
+                                               eval_hot_Num5D_Q,
+                                               eval_hot_norm_Num5D,
+                                               free_hot_Num5D,
                                                produce_2D_data,
                                                make_atmosphere_2D)
 
@@ -285,15 +285,15 @@ def integrate(size_t numThreads,
 
     if hot_atmosphere_I:
         hot_preloaded_I = init_preload(hot_atmosphere_I)
-        hot_data_I = init_hot(N_T, hot_preloaded_I)
+        hot_data_I = init_hot_Num5D(N_T, hot_preloaded_I)
     else:
-        hot_data_I = init_hot(N_T, NULL)
+        hot_data_I = init_hot_Num5D(N_T, NULL)
 
     if hot_atmosphere_Q:
         hot_preloaded_Q = init_preload(hot_atmosphere_Q)
-        hot_data_Q = init_hot(N_T, hot_preloaded_Q)
+        hot_data_Q = init_hot_Num5D(N_T, hot_preloaded_Q)
     else:
-        hot_data_Q = init_hot(N_T, NULL)
+        hot_data_Q = init_hot_Num5D(N_T, NULL)
 
     cdef double[:,:,::1] correction
     cdef int perform_correction
@@ -542,9 +542,9 @@ def integrate(size_t numThreads,
                                                                         0)
                                         correction_I_E = correction_I_E * eval_elsewhere_norm()
 
-                                    (PROFILE_I[T] + BLOCK[p] + _kdx)[0] = (I_E2D * eval_hot_norm() - correction_I_E) * _GEOM
-                                    (PROFILE_Q[T] + BLOCK[p] + _kdx)[0] = (Q_obs * eval_hot_norm()) * _GEOM
-                                    (PROFILE_U[T] + BLOCK[p] + _kdx)[0] = (U_obs * eval_hot_norm()) * _GEOM
+                                    (PROFILE_I[T] + BLOCK[p] + _kdx)[0] = (I_E2D * eval_hot_norm_Num5D() - correction_I_E) * _GEOM
+                                    (PROFILE_Q[T] + BLOCK[p] + _kdx)[0] = (Q_obs * eval_hot_norm_Num5D()) * _GEOM
+                                    (PROFILE_U[T] + BLOCK[p] + _kdx)[0] = (U_obs * eval_hot_norm_Num5D()) * _GEOM
 
                         if k == 0: # if initially visible at first/last phase steps
                             # periodic
@@ -794,10 +794,10 @@ def integrate(size_t numThreads,
         free_preload(hot_preloaded_Q)
         free_preload(hot_preloaded_2D_Q)
 
-    free_hot(N_T, hot_data_I)
+    free_hot_Num5D(N_T, hot_data_I)
     free_hot_2D(N_T, hot_data_2D_I)
 
-    free_hot(N_T, hot_data_Q)
+    free_hot_Num5D(N_T, hot_data_Q)
     free_hot_2D(N_T, hot_data_2D_Q)
 
     if perform_correction == 1:

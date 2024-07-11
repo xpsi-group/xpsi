@@ -759,10 +759,12 @@ class HotRegion(ParameterSubspace):
             self._atm_ext = 4
         elif extension=="user":
             self._atm_ext  = 5
+        elif extension=="Num5D":
+            self._atm_ext = 6
         else:
             raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
                             'atmosphere options are at the moment "BB", "Num4D", "Pol_BB_Burst",'
-                            '"Pol_Num2D", and "user".')
+                            '"Pol_Num2D", "Num5D", and "user".')
         if self._split:
             print('The default/given atmosphere option is ignored, since using split=True,'
                   ' which only works with numerical 3+2D interpolation.')

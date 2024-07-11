@@ -34,6 +34,12 @@ from xpsi.surface_radiation_field.hot_user cimport (init_hot_user,
                                                      eval_hot_user_Q,
                                                      eval_hot_norm_user)
 
+from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot_Num5D,
+                                               eval_hot_Num5D_I,
+                                               eval_hot_norm_Num5D,
+                                               free_hot_Num5D)
+
+
 #----------------------------------------------------------------------->>>
 cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) nogil:
     global atmos_extension
@@ -48,6 +54,8 @@ cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t
         return init_hot_Num2D(numThreads, preloaded)
     elif atmos_extension == 5:
         return init_hot_user(numThreads, preloaded)
+    elif atmos_extension == 6:
+        return init_hot_Num5D(numThreads, preloaded)
     else:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
                "Defaulting to Blackbody (atm_ext=BB).\n")
@@ -64,6 +72,8 @@ cdef int free_hot(size_t numThreads, void *const data) nogil:
         return free_hot_Num2D(numThreads, data)
     elif atmos_extension == 5:
         return free_hot_user(numThreads, data)
+    elif atmos_extension == 6:
+        return free_hot_Num5D(numThreads, data)
     else:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
                "Defaulting to Blackbody (atm_ext=BB).\n")
@@ -88,6 +98,7 @@ cdef double eval_hot_I(size_t THREAD,
         double dmu=0.0
         double anorm=0.0
         double VEC_red[2]
+        double VEC_special[3]
     cdef size_t imu
 
     VEC_red[0] = VEC[0]
@@ -103,6 +114,11 @@ cdef double eval_hot_I(size_t THREAD,
         I_hot = eval_hot_Num2D_I(THREAD,E,mu,VEC_red,data)
     elif atmos_extension == 5:
         I_hot = eval_hot_user_I(THREAD,E,mu,VEC_red,data)
+    elif atmos_extension == 6:
+        VEC_special[0] = VEC[0]
+        VEC_special[1] = VEC[1]
+        VEC_special[2] = VEC[2]
+        I_hot = eval_hot_Num5D_I(THREAD,E,mu,VEC_special,data)
     else:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
                "Defaulting to Blackbody (atm_ext=BB).\n")
@@ -200,6 +216,8 @@ cdef double eval_hot_norm() nogil:
         return eval_hot_norm_Num2D()
     elif atmos_extension == 5:
         return eval_hot_norm_user()
+    elif atmos_extension == 6:
+        return eval_hot_norm_Num5D()
     else:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
                "Defaulting to Blackbody (atm_ext=BB).\n")
