@@ -21,7 +21,7 @@ from matplotlib import cm
 
 import xpsi
 
-from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
+from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi, _keV, _k_B, _h_keV
 
 np.random.seed(xpsi._rank+10)
 
@@ -37,181 +37,8 @@ bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
 spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=400.9752075))
 
 from xpsi.Parameter import Parameter
-class CustomHotRegion_Accreting(xpsi.HotRegion):
-    """Custom implementation of HotRegion. Accreting Atmosphere model by 
-    Anna Bobrikova. The parameters are ordered I(E < mu < tau < tbb < te).
-    
-    E is energy.
-    mu is cos of zenith angle.
-    tau is the optical depth of the comptom slab.
-    tbb is the black body temperature.
-    te is temperature of the electron gas.
-    """
 
-    required_names = ['super_colatitude',
-                      'super_radius',
-                      'phase_shift',
-                      'super_tbb',
-                      'super_te',
-                      'super_tau']
-    optional_names = ['omit_colatitude',
-                      'omit_radius',
-                      'omit_azimuth',
-                      'cede_colatitude',
-                      'cede_radius',
-                      'cede_azimuth',
-                      'cede_tbb',
-                      'cede_te',
-                      'cede_tau']
-    
-    def __init__(self,
-            bounds,
-            values,
-            symmetry = 'azimuthal_invariance',
-            interpolator = 'split',
-            omit = False,
-            cede = False,
-            concentric = False,
-            sqrt_num_cells = 32,
-            min_sqrt_num_cells = 10,
-            max_sqrt_num_cells = 80,
-            num_rays = 200,
-            num_leaves = 64,
-            num_phases = None,
-            phases = None,
-            do_fast = False,
-            fast_sqrt_num_cells = 16,
-            fast_min_sqrt_num_cells = 4,
-            fast_max_sqrt_num_cells = 16,
-            fast_num_rays = 100,
-            fast_num_leaves = 32,
-            fast_num_phases = None,
-            fast_phases = None,
-            is_antiphased = False,
-            custom = None,
-            image_order_limit = None,
-            **kwargs
-            ):
-
-        doc = """
-        tbb
-        """
-        super_tbb = Parameter('super_tbb',
-                    strict_bounds = (0.001, 0.003), #tbb = Tbb(keV)/511keV
-                    bounds = bounds.get('super_tbb', None),
-                    doc = doc,
-                    symbol = r'tbb',
-                    value = values.get('super_tbb', None))
-        doc = """
-        te
-        """
-        super_te = Parameter('super_te',
-                    strict_bounds = (40., 200.), #te = Te(keV)*1000/511keV
-                    bounds = bounds.get('super_te', None),
-                    doc = doc,
-                    symbol = r'te',
-                    value = values.get('super_te', None))
-        
-        doc = """
-        tau
-        """
-        super_tau = Parameter('super_tau',
-                    strict_bounds = (0.5, 3.5),
-                    bounds = bounds.get('super_tau', None),
-                    doc = doc,
-                    symbol = r'tau',
-                    value = values.get('super_tau', None))
-        
-
-        custom = [super_tbb, super_te, super_tau]
-
-        if cede:
-            doc = """
-            cede_tbb
-            """        
-            cede_tbb = Parameter('cede_tbb',
-            strict_bounds = (0.001, 0.003),
-            bounds = bounds.get('cede_tbb', None),
-            doc = doc,
-            symbol = r'cede_tbb',
-            value = values.get('cede_tbb', None))
-
-            doc = """
-            cede_te
-            """
-            cede_te = Parameter('cede_te',
-                        strict_bounds = (40., 200.),
-                        bounds = bounds.get('cede_te', None),
-                        doc = doc,
-                        symbol = r'cede_te',
-                        value = values.get('cede_te', None))
-            
-            doc = """
-            cede_tau
-            """
-            cede_tau = Parameter('cede_tau',
-                        strict_bounds = (0.5, 3.5),
-                        bounds = bounds.get('cede_tau', None),
-                        doc = doc,
-                        symbol = r'cede_tau',
-                        value = values.get('cede_tau', None))
-            
-            custom += [cede_tbb,cede_te,cede_tau]
-
-        super(CustomHotRegion_Accreting, self).__init__(
-                bounds,
-                values,
-                symmetry = symmetry,
-                interpolator = interpolator,
-                omit = omit,
-                cede = cede,
-                concentric = concentric,
-                sqrt_num_cells = sqrt_num_cells,
-                min_sqrt_num_cells = min_sqrt_num_cells,
-                max_sqrt_num_cells = max_sqrt_num_cells,
-                num_rays = num_rays,
-                num_leaves = num_leaves,
-                num_phases = num_phases,
-                phases = phases,
-                do_fast = do_fast,
-                fast_sqrt_num_cells = fast_sqrt_num_cells,
-                fast_min_sqrt_num_cells = fast_min_sqrt_num_cells,
-                fast_max_sqrt_num_cells = fast_max_sqrt_num_cells,
-                fast_num_rays = fast_num_rays,
-                fast_num_leaves = fast_num_leaves,
-                fast_num_phases = fast_num_phases,
-                fast_phases = fast_phases,
-                is_antiphased = is_antiphased,
-                custom = custom,
-                image_order_limit = image_order_limit,
-                **kwargs
-                )
-
-    def _HotRegion__compute_cellParamVecs(self):
-        self._super_radiates = np.greater(self._super_cellArea, 0.0).astype(np.int32)
-        self._super_cellParamVecs = np.ones((self._super_radiates.shape[0],
-                                      self._super_radiates.shape[1],
-                                      3),
-                                     dtype=np.double)
-
-        self._super_cellParamVecs[...,0] *= self['super_te']
-        self._super_cellParamVecs[...,1] *= self['super_tbb']
-        self._super_cellParamVecs[...,2] *= self['super_tau']
-
-        try:
-            self._cede_radiates = np.greater(self._cede_cellArea, 0.0).astype(np.int32)
-        except AttributeError:
-            pass
-        else:
-            self._cede_cellParamVecs = np.ones((self._cede_radiates.shape[0],
-                                                 self._cede_radiates.shape[1],
-                                                 3), dtype=np.double)
-
-            self._cede_cellParamVecs[...,0] *= self['cede_te']
-            self._cede_cellParamVecs[...,1] *= self['cede_tbb']
-            self._cede_cellParamVecs[...,2] *= self['cede_tau']
-
-
+from modules.CustomHotRegion_Accreting import CustomHotRegion_Accreting
 
 bounds = dict(super_colatitude = (None, None),
               super_radius = (None, None),
@@ -251,43 +78,7 @@ if use_elsewhere:
 else:
     elsewhere = None
 
-
-class CustomPhotosphere_NumA5(xpsi.Photosphere):
-    """ A photosphere extension to preload the numerical 5D accretion atmosphere. """
-
-    @xpsi.Photosphere.hot_atmosphere.setter
-    def hot_atmosphere(self, path):
-        with np.load(path, allow_pickle=True) as data_dictionary:
-            NSX = data_dictionary['NSX.npy']
-            size_reorderme = data_dictionary['size.npy']
-
-        size = [size_reorderme[3], size_reorderme[4], size_reorderme[2], size_reorderme[1], size_reorderme[0]]
-
-        Energy = np.ascontiguousarray(NSX[0:size[0],0])
-        cos_zenith = np.ascontiguousarray([NSX[i*size[0],1] for i in range(size[1])])
-        tau = np.ascontiguousarray([NSX[i*size[0]*size[1],2] for i in range(size[2])])
-        t_bb = np.ascontiguousarray([NSX[i*size[0]*size[1]*size[2],3] for i in range(size[3])])
-        t_e = np.ascontiguousarray([NSX[i*size[0]*size[1]*size[2]*size[3],4] for i in range(size[4])])
-        intensities = np.ascontiguousarray(NSX[:,5])
-
-        self._hot_atmosphere = (t_e, t_bb, tau, cos_zenith, Energy, intensities)
-
-    @xpsi.Photosphere.hot_atmosphere_Q.setter
-    def hot_atmosphere_Q(self, path):
-        with np.load(path, allow_pickle=True) as data_dictionary:
-            NSX = data_dictionary['NSX.npy']
-            size_reorderme = data_dictionary['size.npy']
-
-        size = [size_reorderme[3], size_reorderme[4], size_reorderme[2], size_reorderme[1], size_reorderme[0]]
-
-        Energy = np.ascontiguousarray(NSX[0:size[0],0])
-        cos_zenith = np.ascontiguousarray([NSX[i*size[0],1] for i in range(size[1])])
-        tau = np.ascontiguousarray([NSX[i*size[0]*size[1],2] for i in range(size[2])])
-        t_bb = np.ascontiguousarray([NSX[i*size[0]*size[1]*size[2],3] for i in range(size[3])])
-        t_e = np.ascontiguousarray([NSX[i*size[0]*size[1]*size[2]*size[3],4] for i in range(size[4])])
-        intensities = np.ascontiguousarray(NSX[:,5])
-
-        self._hot_atmosphere_Q = (t_e, t_bb, tau, cos_zenith, Energy, intensities)
+from modules.CustomPhotosphere import CustomPhotosphere_NumA5
 
 bounds = dict(spin_axis_position_angle = (None, None))
 photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=True, bounds=bounds,
@@ -342,13 +133,7 @@ print(len(p))
 # elsewhere
 elsewhere_T_keV = 0.4 #  keV
 
-from xpsi.global_imports import  _keV, _k_B
-k_B_over_keV = _k_B / _keV
-def get_T_in_log10_Kelvin(T_keV):
-    """convert T in 10^x K to T in keV"""
-    T_log10_Kelvin = np.log10(T_keV/k_B_over_keV)
-    return T_log10_Kelvin
-
+from modules.helper_functions import get_T_in_log10_Kelvin
 elsewhere_T_log10_K = get_T_in_log10_Kelvin(elsewhere_T_keV)
 
 if use_elsewhere:
@@ -366,65 +151,17 @@ photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 #print("Time spent in integration:",end - start)
 #exit()
 
-print("Bolometric profiles for I, Q, and U:")
-print(repr(np.sum(photosphere.signal[0][0], axis=0)))
-print(repr(np.sum(photosphere.signalQ[0][0], axis=0)))
-print(repr(np.sum(photosphere.signalU[0][0], axis=0)))
-
-from scipy.interpolate import Akima1DInterpolator
-
-class CustomInterstellar(xpsi.Interstellar):
-    """ Apply interstellar attenuation. """
-
-    def __init__(self, energies, attenuation, bounds, value):
-
-        assert len(energies) == len(attenuation), 'Array length mismatch.'
-
-        self._lkp_energies = energies # for lookup
-        self._lkp_attenuation = attenuation # for lookup      
-
-        N_H = Parameter('column_density',
-                        strict_bounds = (0.0,10.0),
-                        bounds = bounds,
-                        doc = 'Units of 10^21 cm^-2.',
-                        symbol = r'$N_{\rm H}$',
-                        value = value)
-
-        self._interpolator = Akima1DInterpolator(self._lkp_energies,
-                                                 self._lkp_attenuation)
-        self._interpolator.extrapolate = True
-
-        super(CustomInterstellar, self).__init__(N_H)
-
-    def attenuation(self, energies):
-        """ Interpolate the attenuation coefficients.
-
-        Useful for post-processing. 
-
-        """
-        return self._interpolate(energies)**(self['column_density']/1.4)
-
-    def _interpolate(self, energies):
-        """ Helper. """
-        _att = self._interpolator(energies)
-        _att[_att < 0.0] = 0.0
-        return _att
-
-    @classmethod
-    def from_SWG(cls, path, **kwargs):
-        """ Load attenuation file from the NICER SWG. Should be the 1.4e21 cm^-2 file. """
-
-        temp = np.loadtxt(path, dtype=np.double)
-
-        energies = temp[:,0]
-
-        attenuation = temp[:,2]
-
-        return cls(energies, attenuation, **kwargs)
+# print("Bolometric profiles for I, Q, and U:")
+# print(repr(np.sum(photosphere.signal[0][0], axis=0)))
+# print(repr(np.sum(photosphere.signalQ[0][0], axis=0)))
+# print(repr(np.sum(photosphere.signalU[0][0], axis=0)))
 
 StokesI = photosphere.signal[0][0]
 StokesQ = photosphere.signalQ[0][0]
 StokesU = photosphere.signalU[0][0]
+
+# from modules.CustomInterstellar import CustomInterstellar
+
 
 
 #Uncomment the following code (and download the required input table) if want to add interstellar attenuation to the modeled signal:
@@ -434,20 +171,227 @@ StokesU = photosphere.signalU[0][0]
 #interstellar(energies, StokesQ)
 #interstellar(energies, StokesU)
 
-#plt.plot(energies[0:50],np.sum(StokesI,axis=1)[0:50])
+plt.plot(energies[0:50],np.sum(StokesI,axis=1)[0:50])
 #print(energies[0:130])
-#print(np.sum(StokesI,axis=1)[0:130])
-#plt.ylabel('Flux [?]')
-#plt.xlabel('Energy [keV]')
-#plt.ylim(0.0,8.0e31)
+print(np.sum(StokesI,axis=1)[0:130])
+plt.ylabel('Flux [?]')
+plt.xlabel('Energy [keV]')
+# plt.ylim(0.0,8.0e31)
 #plt.savefig("figs/spectrum_after_ism.png")
 #exit()
+
+
+
+
+k_B_over_keV = _k_B / _keV
+from scipy.integrate import quad
+_c_cgs = _c*1E2
+
+class CustomBackground_DiskBB(xpsi.Background):
+    """ The background injected to generate synthetic data. """
+
+    def __init__(self, bounds=None, values=None, interstellar = None):
+        self.interstellar = interstellar
+        
+        doc = """
+        Temperature at inner disk radius in log10 Kelvin.
+        """
+        inner_temperature = xpsi.Parameter('T_in',
+                                strict_bounds = (3., 10.),
+                                bounds = bounds.get('T_in', None),
+                                doc = doc,
+                                symbol = r'$T_{in}$',
+                                value = values.get('T_in', None))
+
+        doc = """
+        Disk R_in in kilometers.
+        """
+        inner_radius = xpsi.Parameter('R_in',
+                                strict_bounds = (0., 1e3),
+                                bounds = bounds.get('R_in', None),
+                                doc = doc,
+                                symbol = r'$R_{in}$',
+                                value = values.get('R_in', None))
+
+        
+        doc = """
+        Disk normalisation cos_i*R_in^2/D^2 in (km / 10 kpc)^2.
+        """
+        background_normalisation = xpsi.Parameter('K_disk',
+                                strict_bounds = (0., 1e8),
+                                bounds = bounds.get('K_disk', None),
+                                doc = doc,
+                                symbol = r'$K_{BB}$',
+                                value = values.get('K_disk', None))
+        
+
+        super(CustomBackground_DiskBB, self).__init__(inner_temperature, inner_radius, background_normalisation)
+
+    def __call__(self, energy_edges, phases, interstellar = None):
+        pass #Do nothing, since not needed in this example.
+        
+    def get_f_disk(self, energies, spectral_radiance, attenuate = False):
+        """ Evaluate f_disk(energies).
+        
+        f_disk(E) = 4/3*pi * K_disk * l_disk(b_E/B_E, E)
+        Ref: Mitsuda et al. 1984, Makishima et al. 1986
+        But note that Mitsuda et al. 1984 has an extra factor here because they
+        don't have it in the definition for b_E/B_E.
+        
+        parameters
+        energies[keV]
+        spectral_radiance can be: b_E or B_E
+        attenuate determines whether to apply interstellar medium attenuation.
+        
+        returns
+        f_disk [photons/s/cm^2/keV] or [keV/s/cm^2/keV]
+        
+        """
+        
+
+        T_in = self['T_in']
+        K_disk = self['K_disk']
+
+        # KbT in keV
+        T_in_keV = k_B_over_keV * pow(10.0, T_in)
+        
+        T_out_keV = T_in_keV*1e-1
+        
+        epsrel = 1e-4
+
+        f_disk_array = np.array([]) #photons/s/cm^2/sr or keV/s/cm^2/sr 
+        for energy in energies:
+            f_disk_value = self.l_disk(energy, T_in_keV, T_out_keV, spectral_radiance, epsrel) 
+            f_disk_array=np.append(f_disk_array,f_disk_value)
+        
+        # K_disk is cos_i*R_in^2/D^2 in (km / 10 kpc)^2.
+        # (1 km / 10 kpc)^2 = 1.0502650e-35 [ cm/cm ]
+        
+        f_disk_array *=K_disk*4*np.pi/3*1.0502650e-35 # photons/s/cm^2/energy_bin
+        
+        #print("f_disk_array:",f_disk_array)
+        #exit()
+        
+            # Apply Interstellar if not None
+        if self.interstellar is not None and attenuate:
+            self.interstellar(energies, f_disk_array) # bkg is overwritten here
+        
+        return f_disk_array
+
+    def b_E(self, E, T):
+        '''
+        photon radiance of a blackbody
+
+        parameters:
+            E in keV
+            T in keV
+
+        returns:
+            b_E in photons/s/keV/cm^2/sr 
+        '''
+
+        b = 2*E**2/(_h_keV**3*_c_cgs**2)/(np.exp(E/T)-1)
+        return b
+        
+        
+    def B_E(self, E, T):
+        '''
+        Energy radiance of a blackbody.
+
+        parameters:
+            E in keV
+            T in keV
+
+        returns:
+            B_E in keV/s/keV/cm^2/sr (you will integrate over keV)
+        '''
+        
+        B = 2*E**3/(_h_keV**3*_c_cgs**2)/(np.exp(E/T)-1)
+        return B
+
+
+    def l_disk_integrand(self, T, E, T_in, spectral_radiance):
+        '''
+        parameters:
+            T, T_in in keV
+            E in keV
+
+        returns:
+            integrand in spectral radiance units/keV. This integrand will 
+            be integrated over keV.
+        '''
+
+        # print('T: ', T)
+        # print('E:', E)
+        # print('T_in: ', T_in)
+        # print('(T/T_in)**(-11/3)', (T/T_in)**(-11/3))
+        # print('spectral_radiance(E, T)/T_in', spectral_radiance(E, T)/T_in)
+
+        integrand = (T/T_in)**(-11/3)*spectral_radiance(E, T)/T_in
+        return integrand
+    
+    def l_disk(self, E, T_in, T_out, spectral_radiance, epsrel):
+        '''
+        parameters:
+            T, T_in in keV
+            E in keV
+
+        returns:
+            disk luminosity [spectral radiance units]. 
+        '''
+
+        disk_luminosity,_= quad(self.l_disk_integrand, T_out, T_in, args=(E, T_in, spectral_radiance), epsrel=epsrel)
+        return disk_luminosity
+    
+    
+from xpsi import Derive
+   
+def get_k_disk(cos_i, r_in, distance):
+   """
+   This function calculates the k-disk value for a given set of input parameters.
+
+   Args:
+       cos_i: The cosine inclination angle of the disk, can be a scalar or a tuple.
+       r_in: The inner radius of the disk in kilometers, can be a scalar or a tuple.
+       distance: The distance to the disk in kiloparsecs, can be a scalar or a tuple.
+
+   Returns:
+       A tuple containing the k-disk values for each element in the input parameters.
+
+   Raises:
+       ValueError: If the input tuples have different lengths.
+   """
+
+   if isinstance(cos_i, tuple) and isinstance(r_in, tuple) and isinstance(distance, tuple):
+     if len(cos_i) != len(r_in) or len(cos_i) != len(distance):
+       raise ValueError("Input tuples must have the same length.")
+     # Use a loop instead of recursion
+     k_disk_values = []
+     for c, r, d in zip(cos_i, r_in, distance):
+       k_disk_values.append(c * (r / (d / 10))**2)
+     return tuple(k_disk_values)
+   else:
+     # return cos_i * (r_in / (distance / 10))**2
+     
+     # scaling k_disk further to match signal units
+     distance_m = 3.08567758128e19*distance
+     
+     return cos_i * (r_in / (distance / 10))**2 * distance_m**2
+
+class k_disk_derive(Derive):
+     def __init__(self):
+         pass
+
+     def __call__(self, boundto, caller = None):
+         # ref is a reference to another hot region object
+         return get_k_disk(self.star['cos_inclination'], self.background['R_in'], self.star['distance'])
+   
 
 #An example of how to add disk background to StokesI:
 add_disk_bkg = True
 if add_disk_bkg:
     star = xpsi.Star(spacetime = spacetime, photospheres = photosphere)
-    from modules.CustomBackground_DiskBB import CustomBackground_DiskBB, k_disk_derive
+    # from modules.CustomBackground_DiskBB import CustomBackground_DiskBB, k_disk_derive
     k_disk = k_disk_derive()
     T_in = get_T_in_log10_Kelvin(0.25) #(0.29)
     R_in = 30.0 #55.0
