@@ -462,7 +462,7 @@ def integrate(size_t numThreads,
 
                                     if perform_correction == 1:
                                         correction_I_E = eval_elsewhere(T,
-                                                                        E_electronrest,
+                                                                        E_prime,
                                                                         _ABB,
                                                                         &(correction[i,J,0]),
                                                                         ext_data,
