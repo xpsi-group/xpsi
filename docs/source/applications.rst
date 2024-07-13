@@ -21,20 +21,35 @@ provides an extended technical description of ``v0.1`` of X-PSI and contains
 results of some parameter recovery tests using synthetic data.  
 
 
-NICER papers
-************
+NICER rotation-powered millisecond pulsar papers
+************************************************
 
 X-PSI has been used in several Pulse Profile Modeling analysis papers using *NICER* data of rotation-powered millisecond pulsars. These are typically published with a Zenodo repository containing data, model files, X-PSI scripts, samples and post-processing notebooks to enable full reproduction and independent analysis. 
+
+**Choudhury et al. 2024b** `(ApJ submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv240607285C/abstract>`_ *Exploring Waveform Variations among Neutron Star Ray-tracing Codes for Complex Emission Geometries*. 
+
+**Choudhury et al. 2024a** `(ApJL in press) <https://ui.adsabs.harvard.edu/abs/2024arXiv240706789C/abstract>`_ *A NICER View of the Nearest and Brightest Millisecond Pulsar: PSR J0437-4715*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo24c: https://doi.org/10.5281/zenodo.10886504
+__ Zenodo24c_ 
+
+**Salmi et al. 2024** `(ApJ in press) <https://ui.adsabs.harvard.edu/abs/2024arXiv240614466S/abstract>`_ *The Radius of the High Mass Pulsar PSR J0740+6620 With 3.6 Years of NICER Data*.  See also the associated `Zenodo repository`__.
+
+.. _Zenodo24b: https://doi.org/10.5281/zenodo.10519472
+__ Zenodo24b_
 
 **Vinciguerra et al. 2024** `(ApJ, 961,62) <https://ui.adsabs.harvard.edu/abs/2024ApJ...961...62V/abstract>`_ *An Updated Mass-Radius Analysis of the 2017-2018 NICER Data Set of PSR J0030+0451*. See also the associated `Zenodo repository`__.   
 
 .. _Zenodo24a: https://doi.org/10.5281/zenodo.8239000
 __ Zenodo24a_
 
+**Afle et al. 2023** `(Computing in Science and Engineering, 25, 16) <https://ui.adsabs.harvard.edu/abs/2023CSE....25f..16A/abstract>`_ *Reproducing the Results for Neutron Star Interior Composition Explorer Observation of PSR J0030+0451*. 
+
 **Vinciguerra et al. 2023** `(ApJ, 959, 55) <https://ui.adsabs.harvard.edu/abs/2023ApJ...959...55V/abstract>`_ *X-PSI Parameter Recovery for Temperature Map Configurations Inspired by PSR J0030+0451*.  See also the associated `Zenodo repository`__.
 
 .. _Zenodo23b: https://doi.org/10.5281/zenodo.7646352
 __ Zenodo23b_
+
 
 **Salmi et al. 2023** `(ApJ, 956, 138) <https://ui.adsabs.harvard.edu/abs/2023ApJ...956..138S/abstract>`_ *Atmospheric Effects on Neutron Star Parameter Constraints with NICER*.  See also the associated `Zenodo repository`__.
 
@@ -54,7 +69,7 @@ __ Zenodo21_
 
 **Bogdanov et al. 2021**  `(ApJL, 914, L15) <https://ui.adsabs.harvard.edu/abs/2021ApJ...914L..15B/abstract>`_ *Constraining the Neutron Star Mass-Radius Relation and Dense Matter Equation of State with NICER. III. Model Description and Verification of Parameter Estimation Codes*.
 
-**Bogdanov et al. 2019** `(ApJL, 887, L26) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..26B/abstract>`_ *Constraining the Neutron Star Mass-Radius Relation and Dense Matter Equation of State with NICER. III. Model Description and Verification of Parameter Estimation Codes*.
+**Bogdanov et al. 2019** `(ApJL, 887, L26) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..26B/abstract>`_ *Constraining the Neutron Star Mass-Radius Relation and Dense Matter Equation of State with NICER. II. Emission from Hot Spots on a Rapidly Rotating Neutron Star*.
 
 **Bilous et al. 2019** `(ApJL, 887, L23) <https://ui.adsabs.harvard.edu/abs/2019ApJ...887L..23B/abstract>`_ *A NICER View of PSR J0030+0451: Evidence for a Global-scale Multipolar Magnetic Field*. 
 
@@ -65,10 +80,12 @@ __ Zenodo21_
 __ Zenodo_
 
 
-Other papers
-************
+PPM for other sources
+*********************
 
-**Kini et al. 2024** `(MNRAS, 527, 8118) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.527.8118K/abstract>`_ *Pulse profile modelling of thermonuclear burst oscillations - II. Handling variability*.  See also the associated `Zenodo repository`__.
+**Kini et al. 2024b** `(MNRAS, submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv240510717K/abstract>`_ *Pulse Profile Modelling of Thermonuclear Burst Oscillations III : Constraining the properties of XTE J1814-338*. 
+
+**Kini et al. 2024a** `(MNRAS, 527, 8118) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.527.8118K/abstract>`_ *Pulse profile modelling of thermonuclear burst oscillations - II. Handling variability*.  See also the associated `Zenodo repository`__.
 
 .. _Zenodo24kini: http://dx.doi.org/10.5281/zenodo.8033527
 __ Zenodo24kini_
