@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photosphere &mdash; x-psi 2.2.7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=799474cc"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HotRegion" href="hotregion.html" />
+    <link rel="prev" title="Spacetime" href="spacetime.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sample.html">Importance Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Likelihood API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Photosphere</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#xpsi.Photosphere.Photosphere"><code class="docutils literal notranslate"><span class="pre">Photosphere</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere._animate"><code class="docutils literal notranslate"><span class="pre">Photosphere._animate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere._plot_sky_maps"><code class="docutils literal notranslate"><span class="pre">Photosphere._plot_sky_maps()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.elsewhere"><code class="docutils literal notranslate"><span class="pre">Photosphere.elsewhere</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.elsewhere_atmosphere"><code class="docutils literal notranslate"><span class="pre">Photosphere.elsewhere_atmosphere</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.embed"><code class="docutils literal notranslate"><span class="pre">Photosphere.embed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.everywhere"><code class="docutils literal notranslate"><span class="pre">Photosphere.everywhere</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.global_variables"><code class="docutils literal notranslate"><span class="pre">Photosphere.global_variables</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.hot"><code class="docutils literal notranslate"><span class="pre">Photosphere.hot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.hot_atmosphere"><code class="docutils literal notranslate"><span class="pre">Photosphere.hot_atmosphere</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.image"><code class="docutils literal notranslate"><span class="pre">Photosphere.image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.images"><code class="docutils literal notranslate"><span class="pre">Photosphere.images</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.integrate"><code class="docutils literal notranslate"><span class="pre">Photosphere.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.load_image_data"><code class="docutils literal notranslate"><span class="pre">Photosphere.load_image_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.signal"><code class="docutils literal notranslate"><span class="pre">Photosphere.signal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.signalQ"><code class="docutils literal notranslate"><span class="pre">Photosphere.signalQ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.signalU"><code class="docutils literal notranslate"><span class="pre">Photosphere.signalU</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.spacetime"><code class="docutils literal notranslate"><span class="pre">Photosphere.spacetime</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpsi.Photosphere.Photosphere.write_image_data"><code class="docutils literal notranslate"><span class="pre">Photosphere.write_image_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Photosphere</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/photosphere.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="photosphere">
+<span id="module-xpsi.Photosphere"></span><span id="id1"></span><h1>Photosphere<a class="headerlink" href="#photosphere" title="Link to this heading"></a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Photosphere.Photosphere" title="xpsi.Photosphere.Photosphere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Photosphere</span></code></a> represent a photosphere embedded
+in an ambient Schwarzschild spacetime.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xpsi.Photosphere.</span></span><span class="sig-name descname"><span class="pre">Photosphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elsewhere</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">everywhere</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterSubspace</span></code></a></p>
+<p>A photosphere embedded in an ambient Schwarzschild spacetime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hot</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a> (or a derived class).
+This objects represents the hot regions of the surface that in most
+use-cases will be assumed to contain radiating material that is hotter
+than that <em>elsewhere</em>.</p></li>
+<li><p><strong>elsewhere</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere" title="xpsi.Elsewhere.Elsewhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elsewhere</span></code></a> (or a derived class).</p></li>
+<li><p><strong>everywhere</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere" title="xpsi.Everywhere.Everywhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Everywhere</span></code></a> (or a derived class).
+Note that if you use construct the surface radiation field in this
+way, you should use the <a class="reference internal" href="#xpsi.Photosphere.Photosphere.hot_atmosphere" title="xpsi.Photosphere.Photosphere.hot_atmosphere"><code class="xref py py-attr docutils literal notranslate"><span class="pre">hot_atmosphere</span></code></a>
+property to pass a buffer of numerical data to the integrator
+routines. You then need to ensure that the extension modules
+<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/hot_radiation_field.pyx</span></code> and
+<code class="docutils literal notranslate"><span class="pre">xpsi/surface_radiation_field/elsewhere_radiation_field.pyx</span></code> match.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You cannot specify the surface radiation field <em>everywhere</em> if you
+use hot regions (the latter usage may also include specification of
+the radiation field <em>elsewhere</em>).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bounds</strong> (<em>dict</em>) – Bounds are supplied for instantiation of a frequency parameter.
+The parameter name <code class="docutils literal notranslate"><span class="pre">'mode_frequency'</span></code> must be a key in the
+dictionary unless the parameter is <em>fixed</em> or <em>derived</em>. If a bound
+is <code class="docutils literal notranslate"><span class="pre">None</span></code> that bound is set equal to a strict hard-coded bound.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, lock the coordinate rotation frequency of a mode of
+asymmetry in the photosphere to a fixed frequency, e.g., the stellar
+rotation frequency. If bounds are passed, the frequency is interpreted
+as a free parameter.</p></li>
+<li><p><strong>values</strong> (<em>dict</em>) – Either the fixed value of the mode frequency, a callable if the
+frequency is <em>derived</em>, or a value upon initialisation if the
+frequency is free. The dictionary must have a key with name
+<code class="docutils literal notranslate"><span class="pre">'mode_frequency'</span></code> if it is <em>fixed</em> or <em>derived</em>.
+If the asymmetry is locked to the stellar spin, then you need to pass
+the spin frequency. If fixed but different to the spin frequency, this
+value needs to be passed instead. In the hot region base class this
+mode frequency is applied to normalise the ray lags instead of the
+stellar rotation frequency.</p></li>
+<li><p><strong>stokes</strong> (<em>boolean</em>) – A Boolean that determines whether the signals for all the Stokes I, Q,
+and U parameters are calculated. If False, only Stokes I is calculated.</p></li>
+<li><p><strong>custom</strong> (<em>iterable</em>) – A <a class="reference internal" href="parameter.html#xpsi.Parameter.Parameter" title="xpsi.Parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> instance or iterable over such
+instances. Might be useful for calling image plane extensions and
+passing global variables, without having to instantiate
+surface-discretisation classes and without having to handle global
+variable values at compile time or from disk for runtime access.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In basic modelling patterns the frequency is the spin frequency,
+and thus you only need to explicitly pass the spin as <code class="docutils literal notranslate"><span class="pre">value</span></code> whilst
+leaving <code class="docutils literal notranslate"><span class="pre">bounds</span></code> to default. If the spin frequency happens to be a
+free parameter (perhaps with informative prior information), then
+pass a callable instead that can be used to get the spin frequency
+dynamically when the derived mode frequency variable is called for.</p>
+</div>
+<dl class="simple">
+<dt>Required parameter names:</dt><dd><ul class="simple">
+<li><p>mode_frequency</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere._animate">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_animate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_file_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_num_frames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_figsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dpi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere._animate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere._animate" title="Link to this definition"></a></dt>
+<dd><p>Helper method to animate the intensity sky maps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_file_root</strong> (<em>str</em>) – Reserved for internal use.</p></li>
+<li><p><strong>_num_frames</strong> (<em>int</em>) – Reserved for internal use.</p></li>
+<li><p><strong>_figsize</strong> (<em>int</em>) – Reserved for internal use.</p></li>
+<li><p><strong>_dpi</strong> (<em>int</em>) – Reserved for internal use.</p></li>
+<li><p><strong>cycles</strong> (<em>int</em>) – Number of explicit cycles to generate frames for. The frames from
+the principal cycle are reused, so the images are periodic in
+their phase evolution. There is no delay between cycles in this
+type of repitition.</p></li>
+<li><p><strong>fps</strong> (<em>int</em>) – Frames per second. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then one cycle (assuming images
+have been precomputed for a complete cycle), consisting of
+so many frames, will exhibit a period of one second.</p></li>
+<li><p><strong>repeat</strong> (<em>bool</em>) – Inform <em>ffmpeg</em> to enter a loop when video play back commences.
+Deprecated.</p></li>
+<li><p><strong>repeat_delay</strong> – Delay between repeats in milliseconds. Deprecated.</p></li>
+<li><p><strong>ffmpeg_path</strong> (<em>str</em>) – Absolute path to <em>ffmpeg</em> executable. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults
+to matplotlib rcParams settings, but no guarantee that the package
+will be found even if installed on system. Deprecated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere._plot_sky_maps">
+<span class="sig-name descname"><span class="pre">_plot_sky_maps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_file_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_phases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_c_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_c_pidxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_redraw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_pulse_profile_and_spectrum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_is_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">panel_layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">panel_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bolometric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_zero_intensity_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalise_each_panel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotate_energies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotate_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_annotation_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'[%.1f</span> <span class="pre">keV]'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_annotation_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'[%.1f</span> <span class="pre">cycles]'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotate_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.05,</span> <span class="pre">0.05)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colormap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usetex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.2,</span> <span class="pre">1.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tick_length_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere._plot_sky_maps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere._plot_sky_maps" title="Link to this definition"></a></dt>
+<dd><p>Helper method for specific intensity sky map visualization.</p>
+<p>Uses Delaunay triangulation to create an irregular sky mesh and
+calculate photon (specific) intensity contours at a sequence of phases.</p>
+<p>Each figure generated contains a sequence of panels arranged in
+one or two spatial dimensions. Each panel is an intensity sky map,
+either at a particular energy or integrated over a finite energy
+interval. Panels cannot mix specific and integrated intensities. Only
+a some sequence of energy (intervals), in any order, can be identified
+as labelling panels in one or two spatial dimensions. Time (rotational
+phase), whilst it could be defined to label a sequence of panels, is
+only identified as a labelling a sequence of <em>figures</em>.</p>
+<p>Similarly, sequence of energies could be identified as a variable
+labelling a sequence of figures, but is not. Moreover, energy and time
+could label panels in to spatial dimensions, but such mixing is not
+permitted. Finally, variables controlling the source-receiver system
+could be identified as labels of panels and/or figures, but this
+is also not supported. More complicated rendering patterns may be
+supported in future versions, but for now can be achieved via
+custom extensions building off of the current functionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_file_root</strong> (<em>str</em>) – Relative or absolute path to parent directory for images,
+extended with the root name for the image files. E.g., the
+default is <code class="docutils literal notranslate"><span class="pre">./images/skymap</span></code>. You do not need to change this
+unless you wish to, and is otherwise reserved for internal use.
+You may supply a custom file path via keywords <code class="docutils literal notranslate"><span class="pre">root_dir</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_root</span></code> upon calling <a class="reference internal" href="#xpsi.Photosphere.Photosphere.image" title="xpsi.Photosphere.Photosphere.image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image()</span></code></a>, which are
+concatenated appropriately.</p></li>
+<li><p><strong>_phases</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – The phases at which the star was imaged. This is handled
+internally, so do <em>not</em> pass a keyword argument. If phase averaging,
+the minimum and maximum phases must be zero and <span class="math notranslate nohighlight">\(2\pi\)</span>
+radians (i.e., zero and one cycles).</p></li>
+<li><p><strong>_energies</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – The energies at which the star was imaged. This is handled
+internally, so do <em>not</em> pass a keyword argument.</p></li>
+<li><p><strong>_c_idxs</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – The energy indices for which the intensity maps were cached for
+memory-efficieny plotting. This is handled internally, so do <em>not</em>
+pass a keyword argument.</p></li>
+<li><p><strong>_c_pidxs</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – The energy indices for which the intensity maps were cached for
+memory-efficieny plotting. This is handled internally, so do <em>not</em>
+pass a keyword argument.</p></li>
+<li><p><strong>_redraw</strong> (<em>bool</em>) – Redraw the sky maps? This is handled internally, so do <em>not</em> pass
+a keyword argument.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of OpenMP threads to spawn.</p></li>
+<li><p><strong>with_pulse_profile_and_spectrum</strong> (<em>bool</em>) – A setting that fundamentally changes some behaviours. If
+deactivated (the default), only photon (specific) intensity skymaps
+are plotted. The following frame is an example:</p></li>
+</ul>
+</dd>
+</dl>
+<img alt="_images/_skymap_plot.png" src="_images/_skymap_plot.png" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>with_pulse_profile_and_spectrum</strong> (<em>bool</em>) – If deactivated, the following keyword arguments do not have a use:
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">cycles</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">colormap</span></code>. If <em>activated</em>, photon specific
+intensity skymaps at three energies are plotted in each frame,
+together with their associated photon specific flux pulse-profiles,
+and also the photon specific flux spectrum at a finer array of
+energies. Use <code class="xref py py-obj docutils literal notranslate"><span class="pre">panel_indices</span></code> to select the energies. The
+pulse-profiles are each normalised to their respective maxima,
+and the spectrum shows the relative orders of magnitude of the
+specific flux signals. The following frame is an example:</p>
+</dd>
+</dl>
+<img alt="_images/_skymap_with_pulse_profile_and_spectrum_plot.png" src="_images/_skymap_with_pulse_profile_and_spectrum_plot.png" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>with_pulse_profile_and_spectrum</strong> (<em>bool</em>) – If activated, a subset of other keyword arguments are ignored:
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">energy_bounds</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">phase_average</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">panel_layout</span></code>,
+and <code class="xref py py-obj docutils literal notranslate"><span class="pre">invert</span></code>. The panel layout is rigid (not customisable) in
+order to focus on the plot quality. If more energies were added, the
+information density in the plot-space might become too high without
+adding much more new information.</p></li>
+<li><p><strong>time_is_space</strong> (<em>bool</em>) – Each image is at constant energy (or is a spectral trace up to
+that energy) instead of being at constant phase (or a pulse-profile
+trace up to that phase).</p></li>
+<li><p><strong>panel_layout</strong> (<em>tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em>) – Two elements: the number of rows and columns of panels. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+a layout is automatically determined based on the number of
+images to be plotted.</p></li>
+<li><p><strong>panel_indices</strong> (<em>iterable</em>) – These ordered integers will be used to select intensity information
+by indexing the energy dimension of a 3D intensity array. If
+specific intensites are plotted, these integers should index
+a subset of energies at which the star was imaged. If intensities
+are plotted, these integers should index a subset of the energy
+intervals over which specific intensities are integrated. See
+the <code class="xref py py-obj docutils literal notranslate"><span class="pre">energy_bounds</span></code> keyword argument. If the flux is
+calculated at more energies than specific intensities are cached
+at, then these integers need to index the
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">cache_energy_indices</span></code> array appropriately.</p></li>
+<li><p><strong>cycles</strong> (<em>int</em>) – Nuber of cycles to generate images for. Only relevant if one cycle
+is different to the next in terms of the frame, e.g., most commonly
+if plotting the pulse-profile traces over more than one cycle. If
+frames separated by one cycle are identical, declare the number
+of cycles to the animator instead.</p></li>
+<li><p><strong>phase_average</strong> (<em>bool</em>) – Average each sky map over one revolution (cycle) in phase?
+Note that the resulting image is incompatible with the currently
+supported animation mode. The following image is an example:</p></li>
+</ul>
+</dd>
+</dl>
+<img alt="_images/_skymap_phaseaveraged.png" src="_images/_skymap_phaseaveraged.png" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bolometric</strong> (<em>bool</em>) – Integrate each sky map over energy? Note that the resulting image
+is incompatible with the currently supported animation mode.</p></li>
+<li><p><strong>energy_bounds</strong> (<em>iterable</em>) – A set of two-element containers. Each container has an ordered pair
+of energies which delimit an integration domain. Specific intensity
+is integrated along each sky direction, at each phase, between
+these energy bounds. The bounds must be between the minimum and
+maximum energies at which the star was imaged. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+specific intensity sky maps will be plotted (the default). This
+option is ignored if energy is defined as the time dimension,
+meaning the sky maps are animated with respect to energy.</p></li>
+<li><p><strong>phase_bounds</strong> (<em>iterable</em>) – A set of two-element containers. Each container has an ordered pair
+of energies which delimit an integration domain. Specific intensity
+is integrated along each sky direction, at each phase, between
+these energy bounds. The bounds must be between the minimum and
+maximum energies at which the star was imaged. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+specific intensity sky maps will be plotted (the default). This
+option is ignored if phase is defined as the time dimension,
+meaning the sky maps are animated with respect to phase.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To use this functionality, the specific intensities must have
+been cached at all energies the specific flux is calculated at.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_levels</strong> (<em>int</em>) – Number of contour levels in (specific) intensity, distributed
+between minimum finite, and maximum values per panel, or over all
+panels. See <code class="xref py py-obj docutils literal notranslate"><span class="pre">normalise_each_panel</span></code> keyword argument.</p></li>
+<li><p><strong>add_zero_intensity_level</strong> (<em>bool</em>) – Add a contour level at zero intensity such that the colormap
+minimum corresponds to zero intensity? If <code class="docutils literal notranslate"><span class="pre">True</span></code> (the default),
+then the background sky, where there is by definition zero model
+intensity, has the same colour only as the subset of the image of
+the surface that is not radiating in the model. The disadvantage of
+this choice is that the intensity structure of the image as a
+function of phase and sky direction is generally not as well-
+resolved by the colour and greyscale variation. In the limit
+that the minimum finite intensity of the image is far smaller than
+the maximum, then the intensity resolution by colour and greyscale
+values is highest. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, then the minimum colour is
+assigned to the minimum finite intensity as a function of phase
+and sky direction. This also maximally resolves the intensity by
+colour and greyscale values, which is useful for models wherein the
+surface radiation field is constructed, for instance, from
+uniform-temperature localised hot regions. However, in this case
+the background sky colour is undefined; the background sky colour
+is thus set to the minimum colour in the colormap, meaning that the
+fainest subset of the image over phase and sky direction merges
+with the background sky in terms of colour and greyscale values.</p></li>
+<li><p><strong>normalise_each_panel</strong> (<em>bool</em>) – Normalise the contour colormap to each skymap panel uniquely, or
+globally over all panels? The former yields relative intensity
+as function of phase and sky direction for an energy or energy
+interval, whilst the latter offers more spectral information but
+emission in some panels may not be discernable.</p></li>
+<li><p><strong>invert</strong> (<em>bool</em>) – Invert the greyscale to show bright pixels as dark on a white
+plot background. If a colormap is manually supplied, this just
+controls the plot background colour. Inversion is recommended
+for printed format, whilst a black background is more intuitive
+when in digital format.</p></li>
+<li><p><strong>colormap</strong> (<em>obj</em>) – Usage dependent on other settings. If not plotting the pulse-profile
+and spectrum, then this is simply a (matplotlib) colormap object.
+Choose something appropriate and <em>accessible</em> for a non-negative
+scalar field (sky intensities). If plotting the pulse-profile and
+spectrum too, then <code class="xref py py-obj docutils literal notranslate"><span class="pre">colormap</span></code> can be the string
+<code class="docutils literal notranslate"><span class="pre">'RedGreyBlue'</span></code> to invoke the default colour scheme which is reds
+for the lowest energy intensity skymap and pulse-profile; pure
+greyscale for the intermediate energy; and blues for the highest
+energy.  Alternatively, if <code class="xref py py-obj docutils literal notranslate"><span class="pre">colormap</span></code> is simply <code class="docutils literal notranslate"><span class="pre">None</span></code>, the
+default greyscale will be used for all energies, with all
+pulse-profiles in black. Lastly, you can supply a three-element
+list or tuple of colormap objects, ordered from lowest to highest
+energy; the pulse-profile line colours will be retrieved as the
+midpoint of the colormap. Note that the background sky colour will
+be set to the lowest colour in each colourmap.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em><em>(</em><em>int</em><em>,</em><em>int</em><em>)</em>) – The figure size (width, height) in <em>inches</em>. If the dimensions are
+inconsistent with the aspect ratio suggested by the
+:obj`panel_layout` settings, the height of the figure will be
+automatically rescaled to achieve congruence, meaning each panel is
+approximately square.</p></li>
+<li><p><strong>usetex</strong> (<em>bool</em>) – Use TeX backend for figure text.</p></li>
+<li><p><strong>fontsize_scale</strong> (<em>float</em>) – Use this argument to scale the font size of figure text relative
+to the default font size that is automatically determined based
+on the approximate panel size, which is in turn based on the
+figure size and the panel layout.</p></li>
+<li><p><strong>tick_spacing</strong> (<em>tuple</em><em>[</em><em>float</em><em>,</em><em>float</em><em>]</em>) – A two-element container. The first element is the minor tick
+spacing, and the second is the major tick spacing, for both
+the <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> directions on the image plane. The
+units are both the maximum possible angular size of the image of the
+surface in an ambient Schwarzschild spacetime,
+<span class="math notranslate nohighlight">\(R_{\rm eq}/\sqrt{1-r_{\rm s}/R_{\rm eq}}\)</span>.</p></li>
+<li><p><strong>tick_length_scaling</strong> (<em>float</em>) – Use this argument to scale the axis tick lengths relative to the
+default lengths that are automatically determined based on the
+panel size.</p></li>
+<li><p><strong>dpi_scale</strong> (<em>float</em>) – Use this argument to scale the dots per inch of the figure,
+relative to the default that is automatically determined based
+on the panel size.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.elsewhere">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elsewhere</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.elsewhere" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="elsewhere.html#xpsi.Elsewhere.Elsewhere" title="xpsi.Elsewhere.Elsewhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elsewhere</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.elsewhere_atmosphere">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elsewhere_atmosphere</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.elsewhere_atmosphere" title="Link to this definition"></a></dt>
+<dd><p>Get the numerical atmosphere buffers for elsewhere if used.</p>
+<p>To preload a numerical atmosphere into a buffer, subclass and
+overwrite the setter. The underscore attribute set by the setter
+must be an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
+<span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
+first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
+arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
+<code class="docutils literal notranslate"><span class="pre">self._hot_atmosphere</span> <span class="pre">=</span> <span class="pre">(logT,</span> <span class="pre">logg,</span> <span class="pre">mu,</span> <span class="pre">logE,</span> <span class="pre">buf)</span></code>, where:
+<code class="docutils literal notranslate"><span class="pre">logT</span></code> is a logarithm of local comoving effective temperature;
+<code class="docutils literal notranslate"><span class="pre">logg</span></code> is a logarithm of effective surface gravity;
+<code class="docutils literal notranslate"><span class="pre">mu</span></code> is the cosine of the angle from the local surface normal;
+<code class="docutils literal notranslate"><span class="pre">logE</span></code> is a logarithm of the photon energy; and
+<code class="docutils literal notranslate"><span class="pre">buf</span></code> is a one-dimensional buffer of intensities of size given by
+the product of sizes of the first <span class="math notranslate nohighlight">\(n-1\)</span> tuple elements.</p>
+<p>It is highly recommended that buffer preloading is used, instead
+of loading from disk in the customisable radiation field extension
+module, to avoid reading from disk for every signal
+(likelihood) evaluation. This can be a non-negligible waste of compute
+resources. By preloading in Python, the memory is allocated and
+references to that memory are not in general deleted until a sampling
+script exits and the kernel stops. The likelihood callback accesses
+the same memory upon each call without I/O.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.embed">
+<span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fast_total_counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.embed" title="Link to this definition"></a></dt>
+<dd><p>Embed the photosphere in an ambient Schwarzschild spacetime.</p>
+<p>In other words, generate a discrete representation of the photospheric
+radiation field and the null mapping from the photosphere to infinity,
+for use in flux integrators called by distant observers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.everywhere">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">everywhere</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.everywhere" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="everywhere.html#xpsi.Everywhere.Everywhere" title="xpsi.Everywhere.Everywhere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Everywhere</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.global_variables">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_variables</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.global_variables" title="Link to this definition"></a></dt>
+<dd><p>Get a vector of global surface radiation field variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An <em>ndarray[n]</em> of scalars required to evaluate variables
+that control the radiation field w.r.t local comoving frames
+across the stellar surface.</p>
+</dd>
+</dl>
+<p>The following code block is how one would pass the properties of a
+single-temperature circular <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> to the extension modules. If
+you have more than one <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> object merged into the subspace
+associated with the <code class="docutils literal notranslate"><span class="pre">Photosphere</span></code> object, they may each be prefixed,
+meaning that the set of parameter names below would need to be prefixed
+at the least, and unless you only want to image one <code class="docutils literal notranslate"><span class="pre">HotRegion</span></code>, the
+parameters of the <code class="docutils literal notranslate"><span class="pre">HotRegions</span></code> object are required.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;super_colatitude&#39;</span><span class="p">],</span>
+                  <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;phase_shift&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">_2pi</span><span class="p">,</span>
+                  <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;super_radius&#39;</span><span class="p">],</span>
+                  <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;super_temperature&#39;</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>The phase shift controls the initial rotational phase of the
+<code class="docutils literal notranslate"><span class="pre">HotRegion</span></code> when imaging commences.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.hot">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hot</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.hot" title="Link to this definition"></a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="hotregion.html#xpsi.HotRegion.HotRegion" title="xpsi.HotRegion.HotRegion"><code class="xref py py-class docutils literal notranslate"><span class="pre">HotRegion</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.hot_atmosphere">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hot_atmosphere</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.hot_atmosphere" title="Link to this definition"></a></dt>
+<dd><p>Get the numerical atmosphere buffers for hot regions if used.</p>
+<p>To preload a numerical atmosphere into a buffer, subclass and
+overwrite the setter. The underscore attribute set by the setter
+must be an <span class="math notranslate nohighlight">\(n\)</span>-tuple whose <span class="math notranslate nohighlight">\(n^{th}\)</span> element is an
+<span class="math notranslate nohighlight">\((n-1)\)</span>-dimensional array flattened into a one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The first <span class="math notranslate nohighlight">\(n-1\)</span>
+elements of the <span class="math notranslate nohighlight">\(n\)</span>-tuple must each be an ordered one-dimensional
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of parameter values for the purpose of
+multi-dimensional interpolation in the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. The
+first <span class="math notranslate nohighlight">\(n-1\)</span> elements must be ordered to match the index
+arithmetic applied to the <span class="math notranslate nohighlight">\(n^{th}\)</span> buffer. An example would be
+<code class="docutils literal notranslate"><span class="pre">self._hot_atmosphere</span> <span class="pre">=</span> <span class="pre">(logT,</span> <span class="pre">logg,</span> <span class="pre">mu,</span> <span class="pre">logE,</span> <span class="pre">buf)</span></code>, where:
+<code class="docutils literal notranslate"><span class="pre">logT</span></code> is a logarithm of local comoving effective temperature;
+<code class="docutils literal notranslate"><span class="pre">logg</span></code> is a logarithm of effective surface gravity;
+<code class="docutils literal notranslate"><span class="pre">mu</span></code> is the cosine of the angle from the local surface normal;
+<code class="docutils literal notranslate"><span class="pre">logE</span></code> is a logarithm of the photon energy; and
+<code class="docutils literal notranslate"><span class="pre">buf</span></code> is a one-dimensional buffer of intensities of size given by
+the product of sizes of the first <span class="math notranslate nohighlight">\(n-1\)</span> tuple elements.</p>
+<p>It is highly recommended that buffer preloading is used, instead
+of loading from disk in the customisable radiation field extension
+module, to avoid reading from disk for every signal
+(likelihood) evaluation. This can be a non-negligible waste of compute
+resources. By preloading in Python, the memory is allocated and
+references to that memory are not in general deleted until a sampling
+script exits and the kernel stops. The likelihood callback accesses
+the same memory upon each call without I/O.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.image">
+<span class="sig-name descname"><span class="pre">image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reimage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reuse_ray_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases_in_cycles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sqrt_num_rays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsabs_ray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsrel_ray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_plane_radial_increment_power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_intensities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_energy_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_phase_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">single_precision_intensities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_sky_maps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sky_map_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">animate_sky_maps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">animate_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.image" title="Link to this definition"></a></dt>
+<dd><p>Image the star as a function of phase and energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reimage</strong> (<em>bool</em>) – (Re)image the star. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, but the spacetime configuration
+has been updated or the photosphere parameters have been updated,
+a warning will be generated. In principle, one might want to plot
+sky maps using cached imaging information, or animate sky maps
+using images on disk, so reimaging is not forced if (non-fixed)
+parameters have been changed.</p></li>
+<li><p><strong>reuse_ray_map</strong> (<em>bool</em>) – Reuse a precomputed ray map from the stellar surface to the image
+plane. If the spacetime configuration has changed (non-fixed
+parameters have changed), a cached ray map will <em>not</em> be reused. If
+the spacetime configuration is unchanged, but resolution settings
+have changed for ray tracing, pass <code class="docutils literal notranslate"><span class="pre">False</span></code> to adhere to the new
+resolution settings.</p></li>
+<li><p><strong>energies</strong> (<em>ndarray</em><em>[</em><em>n</em><em>]</em>) – Energies in keV to evaluate incident specific intensities at.</p></li>
+<li><p><strong>num_phases</strong> (<em>int</em>) – The number of phases spanning the unit interval (zero and unity
+inclusive) to image at.</p></li>
+<li><p><strong>phases</strong> (<em>ndarray</em><em>[</em><em>m</em><em>]</em>) – Phases in <em>radians</em> or <em>cycles</em> at which to evaluate incident
+specific intensities at. If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, takes precedence over
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">num_phases</span></code>. The units need to be specified with the
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">phases_in_cycles</span></code> keyword argument: if <code class="docutils literal notranslate"><span class="pre">False</span></code>, give
+the phase array in <em>radians</em>.</p></li>
+<li><p><strong>phases_in_cycles</strong> (<em>bool</em>) – Is the phase array, if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, in units of rotational cycles?</p></li>
+<li><p><strong>sqrt_num_rays</strong> (<em>int</em>) – Square-root of the number of rays. This is the level of
+discretisation in both a radial coordinate and a polar coordinate
+on an elliptical image plane.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the spacetime is static or extremely close to being static in
+a numerical context, at the resolutions we are interested in, we
+need to mitigate problems with rays that graze the pole
+infinitesimally close to the polar axis. In the vicinity of the
+polar coordinate singularity the ODE system is stiff and the
+solution is unstable. The most straightforward way to mitigate this
+is to perform a fallback forward Euler step for a ray that passes
+exactly through the pole, and use that ray as an approximation for
+the grazing ray that started very nearby on the image plane.
+Internally, if a ray intersects the image plane at
+<span class="math notranslate nohighlight">\(x\)</span>-coordinate that is numerically very close to, but not
+exactly, zero (which would mean alignment to the rotational axis),
+it is approximated by a ray that intersects <span class="math notranslate nohighlight">\(x=0\)</span>.
+Image-plane interpolation of quantities (such as intensity) for
+the purpose of visualisation will then smooth out any such
+artefacts.</p>
+<p>Moreover, as an additional measure against artefacts in the sky
+maps in the vicinity of the rotational pole, rays are distributed
+accordingingly. For example, if we request <span class="math notranslate nohighlight">\(n=400\)</span> rays per
+dimension, a maximal spacing of the rays from the rotational axis
+is achieved by rotating the <em>spokes</em> of rays (by up to
+<span class="math notranslate nohighlight">\(\pm\pi/n\)</span>) so that no spoke is aligned (or anti-aligned)
+with the <span class="math notranslate nohighlight">\(y\)</span>-direction.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epsabs_ray</strong> (<em>float</em>) – Absolute error tolerance per ray to adhere to during numerical
+integration.</p></li>
+<li><p><strong>epsrel_ray</strong> (<em>float</em>) – Relative error tolerance per ray to adhere to during numerical
+integration.</p></li>
+<li><p><strong>max_steps</strong> (<em>int</em>) – Maximum number of steps to permit per ray before forced termination
+of integration.</p></li>
+<li><p><strong>init_step</strong> (<em>float</em>) – The initial <em>suggested</em> step size at the image plane for the
+affine parameter for each ray.</p></li>
+<li><p><strong>image_plane_radial_increment_power</strong> (<em>float</em>) – Controls the behaviour of the radial discretisation.
+Higher values towards unity result in linear spacing of rays with
+the radial coordinate. Lower values towards zero squeeze the rays
+towards the visible stellar limb, which is necessary for resolving
+images of extended radiating elements. Values above unity are not
+recommended, and would squeeze rays towards the image-plane origin,
+compromising resolution at the stellar limb.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of OpenMP threads to spawn for parallel blocks of code.
+Parallel blocks include ray integration to generate a global ray
+map from image plane to surface; and image calculation at a
+sequence of rotational phases.</p></li>
+<li><p><strong>cache_intensities</strong> (<em>float</em>) – Cache the photon specific intensity sky maps in memory, as a
+function of phase and energy? The type must be a float (greater than
+or equal to zero) or <code class="docutils literal notranslate"><span class="pre">False</span></code>. The value represents the limiting
+size in GB that can be allocated for the intensity cache. Defaults
+to zero because this dominates memory consumption. You need to
+activate this option if you want to plot the sky maps (see below).
+To activate, supply a limit. A hard limit of 2 GB is imposed for
+safety. To override, use the secret <code class="xref py py-obj docutils literal notranslate"><span class="pre">_OVERRIDE_MEM_LIM</span></code>
+keyword argument to supply a positive limit in GB.</p></li>
+<li><p><strong>cache_phase_indices</strong> (<em>ndarray</em><em>[</em><em>m</em><em>]</em>) – A one-dimensional <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <code class="docutils literal notranslate"><span class="pre">dtype=numpy.int32</span></code>,
+specifying the phase-array indices to cache intensities at. This
+is useful to save memory when you want to plot specific intensity
+skymaps but also compute the specific flux at many more phases. If
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, intensities will be cached at all phases subject to
+memory constraints. Note that the order of the list matters for
+plotting order, so the indices should generally increase, as should
+the phases themselves. If plotting the pulse-profile and spectrum,
+then this is a case where many more phases are useful for the
+resolving specific flux pulse-profile than are needed to plot
+specific intensity skymaps and specific flux spectra at three
+representative phases.</p></li>
+<li><p><strong>cache_energy_indices</strong> (<em>ndarray</em><em>[</em><em>m</em><em>]</em>) – A one-dimensional <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <code class="docutils literal notranslate"><span class="pre">dtype=numpy.int32</span></code>,
+specifying the energy-array indices to cache intensities at. This
+is useful to save memory when you want to plot specific intensity
+skymaps but also compute the specific flux at many more energies. If
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, intensities will be cached at all energies subject to
+memory constraints. Note that the order of the list matters for
+plotting order, so the indices should generally increase, as should
+the energies themselves. If plotting the pulse-profile and spectrum,
+then this is a case where many more energies are useful for the
+resolving specific flux spectrum than are needed to plot specific
+intensity skymaps and specific flux pulse-profiles at three
+representative energies.</p></li>
+<li><p><strong>single_precision_intensities</strong> (<em>bool</em>) – Cache the intensities in single precision? In most use cases,
+double precision is simply unnecessary, and because memory
+consumption can be high, choosing single precision can reduce
+memory requirements by a factor of two. Note that this only applies
+to the caching of intensities, not the calculation of intensities,
+which is done safely in double precision; only the final caching
+operation is a demotion cast to single precision. The default
+is single precision caching. Option ignored if intensities are not
+cached.</p></li>
+<li><p><strong>plot_sky_maps</strong> (<em>bool</em>) – Plot (specific) intensity sky maps at a sequence of phases, or
+by averaging over phase. Maps can be made at one more energies
+or energy intervals. The images will be written to disk and
+can be used as frames in an animated sequence.</p></li>
+<li><p><strong>sky_map_kwargs</strong> (<em>dict</em>) – Dictionary of keyword arguments passed to
+<a class="reference internal" href="#xpsi.Photosphere.Photosphere._plot_sky_maps" title="xpsi.Photosphere.Photosphere._plot_sky_maps"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_plot_sky_maps()</span></code></a>. Refer to the associated
+method docstring for available options.</p></li>
+<li><p><strong>animate_sky_maps</strong> (<em>bool</em>) – Compile images from disk into an animated sequence.</p></li>
+<li><p><strong>free_memory</strong> (<em>bool</em>) – Try to free the imaging information before animating a sequence of
+sky maps written to disk, to try to avoid high memory usage. For
+safety the default is to free the memory, so deactivate this at your
+own risk. If there are other non-weak references created to the
+underlying objects, the memory may fail to be freed. In the
+methods below, the aim is that the native garbage collection cleans
+up the references because they only exist in the method local scope
+(no closures or globals).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Memory used for plotting the sky maps and loading the images from
+disk to animate a phase sequence might not be straightforwardly
+freed despite efforts to do so, because of non-weak references
+covertly held by the matplotlib module.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atm_ext</strong> (<em>str</em>) – Used to determine which atmospheric extension to use.
+Options at the moment:
+“BB”: Analytical blackbody
+“Num4D”: Numerical atmosphere using 4D-interpolation from the provided
+atmosphere data
+“user”: A user-provided extension which can be set up by replacing the contents of 
+the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+(if not changed, “user” is the same as “BB”).</p></li>
+<li><p><strong>animate_kwargs</strong> (<em>dict</em>) – Dictionary of keyword arguments passed to
+<a class="reference internal" href="#xpsi.Photosphere.Photosphere._animate" title="xpsi.Photosphere.Photosphere._animate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_animate()</span></code></a>. Refer to the associated method
+docstring for available options.</p></li>
+<li><p><strong>deactivate_all_verbosity</strong> (<em>bool</em>) – Deactivate the verbose output? Note that despite this keyword
+argument not appearing in the method signature, it is a valid
+switch.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.images">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">images</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.images" title="Link to this definition"></a></dt>
+<dd><p>Get the precomputed image information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.integrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.integrate" title="Link to this definition"></a></dt>
+<dd><p>Integrate over the photospheric radiation field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energies</strong> – A one-dimensional <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of energies in keV.</p></li>
+<li><p><strong>threads</strong> (<em>int</em>) – Number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn for signal integration.</p></li>
+<li><p><strong>stokes</strong> (<em>bool</em>) – If activated, a full Stokes vector is computed and stored in signal, signalQ, and signalU.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.load_image_data">
+<span class="sig-name descname"><span class="pre">load_image_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.load_image_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.load_image_data" title="Link to this definition"></a></dt>
+<dd><p>Load imaging data from disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – Path to directory to load files from. Should contain files written
+to disk by <a class="reference internal" href="#xpsi.Photosphere.Photosphere.write_image_data" title="xpsi.Photosphere.Photosphere.write_image_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write_image_data()</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.signal">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signal</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.signal" title="Link to this definition"></a></dt>
+<dd><p>Get the stored signal (Stokes I).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of tuples of <em>ndarray[m,n]</em>.
+Here <span class="math notranslate nohighlight">\(m\)</span> is the number of energies, and
+<span class="math notranslate nohighlight">\(n\)</span> is the number of phases. Units are photon/s/keV; the
+distance is a fast parameter so the areal units are not yet
+factored in. If the signal is a spectrum because the signal is
+time-invariant, then <span class="math notranslate nohighlight">\(n=1\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.signalQ">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signalQ</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.signalQ" title="Link to this definition"></a></dt>
+<dd><p>Get the stored Stokes Q signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of tuples of <em>ndarray[m,n]</em>.
+Here <span class="math notranslate nohighlight">\(m\)</span> is the number of energies, and
+<span class="math notranslate nohighlight">\(n\)</span> is the number of phases. Units are photon/s/keV; the
+distance is a fast parameter so the areal units are not yet
+factored in. If the signal is a spectrum because the signal is
+time-invariant, then <span class="math notranslate nohighlight">\(n=1\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.signalU">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signalU</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.signalU" title="Link to this definition"></a></dt>
+<dd><p>Get the stored Stokes U signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of tuples of <em>ndarray[m,n]</em>.
+Here <span class="math notranslate nohighlight">\(m\)</span> is the number of energies, and
+<span class="math notranslate nohighlight">\(n\)</span> is the number of phases. Units are photon/s/keV; the
+distance is a fast parameter so the areal units are not yet
+factored in. If the signal is a spectrum because the signal is
+time-invariant, then <span class="math notranslate nohighlight">\(n=1\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.spacetime">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spacetime</span></span><a class="headerlink" href="#xpsi.Photosphere.Photosphere.spacetime" title="Link to this definition"></a></dt>
+<dd><p>Return instance of <a class="reference internal" href="spacetime.html#xpsi.Spacetime.Spacetime" title="xpsi.Spacetime.Spacetime"><code class="xref py py-class docutils literal notranslate"><span class="pre">Spacetime</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xpsi.Photosphere.Photosphere.write_image_data">
+<span class="sig-name descname"><span class="pre">write_image_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Photosphere.html#Photosphere.write_image_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xpsi.Photosphere.Photosphere.write_image_data" title="Link to this definition"></a></dt>
+<dd><p>Write imaging data to disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – Path to directory to write to. Must exist.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spacetime.html" class="btn btn-neutral float-left" title="Spacetime" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hotregion.html" class="btn btn-neutral float-right" title="HotRegion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2023 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
