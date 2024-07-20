@@ -13,7 +13,6 @@ from setuptools import setup, Extension
 import os
 import argparse
 import sys
-import shutil
 
 desc = '''Options for installation'''
 parser = argparse.ArgumentParser(description=desc)

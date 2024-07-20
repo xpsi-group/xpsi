@@ -16,15 +16,9 @@ import numpy as np
 import math
 import time
 
-from matplotlib import pyplot as plt
-from matplotlib import rcParams
-from matplotlib.ticker import MultipleLocator, AutoLocator, AutoMinorLocator
-from matplotlib import gridspec
-from matplotlib import cm
-
 import xpsi
 
-from xpsi.global_imports import _c, _G, _dpr, gravradius, _csq, _km, _2pi
+from xpsi.global_imports import gravradius, _2pi
 
 np.random.seed(xpsi._rank+10)
 

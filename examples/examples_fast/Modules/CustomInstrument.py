@@ -1,11 +1,8 @@
 
 
 import numpy as np
-import math
 
 import xpsi
-
-from xpsi import Parameter
 
 # Instrument Class
 
