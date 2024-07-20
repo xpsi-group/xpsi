@@ -1,15 +1,6 @@
 
 import xpsi
 from xpsi.global_imports import *
-from xpsi import global_imports
-
-from xpsi.cellmesh.mesh_tools import allocate_cells as _allocate_cells
-from xpsi.cellmesh.mesh import construct_spot_cellMesh as _construct_spot_cellMesh
-from xpsi.cellmesh.polar_mesh import construct_polar_cellMesh as _construct_polar_cellMesh
-from xpsi.cellmesh.rays import compute_rays as _compute_rays
-
-from xpsi.Parameter import Parameter, Derive
-from xpsi.ParameterSubspace import ParameterSubspace
 
 
 # Your derived class can have an initializer that sets up your new parameters and the temperature parameters, and then passes them to the base class initializer using the super(<derived class>, self).__init__(*args, **kwargs) call, where kwargs includes custom parameter

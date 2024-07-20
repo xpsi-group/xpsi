@@ -5,13 +5,11 @@ import math
 from scipy.stats import truncnorm
 
 import xpsi
-from xpsi.global_imports import _G, _csq, _km, _2pi, gravradius, _dpr
-from xpsi import Parameter
+from xpsi.global_imports import _2pi, gravradius
 
 from xpsi.PostProcessing import fix_random_seed
 xpsi.PostProcessing.set_random_seed(0) # prevent noise during prior generation
 
-from scipy.interpolate import Akima1DInterpolator
 
 class CustomPrior(xpsi.Prior):
     """ A custom (joint) prior distribution.

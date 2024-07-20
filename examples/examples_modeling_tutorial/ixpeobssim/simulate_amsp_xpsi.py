@@ -20,14 +20,9 @@
 #export IXPEOBSSIM_DATA=/home/xiaotuo/ixpeobssimdata/ixpeobssimdata_24X
 
 from __future__ import print_function, division
-
-import os
 import numpy
-import astropy.units as u
 
 import ixpeobssim.config.model_amsp_xpsi as input_model
-
-from astropy.io import fits
 
 import ixpeobssim.core.pipeline as pipeline
 from ixpeobssim.binning.base import xEventBinningBase
