@@ -241,10 +241,10 @@ cdef double* produce_2D_data(size_t THREAD, const double *const VEC, void *const
     else:
         printf("Error: atmosphere extension must either be 6 or 2 when using split atmospheres")
 
-cdef object make_atmosphere_2D(double *I_data, void *const data):
+cdef object make_atmosphere_2D(double *I_data, const double *const VEC, void *const data):
     if atmos_extension == 6:
         return make_atmosphere_2D_Num5D(I_data,data)
     elif atmos_extension == 2:
-        return make_atmosphere_2D_Num4D(I_data,data)
+        return make_atmosphere_2D_Num4D(I_data,VEC,data)
     else:
         printf("Error: atmosphere extension must either be 6 or 2 when using split atmospheres")

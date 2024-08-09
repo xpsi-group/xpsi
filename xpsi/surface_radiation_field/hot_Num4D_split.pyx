@@ -199,14 +199,15 @@ cdef double eval_hot_Num4D(size_t THREAD,
         double *I_CACHE = D.acc.INTENSITY_CACHE[THREAD]
         double *V_CACHE = D.acc.VEC_CACHE[THREAD]
         double vec[4]
-        double E_eff = k_B_over_keV * pow(10.0, VEC[0])
+        # double E_eff = k_B_over_keV * pow(10.0, VEC[0])
         int update_baseNode[4]
         int CACHE = 0
 
     vec[0] = VEC[0]
     vec[1] = VEC[1]
     vec[2] = mu
-    vec[3] = log10(E / E_eff)
+    #vec[3] = log10(E / E_eff) # correction now happens in a separate function, so I removed this
+    vec[3] = E
 
     while i < D.p.ndims:
         # if parallel == 31:
@@ -341,7 +342,7 @@ cdef double eval_hot_Num4D(size_t THREAD,
 
     if I < 0.0:
         return 0.0
-    return I * pow(10.0, 3.0 * vec[0])
+    return I #* pow(10.0, 3.0 * vec[0])
 
 cdef double eval_hot_norm_Num4D() nogil:
     # Source radiation field normalisation which is independent of the
@@ -368,6 +369,10 @@ cdef double* produce_2D_data_Num4D(size_t THREAD, const double *const VEC, void 
         mu = D.p.params[2][i]
         for j in range(D.p.N[3]):
             E = D.p.params[3][j]
+            #E = correct_E_NSX(VEC[0], D.p.params[3][j])
+
+            # printf("mu %.8e\n", mu)
+            # printf("E %.8e\n", E)
 
             I_E = eval_hot_Num4D(THREAD,
                             E,
@@ -376,10 +381,11 @@ cdef double* produce_2D_data_Num4D(size_t THREAD, const double *const VEC, void 
                             data)
             index = i * D.p.N[3] + j
             I_data[index] = I_E
+            # printf("I_E %.8e\n", I_E)
 
     return I_data
 
-cdef object make_atmosphere_2D_Num4D(double *I_data, void *const data):
+cdef object make_atmosphere_2D_Num4D(double *I_data, const double *const VEC, void *const data):
     cdef DATA *D = <DATA*> data
     cdef np.ndarray[double, ndim=1, mode="c"] mu_array = np.ascontiguousarray(np.empty(D.p.N[2], dtype=float))
     cdef np.ndarray[double, ndim=1, mode="c"] E_array = np.ascontiguousarray(np.empty(D.p.N[3], dtype=float))
@@ -392,5 +398,19 @@ cdef object make_atmosphere_2D_Num4D(double *I_data, void *const data):
             I_array[index] = I_data[index]
     for j in range(D.p.N[3]):
         E_array[j] = D.p.params[3][j]
+        #E_array[j] = correct_E_NSX(VEC[0], D.p.params[3][j])
     cdef tuple atmosphere_2D = (mu_array, E_array, I_array)
     return atmosphere_2D
+
+
+cdef double correct_E_NSX(double T, double E_input) nogil:
+    # printf('corrector!')
+    # printf("T %.8e, ", T)
+    # printf("E_input %.8e\n", E_input)
+    
+    cdef double E_eff = k_B_over_keV * pow(10.0, T)
+    cdef double E_corrected
+    E_corrected = log10(E_input / E_eff)
+    
+    # printf("E_corrected %.8e ", E_corrected)
+    return E_corrected

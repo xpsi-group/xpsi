@@ -14,7 +14,6 @@ nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.t
 import os
 import numpy as np
 import math
-import time
 
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
@@ -650,7 +649,7 @@ if __name__ == '__main__': # sample from the posterior
     
     import time
     start = time.time()
-    multiple_times = 100
+    multiple_times = 20
     for i in range(multiple_times):
         photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 

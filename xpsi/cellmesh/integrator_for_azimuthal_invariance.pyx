@@ -54,6 +54,9 @@ from xpsi.surface_radiation_field.hot_wrapper cimport (init_hot,
                                                      eval_hot_I,
                                                      eval_hot_norm)
 
+
+from xpsi.surface_radiation_field.hot_Num4D_split cimport correct_E_NSX
+
 from xpsi.surface_radiation_field.elsewhere_wrapper cimport (init_elsewhere,
                                                      free_elsewhere,
                                                      eval_elsewhere,
@@ -442,9 +445,11 @@ def integrate(size_t numThreads,
                                     if hot_atm == 6:
                                         E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
                                         E_prime = E_electronrest
+                                    elif hot_atm == 2:
+                                        E_prime = correct_E_NSX(srcCellParams[i,J,0], E_prime)
 
                                     # printf("__ABB: %.8e, \n", _ABB)
-                                    # printf("E_electronrest %.8e\n", E_electronrest)
+                                    # printf("E_prime %.8e\n", E_prime)
                                     # printf("srcCellParams[i,J,0] %.8e\n", srcCellParams[i,J,0])
                                     # printf("srcCellParams[i,J,1] %.8e\n", srcCellParams[i,J,1])
                                     # printf("srcCellParams[i,J,2] %.8e\n", srcCellParams[i,J,2])
@@ -457,6 +462,9 @@ def integrate(size_t numThreads,
                                                    &(srcCellParams[i,J,0]),
                                                    hot_data,
                                                    _beam_opt)
+                                    
+                                    if hot_atm == 2:
+                                        I_E = I_E * pow(10.0, 3.0 * srcCellParams[i,J,0])
                                     
                                     # printf("I_E = %.8e\n", I_E)
 
