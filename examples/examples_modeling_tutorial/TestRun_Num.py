@@ -617,13 +617,13 @@ runtime_params = {'resume': False,
                   'n_clustering_params': None,
                   'outputfiles_basename': './run/run_Num',
                   'n_iter_before_update': 50,
-                  'n_live_points': 50,
+                  'n_live_points': 10,
                   'sampling_efficiency': 0.8,
                   'const_efficiency_mode': False,
                   'wrapped_params': wrapped_params,
                   'evidence_tolerance': 0.5,
                   'seed': 7,
-                  'max_iter': 100, # manual termination condition for short test
+                  'max_iter': 1, # manual termination condition for short test
                   'verbose': True}
 
 # let's require that checks pass before starting to sample

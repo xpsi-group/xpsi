@@ -8,10 +8,10 @@ from xpsi.surface_radiation_field.hot_BB cimport (init_hot_BB,
                                                      eval_hot_BB,
                                                      eval_hot_norm_BB)
 #4D-Numerical
-from xpsi.surface_radiation_field.hot_Num4D cimport (init_hot_Num4D,
-                                                     free_hot_Num4D,
-                                                     eval_hot_Num4D,
-                                                     eval_hot_norm_Num4D)
+# from xpsi.surface_radiation_field.hot_Num4D cimport (init_hot_Num4D,
+#                                                      free_hot_Num4D,
+#                                                      eval_hot_Num4D,
+#                                                      eval_hot_norm_Num4D)
 
 #Blackbody-burst (with beaming and polarization)
 from xpsi.surface_radiation_field.hot_BB_burst cimport (init_hot_BB_burst,
@@ -37,7 +37,16 @@ from xpsi.surface_radiation_field.hot_user cimport (init_hot_user,
 from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot_Num5D,
                                                eval_hot_Num5D_I,
                                                eval_hot_norm_Num5D,
-                                               free_hot_Num5D)
+                                               free_hot_Num5D,
+                                               produce_2D_data_Num5D,
+                                               make_atmosphere_2D_Num5D)
+
+from xpsi.surface_radiation_field.hot_Num4D_split cimport (init_hot_Num4D,
+                                               eval_hot_Num4D,
+                                               eval_hot_norm_Num4D,
+                                               free_hot_Num4D,
+                                               produce_2D_data_Num4D,
+                                               make_atmosphere_2D_Num4D)
 
 
 #----------------------------------------------------------------------->>>
@@ -222,3 +231,20 @@ cdef double eval_hot_norm() nogil:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
                "Defaulting to Blackbody (atm_ext=BB).\n")
         return eval_hot_norm_BB()
+
+
+cdef double* produce_2D_data(size_t THREAD, const double *const VEC, void *const data) nogil:
+    if atmos_extension == 6:
+        return produce_2D_data_Num5D(THREAD,VEC,data)
+    elif atmos_extension == 2:
+        return produce_2D_data_Num4D(THREAD,VEC,data)
+    else:
+        printf("Error: atmosphere extension must either be 6 or 2 when using split atmospheres")
+
+cdef object make_atmosphere_2D(double *I_data, void *const data):
+    if atmos_extension == 6:
+        return make_atmosphere_2D_Num5D(I_data,data)
+    elif atmos_extension == 2:
+        return make_atmosphere_2D_Num4D(I_data,data)
+    else:
+        printf("Error: atmosphere extension must either be 6 or 2 when using split atmospheres")

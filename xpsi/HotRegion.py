@@ -765,9 +765,6 @@ class HotRegion(ParameterSubspace):
             raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
                             'atmosphere options are at the moment "BB", "Num4D", "Pol_BB_Burst",'
                             '"Pol_Num2D", "Num5D", and "user".')
-        if self._split:
-            print('The default/given atmosphere option is ignored, since using split=True,'
-                  ' which only works with numerical 3+2D interpolation.')
 
     @property
     def beam_opt(self):
@@ -1174,6 +1171,9 @@ class HotRegion(ParameterSubspace):
             if hot_atmosphere == ():
                 raise AtmosError('The numerical atmosphere data were not preloaded, '
                                  'even though that is required by the current atmosphere extension.')
+
+        # print('atm_ext',self.atm_ext)
+        # print('hot_atmosphere',hot_atmosphere)
 
         super_pulse = self._integrator(threads,
                                        st.R,

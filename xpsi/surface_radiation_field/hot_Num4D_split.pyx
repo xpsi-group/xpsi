@@ -5,10 +5,13 @@
 
 from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs
 from libc.stdio cimport printf, fopen, fclose, fread, FILE
-from GSL cimport gsl_isnan, gsl_isinf
+# from GSL cimport gsl_isnan, gsl_isinf
 from libc.stdlib cimport malloc, free
 
 from xpsi.global_imports import _keV, _k_B, _h_keV
+
+import numpy as np
+cimport numpy as np
 
 cdef int SUCCESS = 0
 cdef int ERROR = 1
@@ -350,7 +353,7 @@ cdef double eval_hot_norm_Num4D() nogil:
 
     return erg / h_keV
 
-cdef double* produce_2D_data(size_t THREAD, const double *const VEC, void *const data) nogil:
+cdef double* produce_2D_data_Num4D(size_t THREAD, const double *const VEC, void *const data) nogil:
     # interpolate data to make a 2D dataset with only E and mu
     cdef DATA *D = <DATA*> data
     
@@ -366,7 +369,7 @@ cdef double* produce_2D_data(size_t THREAD, const double *const VEC, void *const
         for j in range(D.p.N[3]):
             E = D.p.params[3][j]
 
-            I_E = eval_hot(THREAD,
+            I_E = eval_hot_Num4D(THREAD,
                             E,
                             mu,
                             VEC,
@@ -376,7 +379,7 @@ cdef double* produce_2D_data(size_t THREAD, const double *const VEC, void *const
 
     return I_data
 
-cdef object make_atmosphere_2D(double *I_data, void *const data):
+cdef object make_atmosphere_2D_Num4D(double *I_data, void *const data):
     cdef DATA *D = <DATA*> data
     cdef np.ndarray[double, ndim=1, mode="c"] mu_array = np.ascontiguousarray(np.empty(D.p.N[2], dtype=float))
     cdef np.ndarray[double, ndim=1, mode="c"] E_array = np.ascontiguousarray(np.empty(D.p.N[3], dtype=float))
