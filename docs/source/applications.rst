@@ -28,7 +28,7 @@ X-PSI has been used in several Pulse Profile Modeling analysis papers using *NIC
 
 **Choudhury et al. 2024b** `(ApJ submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv240607285C/abstract>`_ *Exploring Waveform Variations among Neutron Star Ray-tracing Codes for Complex Emission Geometries*. 
 
-**Choudhury et al. 2024a** `(ApJL in press) <https://ui.adsabs.harvard.edu/abs/2024arXiv240706789C/abstract>`_ *A NICER View of the Nearest and Brightest Millisecond Pulsar: PSR J0437-4715*. See also the associated `Zenodo repository`__.
+**Choudhury et al. 2024a** `(ApJL, 971, L20) <https://iopscience.iop.org/article/10.3847/2041-8213/ad5a6f>`_ *A NICER View of the Nearest and Brightest Millisecond Pulsar: PSR J0437-4715*. See also the associated `Zenodo repository`__.
 
 .. _Zenodo24c: https://doi.org/10.5281/zenodo.10886504
 __ Zenodo24c_ 
