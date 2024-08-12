@@ -199,14 +199,13 @@ cdef double eval_hot_Num4D(size_t THREAD,
         double *I_CACHE = D.acc.INTENSITY_CACHE[THREAD]
         double *V_CACHE = D.acc.VEC_CACHE[THREAD]
         double vec[4]
-        # double E_eff = k_B_over_keV * pow(10.0, VEC[0])
+        double E_eff = k_B_over_keV * pow(10.0, VEC[0])
         int update_baseNode[4]
         int CACHE = 0
 
     vec[0] = VEC[0]
     vec[1] = VEC[1]
     vec[2] = mu
-    #vec[3] = log10(E / E_eff) # correction now happens in a separate function, so I removed this
     vec[3] = E
 
     while i < D.p.ndims:
@@ -342,7 +341,8 @@ cdef double eval_hot_Num4D(size_t THREAD,
 
     if I < 0.0:
         return 0.0
-    return I #* pow(10.0, 3.0 * vec[0])
+    return I
+
 
 cdef double eval_hot_norm_Num4D() nogil:
     # Source radiation field normalisation which is independent of the
@@ -401,16 +401,3 @@ cdef object make_atmosphere_2D_Num4D(double *I_data, const double *const VEC, vo
         #E_array[j] = correct_E_NSX(VEC[0], D.p.params[3][j])
     cdef tuple atmosphere_2D = (mu_array, E_array, I_array)
     return atmosphere_2D
-
-
-cdef double correct_E_NSX(double T, double E_input) nogil:
-    # printf('corrector!')
-    # printf("T %.8e, ", T)
-    # printf("E_input %.8e\n", E_input)
-    
-    cdef double E_eff = k_B_over_keV * pow(10.0, T)
-    cdef double E_corrected
-    E_corrected = log10(E_input / E_eff)
-    
-    # printf("E_corrected %.8e ", E_corrected)
-    return E_corrected

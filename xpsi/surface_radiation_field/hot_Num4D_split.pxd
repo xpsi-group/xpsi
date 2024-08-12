@@ -15,5 +15,3 @@ cdef int free_hot_Num4D(size_t numThreads, void *const data) nogil
 cdef double* produce_2D_data_Num4D(size_t THREAD, const double *const VEC, void *const data) nogil
 
 cdef object make_atmosphere_2D_Num4D(double *I_data, const double *const VEC, void *const data)
-
-cdef double correct_E_NSX(double T, double E_input) nogil

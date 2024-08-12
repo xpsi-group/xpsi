@@ -1,5 +1,6 @@
 cdef size_t atmos_extension = 1
 
+from libc.math cimport log10, pow
 from libc.stdio cimport printf
 
 #Blackbody
@@ -27,6 +28,11 @@ from xpsi.surface_radiation_field.hot_Num2D cimport (init_hot_Num2D,
                                                      eval_hot_norm_Num2D)
 
 
+from xpsi.surface_radiation_field.hot_Num2D_split cimport (init_hot_2D,
+                                               eval_hot_2D_I,
+                                               eval_hot_2D_norm,
+                                               free_hot_2D)
+
 #User-defined atmosphere extension (Blackbody by default)
 from xpsi.surface_radiation_field.hot_user cimport (init_hot_user,
                                                      free_hot_user,
@@ -48,6 +54,13 @@ from xpsi.surface_radiation_field.hot_Num4D_split cimport (init_hot_Num4D,
                                                produce_2D_data_Num4D,
                                                make_atmosphere_2D_Num4D)
 
+
+
+from xpsi.global_imports import _keV, _k_B, _h_keV
+cdef double k_B = _k_B
+cdef double keV = _keV
+cdef double h_keV = _h_keV
+cdef double k_B_over_keV = k_B / keV
 
 #----------------------------------------------------------------------->>>
 cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) nogil:
@@ -113,21 +126,27 @@ cdef double eval_hot_I(size_t THREAD,
     VEC_red[0] = VEC[0]
     VEC_red[1] = VEC[1]
 
+    cdef double E_eff = k_B_over_keV * pow(10.0, VEC[0])
+
     if atmos_extension == 1:
         I_hot = eval_hot_BB(THREAD,E,mu,VEC_red,data)
     elif atmos_extension == 2:
-        I_hot = eval_hot_Num4D(THREAD,E,mu,VEC_red,data)
+        E_dataunits = log10(E / E_eff)
+        I_dataunits = eval_hot_Num4D(THREAD,E_dataunits,mu,VEC_red,data)
+        I_hot = I_dataunits * pow(10.0, 3.0 * VEC[0])
     elif atmos_extension == 3:
         I_hot = eval_hot_BB_burst_I(THREAD,E,mu,VEC_red,data)
     elif atmos_extension == 4:
-        I_hot = eval_hot_Num2D_I(THREAD,E,mu,VEC_red,data)
+        E_dataunits = log10(E)
+        I_hot = eval_hot_Num2D_I(THREAD,E_dataunits,mu,VEC_red,data)
     elif atmos_extension == 5:
         I_hot = eval_hot_user_I(THREAD,E,mu,VEC_red,data)
     elif atmos_extension == 6:
         VEC_special[0] = VEC[0]
         VEC_special[1] = VEC[1]
         VEC_special[2] = VEC[2]
-        I_hot = eval_hot_Num5D_I(THREAD,E,mu,VEC_special,data)
+        E_dataunits=E*0.001956951 #kev to electron rest energy conversion
+        I_hot = eval_hot_Num5D_I(THREAD,E_dataunits,mu,VEC_special,data)
     else:
         printf("WARNING: Wrong atmosphere extension provided for hot region(s)."
                "Defaulting to Blackbody (atm_ext=BB).\n")
@@ -248,3 +267,33 @@ cdef object make_atmosphere_2D(double *I_data, const double *const VEC, void *co
         return make_atmosphere_2D_Num4D(I_data,VEC,data)
     else:
         printf("Error: atmosphere extension must either be 6 or 2 when using split atmospheres")
+        
+        
+cdef void* init_hot_2D_split(size_t numThreads, const _preloaded *const preloaded) nogil:
+    return init_hot_2D(numThreads, preloaded)
+    
+cdef int free_hot_2D_split(size_t numThreads, void *const data) nogil:
+    return free_hot_2D(numThreads, data)
+
+cdef double eval_hot_2D_split(size_t THREAD,
+                     double E,
+                     double mu,
+                     const double *const VEC,
+                     void *const data) nogil:
+    cdef double E_eff = k_B_over_keV * pow(10.0, VEC[0])
+    if atmos_extension == 2:
+        E_dataunits = log10(E / E_eff)
+        I_dataunits = eval_hot_2D_I(THREAD,E_dataunits,mu,data)
+        I_hot = I_dataunits * pow(10.0, 3.0 * VEC[0])
+    elif atmos_extension == 6:
+        E_dataunits=E*0.001956951 #kev to electron rest energy conversion
+        I_hot = eval_hot_2D_I(THREAD,E_dataunits,mu,data)
+        # printf("I_hot = %.8e\n", I_hot)
+    else:
+        printf("Error: atmosphere extension must either be 6 or 2 when using split atmospheres")
+    return I_hot
+        
+cdef double eval_hot_2D_norm_split() nogil:
+    return eval_hot_2D_norm()
+    
+        

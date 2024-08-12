@@ -122,7 +122,7 @@ bounds = dict(super_colatitude = (None, None),
               phase_shift = (0.0, 0.1),
               super_temperature = (5.1, 6.8))
 
-split = True
+split = False
 
 primary = xpsi.HotRegion(bounds=bounds,
                         values={},
@@ -632,6 +632,8 @@ runtime_params = {'resume': False,
 
 # let's require that checks pass before starting to sample
 true_logl = -68147.0113542
+
+#likelihood(p)
 likelihood.check(None, [true_logl], 1.0e-2,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
@@ -647,9 +649,13 @@ if __name__ == '__main__': # sample from the posterior
     fig, ax = plt.subplots()
     CustomAxes.plot_bolometric_pulse(ax, np.linspace(0.0, 1.0, 33), signal.expected_counts)
     
+    fig, ax = plt.subplots()
+    profile = CustomAxes.plot_2D_counts(ax, signal.expected_counts, np.linspace(0.0, 1.0, 33), np.arange(20,202))
+    fig.colorbar(profile, ax=ax)
+    
     import time
     start = time.time()
-    multiple_times = 20
+    multiple_times = 100
     for i in range(multiple_times):
         photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
 

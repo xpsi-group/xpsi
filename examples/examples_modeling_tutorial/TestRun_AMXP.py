@@ -68,7 +68,7 @@ primary = CustomHotRegion_Accreting(bounds=bounds,
                                     max_sqrt_num_cells=64, #100
                                     num_leaves=num_leaves,
                                     num_rays=200,
-                                    split=True,
+                                    split=False,
                                     atm_ext='Num5D',
                                     image_order_limit=3,
                                     prefix='p')

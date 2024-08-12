@@ -51,18 +51,12 @@ from xpsi.surface_radiation_field.preload cimport (_preloaded,
 
 from xpsi.surface_radiation_field.hot_wrapper cimport (init_hot,
                                                      free_hot,
-                                                     eval_hot_I,
-                                                     eval_hot_norm,
+                                                     init_hot_2D_split,
+                                                     free_hot_2D_split,
+                                                     eval_hot_2D_split,
+                                                     eval_hot_2D_norm_split,
                                                      produce_2D_data,
                                                      make_atmosphere_2D)
-
-from xpsi.surface_radiation_field.hot_Num4D_split cimport correct_E_NSX
-
-
-from xpsi.surface_radiation_field.hot_Num2D_split cimport (init_hot_2D,
-                                               eval_hot_2D_I,
-                                               eval_hot_2D_norm,
-                                               free_hot_2D)
 
 from xpsi.surface_radiation_field.elsewhere_wrapper cimport (init_elsewhere,
                                                      free_elsewhere,
@@ -293,7 +287,7 @@ def integrate(size_t numThreads,
 
     # initiate data 2D
     hot_preloaded_2D = init_preload(atmosphere_2D)
-    hot_data_2D = init_hot_2D(N_T, hot_preloaded_2D)
+    hot_data_2D = init_hot_2D_split(N_T, hot_preloaded_2D)
 
 
     for ii in prange(<signed int>cellArea.shape[0],
@@ -462,21 +456,17 @@ def integrate(size_t numThreads,
                                 for p in range(N_E):
                                     E_prime = energies[p] / _Z
                                     
-                                    if hot_atm == 6:
-                                        E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
-                                        E_prime = E_electronrest
-                                    elif hot_atm == 2:
-                                        E_prime = correct_E_NSX(srcCellParams[i,J,0], E_prime)
+                                    # if hot_atm == 6:
+                                    #     E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
+                                    #     E_prime = E_electronrest
                                         
                                     
                                     # printf("E_prime %.8e\n", E_prime)
                                     # printf("mu %.8e\n", _ABB)
                                     
                                     
-                                    I_E2D = eval_hot_2D_I(T, E_prime, _ABB, hot_data_2D)
+                                    I_E2D = eval_hot_2D_split(T, E_prime, _ABB, &(srcCellParams[i,J,0]), hot_data_2D)
                                     
-                                    if hot_atm == 2:
-                                        I_E2D = I_E2D * pow(10.0, 3.0 * srcCellParams[i,J,0])
                                     
                                     # printf("I_E2D = %.8e\n", I_E2D)
 
@@ -489,7 +479,7 @@ def integrate(size_t numThreads,
                                                                         0)
                                         correction_I_E = correction_I_E * eval_elsewhere_norm()
 
-                                    (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E2D * eval_hot_norm() - correction_I_E) * _GEOM
+                                    (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E2D * eval_hot_2D_norm_split() - correction_I_E) * _GEOM
 
                         if k == 0: # if initially visible at first/last phase steps
                             # periodic
@@ -684,7 +674,7 @@ def integrate(size_t numThreads,
         free_preload(hot_preloaded_2D)
 
     free_hot(N_T, hot_data)
-    free_hot_2D(N_T, hot_data_2D)
+    free_hot_2D_split(N_T, hot_data_2D)
 
     if perform_correction == 1:
         if elsewhere_atmosphere:

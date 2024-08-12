@@ -198,7 +198,7 @@ cdef double eval_hot_Num2D(size_t THREAD,
         double *I_CACHE = D.acc.INTENSITY_CACHE[THREAD]
         double *V_CACHE = D.acc.VEC_CACHE[THREAD]
         double vec[4]
-        double E_eff = k_B_over_keV * pow(10.0, VEC[0])
+        #double E_eff = k_B_over_keV * pow(10.0, VEC[0])
         int update_baseNode[4]
         int CACHE = 0
 
@@ -209,7 +209,7 @@ cdef double eval_hot_Num2D(size_t THREAD,
     #vec[2] = mu
     #vec[3] = log10(E / E_eff)
     vec[0] = mu
-    vec[1] = log10(E)    
+    vec[1] = E    
     
 
     while i < D.p.ndims:
