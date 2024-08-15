@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Likelihood &mdash; x-psi 1.2.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"processClass": "math|output_area", "processEscapes": true, "ignoreClass": "document", "inlineMath": [["$", "$"], ["\\(", "\\)"]]}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Signal" href="signal.html" />
+    <link rel="prev" title="ParameterSubspace" href="parameterSubspace.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> x-psi
+          
+
+          
+            
+            <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Likelihood API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twohotregions.html">TwoHotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Likelihood</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/likelihood.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<span class="target" id="module-xpsi.Likelihood"></span><div class="section" id="likelihood">
+<span id="id1"></span><h1>Likelihood<a class="headerlink" href="#likelihood" title="Permalink to this headline">¶</a></h1>
+<p>Instances of <a class="reference internal" href="#xpsi.Likelihood.Likelihood" title="xpsi.Likelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> are called by worker sampling
+processes for evaluation of a likelihood function.</p>
+<dl class="class">
+<dt id="xpsi.Likelihood.Likelihood">
+<em class="property">class </em><code class="descclassname">xpsi.Likelihood.</code><code class="descname">Likelihood</code><span class="sig-paren">(</span><em>star</em>, <em>signals</em>, <em>num_energies=128</em>, <em>fast_rel_num_energies=0.25</em>, <em>threads=1</em>, <em>llzero=-1e+90</em>, <em>externally_updated=False</em>, <em>prior=None</em>, <em>max_energy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="parameterSubspace.html#xpsi.ParameterSubspace.ParameterSubspace" title="xpsi.ParameterSubspace.ParameterSubspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">xpsi.ParameterSubspace.ParameterSubspace</span></code></a></p>
+<p>A container for all objects related to likelihood evaluation.</p>
+<p>A collective for objects pertaining to a statistical analysis of
+X-ray signals. These objects include X-ray data (sub)sets, the model
+instruments used to acquire these data sets, and the model star and
+model backgrounds.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>star</strong> (<em>obj</em>) – An instance of <a class="reference internal" href="star.html#xpsi.Star.Star" title="xpsi.Star.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>. This instance is the model star.</li>
+<li><strong>signals</strong> (<em>list</em>) – <p>Either:</p>
+<blockquote>
+<div><ul>
+<li>a single <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instance</li>
+<li>a list of <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instances</li>
+<li>a list of lists of <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instances</li>
+</ul>
+</div></blockquote>
+</li>
+<li><strong>num_energies</strong> (<em>float</em>) – Number of energies to compute specific photon flux signals at for
+likelihood evaluation. These energies will be distributed linearly
+in logarithmic space within the union of waveband coverages
+achieved by some set of instruments. Gaps in waveband coverage will
+be skipped.</li>
+<li><strong>fast_rel_num_energies</strong> (<em>float</em>) – Fraction of the normal number of energies to use in <em>fast</em> mode.</li>
+<li><strong>threads</strong> (<em>int</em>) – The number of <code class="docutils literal notranslate"><span class="pre">OpenMP</span></code> threads to spawn for integration. The default
+number of threads used by low-level integration routines is <code class="docutils literal notranslate"><span class="pre">1</span></code>. The
+number can be increased if the parallelisation paradigm on a cluster
+is changed such that, e.g., per node there is one thread per CPU,
+instead of one <code class="docutils literal notranslate"><span class="pre">OpenMPI</span></code> process. It is recommended that
+<a class="reference internal" href="#xpsi.Likelihood.Likelihood.threads" title="xpsi.Likelihood.Likelihood.threads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">threads</span></code></a> is <code class="docutils literal notranslate"><span class="pre">1</span></code>; more threads are useful when performing
+integrals at high resolution, but not necessarily when integrating
+<em>many</em> times as when sampling, because the MPI parallelisation
+paradigm is invoked.</li>
+<li><strong>llzero</strong> (<em>float</em>) – The minimum log-likelihood setting for MultiNest. Points whose
+log-likelihood is lower than this value are ignored, which is useful
+for defining complicated priors.</li>
+<li><strong>externally_updated</strong> (<em>bool</em>) – Update the parameter values upon call to the likelihood object?
+If so, then pass <code class="docutils literal notranslate"><span class="pre">False</span></code>. A parameter vector then needs to be passed
+to the likelihood object. Otherwise, safely assume that the
+new parameter values are set externally, e.g., in a prior object
+when inverse sampling the prior for nested sampling.</li>
+<li><strong>prior</strong> (<em>obj</em>) – Instance of subclass of <a class="reference internal" href="prior.html#xpsi.Prior.Prior" title="xpsi.Prior.Prior"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prior</span></code></a>.</li>
+<li><strong>max_energy</strong> (<em>float</em>) – Optional maximum of energy set for signal computation. If no maximum
+is requested (the default), then the maximum is equal to the maximum
+energy from the loaded instrument response models.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xpsi.Likelihood.Likelihood.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>p=None</em>, <em>reinitialise=False</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the logarithm of the joint likelihood over all pulsations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p</strong> (<em>list</em>) – Parameter vector if parameters not updated externally.</li>
+<li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Call <code class="docutils literal notranslate"><span class="pre">self.reinitialise()</span></code>?</li>
+<li><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.
+To faciliate this, all parameter caches are cleared.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The logarithm of the likelihood.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Likelihood.Likelihood.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xpsi.Likelihood.Likelihood.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a summary of the parameters constituting the subspace.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Likelihood.Likelihood.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>hypercube_points</em>, <em>loglikelihood_call_vals</em>, <em>rtol_loglike</em>, <em>atol_loglike=0.0</em>, <em>logprior_call_vals=None</em>, <em>rtol_logprior=None</em>, <em>atol_logprior=None</em>, <em>physical_points=None</em>, <em>force_update=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform checks on the likelihood evaluator and the prior density.</p>
+<p>Can be called from <a class="reference internal" href="sample.html#xpsi.Sample.nested" title="xpsi.Sample.nested"><code class="xref py py-func docutils literal notranslate"><span class="pre">nested()</span></code></a> to execute a check before
+automatically commencing a sampling process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hypercube_points</strong> (<em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em>) – A set of <code class="docutils literal notranslate"><span class="pre">n</span></code> points in the unit hypercube, where <code class="docutils literal notranslate"><span class="pre">m</span></code> is
+dimensionality (<code class="docutils literal notranslate"><span class="pre">self.num_params</span></code>) of the sampling space – i.e.,
+of the hypercube. If you want to pass the physical points instead,
+just pass <code class="docutils literal notranslate"><span class="pre">None</span></code> here.</li>
+<li><strong>physical_points</strong> (<em>optional</em><em>(</em><em>ndarray</em><em>[</em><em>n</em><em>,</em><em>m</em><em>]</em><em>)</em>) – A set of <code class="docutils literal notranslate"><span class="pre">n</span></code> points in the physical parameter space, where
+<code class="docutils literal notranslate"><span class="pre">m</span></code> is dimensionality (<code class="docutils literal notranslate"><span class="pre">self.num_params</span></code>) of the sampling space.
+The <code class="docutils literal notranslate"><span class="pre">hypercube_points</span></code>, if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, will be ignored.</li>
+<li><strong>force_update</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force everything to be re-calculated regardless of what was computed before. This can be used to prevent errors in cases when the automatic check for update need is not working as intended.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.less_than_llzero">
+<code class="descname">less_than_llzero</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.less_than_llzero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a number less than the minimum log-likelihood threshold.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.llzero">
+<code class="descname">llzero</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.llzero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the minimum log-likelihood setting passed to MultiNest.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.random_near_llzero">
+<code class="descname">random_near_llzero</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.random_near_llzero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the minimum log-likelihood scaled randomly by up to an
+order of magnitude.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.signals">
+<code class="descname">signals</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of <a class="reference internal" href="signal.html#xpsi.Signal.Signal" title="xpsi.Signal.Signal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signal</span></code></a> instances.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.star">
+<code class="descname">star</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.star" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the instance of <a class="reference internal" href="star.html#xpsi.Star.Star" title="xpsi.Star.Star"><code class="xref py py-class docutils literal notranslate"><span class="pre">Star</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xpsi.Likelihood.Likelihood.synthesise">
+<code class="descname">synthesise</code><span class="sig-paren">(</span><em>p</em>, <em>reinitialise=False</em>, <em>force=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xpsi/Likelihood.html#Likelihood.synthesise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xpsi.Likelihood.Likelihood.synthesise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synthesise pulsation data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p</strong> (<em>list</em>) – Parameter vector.</li>
+<li><strong>reinitialise</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Call <code class="docutils literal notranslate"><span class="pre">self.reinitialise()</span></code>?</li>
+<li><strong>force</strong> (<em>optional</em><em>[</em><em>bool</em><em>]</em>) – Force complete reevaluation even if some parameters are unchanged.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) – Keyword arguments propagated to custom signal synthesis methods.
+Examples of such arguments include exposure times or
+required total count numbers (see example notebooks).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xpsi.Likelihood.Likelihood.threads">
+<code class="descname">threads</code><a class="headerlink" href="#xpsi.Likelihood.Likelihood.threads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of threads spawned for integration.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="signal.html" class="btn btn-neutral float-right" title="Signal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="parameterSubspace.html" class="btn btn-neutral float-left" title="ParameterSubspace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019-2022 the X-PSI Core Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
