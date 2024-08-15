@@ -4,7 +4,6 @@ import numpy as np
 import math
 
 import xpsi
-from xpsi.global_imports import gravradius
 
 np.random.seed(xpsi._rank+10)
 
