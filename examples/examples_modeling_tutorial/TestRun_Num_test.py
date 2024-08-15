@@ -14,7 +14,6 @@ nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.t
 import os
 import numpy as np
 import math
-import time
 
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
@@ -123,6 +122,8 @@ bounds = dict(super_colatitude = (None, None),
               phase_shift = (0.0, 0.1),
               super_temperature = (5.1, 6.8))
 
+split = False
+
 primary = xpsi.HotRegion(bounds=bounds,
                         values={},
                         symmetry=True,
@@ -134,6 +135,7 @@ primary = xpsi.HotRegion(bounds=bounds,
                         max_sqrt_num_cells=64,
                         num_leaves=100,
                         num_rays=200,
+                        split=split,
                         atm_ext="Num4D",
                         image_order_limit=3,
                         prefix='p')
@@ -172,6 +174,7 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
                             num_rays=200,
                             do_fast=False,
                             is_antiphased=True,
+                            split=split,
                             atm_ext="Num4D",
                             image_order_limit=3,
                             prefix='s')
@@ -314,6 +317,7 @@ from time import time
 start_original = time()
 
 photosphere.hot_atmosphere = 'model_data/nsx_H_v200804.out'
+# print('photosphere.hot_atmosphere',photosphere.hot_atmosphere)
 # #nsx_H_v171019.out'
 if use_elsewhere:
     photosphere.elsewhere_atmosphere = 'model_data/nsx_H_v200804.out'
@@ -628,7 +632,32 @@ runtime_params = {'resume': False,
 
 # let's require that checks pass before starting to sample
 true_logl = -68147.0113542
-likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
+
+#likelihood(p)
+likelihood.check(None, [true_logl], 1.0e-2,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
-    xpsi.Sample.nested(likelihood, prior,**runtime_params)
+    #xpsi.Sample.nested(likelihood, prior,**runtime_params)
+    pulse_1 = photosphere.signal[0][0]
+    num_leaves = 100
+    phases = np.linspace(0,1,num_leaves)
+    from modules.helper_functions import CustomAxes
+    fig, ax = plt.subplots()
+    profile = CustomAxes.plot_2D_signal(ax, [pulse_1], phases, [0,0], energies, 'energies')
+    fig.colorbar(profile, ax=ax)
+    
+    fig, ax = plt.subplots()
+    CustomAxes.plot_bolometric_pulse(ax, np.linspace(0.0, 1.0, 33), signal.expected_counts)
+    
+    fig, ax = plt.subplots()
+    profile = CustomAxes.plot_2D_counts(ax, signal.expected_counts, np.linspace(0.0, 1.0, 33), np.arange(20,202))
+    fig.colorbar(profile, ax=ax)
+    
+    import time
+    start = time.time()
+    multiple_times = 100
+    for i in range(multiple_times):
+        photosphere.integrate(energies, threads=1) # the number of OpenMP threads to use
+
+    end = time.time()
+    print("Time spent in integration:",(end - start)/multiple_times)

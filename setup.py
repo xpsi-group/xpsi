@@ -240,6 +240,7 @@ if __name__ == '__main__':
                 'xpsi.surface_radiation_field.hot_BB_burst',
                 'xpsi.surface_radiation_field.hot_Num2D',
                 'xpsi.surface_radiation_field.hot_Num2D_split',
+                'xpsi.surface_radiation_field.hot_Num4D_split',
                 'xpsi.surface_radiation_field.hot_Num5D_split',
                 'xpsi.surface_radiation_field.hot_wrapper',
                 'xpsi.surface_radiation_field.elsewhere_user',

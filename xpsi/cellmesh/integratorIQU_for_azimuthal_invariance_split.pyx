@@ -54,8 +54,8 @@ from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot_Num5D,
                                                eval_hot_Num5D_Q,
                                                eval_hot_norm_Num5D,
                                                free_hot_Num5D,
-                                               produce_2D_data,
-                                               make_atmosphere_2D)
+                                               produce_2D_data_Num5D,
+                                               make_atmosphere_2D_Num5D)
 
 from xpsi.surface_radiation_field.hot_Num2D_split cimport (init_hot_2D,
                                                eval_hot_2D_I,
@@ -320,15 +320,15 @@ def integrate(size_t numThreads,
     cdef double* I_data_2D
     cdef double* Q_data_2D
 
-    I_data_2D = produce_2D_data(T, &(srcCellParams[0,0,0]), hot_data_I)
-    atmosphere_2D_I = make_atmosphere_2D(I_data_2D, hot_data_I)
+    I_data_2D = produce_2D_data_Num5D(T, &(srcCellParams[0,0,0]), hot_data_I)
+    atmosphere_2D_I = make_atmosphere_2D_Num5D(I_data_2D, hot_data_I)
 
     # initiate I data 2D
     hot_preloaded_2D_I = init_preload(atmosphere_2D_I)
     hot_data_2D_I = init_hot_2D(N_T, hot_preloaded_2D_I)
 
-    Q_data_2D = produce_2D_data(T, &(srcCellParams[0,0,0]), hot_data_Q)
-    atmosphere_2D_Q = make_atmosphere_2D(Q_data_2D, hot_data_Q)
+    Q_data_2D = produce_2D_data_Num5D(T, &(srcCellParams[0,0,0]), hot_data_Q)
+    atmosphere_2D_Q = make_atmosphere_2D_Num5D(Q_data_2D, hot_data_Q)
 
     # initiate Qdata 2D
     hot_preloaded_2D_Q = init_preload(atmosphere_2D_Q)

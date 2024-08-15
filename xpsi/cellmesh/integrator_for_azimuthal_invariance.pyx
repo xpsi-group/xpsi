@@ -439,12 +439,12 @@ def integrate(size_t numThreads,
                                 for p in range(N_E):
                                     E_prime = energies[p] / _Z
                                     
-                                    if hot_atm == 6:
-                                        E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
-                                        E_prime = E_electronrest
+                                    # if hot_atm == 6:
+                                    #     E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
+                                    #     E_prime = E_electronrest
 
                                     # printf("__ABB: %.8e, \n", _ABB)
-                                    # printf("E_electronrest %.8e\n", E_electronrest)
+                                    # printf("E_prime %.8e\n", E_prime)
                                     # printf("srcCellParams[i,J,0] %.8e\n", srcCellParams[i,J,0])
                                     # printf("srcCellParams[i,J,1] %.8e\n", srcCellParams[i,J,1])
                                     # printf("srcCellParams[i,J,2] %.8e\n", srcCellParams[i,J,2])
@@ -457,6 +457,7 @@ def integrate(size_t numThreads,
                                                    &(srcCellParams[i,J,0]),
                                                    hot_data,
                                                    _beam_opt)
+                                    
                                     
                                     # printf("I_E = %.8e\n", I_E)
 

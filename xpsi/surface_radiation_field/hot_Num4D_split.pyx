@@ -5,10 +5,13 @@
 
 from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs
 from libc.stdio cimport printf, fopen, fclose, fread, FILE
-from GSL cimport gsl_isnan, gsl_isinf
+# from GSL cimport gsl_isnan, gsl_isinf
 from libc.stdlib cimport malloc, free
 
-from xpsi.global_imports import _keV, _k_B
+from xpsi.global_imports import _keV, _k_B, _h_keV
+
+import numpy as np
+cimport numpy as np
 
 cdef int SUCCESS = 0
 cdef int ERROR = 1
@@ -16,6 +19,7 @@ cdef int ERROR = 1
 cdef double erg = 1.0e-7
 cdef double k_B = _k_B
 cdef double keV = _keV
+cdef double h_keV = _h_keV
 cdef double k_B_over_keV = k_B / keV
 cdef int VERBOSE = 0
 
@@ -43,18 +47,21 @@ ctypedef struct DATA:
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_hot_Num2D(size_t numThreads, const _preloaded *const preloaded) nogil:
+cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) nogil:
     # This function must match the free management routine free_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
     # Return NULL if dynamic memory is not required for the model
 
+    if preloaded == NULL :
+        printf("ERROR: The numerical atmosphere data were not preloaded, which are required by this extension.\n")
+
     cdef DATA *D = <DATA*> malloc(sizeof(DATA))
     D.p = preloaded
 
-    D.p.BLOCKS[0] = 4 #64
-    #D.p.BLOCKS[1] = 16
-    #D.p.BLOCKS[2] = 4
+    D.p.BLOCKS[0] = 64
+    D.p.BLOCKS[1] = 16
+    D.p.BLOCKS[2] = 4
 
     cdef size_t T, i, j, k, l
 
@@ -73,18 +80,11 @@ cdef void* init_hot_Num2D(size_t numThreads, const _preloaded *const preloaded) 
         D.acc.INTENSITY_CACHE[T] = <double*> malloc(256 * sizeof(double))
         D.acc.VEC_CACHE[T] = <double*> malloc(D.p.ndims * sizeof(double))
         for i in range(D.p.ndims):
-        
-            #printf("\nDimension: %d \n", <int>i)        
             D.acc.BN[T][i] = 0
             D.acc.VEC_CACHE[T][i] = D.p.params[i][1]
             D.acc.node_vals[T][2*i] = D.p.params[i][1]
             D.acc.node_vals[T][2*i + 1] = D.p.params[i][2]
 
-            #printf("\nParam0: %f \n", D.p.params[i][0])            
-            #printf("\nParam1: %f \n", D.p.params[i][1])
-            #printf("\nParam2: %f \n", D.p.params[i][2])                                    
-            #printf("\nParam3: %f \n", D.p.params[i][3])
-            
             j = 4*i
 
             D.acc.SPACE[T][j] = 1.0 / (D.p.params[i][0] - D.p.params[i][1])
@@ -124,18 +124,19 @@ cdef void* init_hot_Num2D(size_t numThreads, const _preloaded *const preloaded) 
     for T in range(numThreads):
         for i in range(4):
             for j in range(4):
-                
-                address = D.p.I + (D.acc.BN[T][0] + i) * D.p.S[0]
-                address += D.acc.BN[T][1] + j
-
-                D.acc.INTENSITY_CACHE[T][i * D.p.BLOCKS[0] + j] = address[0]
+                for k in range(4):
+                    for l in range(4):
+                        address = D.p.I + (D.acc.BN[T][0] + i) * D.p.S[0]
+                        address += (D.acc.BN[T][1] + j) * D.p.S[1]
+                        address += (D.acc.BN[T][2] + k) * D.p.S[2]
+                        address += D.acc.BN[T][3] + l
+                        D.acc.INTENSITY_CACHE[T][i * D.p.BLOCKS[0] + j * D.p.BLOCKS[1] + k * D.p.BLOCKS[2] + l] = address[0]
 
     # Cast for generalised usage in integration routines
-    #printf("\nDimensions: %d \n", <int>D.p.ndims)
     return <void*> D
 
 
-cdef int free_hot_Num2D(size_t numThreads, void *const data) nogil:
+cdef int free_hot_Num4D(size_t numThreads, void *const data) nogil:
     # This function must match the initialisation routine init_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -174,7 +175,7 @@ cdef int free_hot_Num2D(size_t numThreads, void *const data) nogil:
 # >>> Improve acceleration properties... i.e. do not recompute numerical
 # ... weights or re-read intensities if not necessary.
 #----------------------------------------------------------------------->>>
-cdef double eval_hot_Num2D(size_t THREAD,
+cdef double eval_hot_Num4D(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
@@ -198,24 +199,18 @@ cdef double eval_hot_Num2D(size_t THREAD,
         double *I_CACHE = D.acc.INTENSITY_CACHE[THREAD]
         double *V_CACHE = D.acc.VEC_CACHE[THREAD]
         double vec[4]
-        #double E_eff = k_B_over_keV * pow(10.0, VEC[0])
+        double E_eff = k_B_over_keV * pow(10.0, VEC[0])
         int update_baseNode[4]
         int CACHE = 0
 
-    #printf("\nVEC[0]: %f \n", VEC[0])
-
-    #vec[0] = VEC[0]
-    #vec[1] = VEC[1]
-    #vec[2] = mu
-    #vec[3] = log10(E / E_eff)
-    vec[0] = mu
-    vec[1] = E    
-    
+    vec[0] = VEC[0]
+    vec[1] = VEC[1]
+    vec[2] = mu
+    vec[3] = E
 
     while i < D.p.ndims:
         # if parallel == 31:
         #     printf("\nDimension: %d", <int>i)
-        #printf("\nDimensionI: %d \n", <int>i)
         update_baseNode[i] = 0
         if vec[i] < node_vals[2*i] and BN[i] != 0:
             # if parallel == 31:
@@ -317,23 +312,25 @@ cdef double eval_hot_Num2D(size_t THREAD,
 
     cdef size_t j, k, l, INDEX, II, JJ, KK
     cdef double *address = NULL
-    #printf("\nvec[0]: %f \n", vec[0])
-    #printf("\nvec[1]: %f \n", vec[1])            
     # Combinatorics over nodes of hypercube; weight cgs intensities
     for i in range(4):
         II = i * D.p.BLOCKS[0]
         for j in range(4):
-            
-            address = D.p.I + (BN[0] + i) * D.p.S[0]
-            address += BN[1] + j
-            
-            temp = DIFF[i] * DIFF[4 + j] 
-            temp *= SPACE[i] * SPACE[4 + j] 
-            INDEX = II + j
-                        
-            if CACHE == 1:
-                I_CACHE[INDEX] = address[0]
-            I += temp * I_CACHE[INDEX]
+            JJ = j * D.p.BLOCKS[1]
+            for k in range(4):
+                KK = k * D.p.BLOCKS[2]
+                for l in range(4):
+                    address = D.p.I + (BN[0] + i) * D.p.S[0]
+                    address += (BN[1] + j) * D.p.S[1]
+                    address += (BN[2] + k) * D.p.S[2]
+                    address += BN[3] + l
+
+                    temp = DIFF[i] * DIFF[4 + j] * DIFF[8 + k] * DIFF[12 + l]
+                    temp *= SPACE[i] * SPACE[4 + j] * SPACE[8 + k] * SPACE[12 + l]
+                    INDEX = II + JJ + KK + l
+                    if CACHE == 1:
+                        I_CACHE[INDEX] = address[0]
+                    I += temp * I_CACHE[INDEX]
 
     #if gsl_isnan(I) == 1:
         #printf("\nIntensity: NaN; Index [%d,%d,%d,%d] ",
@@ -342,11 +339,12 @@ cdef double eval_hot_Num2D(size_t THREAD,
     #printf("\nBase-nodes [%d,%d,%d,%d] ",
                 #<int>BN[0], <int>BN[1], <int>BN[2], <int>BN[3])
 
-    #printf("\nI: %f \n", I)
-    return I #* pow(10.0, 3.0 * vec[0])
+    if I < 0.0:
+        return 0.0
+    return I
 
 
-cdef double eval_hot_norm_Num2D() nogil:
+cdef double eval_hot_norm_Num4D() nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.
@@ -354,37 +352,52 @@ cdef double eval_hot_norm_Num2D() nogil:
     # during integration.
     # The units of the specific intensity need to be J/cm^2/s/keV/steradian.
 
-    return erg / 4.135667662e-18
+    return erg / h_keV
+
+cdef double* produce_2D_data_Num4D(size_t THREAD, const double *const VEC, void *const data) nogil:
+    # interpolate data to make a 2D dataset with only E and mu
+    cdef DATA *D = <DATA*> data
     
-cdef double eval_hot_Num2D_I(size_t THREAD,
-                     double E,
-                     double mu,
-                     const double *const VEC,
-                     void *const data) nogil:
-    # Arguments:
-    # E = photon energy in keV
-    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
-    # VEC = variables such as temperature, effective gravity, ...
-    # data = numerical model data required for intensity evaluation
+    cdef size_t i, j
+    cdef double I_E
 
-    cdef double I = eval_hot_Num2D(THREAD,E,mu,VEC,data)
+    cdef double *I_data
+    I_data = <double*> malloc(sizeof(double*) * D.p.N[2] * D.p.N[3])
 
-    if I < 0.0:
-        return 0.0
-
-    return I 
     
-    
-cdef double eval_hot_Num2D_Q(size_t THREAD,
-                     double E,
-                     double mu,
-                     const double *const VEC,
-                     void *const data) nogil:
-    # Arguments:
-    # E = photon energy in keV
-    # mu = cosine of ray zenith angle (i.e., angle to surface normal)
-    # VEC = variables such as temperature, effective gravity, ...
-    # data = numerical model data required for intensity evaluation
+    for i in range(D.p.N[2]):
+        mu = D.p.params[2][i]
+        for j in range(D.p.N[3]):
+            E = D.p.params[3][j]
+            #E = correct_E_NSX(VEC[0], D.p.params[3][j])
 
-    return eval_hot_Num2D(THREAD,E,mu,VEC,data)   
+            # printf("mu %.8e\n", mu)
+            # printf("E %.8e\n", E)
 
+            I_E = eval_hot_Num4D(THREAD,
+                            E,
+                            mu,
+                            VEC,
+                            data)
+            index = i * D.p.N[3] + j
+            I_data[index] = I_E
+            # printf("I_E %.8e\n", I_E)
+
+    return I_data
+
+cdef object make_atmosphere_2D_Num4D(double *I_data, const double *const VEC, void *const data):
+    cdef DATA *D = <DATA*> data
+    cdef np.ndarray[double, ndim=1, mode="c"] mu_array = np.ascontiguousarray(np.empty(D.p.N[2], dtype=float))
+    cdef np.ndarray[double, ndim=1, mode="c"] E_array = np.ascontiguousarray(np.empty(D.p.N[3], dtype=float))
+    cdef np.ndarray[double, ndim=1, mode="c"] I_array = np.ascontiguousarray(np.empty(D.p.N[2]*D.p.N[3], dtype=float))
+    cdef size_t i, j, index
+    for i in range(D.p.N[2]):
+        mu_array[i] = D.p.params[2][i]
+        for j in range(D.p.N[3]):
+            index = i * D.p.N[3] + j
+            I_array[index] = I_data[index]
+    for j in range(D.p.N[3]):
+        E_array[j] = D.p.params[3][j]
+        #E_array[j] = correct_E_NSX(VEC[0], D.p.params[3][j])
+    cdef tuple atmosphere_2D = (mu_array, E_array, I_array)
+    return atmosphere_2D
