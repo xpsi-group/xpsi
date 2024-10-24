@@ -15,8 +15,7 @@ cdef double _h = 6.62607004e-34
 
 cdef double radiusNormalised(double mu, 
                              double epsilon, 
-                             double zeta, 
-                             double R_eq) nogil: # ADDED! 
+                             double zeta) nogil:  
     """
     Calculate the normalised radius (R(theta)/R_eq) based on the slow-elliptical approximation from Silva et al. (2021) 
     (see equation 16 / R_eq). This approximation is obtained using stars with epsilon <= 0.25.   
@@ -31,31 +30,17 @@ cdef double radiusNormalised(double mu,
         kappa in Silva et al. (2021) 
     :type zeta: double 
 
-    :param R_eq: Equatorial radius of the star 
-    :type R_eq: double
-
     :return: Normalised radius (R(theta)/R_eq)
     :rtype: double 
     """
     cdef : 
-        double esq = epsilon # why do this? 
-        double esqsq = epsilon * epsilon # why seperately define this? 
+        double esq = epsilon
+        double esqsq = epsilon * epsilon 
     
-        # slow-elliptical fit (epsilon<=0.25)
+        # values from equation 19 from Silva et al. 2021  
         double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq # eccentricity of the star 
-        
-        # fast-elliptical fit (epsilon>0.25, corresponds to min ~700-800 Hz) 
-        # double e = 0.251 + 0.935 * esq + 0.709 * zeta + 0.030 * esq * zeta - 0.472 * esqsq - 2.427 * zeta * zeta
-
-        # slow-elliptical fit (epsilon<=0.25)
-        double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq
         double a_2 = -1.013 - 0.312 *  esq + 0.930 * esq * zeta - 1.596 * esqsq 
         double a_4 = 0.016 + 0.301 *  esq - 1.261 * esq * zeta + 2.728 * esqsq 
-
-        # fast-elliptical fit (epsilon>0.25) 
-        # double e = 0.251 + 0.935 * esq + 0.709 * zeta + 0.030 * esq * zeta - 0.472 * esqsq - 2.427 * zeta * zeta
-        # double a2 = -1.265 + 0.220 * esq + 2.651 * zeta + 1.010 * esq * zeta - 1.815 * esqsq - 7.657 * zeta * zeta
-        # double a4 = 0.556 - 1.465 * esq - 4.260 * zeta - 2.327 * esq * zeta + 4.921 * esqsq + 12.98 * zeta * zeta
 
         double g = 1 + a_2 * mu**2 + a_4 * pow(mu, 4) - (1 + a2_ + a_4) * pow(mu, 6)
 
@@ -92,8 +77,8 @@ cdef double f_theta(double mu,
     double esq = epsilon 
     double esqsq = epsilon * epsilon 
 
-    # slow-elliptical fit (epsilon<=0.25)
-    double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq
+    # values from equation 19 from Silva et al. 2021  
+    double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq # eccentricity of the star 
     double a_2 = -1.013 - 0.312 *  esq + 0.930 * esq * zeta - 1.596 * esqsq 
     double a_4 = 0.016 + 0.301 *  esq - 1.261 * esq * zeta + 2.728 * esqsq 
 
