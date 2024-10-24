@@ -51,9 +51,7 @@ cdef double f_theta(double mu,
                     double epsilon,
                     double zeta) nogil:
     """
-    Calculate f(theta) based on the slow-elliptical approximation from Silva et al. (2021) for the derived
-    normalised radius (see equation 16 for the un-normalised radius equation). This approximation is 
-    obtained using stars with epsilon <= 0.25.   
+    Calculate f(theta) based on Equation 3 of Morsink et al. 2007.   
 
     :param mu: Colatitude (cos(theta))
     :type mu: double
@@ -68,7 +66,7 @@ cdef double f_theta(double mu,
         kappa in Silva et al. (2021) 
     :type zeta: double 
 
-    :return: Normalised radius (R(theta)/R_eq)
+    :return: f(theta) 
     :rtype: double 
     """
 
