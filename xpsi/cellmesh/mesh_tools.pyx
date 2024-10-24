@@ -13,53 +13,91 @@ cdef double _keV = 1.60217662e-16
 cdef double _k_B = 1.38064852e-23
 cdef double _h = 6.62607004e-34
 
-cdef double radiusNormalised(double mu, # colatitude: cos(theta)
-                             double epsilon, # dimensionless spin parameter: sigma (in Silva) = (omega**2*R_eq**3)/(G*M)
-                             double zeta, # compactness: x (in effective_gravity_universil.pyx) = kappa (in Silva) = (G*M)/(R_eq*c**2)
-                             double R_eq) nogil: # ADDED! equatorial radius 
+cdef double radiusNormalised(double mu, 
+                             double epsilon, 
+                             double zeta, 
+                             double R_eq) nogil: # ADDED! 
+    """
+    Calculate the normalised radius (R(theta)/R_eq) based on the slow-elliptical approximation from Silva et al. (2021) 
+    (see equation 16 / R_eq). This approximation is obtained using stars with epsilon <= 0.25.   
+
+    :param mu: Colatitude (cos(theta))
+    :type mu: double
+
+    :param epsilon: Dimensionless spin parameter = (omega**2*R_eq**3)/(G*M) defined as sigma in Silva et al. (2021).
+    :type epsilon: double
+
+    :param zeta: Compactness = (G*M)/(R_eq*c**2) defined as zeta in AlGendy & Morsink (2007) and as 
+        kappa in Silva et al. (2021) 
+    :type zeta: double 
+
+    :param R_eq: Equatorial radius of the star 
+    :type R_eq: double
+
+    :return: Normalised radius (R(theta)/R_eq)
+    :rtype: double 
+    """
     cdef : 
-        double x = zeta # x is used in effective_gravity_universil.pyx
         double esq = epsilon # why do this? 
         double esqsq = epsilon * epsilon # why seperately define this? 
     
         # slow-elliptical fit (epsilon<=0.25)
-        double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * x - 0.802 * esqsq # eccentricity of the star 
+        double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq # eccentricity of the star 
         
         # fast-elliptical fit (epsilon>0.25, corresponds to min ~700-800 Hz) 
-        # double e = 0.251 + 0.935 * esq + 0.709 * x + 0.030 * esq * x - 0.472 * esqsq - 2.427 * x * x
+        # double e = 0.251 + 0.935 * esq + 0.709 * zeta + 0.030 * esq * zeta - 0.472 * esqsq - 2.427 * zeta * zeta
 
         # slow-elliptical fit (epsilon<=0.25)
-        double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * x - 0.802 * esqsq
-        double a_2 = -1.013 - 0.312 *  esq + 0.930 * esq * x - 1.596 * esqsq 
-        double a_4 = 0.016 + 0.301 *  esq - 1.261 * esq * x + 2.728 * esqsq 
+        double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq
+        double a_2 = -1.013 - 0.312 *  esq + 0.930 * esq * zeta - 1.596 * esqsq 
+        double a_4 = 0.016 + 0.301 *  esq - 1.261 * esq * zeta + 2.728 * esqsq 
 
         # fast-elliptical fit (epsilon>0.25) 
-        # double e = 0.251 + 0.935 * esq + 0.709 * x + 0.030 * esq * x - 0.472 * esqsq - 2.427 * x * x
-        # double a2 = -1.265 + 0.220 * esq + 2.651 * x + 1.010 * esq * x - 1.815 * esqsq - 7.657 * x * x
-        # double a4 = 0.556 - 1.465 * esq - 4.260 * x - 2.327 * esq * x + 4.921 * esqsq + 12.98 * x * x
+        # double e = 0.251 + 0.935 * esq + 0.709 * zeta + 0.030 * esq * zeta - 0.472 * esqsq - 2.427 * zeta * zeta
+        # double a2 = -1.265 + 0.220 * esq + 2.651 * zeta + 1.010 * esq * zeta - 1.815 * esqsq - 7.657 * zeta * zeta
+        # double a4 = 0.556 - 1.465 * esq - 4.260 * zeta - 2.327 * esq * zeta + 4.921 * esqsq + 12.98 * zeta * zeta
 
         double g = 1 + a_2 * mu**2 + a_4 * pow(mu, 4) - (1 + a2_ + a_4) * pow(mu, 6)
 
-    # return 1.0 + epsilon * (-0.788 + 1.030 * zeta) * mu * mu # eq 20 AlGendy / R_e
-    return sqrt((1 - e**2) / (1 - e**2 * g)) # eq 16 Silva / R_eq
+    return sqrt((1 - e**2) / (1 - e**2 * g)) 
 
 cdef double f_theta(double mu,
-                    double radiusNormed, # radiusNormalised
+                    double radiusNormed, 
                     double epsilon,
                     double zeta) nogil:
+    """
+    Calculate f(theta) based on the slow-elliptical approximation from Silva et al. (2021) for the derived
+    normalised radius (see equation 16 for the un-normalised radius equation). This approximation is 
+    obtained using stars with epsilon <= 0.25.   
+
+    :param mu: Colatitude (cos(theta))
+    :type mu: double
+
+    :param radiusNormed: Normalised radius (R(theta)/R_eq) (see radiusNormalised)
+    :type R_eq: double
+
+    :param epsilon: Dimensionless spin parameter = (omega**2*R_eq**3)/(G*M) defined as sigma in Silva et al. (2021).
+    :type epsilon: double
+
+    :param zeta: Compactness = (G*M)/(R_eq*c**2) defined as zeta in AlGendy & Morsink (2007) and as 
+        kappa in Silva et al. (2021) 
+    :type zeta: double 
+
+    :return: Normalised radius (R(theta)/R_eq)
+    :rtype: double 
+    """
 
     cdef double radiusDerivNormed
 
-    double esq = epsilon # why do this? 
-    double esqsq = epsilon * epsilon # why seperately define this? 
+    double esq = epsilon 
+    double esqsq = epsilon * epsilon 
 
     # slow-elliptical fit (epsilon<=0.25)
-    double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * x - 0.802 * esqsq
-    double a_2 = -1.013 - 0.312 *  esq + 0.930 * esq * x - 1.596 * esqsq 
-    double a_4 = 0.016 + 0.301 *  esq - 1.261 * esq * x + 2.728 * esqsq 
+    double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq
+    double a_2 = -1.013 - 0.312 *  esq + 0.930 * esq * zeta - 1.596 * esqsq 
+    double a_4 = 0.016 + 0.301 *  esq - 1.261 * esq * zeta + 2.728 * esqsq 
 
     radiusDerivNormed = (e**2 * sqrt(1 - mu**2)) / (2 * radiusNormed * (1 - e**2 * g)) * (2 * a_2 * mu + 4 * a_4 * pow(mu,3) - 6 * (1 + a_2 + a_4) * pow(mu,5))
-    # radiusDerivNormed = -2.0 * epsilon * (-0.788 + 1.030 * zeta) * mu * sqrt(1.0 - mu * mu) #  Silva: where does the - and sqrt(..) come from? 
 
     return radiusDerivNormed / (radiusNormed * sqrt(1.0 - 2.0 * zeta / radiusNormed))
 

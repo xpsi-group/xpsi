@@ -3,19 +3,41 @@
 #cython: nonecheck=False
 #cython: wraparound=False
 
-from libc.math cimport sqrt, log10, pow # fabs
+from libc.math cimport sqrt, log10, pow 
 
 cdef double c = 2.99792458e8
 
-cdef double effectiveGravity(double mu, # cos(colatitude: cos(theta)
-                             double R_eq, # equatorial radius 
-                             double x, # compactness: zeta (in AlGendy) = kappa (in Silva) = (G*M)/(R_eq*c**2)
-                             double epsilon) nogil: # dimensionless spin parameter: sigma (in Silva) = (omega**2*R_eq**3)/(G*M)
+cdef double effectiveGravity(double mu, 
+                             double R_eq, 
+                             double x, 
+                             double epsilon) nogil:  
+    
+    """
+    Calculate the effective surface gravity loglikelihood value based on the slow-elliptical approximation 
+    from Silva et al. (2021) (see equation 17). This approximation is obtained using stars with epsilon <= 0.25.   
+
+    :param mu: Colatitude (cos(theta))
+    :type mu: double
+
+    :param R_eq: Equatorial radius of the star 
+    :type R_eq: double
+
+    :param x: Compactness = (G*M)/(R_eq*c**2) defined as zeta in AlGendy & Morsink (2007) and as 
+        kappa in Silva et al. (2021) 
+    :type x: double 
+
+    :param epsilon: Dimensionless spin parameter = (omega**2*R_eq**3)/(G*M) defined as sigma in Silva et al. (2021).
+    :type epsilon: double
+
+    :return: surface gravities in log10(g*g0) in units of centimeters (note that 2.0 is to convert from meters to 
+        centimeters). This is used in the format used in the tabulated atmosphere tables. 
+    :rtype: double 
+    """
 
     cdef:
         double g_0 = x * c * c / (R_eq * sqrt(1.0 - 2.0 * x))
-        double esq = epsilon # why do this? 
-        double esqsq = epsilon * epsilon # why seperately define this? 
+        double esq = epsilon 
+        double esqsq = epsilon * epsilon 
 
         # slow-elliptical fit (epsilon<=0.25)
         double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * x - 0.802 * esqsq
@@ -28,18 +50,5 @@ cdef double effectiveGravity(double mu, # cos(colatitude: cos(theta)
         # double a4 = 0.556 - 1.465 * esq - 4.260 * x - 2.327 * esq * x + 4.921 * esqsq + 12.98 * x * x
 
         double g = 1 + a2 * mu**2 + a4 * pow(mu, 4) - (1 + a2 + a4) * pow(mu, 6)
-
-    #     double c_e = -0.791 + 0.776 * x
-    #     double c_p = 1.138 - 1.431 * x
-    #     double d_e = (-1.315 + 2.431 * x) * esq * x
-    #     double d_p = (0.653 - 2.864 * x) * esq * x
-    #     double d_60 = (13.47 - 27.13 * x) * esq * x
-    #     double f_e = -1.172 * x * esqsq
-    #     double f_p = 0.975 * x * esqsq
-    #     double g = 1.0
-
-    # g += (c_e + d_e + f_e) * esq * (1.0 - mu * mu)
-    # g += (c_p + d_p + f_p - d_60) * esq * mu * mu
-    # g += d_60 * esq * fabs(mu)
 
     return log10(g * g_0) + 2.0
