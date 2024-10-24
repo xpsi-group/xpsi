@@ -41,8 +41,9 @@ cdef double radiusNormalised(double mu,
         double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq # eccentricity of the star 
         double a_2 = -1.013 - 0.312 *  esq + 0.930 * esq * zeta - 1.596 * esqsq 
         double a_4 = 0.016 + 0.301 *  esq - 1.261 * esq * zeta + 2.728 * esqsq 
+        double g = 1.0
 
-        double g = 1 + a_2 * mu**2 + a_4 * pow(mu, 4) - (1 + a2_ + a_4) * pow(mu, 6)
+    g += a_2 * mu**2 + a_4 * pow(mu, 4) - (1 + a_2 + a_4) * pow(mu, 6)
 
     return sqrt((1 - e**2) / (1 - e**2 * g)) 
 
@@ -70,17 +71,20 @@ cdef double f_theta(double mu,
     :rtype: double 
     """
 
-    cdef double radiusDerivNormed
+    cdef:
+        double radiusDerivNormed
+        double esq = epsilon 
+        double esqsq = epsilon * epsilon 
 
-    double esq = epsilon 
-    double esqsq = epsilon * epsilon 
+        # values from equation 19 from Silva et al. 2021  
+        double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq # eccentricity of the star 
+        double a_2 = -1.013 - 0.312 *  esq + 0.930 * esq * zeta - 1.596 * esqsq 
+        double a_4 = 0.016 + 0.301 *  esq - 1.261 * esq * zeta + 2.728 * esqsq 
+        double g = 1.0
+        
+    g += a_2 * mu**2 + a_4 * pow(mu, 4) - (1 + a_2 + a_4) * pow(mu, 6)
 
-    # values from equation 19 from Silva et al. 2021  
-    double e = 1.089 * sqrt(esq) + 0.168 * esq - 0.685 * esq * zeta - 0.802 * esqsq # eccentricity of the star 
-    double a_2 = -1.013 - 0.312 *  esq + 0.930 * esq * zeta - 1.596 * esqsq 
-    double a_4 = 0.016 + 0.301 *  esq - 1.261 * esq * zeta + 2.728 * esqsq 
-
-    radiusDerivNormed = (e**2 * sqrt(1 - mu**2)) / (2 * radiusNormed * (1 - e**2 * g)) * (2 * a_2 * mu + 4 * a_4 * pow(mu,3) - 6 * (1 + a_2 + a_4) * pow(mu,5))
+    radiusDerivNormed = (e * e * sqrt(1 - mu**2)) / (2 * radiusNormed * (1 - e * e * g)) * (2 * a_2 * mu + 4 * a_4 * pow(mu,3) - 6 * (1 + a_2 + a_4) * pow(mu,5))
 
     return radiusDerivNormed / (radiusNormed * sqrt(1.0 - 2.0 * zeta / radiusNormed))
 
