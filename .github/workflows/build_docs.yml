@@ -30,7 +30,7 @@ jobs:
       with:
         ref: python2
     - name: Install Python2 Conda environment with Micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
         cache-env: true
         cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
@@ -63,7 +63,7 @@ jobs:
       with:
         ref: main
     - name: Install Python3 Conda environment with Micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
         cache-env: true
         cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
