@@ -96,7 +96,7 @@ PPM for other sources
 
 **Kini et al. 2024b** `(MNRAS, 535,1507) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.535.1507K/abstract>`_ *Constraining the properties of the thermonuclear burst oscillation source XTE J1814-338 through pulse profile modelling*. See also the associated `Zenodo repository`__.
 
-.. _Zenodo24bkini: 
+.. _Zenodo24bkini: https://doi.org/10.5281/zenodo.8365643 
 __ Zenodo24bkini_
 
 **Kini et al. 2024a** `(MNRAS, 527, 8118) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.527.8118K/abstract>`_ *Pulse profile modelling of thermonuclear burst oscillations - II. Handling variability*.  See also the associated `Zenodo repository`__.
