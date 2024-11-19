@@ -41,7 +41,7 @@ __ Zenodo24d_
 .. _Zenodo24b: https://doi.org/10.5281/zenodo.10519472
 __ Zenodo24b_
 
-**Choudhury et al. 2024a** `(ApJL, 971, L20) <https://iopscience.iop.org/article/10.3847/2041-8213/ad5a6f>`_ *A NICER View of the Nearest and Brightest Millisecond Pulsar: PSR J0437-4715*. See also the associated `Zenodo repository`__.
+**Choudhury et al. 2024a** `(ApJL, 971, L20) <https://ui.adsabs.harvard.edu/abs/2024ApJ...971L..20C/abstract>`_ *A NICER View of the Nearest and Brightest Millisecond Pulsar: PSR J0437-4715*. See also the associated `Zenodo repository`__.
 
 .. _Zenodo24c: https://doi.org/10.5281/zenodo.10886504
 __ Zenodo24c_ 
