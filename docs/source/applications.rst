@@ -26,17 +26,25 @@ NICER rotation-powered millisecond pulsar papers
 
 X-PSI has been used in several Pulse Profile Modeling analysis papers using *NICER* data of rotation-powered millisecond pulsars. These are typically published with a Zenodo repository containing data, model files, X-PSI scripts, samples and post-processing notebooks to enable full reproduction and independent analysis. 
 
-**Choudhury et al. 2024b** `(ApJ submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv240607285C/abstract>`_ *Exploring Waveform Variations among Neutron Star Ray-tracing Codes for Complex Emission Geometries*. 
+**Salmi et al. 2024b** `(ApJ, 976, 58) <https://ui.adsabs.harvard.edu/abs/2024ApJ...976...58S/abstract>`_ *A NICER View of PSR J1231-1411: A Complex Case*.  See also the associated `Zenodo repository`__.
 
-**Choudhury et al. 2024a** `(ApJL, 971, L20) <https://iopscience.iop.org/article/10.3847/2041-8213/ad5a6f>`_ *A NICER View of the Nearest and Brightest Millisecond Pulsar: PSR J0437-4715*. See also the associated `Zenodo repository`__.
+.. _Zenodo24e: https://doi.org/10.5281/zenodo.13358349
+__ Zenodo24e_
 
-.. _Zenodo24c: https://doi.org/10.5281/zenodo.10886504
-__ Zenodo24c_ 
+**Choudhury et al. 2024b** `(ApJ, 975, 202) <https://ui.adsabs.harvard.edu/abs/2024ApJ...975..202C/abstract>`_ *Exploring Waveform Variations among Neutron Star Ray-tracing Codes for Complex Emission Geometries*. See also the associated `Zenodo repository`__.
 
-**Salmi et al. 2024** `(ApJ in press) <https://ui.adsabs.harvard.edu/abs/2024arXiv240614466S/abstract>`_ *The Radius of the High Mass Pulsar PSR J0740+6620 With 3.6 Years of NICER Data*.  See also the associated `Zenodo repository`__.
+.. _Zenodo24d: https://doi.org/10.5281/zenodo.13133748
+__ Zenodo24d_
+
+**Salmi et al. 2024a** `(ApJ, 974, 294) <https://ui.adsabs.harvard.edu/abs/2024ApJ...974..294S/abstract>`_ *The Radius of the High Mass Pulsar PSR J0740+6620 With 3.6 Years of NICER Data*.  See also the associated `Zenodo repository`__.
 
 .. _Zenodo24b: https://doi.org/10.5281/zenodo.10519472
 __ Zenodo24b_
+
+**Choudhury et al. 2024a** `(ApJL, 971, L20) <https://ui.adsabs.harvard.edu/abs/2024ApJ...971L..20C/abstract>`_ *A NICER View of the Nearest and Brightest Millisecond Pulsar: PSR J0437-4715*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo24c: https://doi.org/10.5281/zenodo.10886504
+__ Zenodo24c_ 
 
 **Vinciguerra et al. 2024** `(ApJ, 961,62) <https://ui.adsabs.harvard.edu/abs/2024ApJ...961...62V/abstract>`_ *An Updated Mass-Radius Analysis of the 2017-2018 NICER Data Set of PSR J0030+0451*. See also the associated `Zenodo repository`__.   
 
@@ -83,7 +91,13 @@ __ Zenodo_
 PPM for other sources
 *********************
 
-**Kini et al. 2024b** `(MNRAS, submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv240510717K/abstract>`_ *Pulse Profile Modelling of Thermonuclear Burst Oscillations III : Constraining the properties of XTE J1814-338*. 
+
+**Dorsman et al. 2024** `(MNRAS submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv240907908D/abstract>`_ *Parameter constraints for accreting millisecond pulsars with synthetic NICER data*.
+
+**Kini et al. 2024b** `(MNRAS, 535,1507) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.535.1507K/abstract>`_ *Constraining the properties of the thermonuclear burst oscillation source XTE J1814-338 through pulse profile modelling*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo24bkini: https://doi.org/10.5281/zenodo.8365643 
+__ Zenodo24bkini_
 
 **Kini et al. 2024a** `(MNRAS, 527, 8118) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.527.8118K/abstract>`_ *Pulse profile modelling of thermonuclear burst oscillations - II. Handling variability*.  See also the associated `Zenodo repository`__.
 
