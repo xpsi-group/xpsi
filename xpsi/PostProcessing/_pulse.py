@@ -449,7 +449,7 @@ class PulsePlot(SignalPlot):
                                        rasterized = self._rasterized)
 
         incident.set_edgecolor('face')
-        self._ax.set_ylim([ref.energy_edges[0],
+        self._ax.set_ylim([_np.max([ref.energy_edges[0],0.001]),
                            ref.energy_edges[-1]])
         self._ax.set_yscale('log')
 
@@ -529,7 +529,7 @@ class PulsePlot(SignalPlot):
                                       rasterized = self._rasterized)
 
         registered.set_edgecolor('face')
-        self._ax_registered.set_ylim([ref.data.channels[0],
+        self._ax_registered.set_ylim([_np.max([ref.data.channels[0],0.001]),
                                       ref.data.channels[-1]])
         self._ax_registered.set_yscale('log')
 
