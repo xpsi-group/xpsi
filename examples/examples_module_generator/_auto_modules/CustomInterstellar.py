@@ -51,7 +51,7 @@ class CustomInterstellar(xpsi.Interstellar):
     @classmethod
     def load(cls, path,
              energy_column=0,
-             attenuation_column=1,
+             attenuation_column=2,
              **kwargs):
         """ Load attenuation file. """
 
