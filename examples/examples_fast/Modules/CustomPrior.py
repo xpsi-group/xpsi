@@ -7,8 +7,6 @@ from scipy.stats import truncnorm
 import xpsi
 from xpsi.global_imports import gravradius
 
-from scipy.stats import truncnorm
-
 class CustomPrior(xpsi.Prior):
     """ A custom (joint) prior distribution.
 

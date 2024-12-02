@@ -10,7 +10,6 @@ nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.t
 '''
 
 
-
 import os
 import numpy as np
 import math

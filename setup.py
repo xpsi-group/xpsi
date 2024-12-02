@@ -10,7 +10,6 @@ If compiling and linking with Intel icc, with is on $PATH:
 """
 
 from setuptools import setup, Extension
-import os
 import argparse
 import sys
 
