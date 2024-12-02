@@ -138,6 +138,7 @@ In addition, some optional miscellaneous packages are:
 #. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook.
 #. `pytest <https://docs.pytest.org/en/7.2.x/>`_ if you want to run functionality tests for X-PSI.
 #. `emcee <https://emcee.readthedocs.io/en/latest/>`_ for optional ensemble-MCMC functionality.
+#. `UltraNest <https://johannesbuchner.github.io/UltraNest/readme.html>`_ as alternative sampler.
 
 
 .. _nonpython:
