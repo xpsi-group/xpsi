@@ -345,6 +345,7 @@ class CornerPlotter(PostProcessor):
                        sixtyeight = True,
                        ninety = False,
                        compute_all_intervals=True,
+                       other_interval = None,
                        **kwargs):
         """ Call :meth:`getdist.plots.GetDistPlotter.triangle_plot`.
 
@@ -718,6 +719,7 @@ class CornerPlotter(PostProcessor):
                                             sixtyeight=sixtyeight,
                                             ninety=ninety,
                                             compute_all_intervals=compute_all_intervals,
+                                            other_interval=other_interval,
                                             precisions=precisions)
 
                 self.credible_intervals[id]=self.val_cred
@@ -892,7 +894,7 @@ class CornerPlotter(PostProcessor):
                   'Added 1D marginal credible intervals')
     def _add_credible_interval(self, plotter, posterior, bootstrap, n_simulate,
                                annotate, annotate_xy, sixtyeight,
-                               ninety, compute_all_intervals, precisions=None):
+                               ninety, other_interval, compute_all_intervals, precisions=None):
         """
         Estimate 1-:math:`\sigma` credible interval in one-dimension on a
         combined run, or if such a run does not exist, on the run with
@@ -930,7 +932,11 @@ class CornerPlotter(PostProcessor):
                                   **kwargs)
             return estimator
 
-        quantiles = [0.159, 0.5, 0.841] if sixtyeight else ([0.05,0.5,0.95] if ninety else [0.025, 0.5, 0.975])
+        print(other_interval)
+        if other_interval is not None:   #with other_quantile given as q=99 if we want the 99% confidence interval for ex
+            other_quantile = [0.5 - other_interval/200, 0.5, 0.5 + other_interval/200]
+
+        quantiles = other_quantile if other_interval is not None else ([0.159, 0.5, 0.841] if sixtyeight else ([0.05,0.5,0.95] if ninety else [0.025, 0.5, 0.975]))
 
         def format_CI(name, cred, summary, additional=2, sscript=False, precision=None):
 
@@ -1011,7 +1017,7 @@ class CornerPlotter(PostProcessor):
                 if annotate:
                     stats = format_CI('', # parameter name not needed on plot
                                       cred,
-                                      68 if sixtyeight else (90 if ninety else 95),
+                                      other_interval if other_interval is not None else (68 if sixtyeight else (90 if ninety else 95)),
                                       additional=1,
                                       sscript=True,
                                       precision=precisions[i])
@@ -1067,30 +1073,18 @@ class CornerPlotter(PostProcessor):
                 if compute_all_intervals:
 
                     yield format_CI(self.params.names[i],
-                                    cred,
-                                    68 if sixtyeight else (90 if ninety else 95))
-
-                    if sixtyeight:
+                                    calculate_intervals([0.159, 0.5, 0.841]),
+                                    68)
+                    yield format_CI(self.params.names[i],
+                                    calculate_intervals([0.05, 0.5, 0.95]),
+                                    90)
+                    yield format_CI(self.params.names[i],
+                                    calculate_intervals([0.025, 0.5, 0.975]),
+                                    95)
+                    if other_interval is not None:
                         yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.05, 0.5, 0.95]),
-                                        90)
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.025, 0.5, 0.975]),
-                                        95)
-                    elif ninety:
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.159, 0.5, 0.841]),
-                                        68)
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.025, 0.5, 0.975]),
-                                        95)
-                    else:
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.159, 0.5, 0.841]),
-                                        68)
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.05, 0.5, 0.95]),
-                                        90)
+                                    calculate_intervals(other_quantile),
+                                    other_interval)
 
         else:
             for i, ax in enumerate(diag):
@@ -1124,7 +1118,7 @@ class CornerPlotter(PostProcessor):
                 if annotate:
                     stats = format_CI('', # parameter name not needed on plot
                                       cred,
-                                      68 if sixtyeight else (90 if ninety else 95),
+                                      other_interval if other_interval is not None else (68 if sixtyeight else (90 if ninety else 95)),
                                       additional=1,
                                       sscript=True,
                                       precision=precisions[i])
@@ -1174,30 +1168,18 @@ class CornerPlotter(PostProcessor):
 
                 if compute_all_intervals:
                     yield format_CI(self.params.names[i],
-                                    cred,
-                                    68 if sixtyeight else (90 if ninety else 95))
-
-                    if sixtyeight:
+                                    calculate_intervals([0.159, 0.5, 0.841]),
+                                    68)
+                    yield format_CI(self.params.names[i],
+                                    calculate_intervals([0.05, 0.5, 0.95]),
+                                    90)
+                    yield format_CI(self.params.names[i],
+                                    calculate_intervals([0.025, 0.5, 0.975]),
+                                    95)
+                    if other_interval is not None:
                         yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.05, 0.5, 0.95]),
-                                        90)
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.025, 0.5, 0.975]),
-                                        95)
-                    elif ninety:
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.159, 0.5, 0.841]),
-                                        68)
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.025, 0.5, 0.975]),
-                                        95)
-                    else:
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.159, 0.5, 0.841]),
-                                        68)
-                        yield format_CI(self.params.names[i],
-                                        calculate_intervals([0.05, 0.5, 0.95]),
-                                        90)
+                                    calculate_intervals(other_quantile),
+                                    other_interval)     
 
         if annotate:
             self.val_cred=np_.stack(self.val_cred,axis=0)
