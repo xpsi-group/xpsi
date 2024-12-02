@@ -135,7 +135,7 @@ post-processing:
 
 In addition, some optional miscellaneous packages are:
 
-#. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook.
+#. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook. You may also need the ``ipywidgets`` that can be installed with ``conda install -c conda-forge ipywidgets``.
 #. `pytest <https://docs.pytest.org/en/7.2.x/>`_ if you want to run functionality tests for X-PSI.
 #. `emcee <https://emcee.readthedocs.io/en/latest/>`_ for optional ensemble-MCMC functionality.
 
