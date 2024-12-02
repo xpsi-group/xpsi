@@ -310,12 +310,26 @@ class Data(object):
              n_phases=32, 
              channels=None, 
              phase_column='PULSE_PHASE',
-             channel_column='PI',
-             datafolder = None):
+             channel_column='PI'):
+        """ Load an OGIP compliant event list (EVT) or spectrum (PHA) fits file by redirecting to more specific class methods.
         
-        # Add the path if required
-        if datafolder:
-            path = _os.path.join( datafolder, path )
+        :param str path:
+            Path to EVT or PHA fits file to extract the data from.
+
+        :param int n_phases:
+            The number of phase bins to use, if the data has phase information.
+
+        :param ndarray[n] | None channels:
+            The energy channels to extract the data from. Should be the same as the channels of the instrument to use. 
+            If None, extract all channels in the event list.
+
+        :param str phase_column:
+            If the file is a EVT file, column containing event phases.
+
+        :param str channel_column:
+            If the file is a EVT file, column containing event channels.
+
+        """
         
         # Check whether event file or PHA
         with fits.open( path ) as hdul:
@@ -341,6 +355,24 @@ class Data(object):
                  channels=None, 
                  phase_column='PULSE_PHASE',
                  channel_column='PI'):
+        """ Load an OGIP compliant event list EVT fits file.
+        
+        :param str path:
+            Path to event list fits file to extract the data from.
+
+        :param int n_phases:
+            The number of phase bins to use.
+
+        :param ndarray[n] channels:
+            The energy channels to extract the data from. Should be the same as the channels of the instrument to use. 
+            If None, extract all channels in the event list.
+
+        :param str phase_column:
+            The column in the OGIP EVT file containing event phases.
+
+        :param str channel_column:
+            The column in the OGIP EVT file containing event channels.
+        """
 
         # Read the fits file
         with fits.open( path ) as hdul:
@@ -384,6 +416,15 @@ class Data(object):
     @classmethod
     def from_pha( cls, path, 
                   channels=None ):
+        """ Load an OGIP compliant spectrum PHA fits file.
+        
+        :param str path:
+            Path to PHA fits file to extract the data from.
+
+        :param ndarray[n] channels:
+            The energy channels to extract the data from. Should be the same as the channels of the instrument to use.
+            If None, extract all channels in the PHA file.
+        """
 
         # Read the fits files
         with fits.open( path ) as hdul:
@@ -432,8 +473,19 @@ class Data(object):
         return Data
         
 
-    def spectra_support(self, n, source_backscal=None, smoothing=True):
+    def spectra_support(self, n, source_backscal, smoothing=True):
+        """ Compute the spectrum support, if the data instance is background, assuming Poisson statistics. 
+        
+        :param int n:
+            The width, in sigma, to compute the support for.
 
+        :param float source_backscal:
+            The source scaling backscal parameter, to apply rescaling to the background spectrum so the background extraction area matches the source's.
+            This value can be found using Data.backscal on the source's Data instance.
+
+        :param bool smoothing:
+            Whether to smooth the support or not.
+        """
         # Get the background counts prior
         counts = self.counts.sum(axis=1)
         counts_support = _np.array([counts-n*_np.sqrt(counts),counts+n*_np.sqrt(counts)]).T
@@ -462,7 +514,17 @@ class Data(object):
         return count_rate_support
 
     def plot(self, num_rot = 2, dpi=200, colormap='inferno'):
+        """ Plot the data in a convenient way.
 
+        :param int num_rot:
+            The number of rotations to plot.
+
+        :param int dpi:
+            The resolution of the plot.
+
+        :param str colormap:
+            The colormap to use.
+        """
         # Get the counts
         counts_list = [ self.counts for i in range(num_rot) ]
         phase_list = [self.phases[:-1] + i for i in range(num_rot)] 

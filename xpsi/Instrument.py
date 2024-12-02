@@ -324,8 +324,32 @@ class Instrument(ParameterSubspace):
               max_input=-1,
               datafolder=None,
               **kwargs):
-        
-        """ Load any instrument response matrix. """
+        """ Loading method for Instrument using OGIP defined ARF/RMF or RSP.
+
+        :param str RMF_path:
+            The path to the RMF file which should be OGIP compliant. Path to the OGIP compliant RSP file it ARF_path is None. 
+
+        :param str | None ARF_path:
+            The path to the ARF file which should be OGIP compliant or None if the RMF_path points to a RSP file. 
+
+        :param int min_channel:
+            The minimum channel for which the instrument response is loaded.
+
+        :param int max_channel:
+            The maximum channel for which the instrument response is loaded.
+
+        :param int min_input:
+            The minimum input energy number for which the instrument response is loaded.
+
+        :param int max_input:
+            The maximum input energy number for which the instrument response is loaded.
+
+        :param str | None datafolder:
+            The path to the folder which contains both ARF and RMF files, if not specified in RMF_path or ARF_path.
+
+        :return:
+            Instrument instance with loaded instrument response matrix.
+        """
 
         if datafolder:
             ARF_path = _os.path.join( datafolder, ARF_path ) if ARF_path is not None else None
