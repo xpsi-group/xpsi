@@ -135,7 +135,7 @@ post-processing:
 
 In addition, some optional miscellaneous packages are:
 
-#. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook.
+#. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook. You may also need the ``ipywidgets`` that can be installed with ``conda install -c conda-forge ipywidgets``.
 #. `pytest <https://docs.pytest.org/en/7.2.x/>`_ if you want to run functionality tests for X-PSI.
 #. `emcee <https://emcee.readthedocs.io/en/latest/>`_ for optional ensemble-MCMC functionality.
 
@@ -162,7 +162,7 @@ Build and install guidelines are given below.
 MultiNest
 ^^^^^^^^^
 
-Although production sampling runs need to be performed on a high-performance 
+Although production sampling runs need to be performed on a high-performance
 system and X-PSI can be installed locally without sampling functionality, it is
 advisable to install MultiNest on your personal machine to gain experience in
 application to inexpensive test problems. In addition, to leverage some
@@ -447,6 +447,11 @@ You may also try to use the MacOS native version of ``clang``:
 If you encounter any problems with permissions when installing X-PSI, use the
 ``--user`` option (This will install X-PSI globally, and not just within your
 virtual environment).
+
+.. note::
+
+    We are encountering issues with installing MultiNest on Mac and we are working on proposing a solution.
+
 
 Tips for installing on Windows
 ------------------------------

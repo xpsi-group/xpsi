@@ -687,7 +687,7 @@ class SpectrumPlot(SignalPlot):
 
         ax.set_ylim(bottom = view_y_bottom)
 
-        ax.set_xlim([self._signal.energy_edges[0],
+        ax.set_xlim([_np.max([self._signal.energy_edges[0],0.001]),
                      self._signal.energy_edges[-1]])
         locmaj = LogLocator(base=10.0, numticks=100)
         ax.yaxis.set_major_locator(locmaj)
@@ -760,7 +760,7 @@ class SpectrumPlot(SignalPlot):
                                           **self._background_line_kwargs)
 
         ax = self._ax_registered_1d
-        ax.set_xlim([ref.data.channels[0],
+        ax.set_xlim([_np.max([ref.data.channels[0],0.001]),
                      ref.data.channels[-1]])
         locmaj = LogLocator(base=10.0, numticks=100)
         ax.yaxis.set_major_locator(locmaj)
@@ -794,7 +794,7 @@ class SpectrumPlot(SignalPlot):
                                     rasterized = self._rasterized)
 
         registered.set_edgecolor('face')
-        self._ax_registered.set_xlim([ref.data.channels[0],
+        self._ax_registered.set_xlim([_np.max([ref.data.channels[0],0.001]),
                                       ref.data.channels[-1]])
 
         self._registered_cb = plt.colorbar(registered,

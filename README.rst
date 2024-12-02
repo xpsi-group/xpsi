@@ -72,7 +72,7 @@ more detail, including links to appropriate papers and BibTeX entries.
 
 Copyright and Licensing
 -----------------------
-All content © 2016-2023 the authors. 
+All content © 2016-2025 the authors. 
 The code is distributed under the GNU General Public License v3.0; see `LICENSE <LICENSE>`_ for details.
 
 Legacy
