@@ -6,6 +6,8 @@ from xpsi.utils import make_verbose
 
 from xpsi.Instrument import ChannelError
 
+from astropy.io import fits
+
 class Data(object):
     """ A container for event data.
 
@@ -302,3 +304,159 @@ class Data(object):
     @classmethod
     def bin__event_list(cls, *args, **kwargs):
         return cls.phase_bin__event_list(*args, **kwargs)
+
+    @classmethod
+    def load(cls, path,
+             n_phases=32, 
+             channels=None, 
+             phase_column='PULSE_PHASE',
+             channel_column='PI',
+             datafolder = None):
+        
+        # Add the path if required
+        if datafolder:
+            path = _os.path.join( datafolder, path )
+        
+        # Check whether event file or PHA
+        with fits.open( path ) as hdul:
+            HDUCLAS1 = hdul[1].header['HDUCLAS1']
+
+        # Select the case based on HDUCLAS1
+        if HDUCLAS1 == 'SPECTRUM':
+            return cls.from_pha(path, channels=channels )
+        
+        elif HDUCLAS1 == 'EVENTS':
+            return cls.from_evt(path, 
+                 n_phases=n_phases, 
+                 channels=channels, 
+                 phase_column=phase_column,
+                 channel_column=channel_column)
+        
+        else:
+            raise IOError('HDUCLAS1 of Header does not match PHA or EVT files values. Could not load.')
+        
+    @classmethod
+    def from_evt(cls, path, 
+                 n_phases=32, 
+                 channels=None, 
+                 phase_column='PULSE_PHASE',
+                 channel_column='PI'):
+
+        # Read the fits file
+        with fits.open( path ) as hdul:
+            Header = hdul['EVENTS'].header
+            EvtList = hdul['EVENTS'].data
+
+        # Extract useful data
+        exposure = Header['EXPOSURE']
+        channel_data = EvtList[channel_column]
+        phases_data = EvtList[ phase_column ]
+
+        # No channels specified, use everything
+        if channels is None:
+            min_channel = _np.min( channel_data )
+            max_channel = _np.max( channel_data )
+            channels = _np.arange(min_channel,max_channel+1)
+        else:
+            min_channel = channels[0]
+            max_channel = channels[-1]
+        channel_borders = _np.arange(min_channel, max_channel+2)-0.5
+
+         # Get intrinsinc values
+        first = 0
+        last = max_channel - min_channel
+        phases_borders = _np.linspace( 0.0 , 1.0 , n_phases+1 )
+
+        # Make the 2D histogram
+        mask = [ ch>=min_channel and ch<=max_channel for ch in channel_data ]
+        counts_histogram, _, _ = _np.histogram2d( channel_data[mask] , phases_data[mask], 
+                                                 bins=[channel_borders, phases_borders])
+
+        # Instatiate the class
+        return cls( counts_histogram.astype( dtype=_np.double ),
+                    channels=channels,
+                    phases=phases_borders,
+                    first=first,
+                    last=last,
+                    exposure_time=exposure )
+    
+
+    @classmethod
+    def from_pha( cls, path, 
+                  channels=None ):
+
+        # Read the fits files
+        with fits.open( path ) as hdul:
+            Header = hdul['SPECTRUM'].header 
+            spectrum = hdul['SPECTRUM'].data
+
+        # Extract useful data
+        exposure = _np.double( Header['EXPOSURE'] )
+        channel_data = spectrum['CHANNEL']
+        counts_data = spectrum['COUNTS']
+
+        # No channels specified, use everything
+        if channels is None:
+            min_channel = _np.min( channel_data )
+            max_channel = _np.max( channel_data )
+            channels = _np.arange(min_channel,max_channel+1)
+        else:
+            min_channel = channels[0]
+            max_channel = channels[-1]
+            
+         # Get intrinsinc values
+        first = 0
+        last = max_channel - min_channel
+        phases = _np.array([0.0, 1.0])
+
+        # Match channels
+        channel_counts_map = dict(zip(channel_data, counts_data))
+        if not all(ch in channel_counts_map for ch in channels):
+            raise ValueError("Not all channels exist in channel_data.")
+        counts = _np.array( [[float(channel_counts_map[ch]) for ch in channels]] , dtype=_np.double).T
+        
+        Data = cls( counts,
+                    channels=channels,
+                    phases=phases,
+                    first=first,
+                    last=last,
+                    exposure_time=exposure )
+        
+        # Add useful paths
+        Data.backscal = Header['BACKSCAL']
+        Data.ancrfile = Header['ANCRFILE']
+        Data.respfile = Header['RESPFILE']
+        if Header['HDUCLAS2'] == 'TOTAL':
+            Data.backfile = Header['BACKFILE']
+
+        return Data
+        
+
+    def spectra_support(self, n, source_backscal=None, smoothing=True):
+
+        # Get the background counts prior
+        counts = self.counts.sum(axis=1)
+        counts_support = _np.array([counts-n*_np.sqrt(counts),counts+n*_np.sqrt(counts)]).T
+        counts_support[counts_support[:,0] < 0.0, 0] = 0.0
+
+        # Apply support smoothing if one upper value is not defined
+        for i in range(counts_support.shape[0]):
+            if counts_support[i,1] == 0.0 and smoothing:
+                for j in range(1, counts_support.shape[0]):
+                    if i+j < counts_support.shape[0] and counts_support[i+j,1] > 0.0:
+                        counts_support[i,1] = counts_support[i+j,1]
+                        break
+                    elif i-j >= 0 and counts_support[i-j,1] > 0.0:
+                        counts_support[i,1] = counts_support[i-j,1]
+                        break
+        
+        # Apply the scaling
+        count_rate_support = counts_support / self.exposure_time
+        try:
+            count_rate_support *= ( source_backscal / self.backscal )
+        except:
+            raise IOError('No BACKSCAL was provided for source. Could not compute the support of the spectrum')
+
+        # Clean
+        count_rate_support = _contig( count_rate_support, dtype=_np.double )
+        return count_rate_support
