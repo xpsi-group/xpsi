@@ -829,7 +829,7 @@ parser.add_argument('--attenuation-path', type=str, help='{0} attenuation file.'
 parser.add_argument('--attenuation-energy-column', type=int, default=0,
                     help='Column (zero-indexed) containing the energies in the attenuation file.',
                     comment=True)
-parser.add_argument('--attenuation-column', type=int, default=1,
+parser.add_argument('--attenuation-column', type=int, default=2,
                     help='Column (zero-indexed) containing the attenuation factors in the attenuation file.',
                     comment=True)
 
@@ -3545,7 +3545,7 @@ class CustomInterstellar(xpsi.Interstellar):
     @classmethod
     def load(cls, path,
              energy_column=0,
-             attenuation_column=1,
+             attenuation_column=2,
              **kwargs):
         """ Load attenuation file. """
 
