@@ -306,6 +306,8 @@ class Data(object):
         return cls.phase_bin__event_list(*args, **kwargs)
 
     @classmethod
+    @make_verbose('Loading OGIP compliant file',
+                  'Data loaded')
     def load(cls, path,
              n_phases=32, 
              channels=None, 
@@ -350,11 +352,14 @@ class Data(object):
             raise IOError('HDUCLAS1 of Header does not match PHA or EVT files values. Could not load.')
         
     @classmethod
+    @make_verbose('Loading event list and phase binning',
+                  'Events loaded and binned')
     def from_evt(cls, path, 
                  n_phases=32, 
                  channels=None, 
                  phase_column='PULSE_PHASE',
-                 channel_column='PI'):
+                 channel_column='PI',
+                 phase_shift=0.0):
         """ Load an OGIP compliant event list EVT fits file.
         
         :param str path:
@@ -372,6 +377,9 @@ class Data(object):
 
         :param str channel_column:
             The column in the OGIP EVT file containing event channels.
+
+        :param float phase_shift:
+            A common phase shift to apply to the event phases.
         """
 
         # Read the fits file
@@ -382,7 +390,7 @@ class Data(object):
         # Extract useful data
         exposure = Header['EXPOSURE']
         channel_data = EvtList[channel_column]
-        phases_data = EvtList[ phase_column ]
+        phases_data = ( EvtList[ phase_column ] + phase_shift ) % 1.0 
 
         # No channels specified, use everything
         if channels is None:
@@ -414,6 +422,8 @@ class Data(object):
     
 
     @classmethod
+    @make_verbose('Loading PHA spectrum and phase binning',
+                  'Spectrum loaded')
     def from_pha( cls, path, 
                   channels=None ):
         """ Load an OGIP compliant spectrum PHA fits file.

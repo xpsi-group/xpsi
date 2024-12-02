@@ -310,7 +310,7 @@ class Instrument(ParameterSubspace):
         yield
 
     @classmethod
-    @make_verbose('Loading instrument response matrix',
+    @make_verbose('Loading instrument response matrix from OGIP compliant files',
                   'Response matrix loaded')
     def from_ogip_fits(cls,
               RMF_path,
