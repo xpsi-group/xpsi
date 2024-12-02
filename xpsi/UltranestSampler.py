@@ -24,9 +24,9 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
 
     :param sampler_params: A dictionary of the keyword arguments passed to the instance of :class:`ultranest.ReactiveNestedSampler`.
 
-    :param use_stepsampler: Boolean indicating if the stepsampler is used. In this case the :class:`ultranest.stepsampler.SliceSampler` is used. 
+    :param use_stepsampler: Boolean indicating if the step sampler is used. In this case the :class:`ultranest.stepsampler.SliceSampler` is used. 
 
-    :param stepsampler_params: A dictionary of the keyword arguments passed to the stepsampler :class:`ultranest.stepsampler.SliceSampler`.
+    :param stepsampler_params: A dictionary of the keyword arguments passed to the step sampler :class:`ultranest.stepsampler.SliceSampler`.
 
     """
 
@@ -59,10 +59,9 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
                 
         # change region sampler to step sampler 
         if use_stepsampler: 
-            # set default stepsampler parameters if not specified 
+            # set default step sampler parameters if not specified 
             stepsampler_params.setdefault('nsteps', 2*len(self._param_names))
             stepsampler_params.setdefault('generate_direction', ultranest.stepsampler.generate_mixture_random_direction)
-            stepsampler_params.setdefault('check_nsteps','move-distance')
 
             # initialise step sampler 
             self.stepsampler = ultranest.stepsampler.SliceSampler(**stepsampler_params)
