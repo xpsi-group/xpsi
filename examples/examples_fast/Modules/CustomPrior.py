@@ -5,12 +5,7 @@ import math
 from scipy.stats import truncnorm
 
 import xpsi
-from xpsi.global_imports import _G, _csq, _km, _2pi, gravradius, _dpr
-from xpsi import Parameter
-
-from scipy.interpolate import Akima1DInterpolator
-
-from scipy.stats import truncnorm
+from xpsi.global_imports import gravradius
 
 class CustomPrior(xpsi.Prior):
     """ A custom (joint) prior distribution.
