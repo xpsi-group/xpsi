@@ -460,3 +460,42 @@ class Data(object):
         # Clean
         count_rate_support = _contig( count_rate_support, dtype=_np.double )
         return count_rate_support
+
+    def plot(self, num_rot = 2, dpi=200, colormap='inferno'):
+
+        # Get the counts
+        counts_list = [ self.counts for i in range(num_rot) ]
+        phase_list = [self.phases[:-1] + i for i in range(num_rot)] 
+        counts = _np.concatenate( (counts_list), axis=1 )
+        phases = _np.concatenate( (phase_list), axis=0 )
+
+        # Do the plot
+        mosaic = [['A','.'],['B','C']]
+        fig,axs = _mpl.pyplot.subplot_mosaic( mosaic , height_ratios=[1.,1.], width_ratios=[3,1], layout='constrained')
+
+        # Plot the pulse
+        ax1 = axs['A']
+        ax1.errorbar( x=phases, y=counts.sum(axis=0), yerr=_np.sqrt( counts.sum(axis=0) ), ds='steps-mid', color='black' )
+        ax1.set_ylabel('Counts')
+
+        # Plot the 2D data
+        ax2 = axs['B']
+        im = ax2.pcolormesh( phases, self.channels , counts, cmap=colormap)
+        ax2.sharex( ax1 )
+        ax2.set_xlabel(r'Phase $\phi$ [cycles]')
+        ax2.set_ylabel('PI channel')
+        ax2.set_yscale('log')
+        
+        # Plot the spectrum
+        ax3 = axs['C']
+        ax3.sharey( ax2 )
+        ax3.get_yaxis().set_visible(False)
+        ax3.step( counts.sum(axis=1)/2, self.channels , color='black')
+        ax3.set_yscale('log')
+        ax3.set_xlabel('Counts per channel')
+
+        # Add the colorbar    
+        fig.colorbar( im , ax=ax2 , label='Counts')
+        fig.set_dpi(dpi)
+
+        return fig, axs
