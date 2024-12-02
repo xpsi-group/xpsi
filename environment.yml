@@ -15,3 +15,4 @@ dependencies:
         - h5py  # storage of X-ray signals computed from posterior samples
         - nestcheck  # posterior error analysis, plotting, run combination, etc.
         - fgivenx  # conditional posterior plotting; also required by nestcheck
+        - astropy > 6.0.1 # reading FITS files
