@@ -30,7 +30,7 @@ cdef _preloaded* init_preload(object atmosphere):
                     preloaded.S[i] *= cast.shape[0]
 
     intensity = atmosphere[i+1]
-    preloaded.I = &intensity[0]
+    preloaded.intensity = &intensity[0]
 
     return preloaded
 

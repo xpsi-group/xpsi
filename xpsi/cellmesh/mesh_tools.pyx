@@ -30,7 +30,7 @@ cdef double f_theta(double mu,
 
     return radiusDerivNormed / (radiusNormed * sqrt(1.0 - 2.0 * zeta / radiusNormed))
 
-cdef double integrand(double theta, void *params) nogil:
+cdef double integrand(double theta, void *params) noexcept nogil:
 
     if theta == 0.0:
         return 0.0
@@ -231,7 +231,7 @@ cdef double get_interval(double a, double b, double LB, double UB) nogil:
     elif b_condition == 2 and a_condition == 0:
         return UB - LB
 
-cdef double cell_integrand(double theta, void *params) nogil:
+cdef double cell_integrand(double theta, void *params) noexcept nogil:
 
     if theta == 0.0:
         return 0.0
@@ -653,7 +653,7 @@ cdef double integrateCell(double theta_a,
     return R_eq * R_eq * integral
 
 
-cdef double spot_integrand(double theta, void *params) nogil:
+cdef double spot_integrand(double theta, void *params) noexcept nogil:
 
     if theta == 0.0:
         return 0.0

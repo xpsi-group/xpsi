@@ -125,7 +125,7 @@ cdef void* init_hot_Num2D(size_t numThreads, const _preloaded *const preloaded) 
         for i in range(4):
             for j in range(4):
                 
-                address = D.p.I + (D.acc.BN[T][0] + i) * D.p.S[0]
+                address = D.p.intensity + (D.acc.BN[T][0] + i) * D.p.S[0]
                 address += D.acc.BN[T][1] + j
 
                 D.acc.INTENSITY_CACHE[T][i * D.p.BLOCKS[0] + j] = address[0]
@@ -324,7 +324,7 @@ cdef double eval_hot_Num2D(size_t THREAD,
         II = i * D.p.BLOCKS[0]
         for j in range(4):
             
-            address = D.p.I + (BN[0] + i) * D.p.S[0]
+            address = D.p.intensity + (BN[0] + i) * D.p.S[0]
             address += BN[1] + j
             
             temp = DIFF[i] * DIFF[4 + j] 

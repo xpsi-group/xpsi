@@ -121,7 +121,7 @@ cdef void* init_hot_2D(size_t numThreads, const _preloaded *const preloaded) nog
     for T in range(numThreads): #For the full interpolation hypercube, store all intensities in an array with the right shape, so all values are lookupable later by knowing the i,j address.
         for i in range(4):
             for j in range(4):
-                address = D.p.I + (D.acc.BN[T][0] + i) * D.p.S[0] 
+                address = D.p.intensity + (D.acc.BN[T][0] + i) * D.p.S[0]
                 address += D.acc.BN[T][1] + j
                 D.acc.INTENSITY_CACHE[T][i * D.p.BLOCKS[0] + j] = address[0]
 
@@ -280,7 +280,7 @@ cdef double eval_hot_2D(size_t THREAD,
     for i in range(4):
         II = i * D.p.BLOCKS[0]
         for j in range(4):
-            address = D.p.I + (BN[0] + i) * D.p.S[0] 
+            address = D.p.intensity + (BN[0] + i) * D.p.S[0]
             address += BN[1] + j 			# fecthing the memory address such that we can grab the intensity from the data
 
             temp = DIFF[i] * DIFF[4 + j] # set up Lagrange polynomial numerators.

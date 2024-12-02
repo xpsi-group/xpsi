@@ -123,7 +123,7 @@ cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) 
             for j in range(4):
                 for k in range(4):
                     for l in range(4):
-                        address = D.p.I + (D.acc.BN[T][0] + i) * D.p.S[0]
+                        address = D.p.intensity + (D.acc.BN[T][0] + i) * D.p.S[0]
                         address += (D.acc.BN[T][1] + j) * D.p.S[1]
                         address += (D.acc.BN[T][2] + k) * D.p.S[2]
                         address += D.acc.BN[T][3] + l
@@ -317,7 +317,7 @@ cdef double eval_hot_Num4D(size_t THREAD,
             for k in range(4):
                 KK = k * D.p.BLOCKS[2]
                 for l in range(4):
-                    address = D.p.I + (BN[0] + i) * D.p.S[0]
+                    address = D.p.intensity + (BN[0] + i) * D.p.S[0]
                     address += (BN[1] + j) * D.p.S[1]
                     address += (BN[2] + k) * D.p.S[2]
                     address += BN[3] + l

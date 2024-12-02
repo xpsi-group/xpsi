@@ -128,12 +128,12 @@ cdef void link_rayXpanda(bint *use_rayXpanda, double *rayXpanda_defl_lim) except
 
 cdef double b_phsph_over_r_s = 3.0 * sqrt(3.0) / 2.0
 
-cdef double inDef(double x, void *params) nogil:
+cdef double inDef(double x, void *params) noexcept nogil:
 
     cdef double r_c_over_r_s = (<double*> params)[0]
     return 1.0 / sqrt(2.0 - x * x - (1.0 - x * x) * (1.0 - x * x) / (r_c_over_r_s - 1.0))
 
-cdef double inLag(double x, void *params) nogil:
+cdef double inLag(double x, void *params) noexcept nogil:
 
     cdef double r_c_over_r_s = (<double*> params)[0]
 
@@ -141,14 +141,14 @@ cdef double inLag(double x, void *params) nogil:
 
     return X * X / (x + X)
 
-cdef double outDef(double x, void *params) nogil:
+cdef double outDef(double x, void *params) noexcept nogil:
 
     cdef double sas = (<double*> params)[0]
     cdef double R_over_r_s = (<double*> params)[1]
 
     return x / sqrt(1.0 - sas + x * x * sas * (2.0 - x * x - (1.0 - x * x) * (1.0 - x * x) / (R_over_r_s - 1.0)))
 
-cdef double outLag(double x, void *params) nogil:
+cdef double outLag(double x, void *params) noexcept nogil:
 
     cdef double sas = (<double*> params)[0]
     cdef double R_over_r_s = (<double*> params)[1]

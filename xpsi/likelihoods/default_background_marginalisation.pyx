@@ -77,7 +77,7 @@ ctypedef struct args:
     double std
     double A
 
-cdef double marginal_integrand(double B, void *params) nogil:
+cdef double marginal_integrand(double B, void *params) noexcept nogil:
     """ Compute the integrand for background marginalisation (for a given energy channel).
 
     This function corresponds to the integrand in the second last expression

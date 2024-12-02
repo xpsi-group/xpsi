@@ -2,7 +2,7 @@ from libc.stdlib cimport malloc, free
 
 ctypedef struct _preloaded:
     size_t ndims
-    double *I
+    double *intensity
 
     double **params
     size_t *S
