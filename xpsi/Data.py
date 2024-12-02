@@ -473,7 +473,7 @@ class Data(object):
         return Data
         
 
-    def spectra_support(self, n, source_backscal, smoothing=True):
+    def spectra_support(self, n, source_backscal):
         """ Compute the spectrum support, if the data instance is background, assuming Poisson statistics. 
         
         :param int n:
@@ -482,18 +482,16 @@ class Data(object):
         :param float source_backscal:
             The source scaling backscal parameter, to apply rescaling to the background spectrum so the background extraction area matches the source's.
             This value can be found using Data.backscal on the source's Data instance.
-
-        :param bool smoothing:
-            Whether to smooth the support or not.
         """
         # Get the background counts prior
         counts = self.counts.sum(axis=1)
         counts_support = _np.array([counts-n*_np.sqrt(counts),counts+n*_np.sqrt(counts)]).T
         counts_support[counts_support[:,0] < 0.0, 0] = 0.0
 
-        # Apply support smoothing if one upper value is not defined
+        # Correct for null support upper, values which make the background marginalisation go wrong (interval of integration is then [0,0])
+        # Does it by getting the nearest strictly positive value of the upper support bound
         for i in range(counts_support.shape[0]):
-            if counts_support[i,1] == 0.0 and smoothing:
+            if counts_support[i,1] == 0.0:
                 for j in range(1, counts_support.shape[0]):
                     if i+j < counts_support.shape[0] and counts_support[i+j,1] > 0.0:
                         counts_support[i,1] = counts_support[i+j,1]
