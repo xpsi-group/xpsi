@@ -346,7 +346,7 @@ class CornerPlotter(PostProcessor):
                        ninety = False,
                        compute_all_intervals=True,
                        **kwargs):
-        """ Call :meth:`getdist.plots.GetDistPlotter.triangle_plot`.
+        r""" Call :meth:`getdist.plots.GetDistPlotter.triangle_plot`.
 
         :param bool prior_density:
             If ``True`` tries to draw samples from the joint prior and plot
@@ -893,7 +893,7 @@ class CornerPlotter(PostProcessor):
     def _add_credible_interval(self, plotter, posterior, bootstrap, n_simulate,
                                annotate, annotate_xy, sixtyeight,
                                ninety, compute_all_intervals, precisions=None):
-        """
+        r"""
         Estimate 1-:math:`\sigma` credible interval in one-dimension on a
         combined run, or if such a run does not exist, on the run with
         the specified ID.
@@ -952,7 +952,7 @@ class CornerPlotter(PostProcessor):
 
             if name: name += ' '
 
-            stats = ('%s' % name) + ('  CI$_{%i\%%} = ' % summary)
+            stats = ('%s' % name) + (r'  CI$_{%i\%%} = ' % summary)
 
             if sscript:
                 stats += (('%s_{-%s}^{+%s}$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))

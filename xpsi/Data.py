@@ -7,7 +7,7 @@ from xpsi.utils import make_verbose
 from xpsi.Instrument import ChannelError
 
 class Data(object):
-    """ A container for event data.
+    r""" A container for event data.
 
     The working assumption is that the sampling distribution of this event data
     can be written in terms of a set of channel-by-channel *count*\ -rate
