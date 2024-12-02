@@ -123,12 +123,9 @@ class Instrument(ParameterSubspace):
         try:
             assert isinstance(matrix, _np.ndarray)
             assert matrix.ndim == 2
-            assert matrix.shape[0] <= matrix.shape[1]
             assert (matrix >= 0.0).all()
         except AssertionError:
-            raise ResponseError('Input matrix must be a two-dimensional ndarray, with number of channel intervals'
-                                '(dimension 0) smaller than the number of energy intervals (dimension 1),'
-                                ' and with all matrix elements that are zero or positive.')
+            raise ResponseError('Input matrix must be a two-dimensional ndarray with all matrix elements that are zero or positive.')
         try:
             for i in range(matrix.shape[0]):
                 assert matrix[i,:].any()
