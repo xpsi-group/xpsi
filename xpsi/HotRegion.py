@@ -289,7 +289,10 @@ class HotRegion(ParameterSubspace):
         self.image_order_limit = image_order_limit
 
         self._split = split
-        self.symmetry = symmetry
+        if not isinstance(self._split, bool):
+            raise TypeError("The 'split' argument signifies split atmosphere interpolation and must be a boolean.")
+
+        self._symmetry = symmetry
 
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
