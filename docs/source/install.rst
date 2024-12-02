@@ -450,7 +450,7 @@ virtual environment).
 
 .. note::
 
-    We are encountering issues with installing MultiNest on Mac and are working to resolve them.
+    We are encountering issues with installing MultiNest on Mac and we are working on proposing a solution.
 
 
 Tips for installing on Windows
