@@ -321,11 +321,11 @@ def ultranested(likelihood,
     :param runtime_params:  A dictionary of the keyword arguments passed to the 
         instance of :class:`~.UltranestSampler` to run the sampler.
 
-    :param use_stepsampler: Boolean indicating if the stepsampler is used. In this 
+    :param use_stepsampler: Boolean indicating if the step sampler is used. In this 
         case the :class:`ultranest.stepsampler.SliceSampler` is used. 
 
     :param stepsampler_params: A dictionary of the keyword arguments passed to the 
-        to the instance of :class:`~.UltranestSampler` specifying the stepsampler 
+        to the instance of :class:`~.UltranestSampler` specifying the step sampler 
         runtime parameters.
 
     :param out_filename: String specifying the name of the output file.
