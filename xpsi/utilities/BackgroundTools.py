@@ -1,10 +1,21 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Get the modes
-def get_mode(run_files,
+
+def readMode(run_files,
              mode_number=0,
              verbose=True):
+    """ Get the mode from the summary file. 
+    
+    :param str run_files:
+        Path to the run files without the extension.
+    
+    :param int mode_number:
+        Number of the mode to recover. If 0, takes everything.
+    
+    :param bool verbose:
+        Should the information be printed?
+    """
 
     # Load the summary
     summary = np.loadtxt(f'{run_files}summary.txt')
@@ -13,14 +24,14 @@ def get_mode(run_files,
     summaryMode = summary[mode_number,:-2]
     Npar = len(summaryMode) // 4    # There are 4 metrics per mode
 
-    # Assert that the mode exists
-    assert mode_number <= Nmodes
+    # Get the values
     AverageMode = summaryMode[:Npar]
     SigmaMode = summaryMode[Npar:2*Npar]
     BestFitMode = summaryMode[2*Npar:3*Npar]
     MAP_Mode = summaryMode[3*Npar:4*Npar]
 
     if verbose:
+        print( f"Mode Recovered: {mode_number}" )
         print( "AVERAGE: ",AverageMode,len(AverageMode))
         print ("STD DEVIATION: ",SigmaMode,len(SigmaMode))
         print ("MAX LIKELIHOOD: ",BestFitMode,len(BestFitMode))
@@ -29,8 +40,15 @@ def get_mode(run_files,
     return AverageMode ,SigmaMode, BestFitMode, MAP_Mode
 
 
-# Get the signal depending on the used instrument
-def get_signal( XPSImodel , InstrumentName):
+def getSignal( XPSImodel , InstrumentName):
+    """ Get the signal depending on the used instrument.
+    
+    :param obj XPSImodel:
+        An instance of an imported model containing the signal.
+    
+    :param str InstrumentName:
+        Name of the instrument used, usually XTI, NICER, PN, MOS1 or MOS2.
+    """
 
     # Check the instrument
     signals = XPSImodel.signals[0]
@@ -56,37 +74,80 @@ def get_signal( XPSImodel , InstrumentName):
     return signal
 
 
-# Extract the background from given parameter values 
-def extract_BKG(p, 
+def extractBKG(p, 
                 XPSImodel , 
                 InstrumentName,
                 given_support = True ):
+    """ Extract the background from given parameter values.
+    
+    :param list p:
+        Parameter values.
+    
+    :param obj XPSImodel:
+        An instance of an imported model containing the signal.
+    
+    :param str InstrumentName:
+        Name of the instrument used, usually XTI, NICER, PN, MOS1 or MOS2.
+    
+    :param bool given_support:
+        Should the background be extracted from the given support or the full support
+    """
     
     # Compute the likelihood and get the signal then
     XPSImodel.likelihood(p, reinitialise=True)
-    signal = get_signal( XPSImodel=XPSImodel, InstrumentName=InstrumentName )
+    signal = getSignal( XPSImodel=XPSImodel, InstrumentName=InstrumentName )
     if given_support:
         return signal.background_signal_given_support
     else:
         return signal.background_signal
 
-# Plot the spectrum generated along data for given parameters
-def plot_spectrum_GEN( XPSI_model, 
-                        posterior_file, 
-                        InstrumentName,
-                        Nsamples=200,
-                        AmpF=1, 
-                        plot_bkg=True, 
-                        yscale='linear'):
+
+def plotBackgroundSpectrum( XPSI_model, 
+                            posterior_file, 
+                            InstrumentName,
+                            plot_params=None,
+                            Nsamples=200,
+                            plot_range=True, 
+                            yscale='linear',
+                            plot_support=False):
+    """ Plot the spectrum generated along data for given parameters.
+    
+    :param obj XPSI_model:
+        An instance of an imported model containing the signal.
+    
+    :param str posterior_file:
+        Path to the posterior file without the extension.
+    
+    :param str InstrumentName:
+        Name of the instrument used, usually XTI, NICER, PN, MOS1 or MOS2.
+    
+    :param list | None plot_params:
+        Parameter values to plot, plot Best Fit if None.
+
+    :param int Nsamples:
+        Number of samples to plot the background from.
+    
+    :param bool plot_range:
+        Should the background uncertainty ranges be plotted.
+    
+    :param str yscale:
+        Scale of the y-axis.
+
+    :param bool plot_support:
+        Should the support of the background be plotted ? 
+    """
                     
     # Get signal and data
-    signal = get_signal(XPSImodel=XPSI_model, InstrumentName=InstrumentName)
+    signal = getSignal(XPSImodel=XPSI_model, InstrumentName=InstrumentName)
     data = signal.data
     Data_Spectrum = data.counts.sum(axis=1)
 
-    # Get the inferred backgound 
-    _ ,_, BestFitPSpectrum, _ = get_mode(posterior_file,mode_number=0,verbose=False)
-    BKG = extract_BKG(p=BestFitPSpectrum, XPSImodel=XPSI_model, InstrumentName=InstrumentName) 
+    # Get the parameters to plot the spectrum and backgound 
+    if plot_params is None:
+        _ ,_, p, _ = readMode(posterior_file,mode_number=0,verbose=False)
+    else:
+        p = plot_params
+    BKG = extractBKG(p=p, XPSImodel=XPSI_model, InstrumentName=InstrumentName) 
 
     # Get expected counts from both spots
     num_components = signal.num_components
@@ -99,10 +160,10 @@ def plot_spectrum_GEN( XPSI_model,
     x0 = ( x0[:-1] + x0[1:] ) / 2
     
     # Extract background from samples
-    if plot_bkg:
+    if plot_range:
         posterior = np.loadtxt(posterior_file+'post_equal_weights.dat')
         indexR = np.random.randint(low=0, high=len(posterior)-1, size=Nsamples)
-        BKG_A = np.array( [extract_BKG( p=posterior[indexR[i]][:-1], XPSImodel=XPSI_model, InstrumentName=InstrumentName) for i in range(Nsamples)] )
+        BKG_A = np.array( [extractBKG( p=posterior[indexR[i]][:-1], XPSImodel=XPSI_model, InstrumentName=InstrumentName) for i in range(Nsamples)] )
         sigma = np.std(BKG_A,axis = 0)
         mean = np.mean(BKG_A,axis = 0)
         print( f"Max deviation : {np.max(sigma)} counts")
@@ -116,8 +177,8 @@ def plot_spectrum_GEN( XPSI_model,
     ax.set_xlabel("Energy Channel [keV]",fontsize=15 )
     
     # Prepare labels
-    lBs = r'$\mathrm{BKG\, MEAN\pm 1\sigma}$' if AmpF ==1 else r'$\mathrm{BKG\, MEAN\pm 1\sigma \times %i}$'%AmpF
-    lBp = 'BKG@MaxL'  if AmpF ==1 else r'BKG $\times %i$ @MaxL'%AmpF
+    lBs = r'$\mathrm{BKG\, MEAN\pm 1\sigma}$'
+    lBp = 'BKG@MaxL'
     
     # Plotting outputs
     number_labels = ['Primary@MaxL','Secondary@MaxL','Tertiary@MaxL']
@@ -126,20 +187,20 @@ def plot_spectrum_GEN( XPSI_model,
     ax.fill_between(x0, HotRegion_spectra.sum(axis=0), HotRegion_spectra.sum(axis=0)+BKG, color=mycolors[num_components+1], alpha = 0.5, label ='BKG@MaxL')
     
     # Plotting actual background
-    if plot_bkg:
-        ax.fill_between(x0, np.abs(mean-1*sigma)*AmpF, (mean+1*sigma)*AmpF, color =mycolors[7],alpha = 0.5,label =lBs)
-        ax.fill_between(x0, np.abs(mean-2*sigma)*AmpF, (mean+2*sigma)*AmpF, color =mycolors[7],alpha = 0.4,label =lBs.replace('1\sigma','2\sigma'))
-        ax.fill_between(x0, np.abs(mean-3*sigma)*AmpF, (mean+3*sigma)*AmpF, color =mycolors[7],alpha = 0.3,label =lBs.replace('1\sigma','3\sigma'))
-    ax.plot(x0,BKG*AmpF,color =mycolors[6],label = lBp,lw = 2)
+    if plot_range:
+        ax.fill_between(x0, np.abs(mean-3*sigma), (mean+3*sigma), color =mycolors[7],alpha = 0.3,label =lBs.replace('1\sigma','3\sigma'))
+        ax.fill_between(x0, np.abs(mean-1*sigma), (mean+1*sigma), color =mycolors[7],alpha = 0.5,label =lBs)
+        ax.fill_between(x0, np.abs(mean-2*sigma), (mean+2*sigma), color =mycolors[7],alpha = 0.4,label =lBs.replace('1\sigma','2\sigma'))
+    ax.plot(x0,BKG,color =mycolors[6],label = lBp,lw = 2)
 
     # Plotting data and expected values
     ax.plot(x0,Expected_Spectrum, color=mycolors[4], lw=3, label='Expected signal')
     ax.plot(x0,Data_Spectrum,'--', color=mycolors[5], lw=2, label='Data light curve')
     
     # Plotting background support
-    if signal.support is not None and signal.support[signal.support>0].any():
+    if plot_support and signal.support is not None and signal.support[signal.support>0].any():
         support = signal.support * data.exposure_time
-        ax.fill_between(x0, support[:,0]*AmpF, support[:,1]*AmpF, color='red', alpha = 0.2, label='BKG prior support')
+        ax.fill_between(x0, support[:,0], support[:,1], color='red', alpha = 0.2, label='BKG prior support')
 
     # Finish the plot
     _ = ax.legend(fontsize=15, loc='upper right' )
