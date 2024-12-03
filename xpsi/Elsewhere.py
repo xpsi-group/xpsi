@@ -17,7 +17,7 @@ class IntegrationError(xpsiError):
     """ Raised if a problem was encountered during signal integration. """
 
 class Elsewhere(ParameterSubspace):
-    """ The photospheric radiation field *elsewhere*.
+    r""" The photospheric radiation field *elsewhere*.
 
     This means the radiation field exterior to the hot regions. The local
     comoving radiation field properties are *assumed* (for now) to be

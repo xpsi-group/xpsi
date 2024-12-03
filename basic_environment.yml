@@ -4,7 +4,7 @@ channels:
 dependencies:
   - numpy < 2.0.0
   - cython ~= 0.29
-  - matplotlib
+  - matplotlib >= 3.7.0
   - scipy
   - wrapt
   - astropy >= 5.2, < 7.0.0

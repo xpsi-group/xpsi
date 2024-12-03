@@ -19,7 +19,7 @@ class ChannelError(xpsiError):
     """ Raised if there is a problem with the input channel numbers. """
 
 class Instrument(ParameterSubspace):
-    """ Base class for astronomical X-ray instruments on-board space telescopes.
+    r""" Base class for astronomical X-ray instruments on-board space telescopes.
 
     The body of the initialiser must not be changed to ensure inter-module
     compatibility, but can be extended if appropriate using a call to
@@ -97,7 +97,7 @@ class Instrument(ParameterSubspace):
 
     @property
     def matrix(self):
-        """ Get the reference response matrix.
+        r""" Get the reference response matrix.
 
         In common usage patterns there will be some fiducial or nominal
         response matrix that either defines fixed instrument operation or
