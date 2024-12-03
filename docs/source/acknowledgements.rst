@@ -29,7 +29,7 @@ Those involved in maintenance and development (technical and scientific).
 * Christine Kazantsev (ckazantsev[at]irap.omp.eu), IRAP
 * Yves Kini (y.kini[at]uva.nl), University of Amsterdam
 * Lucien Mauviard-Hagg (lucien.mauviard-haag[at]irap.omp.eu), IRAP
-* Tuomo Salmi (t.h.j.salmi[at]uva.nl), University of Amsterdam
+* Tuomo Salmi (tuomo.salmi[at]helsinki.fi), University of Helsinki
 * Pierre Stammler (pstammler[at]irap.omp.eu), IRAP
 * Serena Vinciguerra (s.vinciguerra[at]uva.nl), University of Amsterdam
 * Anna Watts (a.l.watts[at]uva.nl), University of Amsterdam
@@ -55,6 +55,7 @@ improvements.
 * Yuri Cavecchi
 * Frank Chambers
 * Alex Chen
+* Pushpita Das
 * Julia Deneva
 * Siem Fenne
 * Gwénaël Loyer
