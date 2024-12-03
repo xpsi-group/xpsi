@@ -348,7 +348,7 @@ class CornerPlotter(PostProcessor):
                        compute_all_intervals=True,
                        other_interval = None,
                        **kwargs):
-        """ Call :meth:`getdist.plots.GetDistPlotter.triangle_plot`.
+        r""" Call :meth:`getdist.plots.GetDistPlotter.triangle_plot`.
 
         :param bool prior_density:
             If ``True`` tries to draw samples from the joint prior and plot
@@ -447,7 +447,7 @@ class CornerPlotter(PostProcessor):
             the posterior mass.
 
         :param int/float other_interval:
-            Value of the confidence interval to compute and print for each parameter, e.g. 99 for the 99% confidence interval
+            Value of the credible interval to compute and print for each parameter, e.g. 99 for the 99% confidence interval
 
         :param kwargs:
 
@@ -899,7 +899,7 @@ class CornerPlotter(PostProcessor):
     def _add_credible_interval(self, plotter, posterior, bootstrap, n_simulate,
                                annotate, annotate_xy, sixtyeight,
                                ninety, other_interval, compute_all_intervals, precisions=None):
-        """
+        r"""
         Estimate 1-:math:`\sigma` credible interval in one-dimension on a
         combined run, or if such a run does not exist, on the run with
         the specified ID.
@@ -962,10 +962,10 @@ class CornerPlotter(PostProcessor):
             if name: name += ' '
 
             if isinstance(summary, float) :   ##if interval is given as float, keep the sample precision in the output
-                stats = ('%s' % name) + (f'  CI$_{{{summary}\%}} = ' )
+                stats = ('%s' % name) + (fr'  CI$_{{{summary}\%}} = ' )
 
             else:
-                stats = ('%s' % name) + ('  CI$_{%i\%%} = ' % summary)
+                stats = ('%s' % name) + (r'  CI$_{%i\%%} = ' % summary)
 
             if sscript:
                 stats += (('%s_{-%s}^{+%s}$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
