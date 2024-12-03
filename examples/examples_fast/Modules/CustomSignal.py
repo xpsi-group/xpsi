@@ -1,10 +1,8 @@
 
 
 import numpy as np
-import math
 
 import xpsi
-import six as _six
 
 from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
 from xpsi.likelihoods.default_background_marginalisation import precomputation
