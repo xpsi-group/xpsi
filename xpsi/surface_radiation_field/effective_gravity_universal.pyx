@@ -21,25 +21,25 @@ cdef double effectiveGravity(double mu,
 
     :param double mu: 
         The cosine of the colatitude angle (theta). This parameter defines the angular
-        position on the star's surface, where theta is the angle from the rotation axis between -1 and 1.
+        position on the star's surface, where mu is between -1 and 1.
 
     :param double R_eq: 
         The equatorial radius of the star.
 
     :param double x: 
-        The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 1 or Eq. 10 from 
+        The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 1 or Eq. 9 from 
         Morsink et al. (2007)).
 
     :param double epsilon: 
-        The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 2 or Eq. 9 
-        from Morsink et al. (2007)).
+        The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 2 or 
+        Eq. 10 from Morsink et al. (2007)).
 
     :return: 
         The effective surface gravities in log10(g*g0). The result is scaled to centimeters (conversion
         factor 2.0 is applied) to match the format used in tabulated atmosphere models.
     :rtype: double
     """
-    
+
     cdef:
         double g_0 = x * c * c / (R_eq * sqrt(1.0 - 2.0 * x))
         double esq = epsilon

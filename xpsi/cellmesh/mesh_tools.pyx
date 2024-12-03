@@ -17,20 +17,23 @@ cdef double radiusNormalised(double mu,
                              double epsilon,
                              double zeta) nogil:
     """
-    Calculate the normalised radius (R(mu)/R_eq) based on the oblateness approximation from Morsink et al.
-    (2007) (see Equation 8). This function models the shape of a rotating neutron star based on its spin
-    and compactness. It uses the colatitude (`mu`), the dimensionless spin parameter (`epsilon`), and the
-    compactness (`zeta`) to compute the normalized radius.
+    Calculate the normalised radius (R(mu)/R_eq) based on the oblateness approximation from AlGendy & 
+    Morsink (2014) (see Eq. 20 and Table 1 for coefficient values). This function models the shape of 
+    a rotating neutron star based on its spin and compactness. It uses the colatitude (`mu`), the 
+    dimensionless spin parameter (`epsilon`), and the compactness (`zeta`) to compute the normalized 
+    radius.
 
     :param double mu: 
         The cosine of the colatitude angle (theta). This parameter defines the angular
-        position on the star's surface, where theta is the angle from the rotation axis between -1 and 1.
+        position on the star's surface, where mu is between -1 and 1.
 
     :param double epsilon: 
-        The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 10).
+        The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 2 or 
+        Eq. 10 from Morsink et al. (2007)).
 
     :param double zeta: 
-        The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 9).
+        The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 1 or Eq. 9 from 
+        Morsink et al. (2007)).
 
     :return: 
         The normalized radius, defined as R(theta)/R_eq, which represents the radial distance
@@ -49,7 +52,7 @@ cdef double f_theta(double mu,
 
     :param double mu: 
         The cosine of the colatitude angle (theta). This parameter defines the angular
-        position on the star's surface, where theta is the angle from the rotation axis between -1 and 1.
+        position on the star's surface, where mu is between -1 and 1.
 
     :param double radiusNormed: 
         The normalized radius, typically a dimensionless quantity derived from a physical radius.
@@ -64,7 +67,7 @@ cdef double f_theta(double mu,
         The computed value of f_theta, representing the normalized derivative of the radius.
     :rtype: double
     """
-    
+
     cdef double radiusDerivNormed
 
     radiusDerivNormed = -2.0 * epsilon * (-0.788 + 1.030 * zeta) * mu * sqrt(1.0 - mu * mu)
