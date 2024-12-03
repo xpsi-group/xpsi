@@ -447,7 +447,7 @@ class CornerPlotter(PostProcessor):
             the posterior mass.
 
         :param int/float other_interval:
-            Value of the confidence interval to compute and print for each parameter, e.g. 99 for the 99% confidence interval
+            Value of the credible interval to compute and print for each parameter, e.g. 99 for the 99% confidence interval
 
         :param kwargs:
 
@@ -962,7 +962,7 @@ class CornerPlotter(PostProcessor):
             if name: name += ' '
 
             if isinstance(summary, float) :   ##if interval is given as float, keep the sample precision in the output
-                stats = ('%s' % name) + (f'  CI$_{{{summary}\%}} = ' )
+                stats = ('%s' % name) + (fr'  CI$_{{{summary}\%}} = ' )
 
             else:
                 stats = ('%s' % name) + (r'  CI$_{%i\%%} = ' % summary)
