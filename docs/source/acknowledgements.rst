@@ -25,7 +25,7 @@ Those involved in maintenance and development (technical and scientific).
 * Denis Gonzalez-Caniulef (dgonzalez-ca[at]irap.omp.eu), IRAP
 * Sebastien Guillot (sebastien.guillot[at]irap.omp.eu), IRAP
 * Mariska Hoogkamer (m.m.hoogkamer[at]uva.nl), University of Amsterdam
-* Daniela Huppenkothen (d.huppenkothen[at]sron.nl), SRON
+* Daniela Huppenkothen (d.huppenkothen[at]uva.nl), University of Amsterdam
 * Christine Kazantsev (ckazantsev[at]irap.omp.eu), IRAP
 * Yves Kini (y.kini[at]uva.nl), University of Amsterdam
 * Lucien Mauviard-Hagg (lucien.mauviard-haag[at]irap.omp.eu), IRAP
@@ -77,8 +77,6 @@ direction of this project or led to some specific improvements.
 * Existing open-source projects (which are either external dependencies or
   served as examples during the development of this project, such as *emcee*
   and *stingray*)
-* Daniela Huppenkothen (for pointing towards nested sampling algorithms and for
-  abstract discussion of the statistical framework underlying X-PSI)
 * Will M. Farr & Ilya Mandel (for advice about posterior computation validation,
   and about model space definitions)
 * Will M. Farr (for ideas to accelerate likelihood function evaluation; WIP)
