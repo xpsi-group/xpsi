@@ -147,10 +147,6 @@ class HotRegion(ParameterSubspace):
         region (``super`` region or an ``omit`` region) then the centre
         of that region is the point that is *aligned* to a meridian.
 
-    :param bool is_secondary:
-        Deprecated. You can use or the ``is_antiphased`` keyword argument
-        instead, which has precisely the same effect.
-
     .. note::
 
         The parameters are as follows:
@@ -272,7 +268,7 @@ class HotRegion(ParameterSubspace):
                  image_order_limit = None,
                  **kwargs):
 
-        self.is_antiphased = kwargs.get('is_secondary', is_antiphased)
+        self.is_antiphased = is_antiphased
 
         self.do_fast = do_fast
 
@@ -728,22 +724,17 @@ class HotRegion(ParameterSubspace):
         return self._num_cells
 
     @property
-    def is_secondary(self):
-        """ Shift the hot region by half a rotational cycle? Deprecated. """
+    def is_antiphased(self):
+        """ Shift the hot region by half a rotational cycle? """
         return self._is_antiphased
-
-    @is_secondary.setter
-    def is_secondary(self, is_secondary):
+    
+    @is_antiphased.setter
+    def is_antiphased(self, is_antiphased):
         if not isinstance(is_antiphased, bool):
             raise TypeError('Use a boolean to specify whether or not the '
                             'hot region should be shifted by half a cycle.')
         else:
             self._is_antiphased = is_antiphased
-
-    @property
-    def is_antiphased(self):
-        """ Shift the hot region by half a rotational cycle? """
-        return self._is_antiphased
 
     @property
     def atm_ext(self):
@@ -784,14 +775,6 @@ class HotRegion(ParameterSubspace):
         else:
             raise TypeError('Got an unrecognised beam_opt argument. Note that the only allowed '
                             'beam_opt options are 0, 1, 2, 3 (see documentation).')
-
-    @is_antiphased.setter
-    def is_antiphased(self, is_antiphased):
-        if not isinstance(is_antiphased, bool):
-            raise TypeError('Use a boolean to specify whether or not the '
-                            'hot region should be shifted by half a cycle.')
-        else:
-            self._is_antiphased = is_antiphased
 
     def print_settings(self):
         """ Print numerical settings. """
