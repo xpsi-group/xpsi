@@ -2,12 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def readMode(run_files,
+def readModeSummary(samples_path,
              mode_number=0,
              verbose=True):
     """ Get the mode from the summary file. 
     
-    :param str run_files:
+    :param str samples_path:
         Path to the run files without the extension.
     
     :param int mode_number:
@@ -18,7 +18,7 @@ def readMode(run_files,
     """
 
     # Load the summary
-    summary = np.loadtxt(f'{run_files}summary.txt')
+    summary = np.loadtxt(f'{samples_path}summary.txt')
     Nmodes = np.shape(summary)[0] - 1
     assert mode_number <= Nmodes, 'The mode to recover must be between 0 and %i' % Nmodes
     summaryMode = summary[mode_number,:-2]
@@ -40,6 +40,19 @@ def readMode(run_files,
     return AverageMode ,SigmaMode, BestFitMode, MAP_Mode
 
 
+def readSummary(samples_path,
+                verbose=True):
+    """ Read the summary file of the whole run. 
+    
+    :param str samples_path:
+        Path to the run files without the extension.
+    
+    :param bool verbose:
+        Should the information be printed?
+    """
+    return readModeSummary( samples_path=samples_path , mode_number=0 , verbose=verbose )
+
+
 def getSignal( XPSImodel , InstrumentName):
     """ Get the signal depending on the used instrument.
     
@@ -50,26 +63,33 @@ def getSignal( XPSImodel , InstrumentName):
         Name of the instrument used, usually XTI, NICER, PN, MOS1 or MOS2.
     """
 
-    # Check the instrument
-    signals = XPSImodel.signals[0]
-    try:
-        _ = signals[0].prefix
-    except AttributeError:
-        signals = XPSImodel.signals
-    InstrumentLoaded = [ signals[i].prefix for i in range(len(signals)) ]
-    InstrumentExists = InstrumentName in InstrumentLoaded
+    # Check the signal of the instrument
+    if not hasattr( XPSImodel, 'signal' ):
 
-    # If requested instrument exists, get its associated index
-    # Otherwise, try getting the signal directly
-    if InstrumentExists:
-        idx = InstrumentLoaded.index( InstrumentName )
-        signal = signals[idx]
-    else:
+        # Check the number of lists
+        signals = XPSImodel.signals[0]
         try:
-            signal = XPSImodel.signal
-            print(f'Loaded the only existing signal {signal.prefix}. Please check that it is from the required instrument')
+            _ = signals[0].prefix
         except AttributeError:
-            raise AttributeError(f'Required instrument {InstrumentName} not existing and no default either')
+            signals = XPSImodel.signals
+        InstrumentLoaded = [ signals[i].prefix for i in range(len(signals)) ]
+        InstrumentExists = InstrumentName in InstrumentLoaded
+
+        # If requested instrument exists, get its associated index
+        # Otherwise, try getting the signal directly
+        if InstrumentExists:
+            idx = InstrumentLoaded.index( InstrumentName )
+            signal = signals[idx]
+        else:
+            print(f'Required instrument could not be found. Please choose from {InstrumentLoaded}')
+
+    else:
+        signal = XPSImodel.signal
+        if hasattr( signal, 'prefix' ):
+            print(f'Loaded the only existing signal {signal.prefix}. Please check that it is from the required instrument')
+        else:
+            print(f'Loaded the only existing signal. Please check that it is from the required instrument')
+
 
     return signal
 
@@ -97,13 +117,18 @@ def extractBKG(p,
     XPSImodel.likelihood(p, reinitialise=True)
     signal = getSignal( XPSImodel=XPSImodel, InstrumentName=InstrumentName )
     if given_support:
-        return signal.background_signal_given_support
+        try:
+            return signal.background_signal_given_support
+        except AttributeError:
+            print('WARNING: signal.background_signal_given_support does not exist, falling back to background_signal. '
+                  'Please check that it is correct')
+            return signal.background_signal
     else:
         return signal.background_signal
 
 
 def plotBackgroundSpectrum( XPSI_model, 
-                            posterior_file, 
+                            samples_path, 
                             InstrumentName,
                             plot_params=None,
                             Nsamples=200,
@@ -115,7 +140,7 @@ def plotBackgroundSpectrum( XPSI_model,
     :param obj XPSI_model:
         An instance of an imported model containing the signal.
     
-    :param str posterior_file:
+    :param str samples_path:
         Path to the posterior file without the extension.
     
     :param str InstrumentName:
@@ -144,10 +169,10 @@ def plotBackgroundSpectrum( XPSI_model,
 
     # Get the parameters to plot the spectrum and backgound 
     if plot_params is None:
-        _ ,_, p, _ = readMode(posterior_file,mode_number=0,verbose=False)
+        _ ,_, p, _ = readSummary(samples_path,verbose=False)
     else:
         p = plot_params
-    BKG = extractBKG(p=p, XPSImodel=XPSI_model, InstrumentName=InstrumentName) 
+    BKG = extractBKG(p=p, XPSImodel=XPSI_model, InstrumentName=InstrumentName, given_support=True) 
 
     # Get expected counts from both spots
     num_components = signal.num_components
@@ -156,14 +181,14 @@ def plotBackgroundSpectrum( XPSI_model,
     print( f"Maximum counts in an energy bin : {np.max( HotRegion_spectra.sum(axis=0) )}")
     
     # Extract channels
-    x0 = getattr(XPSI_model,InstrumentName).instrument.channel_edges
+    x0 = signal.instrument.channel_edges
     x0 = ( x0[:-1] + x0[1:] ) / 2
     
     # Extract background from samples
     if plot_range:
-        posterior = np.loadtxt(posterior_file+'post_equal_weights.dat')
+        posterior = np.loadtxt(samples_path+'post_equal_weights.dat')
         indexR = np.random.randint(low=0, high=len(posterior)-1, size=Nsamples)
-        BKG_A = np.array( [extractBKG( p=posterior[indexR[i]][:-1], XPSImodel=XPSI_model, InstrumentName=InstrumentName) for i in range(Nsamples)] )
+        BKG_A = np.array( [extractBKG( p=posterior[indexR[i]][:-1], XPSImodel=XPSI_model, InstrumentName=InstrumentName, given_support=True) for i in range(Nsamples)] )
         sigma = np.std(BKG_A,axis = 0)
         mean = np.mean(BKG_A,axis = 0)
         print( f"Max deviation : {np.max(sigma)} counts")
