@@ -61,8 +61,8 @@ improvements.
 * Geert Raaijmakers
 * Paul Ray
 * Evert Rol
-* Lami Suleiman
 * Rahul Silié
+* Lami Suleiman
 * Emma van der Wateren
 * Bob de Witte
 * The NICER collaboration
