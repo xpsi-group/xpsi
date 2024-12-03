@@ -1,5 +1,6 @@
 import numpy as np_
 from scipy.special import logsumexp
+import decimal
 
 from ._global_imports import *
 
@@ -444,6 +445,9 @@ class CornerPlotter(PostProcessor):
             containing ~68% of the posterior mass? If ``False`` the interval
             computed is the approximate 2-\sigma interval containing ~95% of
             the posterior mass.
+
+        :param int/float other_interval:
+            Value of the confidence interval to compute and print for each parameter, e.g. 99 for the 99% confidence interval
 
         :param kwargs:
 
@@ -932,7 +936,6 @@ class CornerPlotter(PostProcessor):
                                   **kwargs)
             return estimator
 
-        print(other_interval)
         if other_interval is not None:   #with other_quantile given as q=99 if we want the 99% confidence interval for ex
             other_quantile = [0.5 - other_interval/200, 0.5, 0.5 + other_interval/200]
 
@@ -958,7 +961,11 @@ class CornerPlotter(PostProcessor):
 
             if name: name += ' '
 
-            stats = ('%s' % name) + ('  CI$_{%i\%%} = ' % summary)
+            if isinstance(summary, float) :   ##if interval is given as float, keep the sample precision in the output
+                stats = ('%s' % name) + (f'  CI$_{{{summary}\%}} = ' )
+
+            else:
+                stats = ('%s' % name) + ('  CI$_{%i\%%} = ' % summary)
 
             if sscript:
                 stats += (('%s_{-%s}^{+%s}$' % (_f, _f, _f)) % (_qs[0], _qs[1], _qs[2]))
