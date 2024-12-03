@@ -155,11 +155,6 @@ Batch usage
 
 For an example job script, refer to :ref:`example_job`.
 
-Lisa (SURF)
------------
-
-`Lisa <https://servicedesk.surf.nl/wiki/display/WIKI/Lisa>`_ follows mostly the installation instructions as that of Snellius. Small differences in the installation procedure are still to be studied.
-
 Helios (API)
 ------------
 
@@ -169,6 +164,7 @@ Installation
 ^^^^^^^^^^^^
 
 Let's start by loading the necessary modules and creating a Python environment. At the moment, the installation is known to be working for the specific python 3.11 version: 
+
 .. code-block:: bash
 
    module purge
