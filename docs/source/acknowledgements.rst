@@ -22,11 +22,15 @@ Those involved in maintenance and development (technical and scientific).
 
 * Devarshi Choudhury (d.choudhury[at]uva.nl), University of Amsterdam
 * Bas Dorsman (b.dorsman[at]uva.nl), University of Amsterdam
+* Denis Gonzalez-Caniulef (dgonzalez-ca[at]irap.omp.eu), IRAP
 * Sebastien Guillot (sebastien.guillot[at]irap.omp.eu), IRAP
 * Mariska Hoogkamer (m.m.hoogkamer[at]uva.nl), University of Amsterdam
 * Daniela Huppenkothen (d.huppenkothen[at]sron.nl), SRON
+* Christine Kazantsev (ckazantsev[at]irap.omp.eu), IRAP
 * Yves Kini (y.kini[at]uva.nl), University of Amsterdam
+* Lucien Mauviard-Hagg (lucien.mauviard-haag[at]irap.omp.eu), IRAP
 * Tuomo Salmi (t.h.j.salmi[at]uva.nl), University of Amsterdam
+* Pierre Stammler (pstammler[at]irap.omp.eu), IRAP
 * Serena Vinciguerra (s.vinciguerra[at]uva.nl), University of Amsterdam
 * Anna Watts (a.l.watts[at]uva.nl), University of Amsterdam
 
@@ -57,6 +61,7 @@ improvements.
 * Geert Raaijmakers
 * Paul Ray
 * Evert Rol
+* Lami Suleiman
 * Rahul Silié
 * Emma van der Wateren
 * Bob de Witte
@@ -98,4 +103,5 @@ Funding
 
 Development of X-PSI has been funded by two ERC Grants (PI Anna Watts), 
 ERC Starting Grant No. 639217 CSINEUTRONSTAR and ERC Consolidator 
-Grant No. 865768 AEONS.
+Grant No. 865768 AEONS. The IRAP team acknowledges the support of
+the CNES in the development of X-PSI.
