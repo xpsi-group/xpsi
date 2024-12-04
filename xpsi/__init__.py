@@ -86,7 +86,11 @@ if not __XPSI_SETUP__:
 
     from xpsi.Sample import nested
     from xpsi.Prior import Prior
-    from xpsi.SBI_wrapper import Custom_SBI_Likelihood
+    try:
+        from xpsi.SBI_wrapper import Custom_SBI_Likelihood
+    except ImportError:
+        _warning('Cannot import torch and test SBI_wrapper.')
+        
 
     if global_imports._size == 1:
         try:
