@@ -33,7 +33,7 @@ cdef extern from "gsl/gsl_sf_gamma.h":
 
     double gsl_sf_lnfact(const unsigned int n)
 
-from ..tools cimport _get_phase_interpolant, gsl_interp_type
+from ..tools.core cimport _get_phase_interpolant, gsl_interp_type
 
 def precomputation(int[:,::1] data):
     """ Compute negative of sum of log-factorials of data count numbers.
