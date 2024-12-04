@@ -396,7 +396,7 @@ for _x in args.telescope[1:]:
     _telescopes += ' & {}'.format(_x)
 
 module += (
-'''
+r'''
 import os
 import argparse
 import re
@@ -2247,7 +2247,7 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_signa
 
 # Creating Photosphere module
 module = (
-'''""" Photosphere module for X-PSI {0} modelling of {1} {2} event data. """
+r'''""" Photosphere module for X-PSI {0} modelling of {1} {2} event data. """
 
 import argparse
 import re
@@ -2522,7 +2522,7 @@ write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_photo
 
 # Creating Prior module
 module = (
-'''""" Prior module for X-PSI {0} modelling of {1} {2} event data. """
+r'''""" Prior module for X-PSI {0} modelling of {1} {2} event data. """
 
 import argparse
 import re

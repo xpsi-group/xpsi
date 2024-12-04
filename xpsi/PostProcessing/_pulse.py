@@ -152,7 +152,7 @@ class PulsePlot(SignalPlot):
             if ax is not self._ax_registered_1d:
                 ax.tick_params(axis='x', labelbottom=False)
             else:
-                ax.set_xlabel('$\phi$ [cycles]')
+                ax.set_xlabel(r'$\phi$ [cycles]')
 
         self._ax.set_ylabel(r'$E$ [keV]')
         self._ax_1d.set_ylabel(r'photons/cm$^{2}$/s')

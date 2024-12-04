@@ -10,6 +10,7 @@ If compiling and linking with Intel icc, with is on $PATH:
 """
 
 from setuptools import setup, Extension
+
 import argparse
 import sys
 
@@ -285,7 +286,9 @@ if __name__ == '__main__':
                     'xpsi/surface_radiation_field',
                     'xpsi/likelihoods',
                     'xpsi/utilities',
-                    'xpsi/pixelmesh'],
+                    'xpsi/pixelmesh',
+                    'xpsi/include',
+                    'xpsi/include.rayXpanda'],
         install_requires = ['numpy'],
         setup_requires = ['cython ~= 3.0.11'],
         package_data = {'': ['README.rst', 'LICENSE']},
