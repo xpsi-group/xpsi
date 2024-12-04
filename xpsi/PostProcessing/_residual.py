@@ -72,7 +72,7 @@ class ResidualPlot(SignalPlot):
         self._ax_resid = self._add_subplot(2,0)
         self._ax_resid_cb = self._add_subplot(2,1)
 
-        self._ax_resid.set_xlabel('$\phi$ [cycles]')
+        self._ax_resid.set_xlabel(r'$\phi$ [cycles]')
         for ax in (self._ax_data, self._ax_model):
             ax.tick_params(axis='x', labelbottom=False)
 
@@ -179,7 +179,7 @@ class ResidualPlot(SignalPlot):
                                         rasterized = self._rasterized)
         data.set_edgecolor('face')
 
-        self._ax_data.set_ylim([channel_edges[0],
+        self._ax_data.set_ylim([_np.max([channel_edges[0],0.001]),
                                 channel_edges[-1]])
         self._ax_data.set_yscale(self.yscale)
 
@@ -227,7 +227,7 @@ class ResidualPlot(SignalPlot):
                                           rasterized = self._rasterized)
         model.set_edgecolor('face')
 
-        self._ax_model.set_ylim([channel_edges[0],
+        self._ax_model.set_ylim([_np.max([channel_edges[0],0.001]),
                                  channel_edges[-1]])
         self._ax_model.set_yscale(self.yscale)
 
@@ -278,7 +278,7 @@ class ResidualPlot(SignalPlot):
 
         self._ax_resid.axvline(1.0, lw=self._tick_width, color='k')
 
-        self._ax_resid.set_ylim([channel_edges[0],
+        self._ax_resid.set_ylim([_np.max([channel_edges[0],0.001]),
                                  channel_edges[-1]])
         self._ax_resid.set_yscale(self.yscale)
 

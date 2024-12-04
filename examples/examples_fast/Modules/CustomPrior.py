@@ -5,12 +5,7 @@ import math
 from scipy.stats import truncnorm
 
 import xpsi
-from xpsi.global_imports import _G, _csq, _km, _2pi, gravradius, _dpr
-from xpsi import Parameter
-
-from scipy.interpolate import Akima1DInterpolator
-
-from scipy.stats import truncnorm
+from xpsi.global_imports import gravradius
 
 class CustomPrior(xpsi.Prior):
     """ A custom (joint) prior distribution.
@@ -92,10 +87,10 @@ class CustomPrior(xpsi.Prior):
 
         # flat priors in cosine of hot region centre colatitudes (isotropy)
         # support modified by no-overlap rejection condition
-        idx = ref.index('hot__super_colatitude')
-        a, b = ref.get_param('hot__super_colatitude').bounds
+        idx = ref.index('p__super_colatitude')
+        a, b = ref.get_param('p__super_colatitude').bounds
         a = math.cos(a); b = math.cos(b)
-        ref['hot__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
+        ref['p__super_colatitude'] = math.acos(b + (a - b) * hypercube[idx])
 
 
         # restore proper cache

@@ -152,7 +152,7 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
 
     @staticmethod
     def transform(p, **kwargs):
-        """ A transformation for post-processing.
+        r""" A transformation for post-processing.
 
         A subclass can implement this attribute as an instance method: it
         does not need to be a static method.

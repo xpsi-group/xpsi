@@ -152,7 +152,7 @@ class PulsePlot(SignalPlot):
             if ax is not self._ax_registered_1d:
                 ax.tick_params(axis='x', labelbottom=False)
             else:
-                ax.set_xlabel('$\phi$ [cycles]')
+                ax.set_xlabel(r'$\phi$ [cycles]')
 
         self._ax.set_ylabel(r'$E$ [keV]')
         self._ax_1d.set_ylabel(r'photons/cm$^{2}$/s')
@@ -449,7 +449,7 @@ class PulsePlot(SignalPlot):
                                        rasterized = self._rasterized)
 
         incident.set_edgecolor('face')
-        self._ax.set_ylim([ref.energy_edges[0],
+        self._ax.set_ylim([_np.max([ref.energy_edges[0],0.001]),
                            ref.energy_edges[-1]])
         self._ax.set_yscale('log')
 
@@ -529,7 +529,7 @@ class PulsePlot(SignalPlot):
                                       rasterized = self._rasterized)
 
         registered.set_edgecolor('face')
-        self._ax_registered.set_ylim([ref.data.channels[0],
+        self._ax_registered.set_ylim([_np.max([ref.data.channels[0],0.001]),
                                       ref.data.channels[-1]])
         self._ax_registered.set_yscale('log')
 

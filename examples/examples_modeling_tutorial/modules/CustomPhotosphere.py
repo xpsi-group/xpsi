@@ -11,7 +11,6 @@ from xpsi import Everywhere, Elsewhere, HotRegion, Parameter
 import numpy as np
 
 
-
 class CustomPhotosphere_NumA5(xpsi.Photosphere):
     """ A photosphere extension to preload the numerical 5D accretion atmosphere. """
     

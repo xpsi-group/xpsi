@@ -339,3 +339,24 @@ followed first and foremost, but as an example from `Riley et al. 2021 <https://
         month={May}
     }
 
+    @ARTICLE{2021JOSS....6.3001B,
+        author = {{Buchner}, Johannes},
+        title = "{UltraNest - a robust, general purpose Bayesian inference engine}",
+        journal = {The Journal of Open Source Software},
+        keywords = {C, Monte Carlo, Python, Nested Sampling, C++, Bayesian inference, Fortran, Bayes factors, Statistics - Computation, Astrophysics - Instrumentation and Methods for Astrophysics},
+        year = 2021,
+        month = apr,
+        volume = {6},
+        number = {60},
+        eid = {3001},
+        pages = {3001},
+        doi = {10.21105/joss.03001},
+        archivePrefix = {arXiv},
+        eprint = {2101.09604},
+        primaryClass = {stat.CO},
+        adsurl = {https://ui.adsabs.harvard.edu/abs/2021JOSS....6.3001B},
+        adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+        
+    }
+
+
