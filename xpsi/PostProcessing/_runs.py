@@ -95,7 +95,7 @@ class Runs(Metadata):
 
     @classmethod
     def load_runs(cls, ID, run_IDs, roots, base_dirs, use_nestcheck,
-                  likelihood=None, **kwargs):
+                  likelihood=None,multi_mode=False, **kwargs):
         """ Construct a :class:`~.Runs` instance by loading distinct runs.
 
         The kwargs will be shared by nested sampling runs. The args must be
@@ -122,10 +122,56 @@ class Runs(Metadata):
             _transform = None
             _overwrite = False
 
+        if multi_mode:
+            filerootpath =_os.path.join(base_dirs[0], roots[0])
+            # Read the file and manually handle blank lines
+            with open(filerootpath+"post_separate.dat", 'r') as file:
+                lines = file.readlines()
+
+            # Convert lines to a numpy array, replacing blank lines with a marker (e.g., None or NaN)
+            data = []
+            for line in lines:
+                stripped = line.strip()
+                if stripped:  # Non-blank line
+                    data.append(_np.array(stripped.split(), dtype=float))
+                else:  # Blank line
+                    data.append(None)
+
+            # Separate modes based on None markers
+            modes = []
+            current_mode = []
+            for row in data:
+                if row is None:
+                    if current_mode:
+                        modes.append(_np.array(current_mode))
+                        current_mode = []
+                else:
+                    current_mode.append(row)
+
+            # Append the last mode if not empty
+            if current_mode:
+                modes.append(_np.array(current_mode))
+
+            for mode in range(len(modes)):
+                _np.savetxt(filerootpath+f"mode{mode}.txt", modes[mode])
+                roots.append(roots[0]+f"mode{mode}")
+                run_IDs.append(run_IDs[0]+f"_mode {mode}")
+                base_dirs.append(base_dirs[0])
+                use_nestcheck.append(use_nestcheck[0])
+            # Forget about the defaul xpsi loaded file
+            roots = roots[1:]
+            run_IDs = run_IDs[1:]
+            base_dirs = base_dirs[1:]
+            use_nestcheck = use_nestcheck[1:]
+
+            cls.mode_len =len(modes)
+            cls.multi_mode=True
+
         runs = []
         for root, run_ID, base_dir, check in zip(roots, run_IDs,
                                                  base_dirs,
                                                  use_nestcheck):
+
             runs.append(NestedBackend(root, base_dir,
                                       ID=run_ID,
                                       use_nestcheck=check,
@@ -143,6 +189,10 @@ class Runs(Metadata):
         if IDs is None:
             self._subset = self._runs
         else:
+            root_ID=IDs[0]
+            IDs=[]
+            for mode in range(self.mode_len):
+                IDs.append(root_ID+f"_mode {mode}")
             self._subset = [self[ID] for ID in IDs]
 
         if combine and force_combine: # create new run object
