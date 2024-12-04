@@ -230,7 +230,7 @@ if __name__ == '__main__':
                 'xpsi.likelihoods._poisson_likelihood_given_background_IQU',
                 'xpsi.likelihoods._gaussian_likelihood_given_background_IQU',
                 'xpsi.likelihoods._gaussian_likelihood_QnUn',                
-                'xpsi.surface_radiation_field.__init__',
+                'xpsi.surface_radiation_field.core',
                 'xpsi.surface_radiation_field.preload',
                 'xpsi.surface_radiation_field.hot_user',
                 'xpsi.surface_radiation_field.hot_BB',
