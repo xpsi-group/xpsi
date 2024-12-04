@@ -1,11 +1,14 @@
 import numpy as np
 from xpsi.HotRegion import HotRegion
 from xpsi.Spacetime import Spacetime
+from xpsi.Photosphere import Photosphere
 import pytest
 
 class TestHotRegion(object):
     
     def setup_class(cls):
+        # Just to comment, this all relies on SpaceTime and Atmosphere classes
+        # working correctly, so those should be unit tested separately.
         cls.super_colatitude_bounds = (None, None)
         cls.super_radius_bounds = (None, None)
         cls.phase_shift_bounds = (0.0, 0.1)
@@ -16,7 +19,10 @@ class TestHotRegion(object):
                       'phase_shift': cls.phase_shift_bounds,
                       'super_temperature': cls.super_temperature_bounds,}
 	
-        cls.hot_values = {}
+        cls.hot_values = {'super_radius': np.pi/4,
+                          'super_colatitude': np.pi/4,
+                          'super_temperature': 6.}
+
         cls.HotRegion = HotRegion(cls.hot_bounds, cls.hot_values)
         cls.space_values = {'frequency': 401., #Hz
                             'distance': 5., #kpc
@@ -32,6 +38,9 @@ class TestHotRegion(object):
                             }
         
         cls.Spacetime = Spacetime(bounds=cls.space_bounds, values=cls.space_values)
+        cls.mock_photosphere = {'mode_frequency': cls.space_values['frequency']}
+        cls.Photosphere = Photosphere(hot=cls.HotRegion, bounds={'mode_frequency': (None, None)}, 
+                                      values={'mode_frequency': cls.space_values['frequency']})
     
     def test_hotregion_class_initializes(self):
         HotRegion(self.hot_bounds, self.hot_values)
@@ -366,5 +375,196 @@ class TestHotRegion(object):
         # Assert that something was printed
         assert captured.out != "", "Expected some output, but nothing was printed."
 
-    # def test_construct_cellmesh(self):
+    def test_construct_cellmesh_runs(self):
+        # This function calls multiple underlying functions, so it is more of an integration test.
+        # Example valid case, not asserting the actual outcome yet.
+        self.HotRegion.fast_mode = False
+        self.HotRegion.set_num_cells(32, 10, 80, 16, 4, 16)
+        self.HotRegion._HotRegion__construct_cellMesh(self.Spacetime, None, 1)
+        # Not yet testing invalid cases and failing cases yet. Also: not testing yet underlying functions individually.
+        
+    @pytest.mark.parametrize(
+        "super_cell_area, cede_cell_area, expected",
+        [
+            (42, 84, (42, 84)),  # Case where both attributes are defined
+            (42, None, (42, None)),  # Case where _cede_cellArea is missing
+        ],
+    )
+    def test_cell_area(self, super_cell_area, cede_cell_area, expected):        
+        # Mock the _super_cellArea attribute
+        self.HotRegion._super_cellArea = super_cell_area
+    
+        # Conditionally set or remove _cede_cellArea
+        if cede_cell_area is not None:
+            self.HotRegion._cede_cellArea = cede_cell_area
+        elif hasattr(self.HotRegion, '_cede_cellArea'):
+            del self.HotRegion._cede_cellArea
+    
+        # Access the private property using name mangling
+        cell_area = self.HotRegion._HotRegion__cellArea
+    
+        # Assert the expected value
+        assert cell_area == expected
+
+    def test_compute_rays_runs(self):
+        # just testing here that the __compute_rays function runs. Calibrate
+        # lags is called within this function at the end.
+        self.HotRegion._HotRegion__compute_rays(self.Spacetime, 
+                                                self.Photosphere, 1)
+        #print('superlag', self.HotRegion._super_lag)
+        #print('superlag', self.HotRegion._super_lag.shape)
+        
+        
+    @pytest.mark.parametrize('cede', [True, False])
+    def test_calibrate_lag_runs(self, cede):
+        # just testing here that the __calibrate_lag function runs. Not relying
+        # on compute_rays to do that, since that function relies on this 
+        # function.
+
+        mock_r_s_over_r = 0.5924*np.ones(42)
+        self.HotRegion._r_s_over_r = mock_r_s_over_r
+        mock_super_lag = 0.1*np.ones((42, 50))
+        self.HotRegion._super_lag = mock_super_lag
+        if cede:
+            self.HotRegion._cede_r_s_over_r = mock_r_s_over_r
+            self.HotRegion._cede_lag = mock_super_lag
+        elif not cede:
+            pass
+        self.HotRegion._HotRegion__calibrate_lag(self.Spacetime, 
+                                                 self.Photosphere)
+        
+        
+    def test_cellParamVecs_runs(self):
+        # just testing if compute_cellParamVecs runs. I am relying on construct
+        # cellmesh and compute rays, but I tested those separately above.
+        self.HotRegion._HotRegion__construct_cellMesh(self.Spacetime,
+                                  None,
+                                  1)
+        self.HotRegion._HotRegion__compute_rays(self.Spacetime, 
+                                                self.Photosphere, 1)
+        self.HotRegion._HotRegion__compute_cellParamVecs()
+
+    def test_psi(self):
+        # Define test inputs (theta, phi, colatitude)
+        theta = np.array([0, np.pi/4, np.pi/2])  # Example angles in radians
+        phi = np.array([0, np.pi/2, np.pi])      # Example angles in radians
+        colatitude = np.array([np.pi/4, np.pi/2, 3*np.pi/4])  # Example colatitudes
+    
+        # Expected results (precomputed for the given inputs)
+        expected_results = np.arccos(
+            np.cos(colatitude) * np.cos(theta)
+            + np.sin(colatitude) * np.sin(theta) * np.cos(phi)
+        )
+    
+        # Call the psi function
+        results = self.HotRegion.psi(theta, phi, colatitude)
+    
+        # Validate the results against the expected values
+        np.testing.assert_allclose(results, expected_results, rtol=1e-6, atol=1e-8)
+    
+    def test_embed_runs(self):
+        # Just testing that the embed function runs.
+        self.HotRegion.embed(self.Spacetime, self.Photosphere, None, 1)
+        # Also testing the optional args that produce a correction.           
+        # Mock function to be passed as *args
+        def mock_correction_function(vector):
+            return np.ones((len(vector), len(vector), 1))
+
+        self.HotRegion.embed(self.Spacetime, self.Photosphere, None, 1, mock_correction_function)
+        
+        
+    def test_do_fast_getter_setter(self):
+        # Initial state of _do_fast
+        initial_value = False
+        self.HotRegion.do_fast = initial_value
+        
+        # Test the getter
+        assert self.HotRegion.do_fast == initial_value, f"Expected {initial_value}, but got {self.HotRegion.do_fast}"
+    
+        # Test the setter
+        new_value = True
+        self.HotRegion.do_fast = new_value
+        assert self.HotRegion.do_fast == new_value, f"Expected {new_value}, but got {self.HotRegion.do_fast}"
+
+    def test_fast_mode_getter_setter(self):
+        # Initial state of _do_fast
+        initial_value = False
+        self.HotRegion.fast_mode = initial_value
+        
+        # Test the getter
+        assert self.HotRegion.fast_mode == initial_value, f"Expected {initial_value}, but got {self.HotRegion.do_fast}"
+    
+        # Test the setter
+        new_value = True
+        self.HotRegion.fast_mode = new_value
+        assert self.HotRegion.fast_mode == new_value, f"Expected {new_value}, but got {self.HotRegion.do_fast}"
+
+    def test_cede_getter_setter(self):
+        # Test with initial value of _cede
+        initial_value = False
+        self.HotRegion._cede = initial_value
+    
+        # Test the getter
+        assert self.HotRegion.cede == initial_value, f"Expected {initial_value}, but got {self.HotRegion.cede}"
+    
+        # Test the setter with a valid boolean value (True)
+        self.HotRegion.cede = True
+        assert self.HotRegion.cede == True, f"Expected True, but got {self.HotRegion.cede}"
+    
+        # Test the setter with a valid boolean value (False)
+        self.HotRegion.cede = False
+        assert self.HotRegion.cede == False, f"Expected False, but got {self.HotRegion.cede}"
+
+
+    def test_omit_getter_setter(self):
+        # Test with initial value of _omit
+        initial_value = False
+        self.HotRegion._omit = initial_value
+    
+        # Test the getter
+        assert self.HotRegion.omit == initial_value, f"Expected {initial_value}, but got {self.HotRegion.omit}"
+    
+        # Test the setter with a valid boolean value (True)
+        self.HotRegion.omit = True
+        assert self.HotRegion.omit == True, f"Expected True, but got {self.HotRegion.omit}"
+    
+        # Test the setter with a valid boolean value (False)
+        self.HotRegion.omit = False
+        assert self.HotRegion.omit == False, f"Expected False, but got {self.HotRegion.omit}"
+        
+
+    def test_concentric_getter_setter(self):
+        # Test with initial value of _concentric
+        initial_value = False
+        self.HotRegion._concentric = initial_value
+    
+        # Test the getter
+        assert self.HotRegion.concentric == initial_value, f"Expected {initial_value}, but got {self.HotRegion.concentric}"
+    
+        # Test the setter with a valid boolean value (True)
+        self.HotRegion.concentric = True
+        assert self.HotRegion.concentric == True, f"Expected True, but got {self.HotRegion.concentric}"
+    
+        # Test the setter with a valid boolean value (False)
+        self.HotRegion.concentric = False
+        assert self.HotRegion.concentric == False, f"Expected False, but got {self.HotRegion.concentric}"
+        
+        
+        
+    def test_integrate_runs(self):
+        # Just testing that the embed function runs.
+        # split=False
+        # hot_region = HotRegion(self.hot_bounds, self.hot_values, split=split)
+        # hot_region.symmetry = True
+        # print(hot_region._integrator)
+        self.HotRegion.embed(self.Spacetime, self.Photosphere, None, 1)
+        
+
+        # just testing if the integrate runs, first with the default BB 
+        # atmosphere given a hotregion and no elsewhere
+        hot_atmosphere = ()
+        elsewhere_atmosphere = ()
+        atm_ext_else = None
+        energies = np.linspace(1,2,10) # keV
+        self.HotRegion.integrate(self.Spacetime, energies, 1, hot_atmosphere, elsewhere_atmosphere, atm_ext_else)
         

@@ -288,7 +288,7 @@ class HotRegion(ParameterSubspace):
         if not isinstance(self._split, bool):
             raise TypeError("The 'split' argument signifies split atmosphere interpolation and must be a boolean.")
 
-        self._symmetry = symmetry
+        self.symmetry = symmetry
 
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
@@ -517,7 +517,6 @@ class HotRegion(ParameterSubspace):
             raise TypeError('Declare symmetry existence with a boolean.')
 
         self._symmetry = declaration
-
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
             if self._split:
