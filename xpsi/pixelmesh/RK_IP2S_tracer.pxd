@@ -32,9 +32,9 @@ ctypedef struct _RAY:
 cdef _RAY* alloc_RAY(double epsabs_ray,
                      double epsrel_ray,
                      double INIT_STEP,
-                     size_t MAXSTEPS) nogil
+                     size_t MAXSTEPS) noexcept nogil
 
-cdef void free_RAY(_RAY *const RAY) nogil
+cdef void free_RAY(_RAY *const RAY) noexcept nogil
 
 cdef int RK(_RAY *const RAY,
-            const _GEOM *const GEOM) nogil
+            const _GEOM *const GEOM) noexcept nogil

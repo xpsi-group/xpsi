@@ -128,7 +128,7 @@ cdef double marginal_integrand(double B, void *params) noexcept nogil:
 
     return exp(x - a.A)
 
-cdef double delta(double B, void *params) nogil:
+cdef double delta(double B, void *params) noexcept nogil:
 
     cdef size_t j
     cdef double x = 0.0, y = 0.0

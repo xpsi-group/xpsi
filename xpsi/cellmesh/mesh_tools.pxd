@@ -21,17 +21,17 @@ ctypedef gsl_integration_cquad_workspace gsl_cq_work
 
 from xpsi.surface_radiation_field.effective_gravity_universal cimport effectiveGravity
 
-cdef double eval_psi(double theta, double phi, double THETA) nogil
-cdef double eval_phi(double theta, double THETA, double psi) nogil
-cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) nogil
+cdef double eval_psi(double theta, double phi, double THETA) noexcept nogil
+cdef double eval_phi(double theta, double THETA, double psi) noexcept nogil
+cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) noexcept nogil
 
 cdef double radiusNormalised(double mu,
                              double epsilon,
-                             double zeta) nogil
+                             double zeta) noexcept nogil
 cdef double f_theta(double mu,
                     double radiusNormed,
                     double epsilon,
-                    double zeta) nogil
+                    double zeta) noexcept nogil
 
 cdef double integrateArea(double lower_lim,
                           double upper_lim,
@@ -39,7 +39,7 @@ cdef double integrateArea(double lower_lim,
                           double epsilon,
                           double zeta,
                           int av,
-                          gsl_integration_cquad_workspace *w) nogil
+                          gsl_integration_cquad_workspace *w) noexcept nogil
 
 cdef double integrateCell(double theta_a,
                           double theta_b,
@@ -53,7 +53,7 @@ cdef double integrateCell(double theta_a,
                           double superRadius,
                           double superCentreAzi,
                           double superCentreColat,
-                          gsl_cq_work *w) nogil
+                          gsl_cq_work *w) noexcept nogil
 
 cdef double integrateSpot(double theta_a,
                           double theta_b,
@@ -67,4 +67,4 @@ cdef double integrateSpot(double theta_a,
                           double superCentreColat,
                           int Lorentz,
                           double Omega,
-                          gsl_cq_work *w) nogil
+                          gsl_cq_work *w) noexcept nogil

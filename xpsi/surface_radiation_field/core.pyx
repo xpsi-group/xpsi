@@ -109,18 +109,18 @@ from .effective_gravity_universal cimport effectiveGravity
 
 from xpsi.pixelmesh.geometricConfiguration cimport _GEOM
 
-ctypedef void* (*fptr_init)(size_t, const _preloaded *const, size_t) nogil
+ctypedef void* (*fptr_init)(size_t, const _preloaded *const, size_t) noexcept nogil
 
-ctypedef int (*fptr_free)(size_t, void *const) nogil
+ctypedef int (*fptr_free)(size_t, void *const) noexcept nogil
 
 ctypedef double (*fptr_eval)(size_t,
                              double,
                              double,
                              const double *const,
                              void *const,
-                             size_t) nogil
+                             size_t) noexcept nogil
 
-ctypedef double (*fptr_norm)() nogil
+ctypedef double (*fptr_norm)() noexcept nogil
 
 def intensity(double[::1] energies,
               double[::1] mu,

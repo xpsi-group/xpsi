@@ -15,7 +15,7 @@ cdef double _h = 6.62607004e-34
 
 cdef double radiusNormalised(double mu,
                              double epsilon,
-                             double zeta) nogil:
+                             double zeta) noexcept nogil:
     """
     Calculate the normalised radius (R(mu)/R_eq) based on the oblateness approximation from AlGendy & 
     Morsink (2014) (see Eq. 20 and Table 1 for coefficient values). This function models the shape of 
@@ -46,7 +46,7 @@ cdef double radiusNormalised(double mu,
 cdef double f_theta(double mu,
                     double radiusNormed,
                     double epsilon,
-                    double zeta) nogil:
+                    double zeta) noexcept nogil:
     """
     Calculate f(theta) based on Equation 3 of Morsink et al. (2007).
 
@@ -102,7 +102,7 @@ cdef double integrateArea(double lower_lim,
                           double epsilon,
                           double zeta,
                           int av,
-                          gsl_integration_cquad_workspace *w) nogil:
+                          gsl_integration_cquad_workspace *w) noexcept nogil:
 
     cdef double params[3]
     cdef double integral, error
@@ -128,13 +128,13 @@ cdef double integrateArea(double lower_lim,
 
     return R_eq * R_eq * integral
 
-cdef double eval_psi(double theta, double phi, double THETA) nogil:
+cdef double eval_psi(double theta, double phi, double THETA) noexcept nogil:
 
     cdef double psi = acos(cos(THETA) * cos(theta) + sin(THETA) * sin(theta) * cos(phi))
 
     return psi
 
-cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) nogil:
+cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) noexcept nogil:
 
     cdef double azi = sin(theta) * sin(phi) / sin(psi)
 
@@ -237,7 +237,7 @@ cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) nog
                 return 0.0
 
 
-cdef double eval_phi(double theta, double THETA, double psi) nogil:
+cdef double eval_phi(double theta, double THETA, double psi) noexcept nogil:
 
     cdef double cos_phi = cos(psi) - cos(THETA) * cos(theta)
 
@@ -248,7 +248,7 @@ cdef double eval_phi(double theta, double THETA, double psi) nogil:
     else:
         return acos(cos_phi)
 
-cdef double get_interval(double a, double b, double LB, double UB) nogil:
+cdef double get_interval(double a, double b, double LB, double UB) noexcept nogil:
 
     cdef int a_condition, b_condition
 
@@ -365,7 +365,7 @@ cdef double cell_integrand(double theta, void *params) noexcept nogil:
 cdef double theta_given_phi(double phi,
                             double colat,
                             double radius,
-                            double interval[]) nogil:
+                            double interval[]) noexcept nogil:
 
     cdef double x, theta
 
@@ -412,7 +412,7 @@ cdef double integrateCell(double theta_a,
                           double superRadius,
                           double superCentreAzi,
                           double superCentreColat,
-                          gsl_cq_work *w) nogil:
+                          gsl_cq_work *w) noexcept nogil:
 
     cdef void *params[10]
     cdef double integral, error
@@ -796,7 +796,7 @@ cdef double integrateSpot(double theta_a,
                           double superCentreAzi,
                           int Lorentz,
                           double Omega,
-                          gsl_cq_work *w) nogil:
+                          gsl_cq_work *w) noexcept nogil:
 
 
     cdef double params[10]

@@ -48,17 +48,17 @@ cdef double c = 2.99792458e8
 
 cdef int ERROR = 1
 
-cdef double eval_image_deflection(int order, double psi) nogil:
+cdef double eval_image_deflection(int order, double psi) noexcept nogil:
     if order % 2 != 0:
         return <double>(order + 1) * _pi + pow(-1.0, <double>order) * psi
     else:
         return <double>(order) * _pi + pow(-1.0, <double>order) * psi
 
-cdef void invert(double a, double b, double *c, double *d) nogil:
+cdef void invert(double a, double b, double *c, double *d) noexcept nogil:
     #c_invert(a, b, c, d)
     __pyx_f_9rayXpanda_9inversion_c_invert(a, b, c, d)
 
-cdef void deflect(double a, double b, double *c, double *d) nogil:
+cdef void deflect(double a, double b, double *c, double *d) noexcept nogil:
     #c_deflect(a, b, c, d)
     __pyx_f_9rayXpanda_10deflection_c_deflect(a, b, c, d)
 
@@ -71,7 +71,7 @@ cdef double _get_rayXpanda_defl_lim() except *:
         xpsi.cellmesh._check_rayXpanda_defl_lim(__rayXpanda_defl_lim__)
         return <double>__rayXpanda_defl_lim__
 
-cdef bint compare_double(double x, double y, double epsilon = 1.0e-12) nogil:
+cdef bint compare_double(double x, double y, double epsilon = 1.0e-12) noexcept nogil:
     if(fabs(x - y) < epsilon):
         return True
     else:
@@ -162,7 +162,7 @@ cdef void rayIntegrator(size_t thread,
                              double cos_alpha,
                              double r_s,
                              double r_s_over_R,
-                             double *rayParams) nogil:
+                             double *rayParams) noexcept nogil:
 
     cdef int status
     cdef double outParams[2]

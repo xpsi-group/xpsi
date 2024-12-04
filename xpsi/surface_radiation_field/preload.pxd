@@ -11,4 +11,4 @@ ctypedef struct _preloaded:
 
 cdef _preloaded* init_preload(object atmosphere)
 
-cdef int free_preload(_preloaded *const preloaded) nogil
+cdef int free_preload(_preloaded *const preloaded) noexcept nogil

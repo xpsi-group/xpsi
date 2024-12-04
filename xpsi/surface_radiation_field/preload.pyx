@@ -34,7 +34,7 @@ cdef _preloaded* init_preload(object atmosphere):
 
     return preloaded
 
-cdef int free_preload(_preloaded *const preloaded) nogil:
+cdef int free_preload(_preloaded *const preloaded) noexcept nogil:
     free(preloaded.params)
     free(preloaded.N)
     free(preloaded.S)

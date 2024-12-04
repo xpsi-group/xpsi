@@ -50,7 +50,7 @@ ctypedef struct DATA:
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_hot_Num5D(size_t numThreads, const _preloaded *const preloaded) nogil:
+cdef void* init_hot_Num5D(size_t numThreads, const _preloaded *const preloaded) noexcept nogil:
     # This function must match the free management routine free_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -147,7 +147,7 @@ cdef void* init_hot_Num5D(size_t numThreads, const _preloaded *const preloaded) 
     return <void*> D
 
 
-cdef int free_hot_Num5D(size_t numThreads, void *const data) nogil:
+cdef int free_hot_Num5D(size_t numThreads, void *const data) noexcept nogil:
     # This function must match the initialisation routine init_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -190,7 +190,7 @@ cdef double eval_hot(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
-                     void *const data) nogil:
+                     void *const data) noexcept nogil:
     
     # Arguments:
     # E = photon energy in keV
@@ -333,7 +333,7 @@ cdef double eval_hot_Num5D_I(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
-                     void *const data) nogil:
+                     void *const data) noexcept nogil:
     # Arguments:
     # E = photon energy in keV
     # mu = cosine of ray zenith angle (i.e., angle to surface normal)
@@ -352,7 +352,7 @@ cdef double eval_hot_Num5D_Q(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
-                     void *const data) nogil:
+                     void *const data) noexcept nogil:
     # Arguments:
     # E = photon energy in keV
     # mu = cosine of ray zenith angle (i.e., angle to surface normal)
@@ -363,7 +363,7 @@ cdef double eval_hot_Num5D_Q(size_t THREAD,
 
 
 
-cdef double eval_hot_norm_Num5D() nogil:
+cdef double eval_hot_norm_Num5D() noexcept nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.
@@ -373,7 +373,7 @@ cdef double eval_hot_norm_Num5D() nogil:
 
     return erg / 4.135667662e-18
 
-cdef double* produce_2D_data(size_t THREAD, const double *const VEC, void *const data) nogil:
+cdef double* produce_2D_data(size_t THREAD, const double *const VEC, void *const data) noexcept nogil:
     # interpolate data to make a 2D dataset with only E and mu
     cdef DATA *D = <DATA*> data
     
