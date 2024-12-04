@@ -87,7 +87,11 @@ bounds = dict(distance = (0.5,2),
 
 
 spacetime = xpsi.Spacetime(bounds,
-                           values=dict(frequency = 314.0))
+                           values=dict(frequency = 314.0),
+                           star_shape="AGM14")
+
+#print(spacetime.star_shape)
+#exit()
 
 # # Hot-spot
 bounds = dict(super_colatitude = (0.001, math.pi/2 - 0.001),

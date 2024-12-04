@@ -22,6 +22,11 @@ class Spacetime(ParameterSubspace):
         no entry for a default parameter, no initial value will be specified,
         but an exception will be raised if there is also no bound specified.
 
+    :param string star_shape:
+        A string specifying the assumed shape of the star. Options 'AGM14'
+        (an oblate spheroid from Algendy & Morsink 2014) or 'Sphere' are
+        currently allowed.
+
     We define a property for parameters and combinations of parameters to
     shortcut access, given that this subspace is passed to other subspaces
     for model computation. We would like to access the values with fewer
@@ -34,8 +39,9 @@ class Spacetime(ParameterSubspace):
                       'distance',
                       'cos_inclination']
 
-    def __init__(self, bounds, values):
+    def __init__(self, bounds, values, star_shape="AGM14"):
 
+        self.star_shape = star_shape
 
         if not isinstance(bounds, dict) or not isinstance(values, dict):
              raise TypeError("Both bounds and values need to be dictionaries.")
@@ -76,6 +82,18 @@ class Spacetime(ParameterSubspace):
                          value = values.get('cos_inclination', None))
 
         super(Spacetime, self).__init__(f, M, R, D, cosi)
+
+    @property
+    def star_shape(self):
+        """ Get the the shape of the star. """
+        return self._star_shape
+
+    @star_shape.setter
+    def star_shape(self,star_shape):
+        """ Set the shape of the star. """
+        if star_shape not in ["AGM14","Sphere"]:
+            raise TypeError("Invalid star_shape option.")
+        self._star_shape = star_shape
 
     @property
     def M(self):
