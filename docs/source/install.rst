@@ -138,6 +138,7 @@ In addition, some optional miscellaneous packages are:
 #. `jupyter <https://jupyter-notebook.readthedocs.io/en/stable/>`_ if you want to run X-PSI in a notebook.
 #. `pytest <https://docs.pytest.org/en/7.2.x/>`_ if you want to run functionality tests for X-PSI.
 #. `emcee <https://emcee.readthedocs.io/en/latest/>`_ for optional ensemble-MCMC functionality.
+#. `sbi <https://sbi-dev.github.io/sbi/latest/>`_ for performing Simulation-Based Inference (SBI). This additionally requires installation of `torch and torchvision <https://pytorch.org/get-started/locally/>`_
 
 
 .. _nonpython:

@@ -86,6 +86,7 @@ if not __XPSI_SETUP__:
 
     from xpsi.Sample import nested
     from xpsi.Prior import Prior
+    from xpsi.SBI_wrapper import Custom_SBI_Likelihood
 
     if global_imports._size == 1:
         try:
