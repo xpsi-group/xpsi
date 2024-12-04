@@ -309,6 +309,61 @@ class Instrument(ParameterSubspace):
 
         yield
 
+    @make_verbose('Trimming instrument response',
+                  'Instrument response trimmed')
+    def trim_response(self, 
+                      min_channel=0,
+                      max_channel=-1,
+                      threshold=1e-5 ):
+        """ Trim the instrument response to the specified channel range.
+
+        :param int min_channel:
+            The minimum channel number to include in the trimmed response.
+
+        :param int max_channel:
+            The maximum channel number to include in the trimmed response.
+
+        :param float threshold:
+            The threshold value to use for trimming the instrument response.
+            Channels / inputs with a total response below this value will be removed.
+
+        """
+        
+        # Make the table of required channels
+        assert min_channel >= self.channels[0]
+        if max_channel == -1:
+            max_channel = self.channels[-1]
+        assert max_channel <= self.channels[-1]
+        old_channels = self.channels
+        new_channels_indexes = [ min_channel <= c <= max_channel for c in self.channels]
+
+        # Find empty columns and lines
+        new_matrix = self.matrix[new_channels_indexes]
+        empty_channels = _np.all( new_matrix <= threshold, axis=1)
+        empty_inputs = _np.all( new_matrix <= threshold, axis=0)
+        
+        # Apply to matrix and channels directly
+        self.matrix = new_matrix[~empty_channels][:,~empty_inputs]
+        self.channels = self.channels[new_channels_indexes][ ~empty_channels ]
+
+        # Get the edges of energies for both input and channel
+        new_energy_edges = [ self.energy_edges[k] for k in range(len(empty_inputs)) if not empty_inputs[k] ]
+        self.energy_edges = _np.hstack( (new_energy_edges , self.energy_edges[ _np.where( self.energy_edges == new_energy_edges[-1] )[0] + 1 ] ) )
+        if hasattr( self , 'channel_edges' ):
+            new_channels_edges = [ self.channel_edges[ _np.where(old_channels==chan)[0][0]] for chan in self.channels]
+            self.channel_edges = _np.hstack( (new_channels_edges , self.channel_edges[_np.where( old_channels==self.channels[-1])[0] + 1]) )
+
+        # Print if any trimming happens
+        if empty_inputs.sum() > 0:
+            print(f'Triming the response matrix because it contains lines with only values <= {threshold}.\n Now min energy={self.energy_edges[0]} and max_input={self.energy_edges[-1]}')
+        if empty_channels.sum() > 0:
+            print(f'Triming the response matrix because it contains columns with only values <= {threshold}.\n Now min_channel={self.channels[0]} and max_channel={self.channels[-1]}')
+
+        # If ARF and RMF, trim them
+        if hasattr( self , 'ARF' ):
+            self.RMF = self.RMF[new_channels_indexes][~empty_channels][:,~empty_inputs]
+            self.ARF = self.ARF[~empty_inputs]
+
     @classmethod
     @make_verbose('Loading instrument response matrix from OGIP compliant files',
                   'Response matrix loaded')
@@ -441,5 +496,6 @@ class Instrument(ParameterSubspace):
         # Add ARF and RMF for plotting
         Instrument.RMF = RMF[min_channel:max_channel+1,min_input-1:max_input][~empty_channels][:,~empty_inputs]
         Instrument.ARF = ARF_area[min_input-1:max_input][~empty_inputs]
+        Instrument.name = RMF_instr
 
         return Instrument

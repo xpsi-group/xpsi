@@ -204,6 +204,33 @@ class Data(object):
 
         yield
 
+    @make_verbose('Trimming event data', 'Event data trimmed')
+    def trim_data( self , 
+                  min_channel = 0,
+                  max_channel = -1 ):
+        """ Trim the event data to the specified channel range. 
+        
+        :param int min_channel:
+            The minimum channel number to include in the trimmed data.
+
+        :param int max_channel:
+            The maximum channel number to include in the trimmed data.
+        """
+        
+         # Make the table of required channels
+        assert min_channel >= self.channels[0] 
+        assert max_channel <= self.channels[-1]
+        new_channels = [ min_channel <= c <= max_channel for c in self.channels]
+
+        # Trim the counts and channels
+        self._channels = self.channels[new_channels]
+        self._counts = self.counts[new_channels]
+
+        # Change first and last
+        self._first = 0
+        self._last = max_channel - min_channel
+
+
     @classmethod
     @make_verbose('Loading event list and phase binning',
                   'Events loaded and binned')
@@ -339,10 +366,10 @@ class Data(object):
 
         # Select the case based on HDUCLAS1
         if HDUCLAS1 == 'SPECTRUM':
-            return cls.from_pha(path, channels=channels )
+            Data = cls.from_pha(path, channels=channels )
         
         elif HDUCLAS1 == 'EVENTS':
-            return cls.from_evt(path, 
+            Data = cls.from_evt(path, 
                  n_phases=n_phases, 
                  channels=channels, 
                  phase_column=phase_column,
@@ -351,6 +378,12 @@ class Data(object):
         else:
             raise IOError('HDUCLAS1 of Header does not match PHA or EVT files values. Could not load.')
         
+        # Write the name of the instrument
+        Data.instrument = hdul[1].header['INSTRUME']
+
+        return Data
+
+
     @classmethod
     @make_verbose('Loading event list and phase binning',
                   'Events loaded and binned')
@@ -477,13 +510,16 @@ class Data(object):
         Data.backscal = Header['BACKSCAL']
         Data.ancrfile = Header['ANCRFILE']
         Data.respfile = Header['RESPFILE']
-        if Header['HDUCLAS2'] == 'TOTAL':
-            Data.backfile = Header['BACKFILE']
+        try:
+            if Header['HDUCLAS2'] == 'TOTAL':
+                Data.backfile = Header['BACKFILE']
+        except KeyError as e:
+            print('Keyword BACKFILE not found in file ',path)
 
         return Data
         
 
-    def spectra_support(self, n, source_backscal):
+    def spectra_support(self, n, source_backscal, channels=None):
         """ Compute the spectrum support, if the data instance is background, assuming Poisson statistics. 
         
         :param int n:
@@ -516,6 +552,11 @@ class Data(object):
             count_rate_support *= ( source_backscal / self.backscal )
         except:
             raise IOError('No BACKSCAL was provided for source. Could not compute the support of the spectrum')
+
+        # If channels, extract the reight values
+        if channels is not None:
+            channel_indexes = [ _np.where(self.channels == ch)[0][0] for ch in channels ] 
+            count_rate_support = count_rate_support[ channel_indexes , :]
 
         # Clean
         count_rate_support = _contig( count_rate_support, dtype=_np.double )
