@@ -110,10 +110,6 @@ Do you obtain parameter values and evidences?
 
 .. note::
 
-    Without knowing exactly the reason, we currently get typically this message ``Open MPI failed an OFI Libfabric library call (fi_domain).  This is highly unusual; your job may behave unpredictably (and/or abort) after this.`` when doing this test. However, the test works otherwise as expected, and this message seem not to appear when submitting jobs in the cluster instead of using the login node.
-
-.. note::
-
     We assumed above that nested sampling with `MultiNest`_ is desired. If
     ensemble-MCMC with ``emcee`` is desired, you need to install the Python
     packages ``emcee`` and ``schwimmbad``. If ``UltraNest`` is desired, you 
