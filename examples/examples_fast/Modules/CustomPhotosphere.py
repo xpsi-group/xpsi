@@ -1,7 +1,6 @@
 
 
 import numpy as np
-import math
 
 import xpsi
 from xpsi.global_imports import _2pi

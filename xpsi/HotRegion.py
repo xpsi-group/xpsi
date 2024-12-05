@@ -18,7 +18,7 @@ class PulseError(xpsiError):
     """ Raised if a problem was encountered during signal integration. """
 
 class HotRegion(ParameterSubspace):
-    """ A photospheric hot region that is contiguously radiating.
+    r""" A photospheric hot region that is contiguously radiating.
 
     Instances of this class can take the following forms:
 

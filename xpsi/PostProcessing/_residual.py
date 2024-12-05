@@ -80,6 +80,7 @@ class ResidualPlot(SignalPlot):
         self._clustdist_cmap = clustdist_cmap
 
         self._get_figure()
+
         #gridA= self._get_gridspec(0.05, 0.48, 0)
         #gridB= self._get_gridspec(0.55, 0.98, 1)
 
@@ -105,6 +106,7 @@ class ResidualPlot(SignalPlot):
         
         #for ax in (self._ax_data, self._ax_model):
         #    ax.tick_params(axis='x', labelbottom=False)
+
 
         for ax in (self._ax_data, self._ax_model, self._ax_resid):
             ax.set_ylabel('channel')
