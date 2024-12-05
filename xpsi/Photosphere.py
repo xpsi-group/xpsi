@@ -184,7 +184,7 @@ class Photosphere(ParameterSubspace):
                                               custom,
                                               **kwargs)
 
-    def load_NSX_table( self, path , Tcol, gcol, mucol, Ecol, spe_Icol):
+    def load_NSX_table( self, path, Tcol=4, gcol=5, mucol=1, Ecol=0, spe_Icol=2 ):
         """
         Loading the nsx atmosphere table provided in path 
         giving the colums in the table corresponding to 
