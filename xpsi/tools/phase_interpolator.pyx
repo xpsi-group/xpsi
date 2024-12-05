@@ -20,7 +20,7 @@ from GSL cimport (gsl_interp_eval,
                    gsl_interp_accel_free,
                    gsl_interp_accel_reset)
 
-from . cimport _get_phase_interpolant, gsl_interp_type
+from .core cimport _get_phase_interpolant, gsl_interp_type
 
 def phase_interpolator(double[::1] new_phases,
                        double[::1] phases,

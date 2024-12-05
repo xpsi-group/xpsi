@@ -10,6 +10,7 @@ If compiling and linking with Intel icc, with is on $PATH:
 """
 
 from setuptools import setup, Extension
+
 import argparse
 import sys
 
@@ -224,13 +225,13 @@ if __name__ == '__main__':
                 'xpsi.tools.phase_integrator',
                 'xpsi.tools.phase_interpolator',
                 'xpsi.tools.synthesise',
-                'xpsi.tools.__init__',
+                'xpsi.tools.core',
                 'xpsi.likelihoods.default_background_marginalisation',
                 'xpsi.likelihoods._poisson_likelihood_given_background',
                 'xpsi.likelihoods._poisson_likelihood_given_background_IQU',
                 'xpsi.likelihoods._gaussian_likelihood_given_background_IQU',
                 'xpsi.likelihoods._gaussian_likelihood_QnUn',                
-                'xpsi.surface_radiation_field.__init__',
+                'xpsi.surface_radiation_field.core',
                 'xpsi.surface_radiation_field.preload',
                 'xpsi.surface_radiation_field.hot_user',
                 'xpsi.surface_radiation_field.hot_BB',
@@ -270,7 +271,7 @@ if __name__ == '__main__':
 
     setup(
         name = 'xpsi',
-        version = '2.2.7',
+        version = '2.3.0-b',
         author = 'The X-PSI Core Team',
         author_email = 'A.L.Watts@uva.nl',
         url = 'https://github.com/xpsi-group/xpsi',
@@ -285,9 +286,11 @@ if __name__ == '__main__':
                     'xpsi/surface_radiation_field',
                     'xpsi/likelihoods',
                     'xpsi/utilities',
-                    'xpsi/pixelmesh'],
+                    'xpsi/pixelmesh',
+                    'xpsi/include',
+                    'xpsi/include.rayXpanda'],
         install_requires = ['numpy'],
-        setup_requires = ['cython ~= 0.29'],
+        setup_requires = ['cython ~= 3.0.11'],
         package_data = {'': ['README.rst', 'LICENSE']},
         include_package_data = True,
         ext_modules = extensions,

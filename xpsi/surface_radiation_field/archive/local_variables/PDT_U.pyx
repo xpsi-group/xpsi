@@ -15,7 +15,7 @@ cdef int HIT = 1
 cdef int MISS = 0
 
 cdef double separation(double THETA, double PHI,
-                       double theta, double phi, double sin_theta) nogil:
+                       double theta, double phi, double sin_theta) noexcept nogil:
 
     cdef:
         double sin_THETA = sin(THETA)
@@ -28,7 +28,7 @@ cdef int HIT_or_MISS(double theta,
                      double phi,
                      double HYPERSLICE,
                      const double *const global_variables,
-                     const storage *const buf) nogil:
+                     const storage *const buf) noexcept nogil:
     # Use this function to determine whether an arbitrary input ray transports
     # a FINITE quantity of radiation
 
@@ -86,7 +86,7 @@ cdef int HIT_or_MISS(double theta,
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
 cdef storage* init_local_variables(size_t numTHREADS,
-                                   const char *const filepath) nogil:
+                                   const char *const filepath) noexcept nogil:
 
     cdef storage *buf = <storage*> malloc(sizeof(storage))
     buf.local_variables = <double**> malloc(numTHREADS * sizeof(double*))
@@ -101,7 +101,7 @@ cdef storage* init_local_variables(size_t numTHREADS,
 
     return buf
 
-cdef int free_local_variables(size_t numTHREADS, storage *const buf) nogil:
+cdef int free_local_variables(size_t numTHREADS, storage *const buf) noexcept nogil:
 
     cdef size_t THREAD
 
@@ -122,7 +122,7 @@ cdef int eval_local_variables(double theta,
                               const _GEOM *const GEOM,
                               const double *const global_variables,
                               const storage *const buf,
-                              size_t THREAD) nogil:
+                              size_t THREAD) noexcept nogil:
 
     cdef double *local_vars = (<double**> buf.local_variables)[THREAD]
 

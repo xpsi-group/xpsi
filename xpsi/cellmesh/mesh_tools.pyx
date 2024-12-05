@@ -16,7 +16,34 @@ cdef double _h = 6.62607004e-34
 cdef double radiusNormalised(double mu,
                              double epsilon,
                              double zeta,
-                             int star_shape_ind) nogil:
+                             int star_shape_ind) noexcept nogil:
+    """
+    Calculate the normalised radius (R(mu)/R_eq) based on the oblateness approximation from AlGendy & 
+    Morsink (2014) (see Eq. 20 and Table 1 for coefficient values), or assuming a spherical star.
+    In the former case, this function models the shape of a rotating neutron star based on its spin and compactness.
+    It uses the colatitude (`mu`), the dimensionless spin parameter (`epsilon`), and the compactness
+    (`zeta`) to compute the normalised radius.
+
+    :param double mu:
+        The cosine of the colatitude angle (theta). This parameter defines the angular
+        position on the star's surface, where mu is between -1 and 1.
+
+    :param double epsilon:
+        The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 2 or 
+        Eq. 10 from Morsink et al. (2007)).
+
+    :param double zeta:
+        The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 1 or Eq. 9 from 
+        Morsink et al. (2007)).
+
+    :param int star_shape_ind:
+        An integer flag that corresponds to either an oblate (0) or to a spherical star (1).
+
+    :return: 
+        The normalized radius, defined as R(theta)/R_eq, which represents the radial distance
+        from the center of the star at a given colatitude, scaled by the equatorial radius.
+    :rtype: double
+    """
 
     if(star_shape_ind == 0): #AlGendy & Morsink 2014 oblateness
         return 1.0 + epsilon * (-0.788 + 1.030 * zeta) * mu * mu
@@ -29,7 +56,30 @@ cdef double f_theta(double mu,
                     double radiusNormed,
                     double epsilon,
                     double zeta,
-                    int star_shape_ind) nogil:
+                    int star_shape_ind) noexcept nogil:
+    """
+    Calculate f(theta) based on Equation 3 of Morsink et al. (2007), or set f=0 in case of a sphere.
+
+    :param double mu: 
+        The cosine of the colatitude angle (theta). This parameter defines the angular
+        position on the star's surface, where mu is between -1 and 1.
+
+    :param double radiusNormed: 
+        The normalized radius, typically a dimensionless quantity derived from a physical radius.
+
+    :param double epsilon: 
+        The dimensionless spin parameter, defined as (omega**2 * R_eq**3) / (G * M) (see Eq. 10).
+
+    :param double zeta: 
+        The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 9).
+
+    :param int star_shape_ind:
+        An integer flag that corresponds to either an oblate (0) or to a spherical star (1).
+
+    :return: 
+        The computed value of f_theta, representing the normalized derivative of the radius.
+    :rtype: double
+    """
 
     cdef double radiusDerivNormed
 
@@ -42,7 +92,7 @@ cdef double f_theta(double mu,
     else:
         raise TypeError("Invalid star_shape option!")
 
-cdef double integrand(double theta, void *params) nogil:
+cdef double integrand(double theta, void *params) noexcept nogil:
 
     if theta == 0.0:
         return 0.0
@@ -72,7 +122,7 @@ cdef double integrateArea(double lower_lim,
                           double zeta,
                           int star_shape_ind,
                           int av,
-                          gsl_integration_cquad_workspace *w) nogil:
+                          gsl_integration_cquad_workspace *w) noexcept nogil:
 
     cdef double params[4]
     cdef double integral, error
@@ -99,13 +149,13 @@ cdef double integrateArea(double lower_lim,
 
     return R_eq * R_eq * integral
 
-cdef double eval_psi(double theta, double phi, double THETA) nogil:
+cdef double eval_psi(double theta, double phi, double THETA) noexcept nogil:
 
     cdef double psi = acos(cos(THETA) * cos(theta) + sin(THETA) * sin(theta) * cos(phi))
 
     return psi
 
-cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) nogil:
+cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) noexcept nogil:
 
     cdef double azi = sin(theta) * sin(phi) / sin(psi)
 
@@ -208,7 +258,7 @@ cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) nog
                 return 0.0
 
 
-cdef double eval_phi(double theta, double THETA, double psi) nogil:
+cdef double eval_phi(double theta, double THETA, double psi) noexcept nogil:
 
     cdef double cos_phi = cos(psi) - cos(THETA) * cos(theta)
 
@@ -219,7 +269,7 @@ cdef double eval_phi(double theta, double THETA, double psi) nogil:
     else:
         return acos(cos_phi)
 
-cdef double get_interval(double a, double b, double LB, double UB) nogil:
+cdef double get_interval(double a, double b, double LB, double UB) noexcept nogil:
 
     cdef int a_condition, b_condition
 
@@ -246,7 +296,7 @@ cdef double get_interval(double a, double b, double LB, double UB) nogil:
     elif b_condition == 2 and a_condition == 0:
         return UB - LB
 
-cdef double cell_integrand(double theta, void *params) nogil:
+cdef double cell_integrand(double theta, void *params) noexcept nogil:
 
     if theta == 0.0:
         return 0.0
@@ -337,7 +387,7 @@ cdef double cell_integrand(double theta, void *params) nogil:
 cdef double theta_given_phi(double phi,
                             double colat,
                             double radius,
-                            double interval[]) nogil:
+                            double interval[]) noexcept nogil:
 
     cdef double x, theta
 
@@ -385,7 +435,7 @@ cdef double integrateCell(double theta_a,
                           double superRadius,
                           double superCentreAzi,
                           double superCentreColat,
-                          gsl_cq_work *w) nogil:
+                          gsl_cq_work *w) noexcept nogil:
 
     cdef void *params[11]
     cdef double integral, error
@@ -671,7 +721,7 @@ cdef double integrateCell(double theta_a,
     return R_eq * R_eq * integral
 
 
-cdef double spot_integrand(double theta, void *params) nogil:
+cdef double spot_integrand(double theta, void *params) noexcept nogil:
 
     if theta == 0.0:
         return 0.0
@@ -772,7 +822,7 @@ cdef double integrateSpot(double theta_a,
                           double superCentreAzi,
                           int Lorentz,
                           double Omega,
-                          gsl_cq_work *w) nogil:
+                          gsl_cq_work *w) noexcept nogil:
 
 
     cdef double params[11]

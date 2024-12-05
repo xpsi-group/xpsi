@@ -6,8 +6,10 @@ from xpsi.utils import make_verbose
 
 from xpsi.Instrument import ChannelError
 
+from astropy.io import fits
+
 class Data(object):
-    """ A container for event data.
+    r""" A container for event data.
 
     The working assumption is that the sampling distribution of this event data
     can be written in terms of a set of channel-by-channel *count*\ -rate
@@ -202,6 +204,33 @@ class Data(object):
 
         yield
 
+    @make_verbose('Trimming event data', 'Event data trimmed')
+    def trim_data( self , 
+                  min_channel = 0,
+                  max_channel = -1 ):
+        """ Trim the event data to the specified channel range. 
+        
+        :param int min_channel:
+            The minimum channel number to include in the trimmed data.
+
+        :param int max_channel:
+            The maximum channel number to include in the trimmed data.
+        """
+        
+         # Make the table of required channels
+        assert min_channel >= self.channels[0] 
+        assert max_channel <= self.channels[-1]
+        new_channels = [ min_channel <= c <= max_channel for c in self.channels]
+
+        # Trim the counts and channels
+        self._channels = self.channels[new_channels]
+        self._counts = self.counts[new_channels]
+
+        # Change first and last
+        self._first = 0
+        self._last = max_channel - min_channel
+
+
     @classmethod
     @make_verbose('Loading event list and phase binning',
                   'Events loaded and binned')
@@ -302,3 +331,282 @@ class Data(object):
     @classmethod
     def bin__event_list(cls, *args, **kwargs):
         return cls.phase_bin__event_list(*args, **kwargs)
+
+    @classmethod
+    @make_verbose('Loading OGIP compliant file',
+                  'Data loaded')
+    def load(cls, path,
+             n_phases=32, 
+             channels=None, 
+             phase_column='PULSE_PHASE',
+             channel_column='PI'):
+        """ Load an OGIP compliant event list (EVT) or spectrum (PHA) fits file by redirecting to more specific class methods.
+        
+        :param str path:
+            Path to EVT or PHA fits file to extract the data from.
+
+        :param int n_phases:
+            The number of phase bins to use, if the data has phase information.
+
+        :param ndarray[n] | None channels:
+            The energy channels to extract the data from. Should be the same as the channels of the instrument to use. 
+            If None, extract all channels in the event list.
+
+        :param str phase_column:
+            If the file is a EVT file, column containing event phases.
+
+        :param str channel_column:
+            If the file is a EVT file, column containing event channels.
+
+        """
+        
+        # Check whether event file or PHA
+        with fits.open( path ) as hdul:
+            HDUCLAS1 = hdul[1].header['HDUCLAS1']
+
+        # Select the case based on HDUCLAS1
+        if HDUCLAS1 == 'SPECTRUM':
+            Data = cls.from_pha(path, channels=channels )
+        
+        elif HDUCLAS1 == 'EVENTS':
+            Data = cls.from_evt(path, 
+                 n_phases=n_phases, 
+                 channels=channels, 
+                 phase_column=phase_column,
+                 channel_column=channel_column)
+        
+        else:
+            raise IOError('HDUCLAS1 of Header does not match PHA or EVT files values. Could not load.')
+        
+        # Write the name of the instrument
+        Data.instrument = hdul[1].header['INSTRUME']
+
+        return Data
+
+
+    @classmethod
+    @make_verbose('Loading event list and phase binning',
+                  'Events loaded and binned')
+    def from_evt(cls, path, 
+                 n_phases=32, 
+                 channels=None, 
+                 phase_column='PULSE_PHASE',
+                 channel_column='PI',
+                 phase_shift=0.0):
+        """ Load an OGIP compliant event list EVT fits file.
+        
+        :param str path:
+            Path to event list fits file to extract the data from.
+
+        :param int n_phases:
+            The number of phase bins to use.
+
+        :param ndarray[n] channels:
+            The energy channels to extract the data from. Should be the same as the channels of the instrument to use. 
+            If None, extract all channels in the event list.
+
+        :param str phase_column:
+            The column in the OGIP EVT file containing event phases.
+
+        :param str channel_column:
+            The column in the OGIP EVT file containing event channels.
+
+        :param float phase_shift:
+            A common phase shift to apply to the event phases.
+        """
+
+        # Read the fits file
+        with fits.open( path ) as hdul:
+            Header = hdul['EVENTS'].header
+            EvtList = hdul['EVENTS'].data
+
+        # Extract useful data
+        exposure = Header['EXPOSURE']
+        channel_data = EvtList[channel_column]
+        phases_data = ( EvtList[ phase_column ] + phase_shift ) % 1.0 
+
+        # No channels specified, use everything
+        if channels is None:
+            min_channel = _np.min( channel_data )
+            max_channel = _np.max( channel_data )
+            channels = _np.arange(min_channel,max_channel+1)
+        else:
+            min_channel = channels[0]
+            max_channel = channels[-1]
+        channel_borders = _np.arange(min_channel, max_channel+2)-0.5
+
+         # Get intrinsinc values
+        first = 0
+        last = max_channel - min_channel
+        phases_borders = _np.linspace( 0.0 , 1.0 , n_phases+1 )
+
+        # Make the 2D histogram
+        mask = [ ch>=min_channel and ch<=max_channel for ch in channel_data ]
+        counts_histogram, _, _ = _np.histogram2d( channel_data[mask] , phases_data[mask], 
+                                                 bins=[channel_borders, phases_borders])
+
+        # Instatiate the class
+        return cls( counts_histogram.astype( dtype=_np.double ),
+                    channels=channels,
+                    phases=phases_borders,
+                    first=first,
+                    last=last,
+                    exposure_time=exposure )
+    
+
+    @classmethod
+    @make_verbose('Loading PHA spectrum and phase binning',
+                  'Spectrum loaded')
+    def from_pha( cls, path, 
+                  channels=None ):
+        """ Load an OGIP compliant spectrum PHA fits file.
+        
+        :param str path:
+            Path to PHA fits file to extract the data from.
+
+        :param ndarray[n] channels:
+            The energy channels to extract the data from. Should be the same as the channels of the instrument to use.
+            If None, extract all channels in the PHA file.
+        """
+
+        # Read the fits files
+        with fits.open( path ) as hdul:
+            Header = hdul['SPECTRUM'].header 
+            spectrum = hdul['SPECTRUM'].data
+
+        # Extract useful data
+        exposure = _np.double( Header['EXPOSURE'] )
+        channel_data = spectrum['CHANNEL']
+        counts_data = spectrum['COUNTS']
+
+        # No channels specified, use everything
+        if channels is None:
+            min_channel = _np.min( channel_data )
+            max_channel = _np.max( channel_data )
+            channels = _np.arange(min_channel,max_channel+1)
+        else:
+            min_channel = channels[0]
+            max_channel = channels[-1]
+            
+         # Get intrinsinc values
+        first = 0
+        last = max_channel - min_channel
+        phases = _np.array([0.0, 1.0])
+
+        # Match channels
+        channel_counts_map = dict(zip(channel_data, counts_data))
+        if not all(ch in channel_counts_map for ch in channels):
+            raise ValueError("Not all channels exist in channel_data.")
+        counts = _np.array( [[float(channel_counts_map[ch]) for ch in channels]] , dtype=_np.double).T
+        
+        Data = cls( counts,
+                    channels=channels,
+                    phases=phases,
+                    first=first,
+                    last=last,
+                    exposure_time=exposure )
+        
+        # Add useful paths
+        Data.backscal = Header['BACKSCAL']
+        Data.ancrfile = Header['ANCRFILE']
+        Data.respfile = Header['RESPFILE']
+        try:
+            if Header['HDUCLAS2'] == 'TOTAL':
+                Data.backfile = Header['BACKFILE']
+        except KeyError as e:
+            print('Keyword BACKFILE not found in file ',path)
+
+        return Data
+        
+
+    def spectra_support(self, n, source_backscal, channels=None):
+        """ Compute the spectrum support, if the data instance is background, assuming Poisson statistics. 
+        
+        :param int n:
+            The width, in sigma, to compute the support for.
+
+        :param float source_backscal:
+            The source scaling backscal parameter, to apply rescaling to the background spectrum so the background extraction area matches the source's.
+            This value can be found using Data.backscal on the source's Data instance.
+        """
+        # Get the background counts prior
+        counts = self.counts.sum(axis=1)
+        counts_support = _np.array([counts-n*_np.sqrt(counts),counts+n*_np.sqrt(counts)]).T
+        counts_support[counts_support[:,0] < 0.0, 0] = 0.0
+
+        # Correct for null support upper, values which make the background marginalisation go wrong (interval of integration is then [0,0])
+        # Does it by getting the nearest strictly positive value of the upper support bound
+        for i in range(counts_support.shape[0]):
+            if counts_support[i,1] == 0.0:
+                for j in range(1, counts_support.shape[0]):
+                    if i+j < counts_support.shape[0] and counts_support[i+j,1] > 0.0:
+                        counts_support[i,1] = counts_support[i+j,1]
+                        break
+                    elif i-j >= 0 and counts_support[i-j,1] > 0.0:
+                        counts_support[i,1] = counts_support[i-j,1]
+                        break
+        
+        # Apply the scaling
+        count_rate_support = counts_support / self.exposure_time
+        try:
+            count_rate_support *= ( source_backscal / self.backscal )
+        except:
+            raise IOError('No BACKSCAL was provided for source. Could not compute the support of the spectrum')
+
+        # If channels, extract the reight values
+        if channels is not None:
+            channel_indexes = [ _np.where(self.channels == ch)[0][0] for ch in channels ] 
+            count_rate_support = count_rate_support[ channel_indexes , :]
+
+        # Clean
+        count_rate_support = _contig( count_rate_support, dtype=_np.double )
+        return count_rate_support
+
+    def plot(self, num_rot = 2, dpi=200, colormap='inferno'):
+        """ Plot the data in a convenient way.
+
+        :param int num_rot:
+            The number of rotations to plot.
+
+        :param int dpi:
+            The resolution of the plot.
+
+        :param str colormap:
+            The colormap to use.
+        """
+        # Get the counts
+        counts_list = [ self.counts for i in range(num_rot) ]
+        phase_list = [self.phases[:-1] + i for i in range(num_rot)] 
+        counts = _np.concatenate( (counts_list), axis=1 )
+        phases = _np.concatenate( (phase_list), axis=0 )
+
+        # Do the plot
+        mosaic = [['A','.'],['B','C']]
+        fig,axs = _mpl.pyplot.subplot_mosaic( mosaic , height_ratios=[1.,1.], width_ratios=[3,1], layout='constrained')
+
+        # Plot the pulse
+        ax1 = axs['A']
+        ax1.errorbar( x=phases, y=counts.sum(axis=0), yerr=_np.sqrt( counts.sum(axis=0) ), ds='steps-mid', color='black' )
+        ax1.set_ylabel('Counts')
+
+        # Plot the 2D data
+        ax2 = axs['B']
+        im = ax2.pcolormesh( phases, self.channels , counts, cmap=colormap)
+        ax2.sharex( ax1 )
+        ax2.set_xlabel(r'Phase $\phi$ [cycles]')
+        ax2.set_ylabel('PI channel')
+        ax2.set_yscale('log')
+        
+        # Plot the spectrum
+        ax3 = axs['C']
+        ax3.sharey( ax2 )
+        ax3.get_yaxis().set_visible(False)
+        ax3.step( counts.sum(axis=1)/2, self.channels , color='black')
+        ax3.set_yscale('log')
+        ax3.set_xlabel('Counts per channel')
+
+        # Add the colorbar    
+        fig.colorbar( im , ax=ax2 , label='Counts')
+        fig.set_dpi(dpi)
+
+        return fig, axs
