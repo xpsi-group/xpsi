@@ -89,9 +89,9 @@ bounds = dict(distance = (0.5,2),
 spacetime = xpsi.Spacetime(bounds,
                            values=dict(frequency = 314.0),
                            star_shape="AGM14")
-
-#print(spacetime.star_shape)
-#exit()
+#Default star shape is an oblate spheroid from AlGendy & Morsink (2014, AGM14)
+#But also a spherical star can be used with:
+#spacetime.star_shape = "Sphere"
 
 # # Hot-spot
 bounds = dict(super_colatitude = (0.001, math.pi/2 - 0.001),
@@ -140,7 +140,6 @@ likelihood = xpsi.Likelihood(star = star, signals = signal,
 p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
 
 likelihood.check(None, [-3.1603740790e+04], 1.0e-5, physical_points=[p])
-
 
 if __name__ == '__main__':
 

@@ -405,7 +405,8 @@ class Everywhere(ParameterSubspace):
                                                      st.r_s,
                                                      st.R,
                                                      st.zeta,
-                                                     st.epsilon)
+                                                     st.epsilon,
+                                                     st.star_shape_ind)
 
     def _calibrate_lag(self, st, photosphere):
         """ Calibrate lag for cell mesh and normalise by pulse period. """

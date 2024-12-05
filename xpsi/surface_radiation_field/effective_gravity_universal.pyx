@@ -10,7 +10,8 @@ cdef double c = 2.99792458e8
 cdef double effectiveGravity(double mu,
                              double R_eq,
                              double x,
-                             double epsilon) nogil:
+                             double epsilon,
+                             int star_shape_ind) nogil:
 
     cdef:
         double g_0 = x * c * c / (R_eq * sqrt(1.0 - 2.0 * x))
@@ -29,4 +30,9 @@ cdef double effectiveGravity(double mu,
     g += (c_p + d_p + f_p - d_60) * esq * mu * mu
     g += d_60 * esq * fabs(mu)
 
-    return log10(g * g_0) + 2.0
+    if(star_shape_ind == 0): #AlGendy & Morsink 2014 oblateness
+        return log10(g * g_0) + 2.0
+    elif(star_shape_ind == 1): #A spherical star
+        return log10(g_0) + 2.0
+    else:
+        raise TypeError("Invalid star_shape option!")

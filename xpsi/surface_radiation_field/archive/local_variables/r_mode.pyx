@@ -99,6 +99,7 @@ cdef int eval_local_variables(double theta,
     local_vars[1] = effectiveGravity(cos(theta),
                                      GEOM.R_eq,
                                      GEOM.zeta,
-                                     GEOM.epsilon)
+                                     GEOM.epsilon,
+                                     GEOM.star_shape_ind)
 
     return SUCCESS

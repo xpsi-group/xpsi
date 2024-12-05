@@ -15,20 +15,32 @@ cdef double _h = 6.62607004e-34
 
 cdef double radiusNormalised(double mu,
                              double epsilon,
-                             double zeta) nogil:
+                             double zeta,
+                             int star_shape_ind) nogil:
 
-    return 1.0 + epsilon * (-0.788 + 1.030 * zeta) * mu * mu
+    if(star_shape_ind == 0): #AlGendy & Morsink 2014 oblateness
+        return 1.0 + epsilon * (-0.788 + 1.030 * zeta) * mu * mu
+    elif(star_shape_ind == 1): #A spherical star
+        return 1.0
+    else:
+        raise TypeError("Invalid star_shape option!")
 
 cdef double f_theta(double mu,
                     double radiusNormed,
                     double epsilon,
-                    double zeta) nogil:
+                    double zeta,
+                    int star_shape_ind) nogil:
 
     cdef double radiusDerivNormed
 
     radiusDerivNormed = -2.0 * epsilon * (-0.788 + 1.030 * zeta) * mu * sqrt(1.0 - mu * mu)
 
-    return radiusDerivNormed / (radiusNormed * sqrt(1.0 - 2.0 * zeta / radiusNormed))
+    if(star_shape_ind == 0): #AlGendy & Morsink 2014 oblateness
+        return radiusDerivNormed / (radiusNormed * sqrt(1.0 - 2.0 * zeta / radiusNormed))
+    elif(star_shape_ind == 1): #A spherical star
+        return 0.0
+    else:
+        raise TypeError("Invalid star_shape option!")
 
 cdef double integrand(double theta, void *params) nogil:
 
@@ -41,9 +53,10 @@ cdef double integrand(double theta, void *params) nogil:
         double epsilon = (<double*> params)[0]
         double zeta = (<double*> params)[1]
         int av = <int>(<double*> params)[2]
+        int star_shape_ind = <int>(<double*> params)[3]
 
-    radius = radiusNormalised(mu, epsilon, zeta)
-    f = f_theta(mu, radius, epsilon, zeta)
+    radius = radiusNormalised(mu, epsilon, zeta, star_shape_ind)
+    f = f_theta(mu, radius, epsilon, zeta, star_shape_ind)
 
     if (av == 0):
         eval_integrand = radius * radius * sqrt(1.0 + f * f) * sin(theta)
@@ -57,16 +70,18 @@ cdef double integrateArea(double lower_lim,
                           double R_eq,
                           double epsilon,
                           double zeta,
+                          int star_shape_ind,
                           int av,
                           gsl_integration_cquad_workspace *w) nogil:
 
-    cdef double params[3]
+    cdef double params[4]
     cdef double integral, error
     cdef size_t nevals
 
     params[0] = epsilon
     params[1] = zeta
     params[2] = <double> av
+    params[3] = <double> star_shape_ind
 
     cdef gsl_function F
     F.function = integrand
@@ -246,12 +261,13 @@ cdef double cell_integrand(double theta, void *params) nogil:
     cdef double phi_a = (<double**>params)[7][0]
     cdef double phi_b = (<double**>params)[8][0]
     cdef int verbose = (<int**>params)[9][0]
+    cdef int star_shape_ind = (<int**>params)[10][0]
 
     cdef double mu = cos(theta)
     cdef double radius, f
 
-    radius = radiusNormalised(mu, epsilon, zeta)
-    f = f_theta(mu, radius, epsilon, zeta)
+    radius = radiusNormalised(mu, epsilon, zeta, star_shape_ind)
+    f = f_theta(mu, radius, epsilon, zeta, star_shape_ind)
 
     cdef double aLB, aUB, cLB, cUB, delta_phi
 
@@ -363,6 +379,7 @@ cdef double integrateCell(double theta_a,
                           double R_eq,
                           double epsilon,
                           double zeta,
+                          int star_shape_ind,
                           double colat,
                           double cedeRadius,
                           double superRadius,
@@ -370,7 +387,7 @@ cdef double integrateCell(double theta_a,
                           double superCentreColat,
                           gsl_cq_work *w) nogil:
 
-    cdef void *params[10]
+    cdef void *params[11]
     cdef double integral, error
     cdef int verbose = 0
     cdef size_t nevals, i
@@ -385,6 +402,7 @@ cdef double integrateCell(double theta_a,
     params[7] = &phi_a
     params[8] = &phi_b
     params[9] = &verbose
+    params[10] = &star_shape_ind
 
     cdef gsl_function F
     F.function = &cell_integrand
@@ -668,13 +686,14 @@ cdef double spot_integrand(double theta, void *params) nogil:
     cdef int Lorentz = <int>((<double*>params)[7])
     cdef double R_eq = (<double*>params)[8]
     cdef double Omega = (<double*>params)[9]
+    cdef int star_shape_ind = <int>((<double*>params)[10])
     cdef double r_s_over_r
 
     cdef double mu = cos(theta)
     cdef double radius, f
 
-    radius = radiusNormalised(mu, epsilon, zeta)
-    f = f_theta(mu, radius, epsilon, zeta)
+    radius = radiusNormalised(mu, epsilon, zeta, star_shape_ind)
+    f = f_theta(mu, radius, epsilon, zeta, star_shape_ind)
 
     cdef double aLB, aUB, cLB, cUB, delta_phi
 
@@ -745,6 +764,7 @@ cdef double integrateSpot(double theta_a,
                           double R_eq,
                           double epsilon,
                           double zeta,
+                          int star_shape_ind,
                           double colat,
                           double cedeRadius,
                           double superRadius,
@@ -755,7 +775,7 @@ cdef double integrateSpot(double theta_a,
                           gsl_cq_work *w) nogil:
 
 
-    cdef double params[10]
+    cdef double params[11]
     cdef double integral, error
     cdef size_t nevals
 
@@ -769,6 +789,7 @@ cdef double integrateSpot(double theta_a,
     params[7] = <double> Lorentz
     params[8] = R_eq
     params[9] = Omega
+    params[10] = <double> star_shape_ind
 
     cdef gsl_function F
     F.function = &spot_integrand
@@ -823,6 +844,7 @@ def allocate_cells(size_t num_cells,
                    double Omega,
                    double zeta,
                    double epsilon,
+                   int star_shape_ind,
                    double superRadius,
                    double cedeRadius,
                    double superColatitude,
@@ -883,6 +905,7 @@ def allocate_cells(size_t num_cells,
                                       R_eq,
                                       epsilon,
                                       zeta,
+                                      star_shape_ind,
                                       0,
                                       w)
 
@@ -891,6 +914,7 @@ def allocate_cells(size_t num_cells,
                                R_eq,
                                epsilon,
                                zeta,
+                               star_shape_ind,
                                superColatitude,
                                superRadius,
                                holeRadius,
@@ -968,6 +992,7 @@ def allocate_cells(size_t num_cells,
                                           R_eq,
                                           epsilon,
                                           zeta,
+                                          star_shape_ind,
                                           0,
                                           w)
 
@@ -981,6 +1006,7 @@ def allocate_cells(size_t num_cells,
                                      R_eq,
                                      epsilon,
                                      zeta,
+                                     star_shape_ind,
                                      cedeColatitude,
                                      cedeRadius,
                                      superRadius,

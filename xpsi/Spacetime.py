@@ -91,9 +91,21 @@ class Spacetime(ParameterSubspace):
     @star_shape.setter
     def star_shape(self,star_shape):
         """ Set the shape of the star. """
-        if star_shape not in ["AGM14","Sphere"]:
+        allowed_models = ["AGM14","Sphere"]
+        if star_shape not in allowed_models:
             raise TypeError("Invalid star_shape option.")
         self._star_shape = star_shape
+        self._star_shape_ind = allowed_models.index(star_shape)
+
+    @property
+    def star_shape_ind(self):
+        """ Get the the index of shape model. """
+        return self._star_shape_ind
+
+    @star_shape_ind.setter
+    def star_shape_ind(self,star_shape_ind):
+        """ Get the the index of shape model. """
+        self._star_shape_ind = star_shape_ind
 
     @property
     def M(self):
