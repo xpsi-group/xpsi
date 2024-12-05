@@ -182,7 +182,7 @@ Next, let's pip installing the required python packages:
    pip install --upgrade pip setuptools wheel
    pip install numpy==1.26.3
    pip install scipy==1.13.0
-   pip install 'Cython<3' matplotlib wrapt pymultinest getdist h5py pytest nestcheck mpi4py
+   pip install Cython matplotlib wrapt pymultinest getdist h5py pytest nestcheck mpi4py
 
 Now, we make a seperate folder in which we build MultiNest:
 
@@ -255,7 +255,7 @@ Then, create the conda environnnement and Install python packages with conda (or
     conda create -n xpsi --clone base
     conda activate xpsi
     conda install numpy scipy matplotlib wrapt
-    conda install cython~=0.29
+    conda install cython~=3.0.11
     conda install h5py
     conda install -c conda-forge fgivenx
     pip install schwimmbad --user

@@ -44,7 +44,7 @@ contents are:
         - defaults
     dependencies:
         - numpy < 2.0.0
-        - cython ~= 0.29
+        - cython ~= 3.0.11
         - matplotlib
         - scipy
         - wrapt
@@ -52,15 +52,10 @@ contents are:
 
 The core packages required for likelihood functionality are
 `numpy <https://docs.scipy.org/doc/numpy/index.html>`_,
-`cython <http://cython.readthedocs.io/en/latest>`_ (< 1.0),
+`cython <http://cython.readthedocs.io/en/latest>`_,
 `matplotlib <https://matplotlib.org/stable/index.html>`_,
 `scipy <https://docs.scipy.org/doc//scipy/index.html>`_, and
-`wrapt <https://wrapt.readthedocs.io/en/latest/>`_.  The
-latest versions of ``cython (3.*)`` are not currently
-compatible with X-PSI (versions 1.* and 2.* of ``cython``
-were skipped). Therefore, it is important to install
-``cython ~= 0.29``, which will ensure that a compatible
-version is installed.
+`wrapt <https://wrapt.readthedocs.io/en/latest/>`_.
 
 
 To create a virtual environment from this file:
@@ -382,7 +377,7 @@ OS. Here we note some of the changes required.
 After creating the environment using the ``environment.yml`` file, 
 install ``xcode`` or ``xcode tools``. Be mindful of the sequence of programs to
 be installed hereafter. Use ``pip install`` to download and install ``h5py``
-and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy`` and ``cython ~= 0.29``
+and ``emcee`` (and ``maplotlib``, ``numpy``, ``scipy`` and ``cython ~= 3.0.11``
 if not using the ``environment.yml``. You may use the file as a reference of the
 packages required).
 
