@@ -1,9 +1,23 @@
-__all__ = ["nested", "ensemble"]
+__all__ = ["nested", "ensemble", "ultranested"]
 
 from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size
 from xpsi.utils import make_verbose
 from xpsi import Likelihood
+from xpsi.Posterior import Posterior
+
+try:
+    from xpsi.EnsembleSampler import EnsembleSampler
+except ImportError:
+    print("""Check your installation of emcee if using the EnsembleSampler""")
+try:
+    from xpsi.NestedSampler import NestedSampler
+except:
+    print("""Check your installation of PyMultiNest if using the NestedSampler""")
+try:
+    from xpsi.UltranestSampler import UltranestSampler
+except ImportError:
+    print("""Check your installation of UltraNest if using the UltranestSampler""")
 
 posterior = None
 
@@ -46,7 +60,6 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
     """
     # use the globally scoped variable
     global posterior
-    from xpsi.Posterior import Posterior
     # Callable instance of the posterior
     posterior = Posterior(likelihood,
                           prior,
@@ -65,8 +78,6 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
                 pool.wait()
                 _sys.exit(0)
 
-            from xpsi.EnsembleSampler import EnsembleSampler
-
             # Initialise emcee sampler
             sampler = EnsembleSampler(ndims = len(likelihood),
                                       posterior = func,
@@ -77,8 +88,6 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
             # Commence emcee sampling process
             sampler()
     else:
-        from xpsi.EnsembleSampler import EnsembleSampler
-
         # Initialise emcee sampler
         sampler = EnsembleSampler(ndims = len(likelihood),
                                   posterior = posterior,
@@ -108,7 +117,6 @@ def nested(likelihood, prior, check_kwargs={}, **kwargs):
     :param kwargs: Keyword arguments for PyMultiNest.
 
     """
-    from xpsi.NestedSampler import NestedSampler
 
     if check_kwargs:
         likelihood.check(**check_kwargs)
@@ -161,7 +169,6 @@ def importance(target, importance,
         Overwrite an existing importance sample file on disk?
 
     """
-
     if likelihood_change :
         surf="likelihood_change"
     if prior_change:
@@ -297,3 +304,52 @@ def importance(target, importance,
     importance.externally_updated = _importance_state_to_restore
 
     yield
+
+def ultranested(likelihood,
+                prior,
+                sampler_params={},
+                runtime_params={},
+                use_stepsampler=False,
+                stepsampler_params={},
+                out_filename="weighted_post_ultranest_xpsi"):
+    """ Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/)
+        package (Buchner 2021).
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param sampler_params: A dictionary of the keyword arguments passed to the
+        instance of :class:`~.UltranestSampler` to initialise the sampler.
+
+    :param runtime_params:  A dictionary of the keyword arguments passed to the
+        instance of :class:`~.UltranestSampler` to run the sampler.
+
+    :param use_stepsampler: Boolean indicating if the step sampler is used. In this
+        case the :class:`ultranest.stepsampler.SliceSampler` is used.
+
+    :param stepsampler_params: A dictionary of the keyword arguments passed to the
+        to the instance of :class:`~.UltranestSampler` specifying the step sampler
+        runtime parameters.
+
+    :param out_filename: String specifying the name of the output file.
+
+    :returns: An instance of :class:`~.UltranestSampler`
+
+    """
+
+    # initialise the sampler
+    sampler = UltranestSampler(likelihood, prior, sampler_params, use_stepsampler, stepsampler_params)
+
+    # start sampling
+    sampler(runtime_params)
+
+    # print results
+    sampler.print_results()
+    if use_stepsampler:
+        sampler.stepsampler.print_diagnostic()
+
+    # store output
+    sampler.write_results(sampler_params, out_filename)
+
+    return sampler
