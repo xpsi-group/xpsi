@@ -179,7 +179,7 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
             required total count numbers (see example notebooks).
 
         :returns ndarray model_flux:
-            2D array of synthesised counts.
+           *model_flux* (`numpy.ndarray`) synthesised counts.
 
         """
         if reinitialise: # for safety if settings have been changed
