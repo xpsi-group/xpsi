@@ -5,7 +5,7 @@
 Wrappers for SBI
 ================
 
-X-PSI wrapper functionalities to be used by the `sbi` package for Simulation-Based Inference (SBI) that are available in the `xpsi.SBI_wrapper`.
+X-PSI wrapper functionalities to be used by the `sbi <https://sbi-dev.github.io/sbi/latest/>`_ package for Simulation-Based Inference (SBI).
 
 .. autoclass:: xpsi.SBI_wrapper.Custom_SBI_Likelihood
     :members: _driver, synthesise
