@@ -57,7 +57,6 @@
    spacetime
    photosphere
    hotregion
-   twohotregions
    hotregions
    elsewhere
    everywhere
