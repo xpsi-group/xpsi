@@ -286,8 +286,8 @@ def synthesise(self,
     :param optional[int] seed:
         Seed for random number generation for Poisson noise in synthesised data.
 
-    :return ndarray synthetic:
-        The synthesised data set.
+    :return:
+        **synthetic** (`numpy.ndarray`) The synthesised data set.
     """
     if nchannels is None or nphases is None:
         raise ValueError('nchannels and nphases must be specified.')
@@ -345,8 +345,8 @@ class xpsi_wrappers:
 
         :param torch.Size sample_shape:
             The shape of the sample. Defaults to torch.Size([]).
-        :return optional[torch.Tensor] samples:
-            The sampled values. Returns torch.cuda.Tensor is CUDA is available.
+        :return:
+            **sample** (`torch.Tensor` or `torch.cuda.Tensor` if CUDA is available.) The sampled values.
         """
         if len(sample_shape) > 0:
             samples = self.prior.draw(sample_shape[0])
@@ -360,8 +360,8 @@ class xpsi_wrappers:
 
         :param torch.Tensor parameter_vector:
             The parameter vector.
-        :return torch.Tensor log_probability:
-            The log probability of the parameter vector.
+        :return:
+            **log_probability** (`torch.Tensor`) The log probability of the parameter vector.
         """
         parameter_vector = torch.Tensor(parameter_vector).cuda() if torch.cuda.is_available() else torch.Tensor(parameter_vector)
         log_probability = []
@@ -375,8 +375,8 @@ class xpsi_wrappers:
 
         :param torch.Tensor parameter_vector:
             The parameter vector for which to simulate pulse profile.
-        :return torch.Tensor model_flux:
-            The pulse profile for the input parameter vector.
+        :return:
+            **model_flux** (`torch.Tensor`) The pulse profile for the input parameter vector.
         """
         self.instr_kwargs['seed'] = randint(0,1000000000000000)
         parameter_vector = np.array(parameter_vector.cpu())
