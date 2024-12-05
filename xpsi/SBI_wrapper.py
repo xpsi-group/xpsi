@@ -178,6 +178,9 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
             Examples of such arguments include exposure times or
             required total count numbers (see example notebooks).
 
+        :returns ndarray model_flux:
+           *model_flux* (`numpy.ndarray`) synthesised counts.
+
         """
         if reinitialise: # for safety if settings have been changed
             self.reinitialise() # do setup again given exisiting object refs
@@ -233,20 +236,20 @@ class Custom_SBI_Likelihood(xpsi.Likelihood):
                 return model_flux
 
 class SynthesiseData(xpsi.Data):
-    """
-    Custom data container to enable synthesis.
+    """ Custom data container to enable synthesis.
 
-    Args
-    ----
-    channels : ndarray
+    :param ndarray channels:
         Instrument channel numbers which must be equal in number to the first
         dimension of the count matrix.
-    phases : ndarray
+
+    :param ndarray phases:
         Phases of the phase bins which must be equal in number to the second
         dimension of the count matrix.
-    first : int
+
+    :param int first:
         First channel index number to include in the synthesised data.
-    last : int
+
+    :param int last:
         Last channel index number to include in the synthesised data.
     """
     def __init__(self, channels, phases, first, last):
@@ -272,24 +275,19 @@ def synthesise(self,
     """
     Synthesise data set.
 
-    Args
-    ----
-    exposure_time : float
+    :param float exposure_time:
         Exposure time in seconds to scale the expected count rate.
-    expected_source_counts : float
+    :param float expected_source_counts:
         Total expected number of source counts.
-    nchannels : int
+    :param int nchannels:
         Number of channels in the synthesised data.
-    nphases : int
+    :param int nphases:
         Number of phase bins in the synthesised data.
-    seed : int
+    :param optional[int] seed:
         Seed for random number generation for Poisson noise in synthesised data.
-    **kwargs    
 
-    Returns
-    -------
-    synthetic : ndarray
-        The synthesised data set.
+    :return:
+        **synthetic** (`numpy.ndarray`) The synthesised data set.
     """
     if nchannels is None or nphases is None:
         raise ValueError('nchannels and nphases must be specified.')
@@ -322,14 +320,14 @@ def synthesise(self,
 class xpsi_wrappers:
     """
     Class that wraps the xpsi likelihood and prior into a SBI compatible interface.
-    
-    Args
-    ----
-    prior : xpsi.Prior instance
-    likelihood : xpsi.Likelihood instance
-    instr_kwargs : dict
+
+    :param xpsi.Prior prior:
+        xpsi.Prior instance.
+    :param xpsi.Likelihood likelihood:
+        xpsi.Likelihood instance.
+    :param dict instr_kwargs:
         Instrument keyword arguments for the likelihood synthesise method.
-    train_using_CNNs : bool
+    :param optional[bool] train_using_CNNs:
         Whether to use CNNs for training. Defaults to True.
     """
     # Todo: Enable cuda parallelisation.
@@ -344,16 +342,11 @@ class xpsi_wrappers:
     def sample(self, sample_shape=torch.Size([])):
         """
         Sample from the prior distribution.
-        
-        Parameters
-        ----------
-        sample_shape : torch.Size, optional
+
+        :param torch.Size sample_shape:
             The shape of the sample. Defaults to torch.Size([]).
-        
-        Returns
-        -------
-        samples : torch.Tensor or torch.cuda.Tensor depending on whether CUDA is available
-            The sampled values.
+        :return:
+            **sample** (`torch.Tensor` or `torch.cuda.Tensor` if CUDA is available.) The sampled values.
         """
         if len(sample_shape) > 0:
             samples = self.prior.draw(sample_shape[0])
@@ -364,16 +357,11 @@ class xpsi_wrappers:
     def log_prob(self, parameter_vector):
         """
         Compute the log probability of the parameter vector.
-        
-        Parameters
-        ----------
-        parameter_vector : torch.Tensor
+
+        :param torch.Tensor parameter_vector:
             The parameter vector.
-        
-        Returns
-        -------
-        log_probability : torch.Tensor or torch.cuda.Tensor depending on whether CUDA is available
-            The log probability of the parameter vector.
+        :return:
+            **log_probability** (`torch.Tensor`) The log probability of the parameter vector.
         """
         parameter_vector = torch.Tensor(parameter_vector).cuda() if torch.cuda.is_available() else torch.Tensor(parameter_vector)
         log_probability = []
@@ -384,16 +372,11 @@ class xpsi_wrappers:
     def simulator(self, parameter_vector):
         """
         Compute the likelihood of the parameter vector.
-        
-        Parameters
-        ----------
-        parameter_vector : torch.Tensor or torch.cuda.Tensor depending on whether CUDA is available
+
+        :param torch.Tensor parameter_vector:
             The parameter vector for which to simulate pulse profile.
-        
-        Returns
-        -------
-        model_flux : torch.Tensor or torch.cuda.Tensor depending on whether CUDA is available
-            The pulse profile for the input parameter vector.
+        :return:
+            **model_flux** (`torch.Tensor`) The pulse profile for the input parameter vector.
         """
         self.instr_kwargs['seed'] = randint(0,1000000000000000)
         parameter_vector = np.array(parameter_vector.cpu())
