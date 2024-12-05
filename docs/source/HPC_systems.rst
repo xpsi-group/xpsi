@@ -40,12 +40,13 @@ information and the needed modules:
 
 .. code-block:: bash
 
-    module load 2022
-    module load foss/2022a
-    module load SciPy-bundle/2022.05-foss-2022a
-    module load wrapt/1.15.0-foss-2022a
-    module load matplotlib/3.5.2-foss-2022a
-    module load CMake/3.23.1-GCCcore-11.3.0
+    module load 2024
+    module load foss/2024a
+    module load SciPy-bundle/2024.05-gfbf-2024a
+    module load wrapt/1.16.0-gfbf-2024a
+    module load matplotlib/3.9.2-gfbf-2024a
+    module load CMake/3.29.3-GCCcore-13.3.0  
+    module load Cython/3.0.10-GCCcore-13.3.0 
 
 Prepare a new Python virtual environment for X-PSI (named for example "xpsi_py3") in case the possibility of having several co-existing X-PSI and/or PyMultiNest versions is wished (otherwise proceed to MultiNest installation):
 
@@ -103,7 +104,7 @@ To test the installation of MultiNest and PyMultiNest on the login node:
 
 .. code-block:: bash
 
-    mpiexec -n 2 python pymultinest_demo.py
+    python pymultinest_demo.py
 
 Do you obtain parameter values and evidences?
 
