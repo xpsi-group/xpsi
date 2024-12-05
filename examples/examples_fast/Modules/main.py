@@ -109,7 +109,7 @@ hot_spot = xpsi.HotRegion(bounds=bounds,
                                 num_rays=512,
                                 is_secondary=True,
                                 image_order_limit=3, # up to tertiary
-                                prefix='hot')
+                                prefix='p') # For "primary"
 
 
 # # Photosphere
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 
     start = time.time()
     wrapped_params = [0] * len(likelihood)
-    wrapped_params[likelihood.index('hot__phase_shift')] = 1
+    wrapped_params[likelihood.index('p__phase_shift')] = 1
 
     #The original (more accurate) run settings shown as commented.
     runtime_params = {'resume': False,

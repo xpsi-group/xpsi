@@ -115,8 +115,10 @@ Do you obtain parameter values and evidences?
 
     We assumed above that nested sampling with `MultiNest`_ is desired. If
     ensemble-MCMC with ``emcee`` is desired, you need to install the Python
-    packages ``emcee`` and ``schwimmbad``. We assume the user can infer how to
-    do this using the information above and on the :ref:`install` page.
+    packages ``emcee`` and ``schwimmbad``. If ``UltraNest`` is desired, you 
+    need to install the Python package ``ultranest``. We assume the user 
+    can infer how to do this using the information above and on the 
+    :ref:`install` page.
 
 For `GSL <https://www.gnu.org/software/gsl/>`_ we can use the default 2.5
 version already provided in Snellius. Thus, to prepare X-PSI from ``$HOME``, we
@@ -153,11 +155,6 @@ Batch usage
 
 For an example job script, refer to :ref:`example_job`.
 
-Lisa (SURF)
------------
-
-`Lisa <https://servicedesk.surf.nl/wiki/display/WIKI/Lisa>`_ follows mostly the installation instructions as that of Snellius. Small differences in the installation procedure are still to be studied.
-
 Helios (API)
 ------------
 
@@ -166,79 +163,64 @@ Helios is a cluster of the Anton Pannekoek Institute for Astronomy.
 Installation
 ^^^^^^^^^^^^
 
-Let's start by loading the necessary modules and creating a conda environment. At the moment, the installation is known to be working only for the specific python 3.10.6 version, and when conda installing the required python packages separately, as followed:
+Let's start by loading the necessary modules and creating a Python environment. At the moment, the installation is known to be working for the specific python 3.11 version: 
 
 .. code-block:: bash
 
-   module load anaconda3/2021-05
-   module load openmpi/3.1.6
+   module purge
+   module load gnu12
+   module load openmpi4
+   module load gsl 
+
+   python3.11 -m venv $HOME/venv311/xpsi
+   source $HOME/venv311/xpsi/bin/activate 
+     
+Next, let's pip installing the required python packages: 
+
+.. code-block:: bash
+
+   pip install --upgrade pip setuptools wheel
+   pip install numpy==1.26.3
+   pip install scipy==1.13.0
+   pip install 'Cython<3' matplotlib wrapt pymultinest getdist h5py pytest nestcheck mpi4py
+
+Now, we make a seperate folder in which we build MultiNest:
+
+.. code-block:: bash
+
+   cd
+   mkdir My_codes
+   cd My_Codes
+
+   git clone https://github.com/farhanferoz/MultiNest.git multinest
+   cd  multinest/MultiNest_v3.12_CMake/multinest
+   mkdir -p build
+   cd build
+   CC=$(which cc) FC=$(which mpif90) CXX=$(which c++) cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+   make
+
+We then copy the MultiNest library files into our virtual environment and set-up the library path:
+   
+.. code-block:: bash
+
+   cd ../lib
+   cp * $VIRTUAL_ENV/lib/.
+   cd; cd $VIRTUAL_ENV/lib/
+   cp /usr/lib64/liblapack.so.3 .
+   cp /usr/lib64/libblas.so.3 .
+   cp -r /usr/lib64/atlas .
+
+   export LD_LIBRARY_PATH=$VIRTUAL_ENV/lib:$LD_LIBRARY_PATH
+
+If the above works, we can then continue building X-PSI:
+
+.. code-block:: bash
+
+   cd ~/My_Codes
    git clone https://github.com/xpsi-group/xpsi.git
    cd xpsi
-   conda create -n xpsi_py3 python=3.10.6
-   conda activate xpsi_py3
-   conda install -c conda-forge mpi4py
-   conda install cython~=0.29
-   conda install scipy
-   conda install matplotlib
-   conda install wrapt   
-     
-Let's then test if mpi4py works:
-
-.. code-block:: bash
-
-   cd; wget https://github.com/mpi4py/mpi4py/releases/download/3.1.5/mpi4py-3.1.5.tar.gz
-   tar zxvf mpi4py-3.1.5.tar.gz
-   cd mpi4py-3.1.5
-   mpiexec -n 4 python demo/helloworld.py
-   
-Let's then install MultiNest and PyMultiNest:
-   
-.. code-block:: bash
-   
-   cd; git clone https://github.com/farhanferoz/MultiNest.git multinest
-   cd multinest/MultiNest_v3.12_CMake/multinest
-   mkdir build
-   cd build
-   CC=gcc FC=/zfs/helios/filer0/sw-astro/api/openmpi/3.1.6/bin/mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
-   make
-   
-.. code-block:: bash
-
-   cd; git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
-   cd pymultinest
-   python setup.py install   
-   
-We can then check, if the PyMultiNest installation works:
-
-.. code-block:: bash
-
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/multinest/MultiNest_v3.12_CMake/multinest/lib/
-   mpiexec -n 2 python pymultinest_demo.py
-
-Let's then install GSL:
-
-.. code-block:: bash
-
-   cd; wget -v http://mirror.koddos.net/gnu/gsl/gsl-latest.tar.gz
-   tar -xzvf gsl-latest.tar.gz
-   cd gsl-{latest} 
-   ./configure CC=gcc --prefix=$HOME/gsl
-   make
-   make check
-   make install
-   make installcheck
-   make clean
-   export PATH=$HOME/gsl/bin:$PATH
-
-where ``gsl-{latest}`` should be replaced with the latest version number. Let's
-then finally install X-PSI and test that it works:
-   
-.. code-block:: bash
-
-   cd; cd xpsi;        
-   CC=gcc python setup.py install
-   cd examples/examples_fast/Modules/
-   python main.py
+   CC=$(which cc) python setup.py build
+   CC=$(which cc) python setup.py install
 
 Batch usage
 ^^^^^^^^^^^
