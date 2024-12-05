@@ -396,7 +396,7 @@ class xpsi_wrappers:
             The pulse profile for the input parameter vector.
         """
         self.instr_kwargs['seed'] = randint(0,1000000000000000)
-        parameter_vector = np.array(parameter_vector)
+        parameter_vector = np.array(parameter_vector.cpu())
         model_flux = self.likelihood.synthesise(parameter_vector, force=True, 
                                                 instr=self.instr_kwargs)
 
