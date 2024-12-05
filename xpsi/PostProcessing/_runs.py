@@ -132,7 +132,7 @@ class Runs(Metadata):
                                       transform=_transform,
                                       overwrite_transformed=_overwrite,
                                       **kwargs))
-
+        
         return cls(runs, likelihood, ID, **kwargs)
 
     def set_subset(self, IDs=None, combine=False, combine_all=False,
@@ -210,7 +210,8 @@ class Runs(Metadata):
                   'names': self.names,
                   'bounds': self.bounds,
                   'labels': self.labels,
-                  'truths': self.truths}
+                  'truths': self.truths,
+                  'precisions': self.precisions}
 
         self._combined = NestedBackend(file_root,
                                        base_dir = base_dir,
