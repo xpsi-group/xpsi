@@ -44,12 +44,6 @@ class Photosphere(ParameterSubspace):
 
     :param obj everywhere:
         An instance of :class:`~.Everywhere.Everywhere` (or a derived class).
-        Note that if you use construct the surface radiation field in this
-        way, you should use the :attr:`~.Photosphere.Photosphere.hot_atmosphere`
-        property to pass a buffer of numerical data to the integrator
-        routines. You then need to ensure that the extension modules
-        ``xpsi/surface_radiation_field/hot_radiation_field.pyx`` and
-        ``xpsi/surface_radiation_field/elsewhere_radiation_field.pyx`` match.
 
     .. note::
 
@@ -385,7 +379,7 @@ class Photosphere(ParameterSubspace):
     
     @property
     def everywhere_atmosphere(self):
-        """ Get the numerical atmosphere buffers for elsewhere if used.
+        """ Get the numerical atmosphere buffers for eerywhere if used.
 
         To preload a numerical atmosphere into a buffer, subclass and
         overwrite the setter. The underscore attribute set by the setter
