@@ -70,6 +70,7 @@ class ResidualPlot(SignalPlot):
                  clustdist_cmap='PuOr',
                  mu=0.0,
                  sigma=1.0,
+                 nbins=50,
                  **kwargs):
         """
         Constructor method for plotting residuals.
@@ -133,6 +134,7 @@ class ResidualPlot(SignalPlot):
             self._threshlim = threshlim
             self._mu=mu
             self._sigma=sigma
+            self._nbins=nbins
             self._clusters_cmap = clusters_cmap
             self._clustdist_cmap = clustdist_cmap
 
@@ -184,7 +186,7 @@ class ResidualPlot(SignalPlot):
             self._ax_cdist = self._fig.add_subplot(self._gs[4, 2:-1])
             
             # Prettify
-            for ax in (self._ax_data, self._ax_model, self._ax_clres, self._ax_clust, self._ax_rdist):
+            for ax in (self._ax_data, self._ax_model, self._ax_clres, self._ax_clust):
                 ax.set_xlabel('$\phi$ [cycles]')
 
             for ax in (self._ax_data, self._ax_model):
@@ -201,10 +203,9 @@ class ResidualPlot(SignalPlot):
             self._ax_clust.set_yticks([])
             
             self._ax_rdist.set_title('Residual distribution')  
-            self._ax_rdist.xaxis.set_major_locator(MultipleLocator(0.2))
-            self._ax_rdist.xaxis.set_minor_locator(MultipleLocator(0.05))
-            self._ax_rdist.set_xlim([0.0,1.0])
-            self._ax_rdist.set_ylabel('Total of involved residuals')
+            self._ax_rdist.xaxis.set_major_locator(MultipleLocator(1.0))
+            self._ax_rdist.xaxis.set_minor_locator(MultipleLocator(0.5))
+            self._ax_rdist.set_xlabel('Residuals')
 
             self._ax_cdist.set_title('Cluster sizes distribution')
             self._ax_cdist.set_xlabel('Cluster sizes')
@@ -486,9 +487,16 @@ class ResidualPlot(SignalPlot):
         vmaxresid =  _np.max( _np.abs( self._residuals ) )
         vmaxarea =  _np.max( self._affectedarea )
         
-        residhist, binhist =  _np.histogram(self._residuals, bins=len(self._signal.data.phases), range=[self._signal.data.phases[0], self._signal.data.phases[-1]])
+        if _np.abs(_np.amin(self._residuals))< _np.abs(_np.amax(self._residuals)):
+            minabsresid=(-1.0)*_np.amax(self._residuals)
+            maxabsresid=_np.amax(self._residuals)
+        else:
+            minabsresid=_np.amin(self._residuals)
+            maxabsresid=(-1.0)*_np.amin(self._residuals)
+        
+        residhist, binhist =  _np.histogram(self._residuals, bins=self._nbins, range=[minabsresid, maxabsresid])
         centphase = (binhist[:-1] + binhist[1:]) / 2
-        binsize = (self._signal.data.phases[-1]-self._signal.data.phases[0])/(len(self._signal.data.phases)*1.0)
+        binsize = (maxabsresid-minabsresid)/(self._nbins)
         scale=binsize*8640.0
         f = 1/(self._sigma * _np.sqrt(2 * _np.pi)) * _np.exp( - (centphase - self._mu)**2 / (2 * self._sigma**2) )
 
