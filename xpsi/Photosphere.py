@@ -116,8 +116,11 @@ class Photosphere(ParameterSubspace):
                                  'radiation field everywhere.')
             if not isinstance(everywhere, Everywhere):
                 raise TypeError('Invalid type for everywhere object.')
+            self._everywhere_atmosphere = ()
+            
         elif hot is None and elsewhere is None:
             pass # can call image-plane extensions
+
         else:
             if elsewhere is not None:
                 if not isinstance(elsewhere, Elsewhere):
@@ -187,6 +190,58 @@ class Photosphere(ParameterSubspace):
                                               custom,
                                               **kwargs)
 
+    def load_NSX_table( self, path , Tcol, gcol, mucol, Ecol, spe_Icol):
+        """
+        Loading the nsx atmosphere table provided in path 
+        giving the colums in the table corresponding to 
+        - the logarithm of local comoving effective temperature logTeff(K) (Tcol, default=4), 
+        - the logarithm of effective surface gravity logg(cm s^-2) (gcol, default=5), 
+        - the cosine of the angle from the local surface normal mu = cos(theta) (mucol, default=1), 
+        - the logarithm of the photon energy log(E/kTeff) (Ecol, default=0) 
+        - the one-dimensional buffer of specific intensity log(Inu/Teff^3) (spe_Icol, default=2)
+        """
+
+        # Load tables and get sizes
+        table = _np.loadtxt(path, dtype=_np.double)
+        lenlogT = len( _np.unique(table[:,Tcol]) )
+        lenlogg = len( _np.unique(table[:,gcol]) )
+        lenmu = len( _np.unique(table[:,mucol]) )
+        lenlogE = len( _np.unique(table[:,Ecol]) )
+
+        # Make respective tables
+        logT = _np.zeros( lenlogT )
+        logg = _np.zeros( lenlogg )
+        mu = _np.zeros( lenmu )
+        logE = _np.zeros( lenlogE )
+
+        reorder_buf = _np.zeros((lenlogT,
+                                lenlogg,
+                                lenmu,
+                                lenlogE,))
+
+        index = 0
+        for i in range(lenlogT):
+            for j in range(lenlogg):
+                for k in range(lenlogE):
+                    for l in range(lenmu):
+                        logT[i] = table[index,Tcol]
+                        logg[j] = table[index,gcol]
+                        logE[k] = table[index,Ecol]
+                        mu[reorder_buf.shape[2] - l - 1] = table[index,mucol]
+                        reorder_buf[i,j,reorder_buf.shape[2] - l - 1,k] = 10.0**(table[index,spe_Icol])
+                        index += 1
+
+        buf = _np.zeros(_np.prod(reorder_buf.shape))
+
+        bufdex = 0
+        for i in range(lenlogT):
+                for j in range(lenlogg):
+                    for k in range(lenmu):
+                        for l in range(lenlogE):
+                            buf[bufdex] = reorder_buf[i,j,k,l]; bufdex += 1
+
+        return logT, logg, mu, logE, buf
+
     @property
     def hot_atmosphere(self):
         """ Get the numerical atmosphere buffers for hot regions if used.
@@ -222,9 +277,17 @@ class Photosphere(ParameterSubspace):
         return self._hot_atmosphere
 
     @hot_atmosphere.setter
-    def hot_atmosphere(self, path):
-        """ Implement if required. """
-        raise NotImplementedError('Implement setter if required.')
+    def hot_atmosphere(self, path,Tcol=3, gcol=4, mucol=1, Ecol=0, spe_Icol=2):
+
+        if 'nsx' in path:
+            # Read and set attributes of NSX model table
+            logT, logg, mu, logE, buf = self.load_NSX_table( path ,Tcol, gcol, mucol, Ecol, spe_Icol)
+            self._hot_atmosphere = (logT, logg, mu, logE, buf)
+
+        else:
+            ## if you want to set another model
+            """ Implement if required. """
+            raise NotImplementedError('Implement setter if required.')
 
 
     @property
@@ -262,9 +325,16 @@ class Photosphere(ParameterSubspace):
         return self._hot_atmosphere_Q
 
     @hot_atmosphere_Q.setter
-    def hot_atmosphere_Q(self, path):
-        """ Implement if required. """
-        raise NotImplementedError('Implement setter if required.')
+    def hot_atmosphere_Q(self, path, Tcol=3, gcol=4, mucol=1, Ecol=0, spe_Icol=2):
+
+        if 'nsx' in path:
+            # Read and set attributes of NSX model table
+            logT, logg, mu, logE, buf = self.load_NSX_table( path ,Tcol, gcol, mucol, Ecol, spe_Icol)
+            self._hot_atmosphere_Q = (logT, logg, mu, logE, buf)
+
+        else:
+            """ Implement if required. """
+            raise NotImplementedError('Implement setter if required.')
 
 
     @property
@@ -302,9 +372,62 @@ class Photosphere(ParameterSubspace):
         return self._elsewhere_atmosphere
 
     @elsewhere_atmosphere.setter
-    def elsewhere_atmosphere(self, path):
-        """ Implement if required. """
-        raise NotImplementedError('Implement setter if required.')
+    def elsewhere_atmosphere(self, path, Tcol=3, gcol=4, mucol=1, Ecol=0, spe_Icol=2):
+
+        if 'nsx' in path:
+            # Read and set attributes of NSX model table
+            logT, logg, mu, logE, buf = self.load_NSX_table( path ,Tcol, gcol, mucol, Ecol, spe_Icol)
+            self._elsewhere_atmosphere = (logT, logg, mu, logE, buf)
+
+        else:
+            """ Implement if required. """
+            raise NotImplementedError('Implement setter if required.')
+    
+    @property
+    def everywhere_atmosphere(self):
+        """ Get the numerical atmosphere buffers for elsewhere if used.
+
+        To preload a numerical atmosphere into a buffer, subclass and
+        overwrite the setter. The underscore attribute set by the setter
+        must be an :math:`n`-tuple whose :math:`n^{th}` element is an
+        :math:`(n-1)`-dimensional array flattened into a one-dimensional
+        :class:`numpy.ndarray`. The first :math:`n-1`
+        elements of the :math:`n`-tuple must each be an ordered one-dimensional
+        :class:`numpy.ndarray` of parameter values for the purpose of
+        multi-dimensional interpolation in the :math:`n^{th}` buffer. The
+        first :math:`n-1` elements must be ordered to match the index
+        arithmetic applied to the :math:`n^{th}` buffer. An example would be
+        ``self._hot_atmosphere = (logT, logg, mu, logE, buf)``, where:
+        ``logT`` is a logarithm of local comoving effective temperature;
+        ``logg`` is a logarithm of effective surface gravity;
+        ``mu`` is the cosine of the angle from the local surface normal;
+        ``logE`` is a logarithm of the photon energy; and
+        ``buf`` is a one-dimensional buffer of intensities of size given by
+        the product of sizes of the first :math:`n-1` tuple elements.
+
+        It is highly recommended that buffer preloading is used, instead
+        of loading from disk in the customisable radiation field extension
+        module, to avoid reading from disk for every signal
+        (likelihood) evaluation. This can be a non-negligible waste of compute
+        resources. By preloading in Python, the memory is allocated and
+        references to that memory are not in general deleted until a sampling
+        script exits and the kernel stops. The likelihood callback accesses
+        the same memory upon each call without I/O.
+
+        """
+        return self._everywhere_atmosphere
+
+    @everywhere_atmosphere.setter
+    def everywhere_atmosphere(self, path, Tcol=3, gcol=4, mucol=1, Ecol=0, bufcol=2):
+
+        if 'nsx' in path:
+            # Read and set attributes of NSX model table
+            logT, logg, mu, logE, buf = self.load_NSX_table( path ,Tcol, gcol, mucol, Ecol, bufcol)
+            self._everywhere_atmosphere = (logT, logg, mu, logE, buf)
+
+        else:
+            """ Implement if required. """
+            raise NotImplementedError('Implement setter if required.')
 
     @property
     def hot(self):
@@ -393,7 +516,7 @@ class Photosphere(ParameterSubspace):
             spectrum = self._everywhere.integrate(self._spacetime,
                                                    energies,
                                                    threads,
-                                                   self._hot_atmosphere)
+                                                   self._everywhere_atmosphere)
             if spectrum.ndim == 1:
                 self._signal = ((spectrum.reshape(-1,1),),)
             else:
