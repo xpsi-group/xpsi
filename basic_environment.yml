@@ -7,3 +7,4 @@ dependencies:
   - matplotlib >= 3.7.0
   - scipy
   - wrapt
+  - astropy >= 5.2, < 7.0.0

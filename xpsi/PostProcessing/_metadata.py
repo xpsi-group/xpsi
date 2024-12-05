@@ -34,7 +34,7 @@ class Metadata(object):
     """
 
     def __init__(self, ID, names, bounds=None, labels=None,
-                 implementation=None, kde_settings=None, truths=None):
+                 implementation=None, kde_settings=None, truths=None, precisions=None):
 
         self.ID = ID
         self.names = names
@@ -59,6 +59,11 @@ class Metadata(object):
             self.truths = truths
         else:
             self._truths = dict(list(zip(self.names, [None] * len(self.names))))
+        
+        if precisions is not None:
+            self.precisions = precisions
+        else:
+            self._precisions = None
 
     @property
     def ID(self):
@@ -225,4 +230,26 @@ class Metadata(object):
         for i, name in enumerate(self.names):
             v[i] = self.truths[name]
         return v
+    
+    @property
+    def precisions(self):
+        """ Get the parameter precisions. """
+
+        return self._precisions
+
+    @precisions.setter
+    def precisions(self, obj):
+        """ Set the parameter precisions, which should be a dictionary containing integers or Nones. """
+
+        try:
+            if len(obj) != len(self.names):
+                raise TypeError
+            for key in obj:
+                if not isinstance(obj[key], (int | None)):
+                    raise TypeError
+        except TypeError:
+            print('Invalid parameter name specification. See the docstring.')
+            raise
+
+        self._precisions =  obj
 

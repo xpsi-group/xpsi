@@ -44,6 +44,7 @@ jobs:
         micromamba install sphinx decorator h5py
         micromamba install -c conda-forge nbsphinx nbconvert
         pip install sphinxcontrib-websupport sphinx_rtd_theme
+        pip install torch
     - name : install other needed packages
       run: |
         micromamba install -c conda-forge getdist nestcheck
