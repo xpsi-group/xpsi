@@ -17,7 +17,7 @@ class IntegrationError(xpsiError):
     """ Raised if a problem was encountered during signal integration. """
 
 class Everywhere(ParameterSubspace):
-    """ The photospheric radiation field represented by a global mesh.
+    r""" The photospheric radiation field represented by a global mesh.
 
     An instance of this class *cannot* be used in conjuction with hot region
     objects nor with an elsewhere instance.

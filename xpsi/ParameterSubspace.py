@@ -1,4 +1,4 @@
-""" Abstract parameter subspace :math:`\mathbb{R}^{d}`. """
+r""" Abstract parameter subspace :math:`\mathbb{R}^{d}`. """
 
 from xpsi.global_imports import *
 from xpsi.utils import make_verbose

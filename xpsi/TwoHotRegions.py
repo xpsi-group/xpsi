@@ -3,7 +3,7 @@ from xpsi.global_imports import *
 from xpsi.HotRegion import HotRegion, PulseError
 
 class TwoHotRegions(HotRegion):
-    """ Two photospheric hot regions, related via antipodal reflection symmetry.
+    r""" Two photospheric hot regions, related via antipodal reflection symmetry.
 
     The *primary* hot region is represented by the class from which the
     :class:`.TwoHotRegions.TwoHotRegions` derives -- i.e., the

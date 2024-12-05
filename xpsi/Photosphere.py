@@ -762,7 +762,7 @@ class Photosphere(ParameterSubspace):
               atm_ext="BB",
               animate_kwargs = None,
               **kwargs):
-        """ Image the star as a function of phase and energy.
+        r""" Image the star as a function of phase and energy.
 
         :param bool reimage:
             (Re)image the star. If ``False``, but the spacetime configuration
@@ -1317,7 +1317,7 @@ class Photosphere(ParameterSubspace):
                        tick_length_scaling = 1.0,
                        dpi_scale = 1.0,
                        **kwargs):
-        """ Helper method for specific intensity sky map visualization.
+        r""" Helper method for specific intensity sky map visualization.
 
         Uses Delaunay triangulation to create an irregular sky mesh and
         calculate photon (specific) intensity contours at a sequence of phases.
@@ -2021,8 +2021,8 @@ class Photosphere(ParameterSubspace):
                             pp_ax.legend(loc='upper center', ncol=3, mode='expand',
                                          handlelength=4.0,
                                          frameon=False, fancybox=False)
-                            pp_ax.set_xlabel('Phase [$2\pi$ radians]')
-                            pp_ax.set_ylabel('photons/cm$^2$/s/keV')
+                            pp_ax.set_xlabel(r'Phase [$2\pi$ radians]')
+                            pp_ax.set_ylabel(r'photons/cm$^2$/s/keV')
 
                             fig.savefig(file_root + '_%i.png' % (len(_ext_phases) - 1),
                                         dpi=dpi)
@@ -2038,8 +2038,8 @@ class Photosphere(ParameterSubspace):
                         pp_ax.legend(loc='upper center', ncol=3, mode='expand',
                                      handlelength=4.0,
                                      frameon=False, fancybox=False)
-                        pp_ax.set_xlabel('Phase [$2\pi$ radians]')
-                        pp_ax.set_ylabel('photons/cm$^2$/s/keV')
+                        pp_ax.set_xlabel(r'Phase [$2\pi$ radians]')
+                        pp_ax.set_ylabel(r'photons/cm$^2$/s/keV')
 
                         fig.savefig(file_root + '_%i.png' % i, dpi=dpi)
                 else:
