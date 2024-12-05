@@ -43,7 +43,7 @@ ctypedef struct DATA:
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_hot_Num2D(size_t numThreads, const _preloaded *const preloaded) nogil:
+cdef void* init_hot_Num2D(size_t numThreads, const _preloaded *const preloaded) noexcept nogil:
     # This function must match the free management routine free_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -125,7 +125,7 @@ cdef void* init_hot_Num2D(size_t numThreads, const _preloaded *const preloaded) 
         for i in range(4):
             for j in range(4):
                 
-                address = D.p.I + (D.acc.BN[T][0] + i) * D.p.S[0]
+                address = D.p.intensity + (D.acc.BN[T][0] + i) * D.p.S[0]
                 address += D.acc.BN[T][1] + j
 
                 D.acc.INTENSITY_CACHE[T][i * D.p.BLOCKS[0] + j] = address[0]
@@ -135,7 +135,7 @@ cdef void* init_hot_Num2D(size_t numThreads, const _preloaded *const preloaded) 
     return <void*> D
 
 
-cdef int free_hot_Num2D(size_t numThreads, void *const data) nogil:
+cdef int free_hot_Num2D(size_t numThreads, void *const data) noexcept nogil:
     # This function must match the initialisation routine init_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -178,7 +178,7 @@ cdef double eval_hot_Num2D(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
-                     void *const data) nogil:
+                     void *const data) noexcept nogil:
     # Arguments:
     # E = photon energy in keV
     # mu = cosine of ray zenith angle (i.e., angle to surface normal)
@@ -324,7 +324,7 @@ cdef double eval_hot_Num2D(size_t THREAD,
         II = i * D.p.BLOCKS[0]
         for j in range(4):
             
-            address = D.p.I + (BN[0] + i) * D.p.S[0]
+            address = D.p.intensity + (BN[0] + i) * D.p.S[0]
             address += BN[1] + j
             
             temp = DIFF[i] * DIFF[4 + j] 
@@ -346,7 +346,7 @@ cdef double eval_hot_Num2D(size_t THREAD,
     return I #* pow(10.0, 3.0 * vec[0])
 
 
-cdef double eval_hot_norm_Num2D() nogil:
+cdef double eval_hot_norm_Num2D() noexcept nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.
@@ -360,7 +360,7 @@ cdef double eval_hot_Num2D_I(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
-                     void *const data) nogil:
+                     void *const data) noexcept nogil:
     # Arguments:
     # E = photon energy in keV
     # mu = cosine of ray zenith angle (i.e., angle to surface normal)
@@ -379,7 +379,7 @@ cdef double eval_hot_Num2D_Q(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
-                     void *const data) nogil:
+                     void *const data) noexcept nogil:
     # Arguments:
     # E = photon energy in keV
     # mu = cosine of ray zenith angle (i.e., angle to surface normal)

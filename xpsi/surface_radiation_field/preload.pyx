@@ -30,11 +30,11 @@ cdef _preloaded* init_preload(object atmosphere):
                     preloaded.S[i] *= cast.shape[0]
 
     intensity = atmosphere[i+1]
-    preloaded.I = &intensity[0]
+    preloaded.intensity = &intensity[0]
 
     return preloaded
 
-cdef int free_preload(_preloaded *const preloaded) nogil:
+cdef int free_preload(_preloaded *const preloaded) noexcept nogil:
     free(preloaded.params)
     free(preloaded.N)
     free(preloaded.S)

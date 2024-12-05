@@ -48,17 +48,17 @@ cdef double c = 2.99792458e8
 
 cdef int ERROR = 1
 
-cdef double eval_image_deflection(int order, double psi) nogil:
+cdef double eval_image_deflection(int order, double psi) noexcept nogil:
     if order % 2 != 0:
         return <double>(order + 1) * _pi + pow(-1.0, <double>order) * psi
     else:
         return <double>(order) * _pi + pow(-1.0, <double>order) * psi
 
-cdef void invert(double a, double b, double *c, double *d) nogil:
+cdef void invert(double a, double b, double *c, double *d) noexcept nogil:
     #c_invert(a, b, c, d)
     __pyx_f_9rayXpanda_9inversion_c_invert(a, b, c, d)
 
-cdef void deflect(double a, double b, double *c, double *d) nogil:
+cdef void deflect(double a, double b, double *c, double *d) noexcept nogil:
     #c_deflect(a, b, c, d)
     __pyx_f_9rayXpanda_10deflection_c_deflect(a, b, c, d)
 
@@ -71,7 +71,7 @@ cdef double _get_rayXpanda_defl_lim() except *:
         xpsi.cellmesh._check_rayXpanda_defl_lim(__rayXpanda_defl_lim__)
         return <double>__rayXpanda_defl_lim__
 
-cdef bint compare_double(double x, double y, double epsilon = 1.0e-12) nogil:
+cdef bint compare_double(double x, double y, double epsilon = 1.0e-12) noexcept nogil:
     if(fabs(x - y) < epsilon):
         return True
     else:
@@ -128,12 +128,12 @@ cdef void link_rayXpanda(bint *use_rayXpanda, double *rayXpanda_defl_lim) except
 
 cdef double b_phsph_over_r_s = 3.0 * sqrt(3.0) / 2.0
 
-cdef double inDef(double x, void *params) nogil:
+cdef double inDef(double x, void *params) noexcept nogil:
 
     cdef double r_c_over_r_s = (<double*> params)[0]
     return 1.0 / sqrt(2.0 - x * x - (1.0 - x * x) * (1.0 - x * x) / (r_c_over_r_s - 1.0))
 
-cdef double inLag(double x, void *params) nogil:
+cdef double inLag(double x, void *params) noexcept nogil:
 
     cdef double r_c_over_r_s = (<double*> params)[0]
 
@@ -141,14 +141,14 @@ cdef double inLag(double x, void *params) nogil:
 
     return X * X / (x + X)
 
-cdef double outDef(double x, void *params) nogil:
+cdef double outDef(double x, void *params) noexcept nogil:
 
     cdef double sas = (<double*> params)[0]
     cdef double R_over_r_s = (<double*> params)[1]
 
     return x / sqrt(1.0 - sas + x * x * sas * (2.0 - x * x - (1.0 - x * x) * (1.0 - x * x) / (R_over_r_s - 1.0)))
 
-cdef double outLag(double x, void *params) nogil:
+cdef double outLag(double x, void *params) noexcept nogil:
 
     cdef double sas = (<double*> params)[0]
     cdef double R_over_r_s = (<double*> params)[1]
@@ -162,7 +162,7 @@ cdef void rayIntegrator(size_t thread,
                              double cos_alpha,
                              double r_s,
                              double r_s_over_R,
-                             double *rayParams) nogil:
+                             double *rayParams) noexcept nogil:
 
     cdef int status
     cdef double outParams[2]

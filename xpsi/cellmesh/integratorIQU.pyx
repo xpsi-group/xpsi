@@ -44,7 +44,7 @@ from xpsi.surface_radiation_field.elsewhere_wrapper cimport (init_elsewhere,
 
 from .rays cimport eval_image_deflection, invert, link_rayXpanda
 
-from ..tools cimport _get_phase_interpolant, gsl_interp_type
+from ..tools.core cimport _get_phase_interpolant, gsl_interp_type
 
 def integrate(size_t numThreads,
               double R,
