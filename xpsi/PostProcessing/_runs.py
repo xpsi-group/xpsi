@@ -126,40 +126,40 @@ class Runs(Metadata):
             _overwrite = False
 
         if multi_mode:
-            filerootpath =_os.path.join(base_dirs[0], roots[0])
-            # Read the file and manually handle blank lines
-            with open(filerootpath+"post_separate.dat", 'r') as file:
-                lines = file.readlines()
-
-            # Convert lines to a numpy array, replacing blank lines with a marker (e.g., None or NaN)
-            data = []
-            for line in lines:
-                stripped = line.strip()
-                if stripped:  # Non-blank line
-                    data.append(_np.array(stripped.split(), dtype=float))
-                else:  # Blank line
-                    data.append(None)
-
-            # Separate modes based on None markers
-            modes = []
-            current_mode = []
-            for row in data:
-                if row is None:
-                    if current_mode:
-                        modes.append(_np.array(current_mode))
-                        current_mode = []
-                else:
-                    current_mode.append(row)
-
-            # Append the last mode if not empty
-            if current_mode:
-                modes.append(_np.array(current_mode))
-
             for vec in range(len(roots)):
+                filerootpath =_os.path.join(base_dirs[vec], roots[vec])
+                # Read the file and manually handle blank lines
+                with open(filerootpath+"post_separate.dat", 'r') as file:
+                    lines = file.readlines()
+
+                # Convert lines to a numpy array, replacing blank lines with a marker (e.g., None or NaN)
+                data = []
+                for line in lines:
+                    stripped = line.strip()
+                    if stripped:  # Non-blank line
+                        data.append(_np.array(stripped.split(), dtype=float))
+                    else:  # Blank line
+                        data.append(None)
+
+                # Separate modes based on None markers
+                modes = []
+                current_mode = []
+                for row in data:
+                    if row is None:
+                        if current_mode:
+                            modes.append(_np.array(current_mode))
+                            current_mode = []
+                    else:
+                        current_mode.append(row)
+
+                # Append the last mode if not empty
+                if current_mode:
+                    modes.append(_np.array(current_mode))
+
                 for mode in range(len(modes)):
                     _np.savetxt(filerootpath+f"mode{mode+1}.txt", modes[mode])
                     roots.append(roots[vec]+f"mode{mode+1}")
-                    run_IDs.append(run_IDs[vec]+f"{mode_label} {mode}")
+                    run_IDs.append(run_IDs[vec]+f"{mode_label} {mode+1}")
                     base_dirs.append(base_dirs[vec])
                     use_nestcheck.append(use_nestcheck[vec])
             # Forget about the defaul xpsi loaded file
@@ -302,7 +302,6 @@ class Runs(Metadata):
         """ Get a :class:`~.Run` instance using the associated ID. """
         if isinstance(ID, _six.string_types):
             for run in self._runs:
-                print(ID, run.ID)
                 if ID == run.ID:
                     return run
         elif isinstance(ID, int):
