@@ -2,7 +2,7 @@ from libc.stdlib cimport malloc, free
 
 ctypedef struct _preloaded:
     size_t ndims
-    double *I
+    double *intensity
 
     double **params
     size_t *S
@@ -11,4 +11,4 @@ ctypedef struct _preloaded:
 
 cdef _preloaded* init_preload(object atmosphere)
 
-cdef int free_preload(_preloaded *const preloaded) nogil
+cdef int free_preload(_preloaded *const preloaded) noexcept nogil

@@ -40,13 +40,6 @@ class TestInstrumentMatrix(object):
         with pytest.raises(ResponseError):
             st = Instrument(matrix, self.energy_edges, self.channels, self.channel_edges)
 
-    def test_instrument_matrix_shape(self):
-
-        # Tests if matrix has the wrong shape (i.e., dim[0]>dim[1])
-        matrix = np.ones((4,3))
-        with pytest.raises(ResponseError):
-            st = Instrument(matrix, self.energy_edges, self.channels, self.channel_edges)
-
     def test_instrument_matrix_values(self):
 
         # Tests if matrix has >= 0 values

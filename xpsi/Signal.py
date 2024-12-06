@@ -15,6 +15,8 @@ from abc import abstractmethod
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
 
+from copy import deepcopy
+
 class LikelihoodError(xpsiError):
     """ Raised if there is a problem with the value of the log-likelihood. """
 
@@ -82,6 +84,8 @@ class Signal(ParameterSubspace):
                  bounds = None,
                  values = None,
                  stokes = "I",
+                 min_channel = 0,
+                 max_channel = -1,
                  *args,
                  **kwargs):
 
@@ -108,23 +112,36 @@ class Signal(ParameterSubspace):
         if not isinstance(data, Data):
             raise TypeError('Invalid type for a data object.')
         else:
-            self._data = data
+            self._data = deepcopy(data)
 
         if not isinstance(instrument, Instrument):
             raise TypeError('Invalid type for an instrument object.')
         else:
-            self._instrument = instrument
+            self._instrument = deepcopy( instrument )
+
+        # Trimming the data and response so they fit together
+        if min_channel != 0 or max_channel != -1:
+            try:
+                self._data.trim_data(min_channel, max_channel)
+            except AttributeError:
+                print('WARNING : There is no counts in data object. This is normal if you are trying to synthesise data.'
+                      'Otherwise something is very wrong and do not continue')
+            self._instrument.trim_response(min_channel, max_channel)
 
         a, b = data.index_range
-        if (len(data.channels) != len(instrument.channels[a:b])):
+        if (len(self._data.channels) != len(self._instrument.channels[a:b])):
             raise ChannelError( 'Size of the channel array declared for event data '
                                 'does not match the size of the channel array declared'
                                 ' for the loaded instrument response (sub)matrix.')
 
-        if (data.channels != instrument.channels[a:b]).any():
+        if (self._data.channels != self._instrument.channels[a:b]).any():
             raise ChannelError('Channel array declared for event data does not '
                                'match channel array declared for the loaded '
                                'instrument response (sub)matrix.')
+
+        # Check that they come from the same instrument
+        if hasattr( self._data , 'instrument' ) and hasattr( self._instrument , 'name' ):
+            assert self._data.instrument == self._instrument.name, 'Data and Instrument come from different instruments'
 
         self._identify_waveband()
 

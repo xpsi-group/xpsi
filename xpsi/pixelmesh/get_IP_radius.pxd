@@ -5,4 +5,4 @@ from xpsi.pixelmesh.globalRayMap cimport RAY_MAP
 cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
                                       _RAY *const RAY,
                                       RAY_MAP *const MAP,
-				      int force_circular) nogil
+				      int force_circular) noexcept nogil

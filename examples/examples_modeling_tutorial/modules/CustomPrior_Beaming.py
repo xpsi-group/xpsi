@@ -67,7 +67,9 @@ class CustomPrior(xpsi.Prior):
         grav = xpsi.surface_radiation_field.effective_gravity(np.array([1.0, 0.0]),
                                                                np.array([ref.R] * 2 ),
                                                                np.array([ref.zeta] * 2),
-                                                               np.array([ref.epsilon] * 2))
+                                                               np.array([ref.epsilon] * 2),
+                                                               ref.star_shape)
+
         for g in grav:
             if not 13.7 <= g <= 15.0:
                 return -np.inf

@@ -217,7 +217,8 @@ class Elsewhere(ParameterSubspace):
                                                      st.r_s,
                                                      st.R,
                                                      st.zeta,
-                                                     st.epsilon)
+                                                     st.epsilon,
+                                                     st.star_shape_ind)
 
     def _compute_rays(self, st, threads):
         """ Trace (integrate) a set of rays.
