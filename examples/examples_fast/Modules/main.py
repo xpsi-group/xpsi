@@ -88,10 +88,10 @@ bounds = dict(distance = (0.5,2),
 
 spacetime = xpsi.Spacetime(bounds,
                            values=dict(frequency = 314.0),
-                           star_shape="AGM14")
-#Default star shape is an oblate spheroid from AlGendy & Morsink (2014, AGM14)
+                           star_shape="AGM_14")
+#Default star shape is an oblate spheroid from AlGendy & Morsink (2014, AGM_14)
 #But also a spherical star can be used with:
-#spacetime.star_shape = "Sphere"
+#spacetime.star_shape = "sphere"
 
 # # Hot-spot
 bounds = dict(super_colatitude = (0.001, math.pi/2 - 0.001),

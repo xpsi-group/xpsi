@@ -37,7 +37,8 @@ cdef double effectiveGravity(double mu,
         Eq. 10 from Morsink et al. (2007)).
 
     :param int star_shape_ind:
-        An integer flag that corresponds to either an oblate (0) or to a spherical star (1).        
+        An integer flag that corresponds to either an oblate (0) (from Algendy & Morsink 2014) or 
+        to a spherical star (1).        
 
     :return: 
         The effective surface gravities in log10(g*g0). The result is scaled to centimeters (conversion
@@ -62,9 +63,9 @@ cdef double effectiveGravity(double mu,
     g += (c_p + d_p + f_p - d_60) * esq * mu * mu
     g += d_60 * esq * fabs(mu)
 
-    if(star_shape_ind == 0): #AlGendy & Morsink 2014 oblateness
+    if(star_shape_ind == 0):  # AlGendy & Morsink 2014 oblateness
         return log10(g * g_0) + 2.0
-    elif(star_shape_ind == 1): #A spherical star
+    elif(star_shape_ind == 1):  # A spherical star
         return log10(g_0) + 2.0
     else:
         raise TypeError("Invalid star_shape option!")

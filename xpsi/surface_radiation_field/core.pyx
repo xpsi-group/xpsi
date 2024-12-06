@@ -518,9 +518,9 @@ def effective_gravity(double[::1] cos_colatitude,
                       double[::1] R_eq,
                       double[::1] zeta,
                       double[::1] epsilon,
-                      str star_shape = "AGM14"):
+                      str star_shape = "AGM_14"):
     """ Approximate local effective gravity using a universal relation.
-    (or a spherical star if setting star_shape="Sphere")
+    (or a spherical star if setting star_shape="sphere")
 
     See Morsink et al. (2007), AlGendy & Morsink (2014), and Bogdanov et al.
     (2019, ApJL, 887, L26).
@@ -545,7 +545,7 @@ def effective_gravity(double[::1] cos_colatitude,
         properties. See :attr:`~xpsi.Spacetime.Spacetime.epsilon`.
 
     :param double[::1] star_shape:
-        A string defining the shape model of the star ("AGM14" or "Sphere").
+        A string defining the shape model of the star ("AGM_14" or "sphere").
         See :attr:`~xpsi.Spacetime.Spacetime.star_shape`.
 
     :returns:
@@ -559,7 +559,7 @@ def effective_gravity(double[::1] cos_colatitude,
 
     cdef unsigned int i
 
-    allowed_models = ["AGM14","Sphere"]
+    allowed_models = ["AGM_14","sphere"]
     cdef unsigned int star_shape_ind = allowed_models.index(star_shape)
 
     for i in range(<size_t>gravity.shape[0]):

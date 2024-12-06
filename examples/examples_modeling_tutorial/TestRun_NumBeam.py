@@ -109,9 +109,9 @@ bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
                 cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
 
-spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0), star_shape="AGM14")
+spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0), star_shape="AGM_14")
 #The star shape can also set to be spherical:
-#spacetime.star_shape = "Sphere"
+#spacetime.star_shape = "sphere"
 
 bounds = dict(super_colatitude = (None, None),
               super_radius = (None, None),

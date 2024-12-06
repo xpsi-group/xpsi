@@ -37,7 +37,8 @@ cdef double radiusNormalised(double mu,
         Morsink et al. (2007)).
 
     :param int star_shape_ind:
-        An integer flag that corresponds to either an oblate (0) or to a spherical star (1).
+        An integer flag that corresponds to either an oblate (0) (from Algendy & Morsink 2014) or 
+        to a spherical star (1). 
 
     :return: 
         The normalized radius, defined as R(theta)/R_eq, which represents the radial distance
@@ -45,9 +46,9 @@ cdef double radiusNormalised(double mu,
     :rtype: double
     """
 
-    if(star_shape_ind == 0): #AlGendy & Morsink 2014 oblateness
+    if(star_shape_ind == 0):  # AlGendy & Morsink 2014 oblateness
         return 1.0 + epsilon * (-0.788 + 1.030 * zeta) * mu * mu
-    elif(star_shape_ind == 1): #A spherical star
+    elif(star_shape_ind == 1):  # A spherical star
         return 1.0
     else:
         raise TypeError("Invalid star_shape option!")
@@ -74,7 +75,8 @@ cdef double f_theta(double mu,
         The compactness parameter, defined as (G * M) / (R_eq * c**2) (see Eq. 9).
 
     :param int star_shape_ind:
-        An integer flag that corresponds to either an oblate (0) or to a spherical star (1).
+        An integer flag that corresponds to either an oblate (0) (from Algendy & Morsink 2014) or 
+        to a spherical star (1).
 
     :return: 
         The computed value of f_theta, representing the normalized derivative of the radius.
@@ -85,9 +87,9 @@ cdef double f_theta(double mu,
 
     radiusDerivNormed = -2.0 * epsilon * (-0.788 + 1.030 * zeta) * mu * sqrt(1.0 - mu * mu)
 
-    if(star_shape_ind == 0): #AlGendy & Morsink 2014 oblateness
+    if(star_shape_ind == 0):  # AlGendy & Morsink 2014 oblateness
         return radiusDerivNormed / (radiusNormed * sqrt(1.0 - 2.0 * zeta / radiusNormed))
-    elif(star_shape_ind == 1): #A spherical star
+    elif(star_shape_ind == 1):  # A spherical star
         return 0.0
     else:
         raise TypeError("Invalid star_shape option!")
