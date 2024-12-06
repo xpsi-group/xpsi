@@ -91,6 +91,9 @@ class ResidualPlot(SignalPlot):
              the data and posterior-expected count numbers over joint
              channel-phase intervals. A diverging colormap is recommended.
 
+        :param list parameters_vector:
+             List of model parameters to plot the residuals for.
+
         :param bool plot_pulse:
              Plot the pulse profile?
 
