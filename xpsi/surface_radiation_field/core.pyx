@@ -431,6 +431,7 @@ def intensity_from_globals(double[::1] energies,
     GEOM.R_eq = R_eq
     GEOM.epsilon = epsilon
     GEOM.zeta = zeta
+    GEOM.star_shape_ind = 0 #assuming only oblate stars (Algendy & Morsink 2014) for global variables.
 
     cdef fptr_init init_ptr = init_hot
     cdef fptr_free free_ptr = free_hot
@@ -516,8 +517,10 @@ def intensity_from_globals(double[::1] energies,
 def effective_gravity(double[::1] cos_colatitude,
                       double[::1] R_eq,
                       double[::1] zeta,
-                      double[::1] epsilon):
+                      double[::1] epsilon,
+                      str star_shape = "AGM_14"):
     """ Approximate local effective gravity using a universal relation.
+    (or a spherical star if setting star_shape="sphere")
 
     See Morsink et al. (2007), AlGendy & Morsink (2014), and Bogdanov et al.
     (2019, ApJL, 887, L26).
@@ -541,6 +544,10 @@ def effective_gravity(double[::1] cos_colatitude,
         A 1D :class:`numpy.ndarray` of a dimensionless function of stellar
         properties. See :attr:`~xpsi.Spacetime.Spacetime.epsilon`.
 
+    :param double[::1] star_shape:
+        A string defining the shape model of the star ("AGM_14" or "sphere").
+        See :attr:`~xpsi.Spacetime.Spacetime.star_shape`.
+
     :returns:
         A 1D :class:`numpy.ndarray` of the logarithms (base 10) of the
         effective gravities in units of cm/s^2.
@@ -552,10 +559,14 @@ def effective_gravity(double[::1] cos_colatitude,
 
     cdef unsigned int i
 
+    allowed_models = ["AGM_14","sphere"]
+    cdef unsigned int star_shape_ind = allowed_models.index(star_shape)
+
     for i in range(<size_t>gravity.shape[0]):
         gravity[i] = effectiveGravity(cos_colatitude[i],
                                       R_eq[i],
                                       zeta[i],
-                                      epsilon[i])
+                                      epsilon[i],
+                                      star_shape_ind)
 
     return np.asarray(gravity, dtype = np.double, order = 'C')

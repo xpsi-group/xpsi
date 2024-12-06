@@ -27,17 +27,21 @@ cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) noe
 
 cdef double radiusNormalised(double mu,
                              double epsilon,
-                             double zeta) noexcept nogil
+                             double zeta,
+                             int star_shape_ind) noexcept nogil
+
 cdef double f_theta(double mu,
                     double radiusNormed,
                     double epsilon,
-                    double zeta) noexcept nogil
+                    double zeta,
+                    int star_shape_ind) noexcept nogil
 
 cdef double integrateArea(double lower_lim,
                           double upper_lim,
                           double R_eq,
                           double epsilon,
                           double zeta,
+                          int star_shape_ind,
                           int av,
                           gsl_integration_cquad_workspace *w) noexcept nogil
 
@@ -48,6 +52,7 @@ cdef double integrateCell(double theta_a,
                           double R_eq,
                           double epsilon,
                           double zeta,
+                          int star_shape_ind,
                           double colat,
                           double cedeRadius,
                           double superRadius,
@@ -60,6 +65,7 @@ cdef double integrateSpot(double theta_a,
                           double R_eq,
                           double epsilon,
                           double zeta,
+                          int star_shape_ind,
                           double colat,
                           double cedeRadius,
                           double superRadius,
