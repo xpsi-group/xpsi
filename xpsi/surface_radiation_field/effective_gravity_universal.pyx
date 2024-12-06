@@ -10,7 +10,7 @@ cdef double c = 2.99792458e8
 cdef double effectiveGravity(double mu,
                              double R_eq,
                              double x,
-                             double epsilon) nogil:
+                             double epsilon) noexcept nogil:
     """
     Calculate the effective surface gravity log-likelihood value based on the approximation from
     AlGendy & Morsink (2014) (see Eq. 21 and Table 5 for coefficient values).

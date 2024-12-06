@@ -41,6 +41,7 @@
    Module_generator_tutorial
    Example_script_and_modules
    Example_job
+   x_p_sbi
 
 .. toctree::
    :maxdepth: 1
@@ -56,7 +57,6 @@
    spacetime
    photosphere
    hotregion
-   twohotregions
    hotregions
    elsewhere
    everywhere
@@ -80,3 +80,5 @@
    posterior
    sample
    postprocessing
+   SBI_wrapper
+   

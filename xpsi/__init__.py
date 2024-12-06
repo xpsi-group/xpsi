@@ -4,7 +4,7 @@ An open-source package for neutron star astrostatistics.
 
 """
 
-__version__ = "2.2.7"
+__version__ = "2.3.0-b"
 __author__ = "The X-PSI Core Team"
 
 try:
@@ -76,7 +76,6 @@ if not __XPSI_SETUP__:
     from xpsi.Spacetime import Spacetime
     from xpsi.Photosphere import Photosphere
     from xpsi.HotRegion import HotRegion
-    from xpsi.TwoHotRegions import TwoHotRegions
     from xpsi.HotRegions import HotRegions
     from xpsi.Elsewhere import Elsewhere
     from xpsi.Everywhere import Everywhere
@@ -86,6 +85,11 @@ if not __XPSI_SETUP__:
 
     from xpsi.Sample import nested
     from xpsi.Prior import Prior
+    try:
+        from xpsi.SBI_wrapper import Custom_SBI_Likelihood
+    except ImportError:
+        _warning('Cannot import torch and test SBI_wrapper.')
+        
 
     if global_imports._size == 1:
         try:

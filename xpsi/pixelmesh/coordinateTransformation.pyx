@@ -6,7 +6,7 @@
 from libc.math cimport sqrt, sin, cos, acos, pow
 
 cdef void BOYERLINDQUIST_2_SPHERICAL(RAY_MAP *const MAP,
-                                     const _GEOM *const GEOM) nogil:
+                                     const _GEOM *const GEOM) noexcept nogil:
     cdef:
         size_t i, j
         double sin_theta_sq
@@ -34,7 +34,7 @@ cdef void BOYERLINDQUIST_2_SPHERICAL(RAY_MAP *const MAP,
         MAP.ORIGIN[2] = sqrt(rsq + GEOM.asq * sin_theta_sq)
 
 #cdef void BOYERLINDQUIST_2_SPHERICAL_FOCUS(FOCUS_RAY_MAP *const F,
-#                                           const _GEOM *const GEOM) nogil:
+#                                           const _GEOM *const GEOM) noexcept nogil:
 #    cdef:
 #        size_t i, j
 #        double sin_theta_sq
@@ -61,7 +61,7 @@ cdef void BOYERLINDQUIST_2_SPHERICAL(RAY_MAP *const MAP,
 #        F.ORIGIN[2] = sqrt(rsq + GEOM.asq * sin_theta_sq)
 #
 #cdef void BOYERLINDQUIST_2_SPHERICAL_DENSE(FOCUS_RAY_MAP *const F,
-#                                           const _GEOM *const GEOM) nogil:
+#                                           const _GEOM *const GEOM) noexcept nogil:
 #    cdef:
 #        size_t i, j
 #        double sin_theta_sq
