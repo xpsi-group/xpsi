@@ -23,8 +23,8 @@ class Spacetime(ParameterSubspace):
         but an exception will be raised if there is also no bound specified.
 
     :param string star_shape:
-        A string specifying the assumed shape of the star. Options 'AGM14'
-        (an oblate spheroid from Algendy & Morsink 2014) or 'Sphere' are
+        A string specifying the assumed shape of the star. Options 'AGM_14'
+        (an oblate spheroid from Algendy & Morsink 2014) or 'sphere' are
         currently allowed.
 
     We define a property for parameters and combinations of parameters to
@@ -39,7 +39,7 @@ class Spacetime(ParameterSubspace):
                       'distance',
                       'cos_inclination']
 
-    def __init__(self, bounds, values, star_shape="AGM14"):
+    def __init__(self, bounds, values, star_shape="AGM_14"):
 
         self.star_shape = star_shape
 
@@ -91,7 +91,7 @@ class Spacetime(ParameterSubspace):
     @star_shape.setter
     def star_shape(self,star_shape):
         """ Set the shape of the star. """
-        allowed_models = ["AGM14","Sphere"]
+        allowed_models = ["AGM_14","sphere"]
         if star_shape not in allowed_models:
             raise TypeError("Invalid star_shape option.")
         self._star_shape = star_shape
