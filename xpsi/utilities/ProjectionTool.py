@@ -180,6 +180,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     # Set abbreviations for plot labels
     Plab = 'Primary'
     Slab = 'Secondary'
+    Tlab = 'Tertiary'
     EMIlab = ' emission'
     OMIlab = ' omission'
     SUPERlab = ' superseding'
@@ -264,7 +265,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         elif ('ST' == hot_name):
                 params_red = [param for param in params if HStag+'_' in param]
                 if len(params_red)>4:
-                    if not(('cos_inclination' in params_red) and (len(params_red)==5)):
+                    if not( (('cos_inclination' in params_red) or ('sin_inclination' in params_red)) and (len(params_red)==5)):
                         print ("WARNING! there are info for a complex geometry, but they are not being used")
         
         else:
@@ -280,13 +281,38 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         ##### OUTPUTS #####
         hot_name: name of primary hot spot (according to our naming convention)
         hot_name_s: name of the secondary hot spot (according to our naming convention)
+        hot_name_t: name of the tertiary hot spot (according to our naming convention)
         """
         hot_name = ''
         hot_name_s = ''
+        hot_name_t = ''
         if ('-' in model) and (not('-S' in model) and  not('-U' in model) and not('-Ua' in model)):
-            print (r"ERROR: model not recognised. If model has derived quantities and does not fall into the categories mentioned below: transform your dictionary to match \"-U\" requirements. Recognised hot spot names are \"ST\", \"\PST\", \"\CST\", \"EST\", \"PDT\", \"CDT\", \"EDT\"; for two hot spot model connect each hot spot model with \"+\" (first for primary; second for secondary). If the two hot spots have the same name, add \"-S\" (if all the secondary hot spot is antipodal and its temperature and radius is the same of the primary); \"-U\" if the properties of the secondary spot is completely unrelated to the primary ones; \"-Ua\" if the secondary hot spot is antipodal to the primary but has independent radius and temperature.")
+            print ("ERROR: model not recognised. If model has derived quantities and does not fall into the categories mentioned below: transform your dictionary to match \"-U\" requirements. Recognised hot spot names are \"ST\", \"\PST\", \"\CST\", \"EST\", \"PDT\", \"CDT\", \"EDT\"; for two hot spot model connect each hot spot model with \"+\" (first for primary; second for secondary). If the two hot spots have the same name, add \"-S\" (if all the secondary hot spot is antipodal and its temperature and radius is the same of the primary); \"-U\" if the properties of the secondary spot is completely unrelated to the primary ones; \"-Ua\" if the secondary hot spot is antipodal to the primary but has independent radius and temperature.")
             raise IpyExit
-        if ('+' in model) or ('-' in model):
+        if (model.count('+')==2) or ('U3' in model):
+            print("YOU ARE USING A 3 HOT SPOT MODEL")
+            if ('-U3' in model):
+                ind = model.find('-')
+                hot_name = model[:ind]
+                hotspot_check(hot_name,DICT_VECTOR,'p')
+                hotspot_check(hot_name,DICT_VECTOR,'s')
+                hotspot_check(hot_name,DICT_VECTOR,'t')
+            
+            elif ('+' in model):
+                ind = model.find('+')
+                ind2 = model[ind+1:].find('+')
+                hot_name = model[:ind]
+                hotspot_check(hot_name,DICT_VECTOR,'p')
+                hot_name_s = model[ind+1:]
+                hotspot_check(hot_name_s,DICT_VECTOR,'s')
+                hot_name_t = model[ind+1:][ind2+1:]
+                hotspot_check(hot_name_t,DICT_VECTOR,'t')
+                
+            else:
+                print ("ERROR! MODEL NOT RECOGNISED")
+                raise IpyExit
+            
+        elif ('+' in model) or ('-' in model):
             print ("YOU ARE USING A 2 HOT SPOT MODEL")
             if ('-S' in model):
                 ind = model.find('-')
@@ -294,7 +320,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 hotspot_check(hot_name,DICT_VECTOR,'p')
                 params_red = [param for param in DICT_VECTOR if 's_' in param]
                 if len(params_red)>0:
-                    if not(('cos_inclination' in params_red) and (len(params_red)==1)):
+                    if not( (('cos_inclination' in params_red) or ('sin_inclination' in params_red)) and (len(params_red)==1)):
                         print ("WARNING! there are info for a complex geometry, but they are not being used")
             
             elif ('-Ua' in model):
@@ -329,7 +355,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
             hotspot_check(hot_name,DICT_VECTOR,'p')
 
             
-        return hot_name,hot_name_s
+        return hot_name,hot_name_s,hot_name_t
         
         
     def fillVECTORS(HStag, hot_name, flagUa = False):
@@ -347,11 +373,17 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         flagUa: flag True if model "-Ua" (bool)
         """
 
-        if (HStag!='p') and (HStag!='s'):
-            print ("ERROR: invalid Key argument (only 'p' and 's' allowed), not ",HStag)
+        if (HStag!='p') and (HStag!='s') and (HStag!='t'):
+            print ("ERROR: invalid Key argument (only 'p', 's' and 't' allowed), not ",HStag)
             raise IpyExit
 
-        Mlab = Plab if HStag=='p' else Slab
+        match HStag:
+            case 'p':
+                Mlab = Plab 
+            case 's':
+                Mlab = Slab
+            case 't':
+                Mlab = Tlab
         labels = [Mlab]
     
         thetaA = []
@@ -461,7 +493,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
         return phiA_s,thetaA_s,labels_s
 
     # run model check
-    HSname_p, HSname_s =  check_model_param_names()
+    HSname_p, HSname_s, HSname_t =  check_model_param_names()
     
     # Defining phases, colatitudes, angular radii, temperatures and labels for primary hot spot
     phiA_p,thetaA_p,zetaA_p,TA_p,labels_p = fillVECTORS('p',HSname_p)
@@ -522,13 +554,40 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
                 CAall=[mycolors0[nColors-1],mycolors0[nColors-1]]
             else:
                 CAall=[mycolors0[nColors-1],'black',mycolors0[nColors-1],'black']
-            
+    
+    # Define phases, colatitudes, angular radii, temperatures and labels for tertiary hot spot (if any)
+    phiA_t = []
+    thetaA_t = []
+    zetaA_t = []
+    TA_t = []
+    labels_t =[]
+
+    if ((model.count('+')==2) or ('U3' in model)):
+        phiA_t,thetaA_t,zetaA_t,TA_t,labels_t = fillVECTORS('t',HSname_t)
+        TAall = TA_p+TA_s+TA_t
+        LABall = labels_p +labels_s+labels_t
+        ind = [1,2,4,5]
+
+        argT = np.argsort(TAall)
+        j = 0
+        for i in range(len(LABall)):
+            if (OMIlab in LABall[i]):
+                coli = 'black'
+            else:
+                ind_i = ind[argT[j]]
+                coli = mycolors0[ind_i]
+                j = j+1
+            CAall.append(coli)
+
     if antipodal:
             
         phiA_anti,thetaA_anti,labels_anti = SYMMETRIC(phiA_p,thetaA_p,labels_p)
         zetaA_anti = zetaA_p
 
-    cosi    = dictVp['cos_inclination']
+    try:
+        cosi    = dictVp['cos_inclination']
+    except KeyError:
+        cosi    = np.sqrt( 1. - dictVp['sin_inclination']**2 )
     phi_inc = 0.0
 
     cm        = plt.get_cmap('magma')
@@ -552,6 +611,9 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     for i in range(len(zetaA_s)):
         Vi  = [np.cos(x2)*np.sin(zetaA_s[i]),np.sin(x2)*np.sin(zetaA_s[i]),np.cos(zetaA_s[i])*np.ones(len(x2))]
         VA.append(Vi)
+    for i in range(len(zetaA_t)):
+        Vi  = [np.cos(x2)*np.sin(zetaA_t[i]),np.sin(x2)*np.sin(zetaA_t[i]),np.cos(zetaA_t[i])*np.ones(len(x2))]
+        VA.append(Vi)
 
     theta_sub = 0.0
     phi_sub   = 0.0
@@ -559,7 +621,7 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
     NO_POLE_FLAG = False # False when origin of 2D projection is the reference point
     
     allowedPOV = ["I"]
-    if not('cos_inclination' in DICT_VECTOR):
+    if not('cos_inclination' in DICT_VECTOR) and not('sin_inclination' in DICT_VECTOR):
         print ("WARNING: view from Earth is not allowed")
         allowedPOV = []
     LABall = labels_p +labels_s
@@ -900,10 +962,10 @@ def plot_projection_general(dictVp, model, POV = "", ThetaDisplay = "",antiphase
 
 
     #rotating and plotting edges of hot regions
-    THETAall = list(thetaA_p)+list(thetaA_s)
-    PHIall = list(phiA_p)+list(phiA_s)
-    LABall = list(labels_p)+list(labels_s)
-    TAall = list(TA_p)+list(TA_s)
+    THETAall = list(thetaA_p)+list(thetaA_s)+list(thetaA_t)
+    PHIall = list(phiA_p)+list(phiA_s)+list(phiA_t)
+    LABall = list(labels_p)+list(labels_s)+list(labels_t)
+    TAall = list(TA_p)+list(TA_s)+list(TA_t)
 
 
     for i in range(len(VA)):
