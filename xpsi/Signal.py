@@ -733,6 +733,25 @@ class Signal(ParameterSubspace):
 
         """
         raise NotImplementedError('Cannot synthesise data.')
+    
+    @property
+    def chi2( self ):
+        """ Return the chi2 value for the current likelihood value or a given parameter vector if required.
+
+        :param list p:
+            Parameter vector, optional.
+
+        """
+
+        # Get the pulse of data and model
+        pulse_data = self.data.counts.sum( axis = 0 )
+        pulse_model = self.expected_counts.sum( axis = 0 )
+
+        # Compute the chi squared
+        chi2 = _np.sum( (pulse_data - pulse_model)**2 / pulse_model )
+
+        return chi2
+            
 
 
 def construct_energy_array(num_energies, signals, max_energy=None):
