@@ -23,7 +23,6 @@ class TestHotRegion(object):
                           'super_colatitude': np.pi/4,
                           'super_temperature': 6.}
 
-        cls.HotRegion = HotRegion(cls.hot_bounds, cls.hot_values)
         cls.space_values = {'frequency': 401., #Hz
                             'distance': 5., #kpc
                             'mass': 2., #Msun
@@ -37,10 +36,9 @@ class TestHotRegion(object):
                             'cos_inclination': (None, None)
                             }
         
-        cls.Spacetime = Spacetime(bounds=cls.space_bounds, values=cls.space_values)
-        cls.mock_photosphere = {'mode_frequency': cls.space_values['frequency']}
-        cls.Photosphere = Photosphere(hot=cls.HotRegion, bounds={'mode_frequency': (None, None)}, 
-                                      values={'mode_frequency': cls.space_values['frequency']})
+        # cls.Spacetime = Spacetime(bounds=cls.space_bounds, values=cls.space_values)
+        # cls.mock_photosphere = {'mode_frequency': cls.space_values['frequency']}
+        # cls.Photosphere = Photosphere(hot=cls.HotRegion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': cls.space_values['frequency']})
     
     def test_hotregion_class_initializes(self):
         HotRegion(self.hot_bounds, self.hot_values)
@@ -72,16 +70,17 @@ class TestHotRegion(object):
             HotRegion(bounds, self.hot_values)
             
     def test_hotregion_produces_default_parameters(self):
-        self.HotRegion.get_param('phase_shift')
-        self.HotRegion.get_param('super_colatitude')
-        self.HotRegion.get_param('super_radius')
-        self.HotRegion.get_param('super_temperature')
-        self.HotRegion.get_param('cede_colatitude')
-        self.HotRegion.get_param('cede_radius')
-        self.HotRegion.get_param('cede_azimuth')
-        self.HotRegion.get_param('omit_colatitude')
-        self.HotRegion.get_param('omit_radius')
-        self.HotRegion.get_param('omit_azimuth')
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_hotregion.get_param('phase_shift')
+        test_hotregion.get_param('super_colatitude')
+        test_hotregion.get_param('super_radius')
+        test_hotregion.get_param('super_temperature')
+        test_hotregion.get_param('cede_colatitude')
+        test_hotregion.get_param('cede_radius')
+        test_hotregion.get_param('cede_azimuth')
+        test_hotregion.get_param('omit_colatitude')
+        test_hotregion.get_param('omit_radius')
+        test_hotregion.get_param('omit_azimuth')
         
         
     def test_hotregion_handles_cede(self):
@@ -110,45 +109,49 @@ class TestHotRegion(object):
     @pytest.mark.parametrize("num_rays", [50, 50.5, "invalid"])
     def test_set_num_rays(self, num_rays):
         # Test that integer, float and invalid values for num_rays have corect set and get. Raise error if invalid.
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         
         fast_num_rays = 50
         if isinstance(num_rays, float | int):
-            self.HotRegion.set_num_rays(num_rays, fast_num_rays)
-            assert self.HotRegion.num_rays == int(num_rays), f"Expected num_rays to be {num_rays}, got {self.HotRegion.num_rays}"
-            assert self.HotRegion._fast_num_rays == fast_num_rays, f"Expected _fast_num_rays to be {fast_num_rays}, got {self.HotRegion._fast_num_rays}"    
+            test_hotregion.set_num_rays(num_rays, fast_num_rays)
+            assert test_hotregion.num_rays == int(num_rays), f"Expected num_rays to be {num_rays}, got {test_hotregion.num_rays}"
+            assert test_hotregion._fast_num_rays == fast_num_rays, f"Expected _fast_num_rays to be {fast_num_rays}, got {test_hotregion._fast_num_rays}"    
         else:
             with pytest.raises(ValueError):
-                self.HotRegion.set_num_rays(num_rays, fast_num_rays)
+                test_hotregion.set_num_rays(num_rays, fast_num_rays)
                 
     def test_image_order_limit_getter(self):
         # Set a value directly to the private attribute
-        self.HotRegion._image_order_limit = 5
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_hotregion._image_order_limit = 5
     
         # Validate the getter returns the correct value
-        assert self.HotRegion.image_order_limit == 5, (
-            f"Expected image_order_limit to be 5, but got {self.HotRegion.image_order_limit}"
+        assert test_hotregion.image_order_limit == 5, (
+            f"Expected image_order_limit to be 5, but got {test_hotregion.image_order_limit}"
         )
 
     @pytest.mark.parametrize("image_order_limit", [10, None, "invalid", 3.5])
     def test_image_order_limit_setter_valid(self, image_order_limit):
         # Test with a positive integer
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        
         if image_order_limit == 10:
-            self.HotRegion.image_order_limit = 10
-            assert self.HotRegion._image_order_limit == 10, (
-                f"Expected _image_order_limit to be 10, but got {self.HotRegion._image_order_limit}"
+            test_hotregion.image_order_limit = 10
+            assert test_hotregion._image_order_limit == 10, (
+                f"Expected _image_order_limit to be 10, but got {test_hotregion._image_order_limit}"
             )
         elif image_order_limit == None:
-            self.HotRegion.image_order_limit = None
-            assert self.HotRegion._image_order_limit is None, (
-                f"Expected _image_order_limit to be None, but got {self.HotRegion._image_order_limit}"
+            test_hotregion.image_order_limit = None
+            assert test_hotregion._image_order_limit is None, (
+                f"Expected _image_order_limit to be None, but got {test_hotregion._image_order_limit}"
             )
         elif image_order_limit == "invalid":
             # Test with a non-integer value
             with pytest.raises(TypeError, match="Image order limit must be an positive integer if not None."):
-                self.HotRegion.image_order_limit = "invalid"
+                test_hotregion.image_order_limit = "invalid"
         elif image_order_limit == 3.5:
             with pytest.raises(TypeError, match="Image order limit must be an positive integer if not None."):
-                self.HotRegion.image_order_limit = 3.5
+                test_hotregion.image_order_limit = 3.5
 
     @pytest.mark.parametrize(
         "sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells, fast_sqrt_num_cells, fast_min_sqrt_num_cells, fast_max_sqrt_num_cells, expect_error",
@@ -168,36 +171,39 @@ class TestHotRegion(object):
     def test_set_num_cells(self, sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells,
                            fast_sqrt_num_cells, fast_min_sqrt_num_cells, fast_max_sqrt_num_cells,
                            expect_error):
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        
         if expect_error:
             with pytest.raises(expect_error):
-                self.HotRegion.set_num_cells(
+                test_hotregion.set_num_cells(
                     sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells,
                     fast_sqrt_num_cells, fast_min_sqrt_num_cells, fast_max_sqrt_num_cells
                 )
         else:
-            self.HotRegion.set_num_cells(
+            test_hotregion.set_num_cells(
                 sqrt_num_cells, min_sqrt_num_cells, max_sqrt_num_cells,
                 fast_sqrt_num_cells, fast_min_sqrt_num_cells, fast_max_sqrt_num_cells
             )
 
             # Validate attributes for regular cells
-            assert self.HotRegion.sqrt_num_cells == sqrt_num_cells
-            assert self.HotRegion._num_cells == sqrt_num_cells**2
-            assert self.HotRegion._min_sqrt_num_cells == min_sqrt_num_cells
-            assert self.HotRegion._max_sqrt_num_cells == max_sqrt_num_cells
+            assert test_hotregion.sqrt_num_cells == sqrt_num_cells
+            assert test_hotregion._num_cells == sqrt_num_cells**2
+            assert test_hotregion._min_sqrt_num_cells == min_sqrt_num_cells
+            assert test_hotregion._max_sqrt_num_cells == max_sqrt_num_cells
 
             # Validate attributes for fast cells
-            assert self.HotRegion._fast_num_cells == fast_sqrt_num_cells**2
-            assert self.HotRegion._fast_min_sqrt_num_cells == fast_min_sqrt_num_cells
-            assert self.HotRegion._fast_max_sqrt_num_cells == fast_max_sqrt_num_cells
+            assert test_hotregion._fast_num_cells == fast_sqrt_num_cells**2
+            assert test_hotregion._fast_min_sqrt_num_cells == fast_min_sqrt_num_cells
+            assert test_hotregion._fast_max_sqrt_num_cells == fast_max_sqrt_num_cells
 
     def test_leaves_property(self):
         # Set a value directly to the private attribute
-        self.HotRegion._leaves = "test_value"
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_hotregion._leaves = "test_value"
 
         # Verify that the property returns the correct value
-        assert self.HotRegion.leaves == "test_value", (
-            f"Expected leaves to return 'test_value', but got {self.HotRegion.leaves}"
+        assert test_hotregion.leaves == "test_value", (
+            f"Expected leaves to return 'test_value', but got {test_hotregion.leaves}"
         )
         
     @pytest.mark.parametrize(
@@ -235,14 +241,15 @@ class TestHotRegion(object):
         ]
     )
     def test_set_phases(self,num_leaves, num_phases, phases, fast_num_leaves, fast_num_phases, fast_phases, do_fast, expect_error):    
-        HotRegion.do_fast = do_fast
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_hotregion.do_fast = do_fast
         # Expect error for invalid cases
         if expect_error:
             with pytest.raises(expect_error):
-                self.HotRegion.set_phases(num_leaves, num_phases=num_phases, phases=phases, fast_num_leaves=fast_num_leaves, fast_num_phases=fast_num_phases, fast_phases=fast_phases)
+                test_hotregion.set_phases(num_leaves, num_phases=num_phases, phases=phases, fast_num_leaves=fast_num_leaves, fast_num_phases=fast_num_phases, fast_phases=fast_phases)
         else:
             # Test valid cases
-            self.HotRegion.set_phases(num_leaves, num_phases=num_phases, phases=phases, fast_num_leaves=fast_num_leaves, fast_num_phases=fast_num_phases, fast_phases=fast_phases)
+            test_hotregion.set_phases(num_leaves, num_phases=num_phases, phases=phases, fast_num_leaves=fast_num_leaves, fast_num_phases=fast_num_phases, fast_phases=fast_phases)
             if phases is None and num_phases is None:
                 num_temp = num_leaves
                 linspace_temp = np.linspace(0, 1, num_temp)
@@ -252,32 +259,34 @@ class TestHotRegion(object):
             else:
                 linspace_temp = phases
             
-            assert np.allclose(self.HotRegion._phases_cycles, linspace_temp), f"Expected phases {linspace_temp}, but got {self.HotRegion._phases_cycles}"
-            assert np.allclose(self.HotRegion._leaves, np.linspace(0.0, 2*np.pi, 5)), f"Expected leaves to be np.linspace(0.0, 2*np.pi, 5), but got {self.HotRegion._leaves}"
+            assert np.allclose(test_hotregion._phases_cycles, linspace_temp), f"Expected phases {linspace_temp}, but got {test_hotregion._phases_cycles}"
+            assert np.allclose(test_hotregion._leaves, np.linspace(0.0, 2*np.pi, 5)), f"Expected leaves to be np.linspace(0.0, 2*np.pi, 5), but got {test_hotregion._leaves}"
             
         #HotRegion.do_fast = False # restore
         
         
     def test_phases_in_cycles_property(self):
         # Set a value directly to the private attribute
-        self.HotRegion._phases_cycles = "test_value"
-        self.HotRegion._fast_phases_cycles = "test_value"
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_hotregion._phases_cycles = "test_value"
+        test_hotregion._fast_phases_cycles = "test_value"
 
         # Verify that the property returns the correct value
-        assert self.HotRegion.phases_in_cycles == "test_value", (
-            f"Expected phases_in_cycles to return 'test_value', but got {self.HotRegion.phases_in_cycles}"
+        assert test_hotregion.phases_in_cycles == "test_value", (
+            f"Expected phases_in_cycles to return 'test_value', but got {test_hotregion.phases_in_cycles}"
         )
-        assert self.HotRegion.fast_phases_in_cycles == "test_value", (
-            f"Expected fast_phases_in_cycles to return 'test_value', but got {self.HotRegion.fast_phases_in_cycles}"
+        assert test_hotregion.fast_phases_in_cycles == "test_value", (
+            f"Expected fast_phases_in_cycles to return 'test_value', but got {test_hotregion.fast_phases_in_cycles}"
         )
         
     def test_num_cells_property(self):
         # Set a value directly to the private attribute
-        self.HotRegion._num_cells = "test_value"
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_hotregion._num_cells = "test_value"
 
         # Verify that the property returns the correct value
-        assert self.HotRegion.num_cells == "test_value", (
-            f"Expected num_cells to return 'test_value', but got {self.HotRegion.num_cells}"
+        assert test_hotregion.num_cells == "test_value", (
+            f"Expected num_cells to return 'test_value', but got {test_hotregion.num_cells}"
         )
         
         
@@ -295,17 +304,18 @@ class TestHotRegion(object):
         ]
     )
     def test_is_antiphased(self, input_value, expected_value, expect_error):
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
     
         # Handle invalid cases
         if expect_error:
             with pytest.raises(expect_error):
-                self.HotRegion.is_antiphased = input_value
+                test_hotregion.is_antiphased = input_value
         else:
             # Set the value
-            self.HotRegion.is_antiphased = input_value
+            test_hotregion.is_antiphased = input_value
             
             # Assert getter returns the correct value
-            assert self.HotRegion.is_antiphased == expected_value, f"Expected {expected_value}, but got {self.HotRegion.is_antiphased}"
+            assert test_hotregion.is_antiphased == expected_value, f"Expected {expected_value}, but got {test_hotregion.is_antiphased}"
 
     @pytest.mark.parametrize(
         "input_extension, expected_value, expect_error",
@@ -326,15 +336,16 @@ class TestHotRegion(object):
     )
     def test_atm_ext(self, input_extension, expected_value, expect_error):
         # For invalid cases, assert that the proper exception is raised
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         if expect_error:
             with pytest.raises(expect_error):
-                self.HotRegion.atm_ext = input_extension
+                test_hotregion.atm_ext = input_extension
         else:
             # Set the value
-            self.HotRegion.atm_ext = input_extension
+            test_hotregion.atm_ext = input_extension
             
             # Assert the getter returns the correct value
-            assert self.HotRegion.atm_ext == expected_value, f"Expected {expected_value}, but got {self.HotRegion.atm_ext}"
+            assert test_hotregion.atm_ext == expected_value, f"Expected {expected_value}, but got {test_hotregion.atm_ext}"
     
     
     @pytest.mark.parametrize(
@@ -355,19 +366,21 @@ class TestHotRegion(object):
     )
     def test_beam_opt(self, input_option, expected_value, expect_error):
         # For invalid cases, assert that the proper exception is raised
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         if expect_error:
             with pytest.raises(expect_error):
-                self.HotRegion.beam_opt = input_option
+                test_hotregion.beam_opt = input_option
         else:
             # Set the value
-            self.HotRegion.beam_opt = input_option
+            test_hotregion.beam_opt = input_option
             
             # Assert the getter returns the correct value
-            assert self.HotRegion.beam_opt == expected_value, f"Expected {expected_value}, but got {self.HotRegion.beam_opt}"
+            assert test_hotregion.beam_opt == expected_value, f"Expected {expected_value}, but got {test_hotregion.beam_opt}"
 
     def test_print_settings(self, capfd):
         # Call the method
-        self.HotRegion.print_settings()
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_hotregion.print_settings()
         
         # Capture the output
         captured = capfd.readouterr()
@@ -378,11 +391,16 @@ class TestHotRegion(object):
     def test_construct_cellmesh_runs(self):
         # This function calls multiple underlying functions, so it is more of an integration test.
         # Example valid case, not asserting the actual outcome yet.
-        self.HotRegion.fast_mode = False
-        self.HotRegion.set_num_cells(32, 10, 80, 16, 4, 16)
-        self.HotRegion._HotRegion__construct_cellMesh(self.Spacetime, None, 1)
+
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
+
+        test_hotregion.fast_mode = False
+        test_hotregion.set_num_cells(32, 10, 80, 16, 4, 16)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, None, 1)
         # Not yet testing invalid cases and failing cases yet. Also: not testing yet underlying functions individually.
         
+
     @pytest.mark.parametrize(
         "super_cell_area, cede_cell_area, expected",
         [
@@ -392,16 +410,17 @@ class TestHotRegion(object):
     )
     def test_cell_area(self, super_cell_area, cede_cell_area, expected):        
         # Mock the _super_cellArea attribute
-        self.HotRegion._super_cellArea = super_cell_area
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_hotregion._super_cellArea = super_cell_area
     
         # Conditionally set or remove _cede_cellArea
         if cede_cell_area is not None:
-            self.HotRegion._cede_cellArea = cede_cell_area
-        elif hasattr(self.HotRegion, '_cede_cellArea'):
-            del self.HotRegion._cede_cellArea
+            test_hotregion._cede_cellArea = cede_cell_area
+        elif hasattr(test_hotregion, '_cede_cellArea'):
+            del test_hotregion._cede_cellArea
     
         # Access the private property using name mangling
-        cell_area = self.HotRegion._HotRegion__cellArea
+        cell_area = test_hotregion._HotRegion__cellArea
     
         # Assert the expected value
         assert cell_area == expected
@@ -409,40 +428,50 @@ class TestHotRegion(object):
     def test_compute_rays_runs(self):
         # just testing here that the __compute_rays function runs. Calibrate
         # lags is called within this function at the end.
-        self.HotRegion._HotRegion__compute_rays(self.Spacetime, 
-                                                self.Photosphere, 1)
-        #print('superlag', self.HotRegion._super_lag)
-        #print('superlag', self.HotRegion._super_lag.shape)
-        
-        
-    @pytest.mark.parametrize('cede', [True, False])
-    def test_calibrate_lag_runs(self, cede):
-        # just testing here that the __calibrate_lag function runs. Not relying
-        # on compute_rays to do that, since that function relies on this 
-        # function.
 
-        mock_r_s_over_r = 0.5924*np.ones(42)
-        self.HotRegion._r_s_over_r = mock_r_s_over_r
-        mock_super_lag = 0.1*np.ones((42, 50))
-        self.HotRegion._super_lag = mock_super_lag
-        if cede:
-            self.HotRegion._cede_r_s_over_r = mock_r_s_over_r
-            self.HotRegion._cede_lag = mock_super_lag
-        elif not cede:
-            pass
-        self.HotRegion._HotRegion__calibrate_lag(self.Spacetime, 
-                                                 self.Photosphere)
+        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
+        test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
+    
+        test_hotregion.fast_mode = False
+        test_hotregion.set_num_cells(32, 10, 80, 16, 4, 16)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, None, 1)
         
+        test_hotregion._HotRegion__compute_rays(test_spacetime, 
+                                                test_photosphere, 1)
+
+    def test_calibrate_lag_runs(self):
+        # just testing here that the __calibrate_lag function runs. Relying here on 
+        # compute rays and also not testing the options for ceding vs not ceding   
+        
+        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
+        test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
+    
+        
+        test_hotregion.fast_mode = False
+        test_hotregion.set_num_cells(32, 10, 80, 16, 4, 16)
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime, None, 1)
+        test_hotregion._HotRegion__compute_rays(test_spacetime, 
+                                                test_photosphere, 1)
+        test_hotregion._HotRegion__calibrate_lag(test_spacetime, 
+                                                 test_photosphere)
         
     def test_cellParamVecs_runs(self):
         # just testing if compute_cellParamVecs runs. I am relying on construct
         # cellmesh and compute rays, but I tested those separately above.
-        self.HotRegion._HotRegion__construct_cellMesh(self.Spacetime,
+        
+        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
+        test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
+        test_hotregion.fast_mode=False
+        
+        test_hotregion._HotRegion__construct_cellMesh(test_spacetime,
                                   None,
                                   1)
-        self.HotRegion._HotRegion__compute_rays(self.Spacetime, 
-                                                self.Photosphere, 1)
-        self.HotRegion._HotRegion__compute_cellParamVecs()
+        test_hotregion._HotRegion__compute_rays(test_spacetime, 
+                                                test_photosphere, 1)
+        test_hotregion._HotRegion__compute_cellParamVecs()
 
     def test_psi(self):
         # Define test inputs (theta, phi, colatitude)
@@ -457,114 +486,124 @@ class TestHotRegion(object):
         )
     
         # Call the psi function
-        results = self.HotRegion.psi(theta, phi, colatitude)
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        results = test_hotregion.psi(theta, phi, colatitude)
     
         # Validate the results against the expected values
         np.testing.assert_allclose(results, expected_results, rtol=1e-6, atol=1e-8)
     
     def test_embed_runs(self):
         # Just testing that the embed function runs.
-        self.HotRegion.embed(self.Spacetime, self.Photosphere, None, 1)
+
+        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
+        test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
+    
+        test_hotregion.fast_mode=False
+        test_hotregion.embed(test_spacetime, test_photosphere, None, 1)
         # Also testing the optional args that produce a correction.           
         # Mock function to be passed as *args
         def mock_correction_function(vector):
             return np.ones((len(vector), len(vector), 1))
 
-        self.HotRegion.embed(self.Spacetime, self.Photosphere, None, 1, mock_correction_function)
+        test_hotregion.embed(test_spacetime, test_photosphere, None, 1, mock_correction_function)
         
         
     def test_do_fast_getter_setter(self):
         # Initial state of _do_fast
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         initial_value = False
-        self.HotRegion.do_fast = initial_value
+        test_hotregion.do_fast = initial_value
         
         # Test the getter
-        assert self.HotRegion.do_fast == initial_value, f"Expected {initial_value}, but got {self.HotRegion.do_fast}"
+        assert test_hotregion.do_fast == initial_value, f"Expected {initial_value}, but got {test_hotregion.do_fast}"
     
         # Test the setter
         new_value = True
-        self.HotRegion.do_fast = new_value
-        assert self.HotRegion.do_fast == new_value, f"Expected {new_value}, but got {self.HotRegion.do_fast}"
+        test_hotregion.do_fast = new_value
+        assert test_hotregion.do_fast == new_value, f"Expected {new_value}, but got {test_hotregion.do_fast}"
 
     def test_fast_mode_getter_setter(self):
         # Initial state of _do_fast
+        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         initial_value = False
-        self.HotRegion.fast_mode = initial_value
+        test_hotregion.fast_mode = initial_value
         
         # Test the getter
-        assert self.HotRegion.fast_mode == initial_value, f"Expected {initial_value}, but got {self.HotRegion.do_fast}"
+        assert test_hotregion.fast_mode == initial_value, f"Expected {initial_value}, but got {test_hotregion.do_fast}"
     
         # Test the setter
         new_value = True
-        self.HotRegion.fast_mode = new_value
-        assert self.HotRegion.fast_mode == new_value, f"Expected {new_value}, but got {self.HotRegion.do_fast}"
+        test_hotregion.fast_mode = new_value
+        assert test_hotregion.fast_mode == new_value, f"Expected {new_value}, but got {test_hotregion.do_fast}"
 
     def test_cede_getter_setter(self):
         # Test with initial value of _cede
+        test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         initial_value = False
-        self.HotRegion._cede = initial_value
+        test_hotregion._cede = initial_value
     
         # Test the getter
-        assert self.HotRegion.cede == initial_value, f"Expected {initial_value}, but got {self.HotRegion.cede}"
+        assert test_hotregion.cede == initial_value, f"Expected {initial_value}, but got {test_hotregion.cede}"
     
         # Test the setter with a valid boolean value (True)
-        self.HotRegion.cede = True
-        assert self.HotRegion.cede == True, f"Expected True, but got {self.HotRegion.cede}"
+        test_hotregion.cede = True
+        assert test_hotregion.cede == True, f"Expected True, but got {test_hotregion.cede}"
     
         # Test the setter with a valid boolean value (False)
-        self.HotRegion.cede = False
-        assert self.HotRegion.cede == False, f"Expected False, but got {self.HotRegion.cede}"
+        test_hotregion.cede = False
+        assert test_hotregion.cede == False, f"Expected False, but got {test_hotregion.cede}"
 
 
     def test_omit_getter_setter(self):
         # Test with initial value of _omit
+        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         initial_value = False
-        self.HotRegion._omit = initial_value
+        test_hotregion._omit = initial_value
     
         # Test the getter
-        assert self.HotRegion.omit == initial_value, f"Expected {initial_value}, but got {self.HotRegion.omit}"
+        assert test_hotregion.omit == initial_value, f"Expected {initial_value}, but got {test_hotregion.omit}"
     
         # Test the setter with a valid boolean value (True)
-        self.HotRegion.omit = True
-        assert self.HotRegion.omit == True, f"Expected True, but got {self.HotRegion.omit}"
+        test_hotregion.omit = True
+        assert test_hotregion.omit == True, f"Expected True, but got {test_hotregion.omit}"
     
         # Test the setter with a valid boolean value (False)
-        self.HotRegion.omit = False
-        assert self.HotRegion.omit == False, f"Expected False, but got {self.HotRegion.omit}"
+        test_hotregion.omit = False
+        assert test_hotregion.omit == False, f"Expected False, but got {test_hotregion.omit}"
         
 
     def test_concentric_getter_setter(self):
         # Test with initial value of _concentric
+        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         initial_value = False
-        self.HotRegion._concentric = initial_value
+        test_hotregion._concentric = initial_value
     
         # Test the getter
-        assert self.HotRegion.concentric == initial_value, f"Expected {initial_value}, but got {self.HotRegion.concentric}"
+        assert test_hotregion.concentric == initial_value, f"Expected {initial_value}, but got {test_hotregion.concentric}"
     
         # Test the setter with a valid boolean value (True)
-        self.HotRegion.concentric = True
-        assert self.HotRegion.concentric == True, f"Expected True, but got {self.HotRegion.concentric}"
+        test_hotregion.concentric = True
+        assert test_hotregion.concentric == True, f"Expected True, but got {test_hotregion.concentric}"
     
         # Test the setter with a valid boolean value (False)
-        self.HotRegion.concentric = False
-        assert self.HotRegion.concentric == False, f"Expected False, but got {self.HotRegion.concentric}"
+        test_hotregion.concentric = False
+        assert test_hotregion.concentric == False, f"Expected False, but got {test_hotregion.concentric}"
         
         
         
     def test_integrate_runs(self):
-        # Just testing that the embed function runs.
-        # split=False
-        # hot_region = HotRegion(self.hot_bounds, self.hot_values, split=split)
-        # hot_region.symmetry = True
-        # print(hot_region._integrator)
-        self.HotRegion.embed(self.Spacetime, self.Photosphere, None, 1)
+        # Just testing that the integrate function runs with default atmosphere. Not tested yet numerical atmospheres.
+       
+        test_hotregion = HotRegion(bounds=self.hot_bounds, values=self.hot_values)
+        test_spacetime = Spacetime(bounds=self.space_bounds, values=self.space_values)
+        test_photosphere = Photosphere(hot=test_hotregion, bounds={'mode_frequency': (None, None)}, values={'mode_frequency': self.space_values['frequency']})
+    
+        test_hotregion.fast_mode=False
+        test_hotregion.embed(test_spacetime, test_photosphere, None, 1)
         
-
-        # just testing if the integrate runs, first with the default BB 
-        # atmosphere given a hotregion and no elsewhere
-        hot_atmosphere = ()
-        elsewhere_atmosphere = ()
         atm_ext_else = None
         energies = np.linspace(1,2,10) # keV
-        self.HotRegion.integrate(self.Spacetime, energies, 1, hot_atmosphere, elsewhere_atmosphere, atm_ext_else)
+        test_hotregion.integrate(test_spacetime, energies, 1, test_photosphere.hot_atmosphere, test_photosphere.elsewhere_atmosphere, atm_ext_else)
         
+
