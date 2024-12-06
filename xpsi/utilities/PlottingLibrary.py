@@ -195,7 +195,7 @@ def plot_instruments(instruments, xlabel="Energy interval", ylabel="Channel"):
     # RESPONSE
     for i, inst in enumerate(instruments):
         ax1 = axs[i]
-        veneer((25, 100), (10, 50), ax1)
+        veneer((25, 100), (50, 100), ax1)
         matrixplot = ax1.imshow(inst.matrix,
                                 cmap=cm.viridis,
                                 rasterized=True)
@@ -216,6 +216,41 @@ def plot_instruments(instruments, xlabel="Energy interval", ylabel="Channel"):
     ax2.set_ylabel(r'Effective area [cm$^{2}$]')
     ax2.set_xlabel('Energy [keV]')
 
+
+def plot_rmf(matrix,
+             x,
+             y,
+             xlabel="Energy interval",
+             ylabel="Channel"):
+
+    fig = plt.figure(figsize=(14, 7))
+    ax = fig.add_subplot(111)
+
+    # RESPONSE
+    im = ax.pcolormesh(x, y, matrix,
+                       cmap=cm.viridis,
+                       rasterized=True)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    cbar = fig.colorbar(im, ax=ax, shrink=1, pad=0.01)
+    cbar.set_label(r'[cm$^2\,\mathrm{count}\,/\,\mathrm{photon}$]')
+
+    return ax
+
+def plot_arf(instruments,
+             ):
+
+    fig = plt.figure(figsize=(7, 7))
+    ax = fig.add_subplot(111)
+
+    for i, inst in enumerate(instruments):
+        ax.plot((inst.energy_edges[:-1] + inst.energy_edges[1:]) / 2.0,
+                np.sum(inst.matrix, axis=0), label=inst.name)  ## TODO:  change NICER by instrument.name
+
+    ax.set_ylabel('Effective area [cm$^{2}$]')
+    ax.set_xlabel('Energy [keV]')
+    ax.legend(loc='best')
+    return ax
 
 def plot_meshes(regions,
                 lines=True,
@@ -258,9 +293,9 @@ def plot_meshes(regions,
                                      rasterized=True,
                                      edgecolor='black')
             if t == 0:
-                ax.set_title(f"Region {r}, Temp 1")
+                ax.set_title(f"Region {r}, Temperature 1")
             else:
-                ax.set_title(f"Region {r}, Temp 2")
+                ax.set_title(f"Region {r}, Temperature 2")
 
         ax_cb = plt.subplot(gs[t, -1])
         cb = plt.colorbar(patches,
@@ -307,6 +342,7 @@ def plot_spectrum(all_data,
             ax.fill_between(xvalue, d[0], d[1],
                             alpha=0.5,
                             step='pre',
+                            color = 'k',
                             label=label)
 
     ax.legend()
