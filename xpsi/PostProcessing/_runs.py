@@ -157,8 +157,8 @@ class Runs(Metadata):
 
             for vec in range(len(roots)):
                 for mode in range(len(modes)):
-                    _np.savetxt(filerootpath+f"mode{mode}.txt", modes[mode])
-                    roots.append(roots[vec]+f"mode{mode}")
+                    _np.savetxt(filerootpath+f"mode{mode+1}.txt", modes[mode])
+                    roots.append(roots[vec]+f"mode{mode+1}")
                     run_IDs.append(run_IDs[vec]+f"{mode_label} {mode}")
                     base_dirs.append(base_dirs[vec])
                     use_nestcheck.append(use_nestcheck[vec])
@@ -202,7 +202,7 @@ class Runs(Metadata):
                     else:
                         root_ID=ID
                         for mode in range(self.mode_len):
-                            IDs.append(root_ID + f"{self.mode_label} {mode}")
+                            IDs.append(root_ID + f"{self.mode_label} {mode+1}")
             self._subset = [self[ID] for ID in IDs]
 
         if combine and force_combine: # create new run object
