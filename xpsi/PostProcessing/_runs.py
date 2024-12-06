@@ -95,13 +95,16 @@ class Runs(Metadata):
 
     @classmethod
     def load_runs(cls, ID, run_IDs, roots, base_dirs, use_nestcheck,
-                  likelihood=None,multi_mode=False, **kwargs):
+                  likelihood=None,multi_mode=False,mode_label="mode", **kwargs):
         """ Construct a :class:`~.Runs` instance by loading distinct runs.
 
         The kwargs will be shared by nested sampling runs. The args must be
         lists that will be zipped to instantiate a set of run backends.
 
         """
+        mode_label ="_"+mode_label
+        cls.mode_label = mode_label
+        cls.multi_mode = multi_mode
         # if there is a transform method available, try to wrap it
         # so that error due to a mismatch in parameter order is bypassed
         if likelihood is not None:
@@ -152,12 +155,13 @@ class Runs(Metadata):
             if current_mode:
                 modes.append(_np.array(current_mode))
 
-            for mode in range(len(modes)):
-                _np.savetxt(filerootpath+f"mode{mode}.txt", modes[mode])
-                roots.append(roots[0]+f"mode{mode}")
-                run_IDs.append(run_IDs[0]+f"_mode {mode}")
-                base_dirs.append(base_dirs[0])
-                use_nestcheck.append(use_nestcheck[0])
+            for vec in range(len(roots)):
+                for mode in range(len(modes)):
+                    _np.savetxt(filerootpath+f"mode{mode}.txt", modes[mode])
+                    roots.append(roots[vec]+f"mode{mode}")
+                    run_IDs.append(run_IDs[vec]+f"{mode_label} {mode}")
+                    base_dirs.append(base_dirs[vec])
+                    use_nestcheck.append(use_nestcheck[vec])
             # Forget about the defaul xpsi loaded file
             roots = roots[1:]
             run_IDs = run_IDs[1:]
@@ -165,7 +169,7 @@ class Runs(Metadata):
             use_nestcheck = use_nestcheck[1:]
 
             cls.mode_len =len(modes)
-            cls.multi_mode=True
+
 
         runs = []
         for root, run_ID, base_dir, check in zip(roots, run_IDs,
@@ -189,10 +193,16 @@ class Runs(Metadata):
         if IDs is None:
             self._subset = self._runs
         else:
-            root_ID=IDs[0]
-            IDs=[]
-            for mode in range(self.mode_len):
-                IDs.append(root_ID+f"_mode {mode}")
+            if self.multi_mode:
+                old_IDs=IDs
+                IDs=[]
+                for ID in  old_IDs:
+                    if self.mode_label in ID:
+                        IDs = old_IDs
+                    else:
+                        root_ID=ID
+                        for mode in range(self.mode_len):
+                            IDs.append(root_ID + f"{self.mode_label} {mode}")
             self._subset = [self[ID] for ID in IDs]
 
         if combine and force_combine: # create new run object
@@ -292,6 +302,7 @@ class Runs(Metadata):
         """ Get a :class:`~.Run` instance using the associated ID. """
         if isinstance(ID, _six.string_types):
             for run in self._runs:
+                print(ID, run.ID)
                 if ID == run.ID:
                     return run
         elif isinstance(ID, int):
