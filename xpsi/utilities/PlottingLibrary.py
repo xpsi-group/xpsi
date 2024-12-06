@@ -293,9 +293,9 @@ def plot_meshes(regions,
                                      rasterized=True,
                                      edgecolor='black')
             if t == 0:
-                ax.set_title(f"Region {r}, Temperature 1")
+                ax.set_title(f"Region {r+1}, Temperature 1")
             else:
-                ax.set_title(f"Region {r}, Temperature 2")
+                ax.set_title(f"Region {r+1}, Temperature 2")
 
         ax_cb = plt.subplot(gs[t, -1])
         cb = plt.colorbar(patches,
@@ -305,7 +305,7 @@ def plot_meshes(regions,
         cb.set_label(label=r'cell area (normalised by maximum)', labelpad=25)
         cb.solids.set_edgecolor('face')
 
-    veneer((None, None), (0.05, None), ax_cb)
+    # veneer((None, None), (0.05, None), ax_cb)
     cb.outline.set_linewidth(1.0)
 
 
