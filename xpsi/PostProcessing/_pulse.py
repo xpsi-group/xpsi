@@ -118,6 +118,7 @@ class PulsePlot(SignalPlot):
                  plot_truth=False,
                  truth_line_kwargs=None,
                  comp_truth_line_kwargs=None,
+                 parameters_vector=None,
                  **kwargs):
         super(PulsePlot, self).__init__(**kwargs)
 
@@ -201,6 +202,9 @@ class PulsePlot(SignalPlot):
         else:
             self._expectation_line_kwargs = expectation_line_kwargs
 
+        if not parameters_vector is None:
+            self._parameters_vector = parameters_vector
+            
         if comp_expectation_line_kwargs is not None:
             self._comp_expectation_line_kwargs = comp_expectation_line_kwargs
         else:

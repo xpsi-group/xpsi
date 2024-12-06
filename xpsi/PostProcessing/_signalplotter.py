@@ -223,8 +223,20 @@ class SignalPlotter(PostProcessor):
                 archive,
                 plots):
         """ Execute plotting loop given samples. """
-        thetas = self._draw_equally_weighted(run.samples, nsamples,
-                                             len(likelihood))
+
+        # If has a parameter to plot, use it. Else, draw samples !
+        if hasattr(plots[0],'parameters_vector'):
+            try:
+                _ = plots[0].parameters_vector[0]
+                assert len(likelihood) == len(plots[0].parameters_vector)
+            except (AssertionError, TypeError):
+                raise 'When provided, theta to plot must be given as an iterable and have matching length with likelihood'
+            else:
+                thetas = _np.array( [plots[0].parameters_vector] )
+        else:
+            thetas = self._draw_equally_weighted(run.samples, nsamples,
+                                                len(likelihood))
+
 
         signal = likelihood.signal # should only be one signal object available
         for p in plots:
