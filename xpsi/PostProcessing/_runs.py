@@ -95,13 +95,16 @@ class Runs(Metadata):
 
     @classmethod
     def load_runs(cls, ID, run_IDs, roots, base_dirs, use_nestcheck,
-                  likelihood=None,multi_mode=False, **kwargs):
+                  likelihood=None,multi_mode=False,mode_label="mode", **kwargs):
         """ Construct a :class:`~.Runs` instance by loading distinct runs.
 
         The kwargs will be shared by nested sampling runs. The args must be
         lists that will be zipped to instantiate a set of run backends.
 
         """
+        mode_label ="_"+mode_label
+        cls.mode_label = mode_label
+        cls.multi_mode = multi_mode
         # if there is a transform method available, try to wrap it
         # so that error due to a mismatch in parameter order is bypassed
         if likelihood is not None:
@@ -123,41 +126,42 @@ class Runs(Metadata):
             _overwrite = False
 
         if multi_mode:
-            filerootpath =_os.path.join(base_dirs[0], roots[0])
-            # Read the file and manually handle blank lines
-            with open(filerootpath+"post_separate.dat", 'r') as file:
-                lines = file.readlines()
+            for vec in range(len(roots)):
+                filerootpath =_os.path.join(base_dirs[vec], roots[vec])
+                # Read the file and manually handle blank lines
+                with open(filerootpath+"post_separate.dat", 'r') as file:
+                    lines = file.readlines()
 
-            # Convert lines to a numpy array, replacing blank lines with a marker (e.g., None or NaN)
-            data = []
-            for line in lines:
-                stripped = line.strip()
-                if stripped:  # Non-blank line
-                    data.append(_np.array(stripped.split(), dtype=float))
-                else:  # Blank line
-                    data.append(None)
+                # Convert lines to a numpy array, replacing blank lines with a marker (e.g., None or NaN)
+                data = []
+                for line in lines:
+                    stripped = line.strip()
+                    if stripped:  # Non-blank line
+                        data.append(_np.array(stripped.split(), dtype=float))
+                    else:  # Blank line
+                        data.append(None)
 
-            # Separate modes based on None markers
-            modes = []
-            current_mode = []
-            for row in data:
-                if row is None:
-                    if current_mode:
-                        modes.append(_np.array(current_mode))
-                        current_mode = []
-                else:
-                    current_mode.append(row)
+                # Separate modes based on None markers
+                modes = []
+                current_mode = []
+                for row in data:
+                    if row is None:
+                        if current_mode:
+                            modes.append(_np.array(current_mode))
+                            current_mode = []
+                    else:
+                        current_mode.append(row)
 
-            # Append the last mode if not empty
-            if current_mode:
-                modes.append(_np.array(current_mode))
+                # Append the last mode if not empty
+                if current_mode:
+                    modes.append(_np.array(current_mode))
 
-            for mode in range(len(modes)):
-                _np.savetxt(filerootpath+f"mode{mode}.txt", modes[mode])
-                roots.append(roots[0]+f"mode{mode}")
-                run_IDs.append(run_IDs[0]+f"_mode {mode}")
-                base_dirs.append(base_dirs[0])
-                use_nestcheck.append(use_nestcheck[0])
+                for mode in range(len(modes)):
+                    _np.savetxt(filerootpath+f"mode{mode+1}.txt", modes[mode])
+                    roots.append(roots[vec]+f"mode{mode+1}")
+                    run_IDs.append(run_IDs[vec]+f"{mode_label} {mode+1}")
+                    base_dirs.append(base_dirs[vec])
+                    use_nestcheck.append(use_nestcheck[vec])
             # Forget about the defaul xpsi loaded file
             roots = roots[1:]
             run_IDs = run_IDs[1:]
@@ -165,7 +169,7 @@ class Runs(Metadata):
             use_nestcheck = use_nestcheck[1:]
 
             cls.mode_len =len(modes)
-            cls.multi_mode=True
+
 
         runs = []
         for root, run_ID, base_dir, check in zip(roots, run_IDs,
@@ -189,10 +193,16 @@ class Runs(Metadata):
         if IDs is None:
             self._subset = self._runs
         else:
-            root_ID=IDs[0]
-            IDs=[]
-            for mode in range(self.mode_len):
-                IDs.append(root_ID+f"_mode {mode}")
+            if self.multi_mode:
+                old_IDs=IDs
+                IDs=[]
+                for ID in  old_IDs:
+                    if self.mode_label in ID:
+                        IDs = old_IDs
+                    else:
+                        root_ID=ID
+                        for mode in range(self.mode_len):
+                            IDs.append(root_ID + f"{self.mode_label} {mode+1}")
             self._subset = [self[ID] for ID in IDs]
 
         if combine and force_combine: # create new run object
