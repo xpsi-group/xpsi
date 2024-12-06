@@ -112,7 +112,7 @@ class TestHotRegion(object):
         test_hotregion=HotRegion(bounds=self.hot_bounds, values=self.hot_values)
         
         fast_num_rays = 50
-        if isinstance(num_rays, float | int):
+        if isinstance(num_rays, (float, int)):
             test_hotregion.set_num_rays(num_rays, fast_num_rays)
             assert test_hotregion.num_rays == int(num_rays), f"Expected num_rays to be {num_rays}, got {test_hotregion.num_rays}"
             assert test_hotregion._fast_num_rays == fast_num_rays, f"Expected _fast_num_rays to be {fast_num_rays}, got {test_hotregion._fast_num_rays}"    
