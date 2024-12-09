@@ -148,6 +148,7 @@ class SpectrumPlot(SignalPlot):
                  plot_truth=False,
                  truth_line_kwargs=None,
                  comp_truth_line_kwargs=None,
+                 parameters_vector=None,
                  **kwargs):
 
         try:
@@ -182,6 +183,9 @@ class SpectrumPlot(SignalPlot):
             self._registered_contour_kwargs =\
                 registered_contour_kwargs if registered_contour_kwargs else {}
 
+        if not parameters_vector is None:
+            self.parameters_vector = parameters_vector
+            
         self._get_figure()
         fig = self._fig
         gs = self._gs
