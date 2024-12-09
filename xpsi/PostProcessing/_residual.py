@@ -47,7 +47,7 @@ class ResidualPlot(SignalPlot):
     __figtype__ = 'signalplot_residuals'
 
     # do not change at runtime (see base class comments):
-    __caching_targets__ = [] #  ['expected_counts']
+    __caching_targets__ = ['expected_counts']
 
     __rows__          = 3
     __columns__       = 1
