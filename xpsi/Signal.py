@@ -112,12 +112,14 @@ class Signal(ParameterSubspace):
         if not isinstance(data, Data):
             raise TypeError('Invalid type for a data object.')
         else:
-            self._data = deepcopy(data)
+            self._data = data
+            self._original_data = deepcopy(data)
 
         if not isinstance(instrument, Instrument):
             raise TypeError('Invalid type for an instrument object.')
         else:
-            self._instrument = deepcopy( instrument )
+            self._instrument = instrument
+            self._original_instrument = deepcopy( instrument )
 
         # Trimming the data and response so they fit together
         if min_channel != 0 or max_channel != -1:
@@ -280,7 +282,17 @@ class Signal(ParameterSubspace):
     def instrument(self):
         """ Get the instance of :class:`~.Instrument.Instrument`."""
         return self._instrument
+    
+    @property
+    def original_data(self):
+        """ Get the a copy of the original instance of :class:`~.Data.Data`."""
+        return self._original_data
 
+    @property
+    def original_instrument(self):
+        """ Get the a copy of the original instance of :class:`~.Instrument.Instrument`."""
+        return self._original_instrument
+    
     @property
     def photosphere(self):
         return self._photosphere
