@@ -22,7 +22,7 @@ class Residual1DPlot(SignalPlot):
     __figtype__ = 'signalplot_1dresiduals'
 
     # do not change at runtime (see base class comments):
-    __caching_targets__ = [] #['expected_counts']
+    __caching_targets__ = ['expected_counts']
 
     __rows__          = 1
     __columns__       = 1
