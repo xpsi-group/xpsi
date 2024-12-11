@@ -1,5 +1,3 @@
-
-
 import numpy as np
 import math
 
@@ -9,16 +7,21 @@ np.random.seed(xpsi._rank+10)
 
 import time
 
-from CustomInstrument import CustomInstrument
-from CustomSignal import CustomSignal
-from CustomPhotosphere import CustomPhotosphere
-from CustomPrior import CustomPrior
 
 
 # Data
 if __name__ == '__main__':
+    from CustomInstrument import CustomInstrument
+    from CustomSignal import CustomSignal
+    from CustomPhotosphere import CustomPhotosphere
+    from CustomPrior import CustomPrior
     data_path = "../Data/xpsi_good_realisation.dat"
 else:
+    from Modules.CustomInstrument import CustomInstrument
+    from Modules.CustomSignal import CustomSignal
+    from Modules.CustomPhotosphere import CustomPhotosphere
+    from Modules.CustomPrior import CustomPrior
+
     data_path = "./Data/xpsi_good_realisation.dat"
 
 try:

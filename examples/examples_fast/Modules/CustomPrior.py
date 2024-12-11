@@ -113,3 +113,20 @@ class CustomPrior(xpsi.Prior):
         p += [gravradius(ref['mass']) / ref['radius']]
 
         return p
+
+    def density(self, point):
+        """ Evaluate prior density function. """
+
+        if not np.isfinite(self(point)):
+           return 0.0
+
+        ref = self.parameters
+
+        density = 1.0
+        a, b = ref.get_param('mass').bounds
+        density *= 1./(b-a)
+
+        a, b = ref.get_param('radius').bounds
+        density *= 1./(b-a)
+
+        return density
