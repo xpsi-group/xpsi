@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os 
 
-def plotConvergence( samples_path , threshold=0. ):
+def plotConvergence( samples_path , threshold=0. , force_no_multimode=False ):
     """ Plot to asses the convergence of the run.
     
     You should see a mountain and then a rise in the right    
@@ -11,11 +11,14 @@ def plotConvergence( samples_path , threshold=0. ):
 
     :param float threshold: 
         Threshold on the probability to keep in the plotting.
+
+    :param bool force_no_multimode: 
+        Force to not use multimode file and use the full posterior instead.
     """
 
     # Extract samples from multimode file if multimode
     multimode = os.path.exists(samples_path+'post_separate.dat')
-    if multimode:
+    if multimode and not force_no_multimode:
 
         # Open
         with open(samples_path+"post_separate.dat", 'r') as file:
