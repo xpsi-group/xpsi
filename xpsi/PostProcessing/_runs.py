@@ -178,7 +178,7 @@ class Runs(Metadata):
                     run_IDs.append(run_IDs[vec]+f"{mode_label} {mode+1}")
                     base_dirs.append(base_dirs[vec])
                     use_nestcheck.append(use_nestcheck[vec])
-            # Forget about the defaul xpsi loaded file
+            # Forget about the default xpsi loaded file
             roots = roots[1:]
             run_IDs = run_IDs[1:]
             base_dirs = base_dirs[1:]
