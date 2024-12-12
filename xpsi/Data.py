@@ -603,7 +603,7 @@ class Data(object):
         ax3.get_yaxis().set_visible(False)
         ax3.step( counts.sum(axis=1)/2, self.channels , color='black')
         ax3.set_yscale('log')
-        ax3.set_xlabel('Counts per channel')
+        ax3.set_xlabel('Cts/chan.')
 
         # Add the colorbar    
         fig.colorbar( im , ax=ax2 , label='Counts')
