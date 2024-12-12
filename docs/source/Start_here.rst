@@ -33,3 +33,5 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 * :doc:`Example script and modules<Example_script_and_modules>` shows a couple of simple example scripts for pulse shape computation and nested sampling.
 
 * :doc:`Example job<Example_job>` contains example job scripts for computation on clusters.
+
+* :doc:`Posterior inference using SBI<x_p_sbi>` is a tutorial showing how to use Simulation-Based Inference (SBI) to obtain posteriors.

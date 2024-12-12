@@ -1,7 +1,8 @@
 '''
 Test script to check that X-PSI installation is working (with the numerical atmosphere extension with free beaming options).
 The run is succesful if it passes the likelihood check (in ~ 1 minute) and sampling finishes without errors (in ~ 5 min).
-The model and synthetic data are based on those shown in the Modelling tutorial notebook, although adding here new parameters on the atmospheric beaming.
+The model and instrument response are not exactly the same that were used to produce the synthetic data, but this is just an example.
+The model here includes additional free parameters on the atmospheric beaming.
 
 Prequisities:
 Before running the script, add the NICER instrument files to the model_data subdirectory:
@@ -109,7 +110,9 @@ bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 radius = (3.0 * gravradius(1.0), 16.0),  # equatorial radius
                 cos_inclination = (0.0, 1.0))      # (Earth) inclination to rotation axis
 
-spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0))
+spacetime = xpsi.Spacetime(bounds=bounds, values=dict(frequency=300.0), star_shape="AGM_14")
+#The star shape can also set to be spherical:
+#spacetime.star_shape = "sphere"
 
 bounds = dict(super_colatitude = (None, None),
               super_radius = (None, None),
@@ -587,7 +590,7 @@ runtime_params = {'resume': False,
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
-true_logl = -6.84930649e+04
+true_logl = -6.7210627096e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior

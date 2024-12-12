@@ -294,7 +294,8 @@ class Runs(Metadata):
                   'names': self.names,
                   'bounds': self.bounds,
                   'labels': self.labels,
-                  'truths': self.truths}
+                  'truths': self.truths,
+                  'precisions': self.precisions}
 
         self._combined = NestedBackend(file_root,
                                        base_dir = base_dir,

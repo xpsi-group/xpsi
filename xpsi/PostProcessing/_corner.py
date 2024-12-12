@@ -37,7 +37,6 @@ class CornerPlotter(PostProcessor):
 
     """
 
-
     @fix_random_seed
     @make_verbose('Executing posterior density estimation',
                   'Posterior density estimation complete')
@@ -637,6 +636,7 @@ class CornerPlotter(PostProcessor):
                     if xmax - tick[-1].get_loc() < gap_wanted:
                         tick[-1].label1.set_visible(False)
 
+        self.precisions_dict = self.subset_to_plot[0].precisions
         if prior_density:
             # only report KL divergence for topmost posterior,
             # but plot the priors if available for the other posteriors
@@ -680,7 +680,7 @@ class CornerPlotter(PostProcessor):
 
 
         self.credible_intervals=OrderedDict()
-
+      
         if "precisions" in kwargs:
             precisions = kwargs.get('precisions')
             if (not isinstance(precisions, list)) or (not all((isinstance(element, int) or element==None) for element in precisions)):
@@ -691,9 +691,16 @@ class CornerPlotter(PostProcessor):
                 print("Warning: Precisions list has wrong number of dimensions. " +
                 "Using the automatic default precisions instead.")
                 precisions = [None]*plotter.subplots.shape[0]
+        
+        elif self.precisions_dict is not None:
+            precisions=[]
+            for name in self.params.names:
+                precisions.append(self.precisions_dict[name])
+        
         else:
             precisions = [None]*plotter.subplots.shape[0]
-
+        
+        
         if "ci_gap" in kwargs:
             self.ci_gap = kwargs.get("ci_gap")
         else:
@@ -750,7 +757,6 @@ class CornerPlotter(PostProcessor):
 
         """
         run = posterior.subset_to_plot[0]
-
 
         #self.samples[posterior.ID]=samples
 

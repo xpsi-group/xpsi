@@ -33,7 +33,7 @@ cdef extern from "gsl/gsl_sf_gamma.h":
 
     double gsl_sf_lnfact(const unsigned int n)
 
-from ..tools cimport _get_phase_interpolant, gsl_interp_type
+from ..tools.core cimport _get_phase_interpolant, gsl_interp_type
 
 def precomputation(int[:,::1] data):
     """ Compute negative of sum of log-factorials of data count numbers.
@@ -77,7 +77,7 @@ ctypedef struct args:
     double std
     double A
 
-cdef double marginal_integrand(double B, void *params) nogil:
+cdef double marginal_integrand(double B, void *params) noexcept nogil:
     """ Compute the integrand for background marginalisation (for a given energy channel).
 
     This function corresponds to the integrand in the second last expression
@@ -128,7 +128,7 @@ cdef double marginal_integrand(double B, void *params) nogil:
 
     return exp(x - a.A)
 
-cdef double delta(double B, void *params) nogil:
+cdef double delta(double B, void *params) noexcept nogil:
 
     cdef size_t j
     cdef double x = 0.0, y = 0.0

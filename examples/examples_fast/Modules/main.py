@@ -87,7 +87,11 @@ bounds = dict(distance = (0.5,2),
 
 
 spacetime = xpsi.Spacetime(bounds,
-                           values=dict(frequency = 314.0))
+                           values=dict(frequency = 314.0),
+                           star_shape="AGM_14")
+#Default star shape is an oblate spheroid from AlGendy & Morsink (2014, AGM_14)
+#But also a spherical star can be used with:
+#spacetime.star_shape = "sphere"
 
 # # Hot-spot
 bounds = dict(super_colatitude = (0.001, math.pi/2 - 0.001),
@@ -107,9 +111,9 @@ hot_spot = xpsi.HotRegion(bounds=bounds,
                                 max_sqrt_num_cells=64,
                                 num_leaves=64,
                                 num_rays=512,
-                                is_secondary=True,
+                                is_antiphased=True,
                                 image_order_limit=3, # up to tertiary
-                                prefix='hot')
+                                prefix='p') # For "primary"
 
 
 # # Photosphere
@@ -137,12 +141,11 @@ p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
 
 likelihood.check(None, [-3.1603740790e+04], 1.0e-5, physical_points=[p])
 
-
 if __name__ == '__main__':
 
     start = time.time()
     wrapped_params = [0] * len(likelihood)
-    wrapped_params[likelihood.index('hot__phase_shift')] = 1
+    wrapped_params[likelihood.index('p__phase_shift')] = 1
 
     #The original (more accurate) run settings shown as commented.
     runtime_params = {'resume': False,

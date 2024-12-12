@@ -21,7 +21,7 @@ from xpsi.pixelmesh.METRIC_qK cimport *
 cdef double _pi = M_PI
 
 cdef void COMPUTE_BCs(_RAY *const RAY,
-                      const _GEOM *const GEOM) nogil:
+                      const _GEOM *const GEOM) noexcept nogil:
 
     cdef:
         long double d = <long double>GEOM.d

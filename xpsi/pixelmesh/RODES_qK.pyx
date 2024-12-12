@@ -22,7 +22,7 @@ cdef double dg_11dr(double r,
                     double F1_r,
                     double dF1dr_r,
                     double func_r,
-                    double sin_theta) nogil:
+                    double sin_theta) noexcept nogil:
 
     cdef double temp = (2.0*r - r_s)*(r*r + a*a + r_s*r*a*a*sin_theta*sin_theta / Sigma) / (Delta*Delta)
 
@@ -40,7 +40,7 @@ cdef double dg_11dtheta(double r,
                         double F1_r,
                         double func_r,
                         double sin_theta,
-                        double cos_theta) nogil:
+                        double cos_theta) noexcept nogil:
 
     return 2.0*cos_theta*sin_theta*(3.0*kappa*F1_r / func_r - r_s*a*a*r*(1.0 + a*a*sin_theta*sin_theta / Sigma) / (Delta*Sigma))
 
@@ -53,7 +53,7 @@ cdef double dg_22dr(double r,
                     double func_theta,
                     double F1_r,
                     double dF1dr_r,
-                    double func_r) nogil:
+                    double func_r) noexcept nogil:
 
     return (2.0*r*(1.0 - Delta / Sigma) - r_s) / Sigma + kappa*func_theta*(func_r*dF1dr_r + r_s*F1_r / (r*r))
 
@@ -66,7 +66,7 @@ cdef double dg_22dtheta(double r,
                         double F1_r,
                         double func_r,
                         double sin_theta,
-                        double cos_theta) nogil:
+                        double cos_theta) noexcept nogil:
 
     return 2.0*cos_theta*sin_theta*(Delta*a*a / (Sigma*Sigma) + 3.0*kappa*func_r*F1_r)
 
@@ -76,7 +76,7 @@ cdef double dg_33dr(double r,
                     double kappa,
                     double func_theta,
                     double F2_r,
-                    double dF2dr_r) nogil:
+                    double dF2dr_r) noexcept nogil:
 
     return -2.0*r / (Sigma*Sigma) - kappa*func_theta*(dF2dr_r - 2.0*F2_r / r) / (r*r)
 
@@ -87,7 +87,7 @@ cdef double dg_33dtheta(double r,
                         double kappa,
                         double F2_r,
                         double sin_theta,
-                        double cos_theta) nogil:
+                        double cos_theta) noexcept nogil:
 
     return 2.0*sin_theta*cos_theta*(a*a / (Sigma*Sigma) - 3.0*kappa*F2_r / (r*r))
 
@@ -101,7 +101,7 @@ cdef double dg_44dr(double r,
                     double sin_theta,
                     double func_theta,
                     double F2_r,
-                    double dF2dr_r) nogil:
+                    double dF2dr_r) noexcept nogil:
 
     cdef double temp = 2.0*r - r_s - (Delta - a*a*sin_theta*sin_theta)*((2.0*r - r_s)*Sigma + 2.0*r*Delta) / (Delta*Sigma)
 
@@ -118,7 +118,7 @@ cdef double dg_44dtheta(double r,
                         double F2_r,
                         double sin_theta,
                         double cos_theta,
-                        double func_theta) nogil:
+                        double func_theta) noexcept nogil:
 
     cdef double temp = (-a*a - (Delta - a*a*sin_theta*sin_theta)*(Sigma - a*a*sin_theta*sin_theta) / (Sigma*sin_theta*sin_theta)) / (Delta*Sigma*sin_theta*sin_theta)
 
@@ -131,7 +131,7 @@ cdef double dg_14dr(double r,
                     double r_s,
                     double a,
                     double Sigma,
-                    double Delta) nogil:
+                    double Delta) noexcept nogil:
 
     return r_s*a*(r*((2.0*r - r_s) / Delta + 2.0*r / Sigma) - 1.0) / (Delta*Sigma)
 
@@ -142,7 +142,7 @@ cdef double dg_14dtheta(double r,
                         double Sigma,
                         double Delta,
                         double sin_theta,
-                        double cos_theta) nogil:
+                        double cos_theta) noexcept nogil:
 
     return -2.0*r_s*r*a*a*a*cos_theta*sin_theta / (Delta*Sigma*Sigma)
 
@@ -150,80 +150,80 @@ cdef double dg_14dtheta(double r,
 cdef double Gamma_211(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return dr[4] / det - m[4]*(m[0]*dr[4] + m[4]*dr[0] - 2.0*m[1]*dr[1]) / (det*det)
 
 cdef double Gamma_222(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return -dr[2] / (m[2] * m[2])
 
-cdef double Gamma_233(double * m, double * dr, double * dt, double det) nogil:
+cdef double Gamma_233(double * m, double * dr, double * dt, double det) noexcept nogil:
 
     return -dr[3] / (m[3]*m[3])
 
 cdef double Gamma_244(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return dr[0] / det - m[0]*(m[0]*dr[4] + m[4]*dr[0] - 2.0*m[1]*dr[1]) / (det*det)
 
 cdef double Gamma_241(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return -dr[1] / det + m[1]*(m[0]*dr[4] + m[4]*dr[0] - 2.0*m[1]*dr[1]) / (det*det)
 
 cdef double Gamma_232(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return -dt[2] / (m[2]*m[2])
 
 cdef double Gamma_311(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return dt[4] / det - m[4]*(m[0]*dt[4] + m[4]*dt[0] - 2.0*m[1]*dt[1]) / (det*det)
 
 cdef double Gamma_322(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return -dt[2] / (m[2] * m[2])
 
 cdef double Gamma_333(double *m,
                       double *dr,
-                      double *dt,double det) nogil:
+                      double *dt,double det) noexcept nogil:
 
     return -dt[3] / (m[3] * m[3])
 
 cdef double Gamma_344(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return dt[0] / det - m[0]*(m[0]*dt[4] + m[4]*dt[0] - 2.0*m[1]*dt[1]) / (det*det)
 
 cdef double Gamma_341(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return -dt[1] / det + m[1]*(m[0]*dt[4] + m[4]*dt[0] - 2.0*m[1]*dt[1]) / (det*det)
 
 cdef double Gamma_332(double *m,
                       double *dr,
                       double *dt,
-                      double det) nogil:
+                      double det) noexcept nogil:
 
     return -dr[3] / (m[3] * m[3])
 
@@ -232,7 +232,7 @@ cdef double Gamma_332(double *m,
 cdef int RODES(double t,
                   const double *const y,
                   double *const dydl,
-                  void *const params) nogil:
+                  void *const params) noexcept nogil:
 
     # y[] := y[t, phi, r, r', theta, theta']
 

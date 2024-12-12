@@ -147,10 +147,6 @@ class HotRegion(ParameterSubspace):
         region (``super`` region or an ``omit`` region) then the centre
         of that region is the point that is *aligned* to a meridian.
 
-    :param bool is_secondary:
-        Deprecated. You can use or the ``is_antiphased`` keyword argument
-        instead, which has precisely the same effect.
-
     .. note::
 
         The parameters are as follows:
@@ -272,7 +268,7 @@ class HotRegion(ParameterSubspace):
                  image_order_limit = None,
                  **kwargs):
 
-        self.is_antiphased = kwargs.get('is_secondary', is_antiphased)
+        self.is_antiphased = is_antiphased
 
         self.do_fast = do_fast
 
@@ -289,6 +285,9 @@ class HotRegion(ParameterSubspace):
         self.image_order_limit = image_order_limit
 
         self._split = split
+        if not isinstance(self._split, bool):
+            raise TypeError("The 'split' argument signifies split atmosphere interpolation and must be a boolean.")
+
         self.symmetry = symmetry
 
         self.atm_ext = atm_ext
@@ -518,7 +517,6 @@ class HotRegion(ParameterSubspace):
             raise TypeError('Declare symmetry existence with a boolean.')
 
         self._symmetry = declaration
-
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
             if self._split:
@@ -725,22 +723,17 @@ class HotRegion(ParameterSubspace):
         return self._num_cells
 
     @property
-    def is_secondary(self):
-        """ Shift the hot region by half a rotational cycle? Deprecated. """
+    def is_antiphased(self):
+        """ Shift the hot region by half a rotational cycle? """
         return self._is_antiphased
-
-    @is_secondary.setter
-    def is_secondary(self, is_secondary):
+    
+    @is_antiphased.setter
+    def is_antiphased(self, is_antiphased):
         if not isinstance(is_antiphased, bool):
             raise TypeError('Use a boolean to specify whether or not the '
                             'hot region should be shifted by half a cycle.')
         else:
             self._is_antiphased = is_antiphased
-
-    @property
-    def is_antiphased(self):
-        """ Shift the hot region by half a rotational cycle? """
-        return self._is_antiphased
 
     @property
     def atm_ext(self):
@@ -782,14 +775,6 @@ class HotRegion(ParameterSubspace):
             raise TypeError('Got an unrecognised beam_opt argument. Note that the only allowed '
                             'beam_opt options are 0, 1, 2, 3 (see documentation).')
 
-    @is_antiphased.setter
-    def is_antiphased(self, is_antiphased):
-        if not isinstance(is_antiphased, bool):
-            raise TypeError('Use a boolean to specify whether or not the '
-                            'hot region should be shifted by half a cycle.')
-        else:
-            self._is_antiphased = is_antiphased
-
     def print_settings(self):
         """ Print numerical settings. """
         print('Base number of cell parallels: ', self.sqrt_num_cells)
@@ -823,6 +808,7 @@ class HotRegion(ParameterSubspace):
                                                  st.Omega,
                                                  st.zeta,
                                                  st.epsilon,
+                                                 st.star_shape_ind,
                                                  self['super_radius'],
                                                  self['cede_radius'],
                                                  self['super_colatitude'],
@@ -853,6 +839,7 @@ class HotRegion(ParameterSubspace):
                                           st.R,
                                           st.zeta,
                                           st.epsilon,
+                                          st.star_shape_ind,
                                           self['super_radius'],
                                           self['super_colatitude'],
                                           self['omit_radius'],
@@ -885,6 +872,7 @@ class HotRegion(ParameterSubspace):
                                              st.R,
                                              st.zeta,
                                              st.epsilon,
+                                             st.star_shape_ind,
                                              self['cede_radius'],
                                              self['cede_colatitude'],
                                              self['super_radius'],
