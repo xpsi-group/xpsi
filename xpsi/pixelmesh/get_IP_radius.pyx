@@ -10,7 +10,7 @@ from xpsi.pixelmesh.RK_IP2S_tracer cimport RK
 cdef double compute_imagePlane_radius(const _GEOM *const GEOM,
                                       _RAY *const RAY,
                                       RAY_MAP *const MAP,
-                                      int force_circular) nogil:
+                                      int force_circular) noexcept nogil:
 
     # Bisection algorithm to compute an appropriate radial extent for the
     # image plane

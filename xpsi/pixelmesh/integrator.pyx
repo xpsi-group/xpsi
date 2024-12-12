@@ -127,6 +127,7 @@ def integrate(size_t numThreads,
     GEOM.asq = a * a
     GEOM.kappa = kappa
     GEOM.inclination = inclination
+    GEOM.star_shape_ind=0 #Assuming only AlGendy & Morsink 2014 oblateness for the image plane integrator.
 
     if R_eq > 1.5 * r_s: # compare to Schwarzschild photon sphere
         GEOM.b_max = R_eq / sqrt(1.0 - r_s / R_eq)

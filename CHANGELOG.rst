@@ -34,6 +34,20 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[v2.3.0-b] - 2024-12-06
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Updates done during the 2024 hack week. Including making X-PSI Cython3 compatible.
+
+Attribution
+^^^^^^^^^^^
+
+X-PSI team
+
+
 [v2.2.7] - 2024-07-13
 ~~~~~~~~~~~~~~~~~~~~~
 

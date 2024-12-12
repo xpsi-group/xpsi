@@ -25,7 +25,8 @@ def construct_closed_cellMesh(size_t numThreads,
                               double r_s,
                               double R_eq,
                               double zeta,
-                              double epsilon):
+                              double epsilon,
+                              int star_shape_ind):
     """
     Construct a closed photospheric cell mesh.
 
@@ -56,7 +57,7 @@ def construct_closed_cellMesh(size_t numThreads,
     for k in range(numThreads):
         w[k] = gsl_integration_cquad_workspace_alloc(100)
 
-    cellArea = _2pi * integrateArea(0.0, _hpi, R_eq, epsilon, zeta, 0, w[0]) / (<double> numCell)
+    cellArea = _2pi * integrateArea(0.0, _hpi, R_eq, epsilon, zeta, star_shape_ind, 0, w[0]) / (<double> numCell)
 
     cellArea *= 2.0
 
@@ -74,6 +75,7 @@ def construct_closed_cellMesh(size_t numThreads,
                                            R_eq,
                                            epsilon,
                                            zeta,
+                                           star_shape_ind,
                                            0,
                                            w[thread])
 
@@ -97,23 +99,23 @@ def construct_closed_cellMesh(size_t numThreads,
         thread = threadid()
         if (i == numCellsCompute - 1):
             cellColatitudes[i] = integrateArea(parallels[i - 1], _hpi,
-                                                R_eq, epsilon, zeta, 1,
+                                                R_eq, epsilon, zeta, star_shape_ind, 1,
                                                 w[thread]) / eta
         elif (i == 0):
             cellColatitudes[i] = integrateArea(0.0, parallels[i],
-                                                R_eq, epsilon, zeta, 1,
+                                                R_eq, epsilon, zeta, star_shape_ind, 1,
                                                 w[thread]) / eta
         else:
             cellColatitudes[i] = integrateArea(parallels[i - 1], parallels[i],
-                                                R_eq, epsilon, zeta, 1,
+                                                R_eq, epsilon, zeta, star_shape_ind, 1,
                                                 w[thread]) / eta
 
         mu = cos(cellColatitudes[i])
-        radius = radiusNormalised(mu, epsilon, zeta)
+        radius = radiusNormalised(mu, epsilon, zeta, star_shape_ind)
         cellRadialCoord[i] = radius * R_eq
         #r_s_over_r = r_s / cellRadialCoord[i]
-        effGrav[i] = effectiveGravity(mu, R_eq, zeta, epsilon)
-        f = f_theta(mu, radius, epsilon, zeta)
+        effGrav[i] = effectiveGravity(mu, R_eq, zeta, epsilon, star_shape_ind)
+        f = f_theta(mu, radius, epsilon, zeta, star_shape_ind)
         cos_gamma[i] = 1.0 / sqrt(1.0 + f * f)
         maxEmissionAngle[i] = _hpi + acos(cos_gamma[i])
 
