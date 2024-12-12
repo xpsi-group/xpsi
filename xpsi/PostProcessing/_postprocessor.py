@@ -99,7 +99,7 @@ class PostProcessor(object):
     def set_subset(self, IDs=None,
                    combine=False, combine_all=False,
                    force_combine=True, only_combined=False,
-                   overwrite=False):
+                   overwrite=False, split_modes=False):
         """ Set a current list of :class:`~.Runs` instances.
 
         Helper function to get and notify which runs will be plotted.
@@ -135,6 +135,9 @@ class PostProcessor(object):
         :param bool overwrite:
             Overwrite combined-sample files on disk with the same filename?
 
+        :param bool split_modes:
+            Split posteriors by mode? Only useful for cornerplots.
+
         """
 
         if IDs is None:
@@ -160,7 +163,8 @@ class PostProcessor(object):
                                      force_combine = True,
                                      only_combined = True,
                                      only_principal = True,
-                                     overwrite = overwrite)
+                                     overwrite = overwrite,
+                                     split_modes = split_modes)
         else:
             posterior = self._subset[0]
             ids = IDs.get(posterior.ID, None)
@@ -188,7 +192,8 @@ class PostProcessor(object):
                                  force_combine = force_combine,
                                  only_combined = only_combined,
                                  only_principal = False,
-                                 overwrite = overwrite)
+                                 overwrite = overwrite,
+                                 split_modes = split_modes)
 
     @property
     def subset(self):
