@@ -100,9 +100,7 @@ class Runs(Metadata):
 
         param bool multi_mode:
             Load the runs so that they are separated in different modes found
-            by a MultiNest run with mmodal=True. Works at the moment only when
-            loading a single run and when having models with the same number of
-            modes.
+            by a MultiNest run with mmodal=True.
 
         param string mode_label:
             Select a label for the modes to be shown in the plots.
