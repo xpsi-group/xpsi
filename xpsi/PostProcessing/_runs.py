@@ -98,6 +98,15 @@ class Runs(Metadata):
                   likelihood=None,multi_mode=False,mode_label="mode", **kwargs):
         """ Construct a :class:`~.Runs` instance by loading distinct runs.
 
+        param bool multi_mode:
+            Load the runs so that they are separated in different modes found
+            by a MultiNest run with mmodal=True. Works at the moment only when
+            loading a single run and when having models with the same number of
+            modes.
+
+        param string mode_label:
+            Select a label for the modes to be shown in the plots.
+
         The kwargs will be shared by nested sampling runs. The args must be
         lists that will be zipped to instantiate a set of run backends.
 
@@ -126,6 +135,14 @@ class Runs(Metadata):
             _overwrite = False
 
         if multi_mode:
+            if len(roots)>1:
+                raise Exception("Error: multi_mode=True is not yet working when loading multiple runs.")
+            try:
+                cls.mode_len
+            except:
+                pass
+            else:
+                print("Warning: A run/model using multi_mode=True was previously already loaded. This load will overwrite the number of modes found, and can result in an error if trying to plot the previously loaded results.")
             for vec in range(len(roots)):
                 filerootpath =_os.path.join(base_dirs[vec], roots[vec])
                 # Read the file and manually handle blank lines
@@ -155,7 +172,6 @@ class Runs(Metadata):
                 # Append the last mode if not empty
                 if current_mode:
                     modes.append(_np.array(current_mode))
-
                 for mode in range(len(modes)):
                     _np.savetxt(filerootpath+f"mode{mode+1}.txt", modes[mode])
                     roots.append(roots[vec]+f"mode{mode+1}")
