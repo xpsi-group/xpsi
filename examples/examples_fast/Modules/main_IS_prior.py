@@ -110,7 +110,7 @@ hot_spot = xpsi.HotRegion(bounds=bounds,
                                 max_sqrt_num_cells=64,
                                 num_leaves=64,
                                 num_rays=512,
-                                is_secondary=True,
+                                is_antiphased=True,
                                 image_order_limit=3, # up to tertiary
                                 prefix='p')
 
