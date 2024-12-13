@@ -95,8 +95,15 @@ class Runs(Metadata):
 
     @classmethod
     def load_runs(cls, ID, run_IDs, roots, base_dirs, use_nestcheck,
-                  likelihood=None, **kwargs):
+                  likelihood=None, multi_mode=False, mode_label="mode", **kwargs):
         """ Construct a :class:`~.Runs` instance by loading distinct runs.
+
+        param bool multi_mode:
+            Load the runs so that they are separated in different modes found
+            by a MultiNest run with mmodal=True.
+
+        param string mode_label:
+            Select a label for the modes to be shown in the plots.
 
         The kwargs will be shared by nested sampling runs. The args must be
         lists that will be zipped to instantiate a set of run backends.
@@ -122,6 +129,61 @@ class Runs(Metadata):
             _transform = None
             _overwrite = False
 
+        if multi_mode:
+            
+            # Initialize variables
+            len_modes = {}
+            is_multimode_run = {}
+            mode_label ="_"+mode_label
+
+            # Loop over the runs
+            for vec in range(len(roots)):
+
+                # If the run is multimodal, load the modes
+                filerootpath =_os.path.join(base_dirs[vec], roots[vec])
+                ismultimode = _os.path.exists( filerootpath+"post_separate.dat" )
+                is_multimode_run[run_IDs[vec]] = ismultimode
+                if ismultimode:
+                    with open(filerootpath+"post_separate.dat", 'r') as file:
+                        lines = file.readlines()
+
+                    # Convert lines to a numpy array, replacing blank lines with a marker (e.g., None or NaN)
+                    data = []
+                    for line in lines:
+                        stripped = line.strip()
+                        if stripped:  # Non-blank line
+                            data.append(_np.array(stripped.split(), dtype=float))
+                        else:  # Blank line
+                            data.append(None)
+
+                    # Separate modes based on None markers
+                    modes = []
+                    current_mode = []
+                    for row in data:
+                        if row is None:
+                            if current_mode:
+                                modes.append(_np.array(current_mode))
+                                current_mode = []
+                        else:
+                            current_mode.append(row)
+
+                    # Append the last mode if not empty
+                    if current_mode:
+                        modes.append(_np.array(current_mode))
+
+                    for mode in range(len(modes)):
+                        _np.savetxt(filerootpath+f"mode{mode+1}.txt", modes[mode])
+                        roots.append(roots[vec]+f"mode{mode+1}")
+                        run_IDs.append(run_IDs[vec]+f"{mode_label} {mode+1}")
+                        base_dirs.append(base_dirs[vec])
+                        use_nestcheck.append(use_nestcheck[vec])
+
+                    # Save useful information
+                    len_modes[run_IDs[vec]] = len(modes)
+
+                else:
+                    len_modes[run_IDs[vec]] = 0
+
         runs = []
         for root, run_ID, base_dir, check in zip(roots, run_IDs,
                                                  base_dirs,
@@ -132,17 +194,37 @@ class Runs(Metadata):
                                       transform=_transform,
                                       overwrite_transformed=_overwrite,
                                       **kwargs))
-        
-        return cls(runs, likelihood, ID, **kwargs)
+        Runs = cls(runs, likelihood, ID, **kwargs)
+        Runs.multi_mode = multi_mode
+
+        if multi_mode:
+            Runs.len_modes = len_modes
+            Runs.mode_label = mode_label
+            Runs.is_multimode_run = is_multimode_run
+
+        return Runs
 
     def set_subset(self, IDs=None, combine=False, combine_all=False,
                    force_combine=False, only_combined=False,
-                   only_principal=False, overwrite=False):
+                   only_principal=False, overwrite=False, split_modes=False):
         """ Set a current list of :class:`~.Run` instances."""
 
         if IDs is None:
             self._subset = self._runs
         else:
+            if self.multi_mode and split_modes:
+                old_IDs=IDs
+                IDs=[]
+                for ID in  old_IDs:
+                    if self.mode_label in ID:
+                        IDs.append( ID )
+                    else:
+                        if self.is_multimode_run[ ID ]:
+                            root_ID=ID
+                            for mode in range( self.len_modes[root_ID] ):
+                                IDs.append(root_ID + f"{self.mode_label} {mode+1}")
+                        else:
+                            IDs.append( ID )
             self._subset = [self[ID] for ID in IDs]
 
         if combine and force_combine: # create new run object
