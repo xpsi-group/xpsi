@@ -84,12 +84,13 @@ class Instrument(ParameterSubspace):
         find its way to the base class.
 
     """
-    def __init__(self, matrix, energy_edges, channels, channel_edges=None,
+    def __init__(self, matrix, energy_edges, channels, channel_edges=None, name=None,
                  *args, **kwargs):
 
         self.matrix = matrix
         self.energy_edges = energy_edges
         self.channels = channels
+        self.name = name
         if channel_edges is not None:
             self.channel_edges = channel_edges
 

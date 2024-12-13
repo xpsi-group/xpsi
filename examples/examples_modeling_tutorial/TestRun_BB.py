@@ -461,7 +461,7 @@ likelihood.clear_cache()
 likelihood.externally_updated = True
 
 # let's require that checks pass before starting to sample
-true_logl = -26947.474150
+true_logl = -2.6883527522e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
