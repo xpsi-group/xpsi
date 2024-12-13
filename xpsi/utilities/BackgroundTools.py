@@ -213,9 +213,9 @@ def plotBackgroundSpectrum( XPSI_model,
     
     # Plotting actual background
     if plot_range:
-        ax.fill_between(x0, np.abs(mean-3*sigma), (mean+3*sigma), color =mycolors[7],alpha = 0.3,label =lBs.replace('1\sigma','3\sigma'))
+        ax.fill_between(x0, np.abs(mean-3*sigma), (mean+3*sigma), color =mycolors[7],alpha = 0.3,label =lBs.replace(r'1\sigma',r'3\sigma'))
         ax.fill_between(x0, np.abs(mean-1*sigma), (mean+1*sigma), color =mycolors[7],alpha = 0.5,label =lBs)
-        ax.fill_between(x0, np.abs(mean-2*sigma), (mean+2*sigma), color =mycolors[7],alpha = 0.4,label =lBs.replace('1\sigma','2\sigma'))
+        ax.fill_between(x0, np.abs(mean-2*sigma), (mean+2*sigma), color =mycolors[7],alpha = 0.4,label =lBs.replace(r'1\sigma',r'2\sigma'))
     ax.plot(x0,BKG,color =mycolors[6],label = lBp,lw = 2)
 
     # Plotting data and expected values

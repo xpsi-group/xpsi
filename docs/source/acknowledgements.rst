@@ -28,7 +28,7 @@ Those involved in maintenance and development (technical and scientific).
 * Daniela Huppenkothen (d.huppenkothen[at]uva.nl), University of Amsterdam
 * Christine Kazantsev (ckazantsev[at]irap.omp.eu), IRAP
 * Yves Kini (y.kini[at]uva.nl), University of Amsterdam
-* Lucien Mauviard-Hagg (lucien.mauviard-haag[at]irap.omp.eu), IRAP
+* Lucien Mauviard-Haag (lucien.mauviard-haag[at]irap.omp.eu), IRAP
 * Tuomo Salmi (tuomo.salmi[at]helsinki.fi), University of Helsinki
 * Pierre Stammler (pstammler[at]irap.omp.eu), IRAP
 * Serena Vinciguerra (s.vinciguerra[at]uva.nl), University of Amsterdam

@@ -1,7 +1,7 @@
 '''
 Test script to check that X-PSI installation is working (with the numerical atmosphere extension).
 The run is succesful if it passes the likelihood check (in ~ 1 minute) and sampling finishes without errors (in ~ 5 min).
-The model and synthetic data are based on those shown in the Modelling tutorial notebook.
+The model and instrument response are not exactly the same that were used to produce the synthetic data, but this is just an example.
 
 Prequisities:
 Before running the script, add the NICER instrument files to the model_data subdirectory:
@@ -620,7 +620,7 @@ runtime_params = {'resume': False,
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
-true_logl = -68147.0113542
+true_logl = -6.7261415434e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
