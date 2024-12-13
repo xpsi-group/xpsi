@@ -1,5 +1,3 @@
-
-
 import numpy as np
 import math
 
@@ -8,24 +6,20 @@ import xpsi
 np.random.seed(xpsi._rank+10)
 
 import time
+import os
+import sys
 
+this_directory = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(this_directory)
+
+# Data
 from CustomInstrument import CustomInstrument
 from CustomSignal import CustomSignal
 from CustomPhotosphere import CustomPhotosphere
 from CustomPrior import CustomPrior
 
-
-# Data
-if __name__ == '__main__':
-    data_path = "../Data/xpsi_good_realisation.dat"
-else:
-    data_path = "./Data/xpsi_good_realisation.dat"
-
-try:
-    data_loaded = np.loadtxt(data_path, dtype=np.double)
-except:
-    print("Loading the data assuming the notebook was run for documentation pages")
-    data_loaded = np.loadtxt('../../examples/examples_fast/Data/xpsi_good_realisation.dat', dtype=np.double)
+data_path = this_directory+"/../Data/xpsi_good_realisation.dat"
+data_loaded = np.loadtxt(data_path, dtype=np.double)
 
 data = xpsi.Data(data_loaded,
                      channels=np.arange(10,301),

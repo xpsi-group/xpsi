@@ -6,7 +6,7 @@ from xpsi.utils import make_verbose
 from xpsi import Likelihood
 from xpsi.Posterior import Posterior
 
-try: 
+try:
     from xpsi.EnsembleSampler import EnsembleSampler
 except ImportError:
     print("""Check your installation of emcee if using the EnsembleSampler""")
@@ -169,6 +169,10 @@ def importance(target, importance,
         Overwrite an existing importance sample file on disk?
 
     """
+    if likelihood_change :
+        surf="likelihood_change"
+    if prior_change:
+        surf="prior_change"
 
     yield 'Cross-checking parameter names'
     if len(target) > len(importance):
@@ -285,7 +289,7 @@ def importance(target, importance,
         # renormalise
         _ref[:,0] /= _np.sum(_ref[:,0])
 
-        _file = sample_root + '__importance_sampled' + '.txt'
+        _file = sample_root + f'_importance_sampled_{surf}' + '.txt'
         if _os.path.isfile(_file):
             _write = True if overwrite else False
         else:
@@ -301,43 +305,43 @@ def importance(target, importance,
 
     yield
 
-def ultranested(likelihood, 
-                prior, 
-                sampler_params={}, 
-                runtime_params={}, 
-                use_stepsampler=False, 
+def ultranested(likelihood,
+                prior,
+                sampler_params={},
+                runtime_params={},
+                use_stepsampler=False,
                 stepsampler_params={},
                 out_filename="weighted_post_ultranest_xpsi"):
-    """ Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/) 
+    """ Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/)
         package (Buchner 2021).
 
     :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
 
     :param prior: An instance of :class:`~.Prior.Prior`.
 
-    :param sampler_params: A dictionary of the keyword arguments passed to the 
+    :param sampler_params: A dictionary of the keyword arguments passed to the
         instance of :class:`~.UltranestSampler` to initialise the sampler.
 
-    :param runtime_params:  A dictionary of the keyword arguments passed to the 
+    :param runtime_params:  A dictionary of the keyword arguments passed to the
         instance of :class:`~.UltranestSampler` to run the sampler.
 
-    :param use_stepsampler: Boolean indicating if the step sampler is used. In this 
-        case the :class:`ultranest.stepsampler.SliceSampler` is used. 
+    :param use_stepsampler: Boolean indicating if the step sampler is used. In this
+        case the :class:`ultranest.stepsampler.SliceSampler` is used.
 
-    :param stepsampler_params: A dictionary of the keyword arguments passed to the 
-        to the instance of :class:`~.UltranestSampler` specifying the step sampler 
+    :param stepsampler_params: A dictionary of the keyword arguments passed to the
+        to the instance of :class:`~.UltranestSampler` specifying the step sampler
         runtime parameters.
 
     :param out_filename: String specifying the name of the output file.
 
-    :returns: An instance of :class:`~.UltranestSampler` 
-    
+    :returns: An instance of :class:`~.UltranestSampler`
+
     """
 
     # initialise the sampler
     sampler = UltranestSampler(likelihood, prior, sampler_params, use_stepsampler, stepsampler_params)
 
-    # start sampling 
+    # start sampling
     sampler(runtime_params)
 
     # print results
@@ -345,7 +349,7 @@ def ultranested(likelihood,
     if use_stepsampler:
         sampler.stepsampler.print_diagnostic()
 
-    # store output 
+    # store output
     sampler.write_results(sampler_params, out_filename)
 
     return sampler
