@@ -187,7 +187,7 @@ class ResidualPlot(SignalPlot):
             
             # Prettify
             for ax in (self._ax_data, self._ax_model, self._ax_clres, self._ax_clust):
-                ax.set_xlabel('$\phi$ [cycles]')
+                ax.set_xlabel(r'$\phi$ [cycles]')
 
             for ax in (self._ax_data, self._ax_model):
                 ax.tick_params(axis='x', labelbottom=True)
