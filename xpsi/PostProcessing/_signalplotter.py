@@ -115,18 +115,18 @@ class SignalPlotter(PostProcessor):
 
             try:
                 likelihood = posterior.likelihood
-            except AttributeError:
+            except AttributeError as e:
                 print('Supply a likelihood object to proceed.')
-                raise
+                raise e
 
             state_to_restore = likelihood.externally_updated
             likelihood.externally_updated = False
 
             try:
                 _plots = plots[posterior.ID]
-            except (TypeError, KeyError):
+            except (TypeError, KeyError) as e:
                 print('Invalid plot object specification.')
-                raise
+                raise e
             else:
                 try:
                     iter(_plots)
@@ -146,9 +146,9 @@ class SignalPlotter(PostProcessor):
             for plot in _plots:
                 try:
                     _caching_targets += plot.__caching_targets__
-                except (TypeError, AttributeError):
+                except (TypeError, AttributeError) as e:
                     print('Invalid specification of caching targets.')
-                    raise
+                    raise e
 
             # eliminate duplicates (some plot types can share caching targets)
             caching_targets = []
@@ -223,8 +223,21 @@ class SignalPlotter(PostProcessor):
                 archive,
                 plots):
         """ Execute plotting loop given samples. """
-        thetas = self._draw_equally_weighted(run.samples, nsamples,
-                                             len(likelihood))
+
+        # If has a parameter to plot, use it. Else, draw samples !
+        if hasattr(plots[0],'parameters_vector'):
+            try:
+                print( plots[0].parameters_vector )
+                _ = plots[0].parameters_vector[0]
+                assert len(likelihood) == len(plots[0].parameters_vector) , 'Length of the parameter vector does not match likelihood one'
+            except (TypeError) as e:
+                raise e('When provided, theta to plot must be given as an iterable and have matching length with likelihood' )
+            else:
+                thetas = _np.array( [plots[0].parameters_vector] )
+        else:
+            thetas = self._draw_equally_weighted(run.samples, nsamples,
+                                                len(likelihood))
+
 
         signal = likelihood.signal # should only be one signal object available
         for p in plots:

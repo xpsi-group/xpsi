@@ -1,6 +1,6 @@
 from pylab import *
 from ._global_imports import *
-from scipy.ndimage import measurements
+from scipy.ndimage import measurements, gaussian_filter
 from ._signalplot import SignalPlot
 
 class ResidualPlot(SignalPlot):
@@ -64,6 +64,9 @@ class ResidualPlot(SignalPlot):
                  data_cmap='inferno',
                  model_cmap='inferno',
                  residual_cmap='PuOr',
+                 parameters_vector=None,
+                 plot_pulse=False,
+                 blur_residuals=False,
                  plot_clusters=False,
                  threshlim=2.0,
                  clusters_cmap='PuOr',
@@ -87,6 +90,15 @@ class ResidualPlot(SignalPlot):
              Colormap name from :mod:`matplotlib` to use for the residuals between
              the data and posterior-expected count numbers over joint
              channel-phase intervals. A diverging colormap is recommended.
+
+        :param list parameters_vector:
+             List of model parameters to plot the residuals for.
+
+        :param bool plot_pulse:
+             Plot the pulse profile?
+
+        :param bool blur_residuals:
+             Blur the residuals?
 
         :param bool plot_clusters:
              Plot cluster sizes and residual distribution?
@@ -116,16 +128,38 @@ class ResidualPlot(SignalPlot):
         self._model_cmap = model_cmap
         self._residual_cmap = residual_cmap
         self._plot_clusters = plot_clusters
+        self._plot_pulse = plot_pulse
+        self._blur_residuals = blur_residuals
+        if not parameters_vector is None:
+            self.parameters_vector = parameters_vector
+
+        # Choose the rows for plotting
+        self._data_row = 0
+        self._model_row = 1 
+        self._resid_row = 2
+
+        # Do you want to plot the pulse profile?
+        if self._plot_pulse:
+
+            # Move all rows by one
+            cls = type(self)
+            cls.__rows__            += 1
+            cls.__ax_rows__         += 1
+            cls.__height_ratios__   = [1] * cls.__ax_rows__
+            self._pulse_row = 0
+            self._data_row = 1
+            self._model_row = 2 
+            self._resid_row = 3
 
         # Do you want to plot clusters ? 
         if self._plot_clusters:
             
             # Add more columns/rows
             cls = type(self)
-            cls.__rows__          = 5
-            cls.__ax_rows__       = 5
-            cls.__ax_columns__    = 5
-            cls.__height_ratios__ = [1] * 5
+            cls.__rows__          += 2
+            cls.__ax_rows__       += 2
+            cls.__ax_columns__    += 3
+            cls.__height_ratios__ = [1] * cls.__ax_rows__
             cls.__width_ratios__  = [50, 1, 50, 1, 1] # second column for colorbars
             cls.__wspace__        = 0.1
             cls.__hspace__        = 0.35
@@ -138,32 +172,23 @@ class ResidualPlot(SignalPlot):
             self._clusters_cmap = clusters_cmap
             self._clustdist_cmap = clustdist_cmap
 
-        else:
-
-            # Restore sizes
-            cls = type(self)
-            cls.__rows__          = 3
-            cls.__columns__       = 1
-            cls.__ax_rows__       = 3
-            cls.__ax_columns__    = 2
-            cls.__height_ratios__ = [1]*3
-            cls.__width_ratios__  = [50, 1] # second column for colorbars
-            cls.__wspace__        = 0.025
-            cls.__hspace__        = 0.125
+            # Get the rows
+            self._cluster_row = self._resid_row + 1
+            self._clustdist_row = self._resid_row + 2 
 
         # Generate the axes for plotting
         self._get_figure()
 
-        self._ax_data = self._fig.add_subplot(self._gs[0,:-1])
-        self._ax_data_cb = self._fig.add_subplot(self._gs[0,-1])
+        self._ax_data = self._fig.add_subplot(self._gs[self._data_row,:-1])
+        self._ax_data_cb = self._fig.add_subplot(self._gs[self._data_row,-1])
 
-        self._ax_model = self._fig.add_subplot(self._gs[1,:-1])
-        self._ax_model_cb = self._fig.add_subplot(self._gs[1,-1])
+        self._ax_model = self._fig.add_subplot(self._gs[self._model_row,:-1])
+        self._ax_model_cb = self._fig.add_subplot(self._gs[self._model_row,-1])
 
-        self._ax_resid = self._fig.add_subplot(self._gs[2,:-1])
-        self._ax_resid_cb = self._fig.add_subplot(self._gs[2,-1])
+        self._ax_resid = self._fig.add_subplot(self._gs[self._resid_row,:-1])
+        self._ax_resid_cb = self._fig.add_subplot(self._gs[self._resid_row,-1])
 
-        # Prettify everything
+        # Prettify usual plots
         self._ax_resid.set_xlabel(r'$\phi$ [cycles]')
         for ax in (self._ax_data, self._ax_model):
             ax.tick_params(axis='x', labelbottom=False)
@@ -174,16 +199,25 @@ class ResidualPlot(SignalPlot):
             ax.xaxis.set_minor_locator(MultipleLocator(0.05))
             ax.set_xlim([0.0,2.0])
 
+        # Plot the pulse if required
+        if self._plot_pulse:
+            self._ax_pulse = self._fig.add_subplot(self._gs[self._pulse_row,:-1])
+            self._ax_pulse.set_ylabel(r'Total counts')
+            self._ax_pulse.xaxis.set_major_locator(MultipleLocator(0.2))
+            self._ax_pulse.xaxis.set_minor_locator(MultipleLocator(0.05))
+            self._ax_pulse.tick_params(axis='x', labelbottom=False)
+            self._ax_pulse.set_xlim([0.0,2.0])
+
         # Handle cluster plots if required
         if self._plot_clusters:
 
             # Generate axes
-            self._ax_clres = self._fig.add_subplot(self._gs[3,:2])
-            self._ax_clust = self._fig.add_subplot(self._gs[3,2:-1], sharex = self._ax_clres)
-            self._ax_clust_cb = self._fig.add_subplot(self._gs[3,-1])
+            self._ax_clres = self._fig.add_subplot(self._gs[self._cluster_row,:2])
+            self._ax_clust = self._fig.add_subplot(self._gs[self._cluster_row,2:-1], sharex = self._ax_clres)
+            self._ax_clust_cb = self._fig.add_subplot(self._gs[self._cluster_row,-1])
             
-            self._ax_rdist = self._fig.add_subplot(self._gs[4, :2])
-            self._ax_cdist = self._fig.add_subplot(self._gs[4, 2:-1])
+            self._ax_rdist = self._fig.add_subplot(self._gs[self._clustdist_row, :2])
+            self._ax_cdist = self._fig.add_subplot(self._gs[self._clustdist_row, 2:-1])
             
             # Prettify
             for ax in (self._ax_data, self._ax_model, self._ax_clres, self._ax_clust):
@@ -215,6 +249,17 @@ class ResidualPlot(SignalPlot):
             self.yscale = kwargs.get("yscale")
         else:
             self.yscale = "log"
+
+        # Restore sizes
+        cls = type(self)
+        cls.__rows__          = 3
+        cls.__columns__       = 1
+        cls.__ax_rows__       = 3
+        cls.__ax_columns__    = 2
+        cls.__height_ratios__ = [1]*3
+        cls.__width_ratios__  = [50, 1] # second column for colorbars
+        cls.__wspace__        = 0.025
+        cls.__hspace__        = 0.125
 
         plt.close()
 
@@ -266,13 +311,47 @@ class ResidualPlot(SignalPlot):
         if self._plot_clusters:
             self._reveal_clusters()
             self._disp_distributions()
+        if self._plot_pulse:
+            self.add_pulses()
 
     def _set_vminmax(self):
         """ Compute minimum and maximum for data and model colorbars. """
-        self._vmin = min(_np.min(self.expected_counts/2.0),
-                         _np.min(self._signal.data.counts/2.0))
-        self._vmax = max(_np.max(self.expected_counts/2.0),
-                         _np.max(self._signal.data.counts/2.0))
+        self._vmin = min(_np.min(self.expected_counts),
+                         _np.min(self._signal.data.counts))
+        self._vmax = max(_np.max(self.expected_counts),
+                         _np.max(self._signal.data.counts))
+
+    def add_pulses( self ):
+        """ Display the pulse over the data if requested """
+
+        try:
+            self._vmin
+        except AttributeError:
+            self._set_vminmax()
+
+        # Get the pulse of data and model
+        doubles_phases = _np.concatenate( (self._signal.data.phases[:-1] , (self._signal.data.phases[:-1]+1.0)), axis=0 ) 
+        pulse_data = self._signal.data.counts.sum( axis = 0 )
+        double_pulse_data = _np.concatenate( (pulse_data , pulse_data), axis=0 )
+        pulse_model = self.expected_counts.sum( axis = 0 )
+        double_pulse_model = _np.concatenate( (pulse_model , pulse_model) )
+
+        # Compute the chi squared
+        chi2 = self._signal.chi2
+
+        # Plot pulse
+        self._ax_pulse.errorbar(x=doubles_phases,
+                                y=double_pulse_data,
+                                yerr=_np.sqrt( double_pulse_data ),
+                                ds='steps-mid',
+                                label='Data', color='black')
+
+        self._ax_pulse.errorbar(x=doubles_phases,
+                                y=double_pulse_model, 
+                                ds='steps-mid',
+                                label=r'Model $\chi^2=$'+f'{chi2:.2f}', color='steelblue')
+
+        self._ax_pulse.legend(loc='lower right')
 
     def _add_data(self):
         """ Display data in topmost panel. """
@@ -293,7 +372,7 @@ class ResidualPlot(SignalPlot):
 
         data = self._ax_data.pcolormesh(self._signal.data.phases,
                                         channel_edges,
-                                        self._signal.data.counts/2.0,
+                                        self._signal.data.counts,
                                         cmap = cm.get_cmap(self._data_cmap),
                                         vmin = self._vmin,
                                         vmax = self._vmax,
@@ -303,7 +382,7 @@ class ResidualPlot(SignalPlot):
 
         data = self._ax_data.pcolormesh(self._signal.data.phases + 1.0,
                                         channel_edges,
-                                        self._signal.data.counts/2.0,
+                                        self._signal.data.counts,
                                         cmap = cm.get_cmap(self._data_cmap),
                                         vmin = self._vmin,
                                         vmax = self._vmax,
@@ -320,7 +399,7 @@ class ResidualPlot(SignalPlot):
                                      format=_get_default_formatter())
         self._data_cb.ax.set_frame_on(True)
         self._data_cb.ax.yaxis.set_minor_locator(AutoMinorLocator())
-        self._data_cb.set_label(label=r'counts', labelpad=15)
+        self._data_cb.set_label(label=r'counts/cycle', labelpad=15)
 
     def _add_expected_counts(self):
         """ Display posterior expectation of model in second panel. """
@@ -341,7 +420,7 @@ class ResidualPlot(SignalPlot):
 
         model = self._ax_model.pcolormesh(self._signal.data.phases,
                                           channel_edges,
-                                          self.expected_counts/2.0,
+                                          self.expected_counts,
                                           cmap = cm.get_cmap(self._model_cmap),
                                           vmin = self._vmin,
                                           vmax = self._vmax,
@@ -351,7 +430,7 @@ class ResidualPlot(SignalPlot):
 
         model = self._ax_model.pcolormesh(self._signal.data.phases + 1.0,
                                           channel_edges,
-                                          self.expected_counts/2.0,
+                                          self.expected_counts,
                                           cmap = cm.get_cmap(self._model_cmap),
                                           vmin = self._vmin,
                                           vmax = self._vmax,
@@ -369,7 +448,7 @@ class ResidualPlot(SignalPlot):
         self._model_cb.ax.set_frame_on(True)
         self._model_cb.ax.yaxis.set_minor_locator(AutoMinorLocator())
 
-        self._model_cb.set_label(label=r'counts', labelpad=15)
+        self._model_cb.set_label(label=r'counts/cycle', labelpad=15)
 
     def _add_residuals(self):
         """ Display the residuals in the third panel. """
@@ -388,33 +467,65 @@ class ResidualPlot(SignalPlot):
         channel_edges[0] = channels[0]-chandiff1
         channel_edges[len(channels)] = channels[len(channels)-1]+chandiff2
 
-        resid = self._ax_resid.pcolormesh(self._signal.data.phases,
-                                      channel_edges,
-                                      self._residuals,
-                                      cmap = cm.get_cmap(self._residual_cmap),
-                                      vmin = -vmax,
-                                      vmax = vmax,
-                                      linewidth = 0,
-                                      rasterized = self._rasterized)
-        resid.set_edgecolor('face')
+        # Plot
+        if not self._blur_residuals:
+            resid1 = self._ax_resid.pcolormesh(self._signal.data.phases,
+                                        channel_edges,
+                                        self._residuals,
+                                        cmap = cm.get_cmap(self._residual_cmap),
+                                        vmin = -vmax,
+                                        vmax = vmax,
+                                        linewidth = 0,
+                                        rasterized = self._rasterized)
 
-        resid = self._ax_resid.pcolormesh(self._signal.data.phases + 1.0,
-                                      channel_edges,
-                                      _np.abs(self._residuals),
-                                      cmap = cm.get_cmap(self._residual_cmap),
-                                      vmin = -vmax,
-                                      vmax = vmax,
-                                      linewidth = 0,
-                                      rasterized = self._rasterized)
-        resid.set_edgecolor('face')
+            resid2 = self._ax_resid.pcolormesh(self._signal.data.phases + 1.0,
+                                        channel_edges,
+                                        _np.abs(self._residuals),
+                                        cmap = cm.get_cmap(self._residual_cmap),
+                                        vmin = -vmax,
+                                        vmax = vmax,
+                                        linewidth = 0,
+                                        rasterized = self._rasterized)
 
+        else:
+            k=30
+            extended_phases = _np.linspace(self._signal.data.phases[0],self._signal.data.phases[-1:],
+                                           num=(self._signal.data.phases.shape[0]-1)*k+1)
+            extended_channels = _np.log10( _np.logspace(channel_edges[0],channel_edges[-1:],
+                                                        num=(channel_edges.shape[0]-1)*k+1) )
+
+            extended_residuals = _np.repeat( _np.repeat( self._residuals , k , axis=0 ), k , axis=1 )
+            blurred_residuals = gaussian_filter( extended_residuals , 
+                                                 sigma=k,
+                                                 mode=['constant','wrap'] )
+
+            resid1 = self._ax_resid.pcolormesh(_np.squeeze(extended_phases),
+                                        _np.squeeze(extended_channels),
+                                        blurred_residuals,
+                                        cmap = cm.get_cmap(self._residual_cmap),
+                                        vmin = -vmax,
+                                        vmax = vmax,
+                                        linewidth = 0,
+                                        rasterized = self._rasterized)
+
+            resid2 = self._ax_resid.pcolormesh(_np.squeeze(extended_phases) + 1.0,
+                                        _np.squeeze(extended_channels),
+                                        _np.abs(blurred_residuals),
+                                        cmap = cm.get_cmap(self._residual_cmap),
+                                        vmin = -vmax,
+                                        vmax = vmax,
+                                        linewidth = 0,
+                                        rasterized = self._rasterized)
+        
+        resid1.set_edgecolor('face')
+        resid2.set_edgecolor('face')
         self._ax_resid.axvline(1.0, lw=self._tick_width, color='k')
 
         self._ax_resid.set_ylim([_np.max([channel_edges[0],0.001]),
                                  channel_edges[-1]])
         self._ax_resid.set_yscale(self.yscale)
 
-        self._resid_cb = plt.colorbar(resid, cax = self._ax_resid_cb,
+        self._resid_cb = plt.colorbar(resid2, cax = self._ax_resid_cb,
                                       ticks=AutoLocator())
         self._resid_cb.ax.set_frame_on(True)
         self._resid_cb.ax.yaxis.set_minor_locator(AutoMinorLocator())
