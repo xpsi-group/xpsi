@@ -199,7 +199,7 @@ def plot_instruments(instruments, xlabel="Energy interval", ylabel="Channel"):
         matrixplot = ax1.imshow(inst.matrix,
                                 cmap=cm.viridis,
                                 rasterized=True)
-        ax1.set_xlabel('Energy interval')
+        ax1.set_xlabel(xlabel)
         ax1.set_ylabel(ylabel)
 
         cbar = fig.colorbar(matrixplot, ax=ax1, shrink=1 / nb_instru, pad=0.01)
@@ -210,9 +210,11 @@ def plot_instruments(instruments, xlabel="Energy interval", ylabel="Channel"):
     veneer((0.1, 0.5), (50, 250), ax2)
 
     for inst in instruments:
+        label = inst.name if hasattr(inst,'name') else None
         ax2.plot((inst.energy_edges[:-1] + inst.energy_edges[1:]) / 2.0,
-                 np.sum(inst.matrix, axis=0), label='NICER')  ## TODO:  change NICER by instrument.name
-    ax2.legend()
+                 np.sum(inst.matrix, axis=0), label=label)  
+    if not label is None:
+        ax2.legend()
     ax2.set_ylabel(r'Effective area [cm$^{2}$]')
     ax2.set_xlabel('Energy [keV]')
 
@@ -244,12 +246,14 @@ def plot_arf(instruments,
     ax = fig.add_subplot(111)
 
     for i, inst in enumerate(instruments):
+        label = inst.name if hasattr(inst,'name') else None
         ax.plot((inst.energy_edges[:-1] + inst.energy_edges[1:]) / 2.0,
-                np.sum(inst.matrix, axis=0), label=inst.name)  ## TODO:  change NICER by instrument.name
+                np.sum(inst.matrix, axis=0), label=label) 
 
     ax.set_ylabel('Effective area [cm$^{2}$]')
     ax.set_xlabel('Energy [keV]')
-    ax.legend(loc='best')
+    if not label is None:
+        ax.legend(loc='best')
     return ax
 
 def plot_meshes(regions,
