@@ -399,7 +399,7 @@ class ResidualPlot(SignalPlot):
                                      format=_get_default_formatter())
         self._data_cb.ax.set_frame_on(True)
         self._data_cb.ax.yaxis.set_minor_locator(AutoMinorLocator())
-        self._data_cb.set_label(label=r'counts', labelpad=15)
+        self._data_cb.set_label(label=r'counts/cycle', labelpad=15)
 
     def _add_expected_counts(self):
         """ Display posterior expectation of model in second panel. """
@@ -448,7 +448,7 @@ class ResidualPlot(SignalPlot):
         self._model_cb.ax.set_frame_on(True)
         self._model_cb.ax.yaxis.set_minor_locator(AutoMinorLocator())
 
-        self._model_cb.set_label(label=r'counts', labelpad=15)
+        self._model_cb.set_label(label=r'counts/cycle', labelpad=15)
 
     def _add_residuals(self):
         """ Display the residuals in the third panel. """
