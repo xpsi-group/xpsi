@@ -34,13 +34,47 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v2.3.0-b] - 2024-12-06
-~~~~~~~~~~~~~~~~~~~~~~~~~
+[v2.3.0] - 2024-12-16
+~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* Updates done during the 2024 hack week. Including making X-PSI Cython3 compatible.
+* Updates done during the 2024 hack week. Including making X-PSI Cython3 compatible. This list is going to be still updated.
+
+
+Fixed
+^^^^^
+
+* Python3.12 related syntax warnings when installing X-PSI were fixed by adding 'r' in front of strings that contain a back slash.
+
+Added
+^^^^^
+
+* Added UltraNest as an example to the modelling tutorial and installation instructions.
+
+* Added some docstrings to  `mesh_tools.pyx` and `effective_gravity_universal.pyx`.
+
+Changed
+^^^^^^^
+
+* X-PSI was upgraded to Cython3...
+
+* Residual plotting was updated to fix issues when using logarithmic scale and including channel 0.
+
+* Updated the installation instructions for Helios and the example job script.
+
+Deprecated
+^^^^^^^^^^
+
+Removed
+^^^^^^^
+
+* X-PSI Python 2 documentation (v1.x and earlier) was retired from the main online documentation (but can still be accessed via the GitHub).
+
+* Removed the deprecated `is_secondary` argument from the HotRegion class.
+
+* Removed the TwoHotRegions class that nobody was known to be using.
 
 Attribution
 ^^^^^^^^^^^
