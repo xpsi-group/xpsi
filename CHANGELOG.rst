@@ -83,7 +83,7 @@ Changed
 
 * Residual plotting was updated to fix issues when using logarithmic scale and including channel 0.
 
-* Updated the installation instructions for Helios and the example job script.
+* Updated the installation instructions for Helios and Snellius, and updated the example job script.
 
 * The desired precision of credible intervals can now be defined already when loading the runs.
 
