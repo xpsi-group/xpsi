@@ -337,7 +337,7 @@ class ResidualPlot(SignalPlot):
         double_pulse_model = _np.concatenate( (pulse_model , pulse_model) )
 
         # Compute the chi squared
-        chi2 = self._signal.chi2
+        chi2 = _np.sum( (pulse_data - pulse_model)**2 / pulse_model )
 
         # Plot pulse
         self._ax_pulse.errorbar(x=doubles_phases,
