@@ -1,6 +1,7 @@
 __all__ = ["Signal", "LikelihoodError"]
 
 from xpsi.global_imports import *
+from scipy import sparse
 
 from xpsi.Data import Data
 from xpsi.Instrument import Instrument, ChannelError
@@ -10,6 +11,7 @@ from xpsi.Interstellar import Interstellar
 from xpsi.tools.energy_integrator import energy_integrator
 #from xpsi.tools.energy_interpolator import energy_interpolator
 #from xpsi.tools.phase_integrator import phase_integrator
+#import sparse
 
 from abc import abstractmethod
 from xpsi.Parameter import Parameter
@@ -118,6 +120,33 @@ class Signal(ParameterSubspace):
             raise TypeError('Invalid type for an instrument object.')
         else:
             self._instrument = deepcopy( instrument )
+        
+        
+        #Check out if counts data are grouped into larger channels
+        
+        if self._data._grpdata == True:
+            numchangrp=_np.where(self._data._origpha['GROUPING']==1)
+            #print(numchangrp)
+            numchangrp=_np.hstack((numchangrp[0], len(self._data._origpha)))
+            rows = []
+            cols = []
+            dtint = []
+            for i in range(len(numchangrp[1:])):
+                for j in range(numchangrp[:-1][i], numchangrp[1:][i]):
+                    rows.append(i)
+                    cols.append(j)
+                    dtint.append(True)
+            print(numchangrp)
+            binchannels=numchangrp[1:]-numchangrp[:-1]
+            grpRSP=sparse.coo_matrix((dtint, (rows, cols)), shape=(len(numchangrp[1:]), len(self._instrument.matrix)))
+            newRSP=grpRSP @ self._instrument.matrix
+            self._instrument.matrix=newRSP
+            self._instrument.channels=self._data.channels
+            neweminchan=self._instrument.channel_edges[numchangrp[:-1]]
+            newemaxchan=self._instrument.channel_edges[numchangrp[1:]]
+            self._instrument.channel_edges=_np.hstack((neweminchan[0], newemaxchan))
+            
+            
 
         # Trimming the data and response so they fit together
         if min_channel != 0 or max_channel != -1:

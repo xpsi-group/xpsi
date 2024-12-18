@@ -66,6 +66,14 @@ class Data(object):
     :param int last:
         The index of the last row of the loaded response matrix containing
         events (see note below).
+    
+    :param bool grpdata:
+        Check if the spectra counts have been grouped into larger channels. Set
+        by default to False.
+    
+    :param fits.reader or None origpha:
+        If grpdata=True, this tool allows to get access to the original corrected spectrum
+        before grouping.
 
     .. note::
 
@@ -93,7 +101,7 @@ class Data(object):
         The exposure time, in seconds, to acquire this set of event data.
 
     """
-    def __init__(self, counts, channels, phases, first, last, exposure_time):
+    def __init__(self, counts, channels, phases, first, last, exposure_time, grpdata=False, origpha=None):
 
         if not isinstance(counts, _np.ndarray):
             try:
@@ -142,6 +150,13 @@ class Data(object):
             self._exposure_time = float(exposure_time)
         except TypeError:
             raise TypeError('Exposure time must be a float.')
+        
+        self._grpdata = grpdata
+        
+        if self._grpdata==True:
+            self._origpha=origpha
+        else:
+            self._origpha=None
 
     @property
     def exposure_time(self):
@@ -473,11 +488,14 @@ class Data(object):
         with fits.open( path ) as hdul:
             Header = hdul['SPECTRUM'].header 
             spectrum = hdul['SPECTRUM'].data
-
+        
         # Extract useful data
         exposure = _np.double( Header['EXPOSURE'] )
         channel_data = spectrum['CHANNEL']
         counts_data = spectrum['COUNTS']
+        TLMIN= _np.int32(Header['TLMIN1'])
+        grpdata=False
+        origpha=None
 
         # No channels specified, use everything
         if channels is None:
@@ -488,6 +506,42 @@ class Data(object):
             min_channel = channels[0]
             max_channel = channels[-1]
             
+        if 'QUALITY' in spectrum.columns.names :
+            print('Bad bins detected...')
+            quality=spectrum['QUALITY']
+            qualchannels = _np.where(quality==0)
+            spectrum = spectrum[qualchannels]
+            print(r'Spectrum reduced to {} channels'.format(_np.shape(qualchannels)[1]))
+            #channel_data = spectrum['CHANNEL']
+            channel_data = _np.arange(TLMIN, TLMIN+len(spectrum['CHANNEL']))
+            min_channel = _np.min( channel_data )
+            max_channel = _np.max( channel_data )
+            channels = _np.arange(min_channel,max_channel+1)
+            print(channel_data, channels)
+            counts_data = spectrum['COUNTS']
+        
+        if 'GROUPING' in spectrum.columns.names :
+            grpdata = True
+            origpha=spectrum
+            print('Counts will be grouped into larger channels')
+            groupcha=spectrum['GROUPING']
+            min_binchannel = _np.where(groupcha == 1)[0]
+            max_binchannel = _np.hstack((min_binchannel[1:], len(channels)))
+            groupcounts=_np.zeros(len(min_binchannel))
+            jchan=0
+            print(channel_data, channels, min_binchannel, max_binchannel, len(origpha))
+            for i in range(len(min_binchannel)):
+                while jchan < len(channel_data) and channel_data[jchan]>=min_binchannel[i]+TLMIN and channel_data[jchan]<max_binchannel[i]+TLMIN :
+                    groupcounts[i]=groupcounts[i]+counts_data[jchan]
+                    jchan=jchan+1
+            grpchans=_np.arange(len(min_binchannel))
+            print(r'Counts grouped on {} new channels'.format(len(min_binchannel)))
+            channel_data = grpchans
+            min_channel = _np.min( channel_data )
+            max_channel = _np.max( channel_data )
+            channels = _np.arange(min_channel,max_channel+1)
+            counts_data = groupcounts
+
          # Get intrinsinc values
         first = 0
         last = max_channel - min_channel
@@ -504,7 +558,9 @@ class Data(object):
                     phases=phases,
                     first=first,
                     last=last,
-                    exposure_time=exposure )
+                    exposure_time=exposure,
+                    grpdata=grpdata,
+                    origpha=origpha )
         
         # Add useful paths
         Data.backscal = Header['BACKSCAL']

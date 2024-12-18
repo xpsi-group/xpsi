@@ -409,12 +409,15 @@ class Instrument(ParameterSubspace):
 
         # Open useful values in ARF/RMF/RSP
         with fits.open( RMF_path ) as RMF_hdul:
-            RMF_header = RMF_hdul['MATRIX'].header
+            if 'SPECRESP MATRIX' in RMF_hdul :
+                RMF_header = RMF_hdul['SPECRESP MATRIX'].header
+            else :
+                RMF_header = RMF_hdul['MATRIX'].header
         RMF_instr = RMF_header['INSTRUME'] 
         DETCHANS = RMF_header['DETCHANS']
         NUMGRP = RMF_header['NAXIS2']
         TLMIN = RMF_header['TLMIN4']
-        TLMAX = RMF_header['TLMAX4']
+        #TLMAX = RMF_header['TLMAX4']
 
         # Handle the RSP case
         if ARF_path is not None:
@@ -426,16 +429,20 @@ class Instrument(ParameterSubspace):
             max_channel = DETCHANS -1
         if max_input == -1:
             max_input = NUMGRP
+        
         channels = _np.arange( min_channel, max_channel+1 )
         inputs = _np.arange( min_input, max_input+1  )
 
         # Perform routine checks
-        assert min_channel >= TLMIN and max_channel <= TLMAX
-        assert min_input >= 0 and max_input <= NUMGRP
+        #assert min_channel >= TLMIN and max_channel <= TLMAX
+        #assert min_input >= 0 and max_input <= NUMGRP
 
         # If everything in order, get the data
         with fits.open( RMF_path ) as RMF_hdul:
-            RMF_MATRIX = RMF_hdul['MATRIX'].data
+            if 'SPECRESP MATRIX' in RMF_hdul :
+                RMF_MATRIX = RMF_hdul['SPECRESP MATRIX'].data
+            else :
+                RMF_MATRIX = RMF_hdul['MATRIX'].data
             RMF_EBOUNDS = RMF_hdul['EBOUNDS'].data
 
         # Get the channels from the data
@@ -457,8 +464,17 @@ class Instrument(ParameterSubspace):
 
                 if n_chan == 0:
                     continue
-
-                RMF[f_chan:f_chan+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
+                
+                if TLMIN == 1 :
+                    if RMF_line.shape==(): #if RMF_line has only one value, like for a diagonal matrix.
+                        RMF[f_chan-1:f_chan-1+n_chan,i] += RMF_line
+                    else:
+                        RMF[f_chan-1:f_chan-1+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
+                else :
+                    if RMF_line.shape==():
+                        RMF[f_chan:f_chan+n_chan,i] += RMF_line
+                    else:
+                        RMF[f_chan:f_chan+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
                 n_skip += n_chan
 
         # Make the RSP, depending on the input files
