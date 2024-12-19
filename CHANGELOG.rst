@@ -34,20 +34,20 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v3.0.0] - 2024-12-17
+[v3.0.0] - 2024-12-19
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* This release includes updates done during the hack week in December 2024, for example, making X-PSI Cython3 compatible, UltraNest sampling examples, Simulation-Based Inference examples, reading data and instrument files that are in fits-format, and removing deprecated features.
+*  This release upgrades X-PSI to be Cython3 compatible and provides many new features and examples, such as UltraNest sampling, Simulation-Based Inference, and reading data and instrument files that are in FITS format. A few deprecated features were also removed.
 
 Fixed
 ^^^^^
 
-* Fixed Python3.12 related syntax warnings when installing X-PSI were fixed by adding 'r' in front of strings that contain a back slash.
+* Fixed Python3.12 related syntax warnings when installing X-PSI were fixed by adding 'r' in front of strings that contain a backslash.
 
-* Default value for ``image_order_limit`` in the module generator was set to match what is said in the docstring (i.e. the default being ``None``).
+* The default value for ``image_order_limit`` in the module generator was set to match what is said in the docstring (i.e. the default being ``None``).
 
 Added
 ^^^^^
@@ -60,7 +60,7 @@ Added
 
 * Added the possibility to print a user-defined credible level.
 
-* Data (event list or spectrum) and responses (RMF, ARF, RSP) can now be loaded from FITS file.
+* Data (event list or spectrum) and responses (RMF, ARF, RSP) can now be loaded from FITS files.
 
 * Added Simulation-Based Inference examples in the documentation, and wrapper class in the utilities.
 
@@ -70,33 +70,33 @@ Added
 
 * Multi-mode plotting was made possible in the corner plots (different modes from a MultiNest run done with ``multimodal=True`` can be now plotted separately).
 
-* Added bolometric pulse and blurring of the residuals options in ``xpsi/PostProcessing/_residual.py``.\
+* Added bolometric pulse and blurring of the residuals options in ``xpsi/PostProcessing/_residual.py``.
 
-* Added a possibility to use a parameter vector instead of random set of samples in all post-processing functions.
+* Added a possibility to use a parameter vector instead of a random set of samples in all post-processing functions.
 
 * Added a chi-squared calculation property to the Signal class.
 
 Changed
 ^^^^^^^
 
-* X-PSI was upgraded to support Cython3 by updating the syntax and the structure of all the Cython files. Installation instructions were also updated. Using Cython3 is now recommended, but the code still also works with Cython version 0.29.
+* X-PSI was upgraded to support Cython3 by updating the syntax and the structure of all the Cython files. Installation instructions were also updated. Using Cython3 is now recommended. The code seems to still run also with Cython version 0.29, but its functioning correctly and efficiently is not guaranteed.
 
-* Residual plotting was updated to fix issues when using logarithmic scale and including channel 0.
+* Residual plotting was updated to fix issues when using a logarithmic scale and including channel 0.
 
 * Updated the installation instructions for Helios and Snellius, and updated the example job script.
 
 * The desired precision of credible intervals can now be defined already when loading the runs.
 
-* The Photosphere class atmosphere setter can now load by default atmosphere table files similar those of NSX model used in NICER analyses (without need for writing a CustomPhotosphere for this).
+* The Photosphere class atmosphere setter can now load by default atmosphere table files similar to those of NSX model used in NICER analyses (without the need for writing a CustomPhotosphere for this).
 
 * Future plans, publications, etc. were updated in the documentation.
 
 Removed
 ^^^^^^^
 
-* X-PSI Python 2 documentation (v1.x and earlier) was retired from the main online documentation (but can still be accessed via the GitHub).
+* X-PSI Python 2 documentation (v1.x and earlier) was retired from the main online documentation (but can still be accessed via GitHub).
 
-* Removed the deprecated ``is_secondary`` argument from the HotRegion class. **Note that setting ``is_secondary=True`` has now no effect, and will lead to wrong likelihood values if not replacing it with is_antiphased=True**.
+* Removed the deprecated ``is_secondary`` argument from the HotRegion class. **Note that setting ``is_secondary=True`` has now no effect, and will lead to wrong likelihood values if not replacing it with ``is_antiphased=True``**.
 
 * Removed the ``TwoHotRegions`` class that nobody was known to be using.
 
