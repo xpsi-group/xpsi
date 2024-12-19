@@ -747,13 +747,8 @@ class Signal(ParameterSubspace):
         raise NotImplementedError('Cannot synthesise data.')
     
     @property
-    def chi2( self ):
-        """ Return the chi2 value for the current likelihood value or a given parameter vector if required.
-
-        :param list p:
-            Parameter vector, optional.
-
-        """
+    def bolometric_chi2( self ):
+        """ Return the bolometric chi2 value for the current likelihood value. """
 
         # Get the pulse of data and model
         pulse_data = self.data.counts.sum( axis = 0 )
