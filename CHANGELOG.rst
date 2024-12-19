@@ -114,6 +114,7 @@ Daniela Huppenkothen,
 Christine Kazantsev,
 Yves Kini,
 Lucien Mauviard-Haag,
+Evert Rol,
 Tuomo Salmi,
 Pierre Stammler,
 Anna Watts
