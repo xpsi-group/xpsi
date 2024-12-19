@@ -91,6 +91,8 @@ Changed
 
 * Future plans, publications, etc. were updated in the documentation.
 
+* The counts are **not divided by 2 anymore** for signal plots when 2 cycles are shown. The label was changed to "counts per cycle" to denote this change.
+
 Removed
 ^^^^^^^
 
@@ -103,7 +105,18 @@ Removed
 Attribution
 ^^^^^^^^^^^
 
-X-PSI team
+Devarshi Choudhury,
+Bas Dorsman,
+Denis Gonzalez-Caniulef,
+Sebastien Guillot,
+Mariska Hoogkamer,
+Daniela Huppenkothen,
+Christine Kazantsev,
+Yves Kini,
+Lucien Mauviard-Haag,
+Tuomo Salmi,
+Pierre Stammler,
+Anna Watts
 
 
 [v2.2.7] - 2024-07-13
