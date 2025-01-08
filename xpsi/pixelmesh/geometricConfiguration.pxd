@@ -12,3 +12,4 @@ ctypedef struct _GEOM:
     double inclination
     double d
     double b_max
+    int star_shape_ind

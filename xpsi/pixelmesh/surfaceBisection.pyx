@@ -13,7 +13,7 @@ cdef double _pi = M_PI
 cdef double c = 2.99792458e8
 cdef int SUCCESS = 1
 
-cdef double RADIUS(double x, double epsilon, double zeta) nogil:
+cdef double RADIUS(double x, double epsilon, double zeta) noexcept nogil:
 
     return 1.0 + epsilon * (-0.788 + 1.030 * zeta) * x * x
 
@@ -21,7 +21,7 @@ cdef double LINTERP(double t,
                     double t1,
                     double t2,
                     double x1,
-                    double x2) nogil:
+                    double x2) noexcept nogil:
 
     return x1*(t2 - t) / (t2 - t1) + x2*(t - t1) / (t2 - t1)
 
@@ -33,7 +33,7 @@ cdef int BISECT(const double *const y_p,
                 double a,
                 double R_eq,
                 double epsilon,
-                double zeta) nogil:
+                double zeta) noexcept nogil:
 
     cdef:
         int bisect = 1
@@ -66,7 +66,7 @@ cdef double ZABB(const _GEOM *const GEOM,
                  const double *const y,
                  double b,
                  double *const Z,
-                 double *const ABB) nogil:
+                 double *const ABB) noexcept nogil:
 
     cdef:
         double R = y[2] # BL

@@ -28,10 +28,10 @@ Those involved in maintenance and development (technical and scientific).
 * Daniela Huppenkothen (d.huppenkothen[at]uva.nl), University of Amsterdam
 * Christine Kazantsev (ckazantsev[at]irap.omp.eu), IRAP
 * Yves Kini (y.kini[at]uva.nl), University of Amsterdam
-* Lucien Mauviard-Hagg (lucien.mauviard-haag[at]irap.omp.eu), IRAP
+* Lucien Mauviard-Haag (lucien.mauviard-haag[at]irap.omp.eu), IRAP
 * Tuomo Salmi (tuomo.salmi[at]helsinki.fi), University of Helsinki
 * Pierre Stammler (pstammler[at]irap.omp.eu), IRAP
-* Serena Vinciguerra (s.vinciguerra[at]uva.nl), University of Amsterdam
+* Serena Vinciguerra, University of Amsterdam
 * Anna Watts (a.l.watts[at]uva.nl), University of Amsterdam
 
 **Past members**
@@ -100,7 +100,6 @@ X-PSI see :ref:`applications`.
 Funding
 ~~~~~~~
 
-Development of X-PSI has been funded by two ERC Grants (PI Anna Watts), 
-ERC Starting Grant No. 639217 CSINEUTRONSTAR and ERC Consolidator 
-Grant No. 865768 AEONS. The IRAP team acknowledges the support of
+Development of X-PSI has been funded by ERC Starting Grant No. 639217 CSINEUTRONSTAR, ERC Consolidator 
+Grant No. 865768 AEONS, and NWO ENW-XL grant OCENW.XL21.XL21.038 *Probing the phase diagram of Quantum Chromodynamics* (all PI Anna Watts). The IRAP team acknowledges the support of
 the CNES in the development of X-PSI.

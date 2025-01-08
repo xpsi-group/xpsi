@@ -22,16 +22,16 @@ ctypedef struct RAY_MAP:
     double ORIGIN_X
     double ORIGIN_Y
 
-cdef RAY_MAP* alloc_RAY_MAP(size_t NGR) nogil
+cdef RAY_MAP* alloc_RAY_MAP(size_t NGR) noexcept nogil
 
-cdef void free_RAY_MAP(RAY_MAP *const MAP) nogil
+cdef void free_RAY_MAP(RAY_MAP *const MAP) noexcept nogil
 
 cdef void init_RAY_MAP(RAY_MAP *const MAP,
-                       double radialIncrementExponent) nogil
+                       double radialIncrementExponent) noexcept nogil
 
 cdef int compute_globalRayMap(size_t numThreads,
                               double radialIncrementExponent,
                               const _GEOM *const GEOM,
                               RAY_MAP *const MAP,
                               _RAY **RAYS,
-                              int force_circular) nogil
+                              int force_circular) noexcept nogil

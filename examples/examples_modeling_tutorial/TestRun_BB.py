@@ -2,11 +2,6 @@
 Test script to check that X-PSI installation is working (with the default blackbody atmosphere extension).
 The run is succesful if it passes the likelihood check (in ~ 1 minute) and sampling finishes without errors (in ~ 5 min).
 The model and synthetic data are based on those shown in the Modelling tutorial notebook.
-
-Prequisities:
-Before running the script, add the NICER instrument files to the model_data subdirectory:
-nicer_v1.01_arf.txt, nicer_v1.01_rmf_energymap.txt, and nicer_v1.01_rmf_matrix.txt
-(found from https://doi.org/10.5281/zenodo.7094144).
 '''
 
 
@@ -28,6 +23,7 @@ settings = dict(counts = np.loadtxt('model_data/example_synthetic_realisation.da
         phases=np.linspace(0.0, 1.0, 33),
         first=0, last=180,
         exposure_time=984307.6661)
+
 data = xpsi.Data(**settings)
 
 class CustomInstrument(xpsi.Instrument):
@@ -47,61 +43,88 @@ class CustomInstrument(xpsi.Instrument):
 
         return self._folded_signal
 
-    @classmethod
-    def from_response_files(cls, ARF, RMF, channel_edges, max_input,
-                            min_input=0,
-                            ):
-        """ Constructor which converts response files into :class:`numpy.ndarray`s.
-        :param str ARF: Path to ARF which is compatible with
-                                :func:`numpy.loadtxt`.
-        :param str RMF: Path to RMF which is compatible with
-                                :func:`numpy.loadtxt`.
-        :param str channel_edges: Path to edges which is compatible with
-                                  :func:`numpy.loadtxt`.
-        """
-        link ="https://doi.org/10.5281/zenodo.7094144"
-        if min_input != 0:
-            min_input = int(min_input)
+NICER = CustomInstrument.from_ogip_fits(RMF_path='nicer_20170601v003.rmf',
+                                        ARF_path='nicer_20170601v005.arf',
+                                        datafolder='../../examples/examples_modeling_tutorial/model_data')
 
-        max_input = int(max_input)
 
-        try:
-            ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
-        except:
-            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(ARF, link))
-            exit()
 
-        try:
-            RMF = np.loadtxt(RMF, dtype=np.double)
-        except:
-            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(RMF, link))
-            exit()
+from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
+from xpsi.likelihoods.default_background_marginalisation import precomputation
+
+class CustomSignal(xpsi.Signal):
+    """ A custom calculation of the logarithm of the likelihood.
+
+    We extend the :class:`xpsi.Signal.Signal` class to make it callable.
+
+    We overwrite the body of the __call__ method. The docstring for the
+    abstract method is copied.
+
+    """
+
+    def __init__(self, workspace_intervals = 1000, epsabs = 0, epsrel = 1.0e-8,
+                 epsilon = 1.0e-3, sigmas = 10.0, support = None, *args, **kwargs):
+        """ Perform precomputation. """
+
+        super(CustomSignal, self).__init__(*args, **kwargs)
 
         try:
-            channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
-        except:
-            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(channel_edges, link))
-            exit()
+            self._precomp = precomputation(self._data.counts.astype(np.int32))
+        except AttributeError:
+            print('No data... can synthesise data but cannot evaluate a '
+                  'likelihood function.')
+        else:
+            self._workspace_intervals = workspace_intervals
+            self._epsabs = epsabs
+            self._epsrel = epsrel
+            self._epsilon = epsilon
+            self._sigmas = sigmas
 
-        matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
+            if support is not None:
+                self._support = support
+            else:
+                self._support = -1.0 * np.ones((self._data.counts.shape[0],2))
+                self._support[:,0] = 0.0
 
-        edges = np.zeros(ARF[min_input:max_input,3].shape[0]+1, dtype=np.double)
+    @property
+    def support(self):
+        return self._support
 
-        edges[0] = ARF[min_input,1]; edges[1:] = ARF[min_input:max_input,2]
+    @support.setter
+    def support(self, obj):
+        self._support = obj
 
-        for i in range(matrix.shape[0]):
-            matrix[i,:] *= ARF[min_input:max_input,3]
+    def __call__(self, *args, **kwargs):
 
-        channels = np.arange(20, 201)
+        self.loglikelihood, self.expected_counts, self.background_signal, self.background_signal_given_support = \
+                eval_marginal_likelihood(self._data.exposure_time,
+                                          self._data.phases,
+                                          self._data.counts,
+                                          self._signals,
+                                          self._phases,
+                                          self._shifts,
+                                          self._precomp,
+                                          self._support,
+                                          self._workspace_intervals,
+                                          self._epsabs,
+                                          self._epsrel,
+                                          self._epsilon,
+                                          self._sigmas,
+                                          kwargs.get('llzero'))
 
-        return cls(matrix, edges, channels, channel_edges[20:202,-2])
-
-
-NICER = CustomInstrument.from_response_files(ARF = 'model_data/nicer_v1.01_arf.txt',
-                                             RMF = 'model_data/nicer_v1.01_rmf_matrix.txt',
-                                             channel_edges = 'model_data/nicer_v1.01_rmf_energymap.txt',
-                                             max_input = 500,
-                                             min_input = 0)
+NICER.trim_response(min_channel=20, max_channel=200, threshold=2.)
+signal = CustomSignal(data = data,
+                        instrument = NICER,
+                        background = None,
+                        interstellar = None,
+                        workspace_intervals = 1000,
+                        cache = True,
+                        epsrel = 1.0e-8,
+                        epsilon = 1.0e-3,
+                        sigmas = 10.0,
+                        min_channel = 20,
+                        max_channel = 200,
+                        support = None)
 
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 mass = (1.0, 3.0),                       # mass
@@ -127,7 +150,6 @@ primary = xpsi.HotRegion(bounds=bounds,
                         num_leaves=100,
                         num_rays=200,
                         atm_ext="BB",
-                        image_order_limit=3,
                         prefix='p')
 
 class derive(xpsi.Derive):
@@ -164,7 +186,6 @@ secondary = xpsi.HotRegion(bounds=bounds, # can otherwise use same bounds
                             num_rays=200,
                             do_fast=False,
                             atm_ext="BB",
-                            image_order_limit=3,
                             is_antiphased=True,
                             prefix='s')
 
@@ -231,78 +252,6 @@ print(repr(np.sum(photosphere.signal[0][0], axis=0)))
 print("Bolometric pulse for 2nd spot:")
 print(repr(np.sum(photosphere.signal[1][0], axis=0)))
 
-from xpsi.likelihoods.default_background_marginalisation import eval_marginal_likelihood
-from xpsi.likelihoods.default_background_marginalisation import precomputation
-
-class CustomSignal(xpsi.Signal):
-    """ A custom calculation of the logarithm of the likelihood.
-
-    We extend the :class:`xpsi.Signal.Signal` class to make it callable.
-
-    We overwrite the body of the __call__ method. The docstring for the
-    abstract method is copied.
-
-    """
-
-    def __init__(self, workspace_intervals = 1000, epsabs = 0, epsrel = 1.0e-8,
-                 epsilon = 1.0e-3, sigmas = 10.0, support = None, *args, **kwargs):
-        """ Perform precomputation. """
-
-        super(CustomSignal, self).__init__(*args, **kwargs)
-
-        try:
-            self._precomp = precomputation(self._data.counts.astype(np.int32))
-        except AttributeError:
-            print('No data... can synthesise data but cannot evaluate a '
-                  'likelihood function.')
-        else:
-            self._workspace_intervals = workspace_intervals
-            self._epsabs = epsabs
-            self._epsrel = epsrel
-            self._epsilon = epsilon
-            self._sigmas = sigmas
-
-            if support is not None:
-                self._support = support
-            else:
-                self._support = -1.0 * np.ones((self._data.counts.shape[0],2))
-                self._support[:,0] = 0.0
-
-    @property
-    def support(self):
-        return self._support
-
-    @support.setter
-    def support(self, obj):
-        self._support = obj
-
-    def __call__(self, *args, **kwargs):
-        self.loglikelihood, self.expected_counts, self.background_signal, self.background_signal_given_support = \
-                eval_marginal_likelihood(self._data.exposure_time,
-                                          self._data.phases,
-                                          self._data.counts,
-                                          self._signals,
-                                          self._phases,
-                                          self._shifts,
-                                          self._precomp,
-                                          self._support,
-                                          self._workspace_intervals,
-                                          self._epsabs,
-                                          self._epsrel,
-                                          self._epsilon,
-                                          self._sigmas,
-                                          kwargs.get('llzero'))
-
-signal = CustomSignal(data = data,
-                        instrument = NICER,
-                        background = None,
-                        interstellar = None,
-                        workspace_intervals = 1000,
-                        cache = True,
-                        epsrel = 1.0e-8,
-                        epsilon = 1.0e-3,
-                        sigmas = 10.0,
-                        support = None)
 
 from scipy.stats import truncnorm
 class CustomPrior(xpsi.Prior):
@@ -461,7 +410,7 @@ likelihood = xpsi.Likelihood(star = star, signals = signal,
                              num_energies=128,
                              threads=1,
                              prior=prior,
-                             externally_updated=True)
+                             externally_updated=False)
 
 wrapped_params = [0]*len(likelihood)
 wrapped_params[likelihood.index('p__phase_shift')] = 1
@@ -488,8 +437,31 @@ runtime_params = {'resume': False,
                   'max_iter': 100,# manual termination condition for short test
                   'verbose': True}
 
+xpsi.set_phase_interpolant('Akima')
+p = [1.4,
+     12.5,
+     0.2,
+     math.cos(1.25),
+     0.0,
+     1.0,
+     0.075,
+     6.2,
+     0.025,
+     math.pi - 1.0,
+     0.2]
+
+for h in hot.objects:
+    h.set_phases(num_leaves = 100)
+
+likelihood.threads = 3
+likelihood.reinitialise()
+likelihood.clear_cache()
+
+# inform source code that parameter objects updated when inverse sampling
+likelihood.externally_updated = True
+
 # let's require that checks pass before starting to sample
-true_logl = -116504.074
+true_logl = -2.6883527522e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior

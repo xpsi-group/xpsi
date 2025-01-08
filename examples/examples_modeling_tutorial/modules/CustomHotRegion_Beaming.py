@@ -1,7 +1,7 @@
 
 import xpsi
 from xpsi.global_imports import *
-
+from xpsi.Parameter import Parameter
 
 # Your derived class can have an initializer that sets up your new parameters and the temperature parameters, and then passes them to the base class initializer using the super(<derived class>, self).__init__(*args, **kwargs) call, where kwargs includes custom parameter
 

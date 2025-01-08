@@ -5,11 +5,11 @@ cdef double eval_elsewhere(size_t THREAD,
                            double mu,
                            const double *const VEC,
                            void *const data,
-                           size_t beam_opt) nogil
+                           size_t beam_opt) noexcept nogil
 
-cdef double eval_elsewhere_norm() nogil
+cdef double eval_elsewhere_norm() noexcept nogil
 
 cdef void* init_elsewhere(size_t numThreads,
-                          const _preloaded *const preloaded, size_t atm_ext) nogil
+                          const _preloaded *const preloaded, size_t atm_ext) noexcept nogil
 
-cdef int free_elsewhere(size_t numThreads, void *const data) nogil
+cdef int free_elsewhere(size_t numThreads, void *const data) noexcept nogil

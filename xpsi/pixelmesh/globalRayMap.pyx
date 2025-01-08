@@ -30,7 +30,7 @@ cdef int SUCCESS = 0
 cdef double _2pi = 2.0 * M_PI
 cdef double c = 2.99792458e8
 
-cdef RAY_MAP* alloc_RAY_MAP(size_t NGR) nogil:
+cdef RAY_MAP* alloc_RAY_MAP(size_t NGR) noexcept nogil:
 
     cdef RAY_MAP *MAP = <RAY_MAP*> malloc(sizeof(RAY_MAP))
 
@@ -52,7 +52,7 @@ cdef RAY_MAP* alloc_RAY_MAP(size_t NGR) nogil:
 
     return MAP
 
-cdef void free_RAY_MAP(RAY_MAP *const MAP) nogil:
+cdef void free_RAY_MAP(RAY_MAP *const MAP) noexcept nogil:
 
     free(MAP.r_MESH)
     free(MAP.t_MESH)
@@ -71,7 +71,7 @@ cdef void free_RAY_MAP(RAY_MAP *const MAP) nogil:
     free(<RAY_MAP*> MAP)
 
 cdef void init_RAY_MAP(RAY_MAP *const MAP,
-                       double radialIncrementExponent) nogil:
+                       double radialIncrementExponent) noexcept nogil:
 
     cdef:
         size_t i, j
@@ -110,7 +110,7 @@ cdef int compute_globalRayMap(size_t numThreads,
                               const _GEOM *const GEOM,
                               RAY_MAP *const MAP,
                               _RAY **RAYS,
-                              int force_circular) nogil:
+                              int force_circular) noexcept nogil:
 
     cdef:
         signed int ii

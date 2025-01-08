@@ -27,6 +27,7 @@ def construct_polar_cellMesh(size_t numThreads,
                              double R_eq,
                              double zeta,
                              double epsilon,
+                             int star_shape_ind,
                              double cedeRadius,
                              double cedeColatitude,
                              double superRadius,
@@ -67,6 +68,7 @@ def construct_polar_cellMesh(size_t numThreads,
                                     R_eq,
                                     epsilon,
                                     zeta,
+                                    star_shape_ind,
                                     0,
                                     w[0])
 
@@ -101,6 +103,7 @@ def construct_polar_cellMesh(size_t numThreads,
                                            R_eq,
                                            epsilon,
                                            zeta,
+                                           star_shape_ind,
                                            0,
                                            w[thread])
 
@@ -206,15 +209,16 @@ def construct_polar_cellMesh(size_t numThreads,
                                            R_eq,
                                            epsilon,
                                            zeta,
+                                           star_shape_ind,
                                            1,
                                            w[thread]) / eta
 
         mu = cos(cellColatitudes[i])
-        radius = radiusNormalised(mu, epsilon, zeta)
+        radius = radiusNormalised(mu, epsilon, zeta, star_shape_ind)
         cellRadialCoord[i] = radius * R_eq
         #r_s_over_r = r_s / cellRadialCoord[i]
-        effGrav[i] = effectiveGravity(mu, R_eq, zeta, epsilon)
-        f = f_theta(mu, radius, epsilon, zeta)
+        effGrav[i] = effectiveGravity(mu, R_eq, zeta, epsilon, star_shape_ind)
+        f = f_theta(mu, radius, epsilon, zeta, star_shape_ind)
         cos_gamma[i] = 1.0 / sqrt(1.0 + f * f)
         maxEmissionAngle[i] = _hpi + acos(cos_gamma[i])
 
@@ -270,6 +274,7 @@ def construct_polar_cellMesh(size_t numThreads,
                                                R_eq,
                                                epsilon,
                                                zeta,
+                                               star_shape_ind,
                                                cedeColatitude,
                                                cedeRadius,
                                                superRadius,
@@ -308,6 +313,7 @@ def construct_polar_cellMesh(size_t numThreads,
                                                    R_eq,
                                                    epsilon,
                                                    zeta,
+                                                   star_shape_ind,
                                                    cedeColatitude,
                                                    cedeRadius,
                                                    superRadius,

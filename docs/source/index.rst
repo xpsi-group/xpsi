@@ -38,7 +38,7 @@
    Post-processing
    Emitting_patterns_2Dprojection
    Accretion_disk
-   Importance_sample
+   Importance_sampling
    Module_generator_tutorial
    Example_script_and_modules
    Example_job
@@ -58,7 +58,6 @@
    spacetime
    photosphere
    hotregion
-   twohotregions
    hotregions
    elsewhere
    everywhere

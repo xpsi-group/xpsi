@@ -96,7 +96,7 @@ class Derive(object, metaclass=ABCMeta):
                                       num_leaves=100,
                                       num_rays=200,
                                       do_fast=False,
-                                      is_secondary=True,
+                                      is_antiphased=True,
                                       prefix='s')
 
         from xpsi import HotRegions

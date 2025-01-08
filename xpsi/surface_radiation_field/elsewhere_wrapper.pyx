@@ -20,7 +20,7 @@ from xpsi.surface_radiation_field.elsewhere_user cimport (init_elsewhere_user,
                                                      eval_elsewhere_norm_user)
 
 #----------------------------------------------------------------------->>>
-cdef void* init_elsewhere(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) nogil:
+cdef void* init_elsewhere(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) noexcept nogil:
     global atmos_extension_elsewhere
     atmos_extension_elsewhere=atm_ext
     if atmos_extension_elsewhere == 1:
@@ -34,7 +34,7 @@ cdef void* init_elsewhere(size_t numThreads, const _preloaded *const preloaded, 
                "Defaulting to Blackbody (atm_ext=BB).\n")
         return init_hot_BB(numThreads, preloaded)
 
-cdef int free_elsewhere(size_t numThreads, void *const data) nogil:
+cdef int free_elsewhere(size_t numThreads, void *const data) noexcept nogil:
     if atmos_extension_elsewhere == 1:
         return free_hot_BB(numThreads, data)
     elif atmos_extension_elsewhere == 2:
@@ -52,7 +52,7 @@ cdef double eval_elsewhere(size_t THREAD,
                      double mu,
                      const double *const VEC,
                      void *const data,
-                     size_t beam_opt) nogil:
+                     size_t beam_opt) noexcept nogil:
     #Note: Beaming option for elsewhere is not implented, at least yet,
     #even though it is one of the input parameters.
     if atmos_extension_elsewhere == 1:
@@ -68,7 +68,7 @@ cdef double eval_elsewhere(size_t THREAD,
 
     return I_hot
 
-cdef double eval_elsewhere_norm() nogil:
+cdef double eval_elsewhere_norm() noexcept nogil:
     if atmos_extension_elsewhere == 1:
         return eval_hot_norm_BB()
     elif atmos_extension_elsewhere == 2:

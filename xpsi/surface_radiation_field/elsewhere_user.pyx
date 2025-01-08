@@ -25,7 +25,7 @@ cdef double k_B_over_keV = k_B / keV
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
 cdef void* init_elsewhere_user(size_t numThreads,
-                          const _preloaded *const preloaded) nogil:
+                          const _preloaded *const preloaded) noexcept nogil:
     # This function must match the free management routine
     # free_elsewhere() in terms of freeing dynamically allocated memory.
     # This is entirely the user's responsibility to manage.
@@ -36,7 +36,7 @@ cdef void* init_elsewhere_user(size_t numThreads,
     # Return NULL if dynamic memory is not required for the model.
     return NULL
 
-cdef int free_elsewhere_user(size_t numThreads, void *const data) nogil:
+cdef int free_elsewhere_user(size_t numThreads, void *const data) noexcept nogil:
     # This function must match the initialisation routine
     # init_elsewhere() in terms of freeing dynamically allocated memory.
     # This is entirely the user's responsibility to manage.
@@ -55,7 +55,7 @@ cdef double eval_elsewhere_user(size_t THREAD,
                            double E,
                            double mu,
                            const double *const VEC,
-                           void *const data) nogil:
+                           void *const data) noexcept nogil:
     # Arguments:
     # E = photon energy in keV
     # mu = cosine of ray zenith angle (i.e., angle to surface normal)
@@ -66,7 +66,7 @@ cdef double eval_elsewhere_user(size_t THREAD,
 
     return E * E * E / ( exp(E / temp) - 1.0 )
 
-cdef double eval_elsewhere_norm_user() nogil:
+cdef double eval_elsewhere_norm_user() noexcept nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.

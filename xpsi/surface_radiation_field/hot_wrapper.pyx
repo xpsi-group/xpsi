@@ -41,7 +41,7 @@ from xpsi.surface_radiation_field.hot_Num5D_split cimport (init_hot_Num5D,
 
 
 #----------------------------------------------------------------------->>>
-cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) nogil:
+cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t atm_ext) noexcept nogil:
     global atmos_extension
     atmos_extension=atm_ext
     if atmos_extension == 1:
@@ -61,7 +61,7 @@ cdef void* init_hot(size_t numThreads, const _preloaded *const preloaded, size_t
                "Defaulting to Blackbody (atm_ext=BB).\n")
         return init_hot_BB(numThreads, preloaded)
 
-cdef int free_hot(size_t numThreads, void *const data) nogil:
+cdef int free_hot(size_t numThreads, void *const data) noexcept nogil:
     if atmos_extension == 1:
         return free_hot_BB(numThreads, data)
     elif atmos_extension == 2:
@@ -84,7 +84,7 @@ cdef double eval_hot_I(size_t THREAD,
                      double mu,
                      const double *const VEC,
                      void *const data,
-                     size_t beam_opt) nogil:
+                     size_t beam_opt) noexcept nogil:
 
     cdef:
         double I_hot_beam=0.0
@@ -175,7 +175,7 @@ cdef double eval_hot_Q(size_t THREAD,
                      double mu,
                      const double *const VEC,
                      void *const data,
-                     size_t beam_opt) nogil:
+                     size_t beam_opt) noexcept nogil:
     # Arguments:
     # E = photon energy in keV
     # mu = cosine of ray zenith angle (i.e., angle to surface normal)
@@ -205,7 +205,7 @@ cdef double eval_hot_Q(size_t THREAD,
     return Q_hot
 
 
-cdef double eval_hot_norm() nogil:
+cdef double eval_hot_norm() noexcept nogil:
     if atmos_extension == 1:
         return eval_hot_norm_BB()
     elif atmos_extension == 2:
