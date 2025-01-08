@@ -488,7 +488,7 @@ class Likelihood(ParameterSubspace):
                 if not _np.isfinite(logprior):
                     # we need to restore due to premature return
                     super(Likelihood, self).__call__(self.cached)
-                    return self.less_than_llzero
+                    return self.random_near_llzero # changed from less_than_llzero
 
             if self._do_fast:
                 # perform a low-resolution precomputation to direct cell
