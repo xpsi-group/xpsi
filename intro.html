@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X-ray Pulse Simulation and Inference (X-PSI) &mdash; x-psi 3.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=acc74ff5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            x-psi
+              <img src="_static/xpsilogo_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQs and common problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HPC_systems.html">HPC systems</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conduct.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">Future</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Team and acknowledgements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Start_here.html">Start here</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instrument_synergy.html">Instrument synergy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hot_region_complexity.html">Hot region complexity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Global_surface_emission.html">Global surface emission</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Surface_radiation_field_tools.html">Surface radiation field tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling_without_statistics.html">Modeling (without statistics)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Polarization.html">Polarization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post-processing.html">Post-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Emitting_patterns_2Dprojection.html">Emitting Patterns 2D Projection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Importance_sampling.html">Importance Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Module_generator_tutorial.html">Module generator tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_script_and_modules.html">Example script and modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_job.html">Example job</a></li>
+<li class="toctree-l1"><a class="reference internal" href="x_p_sbi.html">Posterior Inference using SBI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Likelihood API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">Parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameterSubspace.html">ParameterSubspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood.html">Likelihood</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signal.html">Signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument.html">Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="star.html">Star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacetime.html">Spacetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="photosphere.html">Photosphere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregion.html">HotRegion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotregions.html">HotRegions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elsewhere.html">Elsewhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="everywhere.html">Everywhere</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interstellar.html">Interstellar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Extension modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extensions_overview.html">Overview of extension modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surface_radiation_field.html">Surface radiation field</a></li>
+<li class="toctree-l1"><a class="reference internal" href="likelihood_implementations.html">Likelihoods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Posterior API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="prior.html">Prior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posterior.html">Posterior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postprocessing.html">PostProcessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SBI_wrapper.html">Wrappers for SBI</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">x-psi</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">X-ray Pulse Simulation and Inference (X-PSI)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/intro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="x-ray-pulse-simulation-and-inference-x-psi">
+<span id="readme"></span><h1>X-ray Pulse Simulation and Inference (X-PSI)<a class="headerlink" href="#x-ray-pulse-simulation-and-inference-x-psi" title="Link to this heading"></a></h1>
+<p><strong>An open-source package for neutron star</strong>
+<strong>X-ray Pulse Simulation and Inference.</strong></p>
+<p>X-PSI is designed to simulate rotationally-modified (pulsed) surface X-ray
+emission from neutron stars, taking into account relativistic effects on
+the emitted radiation. This can then be used to perform Bayesian statistical
+inference on real or simulated astronomical data sets. Model parameters of
+interest may include neutron star mass and radius (useful to constrain the
+properties of ultradense nuclear matter) or the system geometry and properties
+of the hot emitting surface-regions. To achieve this, X-PSI couples code for
+likelihood functionality (simulation) with existing open-source software for
+posterior sampling (inference).</p>
+<p>X-PSI has been used most prominently (to date) in modelling pulsar data from
+NASA’s <a class="reference external" href="https://www.nasa.gov/nicer">Neutron Star Interior Composition Explorer (NICER)</a>, for details see
+<a class="reference internal" href="applications.html#applications"><span class="std std-ref">Publications</span></a>.</p>
+<section id="concept">
+<h2>Concept<a class="headerlink" href="#concept" title="Link to this heading"></a></h2>
+<p>The video below, generated by X-PSI, shows a neutron star with non-uniform
+surface temperature, as it rotates. In this specific case the star hosts a
+photospheric radiation field whose asymmetry is driven by an underlying
+ocean wave (a buoyant <span class="math notranslate nohighlight">\(r\)</span>-mode) of thermonuclear burning. The wave is
+effectively periodic over a small number of rotational cycles. The simulation
+was generated by feeding a wave solution, computed by Frank Chambers
+<a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2020MNRAS.491.6032C/abstract">(Chambers &amp; Watts 2020)</a> in the form of a field of temperatures in
+surface local-comoving frames (<span class="math notranslate nohighlight">\(\sim\! 10^{6}\,\mathrm{K}\)</span>), to X-PSI
+for photospheric imaging. A number of simplifying assumptions are made in mode
+calculation and imaging, but this serves to illustrate the simulation and
+visualisation of a neutron star that pulses in the X-ray regime due to
+rotational modulation of some mode of radiative asymmetry at the surface.</p>
+<video controls loop
+    <source src="_static/skymap_animated.mp4" width="600" height="600">
+</video><p>Each panel displays a specific photon intensity sky map. Panels from top-left to
+bottom-right increase in photon energy. The intensity field in each panel is
+uniquely normalised to the maximum intensity over all phases and sky
+directions. The remarkable evolution of the image with photon energy is
+due to relativistic beaming: at energies much greater than the characteristic
+temperature, the contribution to the image is entirely dominated by the hottest
+region of the surface being relativistically beamed toward the observer as it
+approaches on the left-side of the star. This is the same effect seen in
+many other astrophysical simulations, particularly of images of (supermassive)
+accreting black holes (for instance by the Event Horizon Telescope
+collaboration), although it was interestingly omitted from the motion picture
+film Interstellar <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2015CQGra..32f5001J/abstract">(James et al. 2015)</a>.</p>
+<p>The following image integrates (and thus averages) over waveband (a
+range of photon energies). We also decrease the mode frequency relative to the
+stellar spin frequency, such that the mode is not as equatorially trapped.<a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+<video controls loop
+    <source src="_static/skymap_animated_2.mp4" width="600" height="600">
+</video><p>If one integrates over solid angle (i.e., over sky directions), one is left
+with a specific photon flux in a joint space of photon energy and time (i.e.,
+rotational phase). This is natural because galactic neutron stars subtend far
+too small a solid angle on the sky to be spatially resolved by any telescope:
+they are point sources. We must nevertheless account for the variation of
+intensity with sky direction if we are to compute the data-generating process.
+If one then integrates over phase, the phase-averaged spectrum of photons
+incident on a telescope is yielded; if one instead integrates over some
+waveband, a photon pulse-profile is yielded. The following displays
+several cycles of a phase-energy resolved pulse-profile generated by the more
+equatorially trapped, <span class="math notranslate nohighlight">\(r\)</span>-mode rendered above.</p>
+<img alt="_images/pulse_profile_example.png" src="_images/pulse_profile_example.png" />
+<p>The integration over energy is, for likelihood function evaluation, modified
+by a kernel for the response of an X-ray telescope to the incident radiation
+field.</p>
+<p class="rubric">Footnotes</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>There are a number of visualisation possibilities. For instance, we
+could average the image(s) over phase and/or energy to yield a single
+static image; we could plot phase evolution in one spatial dimension
+(with energy variation in the second) or two spatial dimensions
+(perhaps with energy dependence rendered in time). We could also render
+in space and/or time, variation of the images with stellar parameters
+such as gravitational mass, and geometric parameters such as observer
+inclination to the stellar rotation axis. We could plot
+an image evolving in time, with other panels rendering a photon
+specrum and a pulse-profile evolving in time with the image; here is
+an <a class="reference external" href="https://youtu.be/by3_6rWE7po">example</a>.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2025 the X-PSI Core Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
