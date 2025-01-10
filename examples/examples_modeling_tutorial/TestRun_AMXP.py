@@ -309,13 +309,14 @@ k_disk = k_disk_derive()
 T_in = get_T_in_log10_Kelvin(0.16845756373108872) #(0.29)
 R_in = 0.308122224729265000E+02 #55.0
 values = {'T_in':T_in,'R_in':R_in,'K_disk': k_disk}
-disk = Disk(bounds={}, values=values)
+bounds_disk = {'T_in': (3., 10.), 'R_in': (0., 1e3), 'K_disk': None}
+disk = Disk(bounds=bounds_disk, values=values)
 
 from modules.CustomPhotosphere import CustomPhotosphere_NumA5
 
-stokes = False
+stokes = True
 bounds = dict(spin_axis_position_angle = (None, None))
-photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=stokes, disk=None, bounds=bounds,
+photosphere = CustomPhotosphere_NumA5(hot = hot, elsewhere = elsewhere, stokes=stokes, disk=disk, bounds=bounds,
                                 values=dict(mode_frequency = spacetime['frequency']))
 
 photosphere.hot_atmosphere = this_directory+'/model_data/Bobrikova_compton_slab_I.npz'
@@ -354,31 +355,22 @@ tau=2.0
 #Tbb = 1 keV <=> tbb = 0.002 (roughly)
 #Te = 50 keV <=>  te = 100 (roughly)
 
+p = [mass,  # grav mass
+     radius,  # coordinate equatorial radius
+     distance,  # earth distance kpc
+     cos_i,  # cosine of earth inclination
+     phase_shift,  # phase of hotregion
+     super_colatitude,  # colatitude of centre of superseding region
+     super_radius,  # angular radius superseding region
+     tbb,
+     te,
+     tau,
+     T_in,
+     R_in]
+
 if stokes:
-    p = [mass, #grav mass
-          radius, #coordinate equatorial radius
-          distance, # earth distance kpc
-          cos_i, #cosine of earth inclination
-          chi0, #spin axis position angle
-          phase_shift, #phase of hotregion
-          super_colatitude, #colatitude of centre of superseding region
-          super_radius,  #angular radius superceding region
-          tbb,
-          te,
-          tau
-          ]
-elif not stokes:
-    p = [mass, #grav mass
-          radius, #coordinate equatorial radius
-          distance, # earth distance kpc
-          cos_i, #cosine of earth inclination
-          phase_shift, #phase of hotregion
-          super_colatitude, #colatitude of centre of superseding region
-          super_radius,  #angular radius superceding region
-          tbb,
-          te,
-          tau
-          ]
+    p.insert(4, chi0)  # spin axis position angle
+
 
 # print(len(p))
 
