@@ -44,7 +44,7 @@ ctypedef struct DATA:
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) nogil:
+cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) noexcept nogil:
     # This function must match the free management routine free_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -123,7 +123,7 @@ cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) 
             for j in range(4):
                 for k in range(4):
                     for l in range(4):
-                        address = D.p.I + (D.acc.BN[T][0] + i) * D.p.S[0]
+                        address = D.p.intensity + (D.acc.BN[T][0] + i) * D.p.S[0]
                         address += (D.acc.BN[T][1] + j) * D.p.S[1]
                         address += (D.acc.BN[T][2] + k) * D.p.S[2]
                         address += D.acc.BN[T][3] + l
@@ -133,7 +133,7 @@ cdef void* init_hot_Num4D(size_t numThreads, const _preloaded *const preloaded) 
     return <void*> D
 
 
-cdef int free_hot_Num4D(size_t numThreads, void *const data) nogil:
+cdef int free_hot_Num4D(size_t numThreads, void *const data) noexcept nogil:
     # This function must match the initialisation routine init_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -176,7 +176,7 @@ cdef double eval_hot_Num4D(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
-                     void *const data) nogil:
+                     void *const data) noexcept nogil:
     # Arguments:
     # E = photon energy in keV
     # mu = cosine of ray zenith angle (i.e., angle to surface normal)
@@ -317,7 +317,7 @@ cdef double eval_hot_Num4D(size_t THREAD,
             for k in range(4):
                 KK = k * D.p.BLOCKS[2]
                 for l in range(4):
-                    address = D.p.I + (BN[0] + i) * D.p.S[0]
+                    address = D.p.intensity + (BN[0] + i) * D.p.S[0]
                     address += (BN[1] + j) * D.p.S[1]
                     address += (BN[2] + k) * D.p.S[2]
                     address += BN[3] + l
@@ -340,7 +340,7 @@ cdef double eval_hot_Num4D(size_t THREAD,
         return 0.0
     return I * pow(10.0, 3.0 * vec[0])
 
-cdef double eval_hot_norm_Num4D() nogil:
+cdef double eval_hot_norm_Num4D() noexcept nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.

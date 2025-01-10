@@ -27,7 +27,7 @@ ctypedef gsl_interp_accel accel
 
 ctypedef np.uint8_t uint8
 
-from ..tools cimport _get_phase_interpolant, gsl_interp_type
+from ..tools.core cimport _get_phase_interpolant, gsl_interp_type
 
 def poisson_likelihood_given_background(double exposure_time,
                                         double[::1] phases,

@@ -91,6 +91,7 @@ __ Zenodo_
 PPM for other sources
 *********************
 
+**Das et al. 2024** `(ApJ submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv241116528D/abstract>`_ *Pulse Profiles of Accreting Neutron Stars from GRMHD Simulations*.
 
 **Dorsman et al. 2024** `(MNRAS submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv240907908D/abstract>`_ *Parameter constraints for accreting millisecond pulsars with synthetic NICER data*.
 

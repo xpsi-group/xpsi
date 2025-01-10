@@ -44,6 +44,7 @@ jobs:
         micromamba install sphinx decorator h5py
         micromamba install -c conda-forge nbsphinx nbconvert
         pip install sphinxcontrib-websupport sphinx_rtd_theme
+        pip install torch
     - name : install other needed packages
       run: |
         micromamba install -c conda-forge getdist nestcheck
@@ -52,7 +53,7 @@ jobs:
         python setup.py install
       shell: bash -l {0}
       env:
-        CC:   gcc-10
+        CC:   gcc-12
     - name : build docs
       run: | 
         make html

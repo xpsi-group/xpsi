@@ -1,5 +1,3 @@
-
-
 import numpy as np
 import math
 
@@ -8,24 +6,20 @@ import xpsi
 np.random.seed(xpsi._rank+10)
 
 import time
+import os
+import sys
 
+this_directory = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(this_directory)
+
+# Data
 from CustomInstrument import CustomInstrument
 from CustomSignal import CustomSignal
 from CustomPhotosphere import CustomPhotosphere
 from CustomPrior import CustomPrior
 
-
-# Data
-if __name__ == '__main__':
-    data_path = "../Data/xpsi_good_realisation.dat"
-else:
-    data_path = "./Data/xpsi_good_realisation.dat"
-
-try:
-    data_loaded = np.loadtxt(data_path, dtype=np.double)
-except:
-    print("Loading the data assuming the notebook was run for documentation pages")
-    data_loaded = np.loadtxt('../../examples/examples_fast/Data/xpsi_good_realisation.dat', dtype=np.double)
+data_path = this_directory+"/../Data/xpsi_good_realisation.dat"
+data_loaded = np.loadtxt(data_path, dtype=np.double)
 
 data = xpsi.Data(data_loaded,
                      channels=np.arange(10,301),
@@ -87,7 +81,11 @@ bounds = dict(distance = (0.5,2),
 
 
 spacetime = xpsi.Spacetime(bounds,
-                           values=dict(frequency = 314.0))
+                           values=dict(frequency = 314.0),
+                           star_shape="AGM_14")
+#Default star shape is an oblate spheroid from AlGendy & Morsink (2014, AGM_14)
+#But also a spherical star can be used with:
+#spacetime.star_shape = "sphere"
 
 # # Hot-spot
 bounds = dict(super_colatitude = (0.001, math.pi/2 - 0.001),
@@ -107,7 +105,7 @@ hot_spot = xpsi.HotRegion(bounds=bounds,
                                 max_sqrt_num_cells=64,
                                 num_leaves=64,
                                 num_rays=512,
-                                is_secondary=True,
+                                is_antiphased=True,
                                 image_order_limit=3, # up to tertiary
                                 prefix='p') # For "primary"
 
@@ -136,7 +134,6 @@ likelihood = xpsi.Likelihood(star = star, signals = signal,
 p=[1.4,12,1.,math.cos(60*np.pi/180),0.0,70*np.pi/180, 0.75,6.7]
 
 likelihood.check(None, [-3.1603740790e+04], 1.0e-5, physical_points=[p])
-
 
 if __name__ == '__main__':
 

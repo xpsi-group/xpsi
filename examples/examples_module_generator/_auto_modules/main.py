@@ -751,7 +751,7 @@ parser.add_argument('--hot-atmosphere-size',
 
 parser.add_argument('--image-order-limit',
                          type=int,
-                         default=3,
+                         default=None,
                          help='The highest-order image to sum over. Either a positive integer, or do not pass an argument if a hard limit is not desired.',
                          comment_line_above='global resolution flags')
 

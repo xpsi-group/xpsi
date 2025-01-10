@@ -30,12 +30,11 @@ The following job script ``job.sh`` is an example job script for analysis on the
 
     module purge
 
-    module load 2022
-    module load foss/2022a
-    module load SciPy-bundle/2022.05-foss-2022a
-    module load wrapt/1.15.0-foss-2022a
-    module load matplotlib/3.5.2-foss-2022a
-    module load CMake/3.23.1-GCCcore-11.3.0
+    module load 2024
+    module load foss/2024a
+    module load SciPy-bundle/2024.05-gfbf-2024a
+    module load wrapt/1.16.0-gfbf-2024a
+    module load matplotlib/3.9.2-gfbf-2024a
 
     source $HOME/venvs/xpsi_py3/bin/activate
     

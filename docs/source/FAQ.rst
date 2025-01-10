@@ -97,3 +97,10 @@ Make sure to to install nestcheck and GetDist packages using the corresponding g
 .. rubric:: *ValueError: There is more than one signal instance.*
 
 Typically occurs when post-processing joint NICER and XMM results, if not setting ``model.likelihood.signals = model.likelihood.signals[0][0]`` (when plotting the inferred NICER signal).
+
+Weird issues
+^^^^^^^^^^^^
+
+.. rubric:: *The import order of pymultinest and numpy may sometimes affect the seed-fixed results.*
+
+The import order of numpy and X-PSI (and thus pymultinest) was observed to sometimes influence the exact sampling results even if fixing the random seeds for both numpy and pymultinest. However, the issue occurred only in specific conda environments (with certain packages/dependencies) and later attempts to reproduce it with newer X-PSI installations have not been successful. See the `GitHub issue <https://github.com/xpsi-group/xpsi/issues/276>`_ for more details.

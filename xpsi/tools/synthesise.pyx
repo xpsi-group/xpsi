@@ -35,7 +35,7 @@ ctypedef gsl_interp_accel accel
 
 ctypedef np.uint8_t uint8
 
-from . cimport _get_phase_interpolant, gsl_interp_type
+from .core cimport _get_phase_interpolant, gsl_interp_type
 
 def synthesise_exposure(double exposure_time,
                         double[::1] phases,

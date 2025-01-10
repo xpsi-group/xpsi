@@ -45,7 +45,7 @@ cdef int ERROR = 1
 cdef _RAY* alloc_RAY(double epsabs_ray,
                      double epsrel_ray,
                      double INIT_STEP,
-                     size_t MAXSTEPS) nogil:
+                     size_t MAXSTEPS) noexcept nogil:
 
     cdef _RAY *RAY = <_RAY*> malloc(sizeof(_RAY))
 
@@ -67,7 +67,7 @@ cdef _RAY* alloc_RAY(double epsabs_ray,
     return RAY
 
 cdef void reset_RAY(_RAY *const RAY,
-                    const _GEOM *const GEOM) nogil:
+                    const _GEOM *const GEOM) noexcept nogil:
 
     RAY.NUMSTEPS = 0
     RAY.EVOLVE = 1
@@ -100,7 +100,7 @@ cdef void reset_RAY(_RAY *const RAY,
 
     RAY.SYS.params = &RAY.PARAMS
 
-cdef void free_RAY(_RAY *const RAY) nogil:
+cdef void free_RAY(_RAY *const RAY) noexcept nogil:
 
     gsl_odeiv2_step_free(RAY.S)
     gsl_odeiv2_control_free(RAY.C)
@@ -109,7 +109,7 @@ cdef void free_RAY(_RAY *const RAY) nogil:
     free(<_RAY*> RAY)
 
 cdef int RK(_RAY *const RAY,
-            const _GEOM *const GEOM) nogil:
+            const _GEOM *const GEOM) noexcept nogil:
 
     reset_RAY(RAY, GEOM)
 
@@ -426,7 +426,7 @@ cdef int IS_NULL(const double *const y,
                  double r_s,
                  double kappa,
                  double a,
-                 double asq) nogil:
+                 double asq) noexcept nogil:
 
     cdef:
         double Sigma, Delta, sin_theta, cos_theta

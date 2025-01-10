@@ -303,6 +303,7 @@ class Likelihood(ParameterSubspace):
                                                         signal in self._signals)
 
                 self._star.update(fast_total_counts, self.threads,force_update=force_update)
+
             except xpsiError as e:
                 if isinstance(e, HotRegion.RayError):
                     print('Warning: HotRegion.RayError raised.')

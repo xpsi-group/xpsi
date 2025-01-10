@@ -22,7 +22,7 @@ from GSL cimport (gsl_interp,
 
 ctypedef gsl_interp_accel accel
 
-from . cimport _get_energy_interpolant, gsl_interp_type
+from .core cimport _get_energy_interpolant, gsl_interp_type
 
 def energy_interpolator(size_t N_Ts,
                         double[:,::1] signal,

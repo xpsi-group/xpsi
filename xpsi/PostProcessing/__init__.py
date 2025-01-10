@@ -60,11 +60,13 @@ else:
                "SignalPlotter",
                "PulsePlot",
                "SpectrumPlot",
-               "ResidualPlot"]
+               "ResidualPlot",
+               "Residual1DPlot"]
 
     from ._runs import Runs
     from ._signalplotter import SignalPlotter
     from ._residual import ResidualPlot
+    from ._1d_residual import Residual1DPlot
     from ._pulse import PulsePlot
     from ._spectrum import SpectrumPlot
     from ._backends import NestedBackend

@@ -4,7 +4,7 @@ An open-source package for neutron star astrostatistics.
 
 """
 
-__version__ = "2.2.7"
+__version__ = "3.0.0"
 __author__ = "The X-PSI Core Team"
 
 try:
@@ -76,7 +76,6 @@ if not __XPSI_SETUP__:
     from xpsi.Spacetime import Spacetime
     from xpsi.Photosphere import Photosphere
     from xpsi.HotRegion import HotRegion
-    from xpsi.TwoHotRegions import TwoHotRegions
     from xpsi.HotRegions import HotRegions
     from xpsi.Elsewhere import Elsewhere
     from xpsi.Everywhere import Everywhere

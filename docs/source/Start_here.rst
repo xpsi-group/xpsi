@@ -28,10 +28,12 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 * :doc:`Accretion disk<Accretion_disk>` is a tutorial showing how to set up and accretion disk and add its emission to the emission of a star.
 
-* :doc:`Importance sample<Importance_sample>` is a tutorial for importance sampling.
+* :doc:`Importance sampling<Importance_sampling>` is a tutorial for importance sampling.
 
 * :doc:`Module generator tutorial<Module_generator_tutorial>` provides instructions on how to generate Python modules in an automated way to run X-PSI.
 
 * :doc:`Example script and modules<Example_script_and_modules>` shows a couple of simple example scripts for pulse shape computation and nested sampling.
 
 * :doc:`Example job<Example_job>` contains example job scripts for computation on clusters.
+
+* :doc:`Posterior inference using SBI<x_p_sbi>` is a tutorial showing how to use Simulation-Based Inference (SBI) to obtain posteriors.

@@ -24,7 +24,7 @@ cdef double k_B_over_keV = k_B / keV
 # >>> Thus the bodies of the following need not be written explicitly in
 # ... the Cython language.
 #----------------------------------------------------------------------->>>
-cdef void* init_hot_BB(size_t numThreads, const _preloaded *const preloaded) nogil:
+cdef void* init_hot_BB(size_t numThreads, const _preloaded *const preloaded) noexcept nogil:
     # This function must match the free management routine free_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -35,7 +35,7 @@ cdef void* init_hot_BB(size_t numThreads, const _preloaded *const preloaded) nog
     # Return NULL if dynamic memory is not required for the model.
     return NULL
 
-cdef int free_hot_BB(size_t numThreads, void *const data) nogil:
+cdef int free_hot_BB(size_t numThreads, void *const data) noexcept nogil:
     # This function must match the initialisation routine init_hot()
     # in terms of freeing dynamically allocated memory. This is entirely
     # the user's responsibility to manage.
@@ -54,7 +54,7 @@ cdef double eval_hot_BB(size_t THREAD,
                      double E,
                      double mu,
                      const double *const VEC,
-                     void *const data) nogil:
+                     void *const data) noexcept nogil:
     # Arguments:
     # E = photon energy in keV
     # mu = cosine of ray zenith angle (i.e., angle to surface normal)
@@ -65,7 +65,7 @@ cdef double eval_hot_BB(size_t THREAD,
 
     return E * E * E / ( exp(E / temp) - 1.0 )
 
-cdef double eval_hot_norm_BB() nogil:
+cdef double eval_hot_norm_BB() noexcept nogil:
     # Source radiation field normalisation which is independent of the
     # parameters of the parametrised model -- i.e. cell properties, energy,
     # and angle.
