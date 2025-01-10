@@ -53,7 +53,7 @@ jobs:
         python setup.py install
       shell: bash -l {0}
       env:
-        CC:   gcc-10
+        CC:   gcc-12
     - name : build docs
       run: | 
         make html
