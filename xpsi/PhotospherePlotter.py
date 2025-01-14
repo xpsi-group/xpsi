@@ -34,7 +34,6 @@ class PhotospherePlotter( Photosphere ):
         self.photosphere = Photosphere
         print(self.photosphere._params)
 
-
     @property
     def global_variables(self):
         """ Get a vector of global surface radiation field variables.
@@ -64,7 +63,9 @@ class PhotospherePlotter( Photosphere ):
 
         """
         try:
-            return _np.array([self['temperature']])
+            "Loading the parameters provided by the parent Photosphere instance"
+            return _np.array([self.photosphere['temperature']])
+        
         except KeyError:
             raise NotImplementedError('Subclass and provide an implementation.')
 
@@ -490,7 +491,7 @@ class PhotospherePlotter( Photosphere ):
             :meth:`~Photosphere._animate`. Refer to the associated method
             docstring for available options.
 
-        :param bool deactivate_all_verbosity:
+        :param bool deactivate_verbosity:
             Deactivate the verbose output? Note that despite this keyword
             argument not appearing in the method signature, it is a valid
             switch.
@@ -505,7 +506,7 @@ class PhotospherePlotter( Photosphere ):
         else:
             raise TypeError('Got an unrecognised atm_ext argument. Note that the only allowed '
                             'atmosphere options are at the moment "BB", "Num4D", and "user".')
-        ref = self._spacetime # geometry shortcut saves characters
+        ref = self.photosphere._spacetime # geometry shortcut saves characters
         try:
             _DV = deactivate_verbosity
         except NameError:
@@ -630,7 +631,7 @@ class PhotospherePlotter( Photosphere ):
                                 ref.r_s,
                                 ref.R,
                                 ref.Omega,
-                                self['mode_frequency'],
+                                self.photosphere['mode_frequency'],
                                 ref.zeta,
                                 ref.epsilon,
                                 ref.a, # dimensionless spin
@@ -652,7 +653,7 @@ class PhotospherePlotter( Photosphere ):
                                 single_precision_intensities,
                                 _ray_map,
                                 self.global_to_local_file,
-                                self._hot_atmosphere,
+                                self.photosphere._hot_atmosphere,
                                 atmosphere_extension)
 
             if images[0] == 1:
@@ -696,7 +697,7 @@ class PhotospherePlotter( Photosphere ):
                     yield 'Specific flux integration complete.'
 
             # memoization
-            self._spacetime([param.value for param in self._spacetime])
+            self.photosphere._spacetime([param.value for param in self.photosphere._spacetime])
 
         if sky_map_kwargs is None: sky_map_kwargs = {}
         if animate_kwargs is None: animate_kwargs = {}
@@ -1381,7 +1382,7 @@ class PhotospherePlotter( Photosphere ):
             right = 0.975
             top = bottom + (right - left)
 
-            ref = self._spacetime
+            ref = self.photosphere._spacetime
 
             fig = Figure(figsize = figsize)
             canvas = FigureCanvas(fig)
@@ -1698,8 +1699,6 @@ class PhotospherePlotter( Photosphere ):
 
         yield None
 
-Photosphere._update_doc()
-
 def _veneer(x, y, axes, lw=1.0, length=8, log=(False, False)):
     """ Make the plots a little more aesthetically pleasing. """
     if x is not None:
@@ -1723,4 +1722,3 @@ def _veneer(x, y, axes, lw=1.0, length=8, log=(False, False)):
     axes.tick_params(which='major', colors='black', length=length, width=lw)
     axes.tick_params(which='minor', colors='black', length=int(length/2), width=lw)
     plt.setp(list(axes.spines.values()), linewidth=lw, color='black')
-
