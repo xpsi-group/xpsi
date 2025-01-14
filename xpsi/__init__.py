@@ -75,6 +75,7 @@ if not __XPSI_SETUP__:
     from xpsi.Star import Star
     from xpsi.Spacetime import Spacetime
     from xpsi.Photosphere import Photosphere
+    from xpsi.PhotospherePlotter import PhotospherePlotter   
     from xpsi.HotRegion import HotRegion
     from xpsi.HotRegions import HotRegions
     from xpsi.Elsewhere import Elsewhere
