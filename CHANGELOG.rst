@@ -34,6 +34,46 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[3.0.1] - 2025-01-15
+~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* If the prior.call() returns -np.inf because a parameter value outside the allowed prior (multidimensional) interval, the likelihood will now return random_near_llzero rather than less_than_llzero.  
+
+Fixed
+^^^^^
+
+* This fixes a problem that we believe used to be rare but was recently occuring quite frequently, where MultiNest gets stuck in an infinite loop. That means runs were still appearing to be running but were actually stuck in an infinite loop state.
+
+Added
+^^^^^
+
+Changed
+^^^^^^^
+
+* We no longer follow the procedure of point rejection as described in Appendix B.5.3 in Tom Riley's thesis. 
+* Instead of outright rejection (in the MultiNest code), points will now be 'weakly' rejected when their loglikelihoods are are compared and turn out to be lower than the likelihoods of the current 'good' livepoints. 
+* The bulk of the work is in the evaluation of the loglikelihoods, which is still being skipped, so rejection after loglikelihood comparison amounts to negligible extra work.
+* We have done a few tests of sampling and found no noticeable effects on the posteriors that come out on the other end.
+* Just a note, we discussed but will not implement prior limits in the prior.inverse_sample(), since that will be complicated while we do not expect that it speeds us up. One may argue that alternative is a bit cleaner and a more direct way to inform MultiNest not to consider forbidden parameter values.  
+
+Deprecated
+^^^^^^^^^^
+* likelihood.less_than_llzero()
+
+Removed
+^^^^^^^
+
+Attribution
+^^^^^^^^^^^
+
+Bas Dorsman,
+Mariska Hoogkamer,
+Tuomo Salmi
+
+
 [v3.0.0] - 2024-12-19
 ~~~~~~~~~~~~~~~~~~~~~
 
