@@ -34,7 +34,7 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[3.0.1] - 2025-01-15
+[3.0.1] - 2025-01-16
 ~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -54,7 +54,7 @@ Changed
 ^^^^^^^
 
 * We no longer follow the procedure of point rejection as described in Appendix B.5.3 in Tom Riley's thesis. 
-* Instead of outright rejection (in the MultiNest code), points will now be 'weakly' rejected when their loglikelihoods are are compared and turn out to be lower than the likelihoods of the current 'good' livepoints. 
+* Instead of outright rejection (in the MultiNest code), points will now be 'weakly' rejected when their loglikelihoods are compared and turn out to be lower than the likelihoods of the current 'good' livepoints.
 * The bulk of the work is in the evaluation of the loglikelihoods, which is still being skipped, so rejection after loglikelihood comparison amounts to negligible extra work.
 * We have done a few tests of sampling and found no noticeable effects on the posteriors that come out on the other end.
 * Just a note, we discussed but will not implement prior limits in the prior.inverse_sample(), since that will be complicated while we do not expect that it speeds us up. One may argue that alternative is a bit cleaner and a more direct way to inform MultiNest not to consider forbidden parameter values.  
