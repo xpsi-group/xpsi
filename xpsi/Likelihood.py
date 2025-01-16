@@ -260,11 +260,6 @@ class Likelihood(ParameterSubspace):
         return self._llzero * (0.1 + 0.9*_np.random.rand(1))
 
     @property
-    def less_than_llzero(self):
-        """ Get a number less than the minimum log-likelihood threshold. """
-        return 1.1 * self._llzero
-
-    @property
     def externally_updated(self):
         """ Safely assume parameters are already updated upon call to self? """
         return self._externally_updated
@@ -488,7 +483,7 @@ class Likelihood(ParameterSubspace):
                 if not _np.isfinite(logprior):
                     # we need to restore due to premature return
                     super(Likelihood, self).__call__(self.cached)
-                    return self.random_near_llzero # changed from less_than_llzero
+                    return self.random_near_llzero
 
             if self._do_fast:
                 # perform a low-resolution precomputation to direct cell

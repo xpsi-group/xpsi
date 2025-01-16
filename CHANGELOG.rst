@@ -66,6 +66,8 @@ Deprecated
 Removed
 ^^^^^^^
 
+* likelihood.less_than_llzero()
+
 Attribution
 ^^^^^^^^^^^
 
