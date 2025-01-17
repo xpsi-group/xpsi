@@ -1,8 +1,4 @@
 from xpsi.global_imports import *
-from xpsi import _warning, _verbose
-from xpsi.utils import  make_verbose, verbose
-
-from os.path import join as _join
 
 from xpsi.Spacetime import Spacetime
 from xpsi.HotRegion import HotRegion
