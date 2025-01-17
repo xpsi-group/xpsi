@@ -457,6 +457,9 @@ class Everywhere(ParameterSubspace):
 
         Subclass and overwrite with custom functionality if you desire.
 
+        Designed here simply for uniform effective temperature (assuming
+        it is the first parameter in self.vector).
+
         """
         # all radiate, but can be changed with overwrite
         self._cellRadiates = _np.ones(self._theta.shape, dtype=_np.int32)
