@@ -382,41 +382,45 @@ def eval_marginal_likelihood(double exposure_time,
             gsl_interp_init(interp_ptr, phases_ptr, pulse_ptr,
                             pulse_phase_set.shape[0])
 
-            for j in range(<size_t> (phases.shape[0] - 1)):
-                pa = phases[j] + phase_shift
-                pb = phases[j+1] + phase_shift
+            if pulse.shape[1] > 1:
+                for j in range(<size_t> (phases.shape[0] - 1)):
+                    pa = phases[j] + phase_shift
+                    pb = phases[j+1] + phase_shift
 
-                if pb - pa == 1.0:
-                    pa = 0.0
-                    pb = 1.0
-                else:
-                    pa -= floor(pa)
-                    pb -= floor(pb)
+                    if pb - pa == 1.0:
+                        pa = 0.0
+                        pb = 1.0
+                    else:
+                        pa -= floor(pa)
+                        pb -= floor(pb)
 
-                if pa < pb:
-                    _val = gsl_interp_eval_integ(interp_ptr,
-                                                       phases_ptr,
-                                                       pulse_ptr,
-                                                       pa, pb,
-                                                       acc_ptr)
-                    if _val > 0.0 or _allow_negative[p] == 1:
-                        STAR[i,j] += _val
-                else:
-                    _val = gsl_interp_eval_integ(interp_ptr,
-                                                       phases_ptr,
-                                                       pulse_ptr,
-                                                       pa, 1.0,
-                                                       acc_ptr)
-                    if _val > 0.0 or _allow_negative[p] == 1:
-                        STAR[i,j] += _val
+                    if pa < pb:
+                        _val = gsl_interp_eval_integ(interp_ptr,
+                                                        phases_ptr,
+                                                        pulse_ptr,
+                                                        pa, pb,
+                                                        acc_ptr)
+                        if _val > 0.0 or _allow_negative[p] == 1:
+                            STAR[i,j] += _val
+                    else:
+                        _val = gsl_interp_eval_integ(interp_ptr,
+                                                        phases_ptr,
+                                                        pulse_ptr,
+                                                        pa, 1.0,
+                                                        acc_ptr)
+                        if _val > 0.0 or _allow_negative[p] == 1:
+                            STAR[i,j] += _val
 
-                    _val = gsl_interp_eval_integ(interp_ptr,
-                                                       phases_ptr,
-                                                       pulse_ptr,
-                                                       0.0, pb,
-                                                       acc_ptr)
-                    if _val > 0.0 or _allow_negative[p] == 1:
-                        STAR[i,j] += _val
+                        _val = gsl_interp_eval_integ(interp_ptr,
+                                                        phases_ptr,
+                                                        pulse_ptr,
+                                                        0.0, pb,
+                                                        acc_ptr)
+                        if _val > 0.0 or _allow_negative[p] == 1:
+                            STAR[i,j] += _val
+            else:
+                STAR[i,0] = pulse[i,0] 
+
 
         for j in range(<size_t> (phases.shape[0] - 1)): # interpolant safety procedure
             if STAR[i,j] < 0.0:

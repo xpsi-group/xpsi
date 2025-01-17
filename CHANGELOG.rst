@@ -34,6 +34,34 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
+[3.0.2] - 2025-01-17
+~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Everywhere can now be used with ``time_invariant=True`` and a numerical atmosphere model. This would silently bug before.
+
+Fixed
+^^^^^
+
+* Fixes silent error resulting in wrong model spectrum when using a numerical atmosphere model with ``Everywhere``.
+* Fixes silent error in likelihood computation when ``time_invariant=True`` where likelihood would behave stochastically for fixed parameters.
+
+Changed
+^^^^^^^
+
+* Only pass the temperature and effective gravity to the ``_compute_cellParamVecs()`` in ``Everywhere``.
+* Added a condition on the number of phase bins of the model (more than 2) to interpolate on data bins.
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi,
+Christine Kazantsev,
+Lucien Mauviard
+
+
 [3.0.1] - 2025-01-16
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -46,9 +74,6 @@ Fixed
 ^^^^^
 
 * This fixes a problem that we believe used to be rare but was recently occuring quite frequently, where MultiNest gets stuck in an infinite loop. That means runs were still appearing to be running but were actually stuck in an infinite loop state.
-
-Added
-^^^^^
 
 Changed
 ^^^^^^^

@@ -457,16 +457,19 @@ class Everywhere(ParameterSubspace):
 
         Subclass and overwrite with custom functionality if you desire.
 
+        Designed here simply for uniform effective temperature (assuming
+        it is the first parameter in self.vector).
+
         """
         # all radiate, but can be changed with overwrite
         self._cellRadiates = _np.ones(self._theta.shape, dtype=_np.int32)
 
         self._cellParamVecs = _np.ones((self._theta.shape[0],
                                         self._theta.shape[1],
-                                        len(self.vector)+1),
+                                        2),
                                        dtype=_np.double)
 
-        self._cellParamVecs[...,:-1] *= _np.array(self.vector)
+        self._cellParamVecs[...,:-1] *= _np.array([self.vector[0]])
 
         for i in range(self._cellParamVecs.shape[1]):
             self._cellParamVecs[:,i,-1] *= self._effGrav
@@ -478,7 +481,7 @@ class Everywhere(ParameterSubspace):
         self._compute_rays(spacetime, photosphere, threads)
         self._compute_cellParamVecs()
 
-    def integrate(self, st, energies, threads, atmosphere):
+    def integrate(self, st, energies, threads, *atmosphere):
         """ Integrate over the photospheric radiation field.
 
         :param st: Instance of :class:`~.Spacetime.Spacetime`.

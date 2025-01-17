@@ -510,7 +510,7 @@ class Photosphere(ParameterSubspace):
             spectrum = self._everywhere.integrate(self._spacetime,
                                                    energies,
                                                    threads,
-                                                   self._everywhere_atmosphere)
+                                                   *self._everywhere_atmosphere)
             if spectrum.ndim == 1:
                 self._signal = ((spectrum.reshape(-1,1),),)
             else:
