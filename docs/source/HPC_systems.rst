@@ -241,8 +241,8 @@ In your ``$HOME`` file system, from the login node, start by loading the necessa
     module purge
     module load conda
     module load cmake
-    module load intel/18.2.199
-    module load intelmpi/18.2
+    module load intel/19.5.041
+    module load intelmpi/19.5.041
     module load gsl/2.5-icc
 
 Then, create the conda environnnement and Install python packages with conda (or pip):
@@ -252,7 +252,7 @@ Then, create the conda environnnement and Install python packages with conda (or
     conda create -n xpsi --clone base
     conda activate xpsi
     conda install numpy scipy matplotlib wrapt
-    conda install cython~=3.0.11
+    pip install cython~=3.0.11
     conda install h5py
     conda install -c conda-forge fgivenx
     pip install schwimmbad --user
