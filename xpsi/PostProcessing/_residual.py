@@ -2,6 +2,8 @@ from pylab import *
 from ._global_imports import *
 from scipy.ndimage import measurements, gaussian_filter
 from ._signalplot import SignalPlot
+from matplotlib.patches import Patch as Patch
+from matplotlib.lines import Line2D as Line2D
 
 class ResidualPlot(SignalPlot):
     """ Plot the count data, the posterior-expected count signal, residuals, clusters and their related distributions.
@@ -66,6 +68,7 @@ class ResidualPlot(SignalPlot):
                  residual_cmap='PuOr',
                  parameters_vector=None,
                  plot_pulse=False,
+                 n_realisation_per_model=1,
                  blur_residuals=False,
                  plot_clusters=False,
                  threshlim=2.0,
@@ -96,6 +99,9 @@ class ResidualPlot(SignalPlot):
 
         :param bool plot_pulse:
              Plot the pulse profile?
+
+        :param int n_realisation_per_model:
+             Number of realisations to use to get the errorbars of the posterior predictive.
 
         :param bool blur_residuals:
              Blur the residuals?
@@ -129,6 +135,7 @@ class ResidualPlot(SignalPlot):
         self._residual_cmap = residual_cmap
         self._plot_clusters = plot_clusters
         self._plot_pulse = plot_pulse
+        self._n_realisations_per_model = n_realisation_per_model
         self._blur_residuals = blur_residuals
         if not parameters_vector is None:
             self.parameters_vector = parameters_vector
@@ -283,10 +290,13 @@ class ResidualPlot(SignalPlot):
         """
         try:
             self._model_sum
+            self._model_list
         except AttributeError:
             self._model_sum = self._signal.expected_counts.copy()
+            self._model_list = [self._signal.expected_counts.copy()]
         else:
             self._model_sum += self._signal.expected_counts
+            self._model_list.append( self._signal.expected_counts )
 
     @property
     def model_sum(self):
@@ -296,6 +306,15 @@ class ResidualPlot(SignalPlot):
     @model_sum.deleter
     def model_sum(self):
         del self._model_sum
+
+    @property
+    def model_list(self):
+        """ Get the current list of the count numbers. """
+        return self._model_list
+
+    @model_list.deleter
+    def model_list(self):
+        del self._model_list
 
     @property
     def expected_counts(self):
@@ -336,22 +355,41 @@ class ResidualPlot(SignalPlot):
         pulse_model = self.expected_counts.sum( axis = 0 )
         double_pulse_model = _np.concatenate( (pulse_model , pulse_model) )
 
-        # Compute the chi squared
-        chi2 = _np.sum( (pulse_data - pulse_model)**2 / pulse_model )
+        # Posterior predictive (PP) : get realizations
+        pulse_model_list = [ model.sum( axis = 0 ) for model in self.model_list ]
+        pulse_realizations = [ [_np.random.poisson( model ) for _ in range(self._n_realisations_per_model)] for model in pulse_model_list ]
+        pulse_realizations_flat = _np.reshape( pulse_realizations , (len( pulse_realizations) * self._n_realisations_per_model,-1) )
+        if len( pulse_realizations_flat ) >= 100:
+            pulse_PP_errorbars = pulse_realizations_flat.std( axis=0 )
+        else:
+            print( 'WARNING : Not enough realizations for posterior predictive errorbars. Using Poisson error of the model instead' )
+            pulse_PP_errorbars = _np.sqrt( pulse_model )
+        double_pulse_PP_errorbars = _np.concatenate( (pulse_PP_errorbars , pulse_PP_errorbars), axis=0 )
+        self.bolometric_chi2 = (pulse_data - pulse_model)**2 / pulse_model
 
         # Plot pulse
-        self._ax_pulse.errorbar(x=doubles_phases,
-                                y=double_pulse_data,
-                                yerr=_np.sqrt( double_pulse_data ),
-                                ds='steps-mid',
-                                label='Data', color='black')
+        self._ax_pulse.step(x=doubles_phases,
+                            y=double_pulse_data,
+                            where='mid',
+                            color='black')
 
-        self._ax_pulse.errorbar(x=doubles_phases,
-                                y=double_pulse_model, 
-                                ds='steps-mid',
-                                label=r'Model $\chi^2=$'+f'{chi2:.2f}', color='steelblue')
+        self._ax_pulse.step(x=doubles_phases,
+                            y=double_pulse_model,
+                            where='mid',
+                            alpha=0.7,
+                            color='blue')
 
-        self._ax_pulse.legend(loc='lower right')
+        self._ax_pulse.fill_between(x=doubles_phases,
+                                    y1=double_pulse_model - double_pulse_PP_errorbars,
+                                    y2=double_pulse_model + double_pulse_PP_errorbars,
+                                    step='mid',
+                                    alpha=0.5,
+                                    color='steelblue')
+
+        lines = [Line2D([0], [0], color='black', lw=1), (Patch(color='steelblue', alpha=0.5, lw=1), Line2D([0], [0], color='blue', lw=1))]
+        legends = ['Data', 'Model']
+        loc = 'lower right'
+        self._ax_pulse.legend(lines, legends, loc=loc, frameon=False)
 
     def _add_data(self):
         """ Display data in topmost panel. """

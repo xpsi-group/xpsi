@@ -227,17 +227,17 @@ class SignalPlotter(PostProcessor):
         # If has a parameter to plot, use it. Else, draw samples !
         if hasattr(plots[0],'parameters_vector'):
             try:
-                print( plots[0].parameters_vector )
                 _ = plots[0].parameters_vector[0]
                 assert len(likelihood) == len(plots[0].parameters_vector) , 'Length of the parameter vector does not match likelihood one'
             except (TypeError) as e:
-                raise e('When provided, theta to plot must be given as an iterable and have matching length with likelihood' )
+                raise e('When provided, parameters vector must be given as an iterable and have matching length with likelihood' )
             else:
                 thetas = _np.array( [plots[0].parameters_vector] )
+                _ = likelihood(thetas[0])
+                print('Plotting the model for the provided parameters vector.')
         else:
             thetas = self._draw_equally_weighted(run.samples, nsamples,
                                                 len(likelihood))
-
 
         signal = likelihood.signal # should only be one signal object available
         for p in plots:
