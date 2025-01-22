@@ -251,7 +251,7 @@ Then, create the conda environnnement and Install python packages with conda (or
 
     conda create -n xpsi --clone base
     conda activate xpsi
-    conda install numpy scipy matplotlib wrapt
+    conda install numpy scipy matplotlib wrapt astropy
     pip install cython~=3.0.11
     conda install h5py
     conda install -c conda-forge fgivenx
@@ -280,7 +280,9 @@ Install mpi4py in your ``$HOME`` (e.g. in ``~/Softwares``):
     mpiexec -n 4 python demo/helloworld.py
 
 
-Download and Install the MultiNest package in your ``$HOME`` (e.g. in ``~/Softwares``:
+If you get a ``CMake Error`` when building mpi4py, you might need to use another intel compiler version. Load instead : intel/19.4.243 and intelmpi/19.4.243
+
+Download and Install the MultiNest package in your ``$HOME`` (e.g. in ``~/Softwares``):
 
 .. code-block:: bash
 
@@ -300,7 +302,7 @@ Download and Install the MultiNest package in your ``$HOME`` (e.g. in ``~/Softwa
     ## Check that libraries have been compiled and are present
     ls ../lib
 
-Install pymultinest in your ``$HOME`` (e.g. in ``~/Softwares``:
+Install pymultinest in your ``$HOME`` (e.g. in ``~/Softwares``):
 
 .. code-block:: bash
 
@@ -316,7 +318,7 @@ Install pymultinest in your ``$HOME`` (e.g. in ``~/Softwares``:
     mpiexec -n 2 python pymultinest_demo.py
 
 
-Clone and Install X-PSI in ~/Softwares/
+Clone and Install X-PSI in ``~/Softwares``
 
 .. code-block:: bash
 
