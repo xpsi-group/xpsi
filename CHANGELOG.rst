@@ -39,17 +39,17 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* `_poisson_likelihood_given_background.pyx` can handle likelihood computation when the model generates phases with 0 counts, and penalizes situations where data has phase bins with 0 counts but the model does not.
+* `_poisson_likelihood_given_background.pyx` extension can now handle likelihood computation when the model generates phases with 0 counts, and penalizes situations where data has phase-energy bins with 0 counts but the model does not.
 
 Fixed
 ^^^^^
 
-* Fixes likelihood computation crash when model predicts phase bin with 0 counts. Previously that would result in an attempt to compute log(0).
+* Fixes likelihood computation crash (for the Poisson extension) when model predicts phase bin with 0 counts. Previously that would result in an attempt to compute log(0).
 
 Changed
 ^^^^^^^
 
-* Added conditions to deal with situations involving data counts or model counts being 0 in any phase bin.
+* Added conditions to deal with situations involving data counts or model counts being 0 in any phase-energy bin.
 
 Attribution
 ^^^^^^^^^^^
