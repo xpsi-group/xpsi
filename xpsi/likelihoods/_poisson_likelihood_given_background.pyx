@@ -211,7 +211,7 @@ def poisson_likelihood_given_background(double exposure_time,
             # Penalizing situations where the data counts are not zero 
             # but the model counts are.
             else:
-                LOGLIKE = -1.0e90 * (0.1 + 0.9*np.random.rand(1))
+                LOGLIKE += -1.0e90 * (0.1 + 0.9*np.random.rand(1))
 
             STAR[i,j] += background[i,j]/n
             STAR[i,j] *= exposure_time
