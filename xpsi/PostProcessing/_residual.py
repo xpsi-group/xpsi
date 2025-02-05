@@ -68,7 +68,8 @@ class ResidualPlot(SignalPlot):
                  residual_cmap='PuOr',
                  parameters_vector=None,
                  plot_pulse=False,
-                 n_realisation_per_model=1,
+                 legend_pulse_coords=None,
+                 n_realisation_per_sample=1,
                  blur_residuals=False,
                  plot_clusters=False,
                  threshlim=2.0,
@@ -100,8 +101,11 @@ class ResidualPlot(SignalPlot):
         :param bool plot_pulse:
              Plot the pulse profile?
 
-        :param int n_realisation_per_model:
+        :param int n_realisation_per_sample:
              Number of realisations to use to get the errorbars of the posterior predictive.
+
+        :param tuple legend_pulse_coords:
+             Coordinates for the legend of the pulse if plotted. If not given, will just use the best location.
 
         :param bool blur_residuals:
              Blur the residuals?
@@ -135,7 +139,8 @@ class ResidualPlot(SignalPlot):
         self._residual_cmap = residual_cmap
         self._plot_clusters = plot_clusters
         self._plot_pulse = plot_pulse
-        self._n_realisations_per_model = n_realisation_per_model
+        self._legend_pulse_coords = legend_pulse_coords
+        self._n_realisations_per_model = n_realisation_per_sample
         self._blur_residuals = blur_residuals
         if not parameters_vector is None:
             self.parameters_vector = parameters_vector
@@ -360,12 +365,18 @@ class ResidualPlot(SignalPlot):
         pulse_realizations = [ [_np.random.poisson( model ) for _ in range(self._n_realisations_per_model)] for model in pulse_model_list ]
         pulse_realizations_flat = _np.reshape( pulse_realizations , (len( pulse_realizations) * self._n_realisations_per_model,-1) )
         if len( pulse_realizations_flat ) >= 100:
-            pulse_PP_errorbars = pulse_realizations_flat.std( axis=0 )
+            pulse_PP_q16 = _np.quantile( pulse_realizations_flat, q=0.16, axis=0 )
+            pulse_PP_q84 = _np.quantile( pulse_realizations_flat, q=0.84, axis=0 )
+            double_pulse_PP_q16 = np.concatenate( (pulse_PP_q16 , pulse_PP_q16), axis=0 )
+            double_pulse_PP_q84 = np.concatenate( (pulse_PP_q84 , pulse_PP_q84), axis=0 )
         else:
             print( 'WARNING : Not enough realizations for posterior predictive errorbars. Using Poisson error of the model instead' )
             pulse_PP_errorbars = _np.sqrt( pulse_model )
-        double_pulse_PP_errorbars = _np.concatenate( (pulse_PP_errorbars , pulse_PP_errorbars), axis=0 )
-        self.bolometric_chi2 = (pulse_data - pulse_model)**2 / pulse_model
+            double_pulse_PP_errorbars = _np.concatenate( (pulse_PP_errorbars , pulse_PP_errorbars), axis=0 )
+            double_pulse_PP_q16 = double_pulse_model - double_pulse_PP_errorbars
+            double_pulse_PP_q84 = double_pulse_model + double_pulse_PP_errorbars
+
+        self.bolometric_chi2 = np.sum( (pulse_data - pulse_model)**2 / pulse_model )
 
         # Plot pulse
         self._ax_pulse.step(x=doubles_phases,
@@ -380,16 +391,18 @@ class ResidualPlot(SignalPlot):
                             color='blue')
 
         self._ax_pulse.fill_between(x=doubles_phases,
-                                    y1=double_pulse_model - double_pulse_PP_errorbars,
-                                    y2=double_pulse_model + double_pulse_PP_errorbars,
+                                    y1=double_pulse_PP_q16,
+                                    y2=double_pulse_PP_q84,
                                     step='mid',
                                     alpha=0.5,
                                     color='steelblue')
 
         lines = [Line2D([0], [0], color='black', lw=1), (Patch(color='steelblue', alpha=0.5, lw=1), Line2D([0], [0], color='blue', lw=1))]
         legends = ['Data', 'Model']
-        loc = 'lower right'
-        self._ax_pulse.legend(lines, legends, loc=loc, frameon=False)
+        if self._legend_pulse_coords is None:
+            self._ax_pulse.legend(lines, legends, loc='best', frameon=False)
+        else:
+            self._ax_pulse.legend(lines, legends, bbox_to_anchor=self._legend_pulse_coords, frameon=False)
 
     def _add_data(self):
         """ Display data in topmost panel. """
@@ -432,7 +445,7 @@ class ResidualPlot(SignalPlot):
                                 channel_edges[-1]])
         self._ax_data.set_yscale(self.yscale)
 
-        self._data_cb = plt.colorbar(data, cax=self._ax_data_cb,
+        self._data_cb = self._fig.colorbar(data, cax=self._ax_data_cb,
                                      ticks=_get_default_locator(None),
                                      format=_get_default_formatter())
         self._data_cb.ax.set_frame_on(True)
@@ -480,7 +493,7 @@ class ResidualPlot(SignalPlot):
                                  channel_edges[-1]])
         self._ax_model.set_yscale(self.yscale)
 
-        self._model_cb = plt.colorbar(model, cax=self._ax_model_cb,
+        self._model_cb = self._fig.colorbar(model, cax=self._ax_model_cb,
                                       ticks=_get_default_locator(None),
                                       format=_get_default_formatter())
         self._model_cb.ax.set_frame_on(True)
@@ -563,7 +576,7 @@ class ResidualPlot(SignalPlot):
                                  channel_edges[-1]])
         self._ax_resid.set_yscale(self.yscale)
 
-        self._resid_cb = plt.colorbar(resid2, cax = self._ax_resid_cb,
+        self._resid_cb = self._fig.colorbar(resid2, cax = self._ax_resid_cb,
                                       ticks=AutoLocator())
         self._resid_cb.ax.set_frame_on(True)
         self._resid_cb.ax.yaxis.set_minor_locator(AutoMinorLocator())
@@ -617,7 +630,7 @@ class ResidualPlot(SignalPlot):
         self._ax_clust.set_ylim([_np.max([channel_edges[0],0.001]),
                                  channel_edges[-1]])
 
-        self._clust_cb = plt.colorbar(clust2, cax = self._ax_clust_cb,
+        self._clust_cb = self._fig.colorbar(clust2, cax = self._ax_clust_cb,
                                       ticks=AutoLocator())
         self._clust_cb.ax.set_frame_on(True)
         self._clust_cb.ax.yaxis.set_minor_locator(AutoMinorLocator())
