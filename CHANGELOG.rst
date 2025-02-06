@@ -33,8 +33,8 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
-[3.0.4] - 2025-02-06
-~~~~~~~~~~~~~~~~~~~~
+[v3.0.4] - 2025-02-06
+~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
@@ -48,10 +48,12 @@ Changed
 
 Attribution
 ^^^^^^^^^^^
+
 Devarshi Choudhury
 
-[3.0.3] - 2025-01-29
-~~~~~~~~~~~~~~~~~~~~
+
+[v3.0.3] - 2025-01-29
+~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
@@ -70,11 +72,13 @@ Changed
 
 Attribution
 ^^^^^^^^^^^
+
 Devarshi Choudhury,
 Tuomo Salmi,
 Bas Dorsman
 
-[3.0.2] - 2025-01-17
+
+[v3.0.2] - 2025-01-17
 ~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -102,8 +106,8 @@ Christine Kazantsev,
 Lucien Mauviard
 
 
-[3.0.1] - 2025-01-16
-~~~~~~~~~~~~~~~~~~~~
+[v3.0.1] - 2025-01-16
+~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
