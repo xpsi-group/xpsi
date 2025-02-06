@@ -33,6 +33,23 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
+[3.0.4] - 2025-02-06
+~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Drawing samples from prior to now use Latin hypercube sampler to more uniformly draw samples over high-dimensions.
+
+Changed
+^^^^^^^
+
+* `Prior.draw` modified to use `scipy.stats.qmc.LatinHypercube` instead of `numpy.random.rand` for drawing samples from prior distribution.
+
+Attribution
+^^^^^^^^^^^
+Devarshi Choudhury
+
 [3.0.3] - 2025-01-29
 ~~~~~~~~~~~~~~~~~~~~
 

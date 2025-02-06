@@ -9,6 +9,8 @@ from xpsi.utils import make_verbose
 from abc import ABCMeta, abstractmethod
 from xpsi.ParameterSubspace import ParameterSubspace
 
+from scipy.stats import qmc
+
 class Prior(ParameterSubspace, metaclass=ABCMeta):
     """ The joint prior distribution of parameters (including hyperparameters).
 
@@ -229,7 +231,11 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
 
         """
 
-        h = _np.random.rand(int(ndraws), len(self))
+        # Create a Latin Hypercube sampler
+        sampler = qmc.LatinHypercube(d=len(self))
+
+        # Generate Latin Hypercube samples in the range [0, 1]
+        h = sampler.random(n=ndraws)
 
         if transform:
             try:
@@ -263,7 +269,7 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
                 else:
                     redraw = ndraws
                 redraw -= finite_counter
-                h = _np.random.rand(int(redraw)+1, len(self))
+                h = sampler.random(n=int(redraw) + 1)
                 index = 0
                 if transform:
                     try:
