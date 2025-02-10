@@ -329,6 +329,7 @@ class CornerPlotter(PostProcessor):
                        KL_base = 'bits',
                        ndraws = int(1e6),
                        param_plot_lims = None,
+                       labels_2D = False,
                        crosshairs = False,
                        filled = False,
                        legend_loc = 'lower left',
@@ -373,6 +374,9 @@ class CornerPlotter(PostProcessor):
         :param dict param_plot_lims:
             Dictionary of viewing ranges for plotting. Keys must be parameter
             names.
+
+        :param bool labels_2D:
+            Display parameter labels on 2D panels?
 
         :param bool crosshairs:
             Display parameter truth crosshairs?
@@ -582,6 +586,8 @@ class CornerPlotter(PostProcessor):
                 for i in range(j,len(params.names)):
                     ax = plotter.subplots[i,j]
                     ax.xaxis.set_minor_locator(AutoMinorLocator())
+                    if (i != j) and labels_2D:
+                        ax.text(0.05, 0.95, fr'${params.labels[i]}$ - ${params.labels[j]}$', transform=ax.transAxes, ha='left', va='top')
                 for i in range(j):
                     ax = plotter.subplots[j,i]
                     ax.yaxis.set_minor_locator(AutoMinorLocator())
@@ -600,7 +606,6 @@ class CornerPlotter(PostProcessor):
                     ax.set_xlim(l)
                     ax.xaxis.set_major_locator(_get_default_locator(prune))
                     ax.xaxis.set_minor_locator(AutoMinorLocator())
-
                 for i in range(j):
                     ax = plotter.subplots[j,i]
                     ax.set_ylim(l)
