@@ -156,6 +156,12 @@ class Everywhere(ParameterSubspace):
 
         self.sqrt_num_cells = sqrt_num_cells
 
+        if time_invariant:
+            if (num_leaves not in (None,1)) or (num_phases not in (None,1)):
+                print('Warning : with time_invariant=True, num_leaves and num_phases are automatically set to 1')
+            num_leaves=1
+            num_phases=1
+
         self.set_phases(num_leaves, num_phases, phases)
 
         self.image_order_limit = image_order_limit
@@ -327,8 +333,8 @@ class Everywhere(ParameterSubspace):
         """ Print numerical settings. """
         print('Base number of cell parallels: ', self.sqrt_num_cells)
         print('Number of rays per parallel: ', self.num_rays)
-        print('Number of photospheric leaves: ', len(self.leaves))
-        print('Number of interpolation phases: ', len(self.phases))
+        print('Number of photospheric leaves: ', len(self._leaves))
+        print('Number of interpolation phases: ', len(self._phases))
 
     def set_phases(self, num_leaves,
                    num_phases = None,
