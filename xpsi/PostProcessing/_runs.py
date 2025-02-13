@@ -331,7 +331,7 @@ class Runs(Metadata):
             return self._runs[ID]
 
         # if get this far there was lookup error
-        raise KeyError('No run with ID matching request.')
+        raise KeyError(f'No run with ID matching request : {ID}. Available ID values : {[ r.ID for r in self._runs]}')
 
     @property
     def combined(self):

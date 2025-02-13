@@ -33,7 +33,7 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
-[v3.0.4] - 2025-02-06
+[v3.0.5] - 2025-02-XX
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
@@ -50,6 +50,34 @@ Attribution
 ^^^^^^^^^^^
 
 Devarshi Choudhury
+
+
+[v3.0.4] - 2025-02-13
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Updates to the Post-processing tools and documentation.
+
+Fixed
+^^^^^^^
+
+* Fixed the Post-processing tutorial to show the correct shaded credible regions (not using the outdated ``shade_root_index`` syntax).
+
+Changed
+^^^^^^^
+
+* Posterior predictive error bars were added to the bolometric pulse profile model plot (in ``_residuals.py``).
+
+* Clarified in the Post-processing tutorial that the set parameter bounds must match those used during sampling.
+
+Attribution
+^^^^^^^^^^^
+
+Lucien Mauviard,
+Christine Kazantsev,
+Tuomo Salmi
 
 
 [v3.0.3] - 2025-01-29
@@ -79,7 +107,7 @@ Bas Dorsman
 
 
 [v3.0.2] - 2025-01-17
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
