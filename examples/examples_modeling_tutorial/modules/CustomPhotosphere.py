@@ -85,6 +85,10 @@ class CustomPhotosphere_NumA5(xpsi.Photosphere):
                                    symbol = r'$f_{\rm mode}$',
                                    value = values.get('mode_frequency', None))
 
+        custom = []
+        if disk is not None:
+            custom.append(disk)
+        
         if stokes:
             doc = """
             Spin axis position angle measured from the north counterclock-
