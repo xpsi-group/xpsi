@@ -56,8 +56,9 @@ class NestedSampler(object):
 
         """
 
+        LHS_seed = LHS_seed if LHS_seed is not None else None
         kwargs.setdefault('sampling_efficiency', 0.8)
-        kwargs['sampling_efficiency'] /= self._prior.unit_hypercube_frac
+        kwargs['sampling_efficiency'] /= self._prior.unit_hypercube_frac(LHS_seed=LHS_seed)
 
         yield 'Sampling efficiency set to: %.4f.'%kwargs['sampling_efficiency']
 

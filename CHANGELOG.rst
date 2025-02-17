@@ -47,6 +47,7 @@ Changed
 * `Prior.draw` modified to use `scipy.stats.qmc.LatinHypercube` instead of `numpy.random.rand` for drawing samples from prior distribution.
 * `Prior.estimate_hypercube_frac` modified to accept the kwarg `LHS_seed` to enable reproducible LHS.
 * `Prior.unit_hypercube_frac` modified to accept the kwarg `LHS_seed` to enable reproducible LHS.
+* `NestedSampler.__call__` accepts `LHS_seed` as a kwarg to passs to `Prior.unit_hypercube_frac`
 * `examples/examples_fast/Sampling.ipynb`: `runtime_params` includes a fixed `LHS_seed`.
 * `examples.examples_fast.Modules.main_IS_likelihood.runtime_params` includes a fixed `LHS_seed`.
 * `examples.examples_fast.Modules.main_IS_prior.runtime_params` includes a fixed `LHS_seed`.
