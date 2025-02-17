@@ -435,6 +435,7 @@ runtime_params = {'resume': False,
                   'evidence_tolerance': 0.5,
                   'seed': 7,
                   'max_iter': 100,# manual termination condition for short test
+                  'LHS_seed': 42, # Fixing the LHS seed for hypercube fraction estimation
                   'verbose': True}
 
 xpsi.set_phase_interpolant('Akima')

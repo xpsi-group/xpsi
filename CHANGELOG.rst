@@ -39,12 +39,22 @@ and this project adheres to
 Summary
 ^^^^^^^
 
-* Drawing samples from prior to now use Latin hypercube sampler to more uniformly draw samples over high-dimensions.
+* Drawing samples from prior to now use Latin hypercube sampler (LHS) to more uniformly draw samples over high-dimensions.
 
 Changed
 ^^^^^^^
 
 * `Prior.draw` modified to use `scipy.stats.qmc.LatinHypercube` instead of `numpy.random.rand` for drawing samples from prior distribution.
+* `Prior.estimate_hypercube_frac` modified to accept the kwarg `LHS_seed` to enable reproducible LHS.
+* `Prior.unit_hypercube_frac` modified to accept the kwarg `LHS_seed` to enable reproducible LHS.
+* `examples/examples_fast/Sampling.ipynb`: `runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_fast.Modules.main_IS_likelihood.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_fast.Modules.main_IS_prior.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_fast.Modules.main.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_modeling_tutorial.TestRun_BB.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_modeling_tutorial.TestRun_Num.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_modeling_tutorial.TestRun_NumBeam.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_modeling_tutorial.TestRun_PolNum_split_inference.runtime_params` includes a fixed `LHS_seed`.
 
 Attribution
 ^^^^^^^^^^^

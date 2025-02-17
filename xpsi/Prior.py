@@ -222,7 +222,7 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
         return len(self) + self.derived_names.index(name)
 
     @make_verbose('Drawing samples from the joint prior','Samples drawn')
-    def draw(self, ndraws, transform=False):
+    def draw(self, ndraws, transform=False, LHS_seed=None):
         """ Draw samples uniformly from the prior via inverse sampling.
 
         :param int ndraws: Number of draws.
@@ -232,7 +232,8 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
         """
 
         # Create a Latin Hypercube sampler
-        sampler = qmc.LatinHypercube(d=len(self))
+        sampler = qmc.LatinHypercube(d=len(self), 
+                                     rng=LHS_seed if LHS_seed is not None else None)
 
         # Generate Latin Hypercube samples in the range [0, 1]
         h = sampler.random(n=ndraws)
@@ -290,7 +291,7 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
     @make_verbose('Estimating fractional hypervolume of the unit hypercube '
                   'with finite prior density:',
                   'Fractional hypervolume estimated')
-    def estimate_hypercube_frac(self, ndraws=5):
+    def estimate_hypercube_frac(self, ndraws=5, LHS_seed=None):
         """
         Estimate using Monte Carlo integration the fractional hypervolume
         within a unit hypercube at which prior density is finite.
@@ -305,7 +306,8 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
             yield ('Requiring %.E draws from the prior support '
                    'for Monte Carlo estimation' % ndraws)
 
-            self._unit_hypercube_frac = self.draw(ndraws)[1]
+            self._unit_hypercube_frac = self.draw(ndraws, 
+                                                  LHS_seed=LHS_seed if LHS_seed is not None else None)[1]
         else:
             self._unit_hypercube_frac = None
 
@@ -320,14 +322,15 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
         yield self._unit_hypercube_frac
 
     @property
-    def unit_hypercube_frac(self):
+    def unit_hypercube_frac(self, LHS_seed=None):
         """ Get the fractional hypervolume with finite prior density. """
 
         try:
             return self._unit_hypercube_frac
         except AttributeError:
             try:
-                self.estimate_hypercube_frac(self.__draws_from_support__)
+                self.estimate_hypercube_frac(self.__draws_from_support__, 
+                                             LHS_seed=LHS_seed if LHS_seed is not None else None)
             except AttributeError:
                 print('Cannot locate method for estimating fraction.')
             else:
