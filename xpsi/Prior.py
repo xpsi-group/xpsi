@@ -233,7 +233,7 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
 
         # Create a Latin Hypercube sampler
         sampler = qmc.LatinHypercube(d=len(self), 
-                                     rng=LHS_seed if LHS_seed is not None else None)
+                                     seed=LHS_seed)
 
         # Generate Latin Hypercube samples in the range [0, 1]
         h = sampler.random(n=ndraws)
@@ -307,30 +307,27 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
                    'for Monte Carlo estimation' % ndraws)
 
             self._unit_hypercube_frac = self.draw(ndraws, 
-                                                  LHS_seed=LHS_seed if LHS_seed is not None else None)[1]
+                                                  LHS_seed=LHS_seed)[1]
         else:
             self._unit_hypercube_frac = None
 
         if _size > 1:
             self._unit_hypercube_frac = _comm.bcast(self._unit_hypercube_frac,
                                                     root=0)
-
         yield ('The support occupies an estimated '
                '%.1f%% of the hypervolume within the unit hypercube'
                % (self._unit_hypercube_frac*100.0))
 
         yield self._unit_hypercube_frac
 
-    @property
     def unit_hypercube_frac(self, LHS_seed=None):
         """ Get the fractional hypervolume with finite prior density. """
-
         try:
             return self._unit_hypercube_frac
         except AttributeError:
             try:
                 self.estimate_hypercube_frac(self.__draws_from_support__, 
-                                             LHS_seed=LHS_seed if LHS_seed is not None else None)
+                                             LHS_seed=LHS_seed)
             except AttributeError:
                 print('Cannot locate method for estimating fraction.')
             else:
