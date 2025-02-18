@@ -233,7 +233,7 @@ class Prior(ParameterSubspace, metaclass=ABCMeta):
 
         # Create a Latin Hypercube sampler
         sampler = qmc.LatinHypercube(d=len(self), 
-                                     seed=LHS_seed)
+                                     rng=LHS_seed)
 
         # Generate Latin Hypercube samples in the range [0, 1]
         h = sampler.random(n=ndraws)
