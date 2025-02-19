@@ -135,7 +135,7 @@ class TestMultiNestCheck(object):
                           'importance_nested_sampling': False,
                           'multimodal': False,
                           'n_clustering_params': None,
-                          'outputfiles_basename': '../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_v2',
+                          'outputfiles_basename': '../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_stest_',
                           'n_iter_before_update': 1, #100,
                           'n_live_points': 10, #1000,
                           'sampling_efficiency': 0.3,
@@ -150,9 +150,20 @@ class TestMultiNestCheck(object):
 
         prior.__draws_from_support__ = 1
         #Testing that the hypercube volume is estimated correctly:
-        assert np.isclose(0.8333333333333334, prior.unit_hypercube_frac(LHS_seed=42), rtol=1.0e-5)
+        assert np.isclose(0.7142857142857143, prior.unit_hypercube_frac(LHS_seed=42), rtol=1.0e-5)
 
-        #Testing sampler:  #To be uncommented once MultiNest installation added to Github workflow: 
+        #Testing MultiNest: 
         #xpsi.Sample.nested(likelihood, prior, **runtime_params)
         
+        #Testing UltraNest:
+        sampler_params = {'wrapped_params': wrapped_params}
+        runtime_params = {'show_status':True, # show integration progress as a status line
+                        'min_num_live_points':10,
+                        'max_iters':1}
+        xpsi.Sample.ultranested(likelihood,
+                        prior,
+                        sampler_params,
+                        runtime_params)
+
+
 

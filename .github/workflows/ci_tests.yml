@@ -35,7 +35,7 @@ jobs:
           python=${{ matrix.python-version }}
     - name: mamba installs
       run: |
-        micromamba install flake8 pytest
+        micromamba install flake8 pytest ultranest
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
