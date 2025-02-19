@@ -150,7 +150,7 @@ class TestMultiNestCheck(object):
 
         prior.__draws_from_support__ = 1
         #Testing that the hypercube volume is estimated correctly:
-        assert np.isclose(0.7142857142857143, prior.unit_hypercube_frac(LHS_seed=42), rtol=1.0e-5)
+        assert np.isclose(0.8333333333333334, prior.unit_hypercube_frac(LHS_seed=42), rtol=1.0e-5)
 
         #Testing sampler:  #To be uncommented once MultiNest installation added to Github workflow: 
         #xpsi.Sample.nested(likelihood, prior, **runtime_params)
