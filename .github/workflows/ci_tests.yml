@@ -35,7 +35,8 @@ jobs:
           python=${{ matrix.python-version }}
     - name: mamba installs
       run: |
-        micromamba install flake8 pytest h5py ultranest>=4.4.0
+        micromamba install flake8 pytest h5py
+        micromamba install --channel conda-forge ultranest>=4.4.0
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
