@@ -152,11 +152,9 @@ class TestMultiNestCheck(object):
         assert np.isclose(0.7142857142857143, prior.unit_hypercube_frac(LHS_seed=42), rtol=1.0e-5)
 
         #Testing MultiNest: 
-        #xpsi.Sample.nested(likelihood, prior, **runtime_params)
+        xpsi.Sample.nested(likelihood, prior, **runtime_params)
         
-        #Testing UltraNest (if new enough version):
-        #import ultranest
-        #if(ultranest.__version__ > '4.0'):
+        #Testing UltraNest:
         sampler_params = {'wrapped_params': wrapped_params}
         runtime_params = {'show_status':True, # show integration progress as a status line
                         'min_num_live_points':10,
