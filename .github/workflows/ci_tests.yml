@@ -64,7 +64,7 @@ jobs:
         cd pymultinest
         python setup.py install
         cd ..
-        export LD_LIBRARY_PATH=$(pwd)/multinest/MultiNest_v3.12_CMake/multinest/:$LD_LIBRARY_PATH
+        export LD_LIBRARY_PATH=$(pwd)/multinest/MultiNest_v3.12_CMake/multinest/lib/:$LD_LIBRARY_PATH
     - name: install X-PSI package
       run: |
         python setup.py install
