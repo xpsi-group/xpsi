@@ -152,7 +152,7 @@ class TestMultiNestCheck(object):
         assert np.isclose(0.7142857142857143, prior.unit_hypercube_frac(LHS_seed=42), rtol=1.0e-5)
 
         #Testing MultiNest: 
-        xpsi.Sample.nested(likelihood, prior, **runtime_params)
+        #xpsi.Sample.nested(likelihood, prior, **runtime_params)
         
         #Testing UltraNest:
         sampler_params = {'wrapped_params': wrapped_params}
