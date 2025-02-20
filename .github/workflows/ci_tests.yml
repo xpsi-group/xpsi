@@ -51,6 +51,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: multinest and pymultinest install
       run: |
+        sudo apt install mpich
         git clone https://github.com/farhanferoz/MultiNest.git multinest
         cd multinest/MultiNest_v3.12_CMake/multinest/
         mkdir build
