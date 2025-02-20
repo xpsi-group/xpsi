@@ -155,16 +155,16 @@ class TestMultiNestCheck(object):
         #xpsi.Sample.nested(likelihood, prior, **runtime_params)
         
         #Testing UltraNest (if new enough version):
-        import ultranest
-        if(ultranest.__version__ > '4.0'):
-            sampler_params = {'wrapped_params': wrapped_params}
-            runtime_params = {'show_status':True, # show integration progress as a status line
-                            'min_num_live_points':10,
-                            'max_iters':1}
-            xpsi.Sample.ultranested(likelihood,
-                            prior,
-                            sampler_params,
-                            runtime_params)
+        #import ultranest
+        #if(ultranest.__version__ > '4.0'):
+        sampler_params = {'wrapped_params': wrapped_params}
+        runtime_params = {'show_status':True, # show integration progress as a status line
+                        'min_num_live_points':10,
+                        'max_iters':1}
+        xpsi.Sample.ultranested(likelihood,
+                        prior,
+                        sampler_params,
+                        runtime_params)
 
 
 
