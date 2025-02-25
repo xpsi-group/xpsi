@@ -63,7 +63,7 @@ if __name__ == '__main__':
             _src_dir = os.path.dirname(os.path.abspath(__file__))
             include_dirs = [gsl_prefix + '/include',
                             numpy.get_include(),
-                            join(_src_dir, 'xpsi/include')]
+                            join(_src_dir, 'xpsisilva/include')]
 
             # point to shared library at compile time so runtime resolution
             # is not affected by environment variables, but is determined
@@ -82,14 +82,14 @@ if __name__ == '__main__':
             CC = os.environ['CC']
             sub.call(['%s'%CC,
                       '-c',
-                      join(_src_dir, 'xpsi/include/rayXpanda/inversion.c'),
+                      join(_src_dir, 'xpsisilva/include/rayXpanda/inversion.c'),
                       '-o',
-                      join(_src_dir, 'xpsi/include/rayXpanda/inversion.o')])
+                      join(_src_dir, 'xpsisilva/include/rayXpanda/inversion.o')])
             sub.call(['%s'%CC,
                       '-c',
-                      join(_src_dir, 'xpsi/include/rayXpanda/deflection.c'),
+                      join(_src_dir, 'xpsisilva/include/rayXpanda/deflection.c'),
                       '-o',
-                      join(_src_dir, 'xpsi/include/rayXpanda/deflection.o')])
+                      join(_src_dir, 'xpsisilva/include/rayXpanda/deflection.o')])
             use_rayXpanda = False
         else:
             use_rayXpanda = True
@@ -106,9 +106,9 @@ if __name__ == '__main__':
                 libraries += ['inversion.o', 'deflection.o']
             else:
                 libraries += [':inversion.o', ':deflection.o']
-            library_dirs += [join(_src_dir, 'xpsi/include/rayXpanda')]
+            library_dirs += [join(_src_dir, 'xpsisilva/include/rayXpanda')]
             extra_link_args += ['-Wl,-rpath,%s'%join(_src_dir,
-                                                 'xpsi/include/rayXpanda')]
+                                                 'xpsisilva/include/rayXpanda')]
 
         try:
             print("NOOPENMP =", noopenmp)
@@ -215,52 +215,52 @@ if __name__ == '__main__':
                          extra_compile_args = extra_compile_args,
                          extra_link_args = extra_link_args)
 
-    modnames = ['xpsi.surface_radiation_field.effective_gravity_universal',
-                'xpsi.cellmesh.mesh_tools',
-                'xpsi.cellmesh.mesh',
-                'xpsi.cellmesh.polar_mesh',
-                'xpsi.cellmesh.global_mesh',
-                'xpsi.cellmesh.rays',
-                'xpsi.tools.energy_interpolator',
-                'xpsi.tools.energy_integrator',
-                'xpsi.tools.phase_integrator',
-                'xpsi.tools.phase_interpolator',
-                'xpsi.tools.synthesise',
-                'xpsi.tools.__init__',
-                'xpsi.likelihoods.default_background_marginalisation',
-                'xpsi.likelihoods._poisson_likelihood_given_background',
-                'xpsi.likelihoods._poisson_likelihood_given_background_IQU',
-                'xpsi.likelihoods._gaussian_likelihood_given_background_IQU',
-                'xpsi.likelihoods._gaussian_likelihood_QnUn',                
-                'xpsi.surface_radiation_field.__init__',
-                'xpsi.surface_radiation_field.preload',
-                'xpsi.surface_radiation_field.hot_user',
-                'xpsi.surface_radiation_field.hot_BB',
-                'xpsi.surface_radiation_field.hot_Num4D',
-                'xpsi.surface_radiation_field.hot_BB_burst',
-                'xpsi.surface_radiation_field.hot_Num2D',
-                'xpsi.surface_radiation_field.hot_Num2D_split',
-                'xpsi.surface_radiation_field.hot_Num5D_split',
-                'xpsi.surface_radiation_field.hot_wrapper',
-                'xpsi.surface_radiation_field.elsewhere_user',
-                'xpsi.surface_radiation_field.elsewhere_wrapper',
-                'xpsi.cellmesh.integrator',
-                'xpsi.cellmesh.integratorIQU',
-                'xpsi.cellmesh.integrator_for_azimuthal_invariance',
-                'xpsi.cellmesh.integrator_for_azimuthal_invariance_split',
-                'xpsi.cellmesh.integratorIQU_for_azimuthal_invariance',
-                'xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split',
-                'xpsi.cellmesh.integrator_for_time_invariance',
-                'xpsi.pixelmesh.METRIC_qK',
-                'xpsi.pixelmesh.RODES_qK',
-                'xpsi.pixelmesh.BOUNDARY_CONDITIONS',
-                'xpsi.pixelmesh.surfaceBisection',
-                'xpsi.pixelmesh.coordinateTransformation',
-                'xpsi.pixelmesh.RK_IP2S_tracer',
-                'xpsi.pixelmesh.get_IP_radius',
-                'xpsi.pixelmesh.globalRayMap',
-                'xpsi.surface_radiation_field.local_variables',
-                'xpsi.pixelmesh.integrator']
+    modnames = ['xpsisilva.surface_radiation_field.effective_gravity_universal',
+                'xpsisilva.cellmesh.mesh_tools',
+                'xpsisilva.cellmesh.mesh',
+                'xpsisilva.cellmesh.polar_mesh',
+                'xpsisilva.cellmesh.global_mesh',
+                'xpsisilva.cellmesh.rays',
+                'xpsisilva.tools.energy_interpolator',
+                'xpsisilva.tools.energy_integrator',
+                'xpsisilva.tools.phase_integrator',
+                'xpsisilva.tools.phase_interpolator',
+                'xpsisilva.tools.synthesise',
+                'xpsisilva.tools.__init__',
+                'xpsisilva.likelihoods.default_background_marginalisation',
+                'xpsisilva.likelihoods._poisson_likelihood_given_background',
+                'xpsisilva.likelihoods._poisson_likelihood_given_background_IQU',
+                'xpsisilva.likelihoods._gaussian_likelihood_given_background_IQU',
+                'xpsisilva.likelihoods._gaussian_likelihood_QnUn',                
+                'xpsisilva.surface_radiation_field.__init__',
+                'xpsisilva.surface_radiation_field.preload',
+                'xpsisilva.surface_radiation_field.hot_user',
+                'xpsisilva.surface_radiation_field.hot_BB',
+                'xpsisilva.surface_radiation_field.hot_Num4D',
+                'xpsisilva.surface_radiation_field.hot_BB_burst',
+                'xpsisilva.surface_radiation_field.hot_Num2D',
+                'xpsisilva.surface_radiation_field.hot_Num2D_split',
+                'xpsisilva.surface_radiation_field.hot_Num5D_split',
+                'xpsisilva.surface_radiation_field.hot_wrapper',
+                'xpsisilva.surface_radiation_field.elsewhere_user',
+                'xpsisilva.surface_radiation_field.elsewhere_wrapper',
+                'xpsisilva.cellmesh.integrator',
+                'xpsisilva.cellmesh.integratorIQU',
+                'xpsisilva.cellmesh.integrator_for_azimuthal_invariance',
+                'xpsisilva.cellmesh.integrator_for_azimuthal_invariance_split',
+                'xpsisilva.cellmesh.integratorIQU_for_azimuthal_invariance',
+                'xpsisilva.cellmesh.integratorIQU_for_azimuthal_invariance_split',
+                'xpsisilva.cellmesh.integrator_for_time_invariance',
+                'xpsisilva.pixelmesh.METRIC_qK',
+                'xpsisilva.pixelmesh.RODES_qK',
+                'xpsisilva.pixelmesh.BOUNDARY_CONDITIONS',
+                'xpsisilva.pixelmesh.surfaceBisection',
+                'xpsisilva.pixelmesh.coordinateTransformation',
+                'xpsisilva.pixelmesh.RK_IP2S_tracer',
+                'xpsisilva.pixelmesh.get_IP_radius',
+                'xpsisilva.pixelmesh.globalRayMap',
+                'xpsisilva.surface_radiation_field.local_variables',
+                'xpsisilva.pixelmesh.integrator']
 
     extensions = []
 
@@ -271,23 +271,23 @@ if __name__ == '__main__':
         e.cython_directives = {'language_level': "3"}
 
     setup(
-        name = 'xpsi',
+        name = 'xpsisilva',
         version = '2.2.7',
         author = 'The X-PSI Core Team',
         author_email = 'A.L.Watts@uva.nl',
-        url = 'https://github.com/xpsi-group/xpsi',
+        url = 'https://github.com/xpsisilva-group/xpsisilva',
         license = 'GPLv3',
         description = """X-PSI: An open-source package for
                          neutron star X-ray Pulse Simulation and Inference.""",
         long_description = open('README.rst').read(),
-        packages = ['xpsi',
-                    'xpsi/PostProcessing',
-                    'xpsi/cellmesh',
-                    'xpsi/tools',
-                    'xpsi/surface_radiation_field',
-                    'xpsi/likelihoods',
-                    'xpsi/utilities',
-                    'xpsi/pixelmesh'],
+        packages = ['xpsisilva',
+                    'xpsisilva/PostProcessing',
+                    'xpsisilva/cellmesh',
+                    'xpsisilva/tools',
+                    'xpsisilva/surface_radiation_field',
+                    'xpsisilva/likelihoods',
+                    'xpsisilva/utilities',
+                    'xpsisilva/pixelmesh'],
         install_requires = ['numpy'],
         setup_requires = ['cython ~= 0.29'],
         package_data = {'': ['README.rst', 'LICENSE']},
