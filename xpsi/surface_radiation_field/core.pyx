@@ -312,6 +312,196 @@ def intensity(double[::1] energies,
 
     return np.asarray(intensities, dtype = np.double, order = 'C')
 
+def intensity_no_norm(double[::1] energies,
+              double[::1] mu,
+              double[:,::1] local_variables,
+              atmosphere = None,
+              int stokesQ = 0,
+              region_extension = 'hot',
+              atmos_extension = "BB",
+              beam_opt = 0,
+              size_t numTHREADS = 1):
+    """ Evaluate the photon specific intensity using an extension module.
+
+    The intensities are computed directly from local variable values.
+
+    :param double[::1] energies:
+        A 1D :class:`numpy.ndarray` of energies in keV to evaluate photon
+        specific intensity at, in the local comoving frame.
+
+    :param double[::1] mu:
+        A 1D :class:`numpy.ndarray` of angles at which to evaluate the photon
+        specific intensity at. Specifically, the angle is the cosine of the
+        angle of the ray direction to the local surface normal, in the local
+        comoving frame.
+
+    :param double[:,::1] local_variables:
+        A 2D :class:`numpy.ndarray` (with beam_opt=0) or 7D :class:`numpy.ndarray`
+        (with beam_opt > 0) of local variables such as temperature, effective gravity,
+        and beaming parameters. Rows correspond to the sequence of points in the
+        space of energy and angle specified above, and columns contain the
+        required variable values, one variable per column, in the expected
+        order.
+
+    :param tuple atmosphere:
+        A numerical atmosphere preloaded into buffers. The buffers must be
+        supplied in an :math:`n`-tuple whose :math:`n^{th}` element is an
+        :math:`(n-1)`-dimensional array flattened into a one-dimensional
+        :class:`numpy.ndarray`. The first :math:`n-1`
+        elements of the :math:`n`-tuple must each be an ordered one-dimensional
+        :class:`numpy.ndarray` of parameter values for the purpose of
+        multi-dimensional interpolation in the :math:`n^{th}` buffer. The
+        first :math:`n-1` elements must be ordered to match the index
+        arithmetic applied to the :math:`n^{th}` buffer. An example would be
+        ``(logT, logg, mu, logE, buf)``, where:
+        ``logT`` is a logarithm of local comoving effective temperature;
+        ``logg`` is a logarithm of effective surface gravity;
+        ``mu`` is the cosine of the angle from the local surface normal;
+        ``logE`` is a logarithm of the photon energy; and
+        ``buf`` is a one-dimensional buffer of intensities of size given by
+        the product of sizes of the first :math:`n-1` tuple elements.
+
+        It is highly recommended that buffer preloading is used, instead
+        of loading from disk in the customisable radiation field extension
+        module, to avoid reading from disk for every signal
+        (likelihood) evaluation. This can be a non-negligible waste of compute
+        resources. By preloading in Python, the memory is allocated and
+        references to that memory are not in general deleted until a sampling
+        script exits and the kernel stops. The likelihood callback accesses
+        the same memory upon each call without I/O.
+
+    :param int StokesQ:
+        If StokesQ=1, Stokes Q intensities will be returned. Otherwise Stokes I
+        intensities. Default is StokesQ=0.
+
+    :param str region_extension:
+        Specify the radiating region extension module to invoke. Options are ``'hot'`` and
+        ``'elsewhere'``.
+
+    :param str atmos_extension:
+        Used to determine which atmospheric extension to use.
+        Options at the moment:
+        "BB": Analytical blackbody,
+        "Num4D": Numerical atmosphere using 4D-interpolation from the provided
+        atmosphere data,
+        "Pol_BB_burst": Polarized analytical blackbody+burst approximation,
+        "Pol_Num2D": Polarized numerical atmosphere using 2D-interpolation from the provided
+        atmosphere data,
+        "user": A user-provided extension which can be set up by replacing the contents of
+        the file hot_user.pyx (and elsewhere_user.pyx if needed) and re-installing X-PSI
+        (if not changed, "user" is the same as "BB").
+
+    :param int beam_opt:
+        Used to determine which atmospheric beaming modification model to use.
+        Options at the moment:
+        0: No modification (default)
+        1: Original*beaming_correction without re-normalization
+        2: Original*beaming_correction with analytical re-normalization estimate
+        3: Original*beaming_correction with numerical re-normalization
+
+    :param int numTHREADS:
+        Number of OpenMP threads to launch.
+
+    :returns:
+        A 1D :class:`numpy.ndarray` of the photon specific intensities in
+        units of photons/s/keV/cm^2/sr.
+
+    """
+    cdef size_t _beam_opt = beam_opt
+    cdef size_t _atmos_extension
+
+    cdef fptr_init init_ptr = NULL
+    cdef fptr_free free_ptr = NULL
+    cdef fptr_eval eval_ptr = NULL
+    cdef fptr_norm norm_ptr = NULL
+
+    if region_extension == 'hot':
+        init_ptr = init_hot
+        free_ptr = free_hot
+        eval_ptr_I = eval_hot_I
+        eval_ptr_Q = eval_hot_Q
+        norm_ptr = eval_hot_norm
+    elif region_extension == 'elsewhere':
+        init_ptr = init_elsewhere
+        free_ptr = free_elsewhere
+        eval_ptr_I = eval_elsewhere
+        norm_ptr = eval_elsewhere_norm
+        if stokesQ == 1:
+            raise ValueError("StokesQ option is not allowed for the elsewhere extension.")
+    else:
+        raise ValueError("Region extension module must be 'hot' or 'elsewhere'.")
+
+    # initialise the source radiation field
+    cdef _preloaded *preloaded = NULL
+    cdef void *data = NULL
+
+    if atmos_extension == "BB":
+        _atmos_extension = 1
+    elif atmos_extension == "Num4D":
+        _atmos_extension = 2
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "Pol_BB_Burst":
+        _atmos_extension = 3
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_BB_Burst' is not supported by the elsewhere extension")
+    elif atmos_extension == "Pol_Num2D":
+        _atmos_extension = 4
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_Num2D' is not supported by the elsewhere extension")
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 5
+        if region_extension == 'elsewhere':
+            _atmos_extension = 3
+    else:
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', 'Pol_BB_Burst', 'Pol_Num2D', or 'user'.")
+
+    if atmosphere:
+        preloaded = init_preload(atmosphere)
+        data = init_ptr(numTHREADS, preloaded, _atmos_extension)
+    else:
+        data = init_ptr(numTHREADS, NULL, _atmos_extension)
+
+    cdef double[::1] intensities = np.zeros(energies.shape[0],
+                                            dtype = np.double)
+
+    cdef size_t i, T
+    cdef signed int ii
+    for ii in prange(<signed int>energies.shape[0],
+                     nogil = True,
+                     schedule = 'static',
+                     num_threads = <size_t> numTHREADS,
+                     chunksize = 1):
+
+        T = threadid()
+        i = <size_t> ii
+
+        if stokesQ == 1:
+            intensities[i] = eval_ptr_Q(T,
+                                  energies[i],
+                                  mu[i],
+                                  &(local_variables[i,0]),
+                                  data,
+                                  _beam_opt)
+        else:
+            intensities[i] = eval_ptr_I(T,
+                                  energies[i],
+                                  mu[i],
+                                  &(local_variables[i,0]),
+                                  data,
+                                  _beam_opt)
+        # get photon specific intensity
+        # intensities[i] *= norm_ptr() / (energies[i] * keV)
+
+    if atmosphere:
+        free_preload(preloaded)
+
+    free_ptr(numTHREADS, data)
+
+    return np.asarray(intensities, dtype = np.double, order = 'C')
+
 
 def intensity_from_globals(double[::1] energies,
                            double[::1] mu,
