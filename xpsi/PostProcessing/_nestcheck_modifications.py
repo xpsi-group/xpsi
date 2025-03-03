@@ -59,7 +59,6 @@ def process_multinest_run(dead_points, live_points, file_root, base_dir, **kwarg
     kwargs: dict, optional
         Passed to ns_run_utils.check_ns_run (via process_samples_array)
 
-
     Returns
     -------
     ns_run: dict
