@@ -76,6 +76,7 @@ surface radiation field models.
 """
 
 from cython.parallel cimport *
+from libc.stdlib cimport malloc, free
 
 import numpy as np
 cimport numpy as np
@@ -93,6 +94,14 @@ from .hot_wrapper cimport (init_hot,
                    eval_hot_Q,
                    eval_hot_norm,
                    free_hot)
+
+
+from .hot_Num5D_split cimport (produce_2D_data,
+                   make_atmosphere_2D)
+
+from .hot_Num2D_split cimport (init_hot_2D,
+                      eval_hot_2D,
+                      free_hot_2D)
 
 from .elsewhere_wrapper cimport (init_elsewhere,
                          free_elsewhere,
@@ -455,6 +464,8 @@ def intensity_no_norm(double[::1] energies,
         _atmos_extension = 5
         if region_extension == 'elsewhere':
             _atmos_extension = 3
+    elif atmos_extension == 'Num5D':
+        _atmos_extension = 6 
     else:
         raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', 'Pol_BB_Burst', 'Pol_Num2D', or 'user'.")
 
@@ -501,6 +512,294 @@ def intensity_no_norm(double[::1] energies,
     free_ptr(numTHREADS, data)
 
     return np.asarray(intensities, dtype = np.double, order = 'C')
+
+def intensity_split_interpolation_float(double E,
+              double mu,
+              double[:,::1] local_variables,
+              atmosphere = None,
+              int stokesQ = 0,
+              region_extension = 'hot',
+              atmos_extension = "BB",
+              beam_opt = 0,
+              size_t numTHREADS = 1):
+
+    cdef size_t _beam_opt = beam_opt
+    cdef size_t _atmos_extension
+
+    cdef fptr_init init_ptr = NULL
+    cdef fptr_free free_ptr = NULL
+    cdef fptr_eval eval_ptr = NULL
+    cdef fptr_norm norm_ptr = NULL
+
+    if region_extension == 'hot':
+        init_ptr = init_hot
+        free_ptr = free_hot
+        eval_ptr_I = eval_hot_I
+        eval_ptr_Q = eval_hot_Q
+        norm_ptr = eval_hot_norm
+    elif region_extension == 'elsewhere':
+        init_ptr = init_elsewhere
+        free_ptr = free_elsewhere
+        eval_ptr_I = eval_elsewhere
+        norm_ptr = eval_elsewhere_norm
+        if stokesQ == 1:
+            raise ValueError("StokesQ option is not allowed for the elsewhere extension.")
+    else:
+        raise ValueError("Region extension module must be 'hot' or 'elsewhere'.")
+    
+    
+    # initialise the source radiation field
+    cdef _preloaded *preloaded = NULL
+    cdef void *data = NULL
+
+    if atmos_extension == "BB":
+        _atmos_extension = 1
+    elif atmos_extension == "Num4D":
+        _atmos_extension = 2
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "Pol_BB_Burst":
+        _atmos_extension = 3
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_BB_Burst' is not supported by the elsewhere extension")
+    elif atmos_extension == "Pol_Num2D":
+        _atmos_extension = 4
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_Num2D' is not supported by the elsewhere extension")
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 5
+        if region_extension == 'elsewhere':
+            _atmos_extension = 3
+    elif atmos_extension == 'Num5D':
+        _atmos_extension = 6 
+    else:
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', 'Pol_BB_Burst', 'Pol_Num2D', or 'user'.")
+    
+    if atmosphere:
+        preloaded = init_preload(atmosphere)
+        data = init_ptr(numTHREADS, preloaded, _atmos_extension)
+        #data = init_hot(numTHREADS, preloaded)
+    else:
+        #data = init_hot(numTHREADS, NULL)
+        data = init_ptr(numTHREADS, NULL, _atmos_extension)
+        
+    cdef double *I_data_2D
+    cdef size_t T
+    T = threadid()
+    I_data_2D = produce_2D_data(T, &(local_variables[0,0]), data)     # this part is not parallellizable yet.
+
+    atmosphere_2D = make_atmosphere_2D(I_data_2D, data)    
+    hot_preloaded_2D = init_preload(atmosphere_2D)
+    hot_data_2D = init_hot_2D(numTHREADS, hot_preloaded_2D)
+    
+    cdef double I_E2D
+    I_E2D = eval_hot_2D(T, E, mu, hot_data_2D) # I want this to be arrays instead of single floats as well.
+    
+    # don't get photon specific intensity
+    # intensities[i] *= norm_ptr() / (energies[i] * keV)
+
+    if atmosphere:
+        free_preload(preloaded)
+        free_preload(hot_preloaded_2D)
+
+    # free(I_data_2D) # not necessary, nothing was allocated
+    free_hot_2D(numTHREADS, hot_data_2D)
+    free_hot(numTHREADS, data)
+    
+    return np.asarray(I_E2D, dtype = np.double, order = 'C')
+
+
+def intensity_split_interpolation(double[::1] energies,
+                                  double[::1] mu,
+                                  double[:,::1] local_variables,
+                                  atmosphere = None,
+                                  int stokesQ = 0,
+                                  region_extension = 'hot',
+                                  atmos_extension = "BB",
+                                  beam_opt = 0,
+                                  size_t numTHREADS = 1):
+
+    cdef size_t _beam_opt = beam_opt
+    cdef size_t _atmos_extension
+
+    cdef fptr_init init_ptr = NULL
+    cdef fptr_free free_ptr = NULL
+    cdef fptr_eval eval_ptr = NULL
+    cdef fptr_norm norm_ptr = NULL
+
+    if region_extension == 'hot':
+        init_ptr = init_hot
+        free_ptr = free_hot
+        eval_ptr_I = eval_hot_I
+        eval_ptr_Q = eval_hot_Q
+        norm_ptr = eval_hot_norm
+    elif region_extension == 'elsewhere':
+        init_ptr = init_elsewhere
+        free_ptr = free_elsewhere
+        eval_ptr_I = eval_elsewhere
+        norm_ptr = eval_elsewhere_norm
+        if stokesQ == 1:
+            raise ValueError("StokesQ option is not allowed for the elsewhere extension.")
+    else:
+        raise ValueError("Region extension module must be 'hot' or 'elsewhere'.")
+    
+    
+    # initialise the source radiation field
+    cdef _preloaded *preloaded = NULL
+    cdef void *data = NULL
+
+    if atmos_extension == "BB":
+        _atmos_extension = 1
+    elif atmos_extension == "Num4D":
+        _atmos_extension = 2
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "Pol_BB_Burst":
+        _atmos_extension = 3
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_BB_Burst' is not supported by the elsewhere extension")
+    elif atmos_extension == "Pol_Num2D":
+        _atmos_extension = 4
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_Num2D' is not supported by the elsewhere extension")
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 5
+        if region_extension == 'elsewhere':
+            _atmos_extension = 3
+    elif atmos_extension == 'Num5D':
+        _atmos_extension = 6 
+    else:
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', 'Pol_BB_Burst', 'Pol_Num2D', or 'user'.")
+    
+    if atmosphere:
+        preloaded = init_preload(atmosphere)
+        data = init_ptr(numTHREADS, preloaded, _atmos_extension)
+        #data = init_hot(numTHREADS, preloaded)
+    else:
+        #data = init_hot(numTHREADS, NULL)
+        data = init_ptr(numTHREADS, NULL, _atmos_extension)
+        
+    cdef double *I_data_2D
+    cdef size_t T
+    T = threadid()
+    I_data_2D = produce_2D_data(T, &(local_variables[0,0]), data)     # this part is not parallellizable yet.
+
+    atmosphere_2D = make_atmosphere_2D(I_data_2D, data)    
+    hot_preloaded_2D = init_preload(atmosphere_2D)
+    hot_data_2D = init_hot_2D(numTHREADS, hot_preloaded_2D)
+    
+    cdef double[::1] I_E2D = np.zeros(energies.shape[0],
+                                            dtype = np.double)
+    
+    cdef size_t i
+    cdef signed int ii
+    for ii in prange(<signed int>energies.shape[0],
+                     nogil = True,
+                     schedule = 'static',
+                     num_threads = <size_t> numTHREADS,
+                     chunksize = 1):
+
+        i = <size_t> ii
+        I_E2D[i] = eval_hot_2D(T, # using numThreads>1 should be safe.
+                              energies[i],
+                              mu[i],
+                              hot_data_2D)
+    
+    # don't get photon specific intensity
+    # intensities[i] *= norm_ptr() / (energies[i] * keV)
+
+    if atmosphere:
+        free_preload(preloaded)
+        free_preload(hot_preloaded_2D)
+
+    free(I_data_2D)
+    free_hot_2D(numTHREADS, hot_data_2D)
+    free_hot(numTHREADS, data)
+    
+    return np.asarray(I_E2D, dtype = np.double, order = 'C')
+
+def produce_atmosphere_2D(double[:,::1] local_variables,
+                                  atmosphere = None,
+                                  int stokesQ = 0,
+                                  region_extension = 'hot',
+                                  atmos_extension = "BB",
+                                  beam_opt = 0,
+                                  size_t numTHREADS = 1):
+
+    cdef size_t _beam_opt = beam_opt
+    cdef size_t _atmos_extension
+
+    cdef fptr_init init_ptr = NULL
+    cdef fptr_free free_ptr = NULL
+    cdef fptr_eval eval_ptr = NULL
+    cdef fptr_norm norm_ptr = NULL
+
+    if region_extension == 'hot':
+        init_ptr = init_hot
+        free_ptr = free_hot
+        eval_ptr_I = eval_hot_I
+        eval_ptr_Q = eval_hot_Q
+        norm_ptr = eval_hot_norm
+    elif region_extension == 'elsewhere':
+        init_ptr = init_elsewhere
+        free_ptr = free_elsewhere
+        eval_ptr_I = eval_elsewhere
+        norm_ptr = eval_elsewhere_norm
+        if stokesQ == 1:
+            raise ValueError("StokesQ option is not allowed for the elsewhere extension.")
+    else:
+        raise ValueError("Region extension module must be 'hot' or 'elsewhere'.")
+    
+    
+    # initialise the source radiation field
+    cdef _preloaded *preloaded = NULL
+    cdef void *data = NULL
+
+    if atmos_extension == "BB":
+        _atmos_extension = 1
+    elif atmos_extension == "Num4D":
+        _atmos_extension = 2
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "Pol_BB_Burst":
+        _atmos_extension = 3
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_BB_Burst' is not supported by the elsewhere extension")
+    elif atmos_extension == "Pol_Num2D":
+        _atmos_extension = 4
+        if region_extension == 'elsewhere':
+            raise ValueError("'Pol_Num2D' is not supported by the elsewhere extension")
+        if atmosphere == None:
+            raise ValueError("Atmosphere data must be loaded if using numerical atmosphere extension.")
+    elif atmos_extension == "user":
+        _atmos_extension = 5
+        if region_extension == 'elsewhere':
+            _atmos_extension = 3
+    elif atmos_extension == 'Num5D':
+        _atmos_extension = 6 
+    else:
+        raise ValueError("Atmosphere extension module must be 'BB', 'Num4D', 'Pol_BB_Burst', 'Pol_Num2D', or 'user'.")
+    
+    if atmosphere:
+        preloaded = init_preload(atmosphere)
+        data = init_ptr(numTHREADS, preloaded, _atmos_extension)
+        #data = init_hot(numTHREADS, preloaded)
+    else:
+        #data = init_hot(numTHREADS, NULL)
+        data = init_ptr(numTHREADS, NULL, _atmos_extension)
+        
+    cdef double *I_data_2D
+    cdef size_t T
+    T = threadid()
+    I_data_2D = produce_2D_data(T, &(local_variables[0,0]), data)     # this part is not parallellizable yet.
+
+    atmosphere_2D = make_atmosphere_2D(I_data_2D, data)    
+   
+    return atmosphere_2D
 
 
 def intensity_from_globals(double[::1] energies,
