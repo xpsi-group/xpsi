@@ -198,8 +198,20 @@ def poisson_likelihood_given_background(double exposure_time,
     for i in range(<size_t>STAR.shape[0]):
         for j in range(<size_t>STAR.shape[1]):
             EXPEC = (STAR[i,j] + background[i,j]/n) * exposure_time
-            LOGLIKE -= EXPEC
-            LOGLIKE += counts[i,j] * log(EXPEC)
+
+            # Ensuring that the log likelihood doesn't crash
+            # even when model counts is zero in a given phase bin.
+            if(EXPEC > 0.0):
+                LOGLIKE -= EXPEC
+                LOGLIKE += counts[i,j] * log(EXPEC)
+    
+            elif(counts[i,j] == 0 and EXPEC == 0):
+                pass
+            
+            # Penalizing situations where the data counts are not zero 
+            # but the model counts are.
+            else:
+                LOGLIKE += -1.0e90 * (0.1 + 0.9*np.random.rand(1))
 
             STAR[i,j] += background[i,j]/n
             STAR[i,j] *= exposure_time

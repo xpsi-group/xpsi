@@ -33,6 +33,125 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
+[v3.0.4] - 2025-02-13
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Updates to the Post-processing tools and documentation.
+
+Fixed
+^^^^^^^
+
+* Fixed the Post-processing tutorial to show the correct shaded credible regions (not using the outdated ``shade_root_index`` syntax).
+
+Changed
+^^^^^^^
+
+* Posterior predictive error bars were added to the bolometric pulse profile model plot (in ``_residuals.py``).
+
+* Clarified in the Post-processing tutorial that the set parameter bounds must match those used during sampling.
+
+Attribution
+^^^^^^^^^^^
+
+Lucien Mauviard,
+Christine Kazantsev,
+Tuomo Salmi
+
+
+[v3.0.3] - 2025-01-29
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* `_poisson_likelihood_given_background.pyx` extension can now handle likelihood computation when the model generates phases with 0 counts, and penalizes situations where data has phase-energy bins with 0 counts but the model does not.
+
+Fixed
+^^^^^
+
+* Fixes likelihood computation crash (for the Poisson extension) when model predicts phase bin with 0 counts. Previously that would result in an attempt to compute log(0).
+
+Changed
+^^^^^^^
+
+* Added conditions to deal with situations involving data counts or model counts being 0 in any phase-energy bin.
+
+Attribution
+^^^^^^^^^^^
+Devarshi Choudhury,
+Tuomo Salmi,
+Bas Dorsman
+
+
+[v3.0.2] - 2025-01-17
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Everywhere can now be used with ``time_invariant=True`` and a numerical atmosphere model. This would silently bug before.
+
+Fixed
+^^^^^
+
+* Fixes silent error resulting in wrong model spectrum when using a numerical atmosphere model with ``Everywhere``.
+* Fixes silent error in likelihood computation when ``time_invariant=True`` where likelihood would behave stochastically for fixed parameters.
+
+Changed
+^^^^^^^
+
+* Only pass the temperature and effective gravity to the ``_compute_cellParamVecs()`` in ``Everywhere``.
+* Added a condition on the number of phase bins of the model (more than 2) to interpolate on data bins.
+
+Attribution
+^^^^^^^^^^^
+
+Tuomo Salmi,
+Christine Kazantsev,
+Lucien Mauviard
+
+
+[v3.0.1] - 2025-01-16
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* If the prior.call() returns -np.inf because a parameter value outside the allowed prior (multidimensional) interval, the likelihood will now return random_near_llzero rather than less_than_llzero.  
+
+Fixed
+^^^^^
+
+* This fixes a problem that we believe used to be rare but was recently occuring quite frequently, where MultiNest gets stuck in an infinite loop. That means runs were still appearing to be running but were actually stuck in an infinite loop state.
+
+Changed
+^^^^^^^
+
+* We no longer follow the procedure of point rejection as described in Appendix B.5.3 in Tom Riley's thesis. 
+* Instead of outright rejection (in the MultiNest code), points will now be 'weakly' rejected when their loglikelihoods are compared and turn out to be lower than the likelihoods of the current 'good' livepoints.
+* The bulk of the work is in the evaluation of the loglikelihoods, which is still being skipped, so rejection after loglikelihood comparison amounts to negligible extra work.
+* We have done a few tests of sampling and found no noticeable effects on the posteriors that come out on the other end.
+* Just a note, we discussed but will not implement prior limits in the prior.inverse_sample(), since that will be complicated while we do not expect that it speeds us up. One may argue that alternative is a bit cleaner and a more direct way to inform MultiNest not to consider forbidden parameter values.  
+
+Deprecated
+^^^^^^^^^^
+* likelihood.less_than_llzero()
+
+Removed
+^^^^^^^
+
+* likelihood.less_than_llzero()
+
+Attribution
+^^^^^^^^^^^
+
+Bas Dorsman,
+Mariska Hoogkamer,
+Tuomo Salmi
+
 
 [v3.0.0] - 2024-12-19
 ~~~~~~~~~~~~~~~~~~~~~
