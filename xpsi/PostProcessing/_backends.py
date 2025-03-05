@@ -39,6 +39,7 @@ class NestedBackend(Run):
         filerootpath =_os.path.join(base_dir, root)
         _filerootpath = filerootpath
 
+        # check whether to use .npy files or .txt files 
         if _os.path.isfile(filerootpath+'.npy'):
             loader = _np.load
             saver = _np.save
@@ -83,7 +84,7 @@ class NestedBackend(Run):
 
         if self.use_nestcheck and transform is not None:
             for ext in [f'dead-birth{filetype}', f'phys_live-birth{filetype}']:
-                # dead and live points later in process_multinest_run() for nestcheck:
+                # save dead and live points for later use in process_multinest_run():
                 if 'dead-birth' in ext: 
                     dead_points = samples
                 if 'phys_live-birth' in ext: 
