@@ -133,9 +133,10 @@ def synthesise_exposure(double exposure_time,
 
     for p in range(num_components):
         signal_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(_interpolant, signal_phase_set.shape[0])
-        acc[p] = gsl_interp_accel_alloc()
-        gsl_interp_accel_reset(acc[p])
+        if components[p].shape[1] >  1:
+            interp[p] = gsl_interp_alloc(_interpolant, signal_phase_set.shape[0])
+            acc[p] = gsl_interp_accel_alloc()
+            gsl_interp_accel_reset(acc[p])
 
     cdef gsl_interp *inter_ptr = NULL
     cdef accel *acc_ptr = NULL
@@ -149,49 +150,52 @@ def synthesise_exposure(double exposure_time,
             signal_phase_set = component_phases[p]
             phase_shift = phase_shifts[p]
 
-            interp_ptr = interp[p]
-            acc_ptr = acc[p]
-            phases_ptr = &(signal_phase_set[0])
-            signal_ptr = &(signal[i,0])
+            if signal.shape[1] > 1:
+                interp_ptr = interp[p]
+                acc_ptr = acc[p]
+                phases_ptr = &(signal_phase_set[0])
+                signal_ptr = &(signal[i,0])
 
-            gsl_interp_init(interp_ptr, phases_ptr, signal_ptr,
+                gsl_interp_init(interp_ptr, phases_ptr, signal_ptr,
                             signal_phase_set.shape[0])
 
-            for j in range(<size_t>phases.shape[0] - 1):
-                a = phases[j] + phase_shift
-                b = phases[j+1] + phase_shift
+                for j in range(<size_t>phases.shape[0] - 1):
+                    a = phases[j] + phase_shift
+                    b = phases[j+1] + phase_shift
 
-                if b - a == 1.0:
-                    a = 0.0
-                    b = 1.0
-                else:
-                    a -= floor(a)
-                    b -= floor(b)
+                    if b - a == 1.0:
+                        a = 0.0
+                        b = 1.0
+                    else:
+                        a -= floor(a)
+                        b -= floor(b)
 
-                if a < b:
-                    _val = gsl_interp_eval_integ(interp_ptr,
-                                                       phases_ptr,
-                                                       signal_ptr,
-                                                       a, b,
-                                                       acc_ptr)
-                    if _val > 0.0 or _allow_negative[p] == 1:
-                        STAR[i,j] += _val
-                else:
-                    _val = gsl_interp_eval_integ(interp_ptr,
-                                                       phases_ptr,
-                                                       signal_ptr,
-                                                       a, 1.0,
-                                                       acc_ptr)
-                    if _val > 0.0 or _allow_negative[p] == 1:
-                        STAR[i,j] += _val
+                    if a < b:
+                        _val = gsl_interp_eval_integ(interp_ptr,
+                                                           phases_ptr,
+                                                           signal_ptr,
+                                                           a, b,
+                                                           acc_ptr)
+                        if _val > 0.0 or _allow_negative[p] == 1:
+                            STAR[i,j] += _val
+                    else:
+                        _val = gsl_interp_eval_integ(interp_ptr,
+                                                           phases_ptr,
+                                                           signal_ptr,
+                                                           a, 1.0,
+                                                           acc_ptr)
+                        if _val > 0.0 or _allow_negative[p] == 1:
+                            STAR[i,j] += _val
 
-                    _val = gsl_interp_eval_integ(interp_ptr,
-                                                       phases_ptr,
-                                                       signal_ptr,
-                                                       0.0, b,
-                                                       acc_ptr)
-                    if _val > 0.0 or _allow_negative[p] == 1:
-                        STAR[i,j] += _val
+                        _val = gsl_interp_eval_integ(interp_ptr,
+                                                           phases_ptr,
+                                                           signal_ptr,
+                                                           0.0, b,
+                                                           acc_ptr)
+                        if _val > 0.0 or _allow_negative[p] == 1:
+                            STAR[i,j] += _val
+            else:
+                STAR[i,0] = signal[i,0]
 
         for j in range(<size_t>phases.shape[0] - 1): # interpolant safety procedure
             if STAR[i,j] < 0.0:
@@ -202,8 +206,9 @@ def synthesise_exposure(double exposure_time,
             BACKGROUND += background[i,j]
 
     for p in range(num_components):
-        gsl_interp_accel_free(acc[p])
-        gsl_interp_free(interp[p])
+        if components[p].shape[1] > 1:
+            gsl_interp_accel_free(acc[p])
+            gsl_interp_free(interp[p])
 
     free(acc)
     free(interp)
@@ -350,9 +355,10 @@ def synthesise_given_total_count_number(double[::1] phases,
 
     for p in range(num_components):
         signal_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(_interpolant, signal_phase_set.shape[0])
-        acc[p] = gsl_interp_accel_alloc()
-        gsl_interp_accel_reset(acc[p])
+        if components[p].shape[1] >  1:
+            interp[p] = gsl_interp_alloc(_interpolant, signal_phase_set.shape[0])
+            acc[p] = gsl_interp_accel_alloc()
+            gsl_interp_accel_reset(acc[p])
 
     cdef gsl_interp *inter_ptr = NULL
     cdef accel *acc_ptr = NULL
@@ -367,45 +373,48 @@ def synthesise_given_total_count_number(double[::1] phases,
             signal_phase_set = component_phases[p]
             phase_shift = phase_shifts[p]
 
-            interp_ptr = interp[p]
-            acc_ptr = acc[p]
-            phases_ptr = &(signal_phase_set[0])
-            signal_ptr = &(signal[i,0])
+            if signal.shape[1] > 1:
+                interp_ptr = interp[p]
+                acc_ptr = acc[p]
+                phases_ptr = &(signal_phase_set[0])
+                signal_ptr = &(signal[i,0])
 
-            gsl_interp_init(interp_ptr, phases_ptr, signal_ptr,
-                            signal_phase_set.shape[0])
+                gsl_interp_init(interp_ptr, phases_ptr, signal_ptr,
+                                signal_phase_set.shape[0])
 
-            for j in range(<size_t>phases.shape[0] - 1):
-                a = phases[j] + phase_shift
-                b = phases[j+1] + phase_shift
+                for j in range(<size_t>phases.shape[0] - 1):
+                    a = phases[j] + phase_shift
+                    b = phases[j+1] + phase_shift
 
-                a -= floor(a)
-                b -= floor(b)
+                    a -= floor(a)
+                    b -= floor(b)
 
-                if a < b:
-                    _val = gsl_interp_eval_integ(interp_ptr,
-                                                          phases_ptr,
-                                                          signal_ptr,
-                                                          a, b,
-                                                          acc_ptr)
-                    if _val > 0.0 or _allow_negative[p] == 1:
-                        _signal[i,j] += _val
-                else:
-                    _val = gsl_interp_eval_integ(interp_ptr,
-                                                          phases_ptr,
-                                                          signal_ptr,
-                                                          a, 1.0,
-                                                          acc_ptr)
-                    if _val > 0.0 or _allow_negative[p] == 1:
-                        _signal[i,j] += _val
+                    if a < b:
+                        _val = gsl_interp_eval_integ(interp_ptr,
+                                                              phases_ptr,
+                                                              signal_ptr,
+                                                              a, b,
+                                                              acc_ptr)
+                        if _val > 0.0 or _allow_negative[p] == 1:
+                            _signal[i,j] += _val
+                    else:
+                        _val = gsl_interp_eval_integ(interp_ptr,
+                                                              phases_ptr,
+                                                              signal_ptr,
+                                                              a, 1.0,
+                                                              acc_ptr)
+                        if _val > 0.0 or _allow_negative[p] == 1:
+                            _signal[i,j] += _val
 
-                    _val = gsl_interp_eval_integ(interp_ptr,
-                                                          phases_ptr,
-                                                          signal_ptr,
-                                                          0.0, b,
-                                                          acc_ptr)
-                    if _val > 0.0 or _allow_negative[p] == 1:
-                        _signal[i,j] += _val
+                        _val = gsl_interp_eval_integ(interp_ptr,
+                                                              phases_ptr,
+                                                              signal_ptr,
+                                                              0.0, b,
+                                                              acc_ptr)
+                        if _val > 0.0 or _allow_negative[p] == 1:
+                            _signal[i,j] += _val
+            else:
+                _signal[i,0] = signal[i,0]
 
         for j in range(<size_t>phases.shape[0] - 1): # interpolant safety procedure
             if _signal[i,j] < 0.0:
@@ -416,8 +425,9 @@ def synthesise_given_total_count_number(double[::1] phases,
             BACKGROUND += background[i,j]
 
     for p in range(num_components):
-        gsl_interp_accel_free(acc[p])
-        gsl_interp_free(interp[p])
+        if components[p].shape[1] > 1:
+            gsl_interp_accel_free(acc[p])
+            gsl_interp_free(interp[p])
 
     free(acc)
     free(interp)
