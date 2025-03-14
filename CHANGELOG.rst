@@ -33,6 +33,26 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
+[pre-v3.0.5] - 2025-03-14
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Fixing problems with Everywhere.
+
+Fixed
+^^^^^^^
+
+* Fixes Everywhere.
+
+Attribution
+^^^^^^^^^^^
+
+Christine Kazantsev,
+Tuomo Salmi
+
+
 [v3.0.4] - 2025-02-13
 ~~~~~~~~~~~~~~~~~~~~~
 
