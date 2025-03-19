@@ -155,6 +155,7 @@ if __name__ == '__main__':
                       'evidence_tolerance': 0.1,
                       'max_iter': 100, #-1,
                       'seed' : 0, # Fixing the seed
+                      'LHS_seed': 42, # Fixing the LHS seed for hypercube fraction estimation
                       'verbose': True}
 
 
