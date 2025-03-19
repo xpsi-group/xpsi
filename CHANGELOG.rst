@@ -35,6 +35,7 @@ and this project adheres to
 
 
 [v3.0.6] - 2025-03-XX
+~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
@@ -64,6 +65,7 @@ Devarshi Choudhury
 
 
 [v3.0.5] - 2025-03-19
+~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
