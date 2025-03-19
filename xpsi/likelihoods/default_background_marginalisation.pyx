@@ -360,10 +360,11 @@ def eval_marginal_likelihood(double exposure_time,
 
     for p in range(num_components):
         pulse_phase_set = component_phases[p]
-        interp[p] = gsl_interp_alloc(_interpolant,
-                                     pulse_phase_set.shape[0])
-        acc[p] = gsl_interp_accel_alloc()
-        gsl_interp_accel_reset(acc[p])
+        if components[p].shape[1] > 1:
+            interp[p] = gsl_interp_alloc(_interpolant,
+                                        pulse_phase_set.shape[0])
+            acc[p] = gsl_interp_accel_alloc()
+            gsl_interp_accel_reset(acc[p])
 
     cdef gsl_interp *inter_ptr = NULL
     cdef accel *acc_ptr = NULL
@@ -374,15 +375,15 @@ def eval_marginal_likelihood(double exposure_time,
             pulse_phase_set = component_phases[p]
             phase_shift = phase_shifts[p]
 
-            interp_ptr = interp[p]
-            acc_ptr = acc[p]
-            phases_ptr = &(pulse_phase_set[0])
-            pulse_ptr = &(pulse[i,0])
+            if pulse.shape[1] > 1:            
+                interp_ptr = interp[p]
+                acc_ptr = acc[p]
+                phases_ptr = &(pulse_phase_set[0])
+                pulse_ptr = &(pulse[i,0])
 
-            gsl_interp_init(interp_ptr, phases_ptr, pulse_ptr,
-                            pulse_phase_set.shape[0])
+                gsl_interp_init(interp_ptr, phases_ptr, pulse_ptr,
+                                pulse_phase_set.shape[0])
 
-            if pulse.shape[1] > 1:
                 for j in range(<size_t> (phases.shape[0] - 1)):
                     pa = phases[j] + phase_shift
                     pb = phases[j+1] + phase_shift
@@ -587,9 +588,9 @@ def eval_marginal_likelihood(double exposure_time,
         MCL_BACKGROUND_GIVEN_SUPPORT[i] = B * exposure_time
 
     for p in range(num_components):
-        gsl_interp_accel_free(acc[p])
-        gsl_interp_free(interp[p])
-
+        if components[p].shape[1] > 1:
+            gsl_interp_accel_free(acc[p])
+            gsl_interp_free(interp[p])
     free(acc)
     free(interp)
 
