@@ -33,18 +33,23 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
-[pre-v3.0.5] - 2025-03-14
+[v3.0.5] - 2025-03-19
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
-* Fixing problems with Everywhere.
+* Issues with phase bin interpolations were fixed when using the time-invariant version of the Everywhere class.
 
 Fixed
 ^^^^^^^
 
-* Fixes Everywhere.
+* Phase bin interpolations are now skipped if having only one phase bin during the likelihood calculation (``xpsi/likelihoods/default_background_marginalisation.pyx``) or during the data synthesisation (``xpsi/tools/synthesise.pyx``). Previously, these resulted in errors.
+
+Changed
+^^^^^^^
+
+* The number of phase bins and leaves are now always forced to 1 if ``time_invariant=True`` is used. The 2D-pulse plotting in Global surface emission -tutorial was updated to account for this.
 
 Attribution
 ^^^^^^^^^^^
