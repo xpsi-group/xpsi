@@ -477,7 +477,11 @@ class Data(object):
         # Extract useful data
         exposure = _np.double( Header['EXPOSURE'] )
         channel_data = spectrum['CHANNEL']
-        counts_data = spectrum['COUNTS']
+        try:
+            counts_data = spectrum['COUNTS']
+        except KeyError:
+            counts_data = spectrum['RATE']
+            exposure = _np.double(1.0)
 
         # No channels specified, use everything
         if channels is None:
