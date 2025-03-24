@@ -25,7 +25,10 @@ class Run(Metadata):
         if _os.path.isfile(filepath):
             # we should be able to load samples straightforwardly into
             # a NumPy array for the most basic type of sample lookup
-            self._samples = _np.loadtxt(filepath)
+            if filepath.endswith(".npy"):
+                self._samples = _np.load(filepath)
+            elif filepath.endswith(".txt"):
+                self._samples = _np.loadtxt(filepath)
         else:
             raise ValueError('File %s does not exist.' % filepath)
 
