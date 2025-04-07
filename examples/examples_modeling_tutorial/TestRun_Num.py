@@ -616,6 +616,7 @@ runtime_params = {'resume': False,
                   'wrapped_params': wrapped_params,
                   'evidence_tolerance': 0.5,
                   'seed': 7,
+                  'LHS_seed': 42, # Fixing the LHS seed for hypercube fraction estimation
                   'max_iter': 100, # manual termination condition for short test
                   'verbose': True}
 
