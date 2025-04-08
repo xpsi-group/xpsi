@@ -88,14 +88,22 @@ __ Zenodo21_
 __ Zenodo_
 
 
-PPM for other sources
-*********************
+PPM for accreting/bursting neutron stars
+****************************************
 
 **Das et al. 2024** `(ApJ submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv241116528D/abstract>`_ *Pulse Profiles of Accreting Neutron Stars from GRMHD Simulations*.
 
-**Dorsman et al. 2024** `(MNRAS submitted) <https://ui.adsabs.harvard.edu/abs/2024arXiv240907908D/abstract>`_ *Parameter constraints for accreting millisecond pulsars with synthetic NICER data*.
+**Dorsman et al. 2025** `(MNRAS, 538, 2853) <https://ui.adsabs.harvard.edu/abs/2025MNRAS.538.2853D/abstract>`_ *Parameter constraints for accreting millisecond pulsars with synthetic NICER data*. See also the associated `Zenodo repository`__.
 
-**Kini et al. 2024b** `(MNRAS, 535,1507) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.535.1507K/abstract>`_ *Constraining the properties of the thermonuclear burst oscillation source XTE J1814-338 through pulse profile modelling*. See also the associated `Zenodo repository`__.
+.. _Zenodo25dorsman: https://doi.org/10.5281/zenodo.13691858
+__ Zenodo25dorsman_
+
+**Salmi et al. 2025** `(MNRAS, 538, 2562) <https://ui.adsabs.harvard.edu/abs/2025MNRAS.538.2562S/abstract>`_ *Modelling polarized X-ray pulses from accreting millisecond pulsars with X-PSI, using different hot spot locations and shapes*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo25salmi: https://doi.org/10.5281/zenodo.14130093
+__ Zenodo25salmi_
+
+**Kini et al. 2024b** `(MNRAS, 535, 1507) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.535.1507K/abstract>`_ *Constraining the properties of the thermonuclear burst oscillation source XTE J1814-338 through pulse profile modelling*. See also the associated `Zenodo repository`__.
 
 .. _Zenodo24bkini: https://doi.org/10.5281/zenodo.8365643 
 __ Zenodo24bkini_
@@ -109,5 +117,15 @@ __ Zenodo24kini_
 
 .. _Zenodo23kini: http://dx.doi.org/10.5281/zenodo.7665653
 __ Zenodo23kini_
+
+
+General PPM studies
+*******************
+
+**Bootsma et al. 2025** `(MNRAS, 537, 3769) <https://ui.adsabs.harvard.edu/abs/2025MNRAS.537.3769B/abstract>`_ *Scaling relations for the uncertainty in neutron star radius inferred from pulse profile modelling: the effect of spin rate*. See also the associated `Zenodo repository`__.
+
+.. _Zenodo25bootsma: https://doi.org/10.5281/zenodo.12569158
+__ Zenodo25bootsma_
+
 
 
