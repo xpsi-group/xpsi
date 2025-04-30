@@ -1,8 +1,7 @@
 import numpy as np
 from scipy.fft import fft, ifft
 import math
-from astropy.io import fits
-from typing import Tuple, Optional
+from typing import Tuple
 import warnings
 
 class XrayPileup:
@@ -108,11 +107,13 @@ class XrayPileup:
             
         Returns:
         --------
-        tuple : (piled_spectrum, metadata)
-            Piled up spectrum in counts/sec and analysis metadata
+        piled_spectrum
+            Piled up spectrum in counts/sec 
         """
+        ### ADD PHASE TREATMENT
+
         # Perform pileup calculation
-        piled_spectrum = self.perform_pileup(model_spectrum.squeeze(),alpha, psf_frac)  ## to go from shape (x,1) to (x,)
+        piled_spectrum = self.perform_pileup(model_spectrum.squeeze(), alpha, psf_frac) 
         
         piled_spectrum = piled_spectrum.reshape(model_spectrum.shape)
         
@@ -120,11 +121,5 @@ class XrayPileup:
         if self.rmf_data is not None:
             self.rmf_data = np.maximum(self.rmf_data, 0)
             piled_spectrum =  np.dot(self.rmf_data, piled_spectrum) 
-
-        # Create metadata
-        metadata = {
-            'frame_time': self.frame_time,
-            'energy_grid': self.energies.copy()
-        }
         
-        return piled_spectrum, metadata
+        return piled_spectrum
