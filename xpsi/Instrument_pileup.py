@@ -1,4 +1,5 @@
-""" Instrument module for X-PSI modelling. Includes loading of any instrument's response."""
+""" Instrument module for X-PSI modelling. 
+Includes loading of any instrument's response and initialization of the pileup module."""
 
 import os
 import numpy as np
@@ -11,9 +12,9 @@ from xpsi import Parameter
 from xpsi.utils import make_verbose
 from xpsi.Instrument import ResponseError
 
-from PileupModule import XrayPileup
+from xpsi.PileupModule import XrayPileup
 
-class Instrument_pileup(xpsi.Instrument):
+class InstrumentPileup(xpsi.Instrument):
 
     """ Instrument with pile-up computation """
 
