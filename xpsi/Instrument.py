@@ -8,7 +8,6 @@ from xpsi.ParameterSubspace import ParameterSubspace
 
 from xpsi import Parameter
 from xpsi.utils import make_verbose
-from xpsi.Instrument import ResponseError
 
 from xpsi.PileupModule import XrayPileup
 
@@ -507,7 +506,7 @@ class Instrument(ParameterSubspace):
         return Instrument
 
 
-class InstrumentPileup(xpsi.Instrument):
+class InstrumentPileup(Instrument):
 
     """ Instrument with pile-up computation """
 
