@@ -131,6 +131,8 @@ class InstrumentPileup(xpsi.Instrument):
         channel_energy_edges = np.append(RMF_EBOUNDS['E_MIN'][channels],RMF_EBOUNDS['E_MAX'][channels[-1]])
     
 
+        ## -------- INITIALIZATION OF THE PILEUP ---------------
+
         ## Definition of the parameters for the pile-up
         alpha_grade = Parameter('grade_migration',
                     strict_bounds = (0.0,1.0),
@@ -140,7 +142,7 @@ class InstrumentPileup(xpsi.Instrument):
                     value = values.get('grade_migration', None))
     
         psffrac = Parameter('psf_fraction',
-                    strict_bounds = (0.8,1.0),  #min in sherpa 0.85
+                    strict_bounds = (0.8,1.0),  #min in sherpa set at 0.85
                     bounds = bounds.get('psf_fraction', None),
                     doc = 'fraction of events in the source extraction region to which pileup will be applied',
                     symbol = r'$PSF_frac',
@@ -170,13 +172,13 @@ class InstrumentPileup(xpsi.Instrument):
         with fits.open( Data_path ) as hdul:
             Data_header = hdul['SPECTRUM'].header 
 
-        ## need to make sure that EXPTIME and FRACEXPO exist - should be the case if it's Chandra data
+        ## make sure that EXPTIME and FRACEXPO exist - should be the case if it's Chandra data
         frametime = Data_header['EXPTIME']
         frac_expo = ARF_header['FRACEXPO']
 
         frame = Parameter('frame_time',
                     strict_bounds = (0.0,10.0),
-                    bounds = None,     ##this parameter should always be fixed
+                    bounds = None,    
                     doc = 'good exposure time per frame',
                     symbol = r'$\tau$ (s)',
                     value = frametime )

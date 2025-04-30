@@ -110,11 +110,11 @@ class XrayPileup:
         Returns:
         --------
         piled_spectrum
-            Piled up spectrum in counts/sec 
+            Piled up spectrum in counts/sec after ARF/RMF multiplication
         """
         piled_spectrum = model_spectrum.copy()
 
-        for k in range(len(model_spectrum.shape[1])):
+        for k in range(model_spectrum.shape[1]):
 
             # Perform pileup calculation for each phase bin
             spectrum_pileup = self.perform_pileup(model_spectrum[:,k], alpha, psf_frac) 
