@@ -170,9 +170,9 @@ class InstrumentPileup(xpsi.Instrument):
         with fits.open( Data_path ) as hdul:
             Data_header = hdul['SPECTRUM'].header 
 
-        ## need to add condition that checks that EXPTIME exists !! same for fracexpo
-        
+        ## need to make sure that EXPTIME and FRACEXPO exist - should be the case if it's Chandra data
         frametime = Data_header['EXPTIME']
+        frac_expo = ARF_header['FRACEXPO']
 
         frame = Parameter('frame_time',
                     strict_bounds = (0.0,10.0),
@@ -180,8 +180,6 @@ class InstrumentPileup(xpsi.Instrument):
                     doc = 'good exposure time per frame',
                     symbol = r'$\tau$ (s)',
                     value = frametime )
-
-        frac_expo = ARF_header['FRACEXPO']
 
         fracexpo = Parameter('frac_expo',
                     strict_bounds = (0.0,1.0),

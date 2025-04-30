@@ -28,7 +28,10 @@ class XrayPileup:
 
 
     def perform_pileup(self, spectrum: np.ndarray, alpha: float, psf_frac_init: float) -> np.ndarray:
-        """Perform pileup calculation"""
+        """     
+            Perform pileup calculation
+            Code mainly inspired from the XSPEC equivalent, based on Davis 2001
+        """
 
         num_regions = self.instrument['nregions']
         g0 = self.instrument['g0']
@@ -80,7 +83,6 @@ class XrayPileup:
             factor *= alpha * self.frame_time / i
             results += factor * integ_arf_s_n * arf_s_tmp 
 
-
         # Apply final corrections
         results *= exp_factor  
 
@@ -110,12 +112,13 @@ class XrayPileup:
         piled_spectrum
             Piled up spectrum in counts/sec 
         """
-        ### ADD PHASE TREATMENT
+        piled_spectrum = model_spectrum.copy()
 
-        # Perform pileup calculation
-        piled_spectrum = self.perform_pileup(model_spectrum.squeeze(), alpha, psf_frac) 
-        
-        piled_spectrum = piled_spectrum.reshape(model_spectrum.shape)
+        for k in range(len(model_spectrum.shape[1])):
+
+            # Perform pileup calculation for each phase bin
+            spectrum_pileup = self.perform_pileup(model_spectrum[:,k], alpha, psf_frac) 
+            piled_spectrum[:,k] = spectrum_pileup
         
         # Apply RMF if available
         if self.rmf_data is not None:
