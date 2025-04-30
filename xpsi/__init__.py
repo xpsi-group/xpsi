@@ -69,8 +69,7 @@ if not __XPSI_SETUP__:
 
     from xpsi.Likelihood import Likelihood
     from xpsi.Data import Data
-    from xpsi.Instrument import Instrument
-    from xpsi.Instrument_pileup import InstrumentPileup
+    from xpsi.Instrument import Instrument, InstrumentPileup
     from xpsi.Signal import Signal
 
     from xpsi.Star import Star
