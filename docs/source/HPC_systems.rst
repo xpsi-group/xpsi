@@ -67,6 +67,11 @@ Now the environment can be activated with
 
     source ./venvs/xpsi_py3/bin/activate
 
+Next, install mpi4py:
+
+.. code-block:: bash
+
+    pip install mpi4py
 
 To prepare `MultiNest <https://github.com/farhanferoz/MultiNest>`_ from
 ``$HOME``:
@@ -187,7 +192,7 @@ Now, we make a seperate folder in which we build MultiNest:
 
    cd
    mkdir My_codes
-   cd My_Codes
+   cd My_codes
 
    git clone https://github.com/farhanferoz/MultiNest.git multinest
    cd  multinest/MultiNest_v3.12_CMake/multinest
@@ -213,7 +218,7 @@ If the above works, we can then continue building X-PSI:
 
 .. code-block:: bash
 
-   cd ~/My_Codes
+   cd ~/My_codes
    git clone https://github.com/xpsi-group/xpsi.git
    cd xpsi
    CC=$(which cc) python setup.py build
