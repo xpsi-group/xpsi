@@ -205,6 +205,13 @@ parser.add_argument('--frequency',
                     required=True,
                     help='The coordinate spin frequency of the star (Hz).',
                     empty_lines_below=2)
+                    
+parser.add_argument('--format',
+                    type=str,
+                    required=True,
+                    help='Format of the source files and reponse files, e.g., txt or fits',
+                    comment_line_above='input file flags',
+                    empty_lines_below=2)
 
 parser.add_argument('--model',
                     type=str,
