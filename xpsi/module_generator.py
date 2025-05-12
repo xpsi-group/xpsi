@@ -206,12 +206,12 @@ parser.add_argument('--frequency',
                     help='The coordinate spin frequency of the star (Hz).',
                     empty_lines_below=2)
                     
-parser.add_argument('--format',
-                    type=str,
-                    required=True,
-                    help='Format of the source files and reponse files, e.g., txt or fits',
-                    comment_line_above='input file flags',
-                    empty_lines_below=2)
+parser.add_argument('--use-fits-format',
+                    action='store_true',
+                    help='Are the source and instrumental files stored in FITS format?',
+                    comment_line_above='Input data in FITS format?',
+                    empty_lines_below=2,
+                    comment=True)
 
 parser.add_argument('--model',
                     type=str,
