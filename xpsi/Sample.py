@@ -126,6 +126,8 @@ def nested(likelihood, prior, check_kwargs={}, **kwargs):
                             prior)
     sampler(**kwargs)
 
+    sampler.write_results(kwargs['outputfiles_basename'])
+
 @make_verbose('Importance sampling commencing',
               'Importance sampling completed')
 def importance(target, importance,
@@ -344,12 +346,10 @@ def ultranested(likelihood,
     # start sampling
     sampler(runtime_params)
 
-    # print results
     sampler.print_results()
     if use_stepsampler:
         sampler.stepsampler.print_diagnostic()
 
-    # store output
     sampler.write_results(sampler_params, out_filename)
 
     return sampler

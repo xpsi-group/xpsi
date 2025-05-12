@@ -1,7 +1,6 @@
-
+from xpsi.global_imports import *
 from xpsi import _verbose
 from xpsi.utils import make_verbose
-
 from xpsi.Likelihood import Likelihood
 from xpsi.Prior import Prior
 
@@ -51,8 +50,7 @@ class NestedSampler(object):
     def __call__(self, LHS_seed=None, **kwargs):
         """ Integrate.
 
-        :param kwargs:
-            Keyword arguments passed to :func:`pymultinest.solve`.
+        :param kwargs: Keyword arguments passed to :func:`pymultinest.solve`.
 
         """
 
@@ -69,3 +67,17 @@ class NestedSampler(object):
                               self._ndims,
                               log_zero = self._likelihood.llzero,
                               **kwargs)
+        
+    def write_results(output_basename: str):
+        """Save the output files of MultiNest as .npy file, which is faster for 
+        post-processing.
+
+        :param output_basename: Keyword argument outputfiles_basename originally 
+            passed to :func:`pymultinest.solve`.
+        """
+        output_suffixes = ['', 'dead-birth', 'phys_live-birth']
+
+        for suffix in output_suffixes:
+            # load original multinest output file and save as .npy file 
+            output_file = _np.loadtxt(f"{output_basename}{suffix}.txt")
+            _np.save(f"{output_basename}{suffix}", output_file)
