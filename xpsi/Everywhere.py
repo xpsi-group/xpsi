@@ -6,6 +6,7 @@ from xpsi.cellmesh.rays import compute_rays as _compute_rays
 
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.shell_interpolator import Temp_Interpolator_shells
 
 class AtmosError(xpsiError):
     """ Raised if the numerical atmosphere data were not preloaded. """
@@ -136,7 +137,7 @@ class Everywhere(ParameterSubspace):
 
     """
     required_names = ['temperature (if no custom specification)']
-
+    optional_names = ['mycoolgrid','everywhere_flag','T_everywhere','coderes', 'filename','bhac_data']
     def __init__(self,
                  time_invariant,
                  bounds = None,
@@ -150,7 +151,13 @@ class Everywhere(ParameterSubspace):
                  beam_opt=0,
                  custom = None,
                  image_order_limit = None,
-                 _integrator_toggle = False):
+                 _integrator_toggle = False,
+                 mycoolgrid = False,
+                 everywhere_flag = False,
+                 T_everywhere = 5.5,
+                 coderes = 512,
+                 filename=False,
+                 bhac_data = True):
 
         self.num_rays = num_rays
 
@@ -197,6 +204,16 @@ class Everywhere(ParameterSubspace):
         self.time_invariant = time_invariant
         self._integrator_toggle = _integrator_toggle
 
+        self.mycoolgrid = mycoolgrid
+        self.myeverywhere = everywhere_flag
+        self.T_everywhere = T_everywhere
+        self.coderes = coderes
+        self.filename = filename
+        self.bhac_data = bhac_data
+        
+        if self.mycoolgrid is True and self.filename is False:
+            raise ValueError('Filename not given for interpolation')
+        
     @property
     def atm_ext(self):
         """ ... """
@@ -475,8 +492,22 @@ class Everywhere(ParameterSubspace):
                                         2),
                                        dtype=_np.double)
 
-        self._cellParamVecs[...,:-1] *= _np.array([self.vector[0]])
+        if not self.mycoolgrid:
+            self._cellParamVecs[...,:-1] *= _np.array([self.vector[0]])
+        else:
+            shell_interp = Temp_Interpolator_shells()
+            shell_interp.bhac_shell_avg = self.bhac_data
+            shell_interp.coderes= self.coderes
+            shell_interp.everywhere_xpsi= self.myeverywhere
+            shell_interp.xpsi_theta = self._theta
+            shell_interp.xpsi_phi = self._phi
+            data_avg = shell_interp.read_average_shell(self.filename,coderes=self.coderes,bhac_shell_avg=self.bhac_data)
 
+            Temperature_interpolated = shell_interp.temp_interpolation_avg(thetacode=data_avg[0],phicode=data_avg[1],
+                                                                        Tempcode=data_avg[2], T_everywhere = self.T_everywhere)
+
+            self._cellParamVecs[:,:,0] = Temperature_interpolated[:,:]
+            
         for i in range(self._cellParamVecs.shape[1]):
             self._cellParamVecs[:,i,-1] *= self._effGrav
 
