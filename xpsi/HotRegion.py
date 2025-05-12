@@ -7,6 +7,7 @@ from xpsi.cellmesh.rays import compute_rays as _compute_rays
 
 from xpsi.Parameter import Parameter, Derive
 from xpsi.ParameterSubspace import ParameterSubspace
+from xpsi.shell_interpolator import Temp_Interpolator_shells
 
 class AtmosError(xpsiError):
     """ Raised if the numerical atmosphere data were not preloaded. """
@@ -232,7 +233,12 @@ class HotRegion(ParameterSubspace):
                       'cede_colatitude',
                       'cede_radius',
                       'cede_azimuth',
-                      'cede_temperature']
+                      'cede_temperature',
+                      'mycoolgrid',
+                      'everywhere_flag',
+                      'T_everywhere',
+                      'coderes',
+                      'filename']
 
     def __init__(self,
                  bounds,
@@ -254,6 +260,12 @@ class HotRegion(ParameterSubspace):
                  split=False,
                  custom = None,
                  image_order_limit = None,
+                 mycoolgrid = False,
+                 first_spot = False,
+                 second_spot = False,
+                 T_everywhere = 5.5,
+                 coderes = 512,
+                 filename = False,
                  **kwargs):
 
         self.is_antiphased = is_antiphased
@@ -275,6 +287,16 @@ class HotRegion(ParameterSubspace):
         self.atm_ext = atm_ext
         self.beam_opt = beam_opt
 
+        self.mycoolgrid = mycoolgrid
+        self.first_spot = first_spot
+        self.second_spot = second_spot
+        self.filename = filename
+        self.T_everywhere = T_everywhere
+        self.coderes = coderes
+        
+        if self.mycoolgrid is True and self.filename is False:
+            raise ValueError('Filename not given for interpolation')
+        
         # first the parameters that are fundemental to this class
         doc = """
         The colatitude of the centre of the superseding region [radians].
@@ -913,7 +935,23 @@ class HotRegion(ParameterSubspace):
                                               2),
                                              dtype=_np.double)
 
-        self._super_cellParamVecs[...,:-1] *= self['super_temperature']
+        if not self.mycoolgrid:
+            self._super_cellParamVecs[...,:-1] *= self['super_temperature']
+        else:
+            shell_interp = Temp_Interpolator_shells()
+            shell_interp.xpsi_theta = self._super_theta
+            shell_interp.xpsi_phi = self._super_phi
+            shell_interp.coderes= self.coderes
+            shell_interp.first_spot = self.first_spot
+            shell_interp.second_spot = self.second_spot
+
+            data_snapshot = shell_interp.read_regrid(self.filename,coderes=self.coderes,bhac_shell_avg=self.bhac_data)
+            
+            Temperature_interpolated = shell_interp.temp_interpolation_flux(thetacode=data_snapshot[1],phicode=data_snapshot[0],
+                                                                            Fluxcode=data_snapshot[2],tracercode=data_snapshot[3],
+                                                                            T_everywhere=self.T_everywhere)
+            
+            self._super_cellParamVecs[:,:,0] = Temperature_interpolated[:,:]
 
         for i in range(self._super_cellParamVecs.shape[1]):
             self._super_cellParamVecs[:,i,-1] *= self._super_effGrav
