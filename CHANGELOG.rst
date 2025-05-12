@@ -33,6 +33,43 @@ and this project adheres to
 .. Attribution
 .. ^^^^^^^^^^^
 
+
+[v3.0.6] - 2025-05-12
+~~~~~~~~~~~~~~~~~~~~~
+
+Summary
+^^^^^^^
+
+* Drawing samples from prior to now use Latin hypercube sampler (LHS) to more uniformly draw samples over high-dimensions.
+
+Added
+^^^^^
+
+* Continuous integration test for sampling with UltraNest added.
+
+Changed
+^^^^^^^
+
+* `Prior.draw` modified to use `scipy.stats.qmc.LatinHypercube` instead of `numpy.random.rand` for drawing samples from prior distribution.
+* `Prior.estimate_hypercube_frac` modified to accept the kwarg `LHS_seed` to enable reproducible LHS.
+* `Prior.unit_hypercube_frac` modified to accept the kwarg `LHS_seed` to enable reproducible LHS.
+* `NestedSampler.__call__` accepts `LHS_seed` as a kwarg to passs to `Prior.unit_hypercube_frac`
+* `examples/examples_fast/Sampling.ipynb`: `runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_fast.Modules.main_IS_likelihood.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_fast.Modules.main_IS_prior.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_fast.Modules.main.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_modeling_tutorial.TestRun_BB.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_modeling_tutorial.TestRun_Num.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_modeling_tutorial.TestRun_NumBeam.runtime_params` includes a fixed `LHS_seed`.
+* `examples.examples_modeling_tutorial.TestRun_PolNum_split_inference.runtime_params` includes a fixed `LHS_seed`.
+
+Attribution
+^^^^^^^^^^^
+
+Devarshi Choudhury
+Tuomo Salmi
+
+
 [v3.0.5] - 2025-03-19
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -42,7 +79,7 @@ Summary
 * Issues with phase bin interpolations were fixed when using the time-invariant version of the Everywhere class.
 
 Fixed
-^^^^^^^
+^^^^^
 
 * Phase bin interpolations are now skipped if having only one phase bin during the likelihood calculation (``xpsi/likelihoods/default_background_marginalisation.pyx``) or during the data synthesisation (``xpsi/tools/synthesise.pyx``). Previously, these resulted in errors.
 
@@ -106,6 +143,7 @@ Changed
 
 Attribution
 ^^^^^^^^^^^
+
 Devarshi Choudhury,
 Tuomo Salmi,
 Bas Dorsman

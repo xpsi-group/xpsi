@@ -48,7 +48,7 @@ class NestedSampler(object):
             self._prior = prior
 
     @make_verbose('Commencing integration', 'Integration completed')
-    def __call__(self, **kwargs):
+    def __call__(self, LHS_seed=None, **kwargs):
         """ Integrate.
 
         :param kwargs:
@@ -57,7 +57,7 @@ class NestedSampler(object):
         """
 
         kwargs.setdefault('sampling_efficiency', 0.8)
-        kwargs['sampling_efficiency'] /= self._prior.unit_hypercube_frac
+        kwargs['sampling_efficiency'] /= self._prior.unit_hypercube_frac(LHS_seed=LHS_seed)
 
         yield 'Sampling efficiency set to: %.4f.'%kwargs['sampling_efficiency']
 
