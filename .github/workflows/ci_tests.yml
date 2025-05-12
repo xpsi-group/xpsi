@@ -35,7 +35,7 @@ jobs:
           python=${{ matrix.python-version }}
     - name: mamba installs
       run: |
-        micromamba install flake8 pytest
+        micromamba install flake8 pytest h5py "ultranest>=4.0"
     - name: Set up GCC
       run: |
          sudo apt-get install -y gcc
@@ -49,6 +49,23 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    #- name: multinest and pymultinest install (seems working but the pytest below still cannot find the MultiNest library files)
+    #  run: |
+    #   sudo apt-get install cmake libblas-dev liblapack-dev libatlas-base-dev
+    #   sudo apt install mpich
+    #   git clone https://github.com/farhanferoz/MultiNest.git multinest
+    #   cd multinest/MultiNest_v3.12_CMake/multinest/
+    #   mkdir build
+    #   cd build
+    #   CC=gcc FC=mpif90 CXX=g++ cmake -DCMAKE_{C,CXX}_FLAGS="-O3 -march=native -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -march=native -funroll-loops" ..
+    #   make
+    #   cd ../../../../
+    #   git clone https://github.com/JohannesBuchner/PyMultiNest.git pymultinest
+    #   cd pymultinest
+    #   python setup.py install
+    #   cd ..
+    #   export LD_LIBRARY_PATH=$(pwd)/multinest/MultiNest_v3.12_CMake/multinest/lib/:$LD_LIBRARY_PATH
+    #   echo $LD_LIBRARY_PATH
     - name: install X-PSI package
       run: |
         python setup.py install
