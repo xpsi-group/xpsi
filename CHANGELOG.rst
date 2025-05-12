@@ -34,13 +34,18 @@ and this project adheres to
 .. ^^^^^^^^^^^
 
 
-[v3.0.6] - 2025-03-XX
+[v3.0.6] - 2025-05-12
 ~~~~~~~~~~~~~~~~~~~~~
 
 Summary
 ^^^^^^^
 
 * Drawing samples from prior to now use Latin hypercube sampler (LHS) to more uniformly draw samples over high-dimensions.
+
+Added
+^^^^^
+
+* Continuous integration test for sampling with UltraNest added.
 
 Changed
 ^^^^^^^
@@ -62,6 +67,7 @@ Attribution
 ^^^^^^^^^^^
 
 Devarshi Choudhury
+Tuomo Salmi
 
 
 [v3.0.5] - 2025-03-19
