@@ -814,6 +814,7 @@ class SpectrumPlot(SignalPlot):
         """ Add registered spectrum line as a function of channel number. """
         if not kwargs:
             kwargs.update(dict(color='k', linestyle='-', lw=0.05, alpha=1.0))
+            ax.set_ylim(0.9*_np.min(spectrum),1.1*_np.max(spectrum))
         elif 'ls' in kwargs:
             kwargs['linestyle'] = kwargs.pop('ls')
 
