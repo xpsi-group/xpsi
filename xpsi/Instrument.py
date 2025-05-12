@@ -352,9 +352,11 @@ class Instrument(ParameterSubspace):
 
         # Print if any trimming happens
         if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains rows with only values <= {threshold}.\n Now min energy={self.energy_edges[0]} and max_energy={self.energy_edges[-1]}')
+            print(f'Triming the response matrix because it contains rows with only values <= {threshold}.\n '
+                  f'Now min_energy={self.energy_edges[0]} and max_energy={self.energy_edges[-1]}')
         if empty_channels.sum() > 0:
-            print(f'Triming the response matrix because it contains columns with only values <= {threshold}.\n Now min_channel={self.channels[0]} and max_channel={self.channels[-1]}')
+            print(f'Triming the response matrix because it contains columns with only values <= {threshold}.\n '
+                  f'Now min_channel={self.channels[0]} and max_channel={self.channels[-1]}')
 
         # If ARF and RMF, trim them
         if hasattr( self , 'ARF' ):
@@ -475,9 +477,11 @@ class Instrument(ParameterSubspace):
         channels = channels[ ~empty_channels ]
         inputs = inputs[ ~empty_inputs ]
         if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains rows with only 0 values.\n Now min_input={inputs[0]} and max_energy={inputs[-1]}')
+            print(f'Triming the response matrix because it contains rows with only 0 values.\n '
+                  f'Now min_energy={inputs[0]} and max_energy={inputs[-1]}')
         if empty_channels.sum() > 0:
-            print(f'Triming the response matrix because it contains columns with only 0 values.\n Now min_channel={channels[0]} and max_channel={channels[-1]}')
+            print(f'Triming the response matrix because it contains columns with only 0 values.\n'
+                  f' Now min_channel={channels[0]} and max_channel={channels[-1]}')
 
         # Get the edges of energies for both input and channel
         energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
