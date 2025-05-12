@@ -68,7 +68,7 @@ class NestedSampler(object):
                               log_zero = self._likelihood.llzero,
                               **kwargs)
         
-    def write_results(output_basename: str):
+    def write_results(self, output_basename: str):
         """Save the output files of MultiNest as .npy file, which is faster for 
         post-processing.
 
