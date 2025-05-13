@@ -34,7 +34,7 @@ class ParameterSubspace(object, metaclass=ABCMeta):
             self.prefix = prefix
 
         if not args:
-            yield 'No parameters supplied... empty subspace created.'
+            yield 'An empty subspace was created (no parameters were supplied).'
 
         self._params = []
         self.merge(*args)
