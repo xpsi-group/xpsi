@@ -140,7 +140,7 @@ If you ever need to reinstall, first clean to recompile C files:
 
 .. code-block:: bash
 
-    rm -r build dist *egg* xpsi/*/*.c xpsi/include/rayXpanda/*.o
+    rm -r build dist *egg* xpsi/*/*.c
 
 .. note::
 
