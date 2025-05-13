@@ -315,20 +315,6 @@ class Everywhere(ParameterSubspace):
                                 'if not None.')
         self._image_order_limit = limit
 
-    @property
-    def rayXpanda_defl_lim(self):
-        """ Get the rayXpanda deflection limit. """
-        try:
-            return self._rayXpanda_defl_lim
-        except AttributeError:
-            try:
-                from xpsi.cellmesh import __rayXpanda_defl_lim__
-            except ImportError:
-                return None
-            else:
-                self._rayXpanda_defl_lim = __rayXpanda_defl_lim__
-                return __rayXpanda_defl_lim__
-
     def print_settings(self):
         """ Print numerical settings. """
         print('Base number of cell parallels: ', self.sqrt_num_cells)
