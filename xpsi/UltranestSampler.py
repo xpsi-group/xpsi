@@ -51,7 +51,7 @@ class UltranestSampler(ultranest.ReactiveNestedSampler):
 
         # make default folder for output if not specified
         sampler_params.setdefault('log_dir', 'output')
-        os.makedirs(sampler_params['log_dir'], exist_ok=True)
+        _os.makedirs(sampler_params['log_dir'], exist_ok=True)
 
         # initialise (region) sampler
         super().__init__(param_names=self._param_names, 
