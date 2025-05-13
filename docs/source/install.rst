@@ -28,26 +28,43 @@ X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of
 X-PSI v2.0. We recommend creating a conda virtual environment with anaconda3 as
 per instructions below so as to not disrupt your Python ecosystem.
 
+Note that ``python >= 3.9.0`` is now required because of the version of
+``matplotlib`` needed.
+
 .. _basic_env:
 
 Conda Environment
 ^^^^^^^^^^^^^^^^^
 
-In the source directory we provide a dependency file ``basic_environment.yml`` that
-installs the Python packages required for basic functionality of X-PSI. Its
-contents are:
+In the source directory we provide a dependency file ``environment.yml`` that
+installs the Python packages required for basic functionality of X-PSI. Note
+the script requirement for ``matplotlib``.  For now, we leave out the
+multinest/ultranest samplers, because of issues on MacOS.  Details for installation
+of those are below.
+
+The content of the ``environment.yml`` are:
 
 .. code-block:: bash
 
     name: xpsi_py3
     channels:
         - defaults
+        - conda-forge
     dependencies:
+        - python >= 3.9.0
         - numpy < 2.0.0
-        - cython ~= 3.0.11
-        - matplotlib
+        - matplotlib == 3.9.2       # STRICT REQUIREMENT FROM FGIVENX
         - scipy
         - wrapt
+        - gsl                       # GNU Science library
+        - pytest                    # running functionality self-tests
+        - getdist                   # posterior KDE corner plotting
+        - tqdm                      # progress bar package
+        - h5py                      # storage of X-ray signals computed from posterior samples
+        - nestcheck                 # posterior error analysis, plotting, run combination, etc.
+        - fgivenx                   # conditional posterior plotting; also required by nestcheck
+        - astropy >= 5.2, < 7.0.0   # reading FITS files
+        - emcee                     # MCMC sammpler
 
 
 The core packages required for likelihood functionality are
@@ -62,7 +79,7 @@ To create a virtual environment from this file:
 
 .. code-block:: bash
 
-     conda env create -f <path/to/xpsi>/basic_environment.yml
+     conda env create -f <path/to/xpsi>/environment.yml
 
 If conda does not solve the environment dependencies, you may need to create
 an environment manually via
@@ -86,13 +103,9 @@ Activate the environment as:
     ENVIRONMENT.** Pay special attention to reactivate the environment if you
     ever have to restart the kernel.
 
-We start by installing the GNU Scientific Library (GSL):
 
-.. code-block:: bash
 
-   conda install gsl
-
-Next, install
+We now install
 `mpi4py <https://bitbucket.org/mpi4py/mpi4py/downloads/>`_ which is required for 
 nested sampling:
 
@@ -256,13 +269,18 @@ should print to screen something like the following:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.2.0               |
+    |                Version: 3.0.6               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
 
-    Imported GetDist version: 1.4
+    Imported emcee version: 3.1.6
+    Warning: Cannot import torch and test SBI_wrapper.
+    Imported GetDist version: 1.6.4
     Imported nestcheck version: 0.2.1
+
+
+Some warnings may appear if you are missing Multinest/Ultranest packages.
 
 
 .. note::

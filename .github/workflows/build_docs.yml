@@ -35,7 +35,7 @@ jobs:
       with:
         cache-env: true
         cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
-        environment-file: basic_environment.yml
+        environment-file: environment.yml
         environment-name: xpsipy3
         extra-specs: |
           python=3.10

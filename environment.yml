@@ -3,16 +3,18 @@ channels:
         - defaults
         - conda-forge
 dependencies:
-        - numpy
-        - cython ~= 0.29
-        - matplotlib
+        - python >= 3.9.0
+        - numpy < 2.0.0
+        - cython~= 3.0.11
+        - matplotlib == 3.9.2  # STRICT REQUIREMENT FROM FGIVENX
         - scipy
         - wrapt
-        - pymultinest  # nested sampling
-        - mpi4py  # nested sampling
+        - gsl # GNU Science library
         - pytest  # running functionality self-tests
         - getdist  # posterior KDE corner plotting
+        - tqdm   # progress bar package
         - h5py  # storage of X-ray signals computed from posterior samples
         - nestcheck  # posterior error analysis, plotting, run combination, etc.
         - fgivenx  # conditional posterior plotting; also required by nestcheck
         - astropy >= 5.2, < 7.0.0 # reading FITS files
+        - emcee  # MCMC sammpler
