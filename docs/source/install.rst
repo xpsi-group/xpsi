@@ -28,6 +28,9 @@ X-PSI was originally developed in Python 2.7 and was ported to Python 3 as of
 X-PSI v2.0. We recommend creating a conda virtual environment with anaconda3 as
 per instructions below so as to not disrupt your Python ecosystem.
 
+Note that ``python >= 3.9.0`` is now required because of the version of
+``matplotlib`` needed.
+
 .. _basic_env:
 
 Conda Environment
@@ -48,8 +51,8 @@ The content of the ``environment.yml`` are:
         - defaults
         - conda-forge
     dependencies:
-        - numpy
-        - cython~= 3.0.11
+        - python >= 3.9.0
+        - numpy < 2.0.0
         - matplotlib == 3.9.2       # STRICT REQUIREMENT FROM FGIVENX
         - scipy
         - wrapt
