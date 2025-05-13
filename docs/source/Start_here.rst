@@ -26,6 +26,8 @@ All tutorials listed below may be found as Jupyter notebooks under ``docs/source
 
 * :doc:`Emitting patterns 2D projection<Emitting_patterns_2Dprojection>` is a tutorial showing how to use the 2D projection tool for the hot emitting regions on the star's surface.
 
+* :doc:`Accretion disk<Accretion_disk>` is a tutorial showing how to set up an accretion disk and add its emission to the emission of a star.
+
 * :doc:`Importance sampling<Importance_sampling>` is a tutorial for importance sampling.
 
 * :doc:`Module generator tutorial<Module_generator_tutorial>` provides instructions on how to generate Python modules in an automated way to run X-PSI.
