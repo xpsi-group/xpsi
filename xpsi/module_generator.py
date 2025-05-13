@@ -205,6 +205,13 @@ parser.add_argument('--frequency',
                     required=True,
                     help='The coordinate spin frequency of the star (Hz).',
                     empty_lines_below=2)
+                    
+parser.add_argument('--use-fits-format',
+                    action='store_true',
+                    help='Are the source and instrumental files stored in FITS format?',
+                    comment_line_above='Input data in FITS format?',
+                    empty_lines_below=2,
+                    comment=True)
 
 parser.add_argument('--model',
                     type=str,
@@ -492,14 +499,14 @@ class GenerateConfigAction(argparse.Action):
 
         :return str: The text for the argument in the configuration file.
         """
-        entry = '\\n' if newline else ''
+        entry = '\n' if newline else ''
 
         if comment_line_above is not None:
             if comment_line_above == 'rule':
-               entry += '#' + '-'*78 + '#\\n'
+               entry += '#' + '-'*78 + '#\n'
             else:
                 _ = '## {{}} ##'.format(comment_line_above)
-                entry += '##' + '-' * (len(_) - 4) + '##\\n' + _ + '\\n##' + '-' * (len(_) - 4) + '##\\n'
+                entry += '##' + '-' * (len(_) - 4) + '##\n' + _ + '\n##' + '-' * (len(_) - 4) + '##\n'
 
         _ = ' ## {{}}'.format(inline_comment) if inline_comment is not None else ''
         if not _ and isinstance(nargs, int) and nargs > 1:
@@ -513,24 +520,24 @@ class GenerateConfigAction(argparse.Action):
                                                                  '' if (i > 0 and nargs != 1) else arg,
                                                                  '' if nargs != 1 else '=',
                                                                  '' if (i == 0 and nargs != 1) else str(_default),
-                                                                 (_ if i == 0 else '') + ('\\n{{0}}{{1}}'.format('#' if comment else '', str(_default)) if i == 0 and nargs != 1 else ''),
-                                                                 '\\n' if i > 0 else '')
+                                                                 (_ if i == 0 else '') + ('\n{{0}}{{1}}'.format('#' if comment else '', str(_default)) if i == 0 and nargs != 1 else ''),
+                                                                 '\n' if i > 0 else '')
         else:
             entry += '{{0}}{{1}}{{2}}{{3}}{{4}}'.format('#' if comment else '',
                                                         arg,
                                                         '=' if nargs == 1 else '',
                                                         _ if nargs != 1 else (str(default) if default is not None else ''),
-                                                        ('\\n' + str(default) if default is not None else '') if nargs != 1 else _)
+                                                        ('\n' + str(default) if default is not None else '') if nargs != 1 else _)
 
         if action == 'append':
-            entry += '\\n#{{0}}='.format(arg)
+            entry += '\n#{{0}}='.format(arg)
 
         if isinstance(nargs, int) and nargs > 1:
-            entry += '\\n' * nargs
+            entry += '\n' * nargs
         elif isinstance(nargs, str):
-            entry += '\\n' * 3
+            entry += '\n' * 3
 
-        entry += '\\n' * empty_lines_below
+        entry += '\n' * empty_lines_below
 
         return entry
 

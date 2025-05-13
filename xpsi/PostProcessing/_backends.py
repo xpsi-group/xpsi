@@ -7,7 +7,7 @@ except ImportError:
     _warning('Cannot create a GetDist sample backend.')
 
 try:
-    from nestcheck.data_processing import process_multinest_run
+    from ._nestcheck_modifications import process_multinest_run
     from nestcheck.data_processing import process_polychord_run
 except ImportError:
     _warning('Cannot use nestcheck sample backend.')
@@ -39,25 +39,36 @@ class NestedBackend(Run):
         filerootpath =_os.path.join(base_dir, root)
         _filerootpath = filerootpath
 
+        # check whether to use .npy files or .txt files 
+        if _os.path.isfile(filerootpath+'.npy'):
+            loader = _np.load
+            saver = _np.save
+            filetype = ".npy"
+        else:
+            loader = _np.loadtxt
+            saver = _np.savetxt
+            filetype = ".txt"
+            print("Change output files to .npy to speed up post-processing")
+
         if transform is not None:
-            samples = _np.loadtxt(filerootpath+'.txt')
+            samples = loader(filerootpath + filetype)
             ndims = samples.shape[1] - 2
             temp = transform(samples[0,2:], old_API=True)
             ntransform = len(temp) - ndims
 
-            _exists = _os.path.isfile(filerootpath+'_transformed.txt')
+            _exists = _os.path.isfile(filerootpath+'_transformed'+filetype)
             if not _exists or overwrite_transformed:
                 transformed = _np.zeros((samples.shape[0],
                                          samples.shape[1] + ntransform))
                 transformed[:,:2] = samples[:,:2]
                 for i in range(samples.shape[0]):
                     transformed[i,2:] = transform(samples[i,2:], old_API=True)
-                _np.savetxt(filerootpath+'_transformed.txt', transformed)
+                saver(f'{filerootpath}_transformed{filetype}', transformed)
 
             filerootpath += '_transformed'
             root += '_transformed'
 
-        super(NestedBackend, self).__init__(filepath=filerootpath+'.txt',**kwargs)
+        super(NestedBackend, self).__init__(filepath=filerootpath+filetype,**kwargs)
 
         if getdist is not None:
             # getdist backend
@@ -71,57 +82,50 @@ class NestedBackend(Run):
 
         self.use_nestcheck = use_nestcheck
 
-        if self.use_nestcheck: # nestcheck backend
-            if transform is not None:
-                for ext in ['dead-birth.txt', 'phys_live-birth.txt']:
-                    _exists = _os.path.isfile(filerootpath + ext)
-                    if not _exists or overwrite_transformed:
-                        samples = _np.loadtxt(_filerootpath + ext)
-                        transformed = _np.zeros((samples.shape[0],
-                                                 samples.shape[1] + ntransform))
-                        transformed[:,ndims+ntransform:] = samples[:,ndims:]
-                        for i in range(samples.shape[0]):
-                            transformed[i,:ndims+ntransform] =\
-                                                transform(samples[i,:ndims],
-                                                          old_API=True)
+        if self.use_nestcheck and transform is not None:
+            for ext in [f'dead-birth{filetype}', f'phys_live-birth{filetype}']:
+                # save dead and live points for later use in process_multinest_run():
+                if 'dead-birth' in ext: 
+                    dead_points = samples
+                if 'phys_live-birth' in ext: 
+                    live_points = samples 
 
-                        _np.savetxt(filerootpath + "-" + ext, transformed)
+                if not _os.path.isfile(filerootpath + ext) or overwrite_transformed:
+                   # transform samples 
+                    transformed = _np.zeros((samples.shape[0],
+                                                samples.shape[1] + ntransform))
+                    transformed[:,ndims+ntransform:] = samples[:,ndims:]
+                    for i in range(samples.shape[0]):
+                        transformed[i,:ndims+ntransform] =\
+                                            transform(samples[i,:ndims],
+                                                        old_API=True)
+                    # save transformed part 
+                    saver(filerootpath + "-" + ext, transformed)
 
-                # .stats file with same root needed, but do not need to modify
-                # the .stats file contents
-                if not _os.path.isfile(filerootpath + '.stats'):
-                    if _os.path.isfile(_filerootpath + '.stats'):
-                        try:
-                            from shutil import copyfile as _copyfile
-                        except ImportError:
-                            pass
-                        else:
-                            _copyfile(_filerootpath + '.stats',
-                                      filerootpath + '.stats')
-            try:
-                kwargs['implementation']
-            except KeyError:
-                print('Root %r sampling implementation not specified... '
-                      'assuming MultiNest for nestcheck...')
-                try:
-                    self._nc_bcknd = process_multinest_run(root,
-                                                       base_dir=base_dir)
-                except FileNotFoundError:
-                    self._nc_bcknd = process_multinest_run(root+"-",
-                                                   base_dir=base_dir)
-            else:
-                if kwargs['implementation'] == 'multinest':
+            # .stats file with same root needed, but do not need to modify
+            # the .stats file contents
+            if not _os.path.isfile(filerootpath + '.stats'):
+                if _os.path.isfile(_filerootpath + '.stats'):
                     try:
-                        self._nc_bcknd = process_multinest_run(root,
-                                                           base_dir=base_dir)
-                    except FileNotFoundError:
-                        self._nc_bcknd = process_multinest_run(root+"-",
-                                                       base_dir=base_dir)
-                elif kwargs['implementation'] == 'polychord':
-                    self._nc_bcknd = process_polychord_run(root,
-                                                           base_dir=base_dir)
-                else:
-                    raise ValueError('Cannot process with nestcheck.')
+                        from shutil import copyfile as _copyfile
+                    except ImportError:
+                        pass
+                    else:
+                        _copyfile(_filerootpath + '.stats',
+                                    filerootpath + '.stats')
+                            
+            # assuming multinest for nestcheck if not specified   
+            implementation = kwargs.get('implementation', 'multinest')
+
+            if implementation == 'multinest':
+                try:
+                    self._nc_bcknd = process_multinest_run(dead_points, live_points, root, base_dir=base_dir)
+                except FileNotFoundError:
+                    self._nc_bcknd = process_multinest_run(dead_points, live_points, root + "-", base_dir=base_dir)
+            elif implementation == 'polychord':
+                self._nc_bcknd = process_polychord_run(root, base_dir=base_dir)
+            else:
+                raise ValueError('Cannot process with nestcheck.')
 
     @property
     def getdist_backend(self):

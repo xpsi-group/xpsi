@@ -137,9 +137,7 @@ class Instrument(ParameterSubspace):
             for j in range(matrix.shape[1]):
                 assert matrix[:,j].any()
         except AssertionError:
-            raise ResponseError('Each row and column of the matrix must contain at least one positive number.'
-                                ' Try reducing the \"gap\" between the minimum input energy '
-                                'and minimum input channel.')
+            raise ResponseError('Each row and column of the matrix must contain at least one positive number.')
         self._matrix = matrix
 
     def construct_matrix(self):
@@ -295,20 +293,19 @@ class Instrument(ParameterSubspace):
             try:
                 channel_array = _np.array(channel_array)
             except TypeError:
-                raise ChannelError('Channel numbers must be in a one-dimensional array of positive integers'
-                                   '(including zero).')
+                raise ChannelError('Channel numbers must be in an array.')
 
         try:
             assert channel_array.ndim == 1
             assert (channel_array >= 0).all()
             assert channel_array.shape[0] == self._matrix.shape[0]
         except AssertionError:
-            raise ChannelError('Channel numbers must be in a one-dimensional array of positive integers'
-                               '(including zero).')
+            raise ChannelError('Channel numbers must be in a one-dimensional array of positive integers (including zero), with a '
+                             'length equal to the number of channel in the matrix.')
+
 
         if (channel_array[1:] - channel_array[:-1] != 1).any():
-            yield ('Warning: Channel numbers do not uniformly increment by one.\n'
-                   '         Please check for correctness.')
+            print('WARNING: Channel numbers do not uniformly increment by one.')
 
         self._channels = channel_array
 
@@ -360,9 +357,11 @@ class Instrument(ParameterSubspace):
 
         # Print if any trimming happens
         if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains lines with only values <= {threshold}.\n Now min energy={self.energy_edges[0]} and max_input={self.energy_edges[-1]}')
+            print(f'Triming the response matrix because it contains rows with only values <= {threshold}.\n '
+                  f'Now min_energy={self.energy_edges[0]} and max_energy={self.energy_edges[-1]}')
         if empty_channels.sum() > 0:
-            print(f'Triming the response matrix because it contains columns with only values <= {threshold}.\n Now min_channel={self.channels[0]} and max_channel={self.channels[-1]}')
+            print(f'Triming the response matrix because it contains columns with only values <= {threshold}.\n '
+                  f'Now min_channel={self.channels[0]} and max_channel={self.channels[-1]}')
 
         # If ARF and RMF, trim them
         if hasattr( self , 'ARF' ):
@@ -483,9 +482,11 @@ class Instrument(ParameterSubspace):
         channels = channels[ ~empty_channels ]
         inputs = inputs[ ~empty_inputs ]
         if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains lines with only 0 values.\n Now min_input={inputs[0]} and max_input={inputs[-1]}')
+            print(f'Triming the response matrix because it contains rows with only 0 values.\n '
+                  f'Now min_energy={inputs[0]} and max_energy={inputs[-1]}')
         if empty_channels.sum() > 0:
-            print(f'Triming the response matrix because it contains columns with only 0 values.\n Now min_channel={channels[0]} and max_channel={channels[-1]}')
+            print(f'Triming the response matrix because it contains columns with only 0 values.\n'
+                  f' Now min_channel={channels[0]} and max_channel={channels[-1]}')
 
         # Get the edges of energies for both input and channel
         energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
