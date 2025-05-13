@@ -18,3 +18,4 @@ dependencies:
         - fgivenx  # conditional posterior plotting; also required by nestcheck
         - astropy >= 5.2, < 7.0.0 # reading FITS files
         - emcee  # MCMC sammpler
+        - jupyter
