@@ -4,6 +4,8 @@ from xpsi.utils import make_verbose
 from xpsi.Likelihood import Likelihood
 from xpsi.Prior import Prior
 
+import h5py
+
 try:
     import pymultinest
 except ImportError:
@@ -68,8 +70,8 @@ class NestedSampler(object):
                               log_zero = self._likelihood.llzero,
                               **kwargs)
         
-    def write_results(self, output_basename: str):
-        """Save the output files of MultiNest as .npy file, which is faster for 
+    def write_results_as_hdf5(self, output_basename: str):
+        """Save the output files of MultiNest as .hdf5 file, which is faster for 
         post-processing.
 
         :param output_basename: Keyword argument outputfiles_basename originally 
@@ -77,7 +79,31 @@ class NestedSampler(object):
         """
         output_suffixes = ['', 'dead-birth', 'phys_live-birth']
 
-        for suffix in output_suffixes:
-            # load original multinest output file and save as .npy file 
-            output_file = _np.loadtxt(f"{output_basename}{suffix}.txt")
-            _np.save(f"{output_basename}{suffix}", output_file)
+        paramnames = self._likelihood.names
+
+        with h5py.File(f'{output_basename}.hdf5', 'w') as f:
+            
+            for suffix in output_suffixes:
+                # load original multinest output file 
+                original_output = _np.loadtxt(f"{output_basename}{suffix}.txt")
+
+                # set meta depending on output file 
+                if suffix == '':
+                    metadata = ['weights', '-2logl'] + paramnames
+                    suffix = 'post_unweighted' # rename for hdf5 file
+                if suffix == 'dead-birth':
+                    metadata = paramnames + ['logl', 'logl_birth', 
+                                            'log_prior_mass', 'node_no']
+                if suffix == 'phys_live-birth':
+                    metadata = paramnames + ['logl', 'logl_birth', 
+                                            'node_no']
+                
+                # create a group for data, keep original order of datafile 
+                data_group = f.create_group(suffix, track_order=True)
+
+                # add datasets, one for each column
+                for idx, name in enumerate(metadata):
+                    if original_output.ndim == 1:
+                        data_group.create_dataset(name, data=original_output[idx])
+                    else:
+                        data_group.create_dataset(name, data=original_output[:,idx])

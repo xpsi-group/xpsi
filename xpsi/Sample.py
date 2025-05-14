@@ -126,7 +126,7 @@ def nested(likelihood, prior, check_kwargs={}, **kwargs):
                             prior)
     sampler(**kwargs)
 
-    sampler.write_results(kwargs['outputfiles_basename'])
+    sampler.write_results_as_hdf5(kwargs['outputfiles_basename'])
 
 @make_verbose('Importance sampling commencing',
               'Importance sampling completed')
