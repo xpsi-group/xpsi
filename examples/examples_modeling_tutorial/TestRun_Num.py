@@ -193,45 +193,6 @@ class CustomPhotosphere_num(xpsi.Photosphere):
     """ A photosphere extension to preload the numerical atmosphere NSX. """
 
     @xpsi.Photosphere.hot_atmosphere.setter
-    def hot_atmosphere_old(self, path):
-        try:
-            NSX = np.loadtxt(path, dtype=np.double)
-        except:
-            print("ERROR: You miss the following file:", path)
-            print("The file is found from here: https://doi.org/10.5281/zenodo.7094144")
-            exit()
-        logT = np.zeros(35)
-        logg = np.zeros(14)
-        mu = np.zeros(67)
-        logE = np.zeros(166)
-
-        #reorder_buf = np.zeros((35,11,67,166))
-        reorder_buf = np.zeros((35,14,67,166))
-
-        index = 0
-        for i in range(reorder_buf.shape[0]):
-            for j in range(reorder_buf.shape[1]):
-                for k in range(reorder_buf.shape[3]):
-                   for l in range(reorder_buf.shape[2]):
-                        logT[i] = NSX[index,3]
-                        logg[j] = NSX[index,4]
-                        logE[k] = NSX[index,0]
-                        mu[reorder_buf.shape[2] - l - 1] = NSX[index,1]
-                        reorder_buf[i,j,reorder_buf.shape[2] - l - 1,k] = 10.0**(NSX[index,2])
-                        index += 1
-
-        buf = np.zeros(np.prod(reorder_buf.shape))
-
-        bufdex = 0
-        for i in range(reorder_buf.shape[0]):
-            for j in range(reorder_buf.shape[1]):
-                for k in range(reorder_buf.shape[2]):
-                   for l in range(reorder_buf.shape[3]):
-                        buf[bufdex] = reorder_buf[i,j,k,l]; bufdex += 1
-
-        self._hot_atmosphere = (logT, logg, mu, logE, buf)
-
-    @xpsi.Photosphere.hot_atmosphere.setter
     def hot_atmosphere(self,path):
         size=(35, 14, 67, 166)
         path_npy = path[0:len(path)-3]+"npy"
