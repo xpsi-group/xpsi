@@ -306,73 +306,12 @@ class Instrument(ParameterSubspace):
 
         yield
 
-    @make_verbose('Trimming instrument response',
-                  'Instrument response trimmed')
-    def trim_response(self, 
-                      min_channel=0,
-                      max_channel=-1,
-                      threshold=1e-5 ):
-        """ Trim the instrument response to the specified channel range.
-
-        :param int min_channel:
-            The minimum channel number to include in the trimmed response.
-
-        :param int max_channel:
-            The maximum channel number to include in the trimmed response.
-
-        :param float threshold:
-            The threshold value to use for trimming the instrument response.
-            Channels / inputs with a total response below this value will be removed.
-
-        """
-        
-        # Make the table of required channels
-        assert min_channel >= self.channels[0]
-        if max_channel == -1:
-            max_channel = self.channels[-1]
-        assert max_channel <= self.channels[-1]
-        old_channels = self.channels
-        new_channels_indexes = [ min_channel <= c <= max_channel for c in self.channels]
-
-        # Find empty columns and lines
-        new_matrix = self.matrix[new_channels_indexes]
-        empty_channels = _np.all( new_matrix <= threshold, axis=1)
-        empty_inputs = _np.all( new_matrix <= threshold, axis=0)
-        
-        # Apply to matrix and channels directly
-        self.matrix = new_matrix[~empty_channels][:,~empty_inputs]
-        self.channels = self.channels[new_channels_indexes][ ~empty_channels ]
-
-        # Get the edges of energies for both input and channel
-        new_energy_edges = [ self.energy_edges[k] for k in range(len(empty_inputs)) if not empty_inputs[k] ]
-        self.energy_edges = _np.hstack( (new_energy_edges , self.energy_edges[ _np.where( self.energy_edges == new_energy_edges[-1] )[0] + 1 ] ) )
-        if hasattr( self , 'channel_edges' ):
-            new_channels_edges = [ self.channel_edges[ _np.where(old_channels==chan)[0][0]] for chan in self.channels]
-            self.channel_edges = _np.hstack( (new_channels_edges , self.channel_edges[_np.where( old_channels==self.channels[-1])[0] + 1]) )
-
-        # Print if any trimming happens
-        if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains rows with only values <= {threshold}.\n '
-                  f'Now min_energy={self.energy_edges[0]} and max_energy={self.energy_edges[-1]}')
-        if empty_channels.sum() > 0:
-            print(f'Triming the response matrix because it contains columns with only values <= {threshold}.\n '
-                  f'Now min_channel={self.channels[0]} and max_channel={self.channels[-1]}')
-
-        # If ARF and RMF, trim them
-        if hasattr( self , 'ARF' ):
-            self.RMF = self.RMF[new_channels_indexes][~empty_channels][:,~empty_inputs]
-            self.ARF = self.ARF[~empty_inputs]
-
     @classmethod
     @make_verbose('Loading instrument response matrix from OGIP compliant files',
                   'Response matrix loaded')
     def from_ogip_fits(cls,
               RMF_path,
               ARF_path=None,
-              min_channel=0,
-              max_channel=-1,
-              min_input=1,
-              max_input=-1,
               datafolder=None,
               **kwargs):
         """ Loading method for Instrument using OGIP defined ARF/RMF or RSP.
@@ -383,24 +322,17 @@ class Instrument(ParameterSubspace):
         :param str | None ARF_path:
             The path to the ARF file which should be OGIP compliant or None if the RMF_path points to a RSP file. 
 
-        :param int min_channel:
-            The minimum channel for which the instrument response is loaded.
-
-        :param int max_channel:
-            The maximum channel for which the instrument response is loaded.
-
-        :param int min_input:
-            The minimum input energy number for which the instrument response is loaded.
-
-        :param int max_input:
-            The maximum input energy number for which the instrument response is loaded.
-
         :param str | None datafolder:
             The path to the folder which contains both ARF and RMF files, if not specified in RMF_path or ARF_path.
 
         :return:
             Instrument instance with loaded instrument response matrix.
         """
+
+        for key in ['min_channel', 'max_channel', 'min_input', 'max_input']:
+            if key in kwargs.keys():
+                print(f'WARNING: Deprecated keyword {key} has been provided. The whole instrument response matrix is now loaded. '
+                      'This should not be an issue if the Data and/or Signal has proper min_channel and max_channel.')
 
         if datafolder:
             ARF_path = _os.path.join( datafolder, ARF_path ) if ARF_path is not None else None
@@ -420,22 +352,14 @@ class Instrument(ParameterSubspace):
             with fits.open( ARF_path ) as ARF_hdul:
                 assert RMF_instr == ARF_hdul['SPECRESP'].header['INSTRUME']
 
-        # Get the values and change the -1 values if requried
-        if max_channel == -1:
-            max_channel = DETCHANS -1
-        if max_input == -1:
-            max_input = NUMGRP
-        channels = _np.arange( min_channel, max_channel+1 )
-        inputs = _np.arange( min_input, max_input+1  )
-
-        # Perform routine checks
-        assert min_channel >= TLMIN and max_channel <= TLMAX
-        assert min_input >= 0 and max_input <= NUMGRP
-
         # If everything in order, get the data
         with fits.open( RMF_path ) as RMF_hdul:
             RMF_MATRIX = RMF_hdul['MATRIX'].data
             RMF_EBOUNDS = RMF_hdul['EBOUNDS'].data
+
+        # Get all the channels and einput energies
+        channels = _np.array( RMF_EBOUNDS['CHANNEL'] )
+        inputs = _np.arange( 1, NUMGRP+1  )
 
         # Get the channels from the data
         RMF = _np.zeros((DETCHANS, NUMGRP))
@@ -457,35 +381,22 @@ class Instrument(ParameterSubspace):
                 if n_chan == 0:
                     continue
 
-                RMF[f_chan:f_chan+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
+                RMF[f_chan-TLMIN:f_chan+n_chan-TLMIN,i] += RMF_line[n_skip:n_skip+n_chan]
                 n_skip += n_chan
 
         # Make the RSP, depending on the input files
         if ARF_path is None:
-            RSP = RMF[min_channel:max_channel+1,min_input-1:max_input]
+            RSP = RMF
             ARF_area = RMF.sum( axis=0 )
         else:
             ARF = Table.read(ARF_path, 'SPECRESP')
             ARF_area = ARF['SPECRESP']
             RSP = RMF * ARF_area
-            RSP = RSP[min_channel:max_channel+1,min_input-1:max_input]
-
-        # Find empty columns and lines
-        empty_channels = _np.all(RSP == 0, axis=1)
-        empty_inputs = _np.all(RSP == 0, axis=0)
-        RSP = RSP[~empty_channels][:,~empty_inputs]
-        channels = channels[ ~empty_channels ]
-        inputs = inputs[ ~empty_inputs ]
-        if empty_inputs.sum() > 0:
-            print(f'Triming the response matrix because it contains rows with only 0 values.\n '
-                  f'Now min_energy={inputs[0]} and max_energy={inputs[-1]}')
-        if empty_channels.sum() > 0:
-            print(f'Triming the response matrix because it contains columns with only 0 values.\n'
-                  f' Now min_channel={channels[0]} and max_channel={channels[-1]}')
+            RSP = RSP
 
         # Get the edges of energies for both input and channel
         energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
-        channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels],RMF_EBOUNDS['E_MAX'][channels[-1]])
+        channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
 
         # Make the instrument
         Instrument = cls(RSP,
@@ -495,8 +406,8 @@ class Instrument(ParameterSubspace):
                          **kwargs)
         
         # Add ARF and RMF for plotting
-        Instrument.RMF = RMF[min_channel:max_channel+1,min_input-1:max_input][~empty_channels][:,~empty_inputs]
-        Instrument.ARF = ARF_area[min_input-1:max_input][~empty_inputs]
+        Instrument.RMF = RMF
+        Instrument.ARF = ARF_area
         Instrument.name = RMF_instr
 
         return Instrument

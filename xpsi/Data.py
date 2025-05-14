@@ -225,6 +225,8 @@ class Data(object):
          # Make the table of required channels
         assert min_channel >= self.channels[0] 
         assert max_channel <= self.channels[-1]
+        if max_channel == -1:
+            max_channel = self.channels[-1]
         new_channels = [ min_channel <= c <= max_channel for c in self.channels]
 
         # Trim the counts and channels
