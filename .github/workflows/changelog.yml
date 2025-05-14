@@ -5,7 +5,10 @@ on:
     types: [labeled, closed]
 jobs:
   check-changelog-entry:
-    if: (github.event.action == 'labeled' && github.event.label.name == 'ready-for-changelog') || (github.event.action == 'closed' && github.event.pull_request.merged == true && !contains(github.event.pull_request.labels.*.name, 'no-changelog-entry-needed'))
+    if: >
+     (github.event.action == 'labeled' && github.event.label.name == 'ready-for-changelog') || 
+     (github.event.action == 'closed' && github.event.pull_request.merged == true && 
+     !contains(github.event.pull_request.labels.*.name, 'no-changelog-entry-needed'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
@@ -15,9 +18,9 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
         run: |
           if compgen -G "changelog.d/$PR_NUMBER.*.rst"; then
-            echo "changelog exists"
+            echo "Changelog exists :)"
           else
-            echo "changelog entry not found"
+            echo "Changelog entry not found! :("
             exit 1
           fi
 
@@ -28,10 +31,15 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@v3
         
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Install Python3 Conda environment with Micromamba
+        uses: mamba-org/setup-micromamba@v1
         with:
-          python-version: '3.x'
+          cache-env: true
+          cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+          environment-file: basic_environment.yml
+          environment-name: xpsipy3
+          extra-specs: |
+            python=3.10
 
       - name: Install changelog dependencies
         run: |
