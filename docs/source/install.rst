@@ -329,7 +329,7 @@ If you ever need to reinstall, first clean to recompile the C files:
 
 .. code-block:: bash
 
-    rm -r build dist *egg* xpsi/*/*.c xpsi/include/rayXpanda/*.o
+    rm -r build dist *egg* xpsi/*/*.c
 
 Alternatively, to build X-PSI in-place:
 
