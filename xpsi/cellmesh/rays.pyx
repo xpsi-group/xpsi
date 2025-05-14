@@ -54,77 +54,11 @@ cdef double eval_image_deflection(int order, double psi) noexcept nogil:
     else:
         return <double>(order) * _pi + pow(-1.0, <double>order) * psi
 
-cdef void invert(double a, double b, double *c, double *d) noexcept nogil:
-    #c_invert(a, b, c, d)
-    __pyx_f_9rayXpanda_9inversion_c_invert(a, b, c, d)
-
-cdef void deflect(double a, double b, double *c, double *d) noexcept nogil:
-    #c_deflect(a, b, c, d)
-    __pyx_f_9rayXpanda_10deflection_c_deflect(a, b, c, d)
-
-cdef double _get_rayXpanda_defl_lim() except *:
-    try:
-        from . import __rayXpanda_defl_lim__
-    except ImportError:
-        __rayXpanda_defl_lim__ = _hlfpi # default limit
-    finally:
-        xpsi.cellmesh._check_rayXpanda_defl_lim(__rayXpanda_defl_lim__)
-        return <double>__rayXpanda_defl_lim__
-
 cdef bint compare_double(double x, double y, double epsilon = 1.0e-12) noexcept nogil:
     if(fabs(x - y) < epsilon):
         return True
     else:
         return False
-
-cdef void link_rayXpanda(bint *use_rayXpanda, double *rayXpanda_defl_lim) except *:
-    cdef double _flag, _throwaway
-    use_rayXpanda[0] = 1
-    invert(0.5, 0.5, &_flag, &_throwaway)
-    if <signed int>_flag == -2:
-        use_rayXpanda[0] = 0
-        xpsi.__use_rayXpanda__ = False
-        try:
-            xpsi.__used_rayXpanda__
-        except AttributeError:
-            _cache = None
-        else:
-            _cache = xpsi.__used_rayXpanda__
-        finally:
-            if _cache or (_cache is None and xpsi.__rayXpanda_installed__):
-                xpsi._warning('rayXpanda installed, but library not called')
-                xpsi._warning('this is due to a run-time linking failure')
-        xpsi.__used_rayXpanda__ = False
-    else:
-        use_rayXpanda[0] = 1
-        xpsi.__use_rayXpanda__ = True
-        rayXpanda_defl_lim[0] = _get_rayXpanda_defl_lim()
-        try:
-            xpsi.__used_rayXpanda__
-        except AttributeError:
-            _cache = None
-        else:
-            _cache = xpsi.__used_rayXpanda__
-        finally:
-            try:
-                _changed = (xpsi.cellmesh.__cached_rayXpanda_defl_lim__ != rayXpanda_defl_lim[0])
-            except AttributeError:
-                _changed = True
-            if rayXpanda_defl_lim[0] > _hlfpi and (not _cache or _changed):
-                xpsi._warning('invoking rayXpanda for a signal integration '
-                              'over a subdomain of the stellar image.')
-                xpsi._warning('the larger the primary image subdomain chosen '
-                              'for rayXpanda calls,')
-                xpsi._warning('the larger the rayXpanda expansion truncation '
-                              'error.')
-                xpsi._warning('you can control this by setting the '
-                              'rayXpanda deflection limit manually.')
-                xpsi._warning('please use the top-level function '
-                              'xpsi.set_rayXpanda_deflection_limit(float)')
-                xpsi._warning('please refer to the documentation at '
-                              'https://thomasedwardriley.github.io/rayXpanda/theory ')
-        xpsi.cellmesh.__cached_rayXpanda_defl_lim__ = rayXpanda_defl_lim[0]
-        xpsi.__used_rayXpanda__ = True
 
 cdef double b_phsph_over_r_s = 3.0 * sqrt(3.0) / 2.0
 
@@ -458,80 +392,3 @@ def compute_rays(size_t N_T,
             np.asarray(cos_alpha, dtype = np.double, order = 'C'),
             np.asarray(lag, dtype = np.double, order = 'C'),
             np.asarray(maxDeflection, dtype = np.double, order = 'C'))
-
-
-def compute_derivative(size_t N_T,
-                       double[:,::1] deflection,
-                       double[:,::1] cos_alpha):
-    """ Compute the lensing factor via a monotone cubic spline approximation.
-
-    For primary images only. Used for the rayXpanda documentation.
-
-    :param int: Number of OpenMP threads.
-    :param obj: 1D :class:`numpy.ndarray` of :math:`\psi`, decreasing.
-    :param obj: 1D :class:`numpy.ndarray` of :math:`\cos\\alpha`, increasing.
-
-    :return: 1D :class:`numpy.ndarray` of :math:`\partial\cos\\alpha/\partial\cos\psi/(1-u)`)
-
-    """
-
-    cdef:
-        signed int ii
-        size_t i, j, k, T
-        size_t N_u = deflection.shape[0]
-        size_t N_R = deflection.shape[1]
-
-        double[:,::1] deriv = np.empty((N_u, N_R), dtype = np.double)
-        double[:,::1] cos_deflection = np.empty((N_u, N_R), dtype = np.double)
-
-        double **defl_ptr = <double**> malloc(N_T * sizeof(double*))
-        double **alpha_ptr = <double**> malloc(N_T * sizeof(double*))
-
-        accel **accel_alpha = <accel**> malloc(N_T * sizeof(accel*))
-        interp **interp_alpha = <interp**> malloc(N_T * sizeof(interp*))
-
-    for T in range(N_T):
-        accel_alpha[T] = gsl_interp_accel_alloc()
-        interp_alpha[T] = NULL
-        defl_ptr[T] = NULL
-        alpha_ptr[T] = NULL
-
-    for i in range(N_u):
-        for j in range(N_R):
-            cos_deflection[i,j] = cos(deflection[i,j])
-
-    for ii in prange(<signed int>N_u,
-                     nogil = True,
-                     schedule = 'static',
-                     num_threads = N_T,
-                     chunksize = 1):
-
-        T = threadid()
-        i = <size_t> ii
-
-        for j in range(N_R):
-            if deflection[i,j] < _pi:
-
-                interp_alpha[T] = gsl_interp_alloc(gsl_interp_steffen, N_R - j)
-                gsl_interp_accel_reset(accel_alpha[T])
-
-                defl_ptr[T] = &(cos_deflection[i,j])
-                alpha_ptr[T] = &(cos_alpha[i,j])
-                gsl_interp_init(interp_alpha[T], defl_ptr[T], alpha_ptr[T],  N_R - j)
-
-                for k in range(j, N_R):
-                    deriv[i,k] = gsl_interp_eval_deriv(interp_alpha[T], defl_ptr[T], alpha_ptr[T], cos_deflection[i,k], accel_alpha[T])
-
-                gsl_interp_free(interp_alpha[T])
-
-                break
-
-    for T in range(N_T):
-        free(accel_alpha[T])
-
-    free(defl_ptr)
-    free(alpha_ptr)
-    free(accel_alpha)
-    free(interp_alpha)
-
-    return np.asarray(deriv, dtype = np.double, order = 'C')

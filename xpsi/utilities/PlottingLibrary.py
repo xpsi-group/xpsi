@@ -61,23 +61,21 @@ def plot_1d_pulse(signal=None, photosphere=None, photosphere_phases=None):
     ax.set_ylabel('Signal [arbitrary normalisation]')
     ax.set_xlabel('Phase [cycles]')
 
+    colors = ['k', 'r', 'g', 'b', 'y']
+
     if signal is not None:
-        temp = np.sum(signal.signals[0], axis=0)
-        ax.plot(signal.phases[0], temp / np.max(temp), '-', color='k', lw=0.5, label="Signal (spot 1)")
-        temp = np.sum(signal.signals[1], axis=0)
-        ax.plot(signal.phases[1], temp / np.max(temp), '-', color='r', lw=0.5, label="Signal (spot 2)")
+        for i, s in enumerate(signal.signals):
+            temp = np.sum(s, axis=0)
+            ax.plot(signal.phases[i], temp / np.max(temp), '-', color=colors[i], lw=0.5, label=f"Signal (spot {i+1})")
 
     if photosphere is not None:
         if photosphere_phases is None:
             print("WARNING: Photosphere_phases is missing. Ignoring 'photosphere' in plot")
         else:
-            temp = np.sum(photosphere.signal[0][0], axis=0)
-            ax.plot(photosphere_phases[0], temp / np.max(temp),
-                    'o-', color='k', lw=0.5, markersize=2,
-                    label="Photosphere (spot 1)")
-            temp = np.sum(photosphere.signal[1][0], axis=0)
-            ax.plot(photosphere_phases[1], temp / np.max(temp), 'o-', color='r', lw=0.5, markersize=2,
-                    label="Photosphere (spot 2)")
+            for i, p in enumerate(photosphere.signal):
+                temp = np.sum(p[0], axis=0)
+                ax.plot(photosphere_phases[i], temp / np.max(temp), 'o-', color=colors[i], lw=0.5, markersize=2,
+                        label=f"Photosphere (spot {i+1})")
 
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     veneer((0.05, 0.2), (0.05, 0.2), ax)

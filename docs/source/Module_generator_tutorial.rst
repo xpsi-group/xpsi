@@ -35,17 +35,18 @@ The output of the above code block is:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.1.0               |
+    |                Version: 3.0.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
 
-    Imported GetDist version: 1.4.3
+    Imported GetDist version: 1.5.3
     Imported nestcheck version: 0.2.1
     Parsing configuration file...
     usage: module_generator.py [-h] [--generate-config-file]
                                [--telescope TELESCOPE] [--instrument INSTRUMENT]
                                [--source SOURCE] --frequency FREQUENCY
+                               [--use-fits-format]
                                [--model MODEL] --hot-region-model
                                {ST,CST,EST,PST,CDT,EDT,PDT}
                                [--antipodal-reflection-symmetry]
@@ -86,6 +87,7 @@ The output of the above code block is:
       --source SOURCE       The name of the star, e.g., PSR J0740+6620.
       --frequency FREQUENCY
                             The coordinate spin frequency of the star (Hz).
+      --use-fits-format     Are the source and instrumental files stored in FITS format?
       --model MODEL         A custom model name, e.g., ST-U + NSX-H, otherwise the
                             model name is constructed from other arguments.
       --hot-region-model {ST,CST,EST,PST,CDT,EDT,PDT}
@@ -175,12 +177,12 @@ The corresponding output is:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.1.0               |
+    |                Version: 3.0.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
 
-    Imported GetDist version: 1.4.3
+    Imported GetDist version: 1.5.3
     Imported nestcheck version: 0.2.1
     Parsing configuration file...
     Configuration file generated.
@@ -209,6 +211,11 @@ It should look like this:
     ##---------------------##
     --source=
     --frequency=
+
+    ##----------------------------##
+    ## Input data in FITS format? ##
+    ##----------------------------##
+    #--use-fits-format
 
 
     ##-------------##
@@ -267,6 +274,11 @@ An example of a filled out (and slightly modified) ``generate.ini`` file is pres
 
 __ generate_
 
+.. note::
+
+   Note that in the example above, the source and instrumental response functions are expected to be loaded in TXT format. In the latest versions of X-PSI, the ``module_generator`` can create `Main` and `Custom` files that can load inputs files (source and instrumental response functions) in FITS format. This  functionality can be enabled by uncommenting the `--use-fits-format` option in ``generate.ini``.
+   
+
 The ``generate.ini`` file can then be used to create the required `Main` and `Custom` modules as follows:
 
 .. code-block:: bash
@@ -281,12 +293,12 @@ will take in the default value specified.
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.1.0               |
+    |                Version: 3.0.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
 
-    Imported GetDist version: 1.4.3
+    Imported GetDist version: 1.5.3
     Imported nestcheck version: 0.2.1
     Parsing configuration file...
     --telescope=NICER
@@ -361,12 +373,12 @@ The corresponding output is:
     /=============================================\
     | X-PSI: X-ray Pulse Simulation and Inference |
     |---------------------------------------------|
-    |                Version: 2.1.0               |
+    |                Version: 3.0.0               |
     |---------------------------------------------|
     |      https://xpsi-group.github.io/xpsi      |
     \=============================================/
 
-    Imported GetDist version: 1.4.3
+    Imported GetDist version: 1.5.3
     Imported nestcheck version: 0.2.1
     Parsing configuration file...
     Configuration file generated.
