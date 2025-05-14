@@ -42,9 +42,23 @@ jobs:
           environment-name: xpsipy3
           create-args: python=3.10
 
+      - name: Set up GCC
+        run: |
+          sudo apt-get install -y gcc
+        shell: bash -l {0}
+      - name: install gsl
+        run: |
+          sudo apt-get install -y libgsl-dev
+
+      - name: install X-PSI package
+        run: |
+          python setup.py install
+        shell: bash -l {0}
+        env:
+          CC:   gcc-12
+
       - name: Install changelog dependencies
         run: |
-          cd changelog.d/
           pip install towncrier
 
       - name: Run Towncrier to generate changelog
