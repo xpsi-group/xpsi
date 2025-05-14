@@ -2,6 +2,7 @@ name: changelog
 
 on:
   pull_request:
+    ['labeled', 'closed']
 
 jobs:
   check-changelog-entry:
