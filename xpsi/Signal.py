@@ -157,11 +157,9 @@ class Signal(ParameterSubspace):
             self._background = None
 
         if support is not None:
-
             if self._data.counts.shape[0]==support.shape[0]:
                 self._support = support
             elif self._instrument.channels.shape[0]==support.shape[0]:
-                a_instrument, b_instrument = self._input_interval_range
                 self._support = support[a_instrument:b_instrument+1]
             else:
                 raise TypeError("Data spectrum and background support must the have same shape")
@@ -313,20 +311,31 @@ class Signal(ParameterSubspace):
                 the instrument object.
 
             """
-            a_instrument = _np.where( self._instrument.channels == self._data.channels[0] )[0][0] 
-            b_instrument = _np.where( self._instrument.channels == self._data.channels[-1] )[0][0] 
+            a_instrument = _np.where( self._instrument.channels == self._data.channels[0] )[0][0]
+            b_instrument = _np.where( self._instrument.channels == self._data.channels[-1] )[0][0]
 
+            # Find the channels that are not empty
+            a, b = a_instrument, b_instrument
+            while not self._instrument.matrix[a,:].any():
+                a += 1
+                if a == b_instrument:
+                    raise IndexError('Could not find a non-zero channel in the redistribution.')
+            while not self._instrument.matrix[b,:].any():
+                b -= 1
+                if b == a_instrument:
+                    raise IndexError('Could not find a non-zero channel in the redistribution.')
 
+            # Now find the first and last non-zero energy inputs
             def search(i, j, k):
                 while self._instrument.matrix[i,j] == 0.0:
                     j += k
                 return j
 
-            a_instrument = search(a_instrument, 0, 1)
-            b_instrument = self._instrument.matrix.shape[1] + search(b_instrument-1, -1, -1) + 1
+            a = search(a, 0, 1)
+            b = self._instrument.matrix.shape[1] + search(b-1, -1, -1) + 1
 
-            self._input_interval_range = (a_instrument, b_instrument)
-            self._energy_edges = self._instrument.energy_edges[a_instrument:b_instrument + 1]
+            self._input_interval_range = (a, b)
+            self._energy_edges = self._instrument.energy_edges[a:b + 1]
             self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
 
     @property

@@ -129,10 +129,13 @@ class Instrument(ParameterSubspace):
         try:
             for i in range(matrix.shape[0]):
                 assert matrix[i,:].any()
+        except AssertionError:
+            raise ResponseError('Each row of the matrix must contain at least one positive number.')
+        try:
             for j in range(matrix.shape[1]):
                 assert matrix[:,j].any()
         except AssertionError:
-            raise ResponseError('Each row and column of the matrix must contain at least one positive number.')
+            raise ResponseError('Each column of the matrix must contain at least one positive number.')
         self._matrix = matrix
 
     def construct_matrix(self):
@@ -345,7 +348,6 @@ class Instrument(ParameterSubspace):
         DETCHANS = RMF_header['DETCHANS']
         NUMGRP = RMF_header['NAXIS2']
         TLMIN = RMF_header['TLMIN4']
-        TLMAX = RMF_header['TLMAX4']
 
         # Handle the RSP case
         if ARF_path is not None:
@@ -392,8 +394,20 @@ class Instrument(ParameterSubspace):
             ARF = Table.read(ARF_path, 'SPECRESP')
             ARF_area = ARF['SPECRESP']
             RSP = RMF * ARF_area
-            RSP = RSP
 
+        # Find empty columns and lines
+        empty_channels = _np.all(RSP == 0, axis=1)
+        empty_inputs = _np.all(RSP == 0, axis=0)
+        RSP = RSP[~empty_channels][:,~empty_inputs]
+        channels = channels[ ~empty_channels ]
+        inputs = inputs[ ~empty_inputs ]
+        if empty_inputs.sum() > 0:
+            print(f'Triming the response matrix because it contains rows with only 0 values.\n '
+                  f'Now min_energy={inputs[0]} and max_energy={inputs[-1]}')
+        if empty_channels.sum() > 0:
+            print(f'Triming the response matrix because it contains columns with only 0 values.\n'
+                  f' Now min_channel={channels[0]} and max_channel={channels[-1]}')
+            
         # Get the edges of energies for both input and channel
         energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
         channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
@@ -406,8 +420,8 @@ class Instrument(ParameterSubspace):
                          **kwargs)
         
         # Add ARF and RMF for plotting
-        Instrument.RMF = RMF
-        Instrument.ARF = ARF_area
+        Instrument.RMF = RMF[~empty_channels][:,~empty_inputs]
+        Instrument.ARF = ARF_area[~empty_inputs]
         Instrument.name = RMF_instr
 
         return Instrument
