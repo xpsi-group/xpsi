@@ -779,14 +779,14 @@ class CornerPlotter(PostProcessor):
             return
 
         if force_draw:
-            samples, _ = l.prior.draw(ndraws, transform=True)
+            samples, _ = l.prior.draw(int(ndraws), transform=True)
         else:
             samples_npy = prior_samples_fname
             try:
                 samples = _np.load(samples_npy)
                 print("Not drawing samples from the joint prior. Reading them instead from a pre-computed table:",prior_samples_fname)
             except:
-                 samples, _ = l.prior.draw(ndraws, transform=True)
+                 samples, _ = l.prior.draw(int(ndraws), transform=True)
                  _np.save(samples_npy,samples)
 
         color, lw = (run.contours[key] for key in ('color', 'lw'))
