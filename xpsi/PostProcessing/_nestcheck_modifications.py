@@ -35,7 +35,7 @@ def getdist_kde(x, samples, weights, **kwargs):
                                                in_place=True)
     return bcknd.get1DDensity('x').Prob(x)
 
-def process_multinest_run(dead_points, live_points, file_root, base_dir, **kwargs):
+def process_multinest_run(file_root, base_dir, **kwargs):
     """Modified version of nestcheck.data_processing.process_multinest_run().
     Loads data (both .txt and .npy) from a MultiNest run into the nestcheck 
     dictionary format for analysis.
@@ -64,13 +64,17 @@ def process_multinest_run(dead_points, live_points, file_root, base_dir, **kwarg
     ns_run: dict
         Nested sampling run dict (see the module docstring for more details).
     """
+    # Load dead and live points
+    dead = _np.loadtxt(_os.path.join(base_dir, file_root) + 'dead-birth.txt')
+    live = _np.loadtxt(_os.path.join(base_dir, file_root)
+                      + 'phys_live-birth.txt')
     # Remove unnecessary final columns
-    dead_points = dead_points[:, :-2]
-    live_points = live_points[:, :-1]
-    assert dead_points[:, -2].max() < live_points[:, -2].min(), (
+    dead = dead[:, :-2]
+    live = live[:, :-1]
+    assert dead[:, -2].max() < live[:, -2].min(), (
         'final live points should have greater logls than any dead point!',
-        dead_points, live_points)
-    ns_run = process_samples_array(_np.vstack((dead_points, live_points)), **kwargs)
+        dead, live)
+    ns_run = process_samples_array(_np.vstack((dead, live)), **kwargs)
     assert _np.all(ns_run['thread_min_max'][:, 0] == -_np.inf), (
         'As MultiNest does not currently perform dynamic nested sampling, all '
         'threads should start by sampling the whole prior.')
