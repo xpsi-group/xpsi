@@ -43,43 +43,14 @@
    Example_script_and_modules
    Example_job
    x_p_sbi
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Likelihood API
-
-   parameter
-   parameterSubspace
-   likelihood
-   signal
-   instrument
-   data
-   star
-   spacetime
-   photosphere
-   hotregion
-   hotregions
-   elsewhere
-   everywhere
-   interstellar
-   background
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Extension modules
-
-   extensions_overview
-   surface_radiation_field
-   likelihood_implementations
-   tools
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Posterior API
-
-   prior
-   posterior
-   sample
-   postprocessing
-   SBI_wrapper
    
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API
+
+   likelihood_api
+   extension_modules
+   posterior_api
+   
+
