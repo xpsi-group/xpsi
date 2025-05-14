@@ -590,22 +590,19 @@ class Data(object):
         phases = _np.concatenate( (phase_list), axis=0 )
 
         # Do the plot
-        #mosaic = [['A','.'],['B','C']]
-        fig,axs = _mpl.pyplot.subplots( 2,2 , height_ratios=[1.,1.], width_ratios=[3,1.5], sharex='col',sharey='row') #, layout='constrained')
+        fig,axs = _mpl.pyplot.subplots( 2,2 , height_ratios=[1.,1.], width_ratios=[3,1.5], sharex='col',sharey='row')
         fig.subplots_adjust(wspace=0, hspace=0)
         axs[0,1].axis('off')
-        
+
         # Plot the 2D data
-        ax2 = axs[1,0]#['B']
+        ax2 = axs[1,0]
         im = ax2.pcolormesh( phases, self.channels , counts, cmap=colormap)
         ax2.set_xlabel(r'Phase $\phi$ [cycles]')
         ax2.set_ylabel('PI channel')
         ax2.set_yscale('log')
-        # xticks = ax2.get_xticks()
-        # yticks = ax2.get_yticks()
 
         # Plot the pulse
-        ax1 = axs[0,0]#['A']
+        ax1 = axs[0,0]
         ax1.sharex( ax2 )
         ax1.tick_params(direction='in', which='both',labelbottom=False)
 
@@ -613,7 +610,7 @@ class Data(object):
         ax1.set_ylabel('Counts')
         
         # Plot the spectrum
-        ax3 = axs[1,1]#['C']
+        ax3 = axs[1,1]
         ax3.sharey( ax2 )
         ax3.set_yscale('log')
         ax3.tick_params(direction='in', which='both',labelbottom=False)
