@@ -34,12 +34,11 @@ jobs:
       - name: Install Python3 Conda environment with Micromamba
         uses: mamba-org/setup-micromamba@v1
         with:
-          cache-env: true
-          cache-env-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
+          cache-environment: true
+          cache-environment-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
           environment-file: basic_environment.yml
           environment-name: xpsipy3
-          extra-specs: |
-            python=3.10
+          create-args: python=3.10
 
       - name: Install changelog dependencies
         run: |
