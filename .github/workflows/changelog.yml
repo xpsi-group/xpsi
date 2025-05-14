@@ -28,20 +28,23 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        shell: bash -l {0}    
-    needs: check-changelog-entry
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]    
     steps:
-      - name: Checkout PR branch
-        uses: actions/checkout@v3
-        
-      - name: Install Python3 Conda environment with Micromamba
+      - uses: actions/checkout@v3
+      - name: Install Conda environment with Micromamba
         uses: mamba-org/setup-micromamba@v1
         with:
           cache-environment: true
           cache-environment-key: env-envkey-${{ github.sha }}-${{ github.run_attempt }}
           environment-file: basic_environment.yml
           environment-name: xpsipy3
-          create-args: python=3.10
+          create-args: >-
+            python=${{ matrix.python-version }}
 
       - name: Install changelog dependencies
         run: |
