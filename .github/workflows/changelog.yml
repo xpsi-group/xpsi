@@ -1,0 +1,23 @@
+name: changelog
+
+on:
+  pull_request:
+
+jobs:
+  check-changelog-entry:
+    if: "!contains(github.event.pull_request.labels.*.name, 'no-changelog-entry-needed')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v3
+      - name: Find changelog entry
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          if compgen -G "changelog.d/$PR_NUMBER.*.rst"; then
+            echo "changelog exists"
+          else
+            echo "changelog entry not found"
+            exit 1
+          fi
+
