@@ -77,29 +77,29 @@ class NestedSampler(object):
         :param output_basename: Keyword argument outputfiles_basename originally 
             passed to :func:`pymultinest.solve`.
         """
-        output_suffixes = ['', 'dead-birth', 'phys_live-birth']
+        output_ext = ['', 'dead-birth', 'phys_live-birth']
 
         paramnames = self._likelihood.names
 
         with h5py.File(f'{output_basename}.hdf5', 'w') as f:
             
-            for suffix in output_suffixes:
+            for ext in output_ext:
                 # load original multinest output file 
-                original_output = _np.loadtxt(f"{output_basename}{suffix}.txt")
+                original_output = _np.loadtxt(f"{output_basename}{ext}.txt")
 
                 # set meta depending on output file 
-                if suffix == '':
+                if ext == '':
                     metadata = ['weights', '-2logl'] + paramnames
-                    suffix = 'post_unweighted' # rename for hdf5 file
-                if suffix == 'dead-birth':
+                    ext = 'post_unweighted' # rename for hdf5 file
+                if ext == 'dead-birth':
                     metadata = paramnames + ['logl', 'logl_birth', 
                                             'log_prior_mass', 'node_no']
-                if suffix == 'phys_live-birth':
+                if ext == 'phys_live-birth':
                     metadata = paramnames + ['logl', 'logl_birth', 
                                             'node_no']
                 
                 # create a group for data, keep original order of datafile 
-                data_group = f.create_group(suffix, track_order=True)
+                data_group = f.create_group(ext, track_order=True)
 
                 # add datasets, one for each column
                 for idx, name in enumerate(metadata):
