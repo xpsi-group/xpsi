@@ -39,6 +39,7 @@ jobs:
           environment-file: basic_environment.yml
           environment-name: xpsipy3
           create-args: python=3.10
+          init-shell: bash
 
       - name: Install changelog dependencies
         run: |
