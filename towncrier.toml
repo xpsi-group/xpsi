@@ -1,0 +1,49 @@
+[tool.towncrier]
+package = "xpsi"
+filename = "CHANGELOG.rst"
+directory = "changelog.d"
+issue_format = "`#{issue} <https://github.com/xpsi-group/xpsi/pull/{issue}>`__"
+title_format = "Version {version} ({project_date})"
+underlines = ["~", "^"]
+
+[[tool.towncrier.type]]
+type = "summary"
+dir = "summary"
+name = "Summary"
+showcontent = true
+
+[[tool.towncrier.type]]
+type = "fixed"
+dir = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+type = "added"
+dir = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+type = "changed"
+dir = "changed"
+name = "Changed"
+showcontent = true
+
+[[tool.towncrier.type]]
+type = "deprecated"
+dir = "deprecated"
+name = "Deprecated"
+showcontent = true
+
+[[tool.towncrier.type]]
+type = "removed"
+dir = "removed"
+name = "Removed"
+showcontent = true
+
+[[tool.towncrier.type]]
+type = "attribution"
+dir = "attribution"
+name = "Attribution"
+showcontent = true

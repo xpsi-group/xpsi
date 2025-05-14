@@ -8,30 +8,18 @@ The format is based on
 and this project adheres to
 `Semantic Versioning <http://semver.org/spec/v2.0.0.html>`_.
 
-.. REMOVE THE DOTS BELOW TO UNCOMMENT
-.. ..[Unreleased]
-.. ~~~~~~~~~~~~
-
-.. Summary
-.. ^^^^^^^
-
-.. Fixed
-.. ^^^^^
-
-.. Added
-.. ^^^^^
-
-.. Changed
-.. ^^^^^^^
-
-.. Deprecated
-.. ^^^^^^^^^^
-
-.. Removed
-.. ^^^^^^^
-
-.. Attribution
-.. ^^^^^^^^^^^
+.. Instructions for Contributors:
+.. N.B. Please do not manually edit this changelog.
+.. New changes will be automatically added when using Towncrier with PRs.
+.. 
+.. 1. Before merging your PR, please ensure it has a changelog fragment in the 
+..    ``changelog.d/`` directory.
+..
+.. 2. The fragment file should be named as follows: 
+..    ``changelog.d/<pull_request_number>.<type>.rst`` (e.g., ``changelog.d/123.added`` or ``changelog.d/234.fixed``). 
+..    The types include: ``summary``, ``fixed``, ``added``, ``changed``, ``deprecated``, ``removed`` and ``attribution``.
+..
+.. 3. Each fragment should concisely describe the changes made aimed for X-PSI users and not developers.
 
 
 [v3.0.6] - 2025-05-12
