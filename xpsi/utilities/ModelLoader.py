@@ -8,12 +8,12 @@ def load_model( model_path ,
                config_path = None , 
                execution_path = None ):
     """ Function to load a model from a given python script. 
-    The model can be loaded with or without a configuration file, from an execution directory or in the directory containing the model.
+    The model can be loaded with or without a configuration file, from an execution directory or locally.
 
     Args:
         model_path (str): Path to the main file which loads the model.
         config_path (str|None, optional): Path to the configuration file, if needed, for loading the main. No configuration file is used if None. Defaults to None.
-        execution_path (str|None, optional): Path to the execution directory, if needed, for loading the main. Execution happens in the directory containing the model python script if None. Defaults to None.
+        execution_path (str|None, optional): Path to the execution directory, if needed, for loading the main. Execution happens in the current directory if None. Defaults to None.
 
     Returns:
         Namespace: Imported main with a X-PSI defined Neutron Star model. The different attributes are defined in the main.
@@ -26,16 +26,13 @@ def load_model( model_path ,
 
     # Save original values
     pwd = os.getcwd()
-    abs_model_path , abs_config_path = os.path.abspath(model_path), os.path.abspath(config_path)
     original_sys_path = sys.path.copy()
     original_sys_modules = sys.modules.copy()
 
     # Change directory and make the symbolic link
     if execution_path is not None:
         os.chdir(execution_path)
-    else:
-        os.chdir( os.path.dirname(model_path) )
-    os.system(f'ln -s { abs_model_path } local_main.py')
+    os.system(f'ln -s { os.path.abspath(model_path) } local_main.py')
     
     # Try to catch the error and make sure the cleanup happens
     try:
@@ -46,7 +43,7 @@ def load_model( model_path ,
 
         # Case with config_path provided
         if config_path is not None:
-            os.system(f'ln -s { abs_config_path } local_config.ini')
+            os.system(f'ln -s { os.path.abspath(config_path) } local_config.ini')
             sys.argv = ['local_main.py', f'@local_config.ini']
 
         # Do the loading
