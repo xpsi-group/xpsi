@@ -2,8 +2,7 @@ name: changelog
 
 on:
   pull_request:
-    ['labeled', 'closed']
-
+    types: [labeled, closed]
 jobs:
   check-changelog-entry:
     if: (github.event.action == 'labeled' && github.event.label.name == 'ready-for-changelog') || (github.event.action == 'closed' && github.event.pull_request.merged == true && !contains(github.event.pull_request.labels.*.name, 'no-changelog-entry-needed'))
