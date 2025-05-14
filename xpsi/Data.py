@@ -136,6 +136,11 @@ class Data(object):
             raise ValueError('The number of rows must be compatible '
                              'with the first and last channel numbers.')
 
+        if counts.shape[1] != (phases.shape[0] - 1):
+            raise ValueError('The number of columns must be compatible '
+                             'with the number of phases. Note that the phases array are '
+                             'the phase bin edges (i.e., number of phases bins + 1)')
+
         self._counts = counts
 
         try:
