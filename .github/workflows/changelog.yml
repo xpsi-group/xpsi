@@ -68,7 +68,7 @@ jobs:
 
       - name: Run Towncrier to generate changelog
         run: |
-          yes n | towncrier build
+          towncrier build --yes
 
       - name: Set up Git identity
         run: |
