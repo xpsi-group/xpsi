@@ -31,13 +31,12 @@ Those involved in maintenance and development (technical and scientific).
 * Lucien Mauviard-Haag (lucien.mauviard-haag[at]irap.omp.eu), IRAP
 * Tuomo Salmi (tuomo.salmi[at]helsinki.fi), University of Helsinki
 * Pierre Stammler (pstammler[at]irap.omp.eu), IRAP
-* Serena Vinciguerra, University of Amsterdam
 * Anna Watts (a.l.watts[at]uva.nl), University of Amsterdam
 
 **Past members**
 
-Thomas E. Riley (t.riley.phd[at]gmail.com), the Initial Creator of X-PSI
-
+* Thomas E. Riley (t.riley.phd[at]gmail.com), the Initial Creator of X-PSI
+* Serena Vinciguerra
 
 .. _community:
 

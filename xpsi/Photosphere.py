@@ -8,6 +8,8 @@ from xpsi.Everywhere import Everywhere
 from xpsi.Parameter import Parameter
 from xpsi.ParameterSubspace import ParameterSubspace
 
+from xpsi.surface_radiation_field import effective_gravity
+
 class Photosphere(ParameterSubspace):
     """ A photosphere embedded in an ambient Schwarzschild spacetime.
 
@@ -482,9 +484,55 @@ class Photosphere(ParameterSubspace):
             If activated, a full Stokes vector is computed and stored in signal, signalQ, and signalU.
 
         """
+
+        if self._hot is not None:
+            for hot in self._hot.objects:
+                if hot.atm_ext == 2: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
+
+                    T_low, T_high = self._hot_atmosphere[0][0], self._hot_atmosphere[0][len(self._hot_atmosphere[0])-1]
+                    g_low, g_high = self._hot_atmosphere[1][0], self._hot_atmosphere[1][len(self._hot_atmosphere[1])-1]
+
+                    for ipar in hot.names:
+                        if "temperature" in ipar:
+                            temperature = hot[ipar]
+                            if not T_low <= temperature <= T_high:
+                                raise Exception("HotRegion temperature ", temperature, "is outside of the atmosphere table bounds: [",T_low, T_high,"]")
+
+                    ref = self._spacetime
+                    grav = effective_gravity(_np.array([1.0, 0.0]),
+                                             _np.array([ref.R] * 2 ),
+                                             _np.array([ref.zeta] * 2),
+                                             _np.array([ref.epsilon] * 2))
+
+                    for g in grav:
+                        if not g_low <= g <= g_high:
+                            raise Exception("Surface gravity ", g, "is outside of the atmosphere table bounds: [",g_low, g_high,"]")
+
+        if self._elsewhere is not None:
+            if self._elsewhere.atm_ext == 2: #Num4D extension assumed to be used only in nsx-format. If not, user needs to customize.
+                T_low, T_high = self._elsewhere_atmosphere[0][0], self._elsewhere_atmosphere[0][len(self._elsewhere_atmosphere[0])-1]
+                g_low, g_high = self._elsewhere_atmosphere[1][0], self._elsewhere_atmosphere[1][len(self._elsewhere_atmosphere[1])-1]
+
+                temperature = self._elsewhere[0]
+
+                if not T_low <= temperature <= T_high:
+                    raise Exception(" Elsewhere temperature ", temperature, "is outside of the atmosphere table bounds: [",T_low, T_high,"]")
+
+                ref = self._spacetime
+                grav = effective_gravity(_np.array([1.0, 0.0]),
+                                         _np.array([ref.R] * 2 ),
+                                         _np.array([ref.zeta] * 2),
+                                         _np.array([ref.epsilon] * 2))
+
+                for g in grav:
+                    if not g_low <= g <= g_high:
+                        raise Exception("Surface gravity ", g, "is outside of the atmosphere table bounds: [",g_low, g_high,"]")
+
+        #TBD: Similar check for Everywhere.
+
         if self._everywhere is not None:
             if self._stokes:
-                raise NotImplementedError('Stokes option for everywhere not implmented yet.')      
+                raise NotImplementedError('Stokes option for everywhere not implemented yet.')
             spectrum = self._everywhere.integrate(self._spacetime,
                                                    energies,
                                                    threads,

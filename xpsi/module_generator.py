@@ -205,6 +205,13 @@ parser.add_argument('--frequency',
                     required=True,
                     help='The coordinate spin frequency of the star (Hz).',
                     empty_lines_below=2)
+                    
+parser.add_argument('--use-fits-format',
+                    action='store_true',
+                    help='Are the source and instrumental files stored in FITS format?',
+                    comment_line_above='Input data in FITS format?',
+                    empty_lines_below=2,
+                    comment=True)
 
 parser.add_argument('--model',
                     type=str,
@@ -492,14 +499,14 @@ class GenerateConfigAction(argparse.Action):
 
         :return str: The text for the argument in the configuration file.
         """
-        entry = '\\n' if newline else ''
+        entry = '\n' if newline else ''
 
         if comment_line_above is not None:
             if comment_line_above == 'rule':
-               entry += '#' + '-'*78 + '#\\n'
+               entry += '#' + '-'*78 + '#\n'
             else:
                 _ = '## {{}} ##'.format(comment_line_above)
-                entry += '##' + '-' * (len(_) - 4) + '##\\n' + _ + '\\n##' + '-' * (len(_) - 4) + '##\\n'
+                entry += '##' + '-' * (len(_) - 4) + '##\n' + _ + '\n##' + '-' * (len(_) - 4) + '##\n'
 
         _ = ' ## {{}}'.format(inline_comment) if inline_comment is not None else ''
         if not _ and isinstance(nargs, int) and nargs > 1:
@@ -513,24 +520,24 @@ class GenerateConfigAction(argparse.Action):
                                                                  '' if (i > 0 and nargs != 1) else arg,
                                                                  '' if nargs != 1 else '=',
                                                                  '' if (i == 0 and nargs != 1) else str(_default),
-                                                                 (_ if i == 0 else '') + ('\\n{{0}}{{1}}'.format('#' if comment else '', str(_default)) if i == 0 and nargs != 1 else ''),
-                                                                 '\\n' if i > 0 else '')
+                                                                 (_ if i == 0 else '') + ('\n{{0}}{{1}}'.format('#' if comment else '', str(_default)) if i == 0 and nargs != 1 else ''),
+                                                                 '\n' if i > 0 else '')
         else:
             entry += '{{0}}{{1}}{{2}}{{3}}{{4}}'.format('#' if comment else '',
                                                         arg,
                                                         '=' if nargs == 1 else '',
                                                         _ if nargs != 1 else (str(default) if default is not None else ''),
-                                                        ('\\n' + str(default) if default is not None else '') if nargs != 1 else _)
+                                                        ('\n' + str(default) if default is not None else '') if nargs != 1 else _)
 
         if action == 'append':
-            entry += '\\n#{{0}}='.format(arg)
+            entry += '\n#{{0}}='.format(arg)
 
         if isinstance(nargs, int) and nargs > 1:
-            entry += '\\n' * nargs
+            entry += '\n' * nargs
         elif isinstance(nargs, str):
-            entry += '\\n' * 3
+            entry += '\n' * 3
 
-        entry += '\\n' * empty_lines_below
+        entry += '\n' * empty_lines_below
 
         return entry
 
@@ -651,7 +658,87 @@ _derived_notice = 'If the parameter is derived from one other parameter, e.g., t
 _CDF_notice = 'Supply a function of one variable (the probability mass ``x``), in the form of an expression that can be evaluated with the ``eval(...)`` builtin function, i.e., scipy.stats.truncnorm(x, ...). Note that the prior default PDF is uniform (with compact support), so do not supply a CDF if a uniform prior is desired, or to be explicit, use: DEFAULT UNIFORM. You must use DEFAULT UNIFORM to overwrite a default CDF shown in the auto-generated configuration file, unless the parameter is fixed/derived in which case the prior flag is silently ignored. You can also use the flag more than once: the last usage must be an expression that will be dynamically evaluated using the ``eval(...)`` builtin and must return a float to set as the parameter value; the other usages can be helper statements executed with the ``exec(...)`` builtin, e.g., to set temporary local variables to make the code (and configuration file more readable).'
 
 for instrument in args.instrument:
-    module += (
+    if args.use_fits_format:
+        module += (
+    '''
+parser.add_argument('--{0}-obs-path', type=str, help='Absolute or relative path to {1} {0} observational file. Could be a event list or a PHA spectrum file. {0} number-phase-bins shall be overlooked for PHA spectra files.',
+                    comment_line_above='{0} configuration flags')
+parser.add_argument('--{0}-number-phase-bins', type=int, help='Number of phases bins for binning {0} event list file.')
+parser.add_argument('--{0}-arf-path', type=str, help='{1} {0} ARF file.',
+                    )
+
+parser.add_argument('--{0}-rmf-path', type=str, help='{1} {0} RMF file.',
+                    )
+                    
+parser.add_argument('--{0}-datafolder', type=str, help='Absolute or relative path to the folder where the {1} {0} files, in FITS format, are stored.',
+                    )
+
+parser.add_argument('--{0}-input-bounds',
+                    type=int,
+                    nargs=2,
+                    help='{0} bounding input energy intervals of instrument response submatrix for use with NumPy slice notation.',
+                    comment=True)
+
+parser.add_argument('--{0}-channel-bounds',
+                    type=int,
+                    nargs=2,
+                    help='{0} bounding channels of instrument response submatrix for use with NumPy slice notation.',
+                    empty_lines_below=2)
+
+parser.add_argument('--{0}-energy-independent-effective-area-scaling-factor-bounds',
+                    type=str,
+                    nargs=2,
+                    action=CompileAction,
+                    help='Bounds for {0} energy-independent effective area scaling factor parameter. If no bounds are given (``None``), and no value is given (``None``), the parameter value is fixed at unity, and the instrument response model is locked to the nominal response model (unless a custom model is implemented).',
+                    comment=True,
+                    )
+
+parser.add_argument('--{0}-energy-independent-effective-area-scaling-factor-prior',
+                    type=str,
+                    nargs='*',
+                    default=['truncnorm.ppf(x, -3.0, 3.0, loc=1.0, scale=0.1)'],
+                    action=NullAction,
+                    help='Prior inverse CDF of the energy-independent effective area scaling factor. {5}',
+                    comment=True,
+                    inline_comment='Normal distribution with std. dev. 10%, truncated at +/- 3 std. dev.')
+
+parser.add_argument('--{0}-energy-independent-effective-area-scaling-factor-value',
+                    type=str,
+                    action=CompileAction,
+                    help='Value for {0} energy-independent effective area scaling parameter. Either the name of an instrument to share the parameter with, as a string, or a float. {3} {4}',
+                    comment=True,
+                    empty_lines_below=2)
+
+parser.add_argument('--{0}-phase-shift-bounds',
+                    type=str,
+                    nargs=2,
+                    action=CompileAction,
+                    help='Bounds for {0} phase-shift parameter. If no bounds are given (``None``), and no value is given (``None``), the parameter value is fixed at zero, and is therefore locked to the phase of the signal specified by the hot region phases. For one phase-resolving instrument, this default behaviour is advised, and additional phase-resolving instruments can in principle have a different fixed, derived, or free phase-shift parameter. For instruments that phase-average, the phase-shift can be arbitrarily fixed or derived, but not free because the likelihood is not a function of it.',
+                    comment=True)
+
+parser.add_argument('--{0}-phase-shift-value',
+                    type=str,
+                    action=CompileAction,
+                    help='Value for {0} phase-shift parameter. Either the name of an instrument to share the parameter with, as a string, or a float. {3} {4}',
+                    comment=True,
+                    empty_lines_below=2)
+
+parser.add_argument('--{0}-background-path', type=str, help='Absolute or relative path to {1} {0} background PHA spectrum file.',
+                    comment=True)
+                    
+parser.add_argument('--{0}-background-prior-support-half-width', type=float, help='{0} background prior support half-width (for imaging telescope). The half-width is in units of standard deviation of background count number per instrument channel.',
+                    comment=True,
+                    empty_lines_below=3)
+
+    '''.format(instrument.replace('_','-'),
+               _path,
+               _bounds_default_notice,
+               _value_notice,
+               _derived_notice,
+               _CDF_notice)
+    )
+    else:
+        module += (
     '''
 parser.add_argument('--{0}-exposure-time',
                     type=float,
@@ -1567,7 +1654,60 @@ background = CustomBackground(bounds=bounds, values=values)
     )
 
 for instrument in args.instrument:
-    module += (
+    if args.use_fits_format:
+        module += (
+    '''
+{0} = namespace()
+
+if args.{0}_{2}_value is not None:
+    if eval(args.{0}_{2}_value) in {1}:
+        values = dict({2} = derived_parameter(lambda x: x,
+                                              '{2}',
+                                              eval(args.{0}_{2}_value) + '.instrument'))
+    else:
+        values = dict({2} = parse_value(args.{0}_{2}_value))
+else:
+    values = {{}}
+
+bounds = dict({2} = parse_bounds(args.{0}_{2}_bounds,
+                                   args.{0}_{2}_value,
+                                   default_to_free = False))
+
+{0}.instrument = CustomInstrument.from_ogip_fits(
+                                  ARF_path=args.{0}_arf_path,
+                                  RMF_path=args.{0}_rmf_path,
+                                  bounds=bounds,
+                                  values=values,
+                                  datafolder=args.{0}_datafolder,
+                                  )
+
+{0}.data = xpsi.Data.load(os.path.join(args.{0}_datafolder, args.{0}_obs_path),
+                       n_phases= args.{0}_number_phase_bins,
+                       channels={0}.instrument.channels
+                       )
+
+if args.{0}_background_path:
+    bkgpath = os.path.join(args.{0}_datafolder, args.{0}_background_path)
+elif hasattr ({0}.data, 'backfile'):
+    bkgpath = os.path.join(args.{0}_datafolder, {0}.data.backfile)
+else:
+    bkgpath = None
+    
+if isinstance(bkgpath, str): 
+    spectrum = xpsi.Data.load(bkgpath,
+                       n_phases= args.{0}_number_phase_bins,
+                       channels={0}.instrument.channels)
+
+    support = spectrum.spectra_support(args.{0}_background_prior_support_half_width, source_backscal={0}.data.backscal)
+
+else:
+    support = None
+    '''.format(instrument,
+               args.instrument,
+               'energy_independent_effective_area_scaling_factor')
+    )
+    else:    
+        module += (
     '''
 {0} = namespace()
 
@@ -1674,14 +1814,14 @@ else:
     if not args.background_model:
         module += (
         '''
-{0}.background = None
+{0}.background_model = None
         '''.format(instrument)
         )
     else:
         if args.background_shared_instance:
             module += (
             '''
-{0}.background = background
+{0}.background_model = background
             '''.format(instrument)
             )
         elif args.background_shared_class:
@@ -1717,7 +1857,7 @@ values['{0}'] = derived_parameter(lambda x: x,
 
             module += (
             '''
-{0}.background = CustomBackground(bounds=bounds, values=values)
+{0}.background_model = CustomBackground(bounds=bounds, values=values)
             '''.format(instrument)
             )
         elif not args.background_shared_class:
@@ -1741,11 +1881,50 @@ values['{0}'] = parse_value(args.{0}_value)
 
             module += (
             '''
-{0}.background = {0}_CustomBackground(bound=bounds, values=values)
+{0}.background_model = {0}_CustomBackground(bound=bounds, values=values)
             '''
             )
 
-    module += (
+    if args.use_fits_format:
+        module += (
+    '''
+if args.{0}_phase_shift_value is not None:
+    if eval(args.{0}_phase_shift_value) in {1}:
+        values = dict(phase_shift = derived_parameter(lambda x: x,
+                                                'phase_shift',
+                                                eval(args.{0}_phase_shift_value) + '.signal'))
+    else:
+        values = dict(phase_shift = parse_value(args.{0}_phase_shift_value))
+else:
+    values = {{}}
+
+bounds = dict(phase_shift = parse_bounds(args.{0}_phase_shift_bounds,
+                                         args.{0}_phase_shift_value,
+                                         default_to_free=False))
+
+{0}.signal = CustomSignal(data = {0}.data,
+                          instrument = {0}.instrument,
+                          interstellar = interstellar,
+                          background = {0}.background_model,
+                          min_channel = args.{0}_channel_bounds[0],
+                          max_channel = args.{0}_channel_bounds[1],
+                          cache = False if __name__ == '__main__' else True,
+                          bounds = bounds,
+                          values = values,
+                          workspace_intervals = 1000,
+                          epsrel = 1.0e-8,
+                          epsilon = 1.0e-3,
+                          sigmas = 10.0,
+                          support = support,
+                          prefix = '{0}')
+
+signals[0].append({0}.signal)
+    '''.format(instrument,
+               args.instrument,
+               'energy_independent_effective_area_scaling_factor')
+    )
+    else:
+        module += (
     '''
 if args.{0}_phase_shift_value is not None:
     if eval(args.{0}_phase_shift_value) in {1}:
@@ -3578,7 +3757,10 @@ _instruments += ', and {}'.format(args.instrument[-1])
 module = (
 '''""" Instrument module for X-PSI {0} modelling of {1} {2} event data. """
 
+import os
 import numpy as np
+from astropy.io import fits
+from astropy.table import Table
 import math
 
 import xpsi
@@ -3609,8 +3791,137 @@ class CustomInstrument(xpsi.Instrument):
            _instruments)
 )
 
-for instrument in args.instrument:
+if args.use_fits_format:
     module += (
+    '''
+    @classmethod
+    @make_verbose('Loading instrument response matrix',
+                  'Response matrix loaded')
+    def from_ogip_fits(cls,
+              ARF_path,
+              RMF_path,
+              min_channel=0,
+              max_channel=-1,
+              min_input=1,
+              max_input=-1,
+              bounds=dict(),
+              values=dict(),
+              datafolder=None,
+              **kwargs):
+        
+        """ Load any instrument response matrix. """
+
+        if datafolder:
+            ARF_path = os.path.join( datafolder, ARF_path )
+            RMF_path = os.path.join( datafolder, RMF_path )
+
+        # Open useful values in ARF/RMF    
+        with fits.open( ARF_path ) as ARF_hdul:
+            ARF_instr = ARF_hdul['SPECRESP'].header['INSTRUME']
+            
+        with fits.open( RMF_path ) as RMF_hdul:
+            RMF_header = RMF_hdul['MATRIX'].header
+        RMF_instr = RMF_header['INSTRUME'] 
+        DETCHANS = RMF_header['DETCHANS']
+        NUMGRP = RMF_header['NAXIS2']
+        if 'TLMIN4' in RMF_header:
+            TLMIN = RMF_header['TLMIN4']
+        else:
+            TLMIN = 0
+        if 'TLMAX4' in RMF_header:
+            TLMAX = RMF_header['TLMAX4']
+        else:
+            TLMAX = DETCHANS-1 + TLMIN
+
+        # Get the values and change the -1 values if requried
+        if max_channel == -1:
+            max_channel = DETCHANS -1
+        if max_input == -1:
+            max_input = NUMGRP
+        channels = np.arange( min_channel, max_channel+1 )
+        inputs = np.arange( min_input, max_input+1  )
+
+        # Perform routine checks
+        assert ARF_instr == RMF_instr
+        assert min_channel >= TLMIN and max_channel <= TLMAX
+        assert min_input >= 0 and max_input <= NUMGRP
+
+        # If everything in order, get the data
+        with fits.open( RMF_path ) as RMF_hdul:
+            RMF_MATRIX = RMF_hdul['MATRIX'].data
+            RMF_EBOUNDS = RMF_hdul['EBOUNDS'].data
+
+        # Get the channels from the data
+        RMF = np.zeros((DETCHANS, NUMGRP))
+        for i, (N_GRP, F_CHAN, N_CHAN, RMF_line) in enumerate( zip(RMF_MATRIX['N_GRP'], RMF_MATRIX['F_CHAN'], RMF_MATRIX['N_CHAN'], RMF_MATRIX['MATRIX']) ):
+
+            # Skip if needed
+            if N_GRP == 0:
+                continue
+
+            # Check the values
+            if not isinstance(F_CHAN, np.ndarray ):
+                F_CHAN = [F_CHAN]
+                N_CHAN = [N_CHAN]
+
+            # Add the values to the RMF
+            n_skip = 0 
+            for f_chan, n_chan in zip(F_CHAN,N_CHAN):
+
+                if n_chan == 0:
+                    continue
+
+                RMF[f_chan:f_chan+n_chan,i] += RMF_line[n_skip:n_skip+n_chan]
+                n_skip += n_chan
+
+        # Make the RSP
+        ARF = Table.read(ARF_path, 'SPECRESP')
+        ARF_area = ARF['SPECRESP']
+
+        # Extract the required matrix
+        RSP = RMF * ARF_area
+        RSP = RSP[min_channel:max_channel+1,min_input-1:max_input]
+
+        # Find empty columns and lines
+        empty_channels = np.all(RSP == 0, axis=1)
+        empty_inputs = np.all(RSP == 0, axis=0)
+        RSP = RSP[~empty_channels][:,~empty_inputs]
+        channels = channels[ ~empty_channels ]
+        inputs = inputs[ ~empty_inputs ]
+        if empty_inputs.sum() > 0:
+            print(f'Triming the response matrix because it contains lines with only 0 values.\\n Now min_input={inputs[0]} and max_input={inputs[-1]}')
+        if empty_channels.sum() > 0:
+            print(f'Triming the response matrix because it contains columns with only 0 values.\\n Now min_channel={channels[0]} and max_channel={channels[-1]}')
+
+        # Get the edges of energies for both inputand channel
+        energy_edges = np.append( ARF['ENERG_LO'][inputs-1], ARF['ENERG_HI'][inputs[-1]-1]).astype(dtype=np.double)
+        channel_energy_edges = np.append(RMF_EBOUNDS['E_MIN'][channels],RMF_EBOUNDS['E_MAX'][channels[-1]])
+
+        # Make the scaling
+        alpha_name = 'energy_independent_effective_area_scaling_factor'
+        alpha = Parameter(alpha_name,
+                          strict_bounds = (0.1,1.9),
+                          bounds = bounds.get(alpha_name, None),
+                          doc=f'{RMF_instr} {alpha_name}',
+                          symbol = r'$\\alpha_{\\rm INSTRUMENT}$'.replace('INSTRUMENT', RMF_instr),
+                          value = values.get(alpha_name, 1.0 if bounds.get(alpha_name, None) is None else None))
+
+        Instrument = cls(RSP,
+                         energy_edges,
+                         channels,
+                         channel_energy_edges,
+                         alpha, **kwargs)
+        
+        # Add ARF and RMF for plotting
+        Instrument.RMF = RMF[min_channel:max_channel+1,min_input-1:max_input][~empty_channels][:,~empty_inputs]
+        Instrument.ARF = ARF_area[min_input-1:max_input][~empty_inputs]
+
+        return Instrument
+    '''
+            )
+else:
+    for instrument in args.instrument:
+        module += (
     '''
     @classmethod
     @make_verbose('Loading {0} response matrix',
@@ -3736,7 +4047,8 @@ for instrument in args.instrument:
                    alpha, **kwargs)
     '''.format(instrument,
                'energy_independent_effective_area_scaling_factor')
-    )
+                  )
+
 
 write(r'{}.py'.format(os.path.join(args.module_directory_path, args.custom_instrument_module)), module)
 

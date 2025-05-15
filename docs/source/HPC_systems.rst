@@ -105,13 +105,13 @@ Now you need the Python interface to MultiNest, starting from ``$HOME``:
 
     If not using a Python virtual environment, you should add ``--user`` flag when installing PyMultiNest.
 
-To test the installation of MultiNest and PyMultiNest on the login node:
+To test the installation of MultiNest and PyMultiNest on the login node alongside with MPI:
 
 .. code-block:: bash
 
-    python pymultinest_demo.py
+    mpiexec -n 2 python pymultinest_demo.py
 
-Do you obtain parameter values and evidences?
+It is normal that it runs once, but prints parameter values and evidences twice!
 
 .. note::
 
@@ -140,7 +140,7 @@ If you ever need to reinstall, first clean to recompile C files:
 
 .. code-block:: bash
 
-    rm -r build dist *egg* xpsi/*/*.c xpsi/include/rayXpanda/*.o
+    rm -r build dist *egg* xpsi/*/*.c
 
 .. note::
 
