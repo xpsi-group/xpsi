@@ -372,7 +372,7 @@ def integrate(size_t numThreads,
                     sin_alpha = sqrt(1.0 - _cos_alpha * _cos_alpha)
                     mu = _cos_alpha * cos_gamma
 
-                    if psi != 0.0:
+                    if not are_equal(psi, 0.0):
                         cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
                         if theta_i_over_pi < 0.5:
                             mu = mu + sin_alpha * sin_gamma * cos_delta
@@ -406,7 +406,7 @@ def integrate(size_t numThreads,
                                 else:
                                     _kdx = N_L - 1 - k # switch due to symmetry
 
-                                if psi != 0.0:
+                                if not are_equal(psi, 0.0):
                                     cos_xi = sin_alpha * sin_i * sin(leaves[_kdx]) / sin_psi
                                     superlum = (1.0 + beta * cos_xi)
                                     eta = Lorentz / superlum

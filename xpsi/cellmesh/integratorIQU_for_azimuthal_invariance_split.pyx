@@ -422,7 +422,7 @@ def integrate(size_t numThreads,
                     # for spherical stars mu is defined, but for tilted local
                     # surface, there is not one unique value for mu because
                     # Einstein ring(s)
-                    if psi != 0.0:
+                    if not are_equal(psi, 0.0):
                         cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
                         if theta_i_over_pi < 0.5:
                             mu = mu + sin_alpha * sin_gamma * cos_delta
@@ -457,7 +457,7 @@ def integrate(size_t numThreads,
                                     _kdx = N_L - 1 - k # switch due to symmetry
 
                                 # phase asymmetric now
-                                if psi != 0.0:
+                                if not are_equal(psi, 0.0):
                                     cos_xi = sin_alpha * sin_i * sin(leaves[_kdx]) / sin_psi
                                     superlum = (1.0 + beta * cos_xi)
                                     eta = Lorentz / superlum
