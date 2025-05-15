@@ -37,13 +37,14 @@ class NestedBackend(Run):
     def __init__(self, root, base_dir, use_nestcheck, transform=None,
                  overwrite_transformed=False, **kwargs):
         filerootpath =_os.path.join(base_dir, root)
-        _filerootpath = filerootpath
+        # base_dir: ../../examples/examples_fast/Outputs/
+        # root: ST_live_1000_eff_0.3_seed0
 
-        # check whether to use .npy files or .txt files 
-        if _os.path.isfile(filerootpath+'.npy'):
+        # check whether to use .hdf5 files or .txt files 
+        if _os.path.isfile(filerootpath+'.hdf5'):
             loader = _np.load
             saver = _np.save
-            filetype = ".npy"
+            filetype = ".hdf5"
         else:
             loader = _np.loadtxt
             saver = _np.savetxt
@@ -51,43 +52,40 @@ class NestedBackend(Run):
             print("Change output files to .npy to speed up post-processing")
 
         if transform is not None:
-            samples = loader(filerootpath + filetype)
+            samples = loader(filerootpath + filetype) # .txt
             ndims = samples.shape[1] - 2
             temp = transform(samples[0,2:], old_API=True)
             ntransform = len(temp) - ndims
 
-            _exists = _os.path.isfile(filerootpath+'_transformed'+filetype)
+            _exists = _os.path.isfile(filerootpath+'_transformed'+filetype) # _transformed.txt
             if not _exists or overwrite_transformed:
                 transformed = _np.zeros((samples.shape[0],
                                          samples.shape[1] + ntransform))
                 transformed[:,:2] = samples[:,:2]
                 for i in range(samples.shape[0]):
                     transformed[i,2:] = transform(samples[i,2:], old_API=True)
-                saver(f'{filerootpath}_transformed{filetype}', transformed)
+                saver(f'{filerootpath}_transformed{filetype}', transformed) # _transformed.txt
 
-            filerootpath += '_transformed'
-            root += '_transformed'
-
-        super(NestedBackend, self).__init__(filepath=filerootpath+filetype,**kwargs)
+        super(NestedBackend, self).__init__(filepath=f'{filerootpath}_transformed{filetype}',**kwargs) # _transformed.txt
 
         if getdist is not None:
             # getdist backend
-            self._gd_bcknd = MCSamples(root=filerootpath,
+            self._gd_bcknd = MCSamples(root=f'{filerootpath}_transformed',
                              settings=self.kde_settings,
                              sampler='nested',
                              names=self.names,
                              ranges=self.bounds,
                              labels=[self.labels[name] for name in self.names])
-            self._gd_bcknd.readChains(getdist.chains.chainFiles(filerootpath))
+            self._gd_bcknd.readChains(getdist.chains.chainFiles(f'{filerootpath}_transformed'))
 
         self.use_nestcheck = use_nestcheck
 
         if self.use_nestcheck: # nestcheck backend
             if transform is not None:
-                for ext in ['dead-birth.txt', 'phys_live-birth.txt']:
-                    _exists = _os.path.isfile(filerootpath + ext)
+                for ext in ['dead-birth', 'phys_live-birth']:
+                    _exists = _os.path.isfile(f'{filerootpath}_transformed-{ext}.txt') # _transformed-dead-birth.txt
                     if not _exists or overwrite_transformed:
-                        samples = _np.loadtxt(_filerootpath + ext)
+                        samples = _np.loadtxt(filerootpath + ext + '.txt') # dead-birth.txt
                         transformed = _np.zeros((samples.shape[0],
                                                  samples.shape[1] + ntransform))
                         transformed[:,ndims+ntransform:] = samples[:,ndims:]
@@ -96,30 +94,18 @@ class NestedBackend(Run):
                                                 transform(samples[i,:ndims],
                                                           old_API=True)
 
-                        _np.savetxt(filerootpath + "-" + ext, transformed)
+                        _np.savetxt(f'{filerootpath}_transformed-{ext}.txt', transformed) # _transformed-dead-birth.txt
 
-                # .stats file with same root needed, but do not need to modify
-                # the .stats file contents
-                if not _os.path.isfile(filerootpath + '.stats'):
-                    if _os.path.isfile(_filerootpath + '.stats'):
-                        try:
-                            from shutil import copyfile as _copyfile
-                        except ImportError:
-                            pass
-                        else:
-                            _copyfile(_filerootpath + '.stats',
-                                      filerootpath + '.stats')
-            
             # assuming multinest for nestcheck if not specified   
             implementation = kwargs.get('implementation', 'multinest')
                 
             if implementation == 'multinest':
                 try:
-                    self._nc_bcknd = process_multinest_run(root, base_dir=base_dir)
+                    self._nc_bcknd = process_multinest_run(f'{root}_transformed', base_dir)
                 except FileNotFoundError:
-                    self._nc_bcknd = process_multinest_run(root + "-", base_dir=base_dir)
+                    self._nc_bcknd = process_multinest_run(f'{root}_transformed-', base_dir)
             elif implementation == 'polychord':
-                self._nc_bcknd = process_polychord_run(root, base_dir=base_dir)
+                self._nc_bcknd = process_polychord_run(f'{root}_transformed', base_dir)
             else:
                 raise ValueError('Cannot process with nestcheck.')
 
