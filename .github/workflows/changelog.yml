@@ -33,6 +33,7 @@ jobs:
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v3
+
       - name: Install Conda environment with Micromamba
         uses: mamba-org/setup-micromamba@v1
         with:
@@ -46,6 +47,7 @@ jobs:
         run: |
           sudo apt-get install -y gcc
         shell: bash -l {0}
+
       - name: install gsl
         run: |
           sudo apt-get install -y libgsl-dev
@@ -61,6 +63,12 @@ jobs:
         run: |
           pip install towncrier
 
+      - name: Sync with latest PR branch before building changelog
+        run: |
+          git fetch origin ${{ github.head_ref }}
+          git checkout ${{ github.head_ref }}
+          git pull origin ${{ github.head_ref }}
+
       - name: Run Towncrier to generate changelog
         run: |
           yes n | towncrier build
@@ -72,8 +80,6 @@ jobs:
 
       - name: Commit and push changelog update
         run: |
-          git fetch origin ${{ github.head_ref }}
-          git rebase origin/${{ github.head_ref }}
           git add CHANGELOG.rst
           git commit -m "Changelog updated"
           git push origin HEAD:${{ github.head_ref }}
