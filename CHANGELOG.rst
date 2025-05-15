@@ -20,15 +20,15 @@ Changed
 - Older instruction comments in ``CHANGELOG.rst`` updated for ``towncrier``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
 
 
-History
--------
+.. History
+.. -------
 
-All notable changes to this project will be documented in this file.
+.. All notable changes to this project will be documented in this file.
 
-The format is based on
-`Keep a Changelog <http://keepachangelog.com/en/1.0.0/>`_
-and this project adheres to
-`Semantic Versioning <http://semver.org/spec/v2.0.0.html>`_.
+.. The format is based on
+.. `Keep a Changelog <http://keepachangelog.com/en/1.0.0/>`_
+.. and this project adheres to
+.. `Semantic Versioning <http://semver.org/spec/v2.0.0.html>`_.
 
 .. Instructions for Contributors:
 .. N.B. Please do not manually edit this changelog.
