@@ -13,6 +13,7 @@ Functions:
     - init_hot_Num5D: initialize the memory-space that will be used by the 
     variables in the interpolation.
     - free_hot_Num5D: free the memory-space
+    - eval_hot: computes the 5D interpolation
     - eval_hot_Num5D_I: wrapper for eval_hot
     - eval_hot_Num5D_Q: wrapper for eval_hot
     - eval_hot_norm_Num5D: any multiplicative normalisation of the output of 
@@ -99,12 +100,17 @@ cdef void* init_hot_Num5D(size_t numThreads,
                        and can be executed without the Global Interpreter 
                        Lock (GIL).
     """
+    
+    if preloaded == NULL :
+        printf("ERROR: The numerical atmosphere data were not preloaded, \
+               which are required by this extension.\n")
+
 
     cdef DATA *D = <DATA*> malloc(sizeof(DATA))	 # Define DATA object
     D.p = preloaded  # Store preloaded information from function call in DATA 
     # object. See also preload.pyx.
     
-    #These BLOCKS are related to the number of interpolation points needed in 
+    # These BLOCKS are related to the number of interpolation points needed in 
     # a hypercube.
     D.p.BLOCKS[0] = 256    
     D.p.BLOCKS[1] = 64
@@ -272,11 +278,11 @@ cdef double eval_hot(size_t THREAD,
     
     Arguments:
         THREAD (size_t): Thread ID used for parallel execution.
-        E (double): Photon energy in units of your data table. For AMXPs it is
-        electron rest energy.
+        E (double): Photon energy in units provided by the integrator. 
+        For AMXPs, the integrator provides electron rest energy, which is the 
+        same as in the atmosphere table.
         mu (double): Cosine of the ray zenith angle (angle to surface normal).
-        VEC (const double *const): Pointer to variables (e.g., temperature, 
-                                                         effective gravity).
+        VEC (const double *const): Pointer to variables (e.g., t_bb, t_e, tau).
         data (void *const): Numerical model data required for intensity 
         evaluation.
             The function must appropriately cast the void pointer for use.
