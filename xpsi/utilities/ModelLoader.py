@@ -21,8 +21,10 @@ def load_model( model_path ,
 
     # Check if the files exist
     assert os.path.isfile(model_path), f'File {model_path} does not exist.'
+    abs_model_path = os.path.abspath(model_path)
     if config_path is not None:
         assert os.path.isfile(config_path), f'File {config_path} does not exist.'
+        abs_config_path = os.path.abspath(config_path)
 
     # Save original values
     pwd = os.getcwd()
@@ -32,7 +34,7 @@ def load_model( model_path ,
     # Change directory and make the symbolic link
     if execution_path is not None:
         os.chdir(execution_path)
-    os.system(f'ln -s { os.path.abspath(model_path) } local_main.py')
+    os.system(f'ln -s { abs_model_path } local_main.py')
     
     # Try to catch the error and make sure the cleanup happens
     try:
@@ -43,7 +45,7 @@ def load_model( model_path ,
 
         # Case with config_path provided
         if config_path is not None:
-            os.system(f'ln -s { os.path.abspath(config_path) } local_config.ini')
+            os.system(f'ln -s { abs_config_path } local_config.ini')
             sys.argv = ['local_main.py', f'@local_config.ini']
 
         # Do the loading
