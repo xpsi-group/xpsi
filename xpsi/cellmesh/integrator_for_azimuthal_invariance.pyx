@@ -44,6 +44,7 @@ ctypedef gsl_interp_accel accel
 ctypedef gsl_interp interp
 
 from .rays cimport eval_image_deflection
+from ..tools.core cimport are_equal
 
 from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
@@ -325,7 +326,7 @@ def integrate(size_t numThreads,
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
 
-                if psi != 0.0 and sin_psi == 0.0: # singularity at poles
+                if not are_equal(psi, 0.0) and are_equal(sin_psi, 0.0): # singularity at poles
                     # hack bypass by slight change of viewing angle
                     if cos_i >= 0.0:
                         _i = inclination + inclination * 1.0e-6 # arbitrary small
@@ -360,7 +361,7 @@ def integrate(size_t numThreads,
                     # for spherical stars mu is defined, but for tilted local
                     # surface, there is not one unique value for mu because
                     # Einstein ring(s)
-                    if psi != 0.0:
+                    if not are_equal(psi, 0.0):
                         cos_delta = (cos_i - cos_theta_i * cos_psi) / (sin_theta_i * sin_psi)
                         if theta_i_over_pi < 0.5:
                             mu = mu + sin_alpha * sin_gamma * cos_delta
@@ -395,7 +396,7 @@ def integrate(size_t numThreads,
                                     _kdx = N_L - 1 - k # switch due to symmetry
 
                                 # phase asymmetric now
-                                if psi != 0.0:
+                                if not are_equal(psi, 0.0):
                                     cos_xi = sin_alpha * sin_i * sin(leaves[_kdx]) / sin_psi
                                     superlum = (1.0 + beta * cos_xi)
                                     eta = Lorentz / superlum
