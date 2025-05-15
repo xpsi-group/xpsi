@@ -8,3 +8,5 @@ from GSL cimport (gsl_interp_type,
 cdef const gsl_interp_type* _get_phase_interpolant() except *
 
 cdef const gsl_interp_type* _get_energy_interpolant() except *
+
+cdef bint are_equal(double x, double y, double epsilon=*) noexcept nogil

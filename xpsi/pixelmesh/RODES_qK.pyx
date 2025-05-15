@@ -8,6 +8,8 @@ from libc.stdio cimport printf
 from GSL cimport GSL_SUCCESS
 from xpsi.pixelmesh.METRIC_qK cimport *
 
+from ..tools.core cimport are_equal
+
 cdef double _pi = M_PI
 
 # Partial derivatives of the metric tensor with respect to coordinates r and \theta
@@ -321,7 +323,7 @@ cdef int RODES(double t,
     dydl[0] = (G_44 + b*G_14) / (G_11*G_44 - G_14*G_14) # Reduce #flops here
 
     # Had only the second condition, thus phase-shifting for finite omega parameter...
-    if a == 0.0 and X_IP == 0.0:
+    if are_equal(a, 0.0) and are_equal(X_IP, 0.0):
         dydl[1] = 0.0
     else:
         dydl[1] = -1.0 * (b*G_11 + G_14) / (G_11*G_44 - G_14*G_14)
@@ -339,9 +341,9 @@ cdef int RODES(double t,
     # both of the angles are zero, leading to slow evolution because the
     # relative error is small but the derivative(s) are not set to precisely
     # zero.
-    if a == 0.0 and X_IP == 0.0 and Y_IP == 0.0:
+    if are_equal(a, 0.0) and are_equal(X_IP, 0.0) and are_equal(Y_IP, 0.0):
         dydl[5] = 0.0
-    elif a == 0.0 and Y_IP == 0.0 and inclination == _pi/2.0:
+    elif are_equal(a, 0.0) and are_equal(Y_IP, 0.0) and are_equal(inclination, _pi/2.0):
         dydl[5] = 0.0
     else:
         dydl[5] = (-Gamma_theta[0]*dydl[0]*dydl[0]

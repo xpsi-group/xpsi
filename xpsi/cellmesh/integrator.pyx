@@ -41,6 +41,7 @@ from xpsi.surface_radiation_field.elsewhere_wrapper cimport (init_elsewhere,
                                                      eval_elsewhere_norm)
 
 from .rays cimport eval_image_deflection
+from ..tools.core cimport are_equal
 
 from ..tools.core cimport _get_phase_interpolant, gsl_interp_type
 
@@ -316,7 +317,7 @@ def integrate(size_t numThreads,
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
 
-                if psi != 0.0 and sin_psi == 0.0: # sinularity at poles
+                if not are_equal(psi, 0.0) and are_equal(sin_psi, 0.0): # singularity at poles
                     # hack bypass by slight change of viewing angle
                     if cos_i >= 0.0:
                         _i = inclination + inclination * 1.0e-6 # arbitrary small

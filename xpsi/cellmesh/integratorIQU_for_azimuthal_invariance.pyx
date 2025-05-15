@@ -45,6 +45,7 @@ ctypedef gsl_interp_accel accel
 ctypedef gsl_interp interp
 
 from .rays cimport eval_image_deflection
+from ..tools.core cimport are_equal
 
 from xpsi.surface_radiation_field.preload cimport (_preloaded,
                                                    init_preload,
@@ -363,7 +364,7 @@ def integrate(size_t numThreads,
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
 
-                if psi != 0.0 and sin_psi == 0.0: # singularity at poles
+                if not are_equal(psi, 0.0) and are_equal(sin_psi, 0.0): # singularity at poles
                     # hack bypass by slight change of viewing angle
                     printf("sinpsi = %.6e\n", sin_psi)
                     printf("psi = %.6e\n", psi)

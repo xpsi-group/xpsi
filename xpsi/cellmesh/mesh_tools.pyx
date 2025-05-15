@@ -7,6 +7,8 @@ from libc.math cimport M_PI, M_PI_2
 from libc.math cimport sqrt, sin, cos, tan, asin, acos, atan, fabs, exp, pow
 from libc.math cimport fmin, fmax, floor, ceil
 
+from ..tools.core cimport are_equal
+
 cdef double M_2PI = 2.0 * M_PI
 cdef double _c = 2.99792458e8
 cdef double _keV = 1.60217662e-16
@@ -96,7 +98,7 @@ cdef double f_theta(double mu,
 
 cdef double integrand(double theta, void *params) noexcept nogil:
 
-    if theta == 0.0:
+    if are_equal(theta, 0.0):
         return 0.0
 
     cdef:
@@ -169,7 +171,7 @@ cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) noe
     cdef double critical
 
     if THETA <= 0.0:
-        if cos(theta) == 0.0:
+        if are_equal(cos(theta),0.0):
             critical = M_PI_2
         else:
             critical = atan(tan(theta) * cos(phi))
@@ -196,9 +198,9 @@ cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) noe
                 return M_PI - azi
             elif 3.0*M_PI_2 < phi < M_2PI:
                 return azi + 2.0*M_PI
-            elif phi == 0.0 or phi == M_2PI:
+            elif are_equal(phi, 0.0) or are_equal(phi, M_2PI):
                 return 0.0
-            elif phi == M_PI:
+            elif are_equal(phi, M_PI):
                 return M_PI
         elif THETA < critical:
             if phi <= M_PI_2:
@@ -209,12 +211,12 @@ cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) noe
                 return azi + M_2PI
             elif 3.0*M_PI_2 < phi < M_2PI:
                 return M_PI - azi
-            elif phi == 0.0 or phi == M_2PI:
+            elif are_equal(phi, 0.0) or are_equal(phi, M_2PI):
                 return M_PI
-            elif phi == M_PI:
+            elif are_equal(phi, M_PI):
                 return 0.0
     else:
-        if cos(theta) == 0.0:
+        if are_equal(cos(theta), 0.0):
             critical = M_PI_2
         else:
             critical = atan(tan(theta) * cos(phi))
@@ -241,9 +243,9 @@ cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) noe
                 return M_PI - azi
             elif 3.0*M_PI_2 < phi < M_2PI:
                 return azi + 2.0*M_PI
-            elif phi == 0.0 or phi == M_2PI:
+            elif are_equal(phi, 0.0) or are_equal(phi, M_2PI):
                 return 0.0
-            elif phi == M_PI:
+            elif are_equal(phi, M_PI):
                 return M_PI
         elif THETA > critical:
             if phi <= M_PI_2:
@@ -254,9 +256,9 @@ cdef double eval_cedeAzi(double theta, double phi, double psi, double THETA) noe
                 return azi + M_2PI
             elif 3.0*M_PI_2 < phi < M_2PI:
                 return M_PI - azi
-            elif phi == 0.0 or phi == M_2PI:
+            elif are_equal(phi, 0.0) or are_equal(phi, M_2PI):
                 return M_PI
-            elif phi == M_PI:
+            elif are_equal(phi, M_PI):
                 return 0.0
 
 
@@ -300,7 +302,7 @@ cdef double get_interval(double a, double b, double LB, double UB) noexcept nogi
 
 cdef double cell_integrand(double theta, void *params) noexcept nogil:
 
-    if theta == 0.0:
+    if are_equal(theta, 0.0):
         return 0.0
 
     cdef double epsilon = (<double**> params)[0][0]
@@ -324,7 +326,7 @@ cdef double cell_integrand(double theta, void *params) noexcept nogil:
     cdef double aLB, aUB, cLB, cUB, delta_phi
 
     aUB = eval_phi(theta, colat, cedeRadius)
-    if aUB == -1.0:
+    if are_equal(aUB, -1.0):
         if theta + colat < cedeRadius:
             aUB = M_PI
             aLB = -M_PI
@@ -337,7 +339,7 @@ cdef double cell_integrand(double theta, void *params) noexcept nogil:
         cLB = cUB = 0.0
     else:
         cUB = eval_phi(theta, superCentreColat, superRadius)
-        if cUB == -1.0:
+        if are_equal(cUB, -1.0):
             return 0.0
         else:
             cLB = -cUB
@@ -484,7 +486,7 @@ cdef double integrateCell(double theta_a,
     cdef double thetas[4]
     cdef double theta_min, theta_max
 
-    if integral == 0.0:
+    if are_equal(integral, 0.0):
         #verbose = 1
         # repeat with verbose mode
         #gsl_integration_cquad(&F,
@@ -725,7 +727,7 @@ cdef double integrateCell(double theta_a,
 
 cdef double spot_integrand(double theta, void *params) noexcept nogil:
 
-    if theta == 0.0:
+    if are_equal(theta, 0.0):
         return 0.0
 
     cdef double epsilon = (<double*>params)[0]
@@ -750,7 +752,7 @@ cdef double spot_integrand(double theta, void *params) noexcept nogil:
     cdef double aLB, aUB, cLB, cUB, delta_phi
 
     aUB = eval_phi(theta, colat, cedeRadius)
-    if aUB == -1.0:
+    if are_equal(aUB, -1.0):
         if theta + colat < cedeRadius:
             aUB = M_PI
             aLB = -M_PI
@@ -763,7 +765,7 @@ cdef double spot_integrand(double theta, void *params) noexcept nogil:
         cLB = cUB = 0.0
     else:
         cUB = eval_phi(theta, superCentreColat, superRadius)
-        if cUB == -1.0:
+        if are_equal(cUB, -1.0):
             return 0.0
         else:
             cLB = -cUB
@@ -927,7 +929,7 @@ def allocate_cells(size_t num_cells,
             fast_super = 1.0
             fast_cede = 1.0
 
-        if fast_super == 0.0 and fast_cede == 0.0: # invisible (at this res)
+        if are_equal(fast_super, 0.0) and are_equal(fast_cede, 0.0): # invisible (at this res)
             fast_super = 1.0 # just assume equal and base on relative area
             fast_cede = 1.0
 
@@ -996,8 +998,8 @@ def allocate_cells(size_t num_cells,
     #print(superColatitude, superRadius)
     #print(holeRadius, holeColatitude, holeAzimuth)
 
-    if cedeRadius == 0.0: # no ceding region
-        if super_area == 0.0: # Gaussian integral did not resolve
+    if are_equal(cedeRadius, 0.0): # no ceding region
+        if are_equal(super_area, 0.0): # Gaussian integral did not resolve
             super_area = super_cellArea / 1000.0
         super_sqrt_numCell = ceil(sqrt((<double>num_cells) * super_cellArea / super_area))
         #print(super_sqrt_numCell)
@@ -1068,9 +1070,9 @@ def allocate_cells(size_t num_cells,
                                      Omega,
                                      w)
 
-        if super_area == 0.0: # Gausian integral did not resolve
+        if are_equal(super_area, 0.0): # Gausian integral did not resolve
             super_area = super_cellArea / 1000.0
-        if cede_area == 0.0: # Gausian integral did not resolve
+        if are_equal(cede_area, 0.0): # Gausian integral did not resolve
             cede_area = cede_cellArea / 1000.0
 
         if fast_super > 0.0:
@@ -1079,7 +1081,7 @@ def allocate_cells(size_t num_cells,
 
             y = ((1.0 - f)/f)*(cede_area/super_area) - 1.0
 
-            if y == 0.0:
+            if are_equal(y, 0.0):
                 super_numCell = 0.5 * <double>num_cells
                 cede_numCell = 0.5 * <double>num_cells
             else:
