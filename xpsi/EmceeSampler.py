@@ -17,7 +17,7 @@ from xpsi.Parameter import StrictBoundsError
 from xpsi.ParameterSubspace import ParameterSubspace
 from xpsi.Posterior import PriorError
 
-class EnsembleSampler(_EnsembleSampler):
+class EmceeSampler(_EnsembleSampler):
     """ Derives from `emcee`_'s :class:`~emcee.EnsembleSampler`.
 
     .. _emcee: http://emcee.readthedocs.io/en/latest/
@@ -141,7 +141,7 @@ class EnsembleSampler(_EnsembleSampler):
                 print('Walker positions successfully initialised via inverse '
                       'sampling.')
 
-        super(EnsembleSampler, self).__init__(nwalkers = nwalkers,
+        super(EmceeSampler, self).__init__(nwalkers = nwalkers,
                                               ndim = ndims,
                                               log_prob_fn = posterior,
                                               pool = pool,

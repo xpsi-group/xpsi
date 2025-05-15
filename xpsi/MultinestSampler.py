@@ -14,7 +14,7 @@ else:
     if _verbose:
         print('Imported PyMultiNest.')
 
-class NestedSampler(object):
+class MultinestSampler(object):
     """ Extended MultiNest wrapper.
 
     :param int ndims: Number of parameters.

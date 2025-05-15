@@ -1227,7 +1227,7 @@ if __name__ == '__main__':
                           'max_iter': args.maximum_number_nested_replacement_iterations,
                           'verbose': True}
 
-        xpsi.Sample.nested(likelihood, prior, **runtime_params)
+        xpsi.Sample.run_multinest(likelihood, prior, **runtime_params)
 
 else:
 

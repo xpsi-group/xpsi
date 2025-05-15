@@ -1,4 +1,4 @@
-__all__ = ["nested", "ensemble", "ultranested"]
+__all__ = ["run_multinest", "run_emcee", "run_ultranest"]
 
 from xpsi.global_imports import *
 from xpsi import _comm, _rank, _size
@@ -7,13 +7,13 @@ from xpsi import Likelihood
 from xpsi.Posterior import Posterior
 
 try:
-    from xpsi.EnsembleSampler import EnsembleSampler
+    from xpsi.EmceeSampler import EmceeSampler
 except ImportError:
-    print("""Check your installation of emcee if using the EnsembleSampler""")
+    print("""Check your installation of emcee if using the EmceeSampler""")
 try:
-    from xpsi.NestedSampler import NestedSampler
+    from xpsi.MultinestSampler import MultinestSampler
 except:
-    print("""Check your installation of PyMultiNest if using the NestedSampler""")
+    print("""Check your installation of PyMultiNest if using the MultinestSampler""")
 try:
     from xpsi.UltranestSampler import UltranestSampler
 except ImportError:
@@ -28,7 +28,8 @@ def func(p):
     global posterior
     return posterior(p)
 
-def ensemble(likelihood, prior, MPI = True, **kwargs):
+
+def run_emcee(likelihood, prior, MPI = True, **kwargs):
     """ Initialise `emcee <http://dfm.io/emcee/current/>`_ and sample.
 
     :param likelihood:
@@ -79,7 +80,7 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
                 _sys.exit(0)
 
             # Initialise emcee sampler
-            sampler = EnsembleSampler(ndims = len(likelihood),
+            sampler = EmceeSampler(ndims = len(likelihood),
                                       posterior = func,
                                       pool = pool,
                                       _posterior = posterior,
@@ -89,7 +90,7 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
             sampler()
     else:
         # Initialise emcee sampler
-        sampler = EnsembleSampler(ndims = len(likelihood),
+        sampler = EmceeSampler(ndims = len(likelihood),
                                   posterior = posterior,
                                   pool = None,
                                   **kwargs)
@@ -98,8 +99,7 @@ def ensemble(likelihood, prior, MPI = True, **kwargs):
         sampler()
 
     return sampler.backend
-
-def nested(likelihood, prior, check_kwargs={}, **kwargs):
+def run_multinest(likelihood, prior, check_kwargs={}, **kwargs):
     """ Initialise MultiNest and integrate.
 
     :param dict likelihood:
@@ -121,10 +121,61 @@ def nested(likelihood, prior, check_kwargs={}, **kwargs):
     if check_kwargs:
         likelihood.check(**check_kwargs)
 
-    sampler = NestedSampler(len(likelihood),
-                            likelihood,
-                            prior)
+    sampler = MultinestSampler(len(likelihood),
+                               likelihood,
+                               prior)
     sampler(**kwargs)
+
+
+def run_ultranest(likelihood,
+                  prior,
+                  sampler_params={},
+                  runtime_params={},
+                  use_stepsampler=False,
+                  stepsampler_params={},
+                  out_filename="weighted_post_ultranest_xpsi"):
+    """ Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/)
+        package (Buchner 2021).
+
+    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
+
+    :param prior: An instance of :class:`~.Prior.Prior`.
+
+    :param sampler_params: A dictionary of the keyword arguments passed to the
+        instance of :class:`~.UltranestSampler` to initialise the sampler.
+
+    :param runtime_params:  A dictionary of the keyword arguments passed to the
+        instance of :class:`~.UltranestSampler` to run the sampler.
+
+    :param use_stepsampler: Boolean indicating if the step sampler is used. In this
+        case the :class:`ultranest.stepsampler.SliceSampler` is used.
+
+    :param stepsampler_params: A dictionary of the keyword arguments passed to the
+        to the instance of :class:`~.UltranestSampler` specifying the step sampler
+        runtime parameters.
+
+    :param out_filename: String specifying the name of the output file.
+
+    :returns: An instance of :class:`~.UltranestSampler`
+
+    """
+
+    # initialise the sampler
+    sampler = UltranestSampler(likelihood, prior, sampler_params, use_stepsampler, stepsampler_params)
+
+    # start sampling
+    sampler(runtime_params)
+
+    # print results
+    sampler.print_results()
+    if use_stepsampler:
+        sampler.stepsampler.print_diagnostic()
+
+    # store output
+    sampler.write_results(sampler_params, out_filename)
+
+    return sampler
+
 
 @make_verbose('Importance sampling commencing',
               'Importance sampling completed')
@@ -305,6 +356,25 @@ def importance(target, importance,
 
     yield
 
+
+def ensemble(likelihood, prior, MPI=True, **kwargs):
+
+    print(
+        "ensemble() is deprecated and will be removed in X-PSI v4.0 "
+        "Please use run_emcee() instead.",
+        DeprecationWarning
+    )
+    return run_emcee(likelihood, prior, MPI = MPI, **kwargs)
+
+
+def nested(likelihood, prior, check_kwargs={},  **kwargs):
+    print(
+        "nested() is deprecated and will be removed in X-PSI v4.0 "
+        "Please use run_multinest() instead.",
+        DeprecationWarning
+    )
+    return run_multinest(likelihood, prior, check_kwargs=check_kwargs, **kwargs)
+
 def ultranested(likelihood,
                 prior,
                 sampler_params={},
@@ -312,44 +382,15 @@ def ultranested(likelihood,
                 use_stepsampler=False,
                 stepsampler_params={},
                 out_filename="weighted_post_ultranest_xpsi"):
-    """ Wrapper for the UltraNest (https://johannesbuchner.github.io/UltraNest/)
-        package (Buchner 2021).
-
-    :param likelihood: An instance of :class:`~.Likelihood.Likelihood`.
-
-    :param prior: An instance of :class:`~.Prior.Prior`.
-
-    :param sampler_params: A dictionary of the keyword arguments passed to the
-        instance of :class:`~.UltranestSampler` to initialise the sampler.
-
-    :param runtime_params:  A dictionary of the keyword arguments passed to the
-        instance of :class:`~.UltranestSampler` to run the sampler.
-
-    :param use_stepsampler: Boolean indicating if the step sampler is used. In this
-        case the :class:`ultranest.stepsampler.SliceSampler` is used.
-
-    :param stepsampler_params: A dictionary of the keyword arguments passed to the
-        to the instance of :class:`~.UltranestSampler` specifying the step sampler
-        runtime parameters.
-
-    :param out_filename: String specifying the name of the output file.
-
-    :returns: An instance of :class:`~.UltranestSampler`
-
-    """
-
-    # initialise the sampler
-    sampler = UltranestSampler(likelihood, prior, sampler_params, use_stepsampler, stepsampler_params)
-
-    # start sampling
-    sampler(runtime_params)
-
-    # print results
-    sampler.print_results()
-    if use_stepsampler:
-        sampler.stepsampler.print_diagnostic()
-
-    # store output
-    sampler.write_results(sampler_params, out_filename)
-
-    return sampler
+    print(
+        "ensemble() is deprecated and will be removed in X-PSI v4.0 "
+        "Please use run_ultranest() instead.",
+        DeprecationWarning
+    )
+    return run_ultranest(likelihood,
+                         prior,
+                         sampler_params=sampler_params,
+                         runtime_params=runtime_params,
+                         use_stepsampler=use_stepsampler,
+                         stepsampler_params=stepsampler_params,
+                         out_filename=out_filename)
