@@ -48,61 +48,9 @@ class CustomInstrument(xpsi.Instrument):
 
         return self._folded_signal
 
-    @classmethod
-    def from_response_files(cls, ARF, RMF, channel_edges, max_input,
-                            min_input=0):
-        """ Constructor which converts response files into :class:`numpy.ndarray`s.
-        :param str ARF: Path to ARF which is compatible with
-                                :func:`numpy.loadtxt`.
-        :param str RMF: Path to RMF which is compatible with
-                                :func:`numpy.loadtxt`.
-        :param str channel_edges:  Path to edges which is compatible with
-                                  :func:`numpy.loadtxt`.
-        """
-        link ="https://doi.org/10.5281/zenodo.7094144"
-        if min_input != 0:
-            min_input = int(min_input)
-
-        max_input = int(max_input)
-
-        try:
-            ARF = np.loadtxt(ARF, dtype=np.double, skiprows=3)
-        except:
-            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(ARF, link))
-            exit()
-
-        try:
-            RMF = np.loadtxt(RMF, dtype=np.double)
-        except:
-            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(RMF, link))
-            exit()
-
-        try:
-            channel_edges = np.loadtxt(channel_edges, dtype=np.double, skiprows=3)[:,1:]
-        except:
-            print("ERROR: You miss the following file: {}\nThe file is found from here: {}".format(channel_edges, link))
-            exit()
-
-        matrix = np.ascontiguousarray(RMF[min_input:max_input,20:201].T, dtype=np.double)
-
-        edges = np.zeros(ARF[min_input:max_input,3].shape[0]+1, dtype=np.double)
-
-        edges[0] = ARF[min_input,1]; edges[1:] = ARF[min_input:max_input,2]
-
-        for i in range(matrix.shape[0]):
-            matrix[i,:] *= ARF[min_input:max_input,3]
-
-        channels = np.arange(20, 201)
-
-        return cls(matrix, edges, channels, channel_edges[20:202,-2])
-
-
-
-NICER = CustomInstrument.from_response_files(ARF = 'model_data/nicer_v1.01_arf.txt',
-                                             RMF = 'model_data/nicer_v1.01_rmf_matrix.txt',
-                                             channel_edges = 'model_data/nicer_v1.01_rmf_energymap.txt',
-                                             max_input = 500,
-                                             min_input = 0)
+NICER = CustomInstrument.from_ogip_fits(RMF_path='nicer_20170601v003.rmf',
+                                        ARF_path='nicer_20170601v005.arf',
+                                        datafolder='../../examples/examples_modeling_tutorial/model_data')
 
 bounds = dict(distance = (0.1, 1.0),                     # (Earth) distance
                 mass = (1.0, 3.0),                       # mass
@@ -385,6 +333,8 @@ signal = CustomSignal(data = data,
                         instrument = NICER,
                         background = None,
                         interstellar = None,
+                        min_channel=20, 
+                        max_channel=200,
                         workspace_intervals = 1000,
                         cache = True,
                         epsrel = 1.0e-8,
@@ -582,7 +532,8 @@ runtime_params = {'resume': False,
                   'verbose': True}
 
 # let's require that checks pass before starting to sample
-true_logl = -6.7261415434e+04
+#true_logl = -6.7261415434e+04
+true_logl = -7.0377510276e+04
 likelihood.check(None, [true_logl], 1.0e-6,physical_points=[p],force_update=True)
 
 if __name__ == '__main__': # sample from the posterior
