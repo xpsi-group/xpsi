@@ -1,26 +1,3 @@
-v3.0 - 2025-05-15
-~~~~~~~~~~~~~~~~~
-
-Summary
-^^^^^^^
-
-- Introduced automatic changelog generation upon PR merge using ``Towncrier``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
-
-
-Added
-^^^^^
-
-- Added ``towncrier.toml``, ``changelog.d/README.rst``, and
-   ``.github/workflows/changelog.yml``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
-
-
-Changed
-^^^^^^^
-
-- Older instruction comments in ``CHANGELOG.rst`` updated for ``towncrier``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
-- Changed ``towncrier.toml`` and ``.github/changelog.yml``. (`#585 <https://github.com/xpsi-group/xpsi/pull/585>`__)
-
-
 [v3.0.6] - 2025-05-12
 ~~~~~~~~~~~~~~~~~~~~~
 
