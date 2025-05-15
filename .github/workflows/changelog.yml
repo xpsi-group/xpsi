@@ -63,7 +63,7 @@ jobs:
 
       - name: Run Towncrier to generate changelog
         run: |
-          towncrier build --yes
+          yes n | towncrier build
 
       - name: Commit and push changelog update
         run: |
