@@ -137,6 +137,7 @@ class Signal(ParameterSubspace):
         try:
             a_instrument = _np.where( self._instrument.channels == self._data.channels[0] )[0][0] 
             b_instrument = _np.where( self._instrument.channels == self._data.channels[-1] )[0][0] 
+            self._instrument_index_range_channels = ( a_instrument, b_instrument + 1 )
             assert not (self._data.channels != self._instrument.channels[a_instrument:b_instrument+1]).any()
         except ChannelError or IndexError:
             raise ChannelError('Channel array declared for event data does not match channel array declared for the loaded '
@@ -403,7 +404,7 @@ class Signal(ParameterSubspace):
 
                         temp = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.index_range)
+                                                self._instrument_index_range_channels)
 
                         fast_total_counts.append(_np.sum(temp))
 
@@ -460,7 +461,7 @@ class Signal(ParameterSubspace):
 
                 self.signals = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.index_range)
+                                                self._instrument_index_range_channels)
 
             if self._background is not None:
                 try:
@@ -473,7 +474,7 @@ class Signal(ParameterSubspace):
                 self._background.registered_background = \
                                 self._instrument(self._background.incident_background,
                                                  self._input_interval_range,
-                                                 self._data.index_range)
+                                                 self._instrument_index_range_channels)
 
     @property
     def num_components(self):

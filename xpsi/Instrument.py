@@ -361,7 +361,7 @@ class Instrument(ParameterSubspace):
 
         # Get all the channels and einput energies
         channels = _np.array( RMF_EBOUNDS['CHANNEL'] )
-        inputs = _np.arange( 1, NUMGRP+1  )
+        inputs = _np.arange( 0, NUMGRP )
 
         # Get the channels from the data
         RMF = _np.zeros((DETCHANS, NUMGRP))
@@ -409,7 +409,7 @@ class Instrument(ParameterSubspace):
                   f' Now min_channel={channels[0]} and max_channel={channels[-1]}')
             
         # Get the edges of energies for both input and channel
-        energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs-1], RMF_MATRIX['ENERG_HI'][inputs[-1]-1]).astype(dtype=_np.double)
+        energy_edges = _np.append( RMF_MATRIX['ENERG_LO'][inputs], RMF_MATRIX['ENERG_HI'][inputs[-1]]).astype(dtype=_np.double)
         channel_energy_edges = _np.append(RMF_EBOUNDS['E_MIN'][channels-TLMIN],RMF_EBOUNDS['E_MAX'][channels[-1]-TLMIN])
 
         # Make the instrument
