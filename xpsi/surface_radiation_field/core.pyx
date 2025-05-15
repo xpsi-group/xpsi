@@ -722,6 +722,47 @@ def intensity_split_interpolation(double[::1] energies,
     
     return np.asarray(I_E2D, dtype = np.double, order = 'C')
 
+
+def interpolate_2D(double[::1] energies,
+                   double[::1] mu,
+                   atmosphere_2D,
+                   size_t numTHREADS = 1):
+
+        
+    cdef double *I_data_2D
+    cdef size_t T
+    T = threadid()   
+    hot_preloaded_2D = init_preload(atmosphere_2D)
+    hot_data_2D = init_hot_2D(numTHREADS, hot_preloaded_2D)
+    
+    cdef double[::1] I_E2D = np.zeros(energies.shape[0],
+                                            dtype = np.double)
+    
+    cdef size_t i
+    cdef signed int ii
+    for ii in prange(<signed int>energies.shape[0],
+                     nogil = True,
+                     schedule = 'static',
+                     num_threads = <size_t> numTHREADS,
+                     chunksize = 1):
+
+        i = <size_t> ii
+        I_E2D[i] = eval_hot_2D(T, # using numThreads>1 should be safe.
+                              energies[i],
+                              mu[i],
+                              hot_data_2D)
+    
+    # don't get photon specific intensity
+    # intensities[i] *= norm_ptr() / (energies[i] * keV)
+
+
+    free_preload(hot_preloaded_2D)
+    free(I_data_2D)
+    free_hot_2D(numTHREADS, hot_data_2D)
+    
+    return np.asarray(I_E2D, dtype = np.double, order = 'C')
+
+
 def produce_atmosphere_2D(double[:,::1] local_variables,
                                   atmosphere = None,
                                   int stokesQ = 0,

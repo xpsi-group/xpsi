@@ -247,6 +247,7 @@ if __name__ == '__main__':
                 'xpsi.cellmesh.integratorIQU',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance',
                 'xpsi.cellmesh.integrator_for_azimuthal_invariance_split',
+                'xpsi.cellmesh.integrator_for_azimuthal_invariance_split_pytorch',
                 'xpsi.cellmesh.integratorIQU_for_azimuthal_invariance',
                 'xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split',
                 'xpsi.cellmesh.integrator_for_time_invariance',

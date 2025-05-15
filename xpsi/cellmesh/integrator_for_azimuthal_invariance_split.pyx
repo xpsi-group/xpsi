@@ -13,6 +13,7 @@ from libc.math cimport M_PI, sqrt, sin, cos, acos, log10, pow, exp, fabs, ceil, 
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport printf
 import xpsi
+import time
 
 cdef double _pi = M_PI
 cdef double _hlfpi = M_PI / 2.0
@@ -96,6 +97,37 @@ def integrate(size_t numThreads,
               else_atm_ext,
               beam_opt,
               image_order_limit = None):
+    
+    cdef:
+        double time_start
+        double time_end
+        double time_2D
+        double time_nE
+        double time_nE_start
+        double time_mu 
+        double time_mu_start
+        double time_invis
+        double time_invis_start
+        double time_leaf
+        double time_leaf_start
+        double time_post
+        double time_post_start
+        double time_post_nE
+        double time_post_nE_start
+        double time_post_k
+        double time_post_k_start
+        double time_setup
+        double time_setup_start
+        double time_ks
+        double time_ks_start
+        double time_flux
+        double time_flux_start
+        double time_cell
+        double time_cell_start
+        double time_I
+        double time_I_start
+    
+    time_start = time.time()
 
     # check for rayXpanda explicitly in case of some linker issue
     cdef double rayXpanda_defl_lim
@@ -163,6 +195,13 @@ def integrate(size_t numThreads,
         double _specific_flux
         size_t _InvisPhase
         double E_electronrest
+        
+        # size_t counter_nE = 0
+        # size_t counter_leaflim = 0
+        # size_t counter_cellArea = 0
+        size_t post_counter = 0
+        
+        
 
 
         double[:,:,::1] privateFlux = np.zeros((N_T, N_E, N_P), dtype = np.double)
@@ -196,6 +235,8 @@ def integrate(size_t numThreads,
         double *lag_ptr
         double *profile_ptr
         double *phase_ptr
+        
+
 
     if not _use_rayXpanda:
         accel_alpha_alt = <accel**> malloc(N_T * sizeof(accel*))
@@ -220,6 +261,7 @@ def integrate(size_t numThreads,
 
     cdef double[:,::1] cos_alpha_alt
     cdef double[:,::1] cos_deflection
+
     if not _use_rayXpanda:
         cos_deflection = np.zeros((deflection.shape[0],
                                    deflection.shape[1]),
@@ -274,6 +316,8 @@ def integrate(size_t numThreads,
         else:
             ext_data = init_elsewhere(N_T, NULL, else_atm_ext)
 
+
+
     #----------------------------------------------------------------------->>>
     # >>> Integrate.
     # >>>
@@ -289,11 +333,21 @@ def integrate(size_t numThreads,
     hot_data_2D = init_hot_2D(N_T, hot_preloaded_2D)
 
 
-    for ii in prange(<signed int>cellArea.shape[0],
-                     nogil = True,
-                     schedule = 'static',
-                     num_threads = N_T,
-                     chunksize = 1):
+    time_2D = time.time()
+
+
+    # for ii in prange(<signed int>cellArea.shape[0],
+    #                  nogil = True,
+    #                  schedule = 'static',
+    #                  num_threads = N_T,
+    #                  chunksize = 1):
+        
+        
+    time_cell_start = time.time()
+    for ii in range(<signed int>cellArea.shape[0]):
+                
+        time_setup_start = time.time()        
+        # counter_cellArea += 1
 
         # Thread index
         T = threadid(); twoT = 2*T
@@ -352,14 +406,23 @@ def integrate(size_t numThreads,
             # explanation: image_order = 1 means primary image only
         else:
             _IO = image_order
+        
+        time_setup += time.time() - time_setup_start
+        
+        
+        time_I_start = time.time()
         for I in range(_IO): # loop over images
             InvisFlag[T] = 2 # initialise image order as not visible
             correction_I_E = 0.0
-
+            
+            time_leaf_start = time.time()
             for k in range(leaf_lim):
+                
+                
                 cos_psi = cos_i * cos_theta_i + sin_i * sin_theta_i * cos(leaves[k])
                 psi = eval_image_deflection(I, acos(cos_psi))
                 sin_psi = sin(psi)
+                
 
                 if psi != 0.0 and sin_psi == 0.0: # singularity at poles
                     # hack bypass by slight change of viewing angle
@@ -405,8 +468,10 @@ def integrate(size_t numThreads,
                             mu = mu + sin_alpha * sin_gamma * cos_delta
                         else:
                             mu = mu - sin_alpha * sin_gamma * cos_delta
-
                     if mu > 0.0:
+                        time_mu_start = time.time()
+                        
+                        
                         if _use_rayXpanda and psi <= rayXpanda_defl_lim:
                             pass
                         elif not _use_rayXpanda and psi <= _hlfpi and cos_psi >= interp_alpha_alt[T].xmin:
@@ -424,7 +489,13 @@ def integrate(size_t numThreads,
                         else:
                             _phase_lag = gsl_interp_eval(interp_lag[T], defl_ptr, lag_ptr, psi, accel_lag[T])
 
+
+                        time_mu += time.time() - time_mu_start
+
+                        time_ks_start = time.time()
                         for ks in range(2):
+                            
+                           
                             if (0 < k < leaf_lim - 1
                                     or (k == 0 and ks == 0)
                                     or (k == leaf_lim - 1 and N_L%2 == 1 and ks == 0)
@@ -450,12 +521,21 @@ def integrate(size_t numThreads,
                                 _GEOM = mu * fabs(deriv) * Grav_z * eta * eta * eta / superlum
 
                                 PHASE[T][_kdx] = leaves[_kdx] + _phase_lag
-
-                                # specific intensities
+                                
+                                
+                              
+                        
+                                time_nE_start = time.time()
                                 for p in range(N_E):
-                                    E_prime = energies[p] / _Z
-                                    E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
                                     
+                                            
+                                    # counter_nE += 1
+
+                                    # printf("p=%ld,", p)
+                                    E_prime = energies[p] / _Z
+                                    # printf("_Z=%.8e\n", _Z)
+                                    E_electronrest=E_prime*0.001956951 #kev to electron rest energy conversion
+                            
                                     # printf("E_electronrest %.8e\n", E_electronrest)
                                     # printf("srcCellParams[i,J,0] %.8e\n", srcCellParams[i,J,0])
                                     # printf("srcCellParams[i,J,1] %.8e\n", srcCellParams[i,J,1])
@@ -463,6 +543,7 @@ def integrate(size_t numThreads,
 
 
                                     I_E2D = eval_hot_2D_I(T, E_electronrest, _ABB, hot_data_2D)
+                                    # I_E2D = 0.1
 
                                     # printf("I_E2D = %.8e\n", I_E2D)
 
@@ -474,9 +555,14 @@ def integrate(size_t numThreads,
                                                                         ext_data,
                                                                         0)
                                         correction_I_E = correction_I_E * eval_elsewhere_norm()
+                                        # correction_I_E = 0.1
+
 
                                     (PROFILE[T] + BLOCK[p] + _kdx)[0] = (I_E2D * eval_hot_norm_Num5D() - correction_I_E) * _GEOM
-
+                                time_nE += time.time() - time_nE_start
+                        time_ks += time.time() - time_ks_start    
+                        time_invis_start = time.time()
+                        
                         if k == 0: # if initially visible at first/last phase steps
                             # periodic
                             PHASE[T][N_L - 1] = PHASE[T][0] + _2pi
@@ -527,6 +613,8 @@ def integrate(size_t numThreads,
 
                         # reset visibility flag
                         InvisFlag[T] = 0
+                        
+                        time_invis += time.time() - time_invis_start
 
                     else:
                         # check whether cell was visible at previous phase step
@@ -564,12 +652,14 @@ def integrate(size_t numThreads,
 
                         InvisFlag[T] = 1
                         _InvisPhase = k
-
+                        
+            time_leaf += time.time() - time_leaf_start
             if terminate[T] == 1:
                 break # out of image loop
             elif InvisFlag[T] == 2: # no visibility detected
                 break # ignore higher order images, assume no visiblity
             else: # proceed to sum over images
+                time_post_start = time.time()
                 for m in range(1, N_L):
                     if PHASE[T][m] <= PHASE[T][m - 1]:
                         printf("Interpolation error: phases are not strictly increasing.\n")
@@ -580,6 +670,7 @@ def integrate(size_t numThreads,
                     break # out of image loop
                 else:
                     phase_ptr = PHASE[T]
+                    time_post_nE_start = time.time()
                     for p in range(N_E):
                         gsl_interp_accel_reset(accel_PROFILE[T])
                         profile_ptr = PROFILE[T] + BLOCK[p]
@@ -589,7 +680,9 @@ def integrate(size_t numThreads,
                         while j < <size_t>cellArea.shape[1] and terminate[T] == 0:
                             if CELL_RADIATES[i,j] == 1:
                                 phi_shift = phi[i,j]
+                                time_post_k_start = time.time()
                                 for k in range(N_P):
+                                    post_counter += 1
                                     _PHASE = phases[k]
                                     _PHASE_plusShift = _PHASE + phi_shift
                                     if _PHASE_plusShift > PHASE[T][N_L - 1]:
@@ -609,16 +702,23 @@ def integrate(size_t numThreads,
                                     _specific_flux = gsl_interp_eval(interp_PROFILE[T], phase_ptr, profile_ptr, _PHASE_plusShift, accel_PROFILE[T])
                                     if _specific_flux > 0.0 or perform_correction == 1:
                                         privateFlux[T,p,k] += cellArea[i,j] * _specific_flux
-
+                                time_post_k += time.time() - time_post_k_start
                             j = j + 1
                         if terminate[T] == 1:
                             break # out of energy loop
+                    time_post_nE += time.time() - time_post_nE_start   
+                time_post += time.time() - time_post_start
             if terminate[T] == 1:
                 break # out of image loop
+                
+        time_I += time.time() - time_I_start 
         if not _use_rayXpanda:
             gsl_interp_free(interp_alpha_alt[T])
         if terminate[T] == 1:
            break # out of colatitude loop
+
+    time_cell += time.time() - time_cell_start
+    time_flux_start = time.time()
 
     for i in range(N_E):
         for T in range(N_T):
@@ -628,6 +728,8 @@ def integrate(size_t numThreads,
     for p in range(N_E):
         for k in range(N_P):
             flux[p,k] /= (energies[p] * keV)
+            
+    time_flux = time.time() - time_flux_start
 
     for T in range(N_T):
         gsl_interp_free(interp_alpha[T])
@@ -685,6 +787,34 @@ def integrate(size_t numThreads,
 
     free(terminate)
 
+
+    time_end = time.time()
+    printf("timer_nE=%f\n", time_nE)
+    printf("timer_ks=%f\n", time_ks)
+    printf("timer_leaf=%f\n", time_leaf)
+    printf("timer_I=%f\n", time_I)
+    printf("timer_cell=%f\n", time_cell)
+  
     
+    printf("timer_full=%f\n", time_end-time_start)
+    # printf("timer_preatmosphere=%f\n", time_2D-time_start)
+    # printf("timer_setup=%f\n", time_setup)
+
+    # printf("timer_mu=%f\n", time_mu)
+
+
+    # printf("timer_invis=%f\n", time_invis)
+    printf("timer_post=%f\n", time_post)
+    printf("timer_post_nE=%f\n", time_post_nE)
+    printf("timer_post_k=%f\n", time_post_k)
+    # printf("timer_flux=%f\n", time_flux)
+    
+    
+
+    
+    printf("post_counter=%lu\n", post_counter)
+    # printf("counter_cellArea=%lu\n", counter_cellArea)
+    # printf("counter_leaflim=%lu\n", counter_leaflim)
+    # printf("mcounter_nE=%lu\n", counter_nE)
     return (SUCCESS, np.asarray(flux, dtype = np.double, order = 'C'))
 

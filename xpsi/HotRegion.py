@@ -519,7 +519,7 @@ class HotRegion(ParameterSubspace):
         self._symmetry = declaration
         # find the required integrator
         if declaration: # can we safely assume azimuthal invariance?
-            if self._split:
+            if self._split: #PYTORCH!
                 from xpsi.cellmesh.integrator_for_azimuthal_invariance_split import integrate as _integrator
                 from xpsi.cellmesh.integratorIQU_for_azimuthal_invariance_split import integrate as _integratorIQU
             else:
