@@ -48,11 +48,11 @@ jobs:
           sudo apt-get install -y gcc
         shell: bash -l {0}
 
-      - name: install gsl
+      - name: Install gsl
         run: |
           sudo apt-get install -y libgsl-dev
 
-      - name: install X-PSI package
+      - name: Install X-PSI package
         run: |
           python setup.py install
         shell: bash -l {0}
@@ -63,7 +63,7 @@ jobs:
         run: |
           pip install towncrier
 
-      - name: Sync with latest PR branch before building changelog
+      - name: Sync with latest PR branch before updating changelog
         run: |
           git fetch origin ${{ github.head_ref }}
           git checkout ${{ github.head_ref }}
