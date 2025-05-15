@@ -62,7 +62,7 @@ class TestPostProcessing(object):
                                        run_IDs=['run'],
                                        roots=['ST_live_1000_eff_0.3_seed0'],
                                        base_dirs=[os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../examples/examples_fast/Outputs/')],
-                                       use_nestcheck=[False],
+                                       use_nestcheck=[True],
                                        kde_settings=getdist_kde_settings,
                                        likelihood=ST.likelihood,
                                        names=ST.names,
