@@ -19,6 +19,11 @@ Changed
 
 - Older instruction comments in ``CHANGELOG.rst`` updated for ``towncrier``. (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
 
+Attributed
+^^^^^^^^^^
+
+- Devarshi Choudhury (`#572 <https://github.com/xpsi-group/xpsi/pull/572>`__)
+
 
 .. History
 .. -------
