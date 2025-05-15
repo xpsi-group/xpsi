@@ -3,8 +3,9 @@ package = "xpsi"
 filename = "CHANGELOG.rst"
 directory = "changelog.d/"
 issue_format = "`#{issue} <https://github.com/xpsi-group/xpsi/pull/{issue}>`__"
-title_format = "Version {version} ({project_date})"
+title_format = "v{version} - {project_date}"
 underlines = ["~", "^"]
+version = "python get_version.py"
 
 [[tool.towncrier.type]]
 directory = "summary"
