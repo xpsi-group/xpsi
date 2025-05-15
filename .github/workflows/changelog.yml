@@ -65,8 +65,13 @@ jobs:
         run: |
           yes n | towncrier build
 
+      - name: Set up Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Commit and push changelog update
         run: |
           git add CHANGELOG.rst
           git commit -m "Changelog updated"
-          git push
+          git push origin HEAD:${{ github.head_ref }}
