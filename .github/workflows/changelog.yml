@@ -72,6 +72,8 @@ jobs:
 
       - name: Commit and push changelog update
         run: |
+          git fetch origin ${{ github.head_ref }}
+          git rebase origin/${{ github.head_ref }}
           git add CHANGELOG.rst
           git commit -m "Changelog updated"
           git push origin HEAD:${{ github.head_ref }}
