@@ -38,7 +38,7 @@ jobs:
       - name: Build changelog with Towncrier
         run: |
           VERSION=$(grep -oP "^__version__\s*=\s*['\"]\K[^'\"]+" xpsi/__init__.py | cut -d. -f1,2)
-          towncrier build --version $VERSION
+          towncrier build --version $VERSION --yes
 
       - name: Sync with latest PR branch before updating changelog
         run: |
