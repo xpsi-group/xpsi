@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 import math
-import copy
+import os
 from collections import OrderedDict
 
 import xpsi
@@ -61,7 +61,7 @@ class TestPostProcessing(object):
         ST.runs = xpsi.Runs.load_runs(ID='ST',
                                        run_IDs=['run'],
                                        roots=['ST_live_1000_eff_0.3_seed0'],
-                                       base_dirs=['../../examples/examples_fast/Outputs/'],
+                                       base_dirs=[os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../examples/examples_fast/Outputs/')],
                                        use_nestcheck=[False],
                                        kde_settings=getdist_kde_settings,
                                        likelihood=ST.likelihood,
@@ -79,7 +79,7 @@ class TestPostProcessing(object):
             _ = xpsi.Runs.load_runs(ID='ST',
                                            run_IDs=['run'],
                                            roots=['ST_live_1000_eff_0.3_seed0'],
-                                           base_dirs=['../../examples/examples_fast/Outputs/'],
+                                           base_dirs=[os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../examples/examples_fast/Outputs/')],
                                            use_nestcheck=[False],
                                            kde_settings=getdist_kde_settings,
                                            likelihood=ST.likelihood,
@@ -155,7 +155,7 @@ class TestPostProcessing(object):
     def test_background_plotting_works(self):
         'Testing that the background plotter does not fail when it should not.'
 
-        samples_path = '../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_v2'
+        samples_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_v2')
         fig, ax = plotBackgroundSpectrum(XPSI_model=self.ST, 
                                 samples_path=samples_path, 
                                 InstrumentName=None,
@@ -167,7 +167,7 @@ class TestPostProcessing(object):
         'with MultiNest output file having only 1 equally weighted posterior sample.'
 
         with pytest.raises(IndexError):
-            samples_path = '../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_v2'
+            samples_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_v2')
             fig, ax = plotBackgroundSpectrum(XPSI_model=self.ST, 
                                     samples_path=samples_path, 
                                     InstrumentName=None,
@@ -177,7 +177,7 @@ class TestPostProcessing(object):
     def test_projection_tool_works(self):
         'Testing that the projection tool does not fail when it should not.'
 
-        samples_path = '../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_v2'
+        samples_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../examples/examples_fast/Outputs/ST_live_1000_eff_0.3_seed0_v2')
         AverageP ,SigmaP, BestFitP, MAP_P = readSummary(samples_path,verbose=False)
         self.ST.likelihood(BestFitP,reinitialise=True)
         ax = plot_projection_general(self.ST.likelihood, 'ST', "I","SP", antiphase=False, SaveFlag = False, Name = 'BestFit' )
