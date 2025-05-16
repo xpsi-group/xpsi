@@ -52,6 +52,7 @@ How to get in touch or get involved
 
 We always welcome contributions and feedback! We are especially interested in 
 hearing from you if
+
 * something breaks,
 * you spot bugs, 
 * if there is missing functionality, or you have suggestions for future development,
