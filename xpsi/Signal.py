@@ -86,6 +86,7 @@ class Signal(ParameterSubspace):
                  stokes = "I",
                  min_channel = 0,
                  max_channel = -1,
+                 tolerance = 1e-4,
                  *args,
                  **kwargs):
 
@@ -119,33 +120,35 @@ class Signal(ParameterSubspace):
             raise TypeError('Invalid type for an instrument object.')
         else:
             self._instrument = instrument
-            self._original_instrument = deepcopy( instrument )
 
-        # Trimming the data and response so they fit together
+        # Trimming the data
         if min_channel != 0 or max_channel != -1:
             try:
                 self._data.trim_data(min_channel, max_channel)
             except AttributeError:
                 print('WARNING : There is no counts in data object. This is normal if you are trying to synthesise data.'
                       'Otherwise something is very wrong and do not continue')
-            self._instrument.trim_response(min_channel, max_channel)
 
+        # Check that the channel arrays match
         a, b = data.index_range
-        if (len(self._data.channels) != len(self._instrument.channels[a:b])):
-            raise ChannelError( 'Size of the channel array declared for event data '
-                                'does not match the size of the channel array declared'
-                                ' for the loaded instrument response (sub)matrix.')
+        if ( len(self._data.channels) != (b-a) ):
+            raise ChannelError( 'Size of the channel array declared for event data does not match the declared size.')
 
-        if (self._data.channels != self._instrument.channels[a:b]).any():
-            raise ChannelError('Channel array declared for event data does not '
-                               'match channel array declared for the loaded '
-                               'instrument response (sub)matrix.')
+        # Check that channels of instrument and data can be matched, 
+        try:
+            a_instrument = _np.where( self._instrument.channels == self._data.channels[0] )[0][0] 
+            b_instrument = _np.where( self._instrument.channels == self._data.channels[-1] )[0][0] 
+            self._instrument_index_range_channels = ( a_instrument, b_instrument + 1 )
+            assert not (self._data.channels != self._instrument.channels[a_instrument:b_instrument+1]).any()
+        except ChannelError or IndexError:
+            raise ChannelError('Channel array declared for event data does not match channel array declared for the loaded '
+                            'instrument response (sub)matrix. The data channels need to be a subset of the instrument channels.')
 
         # Check that they come from the same instrument
         if hasattr( self._data , 'instrument' ) and hasattr( self._instrument , 'name' ):
             assert self._data.instrument == self._instrument.name, 'Data and Instrument come from different instruments'
 
-        self._identify_waveband()
+        self._identify_waveband( tolerance=tolerance )
 
         if background is not None:
             if not isinstance(background, Background):
@@ -156,9 +159,10 @@ class Signal(ParameterSubspace):
             self._background = None
 
         if support is not None:
-
             if self._data.counts.shape[0]==support.shape[0]:
                 self._support = support
+            elif self._instrument.channels.shape[0]==support.shape[0]:
+                self._support = support[a_instrument:b_instrument+1]
             else:
                 raise TypeError("Data spectrum and background support must the have same shape")
         else:
@@ -287,17 +291,12 @@ class Signal(ParameterSubspace):
     def original_data(self):
         """ Get the a copy of the original instance of :class:`~.Data.Data`."""
         return self._original_data
-
-    @property
-    def original_instrument(self):
-        """ Get the a copy of the original instance of :class:`~.Instrument.Instrument`."""
-        return self._original_instrument
     
     @property
     def photosphere(self):
         return self._photosphere
 
-    def _identify_waveband(self):
+    def _identify_waveband(self, tolerance=1e-3):
             """ Bound the waveband for signal integration.
 
             Constructs an array of energy edges for instrument operation.
@@ -309,23 +308,47 @@ class Signal(ParameterSubspace):
             model instrument (in an instance of the
             :class:`~.Instrument.Instrument` class).
 
+            :param float tolerance:
+                The relative tolerance of response matrix to be used. 
+                Any energy for which the cumulative of the response at the last channel is over (1-tolerance)*cumulative[-1] is excluded from the waveband.
+                Defaults to 1e-3
+
             :raises IndexError:
                 If the channel range of the data object is not consistent with
                 the instrument object.
 
             """
-            a, b = self._data.index_range
 
+            # Check that the tolerance is between 0 and 1
+            assert 0. <= tolerance <= 1. , 'tolerance for waveband must be between 0 and 1'
+
+            # Get the first and last channels of the data in the instrument responseFind
+            a_instrument = self._instrument_index_range_channels[0]
+            b_instrument = self._instrument_index_range_channels[-1] - 1
+
+            # Find the channels that are not empty
+            while not self._instrument.matrix[a_instrument,:].any():
+                a_instrument += 1
+                if a_instrument == b_instrument:
+                    raise IndexError('Could not find a non-zero channel in the redistribution to stop at.')
+
+            # Now find the first non-zero energy inputs
             def search(i, j, k):
                 while self._instrument.matrix[i,j] == 0.0:
                     j += k
                 return j
+            min_energy_index = search(a_instrument, 0, 1)
 
-            a = search(a, 0, 1)
-            b = self._instrument.matrix.shape[1] + search(b-1, -1, -1) + 1
+            # Get the cumulative of the response at the last channel
+            RSP_cumulative = self._instrument.matrix[ b_instrument ].cumsum()
 
-            self._input_interval_range = (a, b)
-            self._energy_edges = self._instrument.energy_edges[a:b + 1]
+            # Find the first energy index where the cumulative of the redistribution is above the threshold
+            threshold = ( 1. - tolerance ) * RSP_cumulative[-1]
+            max_energy_index = _np.where( RSP_cumulative >= threshold )[0][0]
+
+            # Set the waveband
+            self._input_interval_range = (min_energy_index, max_energy_index + 1)
+            self._energy_edges = self._instrument.energy_edges[a_instrument:max_energy_index + 2]
             self._energy_mids = (self._energy_edges[:-1] + self._energy_edges[1:])/2.0
 
     @property
@@ -393,7 +416,7 @@ class Signal(ParameterSubspace):
 
                         temp = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.index_range)
+                                                self._instrument_index_range_channels)
 
                         fast_total_counts.append(_np.sum(temp))
 
@@ -450,7 +473,7 @@ class Signal(ParameterSubspace):
 
                 self.signals = self._instrument(integrated,
                                                 self._input_interval_range,
-                                                self._data.index_range)
+                                                self._instrument_index_range_channels)
 
             if self._background is not None:
                 try:
@@ -463,7 +486,7 @@ class Signal(ParameterSubspace):
                 self._background.registered_background = \
                                 self._instrument(self._background.incident_background,
                                                  self._input_interval_range,
-                                                 self._data.index_range)
+                                                 self._instrument_index_range_channels)
 
     @property
     def num_components(self):
