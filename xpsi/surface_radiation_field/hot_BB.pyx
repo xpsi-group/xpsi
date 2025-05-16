@@ -10,7 +10,7 @@ J/cm^2/s/keV/steradian.
 
 Functions:
     - init_hot_BB: does nothing but must exist for placeholder purposes.
-    - free_hot_BB: does nothing but must exists for placeholder purposes.
+    - free_hot_BB: does nothing but must exist for placeholder purposes.
     - eval_hot_BB: evaluate the specific intensty.
     - eval_hot_BB_norm: normalize.
 
