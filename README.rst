@@ -8,6 +8,7 @@ X-PSI
 **\ X-ray Pulse Simulation and Inference.**
 
 |Python version| |Build Status Main| |Docs| |GitHub Release| |Repo status|
+
 |joss| |doi|
 
 X-PSI is designed to simulate rotationally-modified (pulsed) surface 
